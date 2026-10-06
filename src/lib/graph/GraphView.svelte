@@ -63,11 +63,17 @@
   const SELECTED_HUE = '#ffffff'
 
   function sync(): void {
+    // Read the `data` prop BEFORE the engine guard: if we returned early on
+    // !engine first, this $effect would record no dependencies and never
+    // re-run when filters change (found via browser testing).
+    const nodes = data.nodes
+    const links = data.links
     if (!engine) return
-    const deg = degreesOf(data.links)
-    const visible = new Set(data.nodes.map((n) => n.id))
 
-    for (const n of data.nodes) {
+    const deg = degreesOf(links)
+    const visible = new Set(nodes.map((n) => n.id))
+
+    for (const n of nodes) {
       const existing = engineNodes.get(n.id)
       if (existing) {
         existing.title = n.title
@@ -83,12 +89,12 @@
 
     // Links are fresh copies each sync: force-graph rewrites source/target
     // into node refs in place, and links hold no physics state anyway.
-    const links = data.links
+    const engineLinks = links
       .filter((l) => visible.has(l.source) && visible.has(l.target))
       .map((l) => ({ source: l.source, target: l.target }))
 
     engine.warmupTicks(firstPaint ? FIRST_PAINT_WARMUP : 0)
-    engine.graphData({ nodes: [...engineNodes.values()], links })
+    engine.graphData({ nodes: [...engineNodes.values()], links: engineLinks })
     if (firstPaint) {
       firstPaint = false
       engine.zoomToFit(400, 40)
@@ -100,9 +106,11 @@
   // Also repaints node colors: the selected node gets the highlight hue, and
   // the engine caches its painter closure, so re-set it on every change.
   function centerSelected(): void {
-    if (!engine || !selectedId) return
-    engine.nodeColor((n) => (n.id === selectedId ? SELECTED_HUE : nodeColor(n)))
-    const n = engineNodes.get(selectedId)
+    // Track `selectedId` before any guard (see sync's note).
+    const id = selectedId
+    if (!engine || !id) return
+    engine.nodeColor((n) => (n.id === id ? SELECTED_HUE : nodeColor(n)))
+    const n = engineNodes.get(id)
     if (!n || n.x == null || n.y == null) return
     engine.centerAt(n.x, n.y, 350)
   }
