@@ -1,0 +1,35 @@
+<div id="content">
+<h1 class="title">Exporting (The Org Manual)</h1>
+<p>
+Org mode includes an <em>exporting</em> subsystem that can transform Org
+documents into a variety of other formats. The format conversion is done
+in two steps: first, parse the document into a syntax tree; then produce
+the output from that tree.
+</p>
+<h2 id="Export-settings">Export settings</h2>
+<p>
+Basic export is carried out with the commands <code>C-c C-e</code>.
+Supported targets include <a href="docs/HTML-Export.html">HTML Export</a>,
+<a href="docs/LaTeX-Export.html">LaTeX/PDF Export</a> and plain ASCII.
+Code blocks are handled through the <a href="docs/Library-of-Babel.html">Library
+of Babel</a>.
+</p>
+<h2 id="The-Export-Dispatcher">The Export Dispatcher</h2>
+<p>
+The export dispatcher is the interactive menu that appears when you request
+an export. Published output goes through <a href="docs/Publishing.html">Publishing</a>.
+</p>
+<pre class="example">
+*** Headline 1                                                   :TAG1:
+    :PROPERTIES:
+    :CUSTOM_ID: custom-id-here
+    :END:
+</pre>
+<table>
+<caption>Export backends referenced from this node</caption>
+<tr><th>Backend</th><th>Doc</th></tr>
+<tr><td>HTML</td><td><a href="docs/HTML-Export.html">HTML Export</a></td></tr>
+<tr><td>LaTeX</td><td><a href="docs/LaTeX-Export.html">LaTeX/PDF Export</a></td></tr>
+<tr><td>Links</td><td><a href="docs/Hyperlinks.html">Hyperlinks</a></td></tr>
+</table>
+</div>

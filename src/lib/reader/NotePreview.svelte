@@ -1,0 +1,119 @@
+<script lang="ts">
+  // NotePreview — reading a doc INSIDE the graph view. This is the roam
+  // promise kept: click a node, the fruiting body appears; follow its links
+  // and the graph selection follows you. org-roam-lite-ui got its text via
+  // a `getText` WS frame; here we fetch the static Org-export fragment.
+  import type { MyceliumStore } from '../core/store.svelte'
+  import { backlinks, outlinks } from '../core/graph'
+
+  let { store }: { store: MyceliumStore } = $props()
+
+  const doc = $derived(store.selected)
+  const html = $derived(doc ? store.bodies.get(doc.slug) : undefined)
+  const ins = $derived(doc ? backlinks(store.data, doc.id).length : 0)
+  const outs = $derived(doc ? outlinks(store.data, doc.id).length : 0)
+
+  // Intercept in-preview link clicks: a cross-doc link re-selects the node
+  // and swaps the preview in place (no page load, no losing the graph).
+  function onContentClick(e: MouseEvent): void {
+    const a = (e.target as HTMLElement).closest('a')
+    if (!a) return
+    const href = a.getAttribute('href') ?? ''
+    const m = href.match(/(?:^|\/)?docs\/([^#]+)\.html(?:$|#)/)
+    if (!m) return // external or in-page anchor: let the browser handle it
+    const target = store.bySlug(m[1])
+    if (!target) return
+    e.preventDefault()
+    store.goto(target)
+  }
+
+  // Preview fetch is a side effect of selection, not of this component's
+  // markup; trigger it here so the store cache stays the single source.
+  $effect(() => {
+    if (doc) void store.body(doc.slug)
+  })
+</script>
+
+{#if doc}
+  <aside class="note-preview" aria-label="Note preview">
+    <header>
+      <h2 class="myc-mono">{doc.title}</h2>
+      <div class="meta myc-mono">
+        {#each doc.tags as tag (tag)}<span class="tag">#{tag}</span>{/each}
+        <span class="deg" title="links in the doc graph">⇤{ins} ⇥{outs}</span>
+        <button class="open-reader myc-mono" onclick={() => store.setMode('reader')}>
+          open reader ↗
+        </button>
+      </div>
+    </header>
+
+    {#if html === undefined}
+      <p class="loading myc-mono">fetching {doc.slug}.html…</p>
+    {:else if html === null}
+      <p class="missing myc-mono">⚠ no export for “{doc.slug}”. Run the site build.</p>
+    {:else}
+      <!-- Organically trusted content: our own build pipeline's static
+           files only (never user input), hence raw {@html} is fine. -->
+      <div class="myc-org" onclick={onContentClick} role="presentation">
+        {@html html}
+      </div>
+    {/if}
+  </aside>
+{:else}
+  <aside class="note-preview empty">
+    <p class="myc-mono">◌ click a node to read it here</p>
+  </aside>
+{/if}
+
+<style>
+  .note-preview {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(46rem, 55vw);
+    overflow-y: auto;
+    background: color-mix(in srgb, var(--myc-bg) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-left: 1px solid var(--myc-border-strong);
+    padding: 1.2rem 1.6rem 3rem;
+    box-shadow: -18px 0 40px color-mix(in srgb, var(--myc-bg-sunken) 60%, transparent);
+  }
+  .note-preview.empty {
+    width: auto;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    bottom: auto;
+    color: var(--myc-fg-faint);
+  }
+  header h2 {
+    font-family: var(--myc-font-mono);
+    font-size: 1.15rem;
+    margin: 0 0 0.4rem;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--myc-fg-muted);
+    border-bottom: 1px dashed var(--myc-border);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.8rem;
+  }
+  .tag { color: var(--myc-accent-2); }
+  .deg { margin-left: auto; }
+  .open-reader {
+    font: inherit;
+    color: var(--myc-accent);
+    background: transparent;
+    border: 1px solid var(--myc-accent-dim);
+    border-radius: var(--myc-radius);
+    padding: 0.15em 0.6em;
+    cursor: pointer;
+  }
+  .open-reader:hover { background: var(--myc-accent); color: var(--myc-bg); }
+  .loading, .missing { color: var(--myc-fg-faint); font-size: 0.85rem; }
+  .missing { color: var(--myc-amber); }
+</style>

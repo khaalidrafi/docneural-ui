@@ -1,0 +1,302 @@
+/* ==========================================================================
+   Mycelium — theme tokens + Org-exported content styles.
+
+   Name: a mycelium is a flat, interlinked nutrient network with no root;
+   every fruiting body can be reached and consumed from any point of it.
+   That is exactly what browsing docs from the roam graph means: each doc
+   is a fruiting body, and the reader eats wherever they happen to stand.
+
+   Structure:
+   1. Tokens (dark default + light override) — every color/size the theme
+      uses lives here, so downstream sites can re-skin with one block.
+   2. Base/reset — page chrome: dotted "spore print" backdrop, glow accents.
+   3. `.myc-org` — styling for raw org-export HTML (headings, tables, src
+      blocks, TODO badges…). The site injects unmodified Org HTML here; the
+      theme must NOT depend on any JS.
+   ========================================================================== */
+
+/* ---------- 1. Tokens -------------------------------------------------- */
+:root {
+  /* Type. Mono everywhere it feels machine-ish (headings, meta, nav,
+     code); human prose stays on a quiet sans for long reads. */
+  --myc-font-mono: "Iosevka", "IBM Plex Mono", "JetBrains Mono", ui-monospace,
+    "DejaVu Sans Mono", Menlo, monospace;
+  --myc-font-prose: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto,
+    sans-serif;
+
+  /* Surfaces — deep charcoal with a green undertone: petri-dish at night. */
+  --myc-bg: #0a0f0d;
+  --myc-bg-raise: #101714; /* panels, table stripes, code wells */
+  --myc-bg-sunken: #070b09; /* page backdrop behind the raise panels */
+  --myc-fg: #d7e2dc;
+  --myc-fg-muted: #8a998f;
+  --myc-fg-faint: #5a6862;
+  --myc-border: #1e2a24;
+  --myc-border-strong: #2c3d34;
+
+  /* Signals — phosphor growth on dark glass. */
+  --myc-accent: #5ef38c;   /* primary: links, focus, carets */
+  --myc-accent-dim: #2e8a52;
+  --myc-accent-2: #46d8e6; /* secondary: nav, tags, graph chrome */
+  --myc-hot: #f368a0;      /* attention: hover, backlink arrows */
+  --myc-amber: #e6c95c;    /* TODO markers, warnings */
+
+  /* Geometry */
+  --myc-radius: 6px;
+  --myc-max-prose: 74ch;
+  --myc-header-h: 3.2rem;
+  --myc-side-w: 240px;
+  --myc-panel-w: 340px;
+
+  color-scheme: dark;
+}
+
+/* Day mode: same network, bleached by sun. Opt in with
+   <html data-theme="light">; the JS theme toggle only flips this attribute. */
+:root[data-theme='light'] {
+  --myc-bg: #f3f5f2;
+  --myc-bg-raise: #e8ece7;
+  --myc-bg-sunken: #dde3dc;
+  --myc-fg: #1a2420;
+  --myc-fg-muted: #4e5e55;
+  --myc-fg-faint: #7d8b83;
+  --myc-border: #c6d0c6;
+  --myc-border-strong: #a7b5a8;
+  --myc-accent: #0c8a44;
+  --myc-accent-dim: #3aa06a;
+  --myc-accent-2: #0b7f93;
+  --myc-hot: #c22d77;
+  --myc-amber: #8a6d0b;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  /* Honor the OS unless the page explicitly asked for dark. */
+  :root:not([data-theme]) {
+    --myc-bg: #f3f5f2;
+    --myc-bg-raise: #e8ece7;
+    --myc-bg-sunken: #dde3dc;
+    --myc-fg: #1a2420;
+    --myc-fg-muted: #4e5e55;
+    --myc-fg-faint: #7d8b83;
+    --myc-border: #c6d0c6;
+    --myc-border-strong: #a7b5a8;
+    --myc-accent: #0c8a44;
+    --myc-accent-dim: #3aa06a;
+    --myc-accent-2: #0b7f93;
+    --myc-hot: #c22d77;
+    --myc-amber: #8a6d0b;
+    color-scheme: light;
+  }
+}
+
+/* ---------- 2. Base ----------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body.myc-body {
+  margin: 0;
+  font-family: var(--myc-font-prose);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--myc-fg);
+  /* "Spore print": faint dot grid, like graph paper seen through murky water.
+     Two offset radial layers so the grid shimmers slightly at any size. */
+  background-color: var(--myc-bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--myc-accent) 5%, transparent) 1px, transparent 0),
+    radial-gradient(circle at 9px 13px, color-mix(in srgb, var(--myc-accent-2) 4%, transparent) 1px, transparent 0);
+  background-size: 28px 28px, 37px 37px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--myc-accent) 35%, transparent);
+}
+
+.myc-body a {
+  color: var(--myc-accent);
+  text-decoration-color: var(--myc-accent-dim);
+  text-underline-offset: 3px;
+  transition: color 120ms, text-shadow 120ms;
+}
+.myc-body a:hover {
+  color: var(--myc-hot);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--myc-hot) 60%, transparent);
+}
+
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--myc-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.myc-mono {
+  font-family: var(--myc-font-mono);
+}
+
+/* Blinking caret used in the wordmark — a small live signal that the
+   interface is a machine, not a magazine. */
+@keyframes myc-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+.myc-caret {
+  display: inline-block;
+  width: 0.55em;
+  color: var(--myc-accent);
+  animation: myc-blink 1.1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .myc-caret { animation: none; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ---------- 3. Org content (.myc-org) -----------------------------------
+   org-export produces plain semantic HTML (div.outline-N, h1..h4, table,
+   pre.src, span.todo/markup). Style it here; components mount content
+   inside a container with class="myc-org".                                  */
+
+.myc-org {
+  max-width: var(--myc-max-prose);
+}
+
+.myc-org h1, .myc-org h2, .myc-org h3, .myc-org h4,
+.myc-org h5, .myc-org h6 {
+  font-family: var(--myc-font-mono);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  margin: 1.8em 0 0.6em;
+  scroll-margin-top: calc(var(--myc-header-h) + 12px);
+}
+
+.myc-org h1 {
+  font-size: 1.7rem;
+  color: var(--myc-fg);
+  text-shadow: 0 0 24px color-mix(in srgb, var(--myc-accent) 22%, transparent);
+  border-bottom: 1px solid var(--myc-border);
+  padding-bottom: 0.35em;
+}
+.myc-org h2 {
+  font-size: 1.35rem;
+}
+.myc-org h2::before { content: "▸ "; color: var(--myc-accent-dim); }
+.myc-org h3 { font-size: 1.15rem; }
+.myc-org h3::before { content: "─ "; color: var(--myc-border-strong); }
+.myc-org h4 { font-size: 1rem; color: var(--myc-fg-muted); }
+
+/* Org TODO keywords on headlines: org exports <span class="todo">TODO</span>
+   and DONE; status classes come as .todo/.done on the headline wrapper. */
+.myc-org .todo {
+  font-family: var(--myc-font-mono);
+  font-size: 0.78em;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--myc-amber);
+  color: var(--myc-amber);
+  border-radius: 3px;
+  margin-right: 0.6em;
+  white-space: nowrap;
+}
+.myc-org .done {
+  border-color: var(--myc-accent-dim);
+  color: var(--myc-accent-dim);
+}
+
+/* Tags as #chips — the roamy signal that something belongs to a cluster. */
+.myc-org .tag {
+  font-family: var(--myc-font-mono);
+  font-size: 0.72em;
+  background: var(--myc-bg-raise);
+  border: 1px solid var(--myc-border);
+  border-radius: 999px;
+  padding: 0.1em 0.7em;
+  margin-left: 0.35em;
+  color: var(--myc-accent-2);
+  white-space: nowrap;
+}
+
+.myc-org p code,
+.myc-org li code,
+.myc-org td code {
+  font-family: var(--myc-font-mono);
+  font-size: 0.88em;
+  background: var(--myc-bg-raise);
+  border: 1px solid var(--myc-border);
+  border-radius: 3px;
+  padding: 0.08em 0.4em;
+  color: var(--myc-accent-2);
+}
+
+.myc-org pre {
+  font-family: var(--myc-font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  background: var(--myc-bg-raise);
+  border: 1px solid var(--myc-border);
+  border-left: 3px solid var(--myc-accent-dim);
+  border-radius: var(--myc-radius);
+  padding: 0.9em 1.1em;
+  overflow-x: auto;
+}
+.myc-org pre.example {
+  border-left-color: var(--myc-accent-2);
+}
+
+/* Org tables: borderless grids with hairlines; header row glows. */
+.myc-org table {
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.92rem;
+}
+.myc-org th, .myc-org td {
+  padding: 0.35em 0.9em 0.35em 0;
+  border-bottom: 1px solid var(--myc-border);
+  text-align: left;
+  vertical-align: top;
+}
+.myc-org th {
+  font-family: var(--myc-font-mono);
+  font-weight: 600;
+  color: var(--myc-accent-2);
+  border-bottom-color: var(--myc-border-strong);
+}
+.myc-org tr:hover td {
+  background: color-mix(in srgb, var(--myc-accent) 4%, transparent);
+}
+
+.myc-org blockquote {
+  margin: 1.2em 0;
+  padding: 0.4em 1.2em;
+  border-left: 3px solid var(--myc-hot);
+  background: color-mix(in srgb, var(--myc-hot) 4%, transparent);
+  color: var(--myc-fg-muted);
+  font-style: italic;
+}
+
+.myc-org ul, .myc-org ol { padding-left: 1.4em; }
+.myc-org li { margin: 0.25em 0; }
+
+/* Org footnotes and targets */
+.myc-org .footref a, .myc-org .target { scroll-margin-top: 100px; }
+.myc-org .footdefined, .myc-org .figure { margin: 1.4em 0; }
+.myc-org .caption {
+  font-family: var(--myc-font-mono);
+  font-size: 0.82rem;
+  color: var(--myc-fg-muted);
+  text-align: center;
+}
+
+.myc-org img { max-width: 100%; height: auto; }
+
+.myc-org hr {
+  border: none;
+  border-top: 1px dashed var(--myc-border-strong);
+  margin: 2em 0;
+}
+
+/* Org exports property drawers as hidden spans; leave them out. */
+.myc-org .title { font-family: var(--myc-font-mono); }

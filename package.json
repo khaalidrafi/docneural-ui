@@ -1,0 +1,33 @@
+{
+  "name": "mycelium-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mycelium — read your docs from any node: a static-data port of org-roam-lite-ui graph reading, plus a classic doc reader (Svelte 5 + Vite).",
+  "type": "module",
+  "svelte": "./src/lib/MyceliumApp.svelte",
+  "exports": {
+    ".": "./src/lib/MyceliumApp.svelte",
+    "./store": "./src/lib/core/store.svelte.ts",
+    "./core": "./src/lib/core/graph.ts",
+    "./styles/mycelium.css": "./styles/mycelium.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@types/node": "^26.4.1",
+    "svelte": "^5.28.0",
+    "svelte-check": "^4.1.6",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  },
+  "dependencies": {
+    "force-graph": "^1.51.4"
+  }
+}
