@@ -1,4 +1,4 @@
-import '../styles/mycelium.css'
+import '../styles/synapt.css'
 import { mount } from 'svelte'
 import Demo from './Demo.svelte'
 

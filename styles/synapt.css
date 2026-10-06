@@ -1,0 +1,304 @@
+/* ==========================================================================
+   Synapt — theme tokens + Org-exported content styles.
+
+   Name: Synapt — synapse, trimmed. "apt" hides inside it: capable, quick,
+   fitting. Hebb's law says neurons that fire together wire together — every
+   read of an interlinked doc strengthens the connection in a human brain,
+   and every citation resolved strengthens an LLM's context. This theme is
+   the workout: it makes those synapses rise.
+   Tagline: fire together, wire stronger.
+
+   Structure:
+   1. Tokens (dark default + light override) — every color/size the theme
+      uses lives here, so downstream sites can re-skin with one block.
+   2. Base/reset — page chrome: dotted "synaptic dust" backdrop, glow accents.
+   3. `.sy-org` — styling for raw org-export HTML (headings, tables, src
+      blocks, TODO badges…). The site injects unmodified Org HTML here; the
+      theme must NOT depend on any JS.
+   ========================================================================== */
+
+/* ---------- 1. Tokens -------------------------------------------------- */
+:root {
+  /* Type. Mono everywhere it feels machine-ish (headings, meta, nav,
+     code); human prose stays on a quiet sans for long reads. */
+  --sy-font-mono: "Iosevka", "IBM Plex Mono", "JetBrains Mono", ui-monospace,
+    "DejaVu Sans Mono", Menlo, monospace;
+  --sy-font-prose: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto,
+    sans-serif;
+
+  /* Surfaces — deep charcoal with a green undertone: petri-dish at night. */
+  --sy-bg: #0a0f0d;
+  --sy-bg-raise: #101714; /* panels, table stripes, code wells */
+  --sy-bg-sunken: #070b09; /* page backdrop behind the raise panels */
+  --sy-fg: #d7e2dc;
+  --sy-fg-muted: #8a998f;
+  --sy-fg-faint: #5a6862;
+  --sy-border: #1e2a24;
+  --sy-border-strong: #2c3d34;
+
+  /* Signals — phosphor growth on dark glass. */
+  --sy-accent: #5ef38c;   /* primary: links, focus, carets */
+  --sy-accent-dim: #2e8a52;
+  --sy-accent-2: #46d8e6; /* secondary: nav, tags, graph chrome */
+  --sy-hot: #f368a0;      /* attention: hover, backlink arrows */
+  --sy-amber: #e6c95c;    /* TODO markers, warnings */
+
+  /* Geometry */
+  --sy-radius: 6px;
+  --sy-max-prose: 74ch;
+  --sy-header-h: 3.2rem;
+  --sy-side-w: 240px;
+  --sy-panel-w: 340px;
+
+  color-scheme: dark;
+}
+
+/* Day mode: same network, bleached by sun. Opt in with
+   <html data-theme="light">; the JS theme toggle only flips this attribute. */
+:root[data-theme='light'] {
+  --sy-bg: #f3f5f2;
+  --sy-bg-raise: #e8ece7;
+  --sy-bg-sunken: #dde3dc;
+  --sy-fg: #1a2420;
+  --sy-fg-muted: #4e5e55;
+  --sy-fg-faint: #7d8b83;
+  --sy-border: #c6d0c6;
+  --sy-border-strong: #a7b5a8;
+  --sy-accent: #0c8a44;
+  --sy-accent-dim: #3aa06a;
+  --sy-accent-2: #0b7f93;
+  --sy-hot: #c22d77;
+  --sy-amber: #8a6d0b;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+  /* Honor the OS unless the page explicitly asked for dark. */
+  :root:not([data-theme]) {
+    --sy-bg: #f3f5f2;
+    --sy-bg-raise: #e8ece7;
+    --sy-bg-sunken: #dde3dc;
+    --sy-fg: #1a2420;
+    --sy-fg-muted: #4e5e55;
+    --sy-fg-faint: #7d8b83;
+    --sy-border: #c6d0c6;
+    --sy-border-strong: #a7b5a8;
+    --sy-accent: #0c8a44;
+    --sy-accent-dim: #3aa06a;
+    --sy-accent-2: #0b7f93;
+    --sy-hot: #c22d77;
+    --sy-amber: #8a6d0b;
+    color-scheme: light;
+  }
+}
+
+/* ---------- 2. Base ----------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body.sy-body {
+  margin: 0;
+  font-family: var(--sy-font-prose);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--sy-fg);
+  /* "Synaptic dust": faint dot grid, like neurons firing through murk —
+     Two offset radial layers so the grid shimmers slightly at any size. */
+  background-color: var(--sy-bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--sy-accent) 5%, transparent) 1px, transparent 0),
+    radial-gradient(circle at 9px 13px, color-mix(in srgb, var(--sy-accent-2) 4%, transparent) 1px, transparent 0);
+  background-size: 28px 28px, 37px 37px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--sy-accent) 35%, transparent);
+}
+
+.sy-body a {
+  color: var(--sy-accent);
+  text-decoration-color: var(--sy-accent-dim);
+  text-underline-offset: 3px;
+  transition: color 120ms, text-shadow 120ms;
+}
+.sy-body a:hover {
+  color: var(--sy-hot);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--sy-hot) 60%, transparent);
+}
+
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--sy-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.sy-mono {
+  font-family: var(--sy-font-mono);
+}
+
+/* Blinking caret used in the wordmark — a small live signal that the
+   interface is a machine, not a magazine. */
+@keyframes sy-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+.sy-caret {
+  display: inline-block;
+  width: 0.55em;
+  color: var(--sy-accent);
+  animation: sy-blink 1.1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sy-caret { animation: none; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ---------- 3. Org content (.sy-org) -----------------------------------
+   org-export produces plain semantic HTML (div.outline-N, h1..h4, table,
+   pre.src, span.todo/markup). Style it here; components mount content
+   inside a container with class="sy-org".                                  */
+
+.sy-org {
+  max-width: var(--sy-max-prose);
+}
+
+.sy-org h1, .sy-org h2, .sy-org h3, .sy-org h4,
+.sy-org h5, .sy-org h6 {
+  font-family: var(--sy-font-mono);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  margin: 1.8em 0 0.6em;
+  scroll-margin-top: calc(var(--sy-header-h) + 12px);
+}
+
+.sy-org h1 {
+  font-size: 1.7rem;
+  color: var(--sy-fg);
+  text-shadow: 0 0 24px color-mix(in srgb, var(--sy-accent) 22%, transparent);
+  border-bottom: 1px solid var(--sy-border);
+  padding-bottom: 0.35em;
+}
+.sy-org h2 {
+  font-size: 1.35rem;
+}
+.sy-org h2::before { content: "▸ "; color: var(--sy-accent-dim); }
+.sy-org h3 { font-size: 1.15rem; }
+.sy-org h3::before { content: "─ "; color: var(--sy-border-strong); }
+.sy-org h4 { font-size: 1rem; color: var(--sy-fg-muted); }
+
+/* Org TODO keywords on headlines: org exports <span class="todo">TODO</span>
+   and DONE; status classes come as .todo/.done on the headline wrapper. */
+.sy-org .todo {
+  font-family: var(--sy-font-mono);
+  font-size: 0.78em;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--sy-amber);
+  color: var(--sy-amber);
+  border-radius: 3px;
+  margin-right: 0.6em;
+  white-space: nowrap;
+}
+.sy-org .done {
+  border-color: var(--sy-accent-dim);
+  color: var(--sy-accent-dim);
+}
+
+/* Tags as #chips — the roamy signal that something belongs to a cluster. */
+.sy-org .tag {
+  font-family: var(--sy-font-mono);
+  font-size: 0.72em;
+  background: var(--sy-bg-raise);
+  border: 1px solid var(--sy-border);
+  border-radius: 999px;
+  padding: 0.1em 0.7em;
+  margin-left: 0.35em;
+  color: var(--sy-accent-2);
+  white-space: nowrap;
+}
+
+.sy-org p code,
+.sy-org li code,
+.sy-org td code {
+  font-family: var(--sy-font-mono);
+  font-size: 0.88em;
+  background: var(--sy-bg-raise);
+  border: 1px solid var(--sy-border);
+  border-radius: 3px;
+  padding: 0.08em 0.4em;
+  color: var(--sy-accent-2);
+}
+
+.sy-org pre {
+  font-family: var(--sy-font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  background: var(--sy-bg-raise);
+  border: 1px solid var(--sy-border);
+  border-left: 3px solid var(--sy-accent-dim);
+  border-radius: var(--sy-radius);
+  padding: 0.9em 1.1em;
+  overflow-x: auto;
+}
+.sy-org pre.example {
+  border-left-color: var(--sy-accent-2);
+}
+
+/* Org tables: borderless grids with hairlines; header row glows. */
+.sy-org table {
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.92rem;
+}
+.sy-org th, .sy-org td {
+  padding: 0.35em 0.9em 0.35em 0;
+  border-bottom: 1px solid var(--sy-border);
+  text-align: left;
+  vertical-align: top;
+}
+.sy-org th {
+  font-family: var(--sy-font-mono);
+  font-weight: 600;
+  color: var(--sy-accent-2);
+  border-bottom-color: var(--sy-border-strong);
+}
+.sy-org tr:hover td {
+  background: color-mix(in srgb, var(--sy-accent) 4%, transparent);
+}
+
+.sy-org blockquote {
+  margin: 1.2em 0;
+  padding: 0.4em 1.2em;
+  border-left: 3px solid var(--sy-hot);
+  background: color-mix(in srgb, var(--sy-hot) 4%, transparent);
+  color: var(--sy-fg-muted);
+  font-style: italic;
+}
+
+.sy-org ul, .sy-org ol { padding-left: 1.4em; }
+.sy-org li { margin: 0.25em 0; }
+
+/* Org footnotes and targets */
+.sy-org .footref a, .sy-org .target { scroll-margin-top: 100px; }
+.sy-org .footdefined, .sy-org .figure { margin: 1.4em 0; }
+.sy-org .caption {
+  font-family: var(--sy-font-mono);
+  font-size: 0.82rem;
+  color: var(--sy-fg-muted);
+  text-align: center;
+}
+
+.sy-org img { max-width: 100%; height: auto; }
+
+.sy-org hr {
+  border: none;
+  border-top: 1px dashed var(--sy-border-strong);
+  margin: 2em 0;
+}
+
+/* Org exports property drawers as hidden spans; leave them out. */
+.sy-org .title { font-family: var(--sy-font-mono); }

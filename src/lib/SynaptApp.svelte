@@ -1,5 +1,5 @@
 <script lang="ts">
-  // MyceliumApp — shell: header (wordmark, mode switch), then one of the
+  // SynaptApp — shell: header (wordmark, mode switch), then one of the
   // two reading surfaces on the SAME store. Graph mode is the roam UI
   // (canvas + filters + in-graph preview); reader mode is the generic docs
   // UI. Both can reach every doc; switching keeps the selection.
@@ -7,21 +7,30 @@
   import FilterBar from './graph/FilterBar.svelte'
   import NotePreview from './reader/NotePreview.svelte'
   import DocReader from './reader/DocReader.svelte'
-  import { MyceliumStore } from './core/store.svelte'
+  import { SynaptStore } from './core/store.svelte'
 
   let {
     base = '.',
-    title = 'mycelium'
+    title = 'synapt',
+    lite = false
   }: {
     /** URL prefix serving graph.json + docs/*.html. */
     base?: string
     title?: string
+    /** Force the extra-lite tier; also auto-on for tiny machines. */
+    lite?: boolean
   } = $props()
 
-  // `base` selects where the WHOLE app reads its static data; it is fixed
-  // for the page lifetime by design (svelte-ignore below).
+  // Lite resolution mirrors org-roam-lite-ui: explicit ?lite=1 or the
+  // `lite` prop, plus a courtesy auto-detect — a potato with deviceMemory
+  // <= 2 GB should never pay for a force-graph simulation it can't run.
+  // svelte-ignore state_referenced_locally -- fixed for the page lifetime.
+  const liteOn =
+    lite ||
+    new URLSearchParams(location.search).get('lite') === '1' ||
+    ((navigator as { deviceMemory?: number }).deviceMemory ?? 8) <= 2
   // svelte-ignore state_referenced_locally
-  const store = new MyceliumStore(base)
+  const store = new SynaptStore(base, liteOn)
   $effect(() => {
     void store.load()
   })
@@ -33,13 +42,15 @@
 </script>
 
 <header class="shell">
-  <div class="brand myc-mono" aria-label="{title}">
-    ~/{title}<span class="myc-caret">▌</span>
+  <div class="brand sy-mono" aria-label="{title}">
+    ~/{title}<span class="sy-caret">▌</span>
   </div>
   <nav class="modes" aria-label="View mode">
-    <button class:active={store.mode === 'graph'} onclick={() => store.setMode('graph')}>
-      ⌁ graph
-    </button>
+    {#if !store.lite}
+      <button class:active={store.mode === 'graph'} onclick={() => store.setMode('graph')}>
+        ⌁ graph
+      </button>
+    {/if}
     <button class:active={store.mode === 'reader'} onclick={() => store.setMode('reader')}>
       ▤ reader
     </button>
@@ -47,12 +58,12 @@
 </header>
 
 {#if store.failed}
-  <div class="fatal myc-mono">
+  <div class="fatal sy-mono">
     ⚠ {store.failed}
     <p>expected `{base}/graph.json` from a site build</p>
   </div>
 {:else if !store.ready}
-  <div class="fatal myc-mono">· extending hyphae…</div>
+  <div class="fatal sy-mono">· firing synapses…</div>
 {:else if store.mode === 'graph'}
   <section class="graph-mode">
     <div class="canvas-wrap">
@@ -74,39 +85,39 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: var(--myc-header-h);
+    height: var(--sy-header-h);
     padding: 0 1rem;
-    border-bottom: 1px solid var(--myc-border);
-    background: color-mix(in srgb, var(--myc-bg-sunken) 70%, transparent);
+    border-bottom: 1px solid var(--sy-border);
+    background: color-mix(in srgb, var(--sy-bg-sunken) 70%, transparent);
   }
   .brand {
     font-size: 1rem;
-    color: var(--myc-fg);
+    color: var(--sy-fg);
     letter-spacing: 0.02em;
   }
   .modes {
     display: flex;
     gap: 0.3rem;
-    font-family: var(--myc-font-mono);
+    font-family: var(--sy-font-mono);
     font-size: 0.8rem;
   }
   .modes button {
-    color: var(--myc-fg-muted);
+    color: var(--sy-fg-muted);
     background: transparent;
-    border: 1px solid var(--myc-border);
-    border-radius: var(--myc-radius);
+    border: 1px solid var(--sy-border);
+    border-radius: var(--sy-radius);
     padding: 0.25em 0.8em;
     cursor: pointer;
   }
   .modes button.active {
-    color: var(--myc-bg);
-    background: var(--myc-accent);
-    border-color: var(--myc-accent);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--myc-accent) 45%, transparent);
+    color: var(--sy-bg);
+    background: var(--sy-accent);
+    border-color: var(--sy-accent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--sy-accent) 45%, transparent);
   }
   .graph-mode {
     position: relative;
-    height: calc(100dvh - var(--myc-header-h));
+    height: calc(100dvh - var(--sy-header-h));
     min-height: 0;
   }
   .canvas-wrap {
@@ -120,19 +131,19 @@
     width: 240px;
     z-index: 2;
     padding: 0.7rem;
-    border: 1px solid var(--myc-border);
-    border-radius: var(--myc-radius);
-    background: color-mix(in srgb, var(--myc-bg) 85%, transparent);
+    border: 1px solid var(--sy-border);
+    border-radius: var(--sy-radius);
+    background: color-mix(in srgb, var(--sy-bg) 85%, transparent);
     backdrop-filter: blur(4px);
   }
   .reader-mode {
-    height: calc(100dvh - var(--myc-header-h));
+    height: calc(100dvh - var(--sy-header-h));
     min-height: 0;
   }
   .fatal {
     padding: 2rem;
-    color: var(--myc-amber);
+    color: var(--sy-amber);
     font-size: 0.9rem;
   }
-  .fatal p { color: var(--myc-fg-faint); }
+  .fatal p { color: var(--sy-fg-faint); }
 </style>

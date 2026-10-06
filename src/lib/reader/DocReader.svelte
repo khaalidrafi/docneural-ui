@@ -3,9 +3,9 @@
   // interlink rail. Same store, same navigation calls as graph mode, so a
   // doc read here and there is byte-identical content from the pipeline.
   import InterlinkPanel from './InterlinkPanel.svelte'
-  import type { MyceliumStore } from '../core/store.svelte'
+  import type { SynaptStore } from '../core/store.svelte'
 
-  let { store }: { store: MyceliumStore } = $props()
+  let { store }: { store: SynaptStore } = $props()
 
   const doc = $derived(store.selected)
   const html = $derived(doc ? store.bodies.get(doc.slug) : undefined)
@@ -67,7 +67,7 @@
   <nav class="side" aria-label="Index">
     {#each groups as [group, docs] (group)}
       <div class="group">
-        <h4 class="myc-mono">{group}</h4>
+        <h4 class="sy-mono">{group}</h4>
         <ul>
           {#each docs as d (d.id)}
             <li>
@@ -85,7 +85,7 @@
 
   <article class="main">
     {#if doc}
-      <div class="crumbs myc-mono">
+      <div class="crumbs sy-mono">
         <button class="mode-link" onclick={() => store.setMode('graph')}>⌁ graph view</button>
         <span>/</span>
         <span>{doc.tags[0] ?? 'docs'}</span>
@@ -101,16 +101,16 @@
         </nav>
       {/if}
       {#if html === undefined}
-        <p class="myc-mono loading">loading…</p>
+        <p class="sy-mono loading">loading…</p>
       {:else if html === null}
-        <p class="missing myc-mono">⚠ no export for “{doc.slug}”</p>
+        <p class="missing sy-mono">⚠ no export for “{doc.slug}”</p>
       {:else}
-        <div class="myc-org" onclick={onContentClick} role="presentation">
+        <div class="sy-org" onclick={onContentClick} role="presentation">
           {@html html}
         </div>
       {/if}
     {:else}
-      <p class="myc-mono">select a doc</p>
+      <p class="sy-mono">select a doc</p>
     {/if}
   </article>
 
@@ -120,13 +120,13 @@
 <style>
   .reader {
     display: grid;
-    grid-template-columns: var(--myc-side-w) minmax(0, 1fr) var(--myc-panel-w);
+    grid-template-columns: var(--sy-side-w) minmax(0, 1fr) var(--sy-panel-w);
     gap: 0;
-    height: calc(100dvh - var(--myc-header-h));
+    height: calc(100dvh - var(--sy-header-h));
     min-height: 0;
   }
   @media (max-width: 1100px) {
-    .reader { grid-template-columns: minmax(0, 1fr) var(--myc-panel-w); }
+    .reader { grid-template-columns: minmax(0, 1fr) var(--sy-panel-w); }
     .side { display: none; }
   }
   @media (max-width: 760px) {
@@ -137,16 +137,16 @@
   }
   .side {
     overflow-y: auto;
-    border-right: 1px solid var(--myc-border);
+    border-right: 1px solid var(--sy-border);
     padding: 0.8rem 0.6rem 2rem;
-    background: color-mix(in srgb, var(--myc-bg-sunken) 50%, transparent);
+    background: color-mix(in srgb, var(--sy-bg-sunken) 50%, transparent);
   }
   .group h4 {
-    font-family: var(--myc-font-mono);
+    font-family: var(--sy-font-mono);
     font-size: 0.7rem;
     text-transform: lowercase;
     letter-spacing: 0.1em;
-    color: var(--myc-accent-dim);
+    color: var(--sy-accent-dim);
     margin: 1rem 0 0.3rem;
   }
   .side ul { list-style: none; margin: 0; padding: 0; }
@@ -156,17 +156,17 @@
     text-align: left;
     font: inherit;
     font-size: 0.8rem;
-    color: var(--myc-fg-muted);
+    color: var(--sy-fg-muted);
     background: none;
     border: none;
     border-radius: 4px;
     padding: 0.2em 0.5em;
     cursor: pointer;
   }
-  .index-btn:hover { color: var(--myc-fg); background: var(--myc-bg-raise); }
+  .index-btn:hover { color: var(--sy-fg); background: var(--sy-bg-raise); }
   .index-btn.current {
-    color: var(--myc-accent);
-    background: color-mix(in srgb, var(--myc-accent) 10%, transparent);
+    color: var(--sy-accent);
+    background: color-mix(in srgb, var(--sy-accent) 10%, transparent);
     font-weight: 600;
   }
   .main {
@@ -176,33 +176,33 @@
   }
   .crumbs {
     font-size: 0.75rem;
-    color: var(--myc-fg-faint);
+    color: var(--sy-fg-faint);
     margin-bottom: 0.8rem;
   }
-  .crumbs .here { color: var(--myc-fg); }
+  .crumbs .here { color: var(--sy-fg); }
   .mode-link {
     font: inherit;
-    color: var(--myc-accent-2);
+    color: var(--sy-accent-2);
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
   }
-  .mode-link:hover { color: var(--myc-hot); }
+  .mode-link:hover { color: var(--sy-hot); }
   .toc {
     display: flex;
     flex-wrap: wrap;
     gap: 0.2rem 0.8rem;
     font-size: 0.75rem;
-    font-family: var(--myc-font-mono);
-    border: 1px dashed var(--myc-border);
-    border-radius: var(--myc-radius);
+    font-family: var(--sy-font-mono);
+    border: 1px dashed var(--sy-border);
+    border-radius: var(--sy-radius);
     padding: 0.5rem 0.8rem;
     margin-bottom: 1.2rem;
   }
-  .toc a { color: var(--myc-fg-muted); text-decoration: none; }
-  .toc a:hover { color: var(--myc-accent); }
+  .toc a { color: var(--sy-fg-muted); text-decoration: none; }
+  .toc a:hover { color: var(--sy-accent); }
   .toc a.sub { padding-left: 0.6em; opacity: 0.8; }
-  .loading, .missing { color: var(--myc-fg-faint); }
-  .missing { color: var(--myc-amber); }
+  .loading, .missing { color: var(--sy-fg-faint); }
+  .missing { color: var(--sy-amber); }
 </style>

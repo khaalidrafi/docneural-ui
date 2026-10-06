@@ -1,4 +1,4 @@
-// Mycelium app state. Svelte 5 runes module — this class *is* the store.
+// Synapt app state. Svelte 5 runes module — this class *is* the store.
 //
 // org-roam-lite-ui receives graph snapshots and note text over a WebSocket
 // from Emacs. The hosted theme has no Emacs: it loads one static
@@ -11,9 +11,14 @@ import { filteredGraph, localGraph, nodeViews, type NodeView } from './graph'
 
 export type Mode = 'graph' | 'reader'
 
-export class MyceliumStore {
+export class SynaptStore {
   /** URL prefix serving graph.json + docs/*.html. */
   base: string
+
+  /** Extra-lite tier (org-roam-lite-ui's): no canvas, no filters, reader
+   *  only. Set from ?lite=1 or low deviceMemory; components check this
+   *  BEFORE touching GraphView so the force-graph chunk is never fetched. */
+  lite: boolean
 
   data = $state<GraphData>({ nodes: [], links: [] })
   ready = $state(false)
@@ -33,8 +38,10 @@ export class MyceliumStore {
   // In-flight fetches, so double-clicks share one request.
   private inflight = new Map<string, Promise<string | null>>()
 
-  constructor(base = '.') {
+  constructor(base = '.', lite = false) {
     this.base = base.replace(/\/+$/, '')
+    this.lite = lite
+    if (lite) this.mode = 'reader'
   }
 
   /** Load graph.json once; then honor the deep link in the URL if present. */
@@ -117,6 +124,8 @@ export class MyceliumStore {
   }
 
   setMode(mode: Mode): void {
+    // Lite machines can't opt into the canvas by deep link either.
+    if (this.lite && mode === 'graph') return
     this.mode = mode
   }
 }

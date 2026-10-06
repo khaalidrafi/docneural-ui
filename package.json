@@ -1,15 +1,15 @@
 {
-  "name": "mycelium-ui",
+  "name": "synapt",
   "version": "0.1.0",
   "private": true,
-  "description": "Mycelium — read your docs from any node: a static-data port of org-roam-lite-ui graph reading, plus a classic doc reader (Svelte 5 + Vite).",
+   "description": "Synapt — fire together, wire stronger: read docs from any node, a static-data port of org-roam-lite-ui graph reading, plus a classic doc reader (Svelte 5 + Vite).",
   "type": "module",
-  "svelte": "./src/lib/MyceliumApp.svelte",
+  "svelte": "./src/lib/SynaptApp.svelte",
   "exports": {
-    ".": "./src/lib/MyceliumApp.svelte",
+    ".": "./src/lib/SynaptApp.svelte",
     "./store": "./src/lib/core/store.svelte.ts",
     "./core": "./src/lib/core/graph.ts",
-    "./styles/mycelium.css": "./styles/mycelium.css"
+    "./styles/synapt.css": "./styles/synapt.css"
   },
   "scripts": {
     "dev": "vite",

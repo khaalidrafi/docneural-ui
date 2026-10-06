@@ -4,9 +4,9 @@
   // clickable tag chips. Filtering only hides nodes from the canvas; the
   // reader is never filtered (you can still reach hidden docs by URL).
   import { commonTags } from '../core/graph'
-  import type { MyceliumStore } from '../core/store.svelte'
+  import type { SynaptStore } from '../core/store.svelte'
 
-  let { store }: { store: MyceliumStore } = $props()
+  let { store }: { store: SynaptStore } = $props()
 
   const tags = $derived(commonTags(store.data))
 
@@ -20,7 +20,7 @@
 <div class="filter-bar">
   <input
     type="search"
-    class="myc-mono"
+    class="sy-mono"
     placeholder="search docs…"
     bind:value={store.query}
     aria-label="Search docs"
@@ -43,20 +43,20 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    font-family: var(--myc-font-mono);
+    font-family: var(--sy-font-mono);
   }
   input {
-    background: var(--myc-bg-raise);
-    border: 1px solid var(--myc-border);
-    border-radius: var(--myc-radius);
-    color: var(--myc-fg);
+    background: var(--sy-bg-raise);
+    border: 1px solid var(--sy-border);
+    border-radius: var(--sy-radius);
+    color: var(--sy-fg);
     font: inherit;
     font-size: 0.85rem;
     padding: 0.45em 0.7em;
     width: 100%;
   }
   input:focus {
-    border-color: var(--myc-accent-dim);
+    border-color: var(--sy-accent-dim);
   }
   .tags {
     display: flex;
@@ -66,17 +66,17 @@
   .tag-chip {
     font: inherit;
     font-size: 0.75rem;
-    color: var(--myc-accent-2);
+    color: var(--sy-accent-2);
     background: transparent;
-    border: 1px solid var(--myc-border-strong);
+    border: 1px solid var(--sy-border-strong);
     border-radius: 999px;
     padding: 0.1em 0.7em;
     cursor: pointer;
   }
-  .tag-chip:hover { border-color: var(--myc-accent-2); }
+  .tag-chip:hover { border-color: var(--sy-accent-2); }
   .tag-chip.active {
-    background: var(--myc-accent-2);
-    color: var(--myc-bg);
-    border-color: var(--myc-accent-2);
+    background: var(--sy-accent-2);
+    color: var(--sy-bg);
+    border-color: var(--sy-accent-2);
   }
 </style>
