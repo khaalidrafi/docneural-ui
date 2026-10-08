@@ -10,7 +10,11 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["svelte"],
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "orui/*": ["../org-roam-lite-ui/src/lib/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"]
 }

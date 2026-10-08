@@ -43,6 +43,11 @@
   --sy-hot: #f368a0;      /* attention: hover, backlink arrows */
   --sy-amber: #e6c95c;    /* TODO markers, warnings */
 
+  /* Graph wires, as a LITERAL color: the force-graph canvas cannot read
+     custom properties or parse color-mix(), so the embed bridges
+     --orui-link-color to this resolved value (SynapsesGraph). */
+  --sy-graph-link: rgba(70, 216, 230, 0.3);
+
   /* Geometry */
   --sy-radius: 6px;
   --sy-max-prose: 74ch;
@@ -69,6 +74,7 @@
   --sy-accent-2: #0b7f93;
   --sy-hot: #c22d77;
   --sy-amber: #8a6d0b;
+  --sy-graph-link: rgba(11, 127, 147, 0.35);
   color-scheme: light;
 }
 
@@ -88,6 +94,7 @@
     --sy-accent-2: #0b7f93;
     --sy-hot: #c22d77;
     --sy-amber: #8a6d0b;
+    --sy-graph-link: rgba(11, 127, 147, 0.35);
     color-scheme: light;
   }
 }
@@ -152,8 +159,39 @@ body.sy-body {
   animation: sy-blink 1.1s steps(1) infinite;
 }
 
+/* Motion vocabulary. `.spark` (the ⌁ glyph) breathes; content rises in on
+   mount; a landed anchor flashes so a stub→section redirect is visible.
+   All opt out under prefers-reduced-motion (block at the end of § 2). */
+@keyframes sy-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes sy-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sy-flash {
+  from { background: color-mix(in srgb, var(--sy-accent) 30%, transparent); }
+  to { background: transparent; }
+}
+
+/* Thin themed scrollbars keep the rails feeling like one instrument. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sy-border-strong) transparent;
+}
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb {
+  background: var(--sy-border-strong);
+  border-radius: 9px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--sy-accent-dim); }
+
 @media (prefers-reduced-motion: reduce) {
   .sy-caret { animation: none; }
+  .spark { animation: none; }
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
@@ -164,6 +202,24 @@ body.sy-body {
 
 .sy-org {
   max-width: var(--sy-max-prose);
+  animation: sy-rise 220ms ease-out both;
+}
+
+/* When the reader lands on a heading (TOC click, prev/next, or a stub
+   redirect into a chapter), flash it so the eye finds the spot. Org-export
+   gives every headline a real id, so :target fires on the URL fragment. */
+.sy-org [id]:target,
+.sy-org :target {
+  animation: sy-flash 1.4s ease-out 1;
+  scroll-margin-top: calc(var(--sy-header-h) + 12px);
+}
+
+/* JS-driven sibling of the above: the reader scrolls with scrollIntoView (no
+   URL fragment), so it adds .sy-flash to the landed heading and removes it
+   when the animation ends. */
+.sy-flash {
+  animation: sy-flash 1.4s ease-out 1;
+  scroll-margin-top: calc(var(--sy-header-h) + 12px);
 }
 
 .sy-org h1, .sy-org h2, .sy-org h3, .sy-org h4,
