@@ -21,9 +21,9 @@
   <input
     type="search"
     class="sy-mono"
-    placeholder="search docs…"
+    placeholder="⌕ search nodes…"
     bind:value={store.query}
-    aria-label="Search docs"
+    aria-label="Search nodes"
   />
   {#if tags.length > 0}
     <div class="tags">

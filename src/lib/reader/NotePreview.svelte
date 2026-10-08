@@ -40,9 +40,9 @@
       <h2 class="sy-mono">{doc.title}</h2>
       <div class="meta sy-mono">
         {#each doc.tags as tag (tag)}<span class="tag">#{tag}</span>{/each}
-        <span class="deg" title="links in the doc graph">⇤{ins} ⇥{outs}</span>
+        <span class="deg" title="synapses touching this doc">⇤{ins} ⇥{outs}</span>
         <button class="open-reader sy-mono" onclick={() => store.setMode('reader')}>
-          open reader ↗
+          open in docs ↗
         </button>
       </div>
     </header>
@@ -61,7 +61,7 @@
   </aside>
 {:else}
   <aside class="note-preview empty">
-    <p class="sy-mono">◌ click a node to read it here</p>
+    <p class="sy-mono">◌ pick a node — its text lands here</p>
   </aside>
 {/if}
 
