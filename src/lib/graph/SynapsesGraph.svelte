@@ -10,6 +10,9 @@
   // fix with zero port work.
   //
   // Bridge rules, in order of consequence:
+  //  - PAINTING: GraphView accepts no custom-painter prop — the neuron look
+  //    (glow rings, node titles, firing-synapse particles) is injected via
+  //    the loadEngine seam. See neuronEngine.ts.
   //  - FILTERS: synapt's tag chips are INCLUSIVE ("show docs carrying one of
   //    these tags"), orui's store filter only excludes. So instead of
   //    mapping the filter across, we swap whole snapshots: the effect reads
@@ -23,7 +26,9 @@
   import GraphView from 'orui/graph/GraphView.svelte'
   import { createGraphStore } from 'orui/state/graphStore'
   import type { OrgRoamNode } from 'orui/api'
-  import { loadEngine, toRoam } from './roamBridge'
+  import { toRoam } from './roamBridge'
+  import { makeNeuronLoader } from './neuronEngine'
+  import { neighborIds } from '../core/graph'
   import type { SynaptStore } from '../core/store.svelte'
 
   let {
@@ -44,9 +49,29 @@
   // A selection made anywhere (rail, palette, reader) pans the camera.
   // Fresh request object per run is the contract: GraphView acts on focus
   // IDENTITY and ignores repeats, so old selections do not re-tween.
+  // The same effect updates the plain vars the neuron painter reads per
+  // frame — hot set = selection + its 1-hop neighbours.
+  let selId: string | null = null
+  let selNb: Set<string> = new Set()
   $effect(() => {
     const sel = store.selected
-    if (sel) roam.setFocus({ id: sel.id })
+    if (sel) {
+      roam.setFocus({ id: sel.id })
+      selId = sel.id
+      selNb = neighborIds(store.data, sel.id)
+    } else {
+      selId = null
+      selNb = new Set()
+    }
+  })
+
+  // The wrap element carries the resolved --orui-* / --sy-* tokens the
+  // painter samples (same source GraphView polls for its own repaints).
+  let wrapEl: HTMLDivElement | undefined = $state()
+  const neuronLoad = makeNeuronLoader({
+    tokenEl: () => wrapEl,
+    selected: () => selId,
+    neighbors: () => selNb
   })
 
   function click(node: OrgRoamNode): void {
@@ -54,11 +79,12 @@
   }
 </script>
 
-<div class="roam-wrap">
-  <!-- loadEngine comes from roamBridge so the import resolves from SYNAPT's
-       node_modules (Vite resolves bare specifiers relative to the importing
-       file, and GraphView.svelte lives in the sibling orui checkout). -->
-  <GraphView store={roam} onNodeClick={click} {loadEngine} />
+<div class="roam-wrap" bind:this={wrapEl}>
+  <!-- loadEngine comes from neuronEngine so the force-graph import resolves
+       from SYNAPT's node_modules (Vite resolves bare specifiers relative to
+       the importing file, and GraphView.svelte lives in the sibling orui
+       checkout) — and so the neuron painting rides in at construction. -->
+  <GraphView store={roam} onNodeClick={click} loadEngine={neuronLoad} />
 </div>
 
 <style>
@@ -66,10 +92,11 @@
     position: absolute;
     inset: 0;
     /* Map the site theme onto orui's canvas tokens. GraphView polls the
-       container's COMPUTED style twice a second, so these literal rgba()
+       container's COMPUTED style twice a second, so these resolved literal
        values (canvas fillStyle cannot parse var()/color-mix(), which is why
-       --sy-graph-link carries the resolved color per theme in synapt.css)
-       repaint the wires when the site's theme toggle flips. */
+       the site carries them as --sy-* tokens per theme in synapt.css)
+       repaint the nodes AND wires when the site's theme toggle flips. */
     --orui-link-color: var(--sy-graph-link);
+    --orui-node-palette: var(--sy-graph-palette);
   }
 </style>

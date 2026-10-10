@@ -23,16 +23,20 @@
     lite?: boolean
   } = $props()
 
+  // Toggle state for graph/lite mode
+  let forceLite = $state(false);
+
   // Lite resolution mirrors org-roam-lite-ui: explicit ?lite=1 or the
   // `lite` prop, plus a courtesy auto-detect — a potato with deviceMemory
   // <= 2 GB should never pay for a force-graph simulation it can't run.
-  // svelte-ignore state_referenced_locally -- fixed for the page lifetime.
-  const liteOn =
+  let liteOn = $derived(
     lite ||
-    new URLSearchParams(location.search).get('lite') === '1' ||
-    ((navigator as { deviceMemory?: number }).deviceMemory ?? 8) <= 2
-  // svelte-ignore state_referenced_locally
-  const store = new SynaptStore(base, liteOn)
+      forceLite ||
+      new URLSearchParams(location.search).get('lite') === '1' ||
+      ((navigator as { deviceMemory?: number }).deviceMemory ?? 8) <= 2
+  )
+
+  const store = $derived(new SynaptStore(base, liteOn))
   $effect(() => {
     void store.load()
   })
@@ -47,24 +51,25 @@
     document.documentElement.dataset.theme = theme
   }
 
+  function toggleLite(): void {
+    forceLite = !forceLite;
+    location.reload();
+  }
+
   function onNodeClick(id: string): void {
     const n = store.byId(id)
     if (n) store.goto(n)
   }
 
-  // Global keyboard layer. Registered once; reads reactive state at call
-  // time so it never needs to re-subscribe.
+  // Global keyboard layer...
   onMount(() => {
     let pendingG = false
-    // DOM setTimeout returns a number, but @types/node (pulled in via the
-    // vite config) says Timeout — this spelling satisfies whichever wins.
     let gTimer: ReturnType<typeof setTimeout> | 0 = 0
     function onKey(e: KeyboardEvent): void {
       const t = e.target as HTMLElement
       const typing =
         t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable
 
-      // ⌘K / Ctrl-K opens the palette from anywhere, even mid-typing.
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
         paletteOpen = !paletteOpen
@@ -79,7 +84,6 @@
 
       if (e.key === '?') { helpOpen = !helpOpen; return }
 
-      // "g" chord: g+d docs, g+s synapses, g+h home.
       if (pendingG) {
         clearTimeout(gTimer)
         pendingG = false
@@ -126,6 +130,9 @@
       ⌕ <span class="hintkey">⌘K</span>
     </button>
     <button class="tool" onclick={() => (helpOpen = true)} aria-label="Keyboard help">?</button>
+    <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode">
+      {store.lite ? 'fast' : 'full'}
+    </button>
     <button class="tool" onclick={toggleTheme} aria-label="Toggle theme">☾</button>
   </div>
 </header>
@@ -145,7 +152,7 @@
     <div class="controls">
       <FilterBar {store} />
     </div>
-    <div class="mode-tag sy-mono"><span class="spark">⌁</span> synapses · {store.data.links.length} wires</div>
+    <div class="mode-tag sy-mono"><span class="spark">⌁</span> synapses · {store.visible.links.length} wires</div>
     <NotePreview {store} />
   </section>
 {:else if store.selected}
@@ -247,9 +254,16 @@
     border-radius: var(--sy-radius);
     padding: 0.25em 0.6em;
     cursor: pointer;
+    transition: all 120ms;
   }
   .tool:hover { color: var(--sy-accent); border-color: var(--sy-accent-dim); }
   .tool .hintkey { color: var(--sy-fg-faint); font-size: 0.72rem; margin-left: 0.3em; }
+
+  @media (max-width: 600px) {
+    .modes { display: none; }
+    .tool.kbd { display: none; }
+    .shell { padding: 0 0.5rem; gap: 0.5rem; }
+  }
 
   .synapse-mode {
     position: relative;
@@ -268,6 +282,9 @@
     border-radius: var(--sy-radius);
     background: color-mix(in srgb, var(--sy-bg) 85%, transparent);
     backdrop-filter: blur(4px);
+  }
+  @media (max-width: 600px) {
+    .controls { left: 0.5rem; width: calc(100vw - 1rem); }
   }
   .mode-tag {
     position: absolute;
@@ -332,4 +349,5 @@
     padding: 0.35em 1em;
     cursor: pointer;
   }
+  @keyframes sy-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 </style>

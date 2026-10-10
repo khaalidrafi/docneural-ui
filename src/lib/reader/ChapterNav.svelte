@@ -4,6 +4,10 @@
   // site opens on — a table of contents, not a graph. The 391 indirectly-
   // referenced stub sections are intentionally absent here (they show up in
   // the "on this page" rail and the command palette instead).
+  //
+  // The checkbox beside each chapter is the mobile-friendly scoping tool:
+  // tick docs to narrow the synapses canvas to exactly those pages (store.
+  // checked), because dragging tag chips is fiddly on a phone.
   import type { SynaptStore } from '../core/store.svelte'
 
   let { store }: { store: SynaptStore } = $props()
@@ -27,14 +31,30 @@
     bind:value={filter}
     aria-label="Filter chapters"
   />
+  {#if store.checked.length > 0}
+    <div class="pinned sy-mono">
+      <span>⌁ graph: {store.checked.length} ticked</span>
+      <button onclick={() => store.clearChecked()}>clear</button>
+    </div>
+  {/if}
   <ol>
     {#each shown as c (c.id)}
       <li>
-        <button
-          class="chapter"
-          class:active={store.selected?.id === c.id}
-          onclick={() => store.goto(c)}
-        >{c.title}</button>
+        <div class="row">
+          <input
+            type="checkbox"
+            class="tick"
+            checked={store.checked.includes(c.id)}
+            onchange={() => store.toggleChecked(c.id)}
+            aria-label="Show {c.title} in the synapses graph"
+            title="tick to isolate in the synapses graph"
+          />
+          <button
+            class="chapter"
+            class:active={store.selected?.id === c.id}
+            onclick={() => store.goto(c)}
+          >{c.title}</button>
+        </div>
       </li>
     {:else}
       <li class="empty sy-mono">no chapter matches “{filter}”</li>
@@ -47,6 +67,7 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: 100%;
     border-right: 1px solid var(--sy-border);
     background: color-mix(in srgb, var(--sy-bg-sunken) 45%, transparent);
     padding: 0.8rem 0.6rem 2rem;
@@ -84,6 +105,25 @@
     padding: 0.4em 0.6em;
   }
   input:focus { border-color: var(--sy-accent-dim); }
+  .pinned {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+    font-size: 0.72rem;
+    color: var(--sy-accent-2);
+    border: 1px dashed var(--sy-accent-dim);
+    border-radius: var(--sy-radius);
+    padding: 0.25em 0.6em;
+  }
+  .pinned button {
+    font: inherit;
+    color: var(--sy-hot);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
   ol {
     list-style: none;
     counter-reset: ch;
@@ -93,9 +133,24 @@
     min-height: 0;
   }
   li { counter-increment: ch; }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  /* A real touch target on phones (the row is ~2rem tall anyway). */
+  .tick {
+    width: 1rem;
+    height: 1rem;
+    margin: 0 0 0 0.35em;
+    accent-color: var(--sy-accent);
+    cursor: pointer;
+    flex: none;
+  }
   .chapter {
     display: block;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     text-align: left;
     font-family: var(--sy-font-prose);
     font-size: 0.82rem;
@@ -105,7 +160,7 @@
     border: none;
     border-left: 2px solid transparent;
     border-radius: 0 4px 4px 0;
-    padding: 0.32em 0.5em 0.32em 1.9em;
+    padding: 0.32em 0.5em 0.32em 1.6em;
     cursor: pointer;
     position: relative;
   }
@@ -113,7 +168,7 @@
   .chapter::before {
     content: counter(ch);
     position: absolute;
-    left: 0.35em;
+    left: 0.15em;
     font-family: var(--sy-font-mono);
     font-size: 0.68rem;
     color: var(--sy-fg-faint);
