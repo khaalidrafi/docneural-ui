@@ -32,9 +32,8 @@
     </div>
     <p class="tagline sy-mono">fire together, wire stronger</p>
     <p class="lede">
-      A living reader for the <strong>Org Manual</strong> — split per Info node,
-      exported by Emacs, and wired into an org-roam graph. Every page knows the
-      pages it cites, and the ones that cite it.
+      A living reader for the <strong>Emacs, Guix, and Org</strong> manuals — split
+      per Info node, exported by Emacs, and wired into an org-roam graph.
     </p>
 
     <div class="stats sy-mono">
@@ -105,7 +104,10 @@
   <footer class="foot sy-mono">
     built by an Emacs batch <span class="sym">org-export</span> · graph modeled on
     <span class="sym">org-roam</span> · stable <span class="sym">id:</span> citations,
-    readable by humans and LLMs alike
+    readable by humans and LLMs alike —
+    <a class="mach" href="{store.base}/llms.txt">llms.txt</a>
+    <a class="mach" href="{store.base}/llms-full.txt">llms-full.txt</a>
+    <a class="mach" href="{store.base}/graph.json">graph.json</a>
   </footer>
 </div>
 
@@ -246,5 +248,12 @@
 
   .foot { max-width: 60ch; text-align: center; font-size: 0.72rem; color: var(--sy-fg-faint); line-height: 1.9; }
   .foot .sym { color: var(--sy-accent-dim); }
+  .foot .mach {
+    color: var(--sy-accent-2);
+    text-decoration: none;
+    border-bottom: 1px dotted color-mix(in srgb, var(--sy-accent-2) 45%, transparent);
+    padding-bottom: 1px;
+  }
+  .foot .mach:hover { color: var(--sy-hot); border-bottom-style: solid; }
   @keyframes sy-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 </style>

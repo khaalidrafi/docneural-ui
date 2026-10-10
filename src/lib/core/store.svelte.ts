@@ -45,6 +45,19 @@ export class SynaptStore {
   query = $state('')
   tags = $state<string[]>([])
 
+  /** Docs ticked in the sidebar. Non-empty means the synapses canvas shows
+   *  exactly these docs (plus the wires between them) — a hand-built local
+   *  graph, and the mobile-friendly way to scope the hairball. */
+  checked = $state<string[]>([])
+  toggleChecked(id: string): void {
+    this.checked = this.checked.includes(id)
+      ? this.checked.filter((x) => x !== id)
+      : [...this.checked, id]
+  }
+  clearChecked(): void {
+    this.checked = []
+  }
+
   // Fetched doc bodies, keyed by slug. '' while loading, null on 404.
   bodies = $state<Map<string, string | null>>(new Map())
   // In-flight fetches, so double-clicks share one request.
@@ -79,9 +92,17 @@ export class SynaptStore {
     return nodeViews(this.data)
   }
 
-  /** What the synapses canvas shows. */
+  /** What the synapses canvas shows: query+tags filter first, then the
+   *  sidebar tick list (when non-empty) narrows to exactly those docs and
+   *  the wires between them. */
   get visible(): GraphData {
-    return filteredGraph(this.data, this.query, this.tags)
+    const g = filteredGraph(this.data, this.query, this.tags)
+    if (!this.checked.length) return g
+    const keep = new Set(this.checked)
+    return {
+      nodes: g.nodes.filter((n) => keep.has(n.id)),
+      links: g.links.filter((l) => keep.has(l.source) && keep.has(l.target))
+    }
   }
 
   /** Neighborhood of the selected doc for the side panels. */

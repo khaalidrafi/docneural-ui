@@ -87,6 +87,26 @@
     bottom: auto;
     color: var(--sy-fg-faint);
   }
+  /* Phone: a side panel would eat the whole canvas. The preview becomes a
+     bottom sheet so the graph keeps the top half of the screen. */
+  @media (max-width: 700px) {
+    .note-preview {
+      top: auto;
+      left: 0;
+      right: 0;
+      width: auto;
+      height: 45%;
+      border-left: none;
+      border-top: 1px solid var(--sy-border-strong);
+      box-shadow: 0 -12px 30px color-mix(in srgb, var(--sy-bg-sunken) 60%, transparent);
+      padding: 0.8rem 1rem 2rem;
+    }
+    .note-preview.empty {
+      height: auto;
+      top: 0;
+      bottom: auto;
+    }
+  }
   header h2 {
     font-family: var(--sy-font-mono);
     font-size: 1.15rem;

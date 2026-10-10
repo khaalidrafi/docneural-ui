@@ -78,9 +78,12 @@
 
   // Scroll-spy: highlight the heading currently at the top of the article.
   // IntersectionObserver is cheap enough for a 4 GB machine (no scroll math).
+  // On phones the whole page scrolls (.doc-main stops being a scroller), so
+  // the observer root falls back to the viewport there.
   $effect(() => {
     const ready = html // re-observe whenever a new body paints
     if (!ready || !mainEl || !proseEl) return
+    const isScroller = getComputedStyle(mainEl).overflowY !== 'visible'
     const heads = [...proseEl.querySelectorAll('h2[id], h3[id]')]
     const visible = new Set<string>()
     const io = new IntersectionObserver(
@@ -94,7 +97,7 @@
         const top = heads.find((h) => visible.has(h.id))
         activeId = top?.id ?? activeId
       },
-      { root: mainEl, rootMargin: '0px 0px -75% 0px', threshold: 0 }
+      { root: isScroller ? mainEl : null, rootMargin: '0px 0px -75% 0px', threshold: 0 }
     )
     heads.forEach((h) => io.observe(h))
     return () => io.disconnect()
@@ -112,16 +115,28 @@
     if (target.id === doc?.id && m[2]) scrollTo(decodeURIComponent(m[2]))
     else store.goto(target)
   }
+
+  // Mobile: the sidebar is an off-canvas drawer (a static strip above the
+  // article just clipped the chapter list). It closes on any navigation —
+  // watching the selected id covers rail/palette/crumb clicks too.
+  let drawer = $state(false)
+  $effect(() => {
+    if (store.selected?.id) drawer = false
+  })
 </script>
 
 <div class="reader">
-  <aside class="side" aria-label="Sidebar">
+  {#if drawer}
+    <div class="scrim" role="presentation" onclick={() => (drawer = false)}></div>
+  {/if}
+  <aside class="side" class:open={drawer} aria-label="Sidebar">
     <ChapterNav {store} />
   </aside>
 
   <div class="doc-main" bind:this={mainEl}>
     {#if doc}
       <nav class="crumbs sy-mono" aria-label="Breadcrumb">
+        <button class="menu" onclick={() => (drawer = true)} aria-label="Open contents">☰</button>
         <button class="crumb" onclick={() => store.goHome()}>The Org Manual</button>
         {#each ancestors as a (a.id)}
           <span class="sep">›</span>
@@ -133,6 +148,10 @@
         {/if}
         <span class="sep">›</span>
         <span class="here">{crumbTitle}</span>
+        <!-- The same page as raw Org: what llms.txt links, one click from
+             what you are reading — humans cite it, agents fetch it. -->
+        <a class="raw sy-mono" href="{store.base}/docs/{doc.slug}.org"
+           title="This page as plain Org (lossless, LLM-friendly)">⌗ raw org</a>
       </nav>
 
       {#if html === undefined}
@@ -174,13 +193,57 @@
     height: calc(100dvh - var(--sy-header-h));
     min-height: 0;
   }
+  /* Tablet: sidebar + article; the rail's own scoped CSS drops it (its
+     content reappears stacked on phones, see SynapseRail). */
   @media (max-width: 1100px) {
-    .reader { grid-template-columns: minmax(0, 1fr) var(--sy-panel-w); }
-    .side { display: none; }
+    .reader { grid-template-columns: var(--sy-side-w) minmax(0, 1fr); }
   }
-  @media (max-width: 760px) {
-    .reader { grid-template-columns: minmax(0, 1fr); }
-    :global(.rail) { display: none; }
+  /* Phone: single column; sidebar becomes an off-canvas drawer opened by
+     the ☰ button in the breadcrumb row. */
+  @media (max-width: 700px) {
+    .reader {
+      display: block;
+      overflow-y: auto;
+    }
+    .side {
+      position: fixed;
+      top: var(--sy-header-h);
+      bottom: 0;
+      left: 0;
+      width: min(78vw, 20rem);
+      z-index: 30;
+      transform: translateX(-105%);
+      transition: transform 160ms ease;
+      background: var(--sy-bg);
+      border-right: 1px solid var(--sy-border-strong);
+      box-shadow: 0 0 40px color-mix(in srgb, var(--sy-bg-sunken) 80%, transparent);
+    }
+    .side.open { transform: none; }
+    .doc-main {
+      height: auto;
+      overflow: visible;
+      padding: 0.9rem 1rem 3rem;
+    }
+  }
+  .scrim {
+    position: fixed;
+    inset: var(--sy-header-h) 0 0 0;
+    z-index: 29;
+    background: color-mix(in srgb, var(--sy-bg-sunken) 55%, transparent);
+  }
+  .menu {
+    display: none;
+    font-family: var(--sy-font-mono);
+    font-size: 0.85rem;
+    color: var(--sy-fg-muted);
+    background: none;
+    border: 1px solid var(--sy-border);
+    border-radius: var(--sy-radius);
+    padding: 0.1em 0.55em;
+    cursor: pointer;
+  }
+  @media (max-width: 700px) {
+    .menu { display: inline-block; }
   }
   .side { min-height: 0; overflow: hidden; }
   .doc-main {
@@ -193,10 +256,24 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.35em;
+    gap: 0.35rem;
     font-size: 0.75rem;
     color: var(--sy-fg-faint);
     margin-bottom: 1rem;
+  }
+  .crumbs .raw {
+    /* far right of the crumb line — an affordance, not part of the path */
+    margin-left: auto;
+    color: var(--sy-accent-2);
+    text-decoration: none;
+    border: 1px solid var(--sy-border);
+    border-radius: var(--sy-radius);
+    padding: 0.1em 0.6em;
+    white-space: nowrap;
+  }
+  .crumbs .raw:hover {
+    color: var(--sy-accent);
+    border-color: var(--sy-accent-dim);
   }
   .crumb {
     font: inherit;

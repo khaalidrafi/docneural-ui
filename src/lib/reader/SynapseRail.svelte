@@ -13,7 +13,8 @@
   // no bespoke highlight needed.
   import GraphView from 'orui/graph/GraphView.svelte'
   import { createGraphStore } from 'orui/state/graphStore'
-  import { loadEngine, toRoam } from '../graph/roamBridge'
+  import { toRoam } from '../graph/roamBridge'
+  import { makeNeuronLoader } from '../graph/neuronEngine'
   import { backlinks, outlinks } from '../core/graph'
   import type { SynaptStore } from '../core/store.svelte'
 
@@ -51,6 +52,19 @@
     if (d) roam.setFocus({ id: d.id })
   })
 
+  // Mini-map painting: compact neuron loader — small solid somas instead of
+  // force-graph's degree-sized discs (a 210px box made the hub a blue blob),
+  // no labels, no particles. The centre doc is the hot node: selection is
+  // read live through the closure, so it wears a ring without a re-sync.
+  let boxEl: HTMLDivElement | undefined = $state()
+  const NO_NB: Set<string> = new Set()
+  const minimapLoad = makeNeuronLoader({
+    tokenEl: () => boxEl,
+    selected: () => doc?.id ?? null,
+    neighbors: () => NO_NB,
+    compact: true
+  })
+
   // Cap the signal lists so the rail stays light on a potato and readable.
   const CAP = 8
   const insShown = $derived(ins.slice(0, CAP))
@@ -85,8 +99,8 @@
         <span class="spark">⌁</span> synapses
         <span class="count">{local.nodes.length - 1}</span>
       </h3>
-      <div class="graph-box">
-        <GraphView store={roam} onNodeClick={(n) => go(n.id)} {loadEngine} />
+      <div class="graph-box" bind:this={boxEl}>
+        <GraphView store={roam} onNodeClick={(n) => go(n.id)} loadEngine={minimapLoad} />
       </div>
       <button class="expand sy-mono" onclick={() => store.setMode('graph')}>
         open full graph ↗
@@ -143,6 +157,21 @@
     overflow-y: auto;
     background: color-mix(in srgb, var(--sy-bg-sunken) 50%, transparent);
   }
+  /* Tablet: the rail drops out (no room beside sidebar + article). Phone:
+     it reappears STACKED under the article — the roam view must be
+     reachable on a phone, just not beside the text. This lives here rather
+     than in DocReader because a scoped `.rail.s-hash` rule outranks any
+     :global(.rail) the parent writes — the hide attempt silently failed. */
+  @media (max-width: 1100px) {
+    .rail { display: none; }
+  }
+  @media (max-width: 700px) {
+    .rail {
+      display: flex;
+      border-left: none;
+      border-top: 1px solid var(--sy-border);
+    }
+  }
   h3 {
     font-family: var(--sy-font-mono);
     font-size: 0.7rem;
@@ -190,6 +219,10 @@
     border-radius: var(--sy-radius);
     overflow: hidden;
     background: color-mix(in srgb, var(--sy-bg-sunken) 70%, transparent);
+    /* Same canvas-theme bridge as the hero graph (SynapsesGraph): the mini
+       map must not be the one spot where the site palette breaks. */
+    --orui-link-color: var(--sy-graph-link);
+    --orui-node-palette: var(--sy-graph-palette);
   }
   .expand {
     margin-top: 0.4rem;

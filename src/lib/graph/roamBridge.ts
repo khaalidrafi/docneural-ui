@@ -17,7 +17,9 @@ export function toRoam(g: GraphData): OrgRoamGraphReponse {
     level: 1,
     pos: 0,
     olp: null,
-    properties: {},
+    properties: {
+      'custom-id': n.id
+    },
     tags: n.tags
   }))
   // `type: 'id'` = the id: citations the exporter resolved. Duplicate pairs
@@ -30,9 +32,3 @@ export function toRoam(g: GraphData): OrgRoamGraphReponse {
   }))
   return { nodes, links, tags: [] }
 }
-
-/** Lazy loader passed to every GraphView mount: resolving `force-graph`
- *  from THIS file (in synapt) rather than GraphView.svelte (in the sibling
- *  orui checkout) pins the import to synapt's node_modules — the site's own
- *  copy, listed in its package.json. */
-export const loadEngine = (): Promise<unknown> => import('force-graph')

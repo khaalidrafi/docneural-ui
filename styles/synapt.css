@@ -48,6 +48,14 @@
      --orui-link-color to this resolved value (SynapsesGraph). */
   --sy-graph-link: rgba(70, 216, 230, 0.3);
 
+  /* Node colors, as a LITERAL comma list: orui's canvas reads
+     --orui-node-palette off the container (see SynapsesGraph/SynapseRail) and
+     picks hue = hash(first tag) % length, so a doc set keeps one phosphor
+     color deterministically, stable across reloads. Eight hues: the four site
+     signals (green, cyan, pink, amber) plus four neighbours that stay readable
+     on dark glass. */
+  --sy-graph-palette: #5ef38c, #46d8e6, #f368a0, #e6c95c, #a78bfa, #7dd3fc, #fb923c, #34d399;
+
   /* Geometry */
   --sy-radius: 6px;
   --sy-max-prose: 74ch;
@@ -75,6 +83,9 @@
   --sy-hot: #c22d77;
   --sy-amber: #8a6d0b;
   --sy-graph-link: rgba(11, 127, 147, 0.35);
+  /* Same eight hues, darkened to survive a light page: the canvas is
+     transparent, so these sit on paper-white, not glass. */
+  --sy-graph-palette: #0c8a44, #0b7f93, #c22d77, #8a6d0b, #6d28d9, #0369a1, #c2410c, #047857;
   color-scheme: light;
 }
 
@@ -95,6 +106,7 @@
     --sy-hot: #c22d77;
     --sy-amber: #8a6d0b;
     --sy-graph-link: rgba(11, 127, 147, 0.35);
+    --sy-graph-palette: #0c8a44, #0b7f93, #c22d77, #8a6d0b, #6d28d9, #0369a1, #c2410c, #047857;
     color-scheme: light;
   }
 }
