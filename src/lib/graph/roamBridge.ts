@@ -14,7 +14,11 @@ export function toRoam(g: GraphData): OrgRoamGraphReponse {
     id: n.id,
     file: n.slug,
     title: n.title,
-    level: 1,
+    // level 0 = FILE node in roam's wire shape, and orui's default filter
+    // (maxLevel 0) shows file nodes only. Every synapt doc IS one .org file,
+    // so this is both the truth and the only value that survives the filter
+    // (level 1 here silently empties the canvas).
+    level: 0,
     pos: 0,
     olp: null,
     properties: {

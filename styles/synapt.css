@@ -4,60 +4,152 @@
    Name: Synapt — synapse, trimmed. "apt" hides inside it: capable, quick,
    fitting. Hebb's law says neurons that fire together wire together — every
    read of an interlinked doc strengthens the connection in a human brain,
-   and every citation resolved strengthens an LLM's context. This theme is
-   the workout: it makes those synapses rise.
-   Tagline: fire together, wire stronger.
+   and every citation resolved strengthens an LLM's context.
+
+   LOOK: a HUD, not a magazine. Ink-blue black, neon cyan/magenta/electric
+   yellow, monospace chrome in uppercase with wide tracking, sharp corners
+   with one notched edge, corner brackets instead of soft shadows, a faint
+   circuit grid and scanlines on the page. Long-form prose stays quiet and
+   readable (Inter, no glow) — the neon belongs to the instrument panel, not
+   to the text you are trying to read.
+
+   MULTI-SOURCE: this site hosts documentation from many projects (Org, Emacs,
+   Guix, ...). Each source owns one neon hue, and the hue is not a second
+   palette: it is the SAME colour the graph canvas paints that source's nodes
+   with, because core/source.ts hashes the source tag with orui's djb2 and
+   indexes the SAME --sy-graph-palette the canvas reads. Components receive it
+   as an inline `--sy-src` custom property and use `var(--sy-src)`.
 
    Structure:
    1. Tokens (dark default + light override) — every color/size the theme
       uses lives here, so downstream sites can re-skin with one block.
-   2. Base/reset — page chrome: dotted "synaptic dust" backdrop, glow accents.
+   2. Base/reset — page chrome: circuit grid, scanlines, links, caret.
+   2b. HUD vocabulary — notches, brackets, glitch, chips, source tint.
    3. `.sy-org` — styling for raw org-export HTML (headings, tables, src
       blocks, TODO badges…). The site injects unmodified Org HTML here; the
       theme must NOT depend on any JS.
    ========================================================================== */
 
+/* ---------- 0. Fonts ---------------------------------------------------
+   Self-hosted, latin subset, three files (96 kB total, cached forever).
+   WHY: a render-blocking <link> to fonts.googleapis.com delays
+   DOMContentLoaded by however long that round trip takes — on the machine
+   this site is built on it added tens of seconds to first paint, and on a
+   phone it is a DNS + TLS + CSS fetch before the font files even start.
+   `font-display: swap` means text paints in the fallback immediately and
+   the real face swaps in; nothing waits on a network.
+   Inter and JetBrains Mono ship as variable files, so one URL serves both
+   weights we use (same arrangement Google's own CSS uses). */
+@font-face {
+  font-family: "Electrolize";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/electrolize-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/inter-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/inter-latin.woff2") format("woff2");
+}
+
 /* ---------- 1. Tokens -------------------------------------------------- */
 :root {
-  /* Type. Mono everywhere it feels machine-ish (headings, meta, nav,
-     code); human prose stays on a quiet sans for long reads. */
-  --sy-font-mono: "Iosevka", "IBM Plex Mono", "JetBrains Mono", ui-monospace,
+  /* Type. Mono IS the identity: headings, nav, labels, meta, code. Human
+     prose stays on a quiet sans, because a long read in mono is not a long
+     read — Inter carries the body text and nothing else. */
+  --sy-font-mono: "JetBrains Mono", "Iosevka", "IBM Plex Mono", ui-monospace,
     "DejaVu Sans Mono", Menlo, monospace;
   --sy-font-prose: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto,
     sans-serif;
+  /* The brand voice, used ONLY where a shape is more useful than a word:
+     the wordmark and the reader's page title. Electrolize is single-weight
+     and cramped small, so nothing readable is set in it — one file, 17 kB. */
+  --sy-font-display: "Electrolize", "JetBrains Mono", ui-monospace, monospace;
+  /* Tracking for the uppercase micro-labels that make this read as an
+     instrument panel. */
+  --sy-track: 0.16em;
 
-  /* Surfaces — deep charcoal with a green undertone: petri-dish at night. */
-  --sy-bg: #0a0f0d;
-  --sy-bg-raise: #101714; /* panels, table stripes, code wells */
-  --sy-bg-sunken: #070b09; /* page backdrop behind the raise panels */
-  --sy-fg: #d7e2dc;
-  --sy-fg-muted: #8a998f;
-  --sy-fg-faint: #5a6862;
-  --sy-border: #1e2a24;
-  --sy-border-strong: #2c3d34;
+  /* Surfaces — ink-blue black, like a terminal with the backlight off.
+     Cool, never neutral grey: the cast is what sells the night-city look. */
+  --sy-bg: #05070d;
+  --sy-bg-raise: #0b1018; /* panels, table stripes, code wells */
+  --sy-bg-sunken: #03050a; /* page backdrop behind the raise panels */
+  --sy-fg: #d5e4f2;
+  /* Secondary text and hairlines have to survive a dim room on a cheap
+     laptop panel. These four are tuned for contrast, not for subtlety:
+     --sy-fg-muted and --sy-fg-faint both clear 4.5:1 against --sy-bg, and
+     the borders clear 2:1, which is what a UI boundary needs to be seen. */
+  --sy-fg-muted: #98aec4;
+  --sy-fg-faint: #7d94ab;
+  --sy-border: #2f4b68;
+  --sy-border-strong: #47708f;
 
-  /* Signals — phosphor growth on dark glass. */
-  --sy-accent: #5ef38c;   /* primary: links, focus, carets */
-  --sy-accent-dim: #2e8a52;
-  --sy-accent-2: #46d8e6; /* secondary: nav, tags, graph chrome */
-  --sy-hot: #f368a0;      /* attention: hover, backlink arrows */
-  --sy-amber: #e6c95c;    /* TODO markers, warnings */
+  /* Signals — the neon trio: cyan is the wire, magenta the synapse, yellow
+     the alert. */
+  --sy-accent: #00e5ff;   /* primary: links, focus, active chrome */
+  --sy-accent-dim: #1c9bb5; /* accent, safe as text on ink */
+  --sy-accent-2: #ff2d95; /* secondary: tags, counts, the firing set */
+  --sy-hot: #ffd60a;      /* attention: hover, backlink arrows */
+  --sy-amber: #ff9f1c;    /* TODO markers, warnings */
+
+  /* One shared glow recipe, so "neon" is a constant and not 40 hand-tuned
+     box-shadows. */
+  --sy-glow: 0 0 6px color-mix(in srgb, var(--sy-accent) 55%, transparent),
+    0 0 20px color-mix(in srgb, var(--sy-accent) 22%, transparent);
+  --sy-glow-2: 0 0 6px color-mix(in srgb, var(--sy-accent-2) 55%, transparent),
+    0 0 20px color-mix(in srgb, var(--sy-accent-2) 22%, transparent);
 
   /* Graph wires, as a LITERAL color: the force-graph canvas cannot read
      custom properties or parse color-mix(), so the embed bridges
      --orui-link-color to this resolved value (SynapsesGraph). */
-  --sy-graph-link: rgba(70, 216, 230, 0.3);
+  --sy-graph-link: rgba(0, 229, 255, 0.3);
+
+  /* The canvas backdrop: one step lighter than the page, so the graph reads
+     as a lit panel sunk into the HUD. GraphView paints a transparent canvas,
+     so this DOM color shows through it (SynapsesGraph .roam-wrap). */
+  --sy-graph-bg: #0a0f18;
+
+  /* The graph's grid: fine circuit lines rather than petri-dish dots. These
+     are the colors the grid's linear-gradients paint with; both themes carry
+     the same two tokens so the well reads as one material everywhere. */
+  --sy-dish-dot-1: rgba(0, 229, 255, 0.09);
+  --sy-dish-dot-2: rgba(255, 45, 149, 0.06);
 
   /* Node colors, as a LITERAL comma list: orui's canvas reads
      --orui-node-palette off the container (see SynapsesGraph/SynapseRail) and
-     picks hue = hash(first tag) % length, so a doc set keeps one phosphor
-     color deterministically, stable across reloads. Eight hues: the four site
-     signals (green, cyan, pink, amber) plus four neighbours that stay readable
-     on dark glass. */
-  --sy-graph-palette: #5ef38c, #46d8e6, #f368a0, #e6c95c, #a78bfa, #7dd3fc, #fb923c, #34d399;
+     picks hue = hash(first tag) % length. core/source.ts hashes the SAME way
+     and indexes THIS SAME list, so a source's DOM colour and its graph colour
+     are one value, not two that happen to look alike. */
+  --sy-graph-palette: #00e5ff, #ff2d95, #ffd60a, #7c5cff, #00ff9d, #ff6b35, #4cc9f0, #f72585;
 
-  /* Geometry */
-  --sy-radius: 6px;
+  /* Geometry — sharp. The one notch is the signature; --sy-notch feeds the
+     clip-path shapes in §2b. */
+  --sy-radius: 3px;
+  --sy-notch: 9px;
   --sy-max-prose: 74ch;
   --sy-header-h: 3.2rem;
   --sy-side-w: 240px;
@@ -66,47 +158,54 @@
   color-scheme: dark;
 }
 
-/* Day mode: same network, bleached by sun. Opt in with
-   <html data-theme="light">; the JS theme toggle only flips this attribute. */
+/* Day mode: same network, bleached to paper. Opt in with
+   <html data-theme="light">; the JS theme toggle only flips this attribute.
+   The neon darkens into ink-jet colour so the HUD survives a bright room. */
 :root[data-theme='light'] {
-  --sy-bg: #f3f5f2;
-  --sy-bg-raise: #e8ece7;
-  --sy-bg-sunken: #dde3dc;
-  --sy-fg: #1a2420;
-  --sy-fg-muted: #4e5e55;
-  --sy-fg-faint: #7d8b83;
-  --sy-border: #c6d0c6;
-  --sy-border-strong: #a7b5a8;
-  --sy-accent: #0c8a44;
-  --sy-accent-dim: #3aa06a;
-  --sy-accent-2: #0b7f93;
-  --sy-hot: #c22d77;
-  --sy-amber: #8a6d0b;
-  --sy-graph-link: rgba(11, 127, 147, 0.35);
-  /* Same eight hues, darkened to survive a light page: the canvas is
-     transparent, so these sit on paper-white, not glass. */
-  --sy-graph-palette: #0c8a44, #0b7f93, #c22d77, #8a6d0b, #6d28d9, #0369a1, #c2410c, #047857;
+  --sy-bg: #eef2f7;
+  --sy-bg-raise: #ffffff;
+  --sy-bg-sunken: #dbe4ee;
+  --sy-fg: #0a1220;
+  --sy-fg-muted: #2c4256;
+  --sy-fg-faint: #4f6478;
+  --sy-border: #8ba2b8;
+  --sy-border-strong: #5c748c;
+  --sy-accent: #00668d;
+  --sy-accent-dim: #086a86;
+  --sy-accent-2: #c9186c;
+  --sy-hot: #7d5600;
+  --sy-amber: #8a5a00;
+  --sy-graph-link: rgba(0, 102, 141, 0.45);
+  --sy-graph-bg: #ffffff;
+  --sy-dish-dot-1: rgba(0, 102, 141, 0.2);
+  --sy-dish-dot-2: rgba(201, 24, 108, 0.09);
+  --sy-graph-palette: #00668d, #c9186c, #8a6b00, #5b3fd6, #00806a, #c2410c, #0369a1, #b3125f;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: light) {
-  /* Honor the OS unless the page explicitly asked for dark. */
+  /* Honor the OS unless the page explicitly asked for dark. Kept in sync with
+     the block above by hand — there is no build step, so a token added to one
+     must be added to the other. */
   :root:not([data-theme]) {
-    --sy-bg: #f3f5f2;
-    --sy-bg-raise: #e8ece7;
-    --sy-bg-sunken: #dde3dc;
-    --sy-fg: #1a2420;
-    --sy-fg-muted: #4e5e55;
-    --sy-fg-faint: #7d8b83;
-    --sy-border: #c6d0c6;
-    --sy-border-strong: #a7b5a8;
-    --sy-accent: #0c8a44;
-    --sy-accent-dim: #3aa06a;
-    --sy-accent-2: #0b7f93;
-    --sy-hot: #c22d77;
-    --sy-amber: #8a6d0b;
-    --sy-graph-link: rgba(11, 127, 147, 0.35);
-    --sy-graph-palette: #0c8a44, #0b7f93, #c22d77, #8a6d0b, #6d28d9, #0369a1, #c2410c, #047857;
+    --sy-bg: #eef2f7;
+    --sy-bg-raise: #ffffff;
+    --sy-bg-sunken: #dbe4ee;
+    --sy-fg: #0a1220;
+    --sy-fg-muted: #2c4256;
+    --sy-fg-faint: #4f6478;
+    --sy-border: #8ba2b8;
+    --sy-border-strong: #5c748c;
+    --sy-accent: #00668d;
+    --sy-accent-dim: #086a86;
+    --sy-accent-2: #c9186c;
+    --sy-hot: #7d5600;
+    --sy-amber: #8a5a00;
+    --sy-graph-link: rgba(0, 102, 141, 0.45);
+    --sy-graph-bg: #ffffff;
+    --sy-dish-dot-1: rgba(0, 102, 141, 0.2);
+    --sy-dish-dot-2: rgba(201, 24, 108, 0.09);
+    --sy-graph-palette: #00668d, #c9186c, #8a6b00, #5b3fd6, #00806a, #c2410c, #0369a1, #b3125f;
     color-scheme: light;
   }
 }
@@ -124,51 +223,72 @@ body.sy-body {
   font-size: 16px;
   line-height: 1.65;
   color: var(--sy-fg);
-  /* "Synaptic dust": faint dot grid, like neurons firing through murk —
-     Two offset radial layers so the grid shimmers slightly at any size. */
+  /* The circuit board the HUD sits on: one fine grid, one coarse grid. Two
+     sizes so the page has depth without a heavy pattern, and both are hairline
+     1px lines — at 4% ink this is texture, not decoration, and it never
+     competes with the text. */
   background-color: var(--sy-bg);
   background-image:
-    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--sy-accent) 5%, transparent) 1px, transparent 0),
-    radial-gradient(circle at 9px 13px, color-mix(in srgb, var(--sy-accent-2) 4%, transparent) 1px, transparent 0);
-  background-size: 28px 28px, 37px 37px;
+    linear-gradient(to right, color-mix(in srgb, var(--sy-accent) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--sy-accent) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--sy-accent-2) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--sy-accent-2) 3%, transparent) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
+}
+
+/* Scanlines: the CRT overlay every cyberpunk HUD has. Fixed and full-bleed so
+   it survives scrolling, pointer-events:none so it never eats a click, and
+   above the canvas too — a screen effect that stops at the graph would look
+   like a bug. Kept at 3.5% so it reads on a bright monitor and does not turn
+   the text into a strobe. */
+body.sy-body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--sy-bg-sunken) 55%, transparent) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+:root[data-theme='light'] body.sy-body::after {
+  /* On paper the overlay has to be light-on-dark or it just greys the page. */
+  mix-blend-mode: screen;
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--sy-bg-sunken) 80%, transparent) 0 1px,
+    transparent 1px 3px
+  );
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--sy-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--sy-accent) 32%, transparent);
+  color: var(--sy-fg);
 }
 
 .sy-body a {
   color: var(--sy-accent);
-  text-decoration-color: var(--sy-accent-dim);
+  text-decoration-color: color-mix(in srgb, var(--sy-accent) 40%, transparent);
   text-underline-offset: 3px;
   transition: color 120ms, text-shadow 120ms;
 }
 .sy-body a:hover {
   color: var(--sy-hot);
-  text-shadow: 0 0 8px color-mix(in srgb, var(--sy-hot) 60%, transparent);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--sy-hot) 60%, transparent);
 }
 
 :where(a, button, input, [tabindex]):focus-visible {
-  outline: 2px solid var(--sy-accent);
+  outline: 1px solid var(--sy-accent);
   outline-offset: 2px;
-  border-radius: 2px;
+  box-shadow: var(--sy-glow);
 }
 
 .sy-mono {
   font-family: var(--sy-font-mono);
-}
-
-/* Blinking caret used in the wordmark — a small live signal that the
-   interface is a machine, not a magazine. */
-@keyframes sy-blink {
-  0%, 55% { opacity: 1; }
-  56%, 100% { opacity: 0; }
-}
-.sy-caret {
-  display: inline-block;
-  width: 0.55em;
-  color: var(--sy-accent);
-  animation: sy-blink 1.1s steps(1) infinite;
 }
 
 /* Motion vocabulary. `.spark` (the ⌁ glyph) breathes; content rises in on
@@ -176,7 +296,7 @@ body.sy-body {
    All opt out under prefers-reduced-motion (block at the end of § 2). */
 @keyframes sy-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0.35; }
 }
 @keyframes sy-rise {
   from { opacity: 0; transform: translateY(6px); }
@@ -195,22 +315,332 @@ body.sy-body {
 *::-webkit-scrollbar { width: 9px; height: 9px; }
 *::-webkit-scrollbar-thumb {
   background: var(--sy-border-strong);
-  border-radius: 9px;
+  border-radius: 0;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 *::-webkit-scrollbar-thumb:hover { background: var(--sy-accent-dim); }
 
+/* ---------- 2b. HUD vocabulary -----------------------------------------
+   The DOM-side equivalents of what the canvas paints. Everything here is
+   sharp-edged and lit from the edge: brackets, notches, underline-glow —
+   no soft 20px-radius cards anywhere.                                       */
+
+/* The brand mark: a node in cross-section. Kept as a ring + nucleus so it
+   reads at 0.7em in the header and at 3em in the hero. The membrane pulses:
+   the mark is never static, even when it means "idle". */
+.sy-neuron-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+  color: var(--sy-accent);
+  border: 1px solid currentColor;
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--sy-accent) 45%, transparent) 0,
+    color-mix(in srgb, var(--sy-accent) 6%, transparent) 62%,
+    transparent 100%);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sy-accent) 38%, transparent);
+  animation: sy-membrane 3.2s ease-in-out infinite;
+}
+@keyframes sy-membrane {
+  0%, 100% { box-shadow: 0 0 8px color-mix(in srgb, var(--sy-accent) 38%, transparent); }
+  50% { box-shadow: 0 0 20px 1px color-mix(in srgb, var(--sy-accent) 70%, transparent); }
+}
+.sy-neuron-mark::before {
+  content: "";
+  width: 0.34em;
+  height: 0.34em;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--sy-accent) 92%, white);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--sy-accent) 80%, transparent);
+}
+
+/* Firing indication for anything "synapse" (counts, tabs, chips): the
+   accent breathes, matching the canvas particles' direction of travel. */
+.sy-firing {
+  color: var(--sy-accent);
+  animation: sy-pulse 2.4s ease-in-out infinite;
+}
+
+/* The graph well: the canvas sits inside this. A circuit grid (finer than the
+   page's, and brighter — this is the lit panel) plus an inward vignette, so
+   the neurons read as live signal on a board rather than dots on a flat pane.
+   Class name kept as .sy-dish because both graph mounts already use it. */
+.sy-dish {
+  background-color: var(--sy-graph-bg);
+  background-image:
+    linear-gradient(to right, var(--sy-dish-dot-1) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--sy-dish-dot-1) 1px, transparent 1px),
+    linear-gradient(to right, var(--sy-dish-dot-2) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--sy-dish-dot-2) 1px, transparent 1px),
+    radial-gradient(ellipse at center,
+      transparent 55%,
+      color-mix(in srgb, var(--sy-bg-sunken) 60%, transparent) 100%);
+  background-size: 32px 32px, 32px 32px, 8px 8px, 8px 8px, 100% 100%;
+}
+
+/* Floating surfaces — the command palette, the note preview, the graph
+   controls. Solid-ish ink with a lit top edge, not frosted glass: on a
+   4 GB machine a big backdrop-filter costs frames, and a HUD panel is
+   opaque anyway. The border does the glowing. */
+.sy-glass {
+  background: color-mix(in srgb, var(--sy-bg-raise) 94%, transparent);
+  border: 1px solid var(--sy-border-strong);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--sy-accent) 14%, transparent),
+    0 10px 30px color-mix(in srgb, var(--sy-bg-sunken) 70%, transparent);
+}
+
+/* Corner brackets: the signature. Two pseudo-elements draw an L at opposite
+   corners, so any region reads as a framed HUD target — the trick that
+   replaces a soft drop shadow. Needs position:relative on the host, and the
+   host must not clip its own overflow. */
+.sy-hud {
+  position: relative;
+}
+.sy-hud::before,
+.sy-hud::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  color: var(--sy-src, var(--sy-accent));
+  opacity: 0.8;
+}
+.sy-hud::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+}
+.sy-hud::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+/* The notched edge: one corner cut at 45°, the silhouette of a hardware
+   label. Used on filled chrome (chips, CTAs, segmented buttons) where there
+   is no border to clip. clip-path also clips box-shadow, so anything that
+   needs an OUTER glow wants .sy-hud instead of a notch. */
+.sy-notch {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--sy-notch)) 0,
+    100% var(--sy-notch),
+    100% 100%,
+    var(--sy-notch) 100%,
+    0 calc(100% - var(--sy-notch))
+  );
+}
+
+/* Uppercase micro-label — the small caps of the HUD. Anything that is a
+   caption rather than content goes through this so "SYSTEM // NODES" and a
+   sentence never look like the same kind of text. */
+.sy-label {
+  font-family: var(--sy-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: var(--sy-track);
+  text-transform: uppercase;
+  color: var(--sy-fg-muted);
+}
+
+/* Chip: the tag/source pill. Square-ish, 1px edge, colour from --sy-src when
+   the host set one (see the MULTI-SOURCE note above). */
+.sy-chip {
+  font-family: var(--sy-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--sy-src, var(--sy-accent-2));
+  background: color-mix(in srgb, var(--sy-src, var(--sy-accent-2)) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sy-src, var(--sy-accent-2)) 32%, transparent);
+  border-radius: 2px;
+  padding: 0.12em 0.6em;
+  white-space: nowrap;
+}
+
+/* The lit edge: a bar that grows out of an element when it becomes active —
+   the DOM echo of an axon leaving a soma. Row-like things (cards, chapters,
+   palette entries) all share it, so "the lit edge" means one thing everywhere.
+   Same idea as .sy-spine from the previous pass, kept under that class name so
+   existing markup keeps working, now without the round glow. */
+.sy-spine { position: relative; }
+.sy-spine::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--sy-src, var(--sy-accent));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 70%, transparent);
+  transform: translateY(-50%);
+  transition: height 160ms ease;
+  pointer-events: none;
+}
+.sy-spine.active::before,
+.sy-spine:hover::before { height: 72%; }
+
+/* Glitch wordmark — the hero's whole reason to look like a screen. The text
+   is real (::before/::after carry the SAME string from data-text, so the
+   glyphs stay selectable and the accessible name is untouched), and the two
+   offset copies are cyan and magenta: the chromatic split of a bad signal.
+   It fires briefly on a 6s loop rather than strobing, so it reads as an
+   event, not a headache. */
+.sy-glitch {
+  position: relative;
+  display: inline-block;
+}
+.sy-glitch::before,
+.sy-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: inset(0 0 60% 0);
+}
+.sy-glitch::before {
+  color: var(--sy-accent);
+  animation: sy-glitch-a 6s steps(1, end) infinite;
+}
+.sy-glitch::after {
+  color: var(--sy-accent-2);
+  clip-path: inset(55% 0 0 0);
+  animation: sy-glitch-b 6s steps(1, end) infinite;
+}
+/* The bulk of the cycle is "no glitch": each burst lasts ~300 ms of 6 s. */
+@keyframes sy-glitch-a {
+  0%, 82%, 100% { transform: none; opacity: 0; }
+  84% { transform: translate(-2px, -1px); opacity: 0.85; }
+  87% { transform: translate(2px, 1px); opacity: 0.7; }
+  90% { transform: translate(-1px, 1px); opacity: 0.8; }
+  93% { transform: translate(1px, -1px); opacity: 0.5; }
+  96% { opacity: 0; }
+}
+@keyframes sy-glitch-b {
+  0%, 82%, 100% { transform: none; opacity: 0; }
+  85% { transform: translate(2px, 1px); opacity: 0.8; }
+  88% { transform: translate(-2px, -1px); opacity: 0.65; }
+  91% { transform: translate(1px, 0); opacity: 0.75; }
+  94% { opacity: 0; }
+}
+
+/* Brand gradient text — the wordmark and section headers. Kept as a
+   background-clip trick so it survives every theme (both stops are live
+   tokens, not baked hues). */
+.sy-gradient-text {
+  background: linear-gradient(100deg,
+    var(--sy-fg) 0%,
+    var(--sy-accent) 45%,
+    var(--sy-accent-2) 80%,
+    var(--sy-fg) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sy-sweep 9s ease-in-out infinite;
+}
+@keyframes sy-sweep {
+  0%, 100% { background-position: 0% 0; }
+  50% { background-position: 100% 0; }
+}
+
+/* Hairline rule that reads as a trace on the board: a 1px line with a lit
+   node riding on it. Used between hero blocks and above footers. */
+.sy-trace {
+  position: relative;
+  height: 1px;
+  border: 0;
+  margin: 1.6rem 0;
+  background: linear-gradient(90deg,
+    transparent, var(--sy-accent-dim) 10%, var(--sy-border-strong) 50%, var(--sy-accent-dim) 90%, transparent);
+}
+.sy-trace::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--sy-accent);
+  box-shadow: 0 0 12px 2px color-mix(in srgb, var(--sy-accent) 65%, transparent);
+  animation: sy-drift 7s ease-in-out infinite;
+}
+@keyframes sy-drift {
+  0%, 100% { transform: translateX(-30%); opacity: 0.7; }
+  50% { transform: translateX(30%); opacity: 1; }
+}
+
+/* A halo behind a hero/panel: two stacked rings, so a DOM surface reads as
+   live signal next to the graph. */
+.sy-halo {
+  position: relative;
+}
+.sy-halo::before,
+.sy-halo::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--sy-accent);
+  pointer-events: none;
+}
+.sy-halo::before { inset: -0.35em; opacity: 0.4; }
+.sy-halo::after { inset: -0.7em; opacity: 0.18; }
+
 @media (prefers-reduced-motion: reduce) {
-  .sy-caret { animation: none; }
   .spark { animation: none; }
+  .sy-firing { animation: none; }
+  .sy-gradient-text { animation: none; }
+  .sy-trace::after { animation: none; }
+  .sy-neuron-mark { animation: none; }
+  /* The glitch is the one effect that cannot merely stop: a frozen chromatic
+     split looks like misrendered text, so the ghosts go entirely. */
+  .sy-glitch::before,
+  .sy-glitch::after { animation: none; opacity: 0; }
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ---------- 2c. Machine output ------------------------------------------
+   Numbers the site computed (corpus stats, counts) are set in mono and put
+   in a key/value grid. That is the whole vocabulary now: an earlier revision
+   dressed this content as a shell session — a tty window with title-bar
+   glyphs, a PS1 prompt, `[ ok ]` lines, a blinking block cursor — and it made
+   a documentation site look like it was mid-boot. The terminal feel stays in
+   the DESIGN (monospace, tracking, notched corners, the neon trio), not in
+   props that pretend the page is a terminal.                                   */
+
+/* A column of keys, a column of values. Grid rather than a table because it
+   is not tabular data. */
+.sy-kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 1.4em;
+}
+.sy-kv > span:nth-child(odd) { color: var(--sy-fg-faint); }
+.sy-kv > span { overflow-wrap: anywhere; }
+.sy-kv b { color: var(--sy-hot); font-weight: 600; }
+
+/* Text you select should read as part of the HUD: a solid neon block,
+   not the browser's blue. */
+::selection {
+  background: var(--sy-accent);
+  color: var(--sy-bg-sunken);
 }
 
 /* ---------- 3. Org content (.sy-org) -----------------------------------
    org-export produces plain semantic HTML (div.outline-N, h1..h4, table,
    pre.src, span.todo/markup). Style it here; components mount content
-   inside a container with class="sy-org".                                  */
+   inside a container with class="sy-org".
+
+   Prose rules for this section: the BODY TEXT stays a quiet sans with no
+   glow — a HUD that makes you work to read a manual is a failed HUD. The
+   neon belongs to structure: headings, table headers, code wells.         */
 
 .sy-org {
   max-width: var(--sy-max-prose);
@@ -247,27 +677,58 @@ body.sy-body {
 .sy-org h1 {
   font-size: 1.7rem;
   color: var(--sy-fg);
-  text-shadow: 0 0 24px color-mix(in srgb, var(--sy-accent) 22%, transparent);
-  border-bottom: 1px solid var(--sy-border);
+  /* The page title is the one place a glow earns its keep: it is a header,
+     not a paragraph, and it marks the top of the doc. */
+  text-shadow: 0 0 24px color-mix(in srgb, var(--sy-accent) 24%, transparent);
+  border-bottom: 1px solid var(--sy-border-strong);
   padding-bottom: 0.35em;
 }
+/* h2/h3 carry a mono sigil in the source's hue (set --sy-src by the reader):
+   a heading level is legible from the margin before you read a word. */
 .sy-org h2 {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
+  letter-spacing: 0.005em;
 }
-.sy-org h2::before { content: "▸ "; color: var(--sy-accent-dim); }
-.sy-org h3 { font-size: 1.15rem; }
-.sy-org h3::before { content: "─ "; color: var(--sy-border-strong); }
+.sy-org h2::before {
+  content: "// ";
+  color: var(--sy-src, var(--sy-accent-dim));
+}
+.sy-org h3 { font-size: 1.12rem; }
+.sy-org h3::before {
+  content: "» ";
+  color: var(--sy-src, var(--sy-border-strong));
+}
 .sy-org h4 { font-size: 1rem; color: var(--sy-fg-muted); }
+
+/* A heading with an id is a link target: clicking it copies a deep link to
+   that section (DocReader labels them and handles the click). The # only
+   appears on hover/focus so the margin stays quiet while you read. */
+.sy-org h2[id], .sy-org h3[id] {
+  cursor: pointer;
+  scroll-margin-top: 0.6rem;
+}
+.sy-org h2[id]::after, .sy-org h3[id]::after {
+  content: " #";
+  font-family: var(--sy-font-mono);
+  color: var(--sy-accent);
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+.sy-org h2[id]:hover::after, .sy-org h3[id]:hover::after,
+.sy-org h2[id]:focus-visible::after, .sy-org h3[id]:focus-visible::after {
+  opacity: 1;
+}
 
 /* Org TODO keywords on headlines: org exports <span class="todo">TODO</span>
    and DONE; status classes come as .todo/.done on the headline wrapper. */
 .sy-org .todo {
   font-family: var(--sy-font-mono);
-  font-size: 0.78em;
+  font-size: 0.74em;
+  letter-spacing: 0.06em;
   padding: 0.15em 0.5em;
   border: 1px solid var(--sy-amber);
   color: var(--sy-amber);
-  border-radius: 3px;
+  border-radius: 2px;
   margin-right: 0.6em;
   white-space: nowrap;
 }
@@ -276,14 +737,15 @@ body.sy-body {
   color: var(--sy-accent-dim);
 }
 
-/* Tags as #chips — the roamy signal that something belongs to a cluster. */
+/* Tags as #chips — the same chip the rest of the HUD uses, because a tag
+   means one thing in the article and one thing in the sidebar. */
 .sy-org .tag {
   font-family: var(--sy-font-mono);
   font-size: 0.72em;
-  background: var(--sy-bg-raise);
-  border: 1px solid var(--sy-border);
-  border-radius: 999px;
-  padding: 0.1em 0.7em;
+  background: color-mix(in srgb, var(--sy-accent-2) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sy-accent-2) 30%, transparent);
+  border-radius: 2px;
+  padding: 0.1em 0.55em;
   margin-left: 0.35em;
   color: var(--sy-accent-2);
   white-space: nowrap;
@@ -296,19 +758,21 @@ body.sy-body {
   font-size: 0.88em;
   background: var(--sy-bg-raise);
   border: 1px solid var(--sy-border);
-  border-radius: 3px;
+  border-radius: 2px;
   padding: 0.08em 0.4em;
-  color: var(--sy-accent-2);
+  color: var(--sy-accent);
 }
 
+/* Source blocks: a well sunk into the page, with a lit left rail so it reads
+   as machine output at a glance even mid-scroll. */
 .sy-org pre {
   font-family: var(--sy-font-mono);
   font-size: 0.85rem;
   line-height: 1.5;
-  background: var(--sy-bg-raise);
+  background: var(--sy-bg-sunken);
   border: 1px solid var(--sy-border);
-  border-left: 3px solid var(--sy-accent-dim);
-  border-radius: var(--sy-radius);
+  border-left: 2px solid var(--sy-src, var(--sy-accent-dim));
+  border-radius: 2px;
   padding: 0.9em 1.1em;
   overflow-x: auto;
 }
@@ -316,7 +780,8 @@ body.sy-body {
   border-left-color: var(--sy-accent-2);
 }
 
-/* Org tables: borderless grids with hairlines; header row glows. */
+/* Org tables: borderless grids with hairlines; header row is a column of
+   uppercase mono, which is what a data table looks like on an instrument. */
 .sy-org table {
   border-collapse: collapse;
   margin: 1.2em 0;
@@ -331,18 +796,21 @@ body.sy-body {
 .sy-org th {
   font-family: var(--sy-font-mono);
   font-weight: 600;
-  color: var(--sy-accent-2);
+  font-size: 0.85em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sy-accent);
   border-bottom-color: var(--sy-border-strong);
 }
 .sy-org tr:hover td {
-  background: color-mix(in srgb, var(--sy-accent) 4%, transparent);
+  background: color-mix(in srgb, var(--sy-accent) 6%, transparent);
 }
 
 .sy-org blockquote {
   margin: 1.2em 0;
   padding: 0.4em 1.2em;
-  border-left: 3px solid var(--sy-hot);
-  background: color-mix(in srgb, var(--sy-hot) 4%, transparent);
+  border-left: 2px solid var(--sy-accent-2);
+  background: color-mix(in srgb, var(--sy-accent-2) 5%, transparent);
   color: var(--sy-fg-muted);
   font-style: italic;
 }
@@ -364,7 +832,8 @@ body.sy-body {
 
 .sy-org hr {
   border: none;
-  border-top: 1px dashed var(--sy-border-strong);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sy-border-strong), transparent);
   margin: 2em 0;
 }
 

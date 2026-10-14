@@ -15,7 +15,8 @@
   import { createGraphStore } from 'orui/state/graphStore'
   import { toRoam } from '../graph/roamBridge'
   import { makeNeuronLoader } from '../graph/neuronEngine'
-  import { backlinks, outlinks } from '../core/graph'
+  import { backlinks, groupWires, outlinks } from '../core/graph'
+  import { sourceVars } from '../core/source'
   import type { SynaptStore } from '../core/store.svelte'
 
   let {
@@ -44,6 +45,14 @@
     const l = local
     if (l) roam.applyGraphdata(toRoam(l))
   })
+  // Citation prose is one small file per node (ctx/<id>.json), asked for when
+  // a page opens. Fire-and-forget: ctxFor() re-reads `contexts`, so the prose
+  // appears under each afferent as soon as it lands.
+  $effect(() => {
+    const d = doc
+    if (d) store.loadContext(d.id)
+  })
+
   // Pan onto the centre doc when the page changes (a plain focus request,
   // like Emacs' follow frame). Fresh object per run = the act-on-identity
   // contract GraphView expects.
@@ -54,8 +63,9 @@
 
   // Mini-map painting: compact neuron loader — small solid somas instead of
   // force-graph's degree-sized discs (a 210px box made the hub a blue blob),
-  // no labels, no particles. The centre doc is the hot node: selection is
-  // read live through the closure, so it wears a ring without a re-sync.
+  // labels off, hot-ness carried by a ring. The centre doc is the hot node:
+  // selection is read live through the closure, so it wears a ring without a
+  // re-sync.
   let boxEl: HTMLDivElement | undefined = $state()
   const NO_NB: Set<string> = new Set()
   const minimapLoad = makeNeuronLoader({
@@ -67,8 +77,14 @@
 
   // Cap the signal lists so the rail stays light on a potato and readable.
   const CAP = 8
-  const insShown = $derived(ins.slice(0, CAP))
-  const outsShown = $derived(outs.slice(0, CAP))
+  /* Afferents/efferents are grouped per citing chapter (core/graph.ts
+   * groupWires), because an index chapter that cites you 612 times is ONE
+   * fact, not 612 rows. The header keeps both numbers: how many wires, and
+   * how many chapters are pulling them. */
+  const insG = $derived(groupWires(ins, 'source'))
+  const outsG = $derived(groupWires(outs, 'target'))
+  const insShown = $derived(insG.slice(0, CAP))
+  const outsShown = $derived(outsG.slice(0, CAP))
 
   function titleOf(id: string): string {
     return store.byId(id)?.title ?? id
@@ -79,10 +95,10 @@
   }
 </script>
 
-<aside class="rail" aria-label="Synapses">
+<aside class="rail" aria-label="Synapses" style={sourceVars(doc?.tags[0] ?? store.manual)}>
   {#if toc.length > 1}
     <section>
-      <h3 class="sy-mono">On this page</h3>
+      <h3 class="sy-mono">// on this page</h3>
       <ul class="toc">
         {#each toc as h (h.id)}
           <li class:sub={h.level === 3}>
@@ -96,7 +112,8 @@
   {#if !store.lite && local && doc}
     <section>
       <h3 class="sy-mono synapse-head">
-        <span class="spark">⌁</span> synapses
+        <span class="sy-neuron-mark spark-mark" aria-hidden="true"></span>
+        <span class="spark">⌁</span> local graph
         <span class="count">{local.nodes.length - 1}</span>
       </h3>
       <div class="graph-box" bind:this={boxEl}>
@@ -109,20 +126,25 @@
   {/if}
 
   <section>
-    <h3 class="sy-mono">⇤ afferent <span class="count">{ins.length}</span></h3>
+    <h3 class="sy-mono">
+      ⇤ afferent <span class="count">{ins.length}</span>
+      {#if insG.length !== ins.length}<span class="from">from {insG.length} chapters</span>{/if}
+    </h3>
     {#if ins.length === 0}
       <p class="none sy-mono">orphan — nothing cites here</p>
     {:else}
       <ul>
-        {#each insShown as l, i (`${l.source}-${i}`)}
+        {#each insShown as g (g.id)}
           <li>
-            <button class="link-btn" onclick={() => go(l.source)}>{titleOf(l.source)}</button>
-            {#if l.context}<p class="ctx">{l.context}</p>{/if}
+            <button class="link-btn" onclick={() => go(g.id)}>
+              {titleOf(g.id)}{#if g.n > 1}<span class="multi">×{g.n}</span>{/if}
+            </button>
+            {#if store.ctxFor(g.link)}<p class="ctx">{store.ctxFor(g.link)}</p>{/if}
           </li>
         {/each}
-        {#if ins.length > CAP}
+        {#if insG.length > CAP}
           <li><button class="more sy-mono" onclick={() => store.setMode('graph')}>
-            +{ins.length - CAP} more…</button></li>
+            +{insG.length - CAP} more chapters…</button></li>
         {/if}
       </ul>
     {/if}
@@ -130,16 +152,21 @@
 
   {#if outs.length > 0}
     <section>
-      <h3 class="sy-mono">⇥ efferent <span class="count">{outs.length}</span></h3>
+      <h3 class="sy-mono">
+        ⇥ efferent <span class="count">{outs.length}</span>
+        {#if outsG.length !== outs.length}<span class="from">to {outsG.length} chapters</span>{/if}
+      </h3>
       <ul>
-        {#each outsShown as l, i (`${l.target}-${i}`)}
+        {#each outsShown as g (g.id)}
           <li>
-            <button class="link-btn" onclick={() => go(l.target)}>{titleOf(l.target)}</button>
+            <button class="link-btn" onclick={() => go(g.id)}>
+              {titleOf(g.id)}{#if g.n > 1}<span class="multi">×{g.n}</span>{/if}
+            </button>
           </li>
         {/each}
-        {#if outs.length > CAP}
+        {#if outsG.length > CAP}
           <li><button class="more sy-mono" onclick={() => store.setMode('graph')}>
-            +{outs.length - CAP} more…</button></li>
+            +{outsG.length - CAP} more chapters…</button></li>
         {/if}
       </ul>
     </section>
@@ -174,19 +201,33 @@
   }
   h3 {
     font-family: var(--sy-font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
+    font-size: 0.66rem;
+    letter-spacing: var(--sy-track);
     text-transform: uppercase;
     color: var(--sy-fg-muted);
-    margin: 0.8rem 0 0.4rem;
+    margin: 0.9rem 0 0.4rem;
     display: flex;
     align-items: center;
     gap: 0.4em;
   }
   section:first-child h3 { margin-top: 0; }
   .count { color: var(--sy-accent-2); }
+  /* "×612" — how much one chapter leans on this one. Kept quiet: it is a
+     weight, not a headline, and the title is what you click. */
+  .multi {
+    margin-left: 0.4em;
+    color: var(--sy-fg-faint);
+    font-size: 0.82em;
+  }
+  /* "from 5 chapters" next to the wire count: the grouped half of the fact. */
+  .from {
+    color: var(--sy-fg-faint);
+    font-size: 0.72em;
+    letter-spacing: 0.04em;
+  }
   .spark { color: var(--sy-accent); animation: sy-pulse 2.4s ease-in-out infinite; }
-  .synapse-head { color: var(--sy-accent-dim); }
+  .synapse-head { color: var(--sy-src, var(--sy-accent-dim)); }
+  .spark-mark { width: 0.62em; height: 0.62em; }
 
   .toc { list-style: none; margin: 0; padding: 0; }
   .toc li { margin: 0; }
@@ -209,20 +250,33 @@
   .toc button.here {
     color: var(--sy-accent);
     border-left-color: var(--sy-accent);
+    background: color-mix(in srgb, var(--sy-accent) 8%, transparent);
     font-weight: 600;
   }
 
   .graph-box {
     position: relative;
     height: 210px;
-    border: 1px solid var(--sy-border);
-    border-radius: var(--sy-radius);
+    border: 1px solid var(--sy-border-strong);
+    /* notched corner: the mini-map is an instrument window, not a card */
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--sy-notch)), calc(100% - var(--sy-notch)) 100%, 0 100%);
     overflow: hidden;
-    background: color-mix(in srgb, var(--sy-bg-sunken) 70%, transparent);
     /* Same canvas-theme bridge as the hero graph (SynapsesGraph): the mini
        map must not be the one spot where the site palette breaks. */
     --orui-link-color: var(--sy-graph-link);
     --orui-node-palette: var(--sy-graph-palette);
+    /* Same agar dish as hero mode, at mini-map scale: the mini-map is the
+       same tissue as the full graph, just a smaller dish. */
+    background-color: var(--sy-graph-bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--sy-dish-dot-1) 1px, transparent 0),
+      radial-gradient(circle at 9px 13px, var(--sy-dish-dot-2) 1px, transparent 0);
+    background-size: 28px 28px, 37px 37px;
+  }
+  /* Phone: stacked under the article, so the box gets the width it lost and
+     the somas room to breathe — this is where a 210px hairball used to die. */
+  @media (max-width: 700px) {
+    .graph-box { height: 260px; }
   }
   .expand {
     margin-top: 0.4rem;
