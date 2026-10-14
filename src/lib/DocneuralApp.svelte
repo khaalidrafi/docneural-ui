@@ -1,27 +1,27 @@
 <script lang="ts">
-  // SynaptApp — shell: header (wordmark, mode switch, ⌘K, theme) then the
+  // DocneuralApp — shell: header (wordmark, mode switch, ⌘K, theme) then the
   // active surface. Docs-first: the site opens on Home (a real front door),
   // the reader shows a chapter, and the org-roam graph is the opt-in
   // "synapses" mode. One store drives all three so a selection survives
   // switching between them.
   //
   // LOOK: a HUD. Ink-black, neon edges, monospace uppercase chrome, corner
-  // brackets, one live status readout. The header also carries --sy-src for
+  // brackets, one live status readout. The header also carries --dn-src for
   // the ACTIVE source, so switching corpus re-tints the interface — the site
   // hosts docs from many projects and the chrome says which one you are in.
   import { onMount } from 'svelte'
-  import SynapsesGraph from './graph/SynapsesGraph.svelte'
+  import DocneuralGraph from './graph/DocneuralGraph.svelte'
   import FilterBar from './graph/FilterBar.svelte'
   import NotePreview from './reader/NotePreview.svelte'
   import DocReader from './reader/DocReader.svelte'
   import Home from './reader/Home.svelte'
   import CommandPalette from './ui/CommandPalette.svelte'
-  import { SynaptStore } from './core/store.svelte'
+  import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
 
   let {
     base = '.',
-    title = 'synapt',
+    title = 'docneural-ui',
     lite = false
   }: {
     base?: string
@@ -42,7 +42,7 @@
       ((navigator as { deviceMemory?: number }).deviceMemory ?? 8) <= 2
   )
 
-  const store = $derived(new SynaptStore(base, liteOn))
+  const store = $derived(new DocneuralStore(base, liteOn))
   $effect(() => {
     void store.load()
   })
@@ -139,8 +139,8 @@
 </script>
 
 <header class="shell" style={sourceVars(store.manual)}>
-  <button class="brand sy-mono" onclick={() => store.goHome()} aria-label="{title} home">
-    <span class="sy-neuron-mark" aria-hidden="true"></span>{title.toUpperCase()}
+  <button class="brand dn-mono" onclick={() => store.goHome()} aria-label="{title} home">
+    <span class="dn-neuron-mark" aria-hidden="true"></span>{title.toUpperCase()}
   </button>
 
   <!-- The mode switch is the site's one big choice — read the text, or read
@@ -160,7 +160,7 @@
   </nav>
 
   <div class="tools">
-    <span class="status sy-mono" class:down={store.failed || !store.ready}>
+    <span class="status dn-mono" class:down={store.failed || !store.ready}>
       <span class="led" aria-hidden="true"></span>{status}
     </span>
     <button class="tool kbd" onclick={() => (paletteOpen = true)} aria-label="Search (Ctrl-K)">
@@ -182,7 +182,7 @@
        terminal, they are on a website with a missing file. -->
   <div class="fatal">
     <div class="panel" role="alert">
-      <span class="sy-neuron-mark" aria-hidden="true"></span>
+      <span class="dn-neuron-mark" aria-hidden="true"></span>
       <h2>This documentation graph did not load</h2>
       <p class="why">{store.failed}</p>
       <p class="hint">The site builds its graph from an exported corpus. If a
@@ -195,7 +195,7 @@
      stated once, with a live count as soon as the nodes are known. -->
   <div class="boot-wrap">
     <div class="panel boot" role="status" aria-live="polite">
-      <span class="sy-neuron-mark" aria-hidden="true"></span>
+      <span class="dn-neuron-mark" aria-hidden="true"></span>
       <h2>{title}</h2>
       <p class="step">reading the graph<span class="dots">…</span></p>
       <p class="step dim">{store.data.nodes.length || '—'} chapters indexed</p>
@@ -204,13 +204,13 @@
 {:else if store.mode === 'graph' && !store.lite}
   <section class="synapse-mode">
     <div class="canvas-wrap">
-      <SynapsesGraph {store} {onNodeClick} />
+      <DocneuralGraph {store} {onNodeClick} />
       <!-- The scope chip: what the canvas is showing, and the one click that
            says otherwise. An ego graph that cannot be expanded is a hidden
            feature; a corpus hairball that cannot be narrowed is a broken one. -->
       {#if store.selected}
         <button
-          class="scope sy-mono"
+          class="scope dn-mono"
           onclick={() => store.toggleScope()}
           title={store.scope === 'ego'
             ? 'Show every chapter the filters pass'
@@ -225,7 +225,7 @@
            asks the physics for room per title instead: the other half of the
            overview question, and a preference worth remembering. -->
       <button
-        class="layout sy-mono"
+        class="layout dn-mono"
         class:spread={store.layout === 'spread'}
         aria-pressed={store.layout === 'spread'}
         onclick={() => store.toggleLayout()}
@@ -235,8 +235,8 @@
       >{store.layout === 'spread' ? '▚ titles: spread' : '▦ titles: packed'}</button>
     </div>
     <details class="controls" open={!isPhone}>
-      <summary class="sy-mono">
-        <span class="sy-neuron-mark" aria-hidden="true"></span>
+      <summary class="dn-mono">
+        <span class="dn-neuron-mark" aria-hidden="true"></span>
         <span class="spark">⌁</span> SYNAPSES · {store.visible.links.length} WIRES
         <span class="chev">▾</span>
       </summary>
@@ -263,8 +263,8 @@
     onclick={(e) => { if (e.target === e.currentTarget) helpOpen = false }}
     onkeydown={(e) => { if (e.key === 'Escape') helpOpen = false }}
   >
-    <div class="help sy-hud sy-glass">
-      <h3 class="sy-mono">{title.toUpperCase()} — KEYMAP</h3>
+    <div class="help dn-hud dn-glass">
+      <h3 class="dn-mono">{title.toUpperCase()} — KEYMAP</h3>
       <p class="blurb">
         A documentation reader <em>enhanced</em> with an org-roam graph. The written
         word is the home page; <span class="spark">⌁ synapses</span> is the connection
@@ -287,7 +287,7 @@
         <dt>?</dt><dd>this keymap</dd>
         <dt>esc</dt><dd>close overlays</dd>
       </dl>
-      <button class="close sy-mono" onclick={() => (helpOpen = false)}>close</button>
+      <button class="close dn-mono" onclick={() => (helpOpen = false)}>close</button>
     </div>
   </div>
 {/if}
@@ -297,24 +297,24 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    height: var(--sy-header-h);
+    height: var(--dn-header-h);
     padding: 0 1rem;
     /* A solid ink rail with a lit top edge, not frosted glass: the scanline
        overlay above it does the atmospheric work, and skipping
        backdrop-filter here is a real win on a 4 GB machine. */
-    background: color-mix(in srgb, var(--sy-bg-sunken) 92%, transparent);
-    border-bottom: 1px solid var(--sy-border-strong);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 92%, transparent);
+    border-bottom: 1px solid var(--dn-border-strong);
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--sy-src, var(--sy-accent)) 40%, transparent),
-      0 1px 0 color-mix(in srgb, var(--sy-src, var(--sy-accent)) 12%, transparent);
+      inset 0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent),
+      0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
   }
   .brand {
-    font-family: var(--sy-font-display);
+    font-family: var(--dn-font-display);
     font-size: 0.95rem;
     font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--sy-fg);
+    color: var(--dn-fg);
     background: none;
     border: none;
     padding: 0;
@@ -323,23 +323,23 @@
     align-items: center;
     gap: 0.45em;
   }
-  .brand:hover { color: var(--sy-accent); text-shadow: var(--sy-glow); }
-  .brand:hover .sy-neuron-mark { box-shadow: 0 0 16px color-mix(in srgb, var(--sy-accent) 70%, transparent); }
+  .brand:hover { color: var(--dn-accent); text-shadow: var(--dn-glow); }
+  .brand:hover .dn-neuron-mark { box-shadow: 0 0 16px color-mix(in srgb, var(--dn-accent) 70%, transparent); }
 
   /* Segmented control: square cells, brackets around the label so an active
      mode reads as a selected switch rather than a painted pill. */
   .modes {
     display: flex;
     gap: 0.15rem;
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.72rem;
-    letter-spacing: var(--sy-track);
+    letter-spacing: var(--dn-track);
     margin-left: 0.4rem;
   }
   .seg {
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: transparent;
-    border: 1px solid var(--sy-border);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.3em 0.7em;
     cursor: pointer;
@@ -348,24 +348,24 @@
     align-items: center;
     gap: 0.3em;
   }
-  .seg .bracket { color: var(--sy-border-strong); }
-  .seg:hover { color: var(--sy-fg); border-color: var(--sy-accent-dim); }
+  .seg .bracket { color: var(--dn-border-strong); }
+  .seg:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .seg.active {
-    color: var(--sy-src, var(--sy-accent));
-    border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 65%, transparent);
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 10%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 22%, transparent);
+    color: var(--dn-src, var(--dn-accent));
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
   }
-  .seg.active .bracket { color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 55%, transparent); }
-  .spark { color: var(--sy-accent); animation: sy-pulse 2.6s ease-in-out infinite; }
-  .seg.active .spark { color: var(--sy-hot); }
+  .seg.active .bracket { color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent); }
+  .spark { color: var(--dn-accent); animation: dn-pulse 2.6s ease-in-out infinite; }
+  .seg.active .spark { color: var(--dn-hot); }
 
   .tools { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
   /* The live readout: how much corpus is behind this interface. */
   .status {
     font-size: 0.66rem;
     letter-spacing: 0.1em;
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
     display: inline-flex;
     align-items: center;
     gap: 0.5em;
@@ -376,30 +376,30 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--sy-accent);
-    box-shadow: 0 0 8px var(--sy-accent);
-    animation: sy-pulse 2.6s ease-in-out infinite;
+    background: var(--dn-accent);
+    box-shadow: 0 0 8px var(--dn-accent);
+    animation: dn-pulse 2.6s ease-in-out infinite;
   }
-  .status.down .led { background: var(--sy-amber); box-shadow: 0 0 8px var(--sy-amber); }
-  .status.down { color: var(--sy-amber); }
+  .status.down .led { background: var(--dn-amber); box-shadow: 0 0 8px var(--dn-amber); }
+  .status.down { color: var(--dn-amber); }
   .tool {
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.06em;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: transparent;
-    border: 1px solid var(--sy-border);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.3em 0.6em;
     cursor: pointer;
     transition: all 120ms;
   }
   .tool:hover {
-    color: var(--sy-accent);
-    border-color: color-mix(in srgb, var(--sy-accent) 55%, transparent);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--sy-accent) 18%, transparent);
+    color: var(--dn-accent);
+    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 18%, transparent);
   }
-  .tool .hintkey { color: var(--sy-fg-faint); font-size: 0.68rem; margin-left: 0.3em; }
+  .tool .hintkey { color: var(--dn-fg-faint); font-size: 0.68rem; margin-left: 0.3em; }
 
   @media (max-width: 900px) {
     /* The instrument reading is the first thing to go; the buttons stay. */
@@ -424,7 +424,7 @@
 
   .synapse-mode {
     position: relative;
-    height: calc(100dvh - var(--sy-header-h));
+    height: calc(100dvh - var(--dn-header-h));
     min-height: 0;
   }
   .canvas-wrap { position: absolute; inset: 0; }
@@ -438,10 +438,10 @@
     bottom: 0.9rem;
     z-index: 5;
     font: inherit;
-    letter-spacing: var(--sy-track);
-    color: var(--sy-fg-muted);
-    background: color-mix(in srgb, var(--sy-bg) 82%, black);
-    border: 1px solid var(--sy-border);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg-muted);
+    background: color-mix(in srgb, var(--dn-bg) 82%, black);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.3em 0.7em;
     cursor: pointer;
@@ -451,8 +451,8 @@
     white-space: nowrap;
   }
   .scope:hover {
-    color: var(--sy-accent);
-    border-color: color-mix(in srgb, var(--sy-accent) 45%, transparent);
+    color: var(--dn-accent);
+    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
   }
   /* Layout chip: the same HUD pill, and when the scope chip is out it stacks
      ABOVE it rather than sharing a corner with a variable-length label — the
@@ -464,25 +464,25 @@
     bottom: 0.9rem;
     z-index: 5;
     font: inherit;
-    letter-spacing: var(--sy-track);
-    color: var(--sy-fg-muted);
-    background: color-mix(in srgb, var(--sy-bg) 82%, black);
-    border: 1px solid var(--sy-border);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg-muted);
+    background: color-mix(in srgb, var(--dn-bg) 82%, black);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.3em 0.7em;
     cursor: pointer;
   }
   .scope ~ .layout { bottom: 2.9rem; }
   .layout:hover {
-    color: var(--sy-accent);
-    border-color: color-mix(in srgb, var(--sy-accent) 45%, transparent);
+    color: var(--dn-accent);
+    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
   }
   /* On means the visitor asked for it, so it wears the accent like an active
      filter chip does. */
   .layout.spread {
-    color: var(--sy-accent);
-    border-color: color-mix(in srgb, var(--sy-accent) 45%, transparent);
-    background: color-mix(in srgb, var(--sy-accent) 12%, var(--sy-bg) 82%, black);
+    color: var(--dn-accent);
+    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
+    background: color-mix(in srgb, var(--dn-accent) 12%, var(--dn-bg) 82%, black);
   }
   /* Controls panel: desktop floats over the canvas top-left; the summary
      doubles as the live wire-count badge. Notched corner + brackets = it
@@ -494,12 +494,12 @@
     width: 250px;
     z-index: 2;
     padding: 0.7rem;
-    border: 1px solid var(--sy-border-strong);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
-    background: color-mix(in srgb, var(--sy-bg-raise) 94%, transparent);
+    background: color-mix(in srgb, var(--dn-bg-raise) 94%, transparent);
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--sy-accent) 14%, transparent),
-      0 10px 30px color-mix(in srgb, var(--sy-bg-sunken) 70%, transparent);
+      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 14%, transparent),
+      0 10px 30px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
   .controls > summary {
@@ -518,17 +518,17 @@
       gap: 0.5em;
       font-size: 0.7rem;
       letter-spacing: 0.12em;
-      color: var(--sy-fg-muted);
+      color: var(--dn-fg-muted);
       cursor: pointer;
       list-style: none;
     }
     .controls > summary::-webkit-details-marker { display: none; }
-    .controls > summary .sy-neuron-mark { width: 0.7em; height: 0.7em; }
-    .controls > summary .chev { margin-left: auto; color: var(--sy-fg-faint); }
+    .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
+    .controls > summary .chev { margin-left: auto; color: var(--dn-fg-faint); }
     .controls[open] > summary .chev { transform: rotate(180deg); }
   }
   .reader-mode {
-    height: calc(100dvh - var(--sy-header-h));
+    height: calc(100dvh - var(--dn-header-h));
     min-height: 0;
   }
 
@@ -546,52 +546,52 @@
     gap: 0.7rem;
     justify-items: start;
     padding: 1.6rem 1.8rem;
-    border: 1px solid var(--sy-border-strong);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 4px;
-    background: var(--sy-bg-raise);
+    background: var(--dn-bg-raise);
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
   }
-  .panel .sy-neuron-mark { width: 1rem; height: 1rem; }
+  .panel .dn-neuron-mark { width: 1rem; height: 1rem; }
   .panel h2 {
     margin: 0;
     font-size: 1.05rem;
-    letter-spacing: var(--sy-track);
-    color: var(--sy-fg);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg);
   }
   .panel .why {
     margin: 0;
     font-size: 0.92rem;
-    color: var(--sy-accent-2);
+    color: var(--dn-accent-2);
   }
   .panel .hint, .panel .step {
     margin: 0;
     font-size: 0.92rem;
-    color: var(--sy-fg);
+    color: var(--dn-fg);
   }
   .panel .hint { line-height: 1.55; }
   .panel .hint code {
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.85em;
     padding: 0.1em 0.4em;
-    background: var(--sy-bg-sunken);
-    border: 1px solid var(--sy-border);
+    background: var(--dn-bg-sunken);
+    border: 1px solid var(--dn-border);
   }
-  .panel .dim { color: var(--sy-fg-muted); }
-  .panel .dots { color: var(--sy-hot); animation: sy-pulse 1.2s ease-in-out infinite; }
-  .panel .step { animation: sy-rise 260ms ease-out both; }
+  .panel .dim { color: var(--dn-fg-muted); }
+  .panel .dots { color: var(--dn-hot); animation: dn-pulse 1.2s ease-in-out infinite; }
+  .panel .step { animation: dn-rise 260ms ease-out both; }
   .panel .step.dim { animation-delay: 0.16s; }
   .retry {
     margin-top: 0.4rem;
     font-size: 0.85rem;
     letter-spacing: 0.04em;
-    color: var(--sy-bg);
-    background: var(--sy-accent);
+    color: var(--dn-bg);
+    background: var(--dn-accent);
     border: none;
     border-radius: 3px;
     padding: 0.6em 1.4em;
     cursor: pointer;
   }
-  .retry:hover { background: var(--sy-hot); }
+  .retry:hover { background: var(--dn-hot); }
 
   .boot-wrap {
     display: grid;
@@ -607,7 +607,7 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background: color-mix(in srgb, var(--sy-bg-sunken) 72%, transparent);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 72%, transparent);
   }
   .help {
     width: min(34rem, 100%);
@@ -617,28 +617,28 @@
   .help h3 {
     margin: 0 0 0.6rem;
     font-size: 0.78rem;
-    letter-spacing: var(--sy-track);
-    color: var(--sy-accent);
-    text-shadow: var(--sy-glow);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-accent);
+    text-shadow: var(--dn-glow);
   }
-  .blurb { color: var(--sy-fg-muted); font-size: 0.9rem; line-height: 1.6; margin: 0 0 1rem; }
-  .blurb em, .blurb strong { color: var(--sy-fg); }
+  .blurb { color: var(--dn-fg-muted); font-size: 0.9rem; line-height: 1.6; margin: 0 0 1rem; }
+  .blurb em, .blurb strong { color: var(--dn-fg); }
   dl { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1rem; margin: 0; }
-  dt { font-family: var(--sy-font-mono); font-size: 0.8rem; color: var(--sy-hot); }
-  dd { margin: 0; font-size: 0.85rem; color: var(--sy-fg-muted); }
+  dt { font-family: var(--dn-font-mono); font-size: 0.8rem; color: var(--dn-hot); }
+  dd { margin: 0; font-size: 0.85rem; color: var(--dn-fg-muted); }
   .close {
     margin-top: 1.2rem;
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--sy-bg);
-    background: var(--sy-accent);
+    color: var(--dn-bg);
+    background: var(--dn-accent);
     border: none;
     border-radius: 2px;
     padding: 0.4em 1.2em;
     cursor: pointer;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
   }
-  .close:hover { background: var(--sy-hot); }
-  @keyframes sy-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .close:hover { background: var(--dn-hot); }
+  @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 </style>

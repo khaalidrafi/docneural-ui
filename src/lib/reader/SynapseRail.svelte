@@ -17,7 +17,7 @@
   import { makeNeuronLoader } from '../graph/neuronEngine'
   import { backlinks, groupWires, outlinks } from '../core/graph'
   import { sourceVars } from '../core/source'
-  import type { SynaptStore } from '../core/store.svelte'
+  import type { DocneuralStore } from '../core/store.svelte'
 
   let {
     store,
@@ -25,7 +25,7 @@
     activeId = null,
     onJump = (_id: string) => {}
   }: {
-    store: SynaptStore
+    store: DocneuralStore
     toc?: { id: string; text: string; level: number }[]
     activeId?: string | null
     onJump?: (id: string) => void
@@ -98,7 +98,7 @@
 <aside class="rail" aria-label="Synapses" style={sourceVars(doc?.tags[0] ?? store.manual)}>
   {#if toc.length > 1}
     <section>
-      <h3 class="sy-mono">// on this page</h3>
+      <h3 class="dn-mono">// on this page</h3>
       <ul class="toc">
         {#each toc as h (h.id)}
           <li class:sub={h.level === 3}>
@@ -111,27 +111,27 @@
 
   {#if !store.lite && local && doc}
     <section>
-      <h3 class="sy-mono synapse-head">
-        <span class="sy-neuron-mark spark-mark" aria-hidden="true"></span>
+      <h3 class="dn-mono synapse-head">
+        <span class="dn-neuron-mark spark-mark" aria-hidden="true"></span>
         <span class="spark">⌁</span> local graph
         <span class="count">{local.nodes.length - 1}</span>
       </h3>
       <div class="graph-box" bind:this={boxEl}>
         <GraphView store={roam} onNodeClick={(n) => go(n.id)} loadEngine={minimapLoad} />
       </div>
-      <button class="expand sy-mono" onclick={() => store.setMode('graph')}>
+      <button class="expand dn-mono" onclick={() => store.setMode('graph')}>
         open full graph ↗
       </button>
     </section>
   {/if}
 
   <section>
-    <h3 class="sy-mono">
+    <h3 class="dn-mono">
       ⇤ afferent <span class="count">{ins.length}</span>
       {#if insG.length !== ins.length}<span class="from">from {insG.length} chapters</span>{/if}
     </h3>
     {#if ins.length === 0}
-      <p class="none sy-mono">orphan — nothing cites here</p>
+      <p class="none dn-mono">orphan — nothing cites here</p>
     {:else}
       <ul>
         {#each insShown as g (g.id)}
@@ -143,7 +143,7 @@
           </li>
         {/each}
         {#if insG.length > CAP}
-          <li><button class="more sy-mono" onclick={() => store.setMode('graph')}>
+          <li><button class="more dn-mono" onclick={() => store.setMode('graph')}>
             +{insG.length - CAP} more chapters…</button></li>
         {/if}
       </ul>
@@ -152,7 +152,7 @@
 
   {#if outs.length > 0}
     <section>
-      <h3 class="sy-mono">
+      <h3 class="dn-mono">
         ⇥ efferent <span class="count">{outs.length}</span>
         {#if outsG.length !== outs.length}<span class="from">to {outsG.length} chapters</span>{/if}
       </h3>
@@ -165,7 +165,7 @@
           </li>
         {/each}
         {#if outsG.length > CAP}
-          <li><button class="more sy-mono" onclick={() => store.setMode('graph')}>
+          <li><button class="more dn-mono" onclick={() => store.setMode('graph')}>
             +{outsG.length - CAP} more chapters…</button></li>
         {/if}
       </ul>
@@ -179,10 +179,10 @@
     flex-direction: column;
     gap: 0.4rem;
     min-height: 0;
-    border-left: 1px solid var(--sy-border);
+    border-left: 1px solid var(--dn-border);
     padding: 0.9rem 0.9rem 2rem;
     overflow-y: auto;
-    background: color-mix(in srgb, var(--sy-bg-sunken) 50%, transparent);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 50%, transparent);
   }
   /* Tablet: the rail drops out (no room beside sidebar + article). Phone:
      it reappears STACKED under the article — the roam view must be
@@ -196,37 +196,37 @@
     .rail {
       display: flex;
       border-left: none;
-      border-top: 1px solid var(--sy-border);
+      border-top: 1px solid var(--dn-border);
     }
   }
   h3 {
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.66rem;
-    letter-spacing: var(--sy-track);
+    letter-spacing: var(--dn-track);
     text-transform: uppercase;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     margin: 0.9rem 0 0.4rem;
     display: flex;
     align-items: center;
     gap: 0.4em;
   }
   section:first-child h3 { margin-top: 0; }
-  .count { color: var(--sy-accent-2); }
+  .count { color: var(--dn-accent-2); }
   /* "×612" — how much one chapter leans on this one. Kept quiet: it is a
      weight, not a headline, and the title is what you click. */
   .multi {
     margin-left: 0.4em;
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
     font-size: 0.82em;
   }
   /* "from 5 chapters" next to the wire count: the grouped half of the fact. */
   .from {
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
     font-size: 0.72em;
     letter-spacing: 0.04em;
   }
-  .spark { color: var(--sy-accent); animation: sy-pulse 2.4s ease-in-out infinite; }
-  .synapse-head { color: var(--sy-src, var(--sy-accent-dim)); }
+  .spark { color: var(--dn-accent); animation: dn-pulse 2.4s ease-in-out infinite; }
+  .synapse-head { color: var(--dn-src, var(--dn-accent-dim)); }
   .spark-mark { width: 0.62em; height: 0.62em; }
 
   .toc { list-style: none; margin: 0; padding: 0; }
@@ -236,41 +236,41 @@
     display: block;
     width: 100%;
     text-align: left;
-    font-family: var(--sy-font-prose);
+    font-family: var(--dn-font-prose);
     font-size: 0.78rem;
     line-height: 1.35;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: none;
     border: none;
     border-left: 2px solid transparent;
     padding: 0.22em 0.5em;
     cursor: pointer;
   }
-  .toc button:hover { color: var(--sy-fg); }
+  .toc button:hover { color: var(--dn-fg); }
   .toc button.here {
-    color: var(--sy-accent);
-    border-left-color: var(--sy-accent);
-    background: color-mix(in srgb, var(--sy-accent) 8%, transparent);
+    color: var(--dn-accent);
+    border-left-color: var(--dn-accent);
+    background: color-mix(in srgb, var(--dn-accent) 8%, transparent);
     font-weight: 600;
   }
 
   .graph-box {
     position: relative;
     height: 210px;
-    border: 1px solid var(--sy-border-strong);
+    border: 1px solid var(--dn-border-strong);
     /* notched corner: the mini-map is an instrument window, not a card */
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--sy-notch)), calc(100% - var(--sy-notch)) 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--dn-notch)), calc(100% - var(--dn-notch)) 100%, 0 100%);
     overflow: hidden;
-    /* Same canvas-theme bridge as the hero graph (SynapsesGraph): the mini
+    /* Same canvas-theme bridge as the hero graph (DocneuralGraph): the mini
        map must not be the one spot where the site palette breaks. */
-    --orui-link-color: var(--sy-graph-link);
-    --orui-node-palette: var(--sy-graph-palette);
+    --orui-link-color: var(--dn-graph-link);
+    --orui-node-palette: var(--dn-graph-palette);
     /* Same agar dish as hero mode, at mini-map scale: the mini-map is the
        same tissue as the full graph, just a smaller dish. */
-    background-color: var(--sy-graph-bg);
+    background-color: var(--dn-graph-bg);
     background-image:
-      radial-gradient(circle at 1px 1px, var(--sy-dish-dot-1) 1px, transparent 0),
-      radial-gradient(circle at 9px 13px, var(--sy-dish-dot-2) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, var(--dn-dish-dot-1) 1px, transparent 0),
+      radial-gradient(circle at 9px 13px, var(--dn-dish-dot-2) 1px, transparent 0);
     background-size: 28px 28px, 37px 37px;
   }
   /* Phone: stacked under the article, so the box gets the width it lost and
@@ -281,30 +281,30 @@
   .expand {
     margin-top: 0.4rem;
     font-size: 0.72rem;
-    color: var(--sy-accent-2);
+    color: var(--dn-accent-2);
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
   }
-  .expand:hover { color: var(--sy-hot); }
+  .expand:hover { color: var(--dn-hot); }
 
   ul { list-style: none; margin: 0; padding: 0; }
   li { margin: 0.3rem 0; }
   .link-btn {
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.78rem;
-    color: var(--sy-accent);
+    color: var(--dn-accent);
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
     text-align: left;
   }
-  .link-btn:hover { color: var(--sy-hot); }
+  .link-btn:hover { color: var(--dn-hot); }
   .ctx {
     font-size: 0.72rem;
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
     margin: 0.1rem 0 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -312,10 +312,10 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .none { color: var(--sy-fg-faint); font-size: 0.78rem; }
+  .none { color: var(--dn-fg-faint); font-size: 0.78rem; }
   .more {
     font-size: 0.7rem;
-    color: var(--sy-accent-2);
+    color: var(--dn-accent-2);
     background: none;
     border: none;
     padding: 0;

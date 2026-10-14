@@ -165,7 +165,7 @@ describe('spreadForces', () => {
     // squeezed against a boundary by its neighbours can finish a fraction
     // outside the room (measured 1.5 px residual at 400 ticks, where alpha is
     // 1e-5: it is a stable floor, not a lag). That residual is what
-    // SynapsesGraph's PAD = 24 exists to absorb, so the assertion is
+    // DocneuralGraph's PAD = 24 exists to absorb, so the assertion is
     // "inside the FITTED rect", i.e. inside the room plus the padding the
     // camera will leave. Asserting 0 here would demand the packing force stop
     // separating titles, which is the one thing it must never do.

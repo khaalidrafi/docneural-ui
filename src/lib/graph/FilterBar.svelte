@@ -8,9 +8,9 @@
   // row and the canvas agree about which colour is which corpus.
   import { commonTags } from '../core/graph'
   import { sourceVars } from '../core/source'
-  import type { SynaptStore } from '../core/store.svelte'
+  import type { DocneuralStore } from '../core/store.svelte'
 
-  let { store }: { store: SynaptStore } = $props()
+  let { store }: { store: DocneuralStore } = $props()
 
   const tags = $derived(commonTags(store.data))
   const isSource = (t: string) => store.manuals.includes(t)
@@ -23,11 +23,11 @@
 </script>
 
 <div class="filter-bar">
-  <label class="sy-label" for="gbq">filter chapters</label>
+  <label class="dn-label" for="gbq">filter chapters</label>
   <input
     id="gbq"
     type="search"
-    class="sy-mono"
+    class="dn-mono"
     placeholder="title contains…"
     bind:value={store.query}
     aria-label="Search nodes"
@@ -55,19 +55,19 @@
   }
   label { padding: 0 0.1em; }
   input {
-    background: var(--sy-bg-sunken);
-    border: 1px solid var(--sy-border);
+    background: var(--dn-bg-sunken);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
-    color: var(--sy-fg);
-    font-family: var(--sy-font-mono);
+    color: var(--dn-fg);
+    font-family: var(--dn-font-mono);
     font-size: 0.8rem;
     padding: 0.45em 0.7em;
     width: 100%;
   }
   input:focus {
     outline: none;
-    border-color: var(--sy-accent);
-    box-shadow: inset 0 0 12px color-mix(in srgb, var(--sy-accent) 10%, transparent);
+    border-color: var(--dn-accent);
+    box-shadow: inset 0 0 12px color-mix(in srgb, var(--dn-accent) 10%, transparent);
   }
   .tags {
     display: flex;
@@ -75,22 +75,22 @@
     gap: 0.3rem;
   }
   .tag-chip {
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.7rem;
-    color: var(--sy-src, var(--sy-fg-muted));
+    color: var(--dn-src, var(--dn-fg-muted));
     background: transparent;
-    border: 1px solid var(--sy-border-strong);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.12em 0.55em;
     cursor: pointer;
     transition: color 120ms, border-color 120ms, background 120ms;
   }
-  .tag-chip:hover { border-color: var(--sy-src, var(--sy-accent)); color: var(--sy-src, var(--sy-accent)); }
+  .tag-chip:hover { border-color: var(--dn-src, var(--dn-accent)); color: var(--dn-src, var(--dn-accent)); }
   .tag-chip.active {
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 18%, transparent);
-    color: var(--sy-src, var(--sy-accent));
-    border-color: var(--sy-src, var(--sy-accent));
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 18%, transparent);
+    color: var(--dn-src, var(--dn-accent));
+    border-color: var(--dn-src, var(--dn-accent));
   }
   /* A source chip keeps its hue even when unselected — the legend reading. */
-  .tag-chip.src { border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 40%, transparent); }
+  .tag-chip.src { border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent); }
 </style>

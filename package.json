@@ -1,15 +1,15 @@
 {
-  "name": "synapt",
+  "name": "docneural-ui",
   "version": "0.1.0",
   "private": true,
-   "description": "Synapt — fire together, wire stronger: read docs from any node, a static-data port of org-roam-lite-ui graph reading, plus a classic doc reader (Svelte 5 + Vite).",
+   "description": "Docneural UI — fire together, wire stronger: read docs from any node, a static-data port of org-roam-lite-ui graph reading, plus a classic doc reader (Svelte 5 + Vite).",
   "type": "module",
-  "svelte": "./src/lib/SynaptApp.svelte",
+  "svelte": "./src/lib/DocneuralApp.svelte",
   "exports": {
-    ".": "./src/lib/SynaptApp.svelte",
+    ".": "./src/lib/DocneuralApp.svelte",
     "./store": "./src/lib/core/store.svelte.ts",
     "./core": "./src/lib/core/graph.ts",
-    "./styles/synapt.css": "./styles/synapt.css"
+    "./styles/docneural-ui.css": "./styles/docneural-ui.css"
   },
   "scripts": {
     "dev": "vite",

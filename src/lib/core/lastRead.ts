@@ -11,7 +11,7 @@
 
 export type LastRead = { slug: string; anchor: string | null; at: number }
 
-const KEY = 'org-docs:last-read'
+const KEY = 'docneural:last-read'
 
 /** The stored position, or null when there is nothing usable to resume. */
 export function loadLastRead(): LastRead | null {

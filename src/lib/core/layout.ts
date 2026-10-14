@@ -6,7 +6,7 @@
 
 import type { LayoutMode } from './types'
 
-const KEY = 'org-docs:layout'
+const KEY = 'docneural:layout'
 
 export function loadLayout(): LayoutMode {
   try {

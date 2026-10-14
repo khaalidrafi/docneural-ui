@@ -36,12 +36,12 @@ describe('sourceColor vs the canvas', () => {
   })
 
   it('gives a source exactly the colour GraphView paints its nodes with', () => {
-    // A theme in the browser: --sy-graph-palette resolves to a literal list,
+    // A theme in the browser: --dn-graph-palette resolves to a literal list,
     // which is what both the canvas (canvasTokens) and the DOM read.
     const palette = ['#00e5ff', '#ff2d95', '#ffd60a', '#7c5cff', '#00ff9d', '#ff6b35', '#4cc9f0', '#f72585']
     const getComputedStyle = (el: unknown) => ({
       getPropertyValue: (name: string) =>
-        name === '--sy-graph-palette'
+        name === '--dn-graph-palette'
           ? palette.join(', ')
           : name === '--orui-link-color'
             ? 'rgba(0,229,255,.3)'
@@ -73,6 +73,6 @@ describe('sourceColor vs the canvas', () => {
   })
 
   it('sourceVars emits the inline custom property components read', () => {
-    expect(sourceVars('org')).toBe(`--sy-src:${sourceColor('org')}`)
+    expect(sourceVars('org')).toBe(`--dn-src:${sourceColor('org')}`)
   })
 })

@@ -1,10 +1,10 @@
 <script lang="ts">
-  // SynapsesGraph — the "synapses" hero view, driven by the REAL
+  // DocneuralGraph — the "synapses" hero view, driven by the REAL
   // org-roam-lite-ui graph engine (Layer 2 of the embed playbook): we mount
   // orui's own GraphView against orui's own observable store, and feed that
-  // store from synapt's static graph.json instead of Emacs's WebSocket.
+  // store from docneural-ui's static graph.json instead of Emacs's WebSocket.
   //
-  // Why the genuine component instead of synapt's port: upstream keeps
+  // Why the genuine component instead of docneural-ui's port: upstream keeps
   // improving the canvas (theme-token repaints, focus tweens, warmup
   // tuning); aliasing `orui/*` (see vite.config) means we inherit every
   // fix with zero port work.
@@ -13,7 +13,7 @@
   //  - PAINTING: GraphView accepts no custom-painter prop — the neuron look
   //    (glow rings, node titles, firing-synapse particles) is injected via
   //    the loadEngine seam. See neuronEngine.ts.
-  //  - FILTERS: synapt's tag chips are INCLUSIVE ("show docs carrying one of
+  //  - FILTERS: docneural-ui's tag chips are INCLUSIVE ("show docs carrying one of
   //    these tags"), orui's store filter only excludes. So instead of
   //    mapping the filter across, we swap whole snapshots: the effect reads
   //    `store.visible` (filteredGraph over query+tags) and re-applies.
@@ -32,13 +32,13 @@
   import type { Engine as NeuronEngine } from './neuronEngine'
   import { neighborIds } from '../core/graph'
   import type { LayoutMode } from '../core/types'
-  import type { SynaptStore } from '../core/store.svelte'
+  import type { DocneuralStore } from '../core/store.svelte'
 
   let {
     store,
     onNodeClick
   }: {
-    store: SynaptStore
+    store: DocneuralStore
     onNodeClick: (id: string) => void
   } = $props()
 
@@ -68,7 +68,7 @@
     }
   })
 
-  // The wrap element carries the resolved --orui-* / --sy-* tokens the
+  // The wrap element carries the resolved --orui-* / --dn-* tokens the
   // painter samples (same source GraphView polls for its own repaints).
   let wrapEl: HTMLDivElement | undefined = $state()
 
@@ -254,7 +254,7 @@
   }
 </script>
 
-<div class="roam-wrap sy-dish" data-layout={store.layout} bind:this={wrapEl}>
+<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl}>
   <!-- loadEngine comes from neuronEngine so the force-graph import resolves
        from SYNAPT's node_modules (Vite resolves bare specifiers relative to
        the importing file, and GraphView.svelte lives in the sibling orui
@@ -270,7 +270,7 @@
       <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
       <span class="orb o4"></span><span class="orb o5"></span>
       <span class="sweep"></span>
-      <p class="skel-line sy-mono">// laying out {store.data.links.length} connections</p>
+      <p class="skel-line dn-mono">// laying out {store.data.links.length} connections</p>
     </div>
   {/if}
 </div>
@@ -291,7 +291,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--sy-accent);
+    background: var(--dn-accent);
     opacity: 0.16;
     animation: sk-pulse 1.8s ease-in-out infinite;
   }
@@ -303,7 +303,7 @@
   .skel .sweep {
     position: absolute;
     inset: -20% -60%;
-    background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--sy-accent) 10%, transparent) 50%, transparent 65%);
+    background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--dn-accent) 10%, transparent) 50%, transparent 65%);
     animation: sk-sweep 2.2s linear infinite;
   }
   .skel .skel-line {
@@ -311,9 +311,9 @@
     left: 0.9rem;
     bottom: 3.1rem;
     margin: 0;
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
     font-size: 0.66rem;
-    letter-spacing: var(--sy-track);
+    letter-spacing: var(--dn-track);
   }
   @keyframes sk-pulse {
     50% { opacity: 0.42; transform: scale(1.25); }
@@ -332,11 +332,11 @@
     /* Map the site theme onto orui's canvas tokens. GraphView polls the
        container's COMPUTED style twice a second, so these resolved literal
        values (canvas fillStyle cannot parse var()/color-mix(), which is why
-       the site carries them as --sy-* tokens per theme in synapt.css)
+       the site carries them as --dn-* tokens per theme in docneural-ui.css)
        repaint the nodes AND wires when the site's theme toggle flips. */
-    --orui-link-color: var(--sy-graph-link);
-    --orui-node-palette: var(--sy-graph-palette);
-    /* The agar dish (dots + vignette) lives in .sy-dish (synapt.css §2b) —
+    --orui-link-color: var(--dn-graph-link);
+    --orui-node-palette: var(--dn-graph-palette);
+    /* The agar dish (dots + vignette) lives in .dn-dish (docneural-ui.css §2b) —
        same treatment, per-theme dot colors, in hero mode and the rail
        mini-map. The canvas paints transparent, so this DOM background IS
        what the neurons sit in. */

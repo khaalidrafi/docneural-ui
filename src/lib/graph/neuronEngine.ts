@@ -21,7 +21,7 @@
 // Colour source: the same computed-style tokens GraphView polls (--orui-*),
 // read through `tokenEl` at most twice a second — a getComputedStyle per node
 // per frame would freeze this machine. Label ink/paper come from the site's
-// own --sy-fg/--sy-bg so text stays readable on both themes.
+// own --dn-fg/--dn-bg so text stays readable on both themes.
 import { canvasTokens, nodeColor, type CanvasTokens } from 'orui/graph/colors'
 import { LABEL_LINE, labelExtent, shortTitle, spreadStrength } from '../core/graph'
 import {
@@ -33,7 +33,7 @@ import type { LayoutMode } from '../core/types'
 
 // The force-graph instance is a chainable kapsule; GraphView keeps its own
 // structural type private, so we stay loose here on purpose. Exported because
-// SynapsesGraph holds the instance to push layout changes into it.
+// DocneuralGraph holds the instance to push layout changes into it.
 export type Engine = any
 type Ctx = CanvasRenderingContext2D
 
@@ -42,7 +42,7 @@ type Ctx = CanvasRenderingContext2D
 type Painted = { title?: string; degree?: number }
 
 export type NeuronFocus = {
-  /** Element whose computed style carries the resolved --orui-* / --sy-* tokens. */
+  /** Element whose computed style carries the resolved --orui-* / --dn-* tokens. */
   tokenEl: () => HTMLElement | undefined
   /** Live selection, read per paint: closures keep the painter current without
    *  re-syncing graph data (which would disturb the physics). */
@@ -249,9 +249,9 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       if (el) {
         const get = (name: string) => getComputedStyle(el).getPropertyValue(name)
         tokens = canvasTokens(get)
-        ink = get('--sy-fg').trim() || ink
-        paper = get('--sy-bg').trim() || paper
-        hotCol = get('--sy-hot').trim() || hotCol
+        ink = get('--dn-fg').trim() || ink
+        paper = get('--dn-bg').trim() || paper
+        hotCol = get('--dn-hot').trim() || hotCol
       }
     }
     return tokens

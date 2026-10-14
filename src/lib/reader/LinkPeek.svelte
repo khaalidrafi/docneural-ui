@@ -16,11 +16,11 @@
   // the synapse rail loads. Positioning is one fixed div, and the card is
   // deliberately not interactive (pointer-events: none) so it can never steal
   // a click or trap a pointer mid-scroll.
-  import type { SynaptStore } from '../core/store.svelte'
+  import type { DocneuralStore } from '../core/store.svelte'
   import type { Peek } from '../core/types'
   import { sourceVars } from '../core/source'
 
-  let { store, peek }: { store: SynaptStore; peek: Peek | null } = $props()
+  let { store, peek }: { store: DocneuralStore; peek: Peek | null } = $props()
 
   const node = $derived(peek ? store.byId(peek.toId) : undefined)
   const title = $derived(node?.title ?? peek?.toId ?? '')
@@ -49,15 +49,15 @@
 </script>
 
 {#if peek && node}
-  <aside class="peek sy-hud" {style} role="tooltip" aria-live="polite">
-    <p class="pk-src sy-mono">~/{manual || 'corpus'}</p>
+  <aside class="peek dn-hud" {style} role="tooltip" aria-live="polite">
+    <p class="pk-src dn-mono">~/{manual || 'corpus'}</p>
     <p class="pk-title">{title}</p>
     {#if why}
       <p class="pk-why">{why}</p>
     {:else}
       <p class="pk-why faint">no citation quote stored on this wire</p>
     {/if}
-    <p class="pk-meta sy-mono">
+    <p class="pk-meta dn-mono">
       <span>{peek.degree} synapses</span>
       <span class="pk-go">↵ follow</span>
     </p>
@@ -71,9 +71,9 @@
     box-sizing: border-box;
     max-width: min(22rem, calc(100vw - 24px));
     padding: 0.6rem 0.75rem 0.55rem;
-    background: color-mix(in srgb, var(--sy-bg) 92%, black);
-    border: 1px solid var(--sy-border);
-    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    background: color-mix(in srgb, var(--dn-bg) 92%, black);
+    border: 1px solid var(--dn-border);
+    border-left: 2px solid var(--dn-src, var(--dn-accent));
     border-radius: 3px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
     pointer-events: none;
@@ -87,22 +87,22 @@
     .peek { animation: none; }
   }
   .pk-src {
-    color: var(--sy-src, var(--sy-accent));
+    color: var(--dn-src, var(--dn-accent));
     font-size: 0.62rem;
-    letter-spacing: var(--sy-track);
+    letter-spacing: var(--dn-track);
   }
-  .pk-title { margin: 0.15rem 0 0.3rem; color: var(--sy-fg); font-size: 0.86rem; line-height: 1.3; }
-  .pk-why { margin: 0 0 0.35rem; color: var(--sy-fg-muted); font-size: 0.74rem; line-height: 1.45; }
-  .pk-why.faint { color: var(--sy-fg-faint); font-style: italic; }
+  .pk-title { margin: 0.15rem 0 0.3rem; color: var(--dn-fg); font-size: 0.86rem; line-height: 1.3; }
+  .pk-why { margin: 0 0 0.35rem; color: var(--dn-fg-muted); font-size: 0.74rem; line-height: 1.45; }
+  .pk-why.faint { color: var(--dn-fg-faint); font-style: italic; }
   .pk-meta {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
     font-size: 0.62rem;
-    letter-spacing: var(--sy-track);
-    border-top: 1px solid var(--sy-border);
+    letter-spacing: var(--dn-track);
+    border-top: 1px solid var(--dn-border);
     padding-top: 0.3rem;
   }
-  .pk-go { color: var(--sy-accent-2); }
+  .pk-go { color: var(--dn-accent-2); }
 </style>

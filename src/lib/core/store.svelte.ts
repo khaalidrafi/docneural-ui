@@ -1,4 +1,4 @@
-// Synapt app state. Svelte 5 runes module — this class *is* the store.
+// Docneural app state. Svelte 5 runes module — this class *is* the store.
 //
 // org-roam-lite-ui receives graph snapshots and note text over a WebSocket
 // from Emacs. The hosted theme has no Emacs: it loads one static
@@ -28,7 +28,7 @@ export type Mode = 'graph' | 'reader'
 const EGO_HOPS = 2
 const COCITE_CAP = 8
 
-export class SynaptStore {
+export class DocneuralStore {
   /** URL prefix serving graph.json + docs/*.html. */
   base: string
 

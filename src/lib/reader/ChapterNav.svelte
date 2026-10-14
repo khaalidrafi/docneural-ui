@@ -8,11 +8,11 @@
   // The checkbox beside each chapter is the mobile-friendly scoping tool:
   // tick docs to narrow the synapses canvas to exactly those pages (store.
   // checked), because dragging tag chips is fiddly on a phone.
-  import type { SynaptStore } from '../core/store.svelte'
+  import type { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
 
-  let { store }: { store: SynaptStore } = $props()
+  let { store }: { store: DocneuralStore } = $props()
 
   let filter = $state('')
   const shown = $derived.by(() => {
@@ -23,12 +23,12 @@
 </script>
 
 <nav class="chapters" aria-label="Contents" style={sourceVars(store.manual)}>
-  <button class="home {store.selected ? '' : 'active'} sy-mono" onclick={() => store.goHome()}>
+  <button class="home {store.selected ? '' : 'active'} dn-mono" onclick={() => store.goHome()}>
     <span class="glyph">◈</span> WELCOME
   </button>
   <ManualTabs {store} />
   <div class="find">
-    <span class="prompt sy-mono" aria-hidden="true">⌕</span>
+    <span class="prompt dn-mono" aria-hidden="true">⌕</span>
     <input
       type="search"
       placeholder="filter chapters…"
@@ -36,11 +36,11 @@
       aria-label="Filter chapters"
     />
   </div>
-  <div class="meta sy-label">
+  <div class="meta dn-label">
     <span>{shown.length} / {store.chapters.length} chapters</span>
   </div>
   {#if store.checked.length > 0}
-    <div class="pinned sy-mono">
+    <div class="pinned dn-mono">
       <span>⌁ GRAPH: {store.checked.length} TICKED</span>
       <button onclick={() => store.clearChecked()}>clear</button>
     </div>
@@ -66,7 +66,7 @@
         </div>
       </li>
     {:else}
-      <li class="empty sy-mono">no chapter matches “{filter}”</li>
+      <li class="empty dn-mono">no chapter matches “{filter}”</li>
     {/each}
   </ol>
 </nav>
@@ -77,8 +77,8 @@
     flex-direction: column;
     min-height: 0;
     height: 100%;
-    border-right: 1px solid var(--sy-border-strong);
-    background: color-mix(in srgb, var(--sy-bg-sunken) 70%, transparent);
+    border-right: 1px solid var(--dn-border-strong);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
     padding: 0.8rem 0.6rem 2rem;
     gap: 0.55rem;
   }
@@ -89,46 +89,46 @@
     font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-align: left;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: transparent;
-    border: 1px solid var(--sy-border);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.45em 0.7em;
     cursor: pointer;
   }
-  .home:hover { color: var(--sy-fg); border-color: var(--sy-accent-dim); }
+  .home:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .home.active {
-    color: var(--sy-accent);
-    border-color: color-mix(in srgb, var(--sy-accent) 55%, transparent);
-    background: color-mix(in srgb, var(--sy-accent) 10%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--sy-accent) 16%, transparent);
+    color: var(--dn-accent);
+    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
+    background: color-mix(in srgb, var(--dn-accent) 10%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-accent) 16%, transparent);
   }
-  .glyph { color: var(--sy-hot); }
+  .glyph { color: var(--dn-hot); }
 
   /* The filter field, marked with a search glyph. */
   .find {
     display: flex;
     align-items: center;
     gap: 0.4em;
-    background: var(--sy-bg-sunken);
-    border: 1px solid var(--sy-border);
+    background: var(--dn-bg-sunken);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0 0.5em;
   }
-  .find:focus-within { border-color: var(--sy-accent-dim); }
-  .prompt { color: var(--sy-hot); font-size: 0.8rem; }
+  .find:focus-within { border-color: var(--dn-accent-dim); }
+  .prompt { color: var(--dn-hot); font-size: 0.8rem; }
   input[type='search'] {
     background: none;
     border: none;
-    color: var(--sy-fg);
-    font-family: var(--sy-font-mono);
+    color: var(--dn-fg);
+    font-family: var(--dn-font-mono);
     font-size: 0.78rem;
     padding: 0.4em 0;
     width: 100%;
     min-width: 0;
   }
   input[type='search']:focus { outline: none; }
-  .meta { color: var(--sy-fg-faint); padding: 0 0.15em; }
+  .meta { color: var(--dn-fg-faint); padding: 0 0.15em; }
 
   .pinned {
     display: flex;
@@ -137,20 +137,20 @@
     gap: 0.5em;
     font-size: 0.68rem;
     letter-spacing: 0.08em;
-    color: var(--sy-accent);
-    border: 1px dashed color-mix(in srgb, var(--sy-accent) 50%, transparent);
+    color: var(--dn-accent);
+    border: 1px dashed color-mix(in srgb, var(--dn-accent) 50%, transparent);
     border-radius: 2px;
     padding: 0.25em 0.6em;
   }
   .pinned button {
     font: inherit;
-    color: var(--sy-accent-2);
+    color: var(--dn-accent-2);
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
   }
-  .pinned button:hover { color: var(--sy-hot); }
+  .pinned button:hover { color: var(--dn-hot); }
 
   ol {
     list-style: none;
@@ -171,7 +171,7 @@
     width: 0.95rem;
     height: 0.95rem;
     margin: 0 0 0 0.35em;
-    accent-color: var(--sy-src, var(--sy-accent));
+    accent-color: var(--dn-src, var(--dn-accent));
     cursor: pointer;
     flex: none;
   }
@@ -180,10 +180,10 @@
     flex: 1;
     min-width: 0;
     text-align: left;
-    font-family: var(--sy-font-prose);
+    font-family: var(--dn-font-prose);
     font-size: 0.82rem;
     line-height: 1.35;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: none;
     border: none;
     border-left: 2px solid transparent;
@@ -198,17 +198,17 @@
     content: counter(ch);
     position: absolute;
     left: 0.2em;
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.64rem;
-    color: var(--sy-fg-faint);
+    color: var(--dn-fg-faint);
   }
-  .chapter:hover { color: var(--sy-fg); background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 7%, transparent); }
+  .chapter:hover { color: var(--dn-fg); background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent); }
   .chapter.active {
-    color: var(--sy-src, var(--sy-accent));
-    border-left-color: var(--sy-src, var(--sy-accent));
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 12%, transparent);
+    color: var(--dn-src, var(--dn-accent));
+    border-left-color: var(--dn-src, var(--dn-accent));
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
     font-weight: 600;
   }
-  .chapter.active::before { color: var(--sy-src, var(--sy-accent)); }
-  .empty { color: var(--sy-fg-faint); font-size: 0.78rem; padding: 0.5em; }
+  .chapter.active::before { color: var(--dn-src, var(--dn-accent)); }
+  .empty { color: var(--dn-fg-faint); font-size: 0.78rem; padding: 0.5em; }
 </style>
