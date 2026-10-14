@@ -294,3 +294,54 @@ describe('label geometry', () => {
     expect(labelExtent(undefined, 8).l).toBeGreaterThan(0)
   })
 })
+
+// ---- relatedNow / learnPath (appended) ----
+import { learnPath, relatedNow } from './graph'
+
+// a and b are both cited by x and y; c is cited only by x. So a ~ b
+// (shared citers) but a !~ c.
+const RELATED: GraphData = {
+  nodes: [node('a'), node('b'), node('c'), node('x'), node('y')],
+  links: [
+    { source: 'x', target: 'a' },
+    { source: 'y', target: 'a' },
+    { source: 'x', target: 'b' },
+    { source: 'y', target: 'b' },
+    { source: 'x', target: 'c' }
+  ]
+}
+
+describe('relatedNow', () => {
+  it('ranks by shared citers, not raw degree', () => {
+    const r = relatedNow(RELATED, 'a')
+    expect(r[0].node.id).toBe('b')
+    expect(r[0].shared).toBe(2)
+    // c is cited by x only (1 shared citer) — below b.
+    const c = r.find((x) => x.node.id === 'c')
+    expect(c?.shared).toBe(1)
+  })
+  it('excludes stubs and self', () => {
+    const withStub: GraphData = {
+      nodes: [node('a'), node('s'), node('b')],
+      links: [
+        { source: 's', target: 'a' },
+        { source: 'a', target: 'b' }
+      ]
+    }
+    withStub.nodes[1].stub = true
+    const r = relatedNow(withStub, 'a')
+    expect(r.every((x) => x.node.id !== 's' && x.node.id !== 'a')).toBe(true)
+  })
+})
+
+describe('learnPath', () => {
+  it('counts transitive citers and lists direct ones', () => {
+    // chain: y -> x -> a means "before a" is 2, direct citers [x].
+    const p = learnPath(RELATED, 'a')
+    expect(p.before).toBe(2)
+    expect(p.citers.map((n) => n.id)).toEqual(['x', 'y'])
+  })
+  it('has no citers for an uncited page', () => {
+    expect(learnPath(RELATED, 'y')).toEqual({ before: 0, citers: [] })
+  })
+})

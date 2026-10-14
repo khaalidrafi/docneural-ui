@@ -309,3 +309,99 @@ export function labelExtent(title: string | undefined, soma: number): Extent {
   }
 }
 
+
+/* ---------- related-now: the chapters that read like this one ----------
+   An afferent list is a popularity contest: a hub chapter shows 792
+   citing pages and the list says nothing about similarity. The citation
+   graph knows better — two chapters cited TOGETHER by the same other
+   chapters are related even when neither links to the other (the same
+   signal coCitations uses locally, here ranked corpus-wide), and the
+   shared manual is a small honest tie-break.
+
+   One O(E) pass builds "who cites whom", then the score is a co-citation
+   ratio. ~1,559 nodes x 29,017 wires is nothing in the browser, and
+   there is no new payload: the data was always in graph.json. */
+
+/** "Reads like this": the `limit` non-stub nodes most often cited
+ *  alongside `id`, over both first-hop citers and the chapters `id` itself
+ *  cites. Excludes itself; ties break to the same manual. */
+export function relatedNow(
+  data: GraphData,
+  id: string,
+  limit = 5
+): { node: DocNode; score: number; shared: number }[] {
+  const byId = new Map(data.nodes.map((n) => [n.id, n]))
+  const outOf = new Map<string, Set<string>>()
+  const into = new Map<string, Set<string>>()
+  for (const l of data.links) {
+    if (!outOf.has(l.source)) outOf.set(l.source, new Set())
+    outOf.get(l.source)!.add(l.target)
+    if (!into.has(l.target)) into.set(l.target, new Set())
+    into.get(l.target)!.add(l.source)
+  }
+  const citers = into.get(id) ?? new Set<string>()
+  // 1. Co-citation: chapters MY citers also cite (minus me). This is the
+  //    hub-proof signal — it ranks by shared evidence, not raw degree.
+  const shared = new Map<string, number>()
+  for (const c of citers) {
+    for (const t of outOf.get(c) ?? []) {
+      if (t !== id) shared.set(t, (shared.get(t) ?? 0) + 1)
+    }
+  }
+  // 2. Second hop: what I cite, and what cites what I cite — "read next"
+  //    as well as "reads like".
+  const second = new Set<string>()
+  for (const t of outOf.get(id) ?? []) {
+    for (const t2 of outOf.get(t) ?? []) if (t2 !== id) second.add(t2)
+  }
+  const manual = byId.get(id)?.tags[0] ?? ''
+  const out: { node: DocNode; score: number; shared: number }[] = []
+  for (const [cid, n] of shared) {
+    const node = byId.get(cid)
+    if (!node || node.stub || cid === id) continue
+    const sameManual = node.tags[0] && node.tags[0] === manual
+    out.push({
+      node,
+      score: n + (second.has(cid) ? 0.5 : 0) + (sameManual ? 0.05 : 0),
+      shared: n
+    })
+  }
+  return out.sort((a, b) => b.score - a.score).slice(0, limit)
+}
+
+/* ---------- learn-path: what to read first, from the graph ----------
+   The citation graph already knows that Exporting is cited by Agenda
+   Views. A topological pass over the reading order gives "prerequisites"
+   per page: pages that cite this one are the pages you should have read
+   first. Zero AI, zero server, purely graph — and it turns a 277-page
+   manual into a path. */
+
+/** How many pages cite INTO `id` (transitively, through the reading
+ *  order's `next` chains), plus the pages that directly cite it. The
+ *  number is what the reader sees ("6 pages before this one"); the
+ *  direct citers are the ones worth linking. */
+export function learnPath(
+  data: GraphData,
+  id: string
+): { before: number; citers: DocNode[] } {
+  const byId = new Map(data.nodes.map((n) => [n.id, n]))
+  const cites = new Map<string, Set<string>>()
+  for (const l of data.links) {
+    if (!cites.has(l.target)) cites.set(l.target, new Set())
+    cites.get(l.target)!.add(l.source)
+  }
+  // BFS backwards from `id` over "is cited by", stubs excluded.
+  const before = new Set<string>()
+  const queue = [...(cites.get(id) ?? [])]
+  while (queue.length) {
+    const cur = queue.shift()!
+    if (before.has(cur)) continue
+    before.add(cur)
+    for (const up of cites.get(cur) ?? []) if (!before.has(up)) queue.push(up)
+  }
+  before.delete(id)
+  const citers = [...(cites.get(id) ?? [])]
+    .map((cid) => byId.get(cid))
+    .filter((n): n is DocNode => !!n && !n.stub)
+  return { before: before.size, citers }
+}

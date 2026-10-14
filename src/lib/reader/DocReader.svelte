@@ -7,6 +7,7 @@
   import ChapterNav from './ChapterNav.svelte'
   import SynapseRail from './SynapseRail.svelte'
   import LinkPeek from './LinkPeek.svelte'
+  import ContextPack from './ContextPack.svelte'
   import { onMount } from 'svelte'
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
@@ -271,6 +272,67 @@
     if (slug) store.notePosition(slug, activeId)
   })
 
+  /* ---------- read aloud (R): the OS voice, free and offline ----------
+     A long chapter is often read with tired eyes, and a screen reader on
+     a docs site is genuinely useful, not a demo. The Web Speech API needs
+     no assets, no server and no key; `speechSynthesis` is the only
+     dependency and it ships with the browser. One utterance at a time,
+     starting from the heading at the top of the screen, and any chapter
+     change or Escape stops it — a voice that keeps reading the page you
+     just left is worse than no voice. */
+  let speaking = $state(false)
+  function readAloud(): void {
+    const synth = window.speechSynthesis
+    if (!synth) {
+      say('this browser has no speech synthesis')
+      return
+    }
+    if (speaking) {
+      synth.cancel()
+      speaking = false
+      say('stopped reading')
+      return
+    }
+    if (!doc || !proseEl) return
+    // From the active heading to the next one: a section, not a chapter —
+    // long enough to be useful, short enough to stop cleanly.
+    const heads = [...proseEl.querySelectorAll('h2[id], h3[id]')]
+    const from = activeId ? heads.findIndex((h) => h.id === activeId) : -1
+    const start = from >= 0 ? heads[from] : heads[0]
+    const end = from >= 0 ? heads[from + 1] : heads[1]
+    const nodes: Node[] = []
+    let el: Node | null = start ?? null
+    while (el && el !== end) {
+      nodes.push(el)
+      el = el.nextSibling
+    }
+    const text = nodes.map((n) => n.textContent ?? '').join(' ').replace(/\s+/g, ' ').trim()
+    if (!text) {
+      say('nothing to read here')
+      return
+    }
+    const u = new SpeechSynthesisUtterance(text)
+    u.rate = 1
+    u.onend = () => (speaking = false)
+    u.onerror = () => (speaking = false)
+    speaking = true
+    say('reading … (R again stops)')
+    synth.speak(u)
+  }
+  $effect(() => {
+    // A new chapter stops the voice; the effect keys on the chapter.
+    const slug = doc?.slug
+    if (slug && speaking) window.speechSynthesis?.cancel()
+    speaking = false
+  })
+
+  // The learn strip: what to have read first, what reads like this, and
+  // how far through the manual you are. All three are computed from the
+  // graph the reader already has — no AI, no server.
+  const path = $derived(store.pathOf(doc?.id))
+  const related = $derived(store.relatedOf(doc?.id))
+  const progress = $derived(store.manualProgress())
+
   // Reader keys live here, not in DocneuralApp's app-level layer, because only
   // this component knows the article element, which box scrolls, and which
   // heading is at the top of the screen.
@@ -285,6 +347,8 @@
       else if (k === 'k') { e.preventDefault(); nudge(-1) }
       else if (k === 'y') { e.preventDefault(); void copyLink(currentAnchor()) }
       else if (k === 'b') { e.preventDefault(); mark() }
+      else if (k === 'r') { e.preventDefault(); readAloud() }
+      else if (k === 'p') { e.preventDefault(); packOpen = true }
       else if (k === 'v') {
         e.preventDefault()
         zen = !zen
@@ -419,6 +483,7 @@
      screen. `v` hides them, esc brings them back — the article goes to full
      measure by dropping its grid columns, not by re-rendering anything. */
   let zen = $state(false)
+  let packOpen = $state(false)
 </script>
 
 <div class="reader" class:zen style={srcVars}>
@@ -464,6 +529,8 @@
                   title="Copy a link to this position (y)">⧉ link</button>
           <button class="cpy" onclick={copyContext}
                   title="Copy this page as plain text with its sources, for an LLM">⧉ llm</button>
+          <button class="cpy" onclick={() => (packOpen = true)}
+                  title="Build one markdown bundle from the chapters you ticked (P)">⧉ pack</button>
           <a class="raw" href="{store.base}/docs/{doc.slug}.org"
              title="This page as plain Org (lossless, LLM-friendly)">raw org</a>
         </span>
@@ -498,6 +565,33 @@
             </button>
           {/if}
         </nav>
+
+        <!-- The learn strip: what the citation graph knows about THIS page
+             that a wall of backlinks cannot say. Zero AI, zero server. -->
+        {#if path.before > 0 || related.length > 0}
+          <section class="learn dn-mono" aria-label="Reading context">
+            <div class="learn-h">
+              {#if path.before > 0}
+                <span class="path" title="Chapters that cite into this one, transitively"
+                  >⇢ {path.before} page{path.before === 1 ? '' : 's'} before this one</span
+                >
+              {/if}
+              {#if progress > 0}
+                <span class="prog-hint">{Math.round(progress * 100)}% of {DocneuralStore.manualTitle(store.manual) || 'this manual'} read</span>
+              {/if}
+            </div>
+            {#if related.length > 0}
+              <div class="rel">
+                <span class="rel-h">reads like this</span>
+                {#each related as r (r.node.id)}
+                  <button class="rel-btn" onclick={() => go(r.node)}>
+                    {r.node.title}{#if r.shared > 1}<span class="shared"> ·{r.shared} shared</span>{/if}
+                  </button>
+                {/each}
+              </div>
+            {/if}
+          </section>
+        {/if}
       {/if}
     {:else}
       <p class="dn-mono">select a chapter</p>
@@ -509,6 +603,7 @@
   {/if}
 
   <LinkPeek {store} {peek} />
+  <ContextPack {store} bind:open={packOpen} />
 
   {#if note}
     <p class="note dn-mono" role="status" aria-live="polite">{note}</p>
@@ -741,4 +836,46 @@
   .pager-btn.next { text-align: right; align-items: flex-end; margin-left: auto; }
   .pager-btn .dir { font-size: 0.62rem; color: var(--dn-fg-faint); letter-spacing: var(--dn-track); text-transform: uppercase; }
   .pager-btn .pt { font-size: 0.85rem; color: var(--dn-src, var(--dn-accent)); }
+  /* The learn strip: three facts the citation graph already knows about
+     this page — what to have read first, what reads like it, how far you
+     are through the manual. Subtracted pixels, added answers. */
+  .learn {
+    margin: 2.2rem auto 1rem;
+    padding: 0.9rem 1rem;
+    max-width: 46rem;
+    border-top: 1px solid var(--dn-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .learn-h {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dn-fg-faint);
+  }
+  .learn-h .path { color: var(--dn-accent-dim); }
+  .rel { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: baseline; }
+  .rel-h {
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dn-fg-faint);
+  }
+  .rel-btn {
+    background: color-mix(in srgb, var(--dn-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-accent) 24%, transparent);
+    color: var(--dn-fg-muted);
+    border-radius: 2px;
+    padding: 0.2em 0.6em;
+    font-family: var(--dn-font-prose);
+    font-size: 0.78rem;
+    cursor: pointer;
+  }
+  .rel-btn:hover { color: var(--dn-accent); border-color: var(--dn-accent); }
+  .rel-btn .shared { color: var(--dn-fg-faint); font-size: 0.68em; }
+
 </style>

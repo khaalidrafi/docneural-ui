@@ -11,6 +11,7 @@
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import type { DocNode } from '../core/types'
+  import type { SearchHit } from '../core/search'
 
   let {
     store,
@@ -28,6 +29,7 @@
 
   type Item =
     | { kind: 'doc'; node: DocNode; label: string; hint: string; src: string }
+    | { kind: 'section'; hit: SearchHit; label: string; hint: string; src: string }
     | { kind: 'cmd'; label: string; hint: string; run: () => void }
 
   const commands: Item[] = [
@@ -40,7 +42,7 @@
     const needle = q.trim().toLowerCase()
     const docs: Item[] = store
       .search(needle, 0)
-      .slice(0, 12)
+      .slice(0, 8)
       .map((n) => ({
         kind: 'doc' as const,
         node: n,
@@ -52,10 +54,27 @@
           : (DocneuralStore.manualTitle(n.tags[0] ?? '') || 'chapter').toUpperCase(),
         src: n.tags[0] ?? ''
       }))
+    // Section hits: the manual has ~30k headings and one "Introduction",
+    // so what a reader actually types is the SECTION name. Rows read
+    // "chapter › heading" and land on the anchor.
+    const sections: Item[] = store
+      .headingHits(q.trim(), 8)
+      .map((h) => {
+        const n = store.bySlug(h.slug)
+        return {
+          kind: 'section' as const,
+          hit: h,
+          label: h.heading ? `${h.pageTitle} › ${h.heading}` : h.pageTitle,
+          hint: h.matched === 'title'
+            ? (DocneuralStore.manualTitle(n?.tags[0] ?? '') || 'page').toUpperCase()
+            : '§ section',
+          src: n?.tags[0] ?? ''
+        }
+      })
     const cmds: Item[] = needle
       ? commands.filter((c) => c.label.toLowerCase().includes(needle))
       : commands
-    return [...cmds, ...docs]
+    return [...cmds, ...docs, ...sections]
   })
 
   // Keep the cursor in range as the list changes.
@@ -76,7 +95,10 @@
   function choose(item: Item | undefined): void {
     if (!item) return
     if (item.kind === 'doc') store.goto(item.node)
-    else item.run()
+    else if (item.kind === 'section') {
+      const node = store.bySlug(item.hit.slug)
+      if (node) store.goto(node, 'reader', item.hit.anchor)
+    } else item.run()
     close()
   }
   function close(): void {
@@ -121,8 +143,8 @@
         />
       </div>
       <ul>
-        {#each items as it, i (it.kind === 'doc' ? it.node.id : it.label)}
-          <li style={it.kind === 'doc' ? sourceVars(it.src) : ''}>
+        {#each items as it, i (it.kind === 'doc' ? it.node.id : it.kind === 'section' ? `${it.hit.slug}#${it.hit.anchor}` : it.label)}
+          <li style={it.kind === 'cmd' ? '' : sourceVars(it.src)}>
             <button
               class="row"
               class:active={i === index}
@@ -130,13 +152,13 @@
               onclick={() => choose(it)}
               onmouseenter={() => (index = i)}
             >
-              <span class="ico dn-mono">{it.kind === 'doc' ? '▤' : '›'}</span>
+              <span class="ico dn-mono">{it.kind === 'doc' ? '▤' : it.kind === 'section' ? '§' : '›'}</span>
               <span class="label">{it.label}</span>
               <span class="hint dn-mono">[{it.hint}]</span>
             </button>
           </li>
         {:else}
-          <li class="empty dn-mono">nothing matches “{q}”</li>
+          <li class="empty dn-mono">nothing matches “{q}” in titles or sections</li>
         {/each}
       </ul>
       <div class="bar dn-mono">↑↓ move · ⏎ open · esc quit · ⌘k toggle</div>

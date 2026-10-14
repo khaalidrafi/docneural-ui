@@ -11,7 +11,9 @@
   import type { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
+  import ContextPack from './ContextPack.svelte'
 
+  let packFromNav = $state(false)
   let { store }: { store: DocneuralStore } = $props()
 
   let filter = $state('')
@@ -42,8 +44,11 @@
   {#if store.checked.length > 0}
     <div class="pinned dn-mono">
       <span>⌁ GRAPH: {store.checked.length} TICKED</span>
+      <span class="spacer"></span>
+      <button onclick={() => (packFromNav = true)} title="Send these chapters to an agent as one bundle">⧉ pack</button>
       <button onclick={() => store.clearChecked()}>clear</button>
     </div>
+    <ContextPack {store} bind:open={packFromNav} />
   {/if}
   <ol>
     {#each shown as c (c.id)}
@@ -60,6 +65,7 @@
           <button
             class="chapter"
             class:active={store.selected?.id === c.id}
+            class:seen={store.visited.includes(c.slug)}
             onclick={() => store.goto(c)}
             onpointerenter={() => store.prefetch([c.slug])}
           >{c.title}</button>
@@ -130,6 +136,7 @@
   input[type='search']:focus { outline: none; }
   .meta { color: var(--dn-fg-faint); padding: 0 0.15em; }
 
+  .pinned .spacer { flex: 1; }
   .pinned {
     display: flex;
     align-items: center;
@@ -208,6 +215,13 @@
     border-left-color: var(--dn-src, var(--dn-accent));
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
     font-weight: 600;
+  }
+  /* A read chapter keeps a dot: a 277-page manual gets a shape, and
+     "where was I" stops being a search. core/visited.ts, one key. */
+  .chapter.seen::after {
+    content: '·';
+    margin-left: 0.5em;
+    color: var(--dn-accent-dim);
   }
   .chapter.active::before { color: var(--dn-src, var(--dn-accent)); }
   .empty { color: var(--dn-fg-faint); font-size: 0.78rem; padding: 0.5em; }

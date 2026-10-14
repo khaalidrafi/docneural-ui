@@ -1,0 +1,7 @@
+{
+  "name": "org-roam-lite-ui",
+  "version": "0.0.0-shim",
+  "private": true,
+  "type": "module",
+  "description": "TEMPORARY local stand-in for the org-roam-lite-ui repo: implements only the four modules docneural-ui consumes, with the same contracts. Replace with the real repo when it is available; no docneural or docneural-ui file changes are needed to swap."
+}
