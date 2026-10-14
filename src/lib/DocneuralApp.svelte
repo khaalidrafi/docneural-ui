@@ -16,6 +16,7 @@
   import DocReader from './reader/DocReader.svelte'
   import Home from './reader/Home.svelte'
   import CommandPalette from './ui/CommandPalette.svelte'
+import AskPanel from './ui/AskPanel.svelte'
   import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
 
@@ -48,6 +49,8 @@
   })
 
   let paletteOpen = $state(false)
+  let askOpen = $state(false)
+  let askQ = $state('')
   let helpOpen = $state(false)
   let theme = $state<string | null>(null)
 
@@ -252,7 +255,8 @@
   <Home {store} {title} />
 {/if}
 
-<CommandPalette bind:open={paletteOpen} {store} />
+<CommandPalette bind:open={paletteOpen} {store} onAsk={(q) => { askQ = q; askOpen = true }} />
+    <AskPanel {store} bind:open={askOpen} bind:initialQuery={askQ} />
 
 {#if helpOpen}
   <div

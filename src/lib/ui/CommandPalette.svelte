@@ -16,11 +16,13 @@
   let {
     store,
     open = $bindable(false),
-    onClose = () => {}
+    onClose = () => {},
+    onAsk = (_q: string) => {}
   }: {
     store: DocneuralStore
     open?: boolean
     onClose?: () => void
+    onAsk?: (q: string) => void
   } = $props()
 
   let q = $state('')
@@ -37,6 +39,10 @@
     { kind: 'cmd', label: 'Open reader', hint: 'docs mode', run: () => store.setMode('reader') },
     { kind: 'cmd', label: 'Open synapses', hint: 'graph mode', run: () => store.setMode('graph') }
   ]
+
+  // `? what is a synapse?` switches the palette into ask mode: one row
+  // hands the question to the grounded-answer panel (BYO key).
+  const askQuery = $derived(q.trim().startsWith('?') ? q.trim().slice(1).trim() : '')
 
   const items = $derived.by(() => {
     const needle = q.trim().toLowerCase()
@@ -74,6 +80,18 @@
     const cmds: Item[] = needle
       ? commands.filter((c) => c.label.toLowerCase().includes(needle))
       : commands
+    if (askQuery) {
+      return [
+        {
+          kind: 'cmd' as const,
+          label: `ask this corpus: ${askQuery}`,
+          hint: 'grounded · byo key',
+          run: () => onAsk(askQuery)
+        },
+        ...docs,
+        ...sections
+      ]
+    }
     return [...cmds, ...docs, ...sections]
   })
 
@@ -138,7 +156,7 @@
           bind:value={q}
           class="dn-mono"
           type="text"
-          placeholder="jump to a doc, or run a command…"
+          placeholder="jump to a doc, run a command, or “? ask this corpus”…"
           aria-label="Command input"
         />
       </div>
