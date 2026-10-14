@@ -1,9 +1,15 @@
 <script lang="ts">
-  // CommandPalette — ⌘K / Ctrl-K. Fuzzy-jump to any node (chapters AND the
-  // 391 indirect sections, which the sidebar hides) plus a few commands.
+  // CommandPalette — ⌘K / Ctrl-K. Fuzzy-jump to any node in any manual
+  // (chapters AND the indirect stub sections, which the sidebar hides)
+  // plus a few commands.
   // Zero dependencies: a filtered list + arrow-key selection is enough, and
   // stays light on the potato.
-  import type { SynaptStore } from '../core/store.svelte'
+  //
+  // Styled as a terminal window: a title strip, a `>` prompt, rows tagged
+  // with the SOURCE they belong to in that source's hue. The tag is the
+  // point — in an aggregator, "Introduction" is ambiguous and "[ORG]" is not.
+  import { SynaptStore } from '../core/store.svelte'
+  import { sourceVars } from '../core/source'
   import type { DocNode } from '../core/types'
 
   let {
@@ -21,7 +27,7 @@
   let index = $state(0)
 
   type Item =
-    | { kind: 'doc'; node: DocNode; label: string; hint: string }
+    | { kind: 'doc'; node: DocNode; label: string; hint: string; src: string }
     | { kind: 'cmd'; label: string; hint: string; run: () => void }
 
   const commands: Item[] = [
@@ -39,7 +45,12 @@
         kind: 'doc' as const,
         node: n,
         label: n.title,
-        hint: n.redirect ? `section of ${n.redirect.slug}` : 'chapter'
+        // Hint disambiguates the aggregator: every manual has an
+        // "Introduction"; say which one a hit belongs to.
+        hint: n.redirect
+          ? `§ ${n.redirect.slug}`
+          : (SynaptStore.manualTitle(n.tags[0] ?? '') || 'chapter').toUpperCase(),
+        src: n.tags[0] ?? ''
       }))
     const cmds: Item[] = needle
       ? commands.filter((c) => c.label.toLowerCase().includes(needle))
@@ -93,34 +104,42 @@
     }}
     onkeydown={onKey}
   >
-    <div class="palette">
-      <input
-        bind:this={input}
-        bind:value={q}
-        class="sy-mono"
-        type="text"
-        placeholder="jump to a doc, or run a command…"
-        aria-label="Command input"
-      />
+    <div class="palette sy-hud">
+      <div class="titlebar sy-mono">
+        <span class="tb-l">jump</span>
+        <span class="tb-r">{store.manuals.length} sources · {store.data.nodes.length} chapters</span>
+      </div>
+      <div class="promptline">
+        <span class="gt" aria-hidden="true">⌕</span>
+        <input
+          bind:this={input}
+          bind:value={q}
+          class="sy-mono"
+          type="text"
+          placeholder="jump to a doc, or run a command…"
+          aria-label="Command input"
+        />
+      </div>
       <ul>
         {#each items as it, i (it.kind === 'doc' ? it.node.id : it.label)}
-          <li>
+          <li style={it.kind === 'doc' ? sourceVars(it.src) : ''}>
             <button
               class="row"
               class:active={i === index}
+              class:cmd={it.kind === 'cmd'}
               onclick={() => choose(it)}
               onmouseenter={() => (index = i)}
             >
               <span class="ico sy-mono">{it.kind === 'doc' ? '▤' : '›'}</span>
               <span class="label">{it.label}</span>
-              <span class="hint sy-mono">{it.hint}</span>
+              <span class="hint sy-mono">[{it.hint}]</span>
             </button>
           </li>
         {:else}
-          <li class="empty sy-mono">no matches</li>
+          <li class="empty sy-mono">nothing matches “{q}”</li>
         {/each}
       </ul>
-      <div class="bar sy-mono">↑↓ move · ⏎ open · esc close</div>
+      <div class="bar sy-mono">↑↓ move · ⏎ open · esc quit · ⌘k toggle</div>
     </div>
   </div>
 {/if}
@@ -133,29 +152,56 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: 12vh 1rem 1rem;
-    background: color-mix(in srgb, var(--sy-bg-sunken) 62%, transparent);
-    backdrop-filter: blur(3px);
+    padding: 10vh 1rem 1rem;
+    background: color-mix(in srgb, var(--sy-bg-sunken) 74%, transparent);
   }
   .palette {
-    width: min(40rem, 100%);
-    background: var(--sy-bg);
-    border: 1px solid var(--sy-border-strong);
-    border-radius: 10px;
-    box-shadow: 0 24px 60px color-mix(in srgb, var(--sy-bg-sunken) 75%, transparent);
-    overflow: hidden;
-  }
-  .palette input {
-    width: 100%;
+    position: relative;
+    width: min(42rem, 100%);
     background: var(--sy-bg-raise);
-    border: none;
-    border-bottom: 1px solid var(--sy-border);
-    color: var(--sy-fg);
-    font-size: 1rem;
-    padding: 0.9em 1.1em;
+    border: 1px solid var(--sy-border-strong);
+    border-radius: 2px;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--sy-accent) 16%, transparent),
+      0 24px 60px color-mix(in srgb, var(--sy-bg-sunken) 85%, transparent),
+      0 0 40px color-mix(in srgb, var(--sy-accent) 10%, transparent);
+    overflow: hidden;
+    animation: sy-rise 160ms ease-out both;
   }
-  .palette input:focus { outline: none; }
-  ul { list-style: none; margin: 0; padding: 0.3rem; max-height: 60vh; overflow-y: auto; }
+  /* Title strip: the window chrome of a terminal, and where the corpus
+     readout lives so the palette says what it is searching. */
+  .titlebar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.45em 0.9em;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sy-fg-faint);
+    background: color-mix(in srgb, var(--sy-bg-sunken) 80%, transparent);
+    border-bottom: 1px solid var(--sy-border);
+  }
+  .tb-l { color: var(--sy-accent); }
+  .promptline {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.15em 0.9em;
+    border-bottom: 1px solid var(--sy-border);
+  }
+  .gt { color: var(--sy-fg-muted); font-family: var(--sy-font-mono); font-size: 1.05rem; }
+  .promptline input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    color: var(--sy-fg);
+    font-size: 0.95rem;
+    padding: 0.7em 0;
+  }
+  .promptline input:focus { outline: none; caret-color: var(--sy-accent); }
+  ul { list-style: none; margin: 0; padding: 0.3rem; max-height: 56vh; overflow-y: auto; }
   .row {
     display: flex;
     align-items: center;
@@ -165,21 +211,31 @@
     color: var(--sy-fg);
     background: none;
     border: none;
-    border-radius: 6px;
+    border-left: 2px solid transparent;
     padding: 0.5em 0.7em;
     cursor: pointer;
+    transition: background 100ms;
   }
-  .row .ico { color: var(--sy-accent-dim); width: 1em; }
-  .row .label { flex: 1; font-family: var(--sy-font-prose); font-size: 0.9rem; }
-  .row .hint { font-size: 0.7rem; color: var(--sy-fg-faint); }
-  .row.active { background: color-mix(in srgb, var(--sy-accent) 14%, transparent); }
-  .row.active .label { color: var(--sy-accent); }
+  .row .ico { color: var(--sy-src, var(--sy-accent-dim)); width: 1em; }
+  .row .label { flex: 1; font-family: var(--sy-font-prose); font-size: 0.88rem; }
+  .row .hint { font-size: 0.64rem; letter-spacing: 0.1em; color: var(--sy-fg-faint); }
+  /* Selected row: lit in the SOURCE's hue, so the highlight itself tells you
+     which corpus you are about to open. */
+  .row.active {
+    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 14%, transparent);
+    border-left-color: var(--sy-src, var(--sy-accent));
+  }
+  .row.active .label { color: var(--sy-src, var(--sy-accent)); }
+  .row.active .hint { color: var(--sy-src, var(--sy-accent)); }
+  .row.cmd .hint { color: var(--sy-accent-2); }
   .empty { padding: 0.7em; color: var(--sy-fg-faint); font-size: 0.85rem; }
   .bar {
     border-top: 1px solid var(--sy-border);
     padding: 0.5em 0.9em;
-    font-size: 0.7rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--sy-fg-faint);
-    background: var(--sy-bg-raise);
+    background: color-mix(in srgb, var(--sy-bg-sunken) 60%, transparent);
   }
 </style>

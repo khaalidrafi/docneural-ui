@@ -52,6 +52,24 @@ describe('chapters', () => {
     expect(ids).not.toContain('s')
     expect(ids).not.toContain('r')
   })
+  it('walks chain heads in id order, so a manual Top opens first', () => {
+    const store = new SynaptStore()
+    // Array order deliberately fights id order: the fragment head sorts
+    // before the Top node in the array, but ids are `<manual>--<file>'
+    // so the Top itself (bare manual id) must win the head walk. Without
+    // this the Emacs manual opened at "Abbrev Concepts", not at its Top.
+    store.data = {
+      nodes: [
+        node({ id: 'm--frag', title: 'Side Chain Start', tags: ['m'] }),
+        node({ id: 'm', title: 'Top', tags: ['m'], next: 'm--intro' }),
+        node({ id: 'm--intro', title: 'Introduction', tags: ['m'], next: 'm--body' }),
+        node({ id: 'm--body', title: 'The Body', tags: ['m'] })
+      ],
+      links: []
+    }
+    store.manual = 'm'
+    expect(store.chapters.map((n) => n.id)).toEqual(['m', 'm--intro', 'm--body', 'm--frag'])
+  })
 })
 
 describe('contentSibling pager', () => {
@@ -126,6 +144,97 @@ describe('lite tier', () => {
     store.setMode('graph')
     expect(store.lite).toBe(true)
     expect(store.mode).toBe('reader')
+  })
+})
+
+// The aggregator contract: nodes carry their manual as the FIRST tag (set
+// stamped by the exporter), and the reader's TOC scopes to one manual.
+describe('manual scoping', () => {
+  function multiFixture(): GraphData {
+    return {
+      nodes: [
+        node({ id: 'a1', slug: 'a1', title: 'Alpha One', tags: ['alpha'], next: 'a2' }),
+        node({ id: 'a2', slug: 'a2', title: 'Alpha Two', tags: ['alpha'] }),
+        node({ id: 'b1', slug: 'b1', title: 'Beta One', tags: ['beta'], next: 'b2' }),
+        node({ id: 'b2', slug: 'b2', title: 'Beta Two', tags: ['beta'] })
+      ],
+      links: []
+    }
+  }
+
+  it('manuals lists corpora in first-seen order', () => {
+    const store = new SynaptStore()
+    store.data = multiFixture()
+    expect(store.manuals).toEqual(['alpha', 'beta'])
+  })
+
+  it('chapters scopes to the active manual, and an empty manual shows all', () => {
+    const store = new SynaptStore()
+    store.data = multiFixture()
+    store.manual = 'beta'
+    expect(store.chapters.map((n) => n.id)).toEqual(['b1', 'b2'])
+    store.manual = ''
+    expect(store.chapters.map((n) => n.id)).toEqual(['a1', 'a2', 'b1', 'b2'])
+  })
+
+  it('goto retargets the TOC to the doc manual (palette jumps carry it)', () => {
+    const store = new SynaptStore()
+    store.data = multiFixture()
+    store.manual = 'alpha'
+    store.goto(store.byId('b1')!)
+    expect(store.manual).toBe('beta')
+    expect(store.chapters.map((n) => n.id)).toEqual(['b1', 'b2'])
+  })
+
+  it('showManual lands an open reader on the other manual first chapter', () => {
+    const store = new SynaptStore()
+    store.data = multiFixture()
+    store.goto(store.byId('a1')!)
+    store.showManual('beta')
+    expect(store.selected?.id).toBe('b1')
+    // With nothing selected it only retargets the list (Home behavior).
+    store.selected = undefined
+    store.showManual('alpha')
+    expect(store.selected).toBeUndefined()
+    expect(store.manual).toBe('alpha')
+  })
+
+  it('load leaves manual empty for untagged data (single-corpus stays unscoped)', async () => {
+    ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search: '' }
+    const store = new SynaptStore()
+    await store.load() // the beforeEach fetch stub serves `fixture()` (no tags)
+    expect(store.ready).toBe(true)
+    expect(store.manual).toBe('')
+    expect(store.chapters.map((n) => n.id)).toEqual(['c1', 'c2', 'c3', 'c4'])
+  })
+
+  it('manualTitle renders the reader-facing label', () => {
+    // Real project names, no invented " Manual" suffix: the site hosts
+    // arbitrary corpora, so the label is whatever the project calls itself.
+    expect(SynaptStore.manualTitle('org')).toBe('Org')
+    expect(SynaptStore.manualTitle('emacs')).toBe('GNU Emacs')
+    expect(SynaptStore.manualTitle('std_docs')).toBe('Std Docs')
+    expect(SynaptStore.manualTitle('')).toBe('')
+  })
+
+  it('sources reports per-corpus pages and wires, stubs excluded', async () => {
+    ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search: '' }
+    const store = new SynaptStore()
+    store.data = {
+      nodes: [
+        { id: 'a1', slug: 'a--1', title: 'A one', tags: ['alpha'] },
+        { id: 'a2', slug: 'a--2', title: 'A two', tags: ['alpha'] },
+        { id: 'a3', slug: 'a--3', title: 'A stub', tags: ['alpha'], stub: true },
+        { id: 'b1', slug: 'b--1', title: 'B one', tags: ['beta'] }
+      ],
+      links: [{ source: 'a1', target: 'b1' }, { source: 'b1', target: 'a2' }]
+    }
+    store.ready = true
+    const src = store.sources
+    expect(src.map((s) => s.name)).toEqual(['alpha', 'beta'])
+    expect(src[0].pages).toBe(2) // a3 is a pointer, not a page
+    expect(src[0].links).toBe(1) // the wire that starts inside alpha
+    expect(src[1].links).toBe(1)
   })
 })
 

@@ -1,57 +1,180 @@
 <script lang="ts">
   // Home — the welcome screen the site opens on (reader mode, nothing
-  // selected). It is a real front door, not the graph: what Synapt is, the
-  // live shape of the corpus, a jump-to-anything box, and the chapter grid.
-  // The synapses view is offered as an enhancement, never forced.
-  import type { SynaptStore } from '../core/store.svelte'
+  // selected). It is a real front door, not the graph: what the site is, the
+  // live shape of the corpus, a jump-to-anything box, and the chapter grid of
+  // one manual (tabs hop between the manuals this aggregator carries).
+  //
+  // This is also where the AGGREGATOR identity lives: the sources strip shows
+  // every corpus the export carries, each wearing the exact hue the synapses
+  // canvas gives its nodes (core/source.ts), with its page and wire counts.
+  // Nothing here assumes Emacs, Guix or Org — the copy is written for
+  // "documentation from anywhere", because that is what the exporter emits.
+  import { SynaptStore } from '../core/store.svelte'
+  import { sourceVars } from '../core/source'
+  import ManualTabs from '../ui/ManualTabs.svelte'
 
-  let { store }: { store: SynaptStore } = $props()
+  let { store, title = 'org-docs' }: { store: SynaptStore; title?: string } = $props()
 
   const chapters = $derived(store.chapters)
   const docCount = $derived(store.data.nodes.length)
+  // `pages` on the tty must be the whole site, not the selected manual's TOC:
+  // the strip below lists 485 + 485 + 277 pages, so a "24" here (chapters for
+  // one corpus) reads as a broken counter. Stubs are heading references that
+  // redirect to a real page, so they are not pages.
+  const pageCount = $derived(store.data.nodes.filter((n) => !n.stub).length)
   const synCount = $derived(store.data.links.length)
+  const sources = $derived(store.sources)
+  // The `--stats` output lists corpora by their tag, i.e. the way you would
+  // name a directory, not the display name the cards wear.
+  const sourceList = $derived(sources.map((s) => s.name).join(' ') || '1')
 
   let query = $state('')
   const results = $derived(store.search(query, 9))
 
   const first = $derived(chapters[0])
 
-  // Per-chapter synapse degree for the card badges (computed once a load).
+  // Where the reader stopped last time (written by DocReader through the
+  // store). Resolved against the live graph every time it changes, because a
+  // slug saved from an older export may not exist in this corpus.
+  const last = $derived.by(() => {
+    const v = store.lastRead
+    if (!store.ready || !v) return null
+    const node = store.bySlug(v.slug)
+    return node ? { node, anchor: v.anchor } : null
+  })
+  function resume(): void {
+    if (last) store.goto(last.node, 'reader', last.anchor)
+  }
+
+  // The sections marked with `b`, newest first. Resolved against the live
+  // graph exactly like `last`: a mark saved from an older export can name a
+  // page that no longer exists, and a dead entry in a bookmark list is worse
+  // than a missing one. The stored title paints, so a card is never blank.
+  const marks = $derived.by(() => {
+    if (!store.ready) return []
+    return store.saved.flatMap((m) => {
+      const node = store.bySlug(m.slug)
+      return node ? [{ ...m, node }] : []
+    })
+  })
+
+  // Per-chapter synapse degree for the row badges (computed once a load).
   const degree = $derived.by(() => {
     const m = new Map<string, number>()
-    const v = store.views
-    for (const [id, n] of v) m.set(id, n.degree)
+    for (const [id, n] of store.views) m.set(id, n.degree)
     return m
+  })
+
+  // A source card: open that corpus and land its first chapter (showManual
+  // alone only retargets the TOC; here there is no selection, so we do it).
+  function openManual(m: string): void {
+    store.showManual(m)
+    const c = store.chapters[0]
+    if (c) store.goto(c)
+  }
+
+  // A manual can carry ~500 chapters; painting all of them on a potato is
+  // slow and useless to skim. Show a first page, offer the rest on demand.
+  // (Reset when the TOC's manual changes -- the $effect below.)
+  let showAll = $state(false)
+  $effect(() => {
+    void store.manual
+    showAll = false
   })
 </script>
 
 <div class="home">
-  <header class="hero">
-    <div class="wordmark sy-mono">
-      synapt<span class="sy-caret">▌</span>
+  <header class="hero sy-hud" style={sourceVars(store.manual)}>
+    <p class="kicker sy-label">// knowledge uplink · online</p>
+    <div class="wordmark sy-mono sy-glitch" data-text={title.toUpperCase()}>
+      <span class="sy-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
     </div>
-    <p class="tagline sy-mono">fire together, wire stronger</p>
+    <p class="tagline sy-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
     <p class="lede">
-      A living reader for the <strong>Emacs, Guix, and Org</strong> manuals — split
-      per Info node, exported by Emacs, and wired into an org-roam graph.
+      One reader for documentation from <strong>anywhere</strong> — every manual
+      split per section, exported from Org by Emacs, and wired into an org-roam
+      graph of <strong>{synCount} firing synapses</strong>. Read it top to bottom,
+      jump anywhere with ⌘K, or drop into the graph and follow the citations.
+      Every page also ships as raw Org and as
+      <span class="sy-mono">llms.txt</span> — machine-readable on purpose.
     </p>
 
-    <div class="stats sy-mono">
-      <span class="stat"><b>{chapters.length}</b> chapters</span>
-      <span class="dot">·</span>
-      <span class="stat"><b>{docCount}</b> docs</span>
-      <span class="dot">·</span>
-      <span class="stat"><b>{synCount}</b> synapses</span>
+    <!-- The corpus readout, stated plainly. The size of the site IS the pitch,
+         so the numbers get a panel of their own — but as a panel, not as a
+         pretend shell session: no prompt, no window buttons, no "[ ok ]". -->
+    <div class="stats" role="status" aria-live="polite">
+      <div class="stats-hd sy-label">
+        <span class="sy-neuron-mark" aria-hidden="true"></span>
+        <span>this corpus</span>
+      </div>
+      <div class="sy-kv">
+        <span>sources</span><span>{sources.length} · {sourceList}</span>
+        <span>pages</span><span>{pageCount}</span>
+        <span>neurons</span><span>{docCount}</span>
+        <span>synapses</span><span><b>{synCount}</b> firing</span>
+        <span>artifacts</span><span>graph.json · llms.txt · *.org</span>
+      </div>
+      <p class="note">indexed at build time — no database, no server</p>
+      <!-- Resume, straight off the front door: the last page you were on, at
+           the heading you were under. Only shown when the stored slug still
+           exists in this corpus — a renamed chapter must not offer a dead link. -->
+      {#if last}
+        <button class="resume" onclick={resume}>
+          <span class="r-lab">resume</span>
+          <span class="r-to">{last.node.tags[0]}/{last.node.title}{last.anchor ? `#${last.anchor}` : ''}</span>
+          <span class="r-go" aria-hidden="true">↷</span>
+        </button>
+      {/if}
     </div>
   </header>
 
+  <!-- The marks you made with `b`, straight off the front door. This is the
+       whole point of a bookmark list on a reference site: you return, and the
+       five sections that matter to today's task are already in one place. -->
+  {#if marks.length}
+    <section class="saved">
+      <h2 class="section-h sy-label">
+        // marked <span class="hint">{marks.length} section{marks.length === 1 ? '' : 's'} · b in the reader</span>
+      </h2>
+      <div class="mk-row">
+        {#each marks as m (m.slug + '#' + (m.anchor ?? ''))}
+          <button
+            class="mk sy-mono"
+            style={sourceVars(m.node.tags[0] ?? '')}
+            onclick={() => store.goto(m.node, 'reader', m.anchor)}
+          >
+            <span class="mk-src">{m.node.tags[0] ?? 'corpus'}</span>
+            <span class="mk-title">{m.title}</span>
+            {#if m.anchor}<span class="mk-to">#{m.anchor}</span>{/if}
+          </button>
+        {/each}
+      </div>
+    </section>
+  {/if}
+
+  <section class="sources">
+    <h2 class="sy-label">// sources <span class="hint">each corpus wears its graph hue</span></h2>
+    <div class="src-row">
+      {#each sources as s (s.name)}
+        <button class="src-card sy-hud" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
+          <span class="src-name sy-mono">{SynaptStore.manualTitle(s.name)}</span>
+          <span class="src-meta sy-mono">{s.pages} pages · {s.links} wires</span>
+          <span class="src-open">read ↗</span>
+        </button>
+      {:else}
+        <p class="none sy-mono">one corpus, no tags — everything is one source</p>
+      {/each}
+    </div>
+  </section>
+
+  <!-- The jump box. Monospace and left-labelled, which is enough: the field
+       searches, it does not pretend to be a shell. -->
   <div class="search-wrap">
-    <div class="search-box">
-      <span class="sy-mono prompt">jump ›</span>
+    <div class="search-box sy-mono">
+      <span class="prompt" aria-hidden="true">⌕</span>
       <input
         type="text"
-        class="sy-mono"
-        placeholder="search every node…  (⌘K)"
+        placeholder="search every chapter   (or press ⌘K)"
         bind:value={query}
         aria-label="Search docs"
       />
@@ -59,29 +182,38 @@
     {#if query.trim()}
       <ul class="results">
         {#each results as r (r.id)}
-          <li>
+          <li style={sourceVars(r.tags[0])}>
             <button onclick={() => store.goto(r)}>
+              <span class="dot" aria-hidden="true"></span>
               {r.title}
-              {#if r.redirect}<span class="stub sy-mono">→ {r.redirect.slug}</span>{/if}
+              {#if r.redirect}<span class="stub">→ {r.redirect.slug}</span>{/if}
             </button>
           </li>
         {:else}
-          <li class="none sy-mono">nothing matches “{query}”</li>
+          <li class="none">org-docs: no match for “{query}”</li>
         {/each}
       </ul>
     {/if}
   </div>
 
   <div class="cta-row">
-    {#if first}
-      <button class="cta primary" onclick={() => store.goto(first)}>
+    {#each sources as s (s.name)}
+      <button class="cta sy-notch" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
         <span class="cta-k">▤</span>
-        <span class="cta-t">Start reading</span>
-        <span class="cta-s">{first.title}</span>
+        <span class="cta-t">{SynaptStore.manualTitle(s.name)}</span>
+        <span class="cta-s">read from the top</span>
       </button>
-    {/if}
+    {:else}
+      {#if first}
+        <button class="cta sy-notch" onclick={() => store.goto(first)}>
+          <span class="cta-k">▤</span>
+          <span class="cta-t">Start reading</span>
+          <span class="cta-s">{first.title}</span>
+        </button>
+      {/if}
+    {/each}
     {#if !store.lite}
-      <button class="cta" onclick={() => store.setMode('graph')}>
+      <button class="cta graph sy-notch" onclick={() => store.setMode('graph')}>
         <span class="cta-k spark">⌁</span>
         <span class="cta-t">Explore synapses</span>
         <span class="cta-s">the whole graph, live</span>
@@ -90,19 +222,29 @@
   </div>
 
   <section class="chapters-grid">
-    <h2 class="sy-mono section-h">Contents</h2>
+    <div class="contents-head">
+      <h2 class="section-h sy-label">
+        contents // {SynaptStore.manualTitle(store.manual) || 'all sources'}
+      </h2>
+      <ManualTabs {store} />
+    </div>
     <div class="grid">
-      {#each chapters as c (c.id)}
-        <button class="card" onclick={() => store.goto(c)}>
-          <span class="card-deg sy-mono">{degree.get(c.id) ?? 0} ⌁</span>
+      {#each showAll ? chapters : chapters.slice(0, 60) as c (c.id)}
+        <button class="card" style={sourceVars(c.tags[0])} onclick={() => store.goto(c)}>
           <span class="card-title">{c.title}</span>
+          <span class="card-deg sy-mono">{degree.get(c.id) ?? 0}⌁</span>
         </button>
       {/each}
+      {#if !showAll && chapters.length > 60}
+        <button class="card show-all sy-mono" onclick={() => (showAll = true)}>
+          + {chapters.length - 60} more chapters
+        </button>
+      {/if}
     </div>
   </section>
 
   <footer class="foot sy-mono">
-    built by an Emacs batch <span class="sym">org-export</span> · graph modeled on
+    exported by an Emacs batch <span class="sym">org-export</span> · graph modeled on
     <span class="sym">org-roam</span> · stable <span class="sym">id:</span> citations,
     readable by humans and LLMs alike —
     <a class="mach" href="{store.base}/llms.txt">llms.txt</a>
@@ -115,89 +257,276 @@
   .home {
     height: calc(100dvh - var(--sy-header-h));
     overflow-y: auto;
-    padding: 3rem 1.5rem 4rem;
+    padding: 2.6rem 1.5rem 4rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 2.2rem;
   }
-  .hero { max-width: 62ch; text-align: center; }
+
+  /* ---------- hero ---------- */
+  /* Framed by .sy-hud corner brackets in the source's hue: the front door is
+     a target on the board, and its colour changes with the corpus you are in.
+     The ::before is a wide, low halo so the wordmark sits in a field of
+     signal rather than on empty page. */
+  .hero {
+    position: relative;
+    max-width: 68ch;
+    text-align: center;
+    isolation: isolate;
+    padding: 1.6rem 1.4rem 0.4rem;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -30% -12% -20%;
+    background:
+      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--sy-accent) 11%, transparent), transparent 70%),
+      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--sy-accent-2) 9%, transparent), transparent 70%);
+    filter: blur(8px);
+    pointer-events: none;
+  }
+  .kicker {
+    color: var(--sy-hot);
+    letter-spacing: 0.2em;
+    margin: 0 0 0.9rem;
+  }
   .wordmark {
-    font-size: clamp(2.6rem, 8vw, 4.5rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-family: var(--sy-font-display);
+    font-size: clamp(2.4rem, 8vw, 4.4rem);
+    /* Electrolize is single-weight; asking for 700 here only gets the
+       browser's fake bold, which is ugly at display size. */
+    font-weight: 400;
+    /* Display face, tight tracking, uppercase: the brand mark. The letters
+       are the glitch's real text — the ::before/::after ghosts in .sy-glitch
+       carry the same string from data-text. */
+    letter-spacing: 0.02em;
     color: var(--sy-fg);
-    text-shadow: 0 0 34px color-mix(in srgb, var(--sy-accent) 30%, transparent);
+    text-shadow: 0 0 30px color-mix(in srgb, var(--sy-accent) 26%, transparent);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
   }
+  .wordmark .mark { width: 0.55em; height: 0.55em; flex: none; }
   .tagline {
     color: var(--sy-accent);
-    letter-spacing: 0.16em;
-    font-size: 0.82rem;
-    margin: 0.3rem 0 1.2rem;
+    letter-spacing: 0.14em;
+    font-size: 0.75rem;
+    text-transform: lowercase;
+    margin: 0.5rem 0 1.2rem;
   }
-  .lede { color: var(--sy-fg-muted); font-size: 1.02rem; line-height: 1.6; margin: 0; }
+  .lede { color: var(--sy-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
   .lede strong { color: var(--sy-fg); }
+  .lede .sy-mono { font-size: 0.9em; color: var(--sy-accent-2); }
+  /* The hero readout: a bordered panel of real numbers, left-aligned inside a
+     centered hero and wide enough that the columns never wrap on a laptop. */
   .stats {
-    display: flex;
-    gap: 0.7em;
-    justify-content: center;
+    width: min(46rem, 100%);
     margin-top: 1.4rem;
-    font-size: 0.82rem;
+    text-align: left;
+    display: grid;
+    gap: 0.7rem;
+    padding: 1.1rem 1.3rem 1.2rem;
+    background: var(--sy-bg-raise);
+    border: 1px solid var(--sy-border);
+    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    border-radius: 3px;
+  }
+  .stats-hd {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
     color: var(--sy-fg-muted);
   }
-  .stats b { color: var(--sy-accent-2); font-size: 1.05em; }
-  .stats .dot { color: var(--sy-border-strong); }
+  .stats-hd .sy-neuron-mark { width: 0.7em; height: 0.7em; }
+  .stats .note { margin: 0; font-size: 0.78rem; color: var(--sy-fg-muted); }
+  /* The readout is monospace: digits that do not shift width between builds are
+     the difference between a machine's count and a sentence about a count. */
+  .stats .sy-kv { font-family: var(--sy-font-mono); font-size: 0.84rem; }
+  /* Resume: a labelled row, not a command line. The label says what it does,
+     the value says where it goes. */
+  .resume {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7em;
+    font-family: var(--sy-font-mono);
+    font-size: 0.82rem;
+    text-align: left;
+    color: var(--sy-fg-muted);
+    background: color-mix(in srgb, var(--sy-accent) 7%, transparent);
+    border: 1px solid var(--sy-border);
+    border-radius: 3px;
+    padding: 0.5em 0.8em;
+    cursor: pointer;
+  }
+  .resume:hover {
+    border-color: var(--sy-accent);
+    color: var(--sy-accent);
+  }
+  .resume .r-lab {
+    text-transform: uppercase;
+    letter-spacing: var(--sy-track);
+    font-size: 0.68rem;
+    color: var(--sy-src, var(--sy-accent));
+  }
+  .resume .r-to { color: var(--sy-fg); overflow-wrap: anywhere; }
+  .resume:hover .r-to { text-decoration: underline; }
+  .resume .r-go { margin-left: auto; }
+  @media (max-width: 700px) {
+    .stats { padding: 0.9rem 1rem; }
+  }
 
+  /* ---------- sources strip: the aggregator, shown not told ---------- */
+  .sources { width: min(68rem, 100%); }
+
+  /* ---------- marked sections ---------- */
+  .saved { width: min(68rem, 100%); margin-top: 1.2rem; }
+  .saved .section-h { margin-bottom: 0.5rem; }
+  .mk-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .mk {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45em;
+    font: inherit;
+    letter-spacing: var(--sy-track);
+    text-align: left;
+    color: var(--sy-fg);
+    background: color-mix(in srgb, var(--sy-accent) 6%, transparent);
+    border: 1px solid var(--sy-border);
+    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    border-radius: 2px;
+    padding: 0.3em 0.7em;
+    cursor: pointer;
+  }
+  .mk:hover {
+    border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 60%, transparent);
+    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 12%, transparent);
+  }
+  .mk .mk-src { color: var(--sy-src, var(--sy-accent)); }
+  .mk .mk-to { color: var(--sy-fg-faint); }
+  .sources h2, .section-h { color: var(--sy-fg-muted); margin: 0 0 0.7rem; }
+  .hint { color: var(--sy-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
+  .src-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0.5rem;
+  }
+  .src-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25em;
+    text-align: left;
+    color: var(--sy-fg);
+    background: color-mix(in srgb, var(--sy-bg-raise) 80%, transparent);
+    border: 1px solid color-mix(in srgb, var(--sy-src, var(--sy-accent)) 26%, transparent);
+    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    border-radius: 2px;
+    padding: 0.7em 0.8em;
+    cursor: pointer;
+    transition: border-color 120ms, box-shadow 120ms, background 120ms;
+  }
+  .src-card:hover {
+    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 9%, transparent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 22%, transparent);
+  }
+  .src-name { font-size: 0.85rem; font-weight: 600; color: var(--sy-src, var(--sy-fg)); letter-spacing: 0.03em; }
+  .src-meta { font-size: 0.68rem; color: var(--sy-fg-faint); letter-spacing: 0.06em; }
+  .src-open {
+    position: absolute;
+    right: 0.7em;
+    top: 0.7em;
+    font-size: 0.68rem;
+    font-family: var(--sy-font-mono);
+    color: var(--sy-src, var(--sy-accent));
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+  .src-card:hover .src-open { opacity: 1; }
+  .none { color: var(--sy-fg-faint); font-size: 0.78rem; margin: 0; }
+
+  /* ---------- jump box ---------- */
   .search-wrap { width: min(46rem, 100%); }
   .search-box {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.6em;
-    background: var(--sy-bg-raise);
+    background: var(--sy-bg-sunken);
     border: 1px solid var(--sy-border-strong);
-    border-radius: var(--sy-radius);
+    border-radius: 2px;
     padding: 0.7em 1em;
+    transition: border-color 120ms, box-shadow 120ms;
   }
   .search-box:focus-within {
-    border-color: var(--sy-accent-dim);
-    box-shadow: 0 0 22px color-mix(in srgb, var(--sy-accent) 20%, transparent);
+    border-color: var(--sy-accent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sy-accent) 30%, transparent),
+      0 0 22px color-mix(in srgb, var(--sy-accent) 20%, transparent);
   }
-  .prompt { color: var(--sy-accent); font-size: 0.85rem; }
+  /* PS1 sits outside the input, so only the path part may shrink. */
+  .prompt { flex: none; font-size: 0.8rem; }
   .search-box input {
     flex: 1;
+    min-width: 0;
     background: none;
     border: none;
     color: var(--sy-fg);
-    font-size: 1rem;
+    font-family: var(--sy-font-mono);
+    font-size: 0.9rem;
+    caret-color: var(--sy-accent);
   }
   .search-box input:focus { outline: none; }
+  .search-box .prompt { color: var(--sy-fg-muted); font-size: 1rem; }
+  @media (max-width: 520px) {
+    .search-box .prompt { display: none; }
+  }
   .results {
     list-style: none;
     margin: 0.4rem 0 0;
     padding: 0.3rem;
     background: var(--sy-bg-raise);
     border: 1px solid var(--sy-border);
-    border-radius: var(--sy-radius);
+    border-radius: 2px;
   }
   .results li button {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
     width: 100%;
     text-align: left;
     font-family: var(--sy-font-prose);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--sy-fg);
     background: none;
     border: none;
-    border-radius: 4px;
+    border-radius: 2px;
     padding: 0.45em 0.7em;
     cursor: pointer;
   }
-  .results li button:hover { background: color-mix(in srgb, var(--sy-accent) 12%, transparent); color: var(--sy-accent); }
-  .stub { font-size: 0.72rem; color: var(--sy-fg-faint); margin-left: 0.6em; }
-  .none { padding: 0.5em 0.7em; color: var(--sy-fg-faint); }
+  .results li button:hover { background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 12%, transparent); color: var(--sy-src, var(--sy-accent)); }
+  /* The source's hue as a dot: you see which corpus a hit belongs to before
+     you read its title. */
+  .results .dot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--sy-src, var(--sy-accent));
+    box-shadow: 0 0 8px var(--sy-src, var(--sy-accent));
+  }
+  .stub { font-size: 0.72rem; color: var(--sy-fg-faint); margin-left: auto; }
+  .results .none { padding: 0.5em 0.7em; color: var(--sy-fg-faint); }
 
-  .cta-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  /* ---------- CTAs ---------- */
+  .cta-row { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
   .cta {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -205,48 +534,104 @@
     min-width: 15rem;
     text-align: left;
     color: var(--sy-fg);
-    background: var(--sy-bg-raise);
-    border: 1px solid var(--sy-border-strong);
-    border-radius: var(--sy-radius);
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--sy-src, var(--sy-accent)) 9%, transparent),
+        transparent 55%),
+      var(--sy-bg-raise);
+    border: 1px solid color-mix(in srgb, var(--sy-src, var(--sy-accent)) 34%, transparent);
     padding: 0.9em 1.1em;
     cursor: pointer;
+    overflow: hidden;
     transition: transform 120ms, box-shadow 120ms, border-color 120ms;
   }
-  .cta:hover { transform: translateY(-2px); border-color: var(--sy-accent-dim); box-shadow: 0 8px 24px color-mix(in srgb, var(--sy-accent) 16%, transparent); }
-  .cta.primary { border-color: var(--sy-accent-dim); }
-  .cta-k { font-size: 1.1rem; color: var(--sy-accent-2); }
-  .cta-k.spark { color: var(--sy-accent); }
-  .cta-t { font-family: var(--sy-font-mono); font-weight: 600; }
-  .cta-s { font-size: 0.78rem; color: var(--sy-fg-muted); }
-
-  .chapters-grid { width: min(64rem, 100%); }
-  .section-h {
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--sy-fg-muted);
-    margin: 0 0 0.8rem;
+  /* Sheen: a hard-edged light sweep, clipped to the notched shape — the
+     "charge" before you follow the link. Transform-only, so it stays cheap. */
+  .cta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg,
+      transparent 38%,
+      color-mix(in srgb, var(--sy-src, var(--sy-accent)) 22%, transparent) 50%,
+      transparent 62%);
+    transform: translateX(-130%);
+    transition: transform 500ms ease;
+    pointer-events: none;
   }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.6rem; }
+  .cta:hover::after { transform: translateX(130%); }
+  .cta:hover {
+    transform: translateY(-2px);
+    border-color: var(--sy-src, var(--sy-accent));
+    box-shadow: 0 0 22px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 20%, transparent);
+  }
+  .cta-k { font-size: 1.1rem; color: var(--sy-src, var(--sy-accent-2)); }
+  .cta-k.spark { color: var(--sy-hot); }
+  .cta-t { font-family: var(--sy-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
+  .cta-s { font-size: 0.75rem; color: var(--sy-fg-muted); }
+  .cta.graph { border-style: dashed; }
+
+  /* ---------- contents grid ---------- */
+  .chapters-grid { width: min(68rem, 100%); }
+  .contents-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.8rem;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.5rem; }
   .card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.4em;
     text-align: left;
     font-family: var(--sy-font-prose);
     color: var(--sy-fg);
-    background: color-mix(in srgb, var(--sy-bg-raise) 70%, transparent);
+    background: color-mix(in srgb, var(--sy-bg-raise) 72%, transparent);
     border: 1px solid var(--sy-border);
-    border-radius: var(--sy-radius);
-    padding: 0.8em 0.9em;
+    border-radius: 2px;
+    padding: 0.75em 0.85em 0.75em 1em;
     cursor: pointer;
-    transition: border-color 120ms, background 120ms;
+    overflow: hidden;
+    transition: border-color 120ms, background 120ms, box-shadow 120ms, transform 120ms;
   }
-  .card:hover { border-color: var(--sy-accent-dim); background: color-mix(in srgb, var(--sy-accent) 8%, transparent); }
-  .card-title { font-size: 0.9rem; }
-  .card-deg { align-self: flex-end; font-size: 0.68rem; color: var(--sy-accent-2); }
+  /* The lit edge: a hairline bar grows out of the card's left edge on hover,
+     in that chapter's source hue — the DOM echo of an axon leaving a soma. */
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2px;
+    height: 0;
+    background: var(--sy-src, var(--sy-accent));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 65%, transparent);
+    transform: translateY(-50%);
+    transition: height 160ms ease;
+  }
+  .card:hover {
+    border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 45%, transparent);
+    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 7%, transparent);
+    transform: translateY(-1px);
+  }
+  .card:hover::before { height: 72%; }
+  .show-all {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--sy-accent);
+    border-style: dashed;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+  .card-title { font-size: 0.88rem; }
+  .card-deg { align-self: flex-end; font-size: 0.66rem; color: var(--sy-fg-faint); letter-spacing: 0.06em; }
+  .card:hover .card-deg { color: var(--sy-src, var(--sy-accent)); }
 
-  .foot { max-width: 60ch; text-align: center; font-size: 0.72rem; color: var(--sy-fg-faint); line-height: 1.9; }
+  .foot { max-width: 60ch; text-align: center; font-size: 0.7rem; color: var(--sy-fg-faint); line-height: 1.9; letter-spacing: 0.04em; }
   .foot .sym { color: var(--sy-accent-dim); }
   .foot .mach {
     color: var(--sy-accent-2);

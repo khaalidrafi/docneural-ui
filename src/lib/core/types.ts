@@ -48,3 +48,23 @@ export type GraphData = {
   nodes: DocNode[]
   links: DocLink[]
 }
+
+/** A hover/long-press peek card, already measured by the reader: where the
+ *  pointer is and which wire it is on. `why` is NOT stored here on purpose —
+ *  the citation sentence arrives with the ctx file, so the card reads it from
+ *  the store and updates the moment it lands. See reader/LinkPeek.svelte. */
+export type Peek = {
+  x: number
+  y: number
+  fromId: string
+  toId: string
+  degree: number
+}
+
+/** The two graph layouts, named from the visitor's question. `cluster` keeps
+ *  force-graph's own defaults and shows how a corpus hangs together; `spread`
+ *  pushes every node far enough from its neighbours that its title can be
+ *  read, which is what makes an overview say anything at all. Lives here (not
+ *  in graph/neuronEngine.ts) because the store must name it without importing
+ *  the canvas module into the boot chunk. */
+export type LayoutMode = 'cluster' | 'spread'
