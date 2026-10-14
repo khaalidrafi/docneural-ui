@@ -12,11 +12,13 @@
 // no page of its own) are transparently followed to their canonical home.
 
 import type { DocLink, DocNode, GraphData, LayoutMode } from './types'
-import { coCitations, egoGraph, filteredGraph, localGraph, nodeViews, type NodeView } from './graph'
+import { coCitations, egoGraph, filteredGraph, learnPath, localGraph, nodeViews, relatedNow, type NodeView } from './graph'
+import { rankEntries, type SearchEntry, type SearchHit } from './search'
 import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
 import { loadLayout, writeLayout } from './layout'
 import { loadSaved, writeSaved, type SavedMark } from './saved'
+import { loadVisited, writeVisited } from './visited'
 
 export type Mode = 'graph' | 'reader'
 
@@ -78,6 +80,25 @@ export class DocneuralStore {
   }
   isSaved(slug: string, anchor: string | null): boolean {
     return this.saved.some((m) => m.slug === slug && m.anchor === (anchor ?? null))
+  }
+
+  /** Slugs this reader has opened (core/visited.ts), newest last. Gives the
+   *  sidebar its dots and the learn strip its percentage. */
+  visited = $state<string[]>(loadVisited())
+  private noteVisit(slug: string): void {
+    if (this.visited.includes(slug)) return
+    this.visited = writeVisited(this.visited, slug)
+  }
+
+  /** "You have read 41% of The Org Manual": visited real chapters over the
+   *  active manual's real chapters. 0 when there is nothing to divide. */
+  manualProgress(): number {
+    const content = this.data.nodes.filter(
+      (n) => !n.stub && (!this.manual || !n.tags[0] || n.tags[0] === this.manual)
+    )
+    if (!content.length) return 0
+    const seen = new Set(this.visited)
+    return content.filter((n) => seen.has(n.slug)).length / content.length
   }
 
   // Graph-mode UI filter state (ported from org-roam-lite-ui filters).
@@ -383,6 +404,7 @@ export class DocneuralStore {
    *  The URL keeps the slug the reader asked for, so ?doc=<stub> stays a
    *  valid, shareable deep link even though a different chapter renders. */
   goto(doc: DocNode, mode?: Mode, anchor?: string | null): void {
+    this.noteVisit(doc.slug)
     if (mode) this.mode = mode
     // Opening a doc retargets the TOC to its manual — the sidebar you see
     // is the one containing the page you are reading (a palette jump from
@@ -441,6 +463,50 @@ export class DocneuralStore {
       /* a hand-typed % in the hash is not worth losing the page over */
     }
     this.goto(doc, undefined, anchor)
+  }
+
+  // Heading index, per manual, lazy (search/<manual>.json — built by the
+  // site's build-search.mjs from the already-exported fragments). Same
+  // fetch-on-demand contract as ctx/: ~1.8 MB for a 30k-heading manual
+  // arrives only when that manual is active.
+  searchIndex = $state<Record<string, SearchEntry[]>>({})
+  private searchInflight = new Set<string>()
+
+  loadSearch(manual: string): void {
+    if (!manual || this.searchIndex[manual] || this.searchInflight.has(manual)) return
+    this.searchInflight.add(manual)
+    void (async () => {
+      try {
+        const res = await fetch(`${this.base}/search/${manual || 'corpus'}.json`)
+        if (res.ok) this.searchIndex = { ...this.searchIndex, [manual]: await res.json() }
+      } catch {
+        /* no index for this manual: title-only search degrades gracefully */
+      } finally {
+        this.searchInflight.delete(manual)
+      }
+    })()
+  }
+
+  /** Section-level hits for the palette: BM25 over the active manual's
+   *  heading index. Kicks off the fetch on first keystroke; results
+   *  arrive on the next repaint once the file lands. */
+  headingHits(q: string, limit = 12): SearchHit[] {
+    const needle = q.trim()
+    if (!needle) return []
+    this.loadSearch(this.manual)
+    const idx = this.searchIndex[this.manual]
+    return idx ? rankEntries(idx, needle, limit) : []
+  }
+
+  /** "Reads like this" for the page on screen — co-citation based, so a
+   *  hub chapter with 792 backlinks still gets a MEANINGFUL list. */
+  relatedOf(id: string | undefined): { node: DocNode; score: number; shared: number }[] {
+    return id ? relatedNow(this.data, id) : []
+  }
+
+  /** "N pages before this one": pages that cite into `id`, transitively. */
+  pathOf(id: string | undefined): { before: number; citers: DocNode[] } {
+    return id ? learnPath(this.data, id) : { before: 0, citers: [] }
   }
 
   /** Case-insensitive title search over every node (palette + rail filter). */

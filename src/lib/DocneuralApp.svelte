@@ -283,6 +283,8 @@
         <dt>y</dt><dd>copy a link to exactly where you are reading</dd>
         <dt>b</dt><dd>mark this section — they wait on the front door</dd>
         <dt>v</dt><dd>distraction-free: hide the panels, esc brings them back</dd>
+        <dt>r</dt><dd>read this section aloud (the OS voice; r again stops)</dd>
+        <dt>p</dt><dd>build a context pack from the chapters you ticked</dd>
         <dt>click a heading</dt><dd>copy a link to that section</dd>
         <dt>?</dt><dd>this keymap</dd>
         <dt>esc</dt><dd>close overlays</dd>
