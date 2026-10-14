@@ -6,15 +6,15 @@
 // and that colour is not invented here: org-roam-lite-ui paints a graph node
 // with `palette[hashString(firstTag) % palette.length]` (see
 // orui/graph/colors.ts), where `palette` is the literal comma list our theme
-// carries as --sy-graph-palette. Hashing the same way against the same list
+// carries as --dn-graph-palette. Hashing the same way against the same list
 // means a source's chip, its tab, its heading sigil and its neurons on the
 // canvas are provably ONE colour — no second palette to drift out of sync.
 //
 // hashString must stay byte-identical to orui's: it is what makes the DOM hue
 // and the canvas hue agree, and changing either one silently decouples them.
 //
-// Colour reaches the DOM as an inline `--sy-src` custom property (CSS cannot
-// compute a hash), and every rule in synapt.css reads `var(--sy-src, ...)`
+// Colour reaches the DOM as an inline `--dn-src` custom property (CSS cannot
+// compute a hash), and every rule in docneural-ui.css reads `var(--dn-src, ...)`
 // with the theme accent as the fallback, so an element with no source still
 // looks finished.
 
@@ -61,7 +61,7 @@ export function sourceTitle(tag: string | undefined): string {
     .join(' ')
 }
 
-// --sy-graph-palette is read through getComputedStyle, which resolves the
+// --dn-graph-palette is read through getComputedStyle, which resolves the
 // var()/theme cascade for us — so this returns the ACTIVE theme's list, and a
 // theme flip changes the DOM hues the same way it changes the canvas: within
 // the poll window. 500 ms matches GraphView's own canvas-token poll exactly,
@@ -77,7 +77,7 @@ export function graphPalette(): string[] {
   if (!parsed || now - readAt > 500) {
     readAt = now
     const raw = getComputedStyle(document.documentElement)
-      .getPropertyValue('--sy-graph-palette')
+      .getPropertyValue('--dn-graph-palette')
       .trim()
     // Reuse the previous array when the list did not change: components call
     // this per row, and a theme flip is the only event that invalidates it.
@@ -89,8 +89,8 @@ export function graphPalette(): string[] {
 
 /** The colour one source wears, everywhere. null when there is no palette to
  *  index (a theme that cleared it, or a headless test with no styles) — the
- *  caller then falls back to the theme accent, which is what `var(--sy-src,
- *  var(--sy-accent))` already does in CSS. */
+ *  caller then falls back to the theme accent, which is what `var(--dn-src,
+ *  var(--dn-accent))` already does in CSS. */
 export function sourceColor(tag: string | undefined): string | null {
   if (!tag) return null
   const p = graphPalette()
@@ -100,9 +100,9 @@ export function sourceColor(tag: string | undefined): string | null {
 
 /** Inline `style` attribute value carrying the source hue for one element's
  *  subtree. Use as `style={sourceVars(m)}` on a container: every descendant
- *  rule that reads var(--sy-src) picks it up, so a card, its chip and its
+ *  rule that reads var(--dn-src) picks it up, so a card, its chip and its
  *  hover glow all take the source's colour from one attribute. */
 export function sourceVars(tag: string | undefined): string {
   const c = sourceColor(tag)
-  return c ? `--sy-src:${c}` : ''
+  return c ? `--dn-src:${c}` : ''
 }

@@ -3,7 +3,7 @@
 // pager that must skip stubs. These run in node; the URL/fetch side of `goto`
 // is exercised with tiny global stubs, not jsdom.
 import { beforeEach, describe, expect, it } from 'vitest'
-import { SynaptStore } from './store.svelte'
+import { DocneuralStore } from './store.svelte'
 import type { DocNode, GraphData } from './types'
 
 function node(p: Partial<DocNode> & { id: string }): DocNode {
@@ -44,7 +44,7 @@ beforeEach(() => {
 
 describe('chapters', () => {
   it('excludes stubs and orders by the next-chain, heads first', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     const ids = store.chapters.map((n) => n.id)
     // Main chain walked from its head (c1); stubs (s, r) never appear.
@@ -53,7 +53,7 @@ describe('chapters', () => {
     expect(ids).not.toContain('r')
   })
   it('walks chain heads in id order, so a manual Top opens first', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     // Array order deliberately fights id order: the fragment head sorts
     // before the Top node in the array, but ids are `<manual>--<file>'
     // so the Top itself (bare manual id) must win the head walk. Without
@@ -74,14 +74,14 @@ describe('chapters', () => {
 
 describe('contentSibling pager', () => {
   it('returns the next real chapter', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     store.selected = store.byId('c1')
     expect(store.nextChapter()?.id).toBe('c2')
     expect(store.prevChapter()).toBeUndefined()
   })
   it('skips a stub: a chapter whose next is a stub has no next chapter', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     store.selected = store.byId('c4') // c4.next === 's' (a stub)
     expect(store.nextChapter()).toBeUndefined()
@@ -90,7 +90,7 @@ describe('contentSibling pager', () => {
 
 describe('goto', () => {
   it('selects a normal doc and clears redirect state', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     store.goto(store.byId('c1')!)
     expect(store.selected?.id).toBe('c1')
@@ -99,7 +99,7 @@ describe('goto', () => {
     expect(lastUrl).toContain('doc=c1')
   })
   it('follows a stub redirect: renders the canonical chapter, remembers origin + anchor, keeps the stub slug in the URL', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     const stub = store.byId('r')!
     store.goto(stub)
@@ -113,7 +113,7 @@ describe('goto', () => {
 
 describe('goHome', () => {
   it('returns to reader mode with nothing selected and no deep link', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     store.goto(store.byId('c1')!)
     store.setMode('graph')
@@ -127,7 +127,7 @@ describe('goHome', () => {
 
 describe('search', () => {
   it('is a case-insensitive title substring search with a limit', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = fixture()
     expect(store.search('chapter').map((n) => n.id).sort()).toEqual(['c1', 'c2', 'c3', 'c4'])
     expect(store.search('SIDE')).toEqual(['c4'].map((id) => store.byId(id)!))
@@ -139,7 +139,7 @@ describe('search', () => {
 
 describe('lite tier', () => {
   it('cannot be forced into graph mode', () => {
-    const store = new SynaptStore('.', true)
+    const store = new DocneuralStore('.', true)
     store.data = fixture()
     store.setMode('graph')
     expect(store.lite).toBe(true)
@@ -163,13 +163,13 @@ describe('manual scoping', () => {
   }
 
   it('manuals lists corpora in first-seen order', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = multiFixture()
     expect(store.manuals).toEqual(['alpha', 'beta'])
   })
 
   it('chapters scopes to the active manual, and an empty manual shows all', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = multiFixture()
     store.manual = 'beta'
     expect(store.chapters.map((n) => n.id)).toEqual(['b1', 'b2'])
@@ -178,7 +178,7 @@ describe('manual scoping', () => {
   })
 
   it('goto retargets the TOC to the doc manual (palette jumps carry it)', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = multiFixture()
     store.manual = 'alpha'
     store.goto(store.byId('b1')!)
@@ -187,7 +187,7 @@ describe('manual scoping', () => {
   })
 
   it('showManual lands an open reader on the other manual first chapter', () => {
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = multiFixture()
     store.goto(store.byId('a1')!)
     store.showManual('beta')
@@ -201,7 +201,7 @@ describe('manual scoping', () => {
 
   it('load leaves manual empty for untagged data (single-corpus stays unscoped)', async () => {
     ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search: '' }
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     await store.load() // the beforeEach fetch stub serves `fixture()` (no tags)
     expect(store.ready).toBe(true)
     expect(store.manual).toBe('')
@@ -211,15 +211,15 @@ describe('manual scoping', () => {
   it('manualTitle renders the reader-facing label', () => {
     // Real project names, no invented " Manual" suffix: the site hosts
     // arbitrary corpora, so the label is whatever the project calls itself.
-    expect(SynaptStore.manualTitle('org')).toBe('Org')
-    expect(SynaptStore.manualTitle('emacs')).toBe('GNU Emacs')
-    expect(SynaptStore.manualTitle('std_docs')).toBe('Std Docs')
-    expect(SynaptStore.manualTitle('')).toBe('')
+    expect(DocneuralStore.manualTitle('org')).toBe('Org')
+    expect(DocneuralStore.manualTitle('emacs')).toBe('GNU Emacs')
+    expect(DocneuralStore.manualTitle('std_docs')).toBe('Std Docs')
+    expect(DocneuralStore.manualTitle('')).toBe('')
   })
 
   it('sources reports per-corpus pages and wires, stubs excluded', async () => {
     ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search: '' }
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     store.data = {
       nodes: [
         { id: 'a1', slug: 'a--1', title: 'A one', tags: ['alpha'] },
@@ -244,7 +244,7 @@ describe('?mode=graph deep link', () => {
       href: 'http://site.test/',
       search: '?mode=graph'
     }
-    const store = new SynaptStore()
+    const store = new DocneuralStore()
     await store.load()
     expect(store.ready).toBe(true)
     expect(store.mode).toBe('graph')
@@ -254,7 +254,7 @@ describe('?mode=graph deep link', () => {
       href: 'http://site.test/',
       search: '?mode=graph'
     }
-    const store = new SynaptStore('.', true)
+    const store = new DocneuralStore('.', true)
     await store.load()
     expect(store.mode).toBe('reader')
   })

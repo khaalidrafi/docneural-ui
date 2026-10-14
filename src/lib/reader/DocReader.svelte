@@ -8,12 +8,12 @@
   import SynapseRail from './SynapseRail.svelte'
   import LinkPeek from './LinkPeek.svelte'
   import { onMount } from 'svelte'
-  import { SynaptStore } from '../core/store.svelte'
+  import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import { copyText } from '../core/clipboard'
   import type { DocNode, Peek } from '../core/types'
 
-  let { store }: { store: SynaptStore } = $props()
+  let { store }: { store: DocneuralStore } = $props()
 
   const doc = $derived(store.selected)
   const html = $derived(doc ? store.bodies.get(doc.slug) : undefined)
@@ -42,7 +42,7 @@
   // title as the leaf of the breadcrumb.
   const crumbTitle = $derived(store.origin?.title ?? doc?.title ?? '')
   // The whole reader wears ONE hue: the corpus this page came from. It rides
-  // down through --sy-src so the article's heading sigils, the rail's
+  // down through --dn-src so the article's heading sigils, the rail's
   // mini-map frame and the pager all take that colour — you always know
   // which source you are inside without reading a label.
   const srcVars = $derived(sourceVars(doc?.tags[0] ?? store.manual))
@@ -67,10 +67,10 @@
   function flash(el: Element | null | undefined): void {
     if (!el) return
     el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    el.classList.remove('sy-flash')
+    el.classList.remove('dn-flash')
     void (el as HTMLElement).offsetWidth // restart the animation
-    el.classList.add('sy-flash')
-    el.addEventListener('animationend', () => el.classList.remove('sy-flash'), { once: true })
+    el.classList.add('dn-flash')
+    el.addEventListener('animationend', () => el.classList.remove('dn-flash'), { once: true })
   }
   function scrollTo(id: string): void {
     flash(proseEl?.querySelector(`#${CSS.escape(id)}`))
@@ -192,7 +192,7 @@
     const raw = new URL(`${store.base}/docs/${doc.slug}.org`, location.href).toString()
     const head =
       `# ${doc.title}\n` +
-      `Source: org-docs · ${doc.tags[0] ?? 'corpus'} · ${linkFor(null)}\n` +
+      `Source: docneural · ${doc.tags[0] ?? 'corpus'} · ${linkFor(null)}\n` +
       `Raw Org: ${raw}\n\n`
     return head + (proseEl.innerText ?? '').trim() + '\n'
   }
@@ -271,7 +271,7 @@
     if (slug) store.notePosition(slug, activeId)
   })
 
-  // Reader keys live here, not in SynaptApp's app-level layer, because only
+  // Reader keys live here, not in DocneuralApp's app-level layer, because only
   // this component knows the article element, which box scrolls, and which
   // heading is at the top of the screen.
   onMount(() => {
@@ -436,7 +436,7 @@
          transform-only, so it costs the compositor nothing. -->
     <div class="prog" bind:this={barEl} aria-hidden="true"></div>
     {#if doc}
-      <nav class="crumbs sy-mono" aria-label="Breadcrumb">
+      <nav class="crumbs dn-mono" aria-label="Breadcrumb">
         <button class="menu" onclick={() => (drawer = true)} aria-label="Open contents">☰</button>
         <!-- A path, not a label: the corpus is a directory, the chapters are
              what is under it. `~/` says you started at the front door, which
@@ -470,13 +470,13 @@
       </nav>
 
       {#if html === undefined}
-        <p class="loading sy-mono">loading this chapter…</p>
+        <p class="loading dn-mono">loading this chapter…</p>
       {:else if html === null}
         <!-- A static file the export never produced. Say which file is
              missing and what to run, in plain words. -->
-        <p class="missing sy-mono">This chapter has no page yet — the export did not produce <code>docs/{doc.slug}.html</code>. Run <code>make export &amp;&amp; make build</code>.</p>
+        <p class="missing dn-mono">This chapter has no page yet — the export did not produce <code>docs/{doc.slug}.html</code>. Run <code>make export &amp;&amp; make build</code>.</p>
       {:else}
-        <div class="sy-org" bind:this={proseEl} role="presentation"
+        <div class="dn-org" bind:this={proseEl} role="presentation"
              onclick={onContentClick}
              onpointerover={onPeekMove} onpointerout={onPeekLeave}
              onpointerdown={onPeekDown} onpointerup={onPeekUp}
@@ -500,7 +500,7 @@
         </nav>
       {/if}
     {:else}
-      <p class="sy-mono">select a chapter</p>
+      <p class="dn-mono">select a chapter</p>
     {/if}
   </div>
 
@@ -511,25 +511,25 @@
   <LinkPeek {store} {peek} />
 
   {#if note}
-    <p class="note sy-mono" role="status" aria-live="polite">{note}</p>
+    <p class="note dn-mono" role="status" aria-live="polite">{note}</p>
   {/if}
 </div>
 
 <style>
   .reader {
     display: grid;
-    grid-template-columns: var(--sy-side-w) minmax(0, 1fr) var(--sy-panel-w);
-    height: calc(100dvh - var(--sy-header-h));
+    grid-template-columns: var(--dn-side-w) minmax(0, 1fr) var(--dn-panel-w);
+    height: calc(100dvh - var(--dn-header-h));
     min-height: 0;
   }
   /* Distraction-free (v): one column, and the article keeps its own measure
-     (max-width lives on .sy-prose), so this is purely about removing the two
+     (max-width lives on .dn-prose), so this is purely about removing the two
      panels — nothing re-lays-out, nothing re-renders. */
   .reader.zen { grid-template-columns: minmax(0, 1fr); }
   /* Tablet: sidebar + article; the rail's own scoped CSS drops it (its
      content reappears stacked on phones, see SynapseRail). */
   @media (max-width: 1100px) {
-    .reader { grid-template-columns: var(--sy-side-w) minmax(0, 1fr); }
+    .reader { grid-template-columns: var(--dn-side-w) minmax(0, 1fr); }
   }
   /* Phone: single column; sidebar becomes an off-canvas drawer opened by
      the ☰ button in the breadcrumb row. */
@@ -540,16 +540,16 @@
     }
     .side {
       position: fixed;
-      top: var(--sy-header-h);
+      top: var(--dn-header-h);
       bottom: 0;
       left: 0;
       width: min(78vw, 20rem);
       z-index: 30;
       transform: translateX(-105%);
       transition: transform 160ms ease;
-      background: var(--sy-bg);
-      border-right: 1px solid var(--sy-border-strong);
-      box-shadow: 0 0 40px color-mix(in srgb, var(--sy-bg-sunken) 80%, transparent);
+      background: var(--dn-bg);
+      border-right: 1px solid var(--dn-border-strong);
+      box-shadow: 0 0 40px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
     }
     .side.open { transform: none; }
     .doc-main {
@@ -560,18 +560,18 @@
   }
   .scrim {
     position: fixed;
-    inset: var(--sy-header-h) 0 0 0;
+    inset: var(--dn-header-h) 0 0 0;
     z-index: 29;
-    background: color-mix(in srgb, var(--sy-bg-sunken) 55%, transparent);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 55%, transparent);
   }
   .menu {
     display: none;
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.85rem;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: none;
-    border: 1px solid var(--sy-border);
-    border-radius: var(--sy-radius);
+    border: 1px solid var(--dn-border);
+    border-radius: var(--dn-radius);
     padding: 0.1em 0.55em;
     cursor: pointer;
   }
@@ -595,8 +595,8 @@
     margin-bottom: -2px;
     background: linear-gradient(
       90deg,
-      var(--sy-src, var(--sy-accent)),
-      var(--sy-accent-2)
+      var(--dn-src, var(--dn-accent)),
+      var(--dn-accent-2)
     );
     transform: scaleX(0);
     transform-origin: 0 50%;
@@ -611,12 +611,12 @@
     max-width: min(90vw, 34rem);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
-    color: var(--sy-fg);
-    background: var(--sy-bg-sunken);
-    border: 1px solid var(--sy-border-strong);
-    border-left: 2px solid var(--sy-accent);
+    color: var(--dn-fg);
+    background: var(--dn-bg-sunken);
+    border: 1px solid var(--dn-border-strong);
+    border-left: 2px solid var(--dn-accent);
     padding: 0.4rem 0.7rem;
-    animation: sy-rise 160ms ease-out;
+    animation: dn-rise 160ms ease-out;
   }
   .crumbs {
     display: flex;
@@ -624,26 +624,26 @@
     align-items: center;
     gap: 0.45rem;
     font-size: 0.7rem;
-    letter-spacing: var(--sy-track);
-    color: var(--sy-fg-faint);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg-faint);
     margin-bottom: 1.2rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--sy-border);
+    border-bottom: 1px solid var(--dn-border);
   }
   /* the channel you are on, as a path — and a path is never uppercased */
   .src-chip {
     font: inherit;
-    color: var(--sy-src, var(--sy-accent));
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--sy-src, var(--sy-accent)) 40%, transparent);
+    color: var(--dn-src, var(--dn-accent));
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent);
     border-radius: 2px;
     padding: 0.15em 0.6em;
     cursor: pointer;
   }
   .src-chip:hover {
-    box-shadow: 0 0 14px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 30%, transparent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 30%, transparent);
   }
-  .slash { color: var(--sy-border-strong); }
+  .slash { color: var(--dn-border-strong); }
   /* The affordance group, pushed to the right end of the crumb line so the
      path itself stays readable as a path. */
   .acts {
@@ -654,43 +654,43 @@
   }
   .cpy {
     font: inherit;
-    letter-spacing: var(--sy-track);
-    color: var(--sy-fg-faint);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg-faint);
     background: none;
-    border: 1px solid var(--sy-border);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.15em 0.6em;
     cursor: pointer;
     white-space: nowrap;
   }
   .cpy:hover {
-    color: var(--sy-accent);
-    border-color: color-mix(in srgb, var(--sy-accent) 45%, transparent);
+    color: var(--dn-accent);
+    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
   }
   /* A section you already marked stays lit — the state has to be visible, or
      `b` looks like a key that does nothing the second time. */
   .cpy.on {
-    color: var(--sy-hot);
-    border-color: color-mix(in srgb, var(--sy-hot) 55%, transparent);
-    background: color-mix(in srgb, var(--sy-hot) 10%, transparent);
+    color: var(--dn-hot);
+    border-color: color-mix(in srgb, var(--dn-hot) 55%, transparent);
+    background: color-mix(in srgb, var(--dn-hot) 10%, transparent);
   }
   .crumbs .raw {
-    letter-spacing: var(--sy-track);
-    color: var(--sy-accent-2);
+    letter-spacing: var(--dn-track);
+    color: var(--dn-accent-2);
     text-decoration: none;
-    border: 1px solid color-mix(in srgb, var(--sy-accent-2) 45%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-accent-2) 45%, transparent);
     border-radius: 2px;
     padding: 0.15em 0.6em;
     white-space: nowrap;
   }
   .crumbs .raw:hover {
-    color: var(--sy-bg);
-    background: var(--sy-accent-2);
-    box-shadow: var(--sy-glow-2);
+    color: var(--dn-bg);
+    background: var(--dn-accent-2);
+    box-shadow: var(--dn-glow-2);
   }
   .crumb {
     font: inherit;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
     background: none;
     border: none;
     padding: 0;
@@ -698,15 +698,15 @@
     text-transform: none;
     letter-spacing: normal;
   }
-  .crumb:hover { color: var(--sy-accent); }
-  .crumbs .sep { color: var(--sy-border-strong); }
+  .crumb:hover { color: var(--dn-accent); }
+  .crumbs .sep { color: var(--dn-border-strong); }
   .crumbs .here {
-    color: var(--sy-fg);
+    color: var(--dn-fg);
     letter-spacing: normal;
   }
-  .loading { color: var(--sy-fg-muted); }
-  .missing { color: var(--sy-amber); }
-  .missing code { font-family: var(--sy-font-mono); font-size: 0.92em; }
+  .loading { color: var(--dn-fg-muted); }
+  .missing { color: var(--dn-amber); }
+  .missing code { font-family: var(--dn-font-mono); font-size: 0.92em; }
 
   .pager {
     display: flex;
@@ -714,31 +714,31 @@
     gap: 1rem;
     margin-top: 3rem;
     padding-top: 1.2rem;
-    border-top: 1px solid var(--sy-border);
+    border-top: 1px solid var(--dn-border);
   }
   .pager-btn {
     display: flex;
     flex-direction: column;
     gap: 0.15em;
     max-width: 46%;
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     text-align: left;
-    color: var(--sy-fg);
-    background: var(--sy-bg-raise);
-    border: 1px solid var(--sy-border-strong);
+    color: var(--dn-fg);
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.6em 0.9em;
     cursor: pointer;
     transition: border-color 120ms, box-shadow 120ms;
   }
   /* notch the outer corner so the pager reads as HUD hardware, not cards */
-  .pager-btn.prev { clip-path: polygon(0 0, 100% 0, 100% 100%, var(--sy-notch) 100%, 0 calc(100% - var(--sy-notch))); }
-  .pager-btn.next { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--sy-notch)), calc(100% - var(--sy-notch)) 100%, 0 100%); }
+  .pager-btn.prev { clip-path: polygon(0 0, 100% 0, 100% 100%, var(--dn-notch) 100%, 0 calc(100% - var(--dn-notch))); }
+  .pager-btn.next { clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--dn-notch)), calc(100% - var(--dn-notch)) 100%, 0 100%); }
   .pager-btn:hover {
-    border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 60%, var(--sy-border-strong));
-    box-shadow: 0 0 18px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 24%, transparent);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, var(--dn-border-strong));
+    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 24%, transparent);
   }
   .pager-btn.next { text-align: right; align-items: flex-end; margin-left: auto; }
-  .pager-btn .dir { font-size: 0.62rem; color: var(--sy-fg-faint); letter-spacing: var(--sy-track); text-transform: uppercase; }
-  .pager-btn .pt { font-size: 0.85rem; color: var(--sy-src, var(--sy-accent)); }
+  .pager-btn .dir { font-size: 0.62rem; color: var(--dn-fg-faint); letter-spacing: var(--dn-track); text-transform: uppercase; }
+  .pager-btn .pt { font-size: 0.85rem; color: var(--dn-src, var(--dn-accent)); }
 </style>

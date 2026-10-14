@@ -1,6 +1,6 @@
 // The one conversion both graph mounts need: graph.json's DocNode/DocLink
 // shape (see core/types.ts) -> the org-roam-lite-ui `graphdata` wire shape
-// their store and GraphView consume. Kept out of the components so SynapsesGraph
+// their store and GraphView consume. Kept out of the components so DocneuralGraph
 // (hero mode) and the reader's SynapseRail mini-map share one mapping.
 //
 // Only id/title/tags survive the trip: GraphView, nodeColor and the filters
@@ -15,7 +15,7 @@ export function toRoam(g: GraphData): OrgRoamGraphReponse {
     file: n.slug,
     title: n.title,
     // level 0 = FILE node in roam's wire shape, and orui's default filter
-    // (maxLevel 0) shows file nodes only. Every synapt doc IS one .org file,
+    // (maxLevel 0) shows file nodes only. Every docneural-ui doc IS one .org file,
     // so this is both the truth and the only value that survives the filter
     // (level 1 here silently empties the canvas).
     level: 0,

@@ -12,7 +12,7 @@
 
 export type SavedMark = { slug: string; anchor: string | null; title: string; at: number }
 
-const KEY = 'org-docs:saved'
+const KEY = 'docneural:saved'
 /* Bound the list: an unbounded bookmark pile is a second, worse table of
    contents, and the storage write is JSON of the whole array. */
 const MAX = 24

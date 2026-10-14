@@ -1,4 +1,4 @@
-// Shared data contract between the host site (org-docs-website's export
+// Shared data contract between the host site (org-docs' export
 // pipeline) and the theme. The theme never talks to Emacs: everything it
 // needs is two static artifacts —
 //

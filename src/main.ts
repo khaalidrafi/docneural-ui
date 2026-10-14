@@ -1,4 +1,4 @@
-import '../styles/synapt.css'
+import '../styles/docneural-ui.css'
 import { mount } from 'svelte'
 import Demo from './Demo.svelte'
 

@@ -8,7 +8,7 @@
   // Styled as a terminal window: a title strip, a `>` prompt, rows tagged
   // with the SOURCE they belong to in that source's hue. The tag is the
   // point — in an aggregator, "Introduction" is ambiguous and "[ORG]" is not.
-  import { SynaptStore } from '../core/store.svelte'
+  import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import type { DocNode } from '../core/types'
 
@@ -17,7 +17,7 @@
     open = $bindable(false),
     onClose = () => {}
   }: {
-    store: SynaptStore
+    store: DocneuralStore
     open?: boolean
     onClose?: () => void
   } = $props()
@@ -49,7 +49,7 @@
         // "Introduction"; say which one a hit belongs to.
         hint: n.redirect
           ? `§ ${n.redirect.slug}`
-          : (SynaptStore.manualTitle(n.tags[0] ?? '') || 'chapter').toUpperCase(),
+          : (DocneuralStore.manualTitle(n.tags[0] ?? '') || 'chapter').toUpperCase(),
         src: n.tags[0] ?? ''
       }))
     const cmds: Item[] = needle
@@ -104,8 +104,8 @@
     }}
     onkeydown={onKey}
   >
-    <div class="palette sy-hud">
-      <div class="titlebar sy-mono">
+    <div class="palette dn-hud">
+      <div class="titlebar dn-mono">
         <span class="tb-l">jump</span>
         <span class="tb-r">{store.manuals.length} sources · {store.data.nodes.length} chapters</span>
       </div>
@@ -114,7 +114,7 @@
         <input
           bind:this={input}
           bind:value={q}
-          class="sy-mono"
+          class="dn-mono"
           type="text"
           placeholder="jump to a doc, or run a command…"
           aria-label="Command input"
@@ -130,16 +130,16 @@
               onclick={() => choose(it)}
               onmouseenter={() => (index = i)}
             >
-              <span class="ico sy-mono">{it.kind === 'doc' ? '▤' : '›'}</span>
+              <span class="ico dn-mono">{it.kind === 'doc' ? '▤' : '›'}</span>
               <span class="label">{it.label}</span>
-              <span class="hint sy-mono">[{it.hint}]</span>
+              <span class="hint dn-mono">[{it.hint}]</span>
             </button>
           </li>
         {:else}
-          <li class="empty sy-mono">nothing matches “{q}”</li>
+          <li class="empty dn-mono">nothing matches “{q}”</li>
         {/each}
       </ul>
-      <div class="bar sy-mono">↑↓ move · ⏎ open · esc quit · ⌘k toggle</div>
+      <div class="bar dn-mono">↑↓ move · ⏎ open · esc quit · ⌘k toggle</div>
     </div>
   </div>
 {/if}
@@ -153,20 +153,20 @@
     align-items: flex-start;
     justify-content: center;
     padding: 10vh 1rem 1rem;
-    background: color-mix(in srgb, var(--sy-bg-sunken) 74%, transparent);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 74%, transparent);
   }
   .palette {
     position: relative;
     width: min(42rem, 100%);
-    background: var(--sy-bg-raise);
-    border: 1px solid var(--sy-border-strong);
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--sy-accent) 16%, transparent),
-      0 24px 60px color-mix(in srgb, var(--sy-bg-sunken) 85%, transparent),
-      0 0 40px color-mix(in srgb, var(--sy-accent) 10%, transparent);
+      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 16%, transparent),
+      0 24px 60px color-mix(in srgb, var(--dn-bg-sunken) 85%, transparent),
+      0 0 40px color-mix(in srgb, var(--dn-accent) 10%, transparent);
     overflow: hidden;
-    animation: sy-rise 160ms ease-out both;
+    animation: dn-rise 160ms ease-out both;
   }
   /* Title strip: the window chrome of a terminal, and where the corpus
      readout lives so the palette says what it is searching. */
@@ -178,29 +178,29 @@
     font-size: 0.65rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--sy-fg-faint);
-    background: color-mix(in srgb, var(--sy-bg-sunken) 80%, transparent);
-    border-bottom: 1px solid var(--sy-border);
+    color: var(--dn-fg-faint);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
+    border-bottom: 1px solid var(--dn-border);
   }
-  .tb-l { color: var(--sy-accent); }
+  .tb-l { color: var(--dn-accent); }
   .promptline {
     display: flex;
     align-items: center;
     gap: 0.5em;
     padding: 0.15em 0.9em;
-    border-bottom: 1px solid var(--sy-border);
+    border-bottom: 1px solid var(--dn-border);
   }
-  .gt { color: var(--sy-fg-muted); font-family: var(--sy-font-mono); font-size: 1.05rem; }
+  .gt { color: var(--dn-fg-muted); font-family: var(--dn-font-mono); font-size: 1.05rem; }
   .promptline input {
     flex: 1;
     min-width: 0;
     background: none;
     border: none;
-    color: var(--sy-fg);
+    color: var(--dn-fg);
     font-size: 0.95rem;
     padding: 0.7em 0;
   }
-  .promptline input:focus { outline: none; caret-color: var(--sy-accent); }
+  .promptline input:focus { outline: none; caret-color: var(--dn-accent); }
   ul { list-style: none; margin: 0; padding: 0.3rem; max-height: 56vh; overflow-y: auto; }
   .row {
     display: flex;
@@ -208,7 +208,7 @@
     gap: 0.7em;
     width: 100%;
     text-align: left;
-    color: var(--sy-fg);
+    color: var(--dn-fg);
     background: none;
     border: none;
     border-left: 2px solid transparent;
@@ -216,26 +216,26 @@
     cursor: pointer;
     transition: background 100ms;
   }
-  .row .ico { color: var(--sy-src, var(--sy-accent-dim)); width: 1em; }
-  .row .label { flex: 1; font-family: var(--sy-font-prose); font-size: 0.88rem; }
-  .row .hint { font-size: 0.64rem; letter-spacing: 0.1em; color: var(--sy-fg-faint); }
+  .row .ico { color: var(--dn-src, var(--dn-accent-dim)); width: 1em; }
+  .row .label { flex: 1; font-family: var(--dn-font-prose); font-size: 0.88rem; }
+  .row .hint { font-size: 0.64rem; letter-spacing: 0.1em; color: var(--dn-fg-faint); }
   /* Selected row: lit in the SOURCE's hue, so the highlight itself tells you
      which corpus you are about to open. */
   .row.active {
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 14%, transparent);
-    border-left-color: var(--sy-src, var(--sy-accent));
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
+    border-left-color: var(--dn-src, var(--dn-accent));
   }
-  .row.active .label { color: var(--sy-src, var(--sy-accent)); }
-  .row.active .hint { color: var(--sy-src, var(--sy-accent)); }
-  .row.cmd .hint { color: var(--sy-accent-2); }
-  .empty { padding: 0.7em; color: var(--sy-fg-faint); font-size: 0.85rem; }
+  .row.active .label { color: var(--dn-src, var(--dn-accent)); }
+  .row.active .hint { color: var(--dn-src, var(--dn-accent)); }
+  .row.cmd .hint { color: var(--dn-accent-2); }
+  .empty { padding: 0.7em; color: var(--dn-fg-faint); font-size: 0.85rem; }
   .bar {
-    border-top: 1px solid var(--sy-border);
+    border-top: 1px solid var(--dn-border);
     padding: 0.5em 0.9em;
     font-size: 0.64rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--sy-fg-faint);
-    background: color-mix(in srgb, var(--sy-bg-sunken) 60%, transparent);
+    color: var(--dn-fg-faint);
+    background: color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent);
   }
 </style>

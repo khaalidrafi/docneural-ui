@@ -9,11 +9,11 @@
   // canvas gives its nodes (core/source.ts), with its page and wire counts.
   // Nothing here assumes Emacs, Guix or Org — the copy is written for
   // "documentation from anywhere", because that is what the exporter emits.
-  import { SynaptStore } from '../core/store.svelte'
+  import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
 
-  let { store, title = 'org-docs' }: { store: SynaptStore; title?: string } = $props()
+  let { store, title = 'org-docs' }: { store: DocneuralStore; title?: string } = $props()
 
   const chapters = $derived(store.chapters)
   const docCount = $derived(store.data.nodes.length)
@@ -84,30 +84,30 @@
 </script>
 
 <div class="home">
-  <header class="hero sy-hud" style={sourceVars(store.manual)}>
-    <p class="kicker sy-label">// knowledge uplink · online</p>
-    <div class="wordmark sy-mono sy-glitch" data-text={title.toUpperCase()}>
-      <span class="sy-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
+  <header class="hero dn-hud" style={sourceVars(store.manual)}>
+    <p class="kicker dn-label">// knowledge uplink · online</p>
+    <div class="wordmark dn-mono dn-glitch" data-text={title.toUpperCase()}>
+      <span class="dn-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
     </div>
-    <p class="tagline sy-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
+    <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual
       split per section, exported from Org by Emacs, and wired into an org-roam
       graph of <strong>{synCount} firing synapses</strong>. Read it top to bottom,
       jump anywhere with ⌘K, or drop into the graph and follow the citations.
       Every page also ships as raw Org and as
-      <span class="sy-mono">llms.txt</span> — machine-readable on purpose.
+      <span class="dn-mono">llms.txt</span> — machine-readable on purpose.
     </p>
 
     <!-- The corpus readout, stated plainly. The size of the site IS the pitch,
          so the numbers get a panel of their own — but as a panel, not as a
          pretend shell session: no prompt, no window buttons, no "[ ok ]". -->
     <div class="stats" role="status" aria-live="polite">
-      <div class="stats-hd sy-label">
-        <span class="sy-neuron-mark" aria-hidden="true"></span>
+      <div class="stats-hd dn-label">
+        <span class="dn-neuron-mark" aria-hidden="true"></span>
         <span>this corpus</span>
       </div>
-      <div class="sy-kv">
+      <div class="dn-kv">
         <span>sources</span><span>{sources.length} · {sourceList}</span>
         <span>pages</span><span>{pageCount}</span>
         <span>neurons</span><span>{docCount}</span>
@@ -133,13 +133,13 @@
        five sections that matter to today's task are already in one place. -->
   {#if marks.length}
     <section class="saved">
-      <h2 class="section-h sy-label">
+      <h2 class="section-h dn-label">
         // marked <span class="hint">{marks.length} section{marks.length === 1 ? '' : 's'} · b in the reader</span>
       </h2>
       <div class="mk-row">
         {#each marks as m (m.slug + '#' + (m.anchor ?? ''))}
           <button
-            class="mk sy-mono"
+            class="mk dn-mono"
             style={sourceVars(m.node.tags[0] ?? '')}
             onclick={() => store.goto(m.node, 'reader', m.anchor)}
           >
@@ -153,16 +153,16 @@
   {/if}
 
   <section class="sources">
-    <h2 class="sy-label">// sources <span class="hint">each corpus wears its graph hue</span></h2>
+    <h2 class="dn-label">// sources <span class="hint">each corpus wears its graph hue</span></h2>
     <div class="src-row">
       {#each sources as s (s.name)}
-        <button class="src-card sy-hud" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
-          <span class="src-name sy-mono">{SynaptStore.manualTitle(s.name)}</span>
-          <span class="src-meta sy-mono">{s.pages} pages · {s.links} wires</span>
+        <button class="src-card dn-hud" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
+          <span class="src-name dn-mono">{DocneuralStore.manualTitle(s.name)}</span>
+          <span class="src-meta dn-mono">{s.pages} pages · {s.links} wires</span>
           <span class="src-open">read ↗</span>
         </button>
       {:else}
-        <p class="none sy-mono">one corpus, no tags — everything is one source</p>
+        <p class="none dn-mono">one corpus, no tags — everything is one source</p>
       {/each}
     </div>
   </section>
@@ -170,7 +170,7 @@
   <!-- The jump box. Monospace and left-labelled, which is enough: the field
        searches, it does not pretend to be a shell. -->
   <div class="search-wrap">
-    <div class="search-box sy-mono">
+    <div class="search-box dn-mono">
       <span class="prompt" aria-hidden="true">⌕</span>
       <input
         type="text"
@@ -198,14 +198,14 @@
 
   <div class="cta-row">
     {#each sources as s (s.name)}
-      <button class="cta sy-notch" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
+      <button class="cta dn-notch" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
         <span class="cta-k">▤</span>
-        <span class="cta-t">{SynaptStore.manualTitle(s.name)}</span>
+        <span class="cta-t">{DocneuralStore.manualTitle(s.name)}</span>
         <span class="cta-s">read from the top</span>
       </button>
     {:else}
       {#if first}
-        <button class="cta sy-notch" onclick={() => store.goto(first)}>
+        <button class="cta dn-notch" onclick={() => store.goto(first)}>
           <span class="cta-k">▤</span>
           <span class="cta-t">Start reading</span>
           <span class="cta-s">{first.title}</span>
@@ -213,7 +213,7 @@
       {/if}
     {/each}
     {#if !store.lite}
-      <button class="cta graph sy-notch" onclick={() => store.setMode('graph')}>
+      <button class="cta graph dn-notch" onclick={() => store.setMode('graph')}>
         <span class="cta-k spark">⌁</span>
         <span class="cta-t">Explore synapses</span>
         <span class="cta-s">the whole graph, live</span>
@@ -223,8 +223,8 @@
 
   <section class="chapters-grid">
     <div class="contents-head">
-      <h2 class="section-h sy-label">
-        contents // {SynaptStore.manualTitle(store.manual) || 'all sources'}
+      <h2 class="section-h dn-label">
+        contents // {DocneuralStore.manualTitle(store.manual) || 'all sources'}
       </h2>
       <ManualTabs {store} />
     </div>
@@ -232,18 +232,18 @@
       {#each showAll ? chapters : chapters.slice(0, 60) as c (c.id)}
         <button class="card" style={sourceVars(c.tags[0])} onclick={() => store.goto(c)}>
           <span class="card-title">{c.title}</span>
-          <span class="card-deg sy-mono">{degree.get(c.id) ?? 0}⌁</span>
+          <span class="card-deg dn-mono">{degree.get(c.id) ?? 0}⌁</span>
         </button>
       {/each}
       {#if !showAll && chapters.length > 60}
-        <button class="card show-all sy-mono" onclick={() => (showAll = true)}>
+        <button class="card show-all dn-mono" onclick={() => (showAll = true)}>
           + {chapters.length - 60} more chapters
         </button>
       {/if}
     </div>
   </section>
 
-  <footer class="foot sy-mono">
+  <footer class="foot dn-mono">
     exported by an Emacs batch <span class="sym">org-export</span> · graph modeled on
     <span class="sym">org-roam</span> · stable <span class="sym">id:</span> citations,
     readable by humans and LLMs alike —
@@ -255,7 +255,7 @@
 
 <style>
   .home {
-    height: calc(100dvh - var(--sy-header-h));
+    height: calc(100dvh - var(--dn-header-h));
     overflow-y: auto;
     padding: 2.6rem 1.5rem 4rem;
     display: flex;
@@ -265,7 +265,7 @@
   }
 
   /* ---------- hero ---------- */
-  /* Framed by .sy-hud corner brackets in the source's hue: the front door is
+  /* Framed by .dn-hud corner brackets in the source's hue: the front door is
      a target on the board, and its colour changes with the corpus you are in.
      The ::before is a wide, low halo so the wordmark sits in a field of
      signal rather than on empty page. */
@@ -282,43 +282,43 @@
     z-index: -1;
     inset: -30% -12% -20%;
     background:
-      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--sy-accent) 11%, transparent), transparent 70%),
-      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--sy-accent-2) 9%, transparent), transparent 70%);
+      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--dn-accent) 11%, transparent), transparent 70%),
+      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--dn-accent-2) 9%, transparent), transparent 70%);
     filter: blur(8px);
     pointer-events: none;
   }
   .kicker {
-    color: var(--sy-hot);
+    color: var(--dn-hot);
     letter-spacing: 0.2em;
     margin: 0 0 0.9rem;
   }
   .wordmark {
-    font-family: var(--sy-font-display);
+    font-family: var(--dn-font-display);
     font-size: clamp(2.4rem, 8vw, 4.4rem);
     /* Electrolize is single-weight; asking for 700 here only gets the
        browser's fake bold, which is ugly at display size. */
     font-weight: 400;
     /* Display face, tight tracking, uppercase: the brand mark. The letters
-       are the glitch's real text — the ::before/::after ghosts in .sy-glitch
+       are the glitch's real text — the ::before/::after ghosts in .dn-glitch
        carry the same string from data-text. */
     letter-spacing: 0.02em;
-    color: var(--sy-fg);
-    text-shadow: 0 0 30px color-mix(in srgb, var(--sy-accent) 26%, transparent);
+    color: var(--dn-fg);
+    text-shadow: 0 0 30px color-mix(in srgb, var(--dn-accent) 26%, transparent);
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
   }
   .wordmark .mark { width: 0.55em; height: 0.55em; flex: none; }
   .tagline {
-    color: var(--sy-accent);
+    color: var(--dn-accent);
     letter-spacing: 0.14em;
     font-size: 0.75rem;
     text-transform: lowercase;
     margin: 0.5rem 0 1.2rem;
   }
-  .lede { color: var(--sy-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
-  .lede strong { color: var(--sy-fg); }
-  .lede .sy-mono { font-size: 0.9em; color: var(--sy-accent-2); }
+  .lede { color: var(--dn-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
+  .lede strong { color: var(--dn-fg); }
+  .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2); }
   /* The hero readout: a bordered panel of real numbers, left-aligned inside a
      centered hero and wide enough that the columns never wrap on a laptop. */
   .stats {
@@ -328,49 +328,49 @@
     display: grid;
     gap: 0.7rem;
     padding: 1.1rem 1.3rem 1.2rem;
-    background: var(--sy-bg-raise);
-    border: 1px solid var(--sy-border);
-    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border);
+    border-left: 2px solid var(--dn-src, var(--dn-accent));
     border-radius: 3px;
   }
   .stats-hd {
     display: flex;
     align-items: center;
     gap: 0.5em;
-    color: var(--sy-fg-muted);
+    color: var(--dn-fg-muted);
   }
-  .stats-hd .sy-neuron-mark { width: 0.7em; height: 0.7em; }
-  .stats .note { margin: 0; font-size: 0.78rem; color: var(--sy-fg-muted); }
+  .stats-hd .dn-neuron-mark { width: 0.7em; height: 0.7em; }
+  .stats .note { margin: 0; font-size: 0.78rem; color: var(--dn-fg-muted); }
   /* The readout is monospace: digits that do not shift width between builds are
      the difference between a machine's count and a sentence about a count. */
-  .stats .sy-kv { font-family: var(--sy-font-mono); font-size: 0.84rem; }
+  .stats .dn-kv { font-family: var(--dn-font-mono); font-size: 0.84rem; }
   /* Resume: a labelled row, not a command line. The label says what it does,
      the value says where it goes. */
   .resume {
     display: flex;
     align-items: baseline;
     gap: 0.7em;
-    font-family: var(--sy-font-mono);
+    font-family: var(--dn-font-mono);
     font-size: 0.82rem;
     text-align: left;
-    color: var(--sy-fg-muted);
-    background: color-mix(in srgb, var(--sy-accent) 7%, transparent);
-    border: 1px solid var(--sy-border);
+    color: var(--dn-fg-muted);
+    background: color-mix(in srgb, var(--dn-accent) 7%, transparent);
+    border: 1px solid var(--dn-border);
     border-radius: 3px;
     padding: 0.5em 0.8em;
     cursor: pointer;
   }
   .resume:hover {
-    border-color: var(--sy-accent);
-    color: var(--sy-accent);
+    border-color: var(--dn-accent);
+    color: var(--dn-accent);
   }
   .resume .r-lab {
     text-transform: uppercase;
-    letter-spacing: var(--sy-track);
+    letter-spacing: var(--dn-track);
     font-size: 0.68rem;
-    color: var(--sy-src, var(--sy-accent));
+    color: var(--dn-src, var(--dn-accent));
   }
-  .resume .r-to { color: var(--sy-fg); overflow-wrap: anywhere; }
+  .resume .r-to { color: var(--dn-fg); overflow-wrap: anywhere; }
   .resume:hover .r-to { text-decoration: underline; }
   .resume .r-go { margin-left: auto; }
   @media (max-width: 700px) {
@@ -393,24 +393,24 @@
     align-items: baseline;
     gap: 0.45em;
     font: inherit;
-    letter-spacing: var(--sy-track);
+    letter-spacing: var(--dn-track);
     text-align: left;
-    color: var(--sy-fg);
-    background: color-mix(in srgb, var(--sy-accent) 6%, transparent);
-    border: 1px solid var(--sy-border);
-    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    color: var(--dn-fg);
+    background: color-mix(in srgb, var(--dn-accent) 6%, transparent);
+    border: 1px solid var(--dn-border);
+    border-left: 2px solid var(--dn-src, var(--dn-accent));
     border-radius: 2px;
     padding: 0.3em 0.7em;
     cursor: pointer;
   }
   .mk:hover {
-    border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 60%, transparent);
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 12%, transparent);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
   }
-  .mk .mk-src { color: var(--sy-src, var(--sy-accent)); }
-  .mk .mk-to { color: var(--sy-fg-faint); }
-  .sources h2, .section-h { color: var(--sy-fg-muted); margin: 0 0 0.7rem; }
-  .hint { color: var(--sy-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
+  .mk .mk-src { color: var(--dn-src, var(--dn-accent)); }
+  .mk .mk-to { color: var(--dn-fg-faint); }
+  .sources h2, .section-h { color: var(--dn-fg-muted); margin: 0 0 0.7rem; }
+  .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
   .src-row {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
@@ -423,33 +423,33 @@
     align-items: flex-start;
     gap: 0.25em;
     text-align: left;
-    color: var(--sy-fg);
-    background: color-mix(in srgb, var(--sy-bg-raise) 80%, transparent);
-    border: 1px solid color-mix(in srgb, var(--sy-src, var(--sy-accent)) 26%, transparent);
-    border-left: 2px solid var(--sy-src, var(--sy-accent));
+    color: var(--dn-fg);
+    background: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent);
+    border-left: 2px solid var(--dn-src, var(--dn-accent));
     border-radius: 2px;
     padding: 0.7em 0.8em;
     cursor: pointer;
     transition: border-color 120ms, box-shadow 120ms, background 120ms;
   }
   .src-card:hover {
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 9%, transparent);
-    box-shadow: 0 0 18px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 22%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 9%, transparent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
   }
-  .src-name { font-size: 0.85rem; font-weight: 600; color: var(--sy-src, var(--sy-fg)); letter-spacing: 0.03em; }
-  .src-meta { font-size: 0.68rem; color: var(--sy-fg-faint); letter-spacing: 0.06em; }
+  .src-name { font-size: 0.85rem; font-weight: 600; color: var(--dn-src, var(--dn-fg)); letter-spacing: 0.03em; }
+  .src-meta { font-size: 0.68rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
   .src-open {
     position: absolute;
     right: 0.7em;
     top: 0.7em;
     font-size: 0.68rem;
-    font-family: var(--sy-font-mono);
-    color: var(--sy-src, var(--sy-accent));
+    font-family: var(--dn-font-mono);
+    color: var(--dn-src, var(--dn-accent));
     opacity: 0;
     transition: opacity 120ms;
   }
   .src-card:hover .src-open { opacity: 1; }
-  .none { color: var(--sy-fg-faint); font-size: 0.78rem; margin: 0; }
+  .none { color: var(--dn-fg-faint); font-size: 0.78rem; margin: 0; }
 
   /* ---------- jump box ---------- */
   .search-wrap { width: min(46rem, 100%); }
@@ -458,16 +458,16 @@
     display: flex;
     align-items: center;
     gap: 0.6em;
-    background: var(--sy-bg-sunken);
-    border: 1px solid var(--sy-border-strong);
+    background: var(--dn-bg-sunken);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.7em 1em;
     transition: border-color 120ms, box-shadow 120ms;
   }
   .search-box:focus-within {
-    border-color: var(--sy-accent);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sy-accent) 30%, transparent),
-      0 0 22px color-mix(in srgb, var(--sy-accent) 20%, transparent);
+    border-color: var(--dn-accent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dn-accent) 30%, transparent),
+      0 0 22px color-mix(in srgb, var(--dn-accent) 20%, transparent);
   }
   /* PS1 sits outside the input, so only the path part may shrink. */
   .prompt { flex: none; font-size: 0.8rem; }
@@ -476,13 +476,13 @@
     min-width: 0;
     background: none;
     border: none;
-    color: var(--sy-fg);
-    font-family: var(--sy-font-mono);
+    color: var(--dn-fg);
+    font-family: var(--dn-font-mono);
     font-size: 0.9rem;
-    caret-color: var(--sy-accent);
+    caret-color: var(--dn-accent);
   }
   .search-box input:focus { outline: none; }
-  .search-box .prompt { color: var(--sy-fg-muted); font-size: 1rem; }
+  .search-box .prompt { color: var(--dn-fg-muted); font-size: 1rem; }
   @media (max-width: 520px) {
     .search-box .prompt { display: none; }
   }
@@ -490,8 +490,8 @@
     list-style: none;
     margin: 0.4rem 0 0;
     padding: 0.3rem;
-    background: var(--sy-bg-raise);
-    border: 1px solid var(--sy-border);
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
   }
   .results li button {
@@ -500,16 +500,16 @@
     gap: 0.55em;
     width: 100%;
     text-align: left;
-    font-family: var(--sy-font-prose);
+    font-family: var(--dn-font-prose);
     font-size: 0.88rem;
-    color: var(--sy-fg);
+    color: var(--dn-fg);
     background: none;
     border: none;
     border-radius: 2px;
     padding: 0.45em 0.7em;
     cursor: pointer;
   }
-  .results li button:hover { background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 12%, transparent); color: var(--sy-src, var(--sy-accent)); }
+  .results li button:hover { background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent); color: var(--dn-src, var(--dn-accent)); }
   /* The source's hue as a dot: you see which corpus a hit belongs to before
      you read its title. */
   .results .dot {
@@ -517,11 +517,11 @@
     height: 6px;
     flex: none;
     border-radius: 50%;
-    background: var(--sy-src, var(--sy-accent));
-    box-shadow: 0 0 8px var(--sy-src, var(--sy-accent));
+    background: var(--dn-src, var(--dn-accent));
+    box-shadow: 0 0 8px var(--dn-src, var(--dn-accent));
   }
-  .stub { font-size: 0.72rem; color: var(--sy-fg-faint); margin-left: auto; }
-  .results .none { padding: 0.5em 0.7em; color: var(--sy-fg-faint); }
+  .stub { font-size: 0.72rem; color: var(--dn-fg-faint); margin-left: auto; }
+  .results .none { padding: 0.5em 0.7em; color: var(--dn-fg-faint); }
 
   /* ---------- CTAs ---------- */
   .cta-row { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
@@ -533,13 +533,13 @@
     gap: 0.2em;
     min-width: 15rem;
     text-align: left;
-    color: var(--sy-fg);
+    color: var(--dn-fg);
     background:
       linear-gradient(180deg,
-        color-mix(in srgb, var(--sy-src, var(--sy-accent)) 9%, transparent),
+        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 9%, transparent),
         transparent 55%),
-      var(--sy-bg-raise);
-    border: 1px solid color-mix(in srgb, var(--sy-src, var(--sy-accent)) 34%, transparent);
+      var(--dn-bg-raise);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 34%, transparent);
     padding: 0.9em 1.1em;
     cursor: pointer;
     overflow: hidden;
@@ -553,7 +553,7 @@
     inset: 0;
     background: linear-gradient(115deg,
       transparent 38%,
-      color-mix(in srgb, var(--sy-src, var(--sy-accent)) 22%, transparent) 50%,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent) 50%,
       transparent 62%);
     transform: translateX(-130%);
     transition: transform 500ms ease;
@@ -562,13 +562,13 @@
   .cta:hover::after { transform: translateX(130%); }
   .cta:hover {
     transform: translateY(-2px);
-    border-color: var(--sy-src, var(--sy-accent));
-    box-shadow: 0 0 22px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 20%, transparent);
+    border-color: var(--dn-src, var(--dn-accent));
+    box-shadow: 0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 20%, transparent);
   }
-  .cta-k { font-size: 1.1rem; color: var(--sy-src, var(--sy-accent-2)); }
-  .cta-k.spark { color: var(--sy-hot); }
-  .cta-t { font-family: var(--sy-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
-  .cta-s { font-size: 0.75rem; color: var(--sy-fg-muted); }
+  .cta-k { font-size: 1.1rem; color: var(--dn-src, var(--dn-accent-2)); }
+  .cta-k.spark { color: var(--dn-hot); }
+  .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
+  .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
   .cta.graph { border-style: dashed; }
 
   /* ---------- contents grid ---------- */
@@ -588,10 +588,10 @@
     flex-direction: column;
     gap: 0.4em;
     text-align: left;
-    font-family: var(--sy-font-prose);
-    color: var(--sy-fg);
-    background: color-mix(in srgb, var(--sy-bg-raise) 72%, transparent);
-    border: 1px solid var(--sy-border);
+    font-family: var(--dn-font-prose);
+    color: var(--dn-fg);
+    background: color-mix(in srgb, var(--dn-bg-raise) 72%, transparent);
+    border: 1px solid var(--dn-border);
     border-radius: 2px;
     padding: 0.75em 0.85em 0.75em 1em;
     cursor: pointer;
@@ -607,14 +607,14 @@
     top: 50%;
     width: 2px;
     height: 0;
-    background: var(--sy-src, var(--sy-accent));
-    box-shadow: 0 0 8px color-mix(in srgb, var(--sy-src, var(--sy-accent)) 65%, transparent);
+    background: var(--dn-src, var(--dn-accent));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
     transform: translateY(-50%);
     transition: height 160ms ease;
   }
   .card:hover {
-    border-color: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 45%, transparent);
-    background: color-mix(in srgb, var(--sy-src, var(--sy-accent)) 7%, transparent);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent);
     transform: translateY(-1px);
   }
   .card:hover::before { height: 72%; }
@@ -622,23 +622,23 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: var(--sy-accent);
+    color: var(--dn-accent);
     border-style: dashed;
     font-size: 0.78rem;
     letter-spacing: 0.08em;
   }
   .card-title { font-size: 0.88rem; }
-  .card-deg { align-self: flex-end; font-size: 0.66rem; color: var(--sy-fg-faint); letter-spacing: 0.06em; }
-  .card:hover .card-deg { color: var(--sy-src, var(--sy-accent)); }
+  .card-deg { align-self: flex-end; font-size: 0.66rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
+  .card:hover .card-deg { color: var(--dn-src, var(--dn-accent)); }
 
-  .foot { max-width: 60ch; text-align: center; font-size: 0.7rem; color: var(--sy-fg-faint); line-height: 1.9; letter-spacing: 0.04em; }
-  .foot .sym { color: var(--sy-accent-dim); }
+  .foot { max-width: 60ch; text-align: center; font-size: 0.7rem; color: var(--dn-fg-faint); line-height: 1.9; letter-spacing: 0.04em; }
+  .foot .sym { color: var(--dn-accent-dim); }
   .foot .mach {
-    color: var(--sy-accent-2);
+    color: var(--dn-accent-2);
     text-decoration: none;
-    border-bottom: 1px dotted color-mix(in srgb, var(--sy-accent-2) 45%, transparent);
+    border-bottom: 1px dotted color-mix(in srgb, var(--dn-accent-2) 45%, transparent);
     padding-bottom: 1px;
   }
-  .foot .mach:hover { color: var(--sy-hot); border-bottom-style: solid; }
-  @keyframes sy-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .foot .mach:hover { color: var(--dn-hot); border-bottom-style: solid; }
+  @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 </style>
