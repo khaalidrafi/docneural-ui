@@ -30,7 +30,8 @@
   import { applyLayout, fitReadable, makeNeuronLoader } from './neuronEngine'
   import type { Blocker } from './spreadForces'
   import type { Engine as NeuronEngine } from './neuronEngine'
-  import { neighborIds } from '../core/graph'
+  import { neighborIds, capForPhone } from '../core/graph'
+  import { isPhoneViewport } from '../core/layout'
   import type { LayoutMode } from '../core/types'
   import type { DocneuralStore } from '../core/store.svelte'
 
@@ -44,9 +45,29 @@
 
   const roam = createGraphStore()
 
+  // PHONE: the overview is 1,559 neurons and 29,017 wires, and a 4 GB phone
+  // pays for every one of them in sim and paint. The cap keeps the most
+  // connected chapters (hubs are how you find anything) plus the selection's
+  // hot set, and desktop is untouched — isPhoneViewport() asks the SAME
+  // 700 px question the reader's own stylesheets do. Re-applied per snapshot,
+  // so a resize across the breakpoint hands the canvas more or less graph.
+  const PHONE_NODE_CAP = 400
+
   // Data, query or tags moved -> swap the snapshot the canvas sees.
   $effect(() => {
-    roam.applyGraphdata(toRoam(store.visible))
+    const g = store.visible
+    const phone = isPhoneViewport()
+    // Coming back from a pause: a filter keystroke or a selection while the
+    // render loop is stopped must not leave the canvas on a stale frame.
+    if (phone) {
+      engine?.resumeAnimation()
+      wrapEl?.removeAttribute('data-paused')
+    }
+    // The hot set is read only on a phone (short-circuit), so a selection on
+    // desktop does NOT re-run this effect — the canvas data has not changed,
+    // and a full re-sync per click would spend the physics' saved positions.
+    const hot = phone && selId ? new Set([selId, ...selNb]) : undefined
+    roam.applyGraphdata(toRoam(phone ? capForPhone(g, PHONE_NODE_CAP, hot) : g))
   })
 
   // A selection made anywhere (rail, palette, reader) pans the camera.
@@ -237,6 +258,23 @@
         // The other half of the evidence: `fit: 0.6` alone cannot tell a camera
         // bug from a layout that packed loose, and both look the same on screen.
         wrapEl.dataset.field = `${Math.round(w)}x${Math.round(h)}`
+        // PHONE, the other half of the cap: once the layout has settled, a
+        // parked canvas is repaints-for-nobody — force-graph's loop keeps
+        // painting every neuron per frame even when nothing moves. Pause the
+        // loop after each settle; the wake listener below resumes it the
+        // moment a finger or wheel touches the dish, and a data change resumes
+        // it in the snapshot effect. data-paused publishes the fact for the
+        // verify gate, the way data-fit publishes the camera's.
+        if (isPhoneViewport()) {
+          try {
+            eng.pauseAnimation()
+            // The verify gate's phone assertion reads this — the same pattern
+            // as data-fit: publish the state as a DOM fact, assert the fact.
+            wrapEl.dataset.paused = '1'
+          } catch {
+            /* an engine without the knob keeps running: the cap still bound it */
+          }
+        }
       })
     }
   })
@@ -247,6 +285,36 @@
     neighbors: () => selNb,
     spread: () => store.layout === 'spread',
     onEngine: (e) => { engine = e }
+  })
+
+  // PHONE, the resume side: touch or scroll the dish and the canvas wakes up
+  // for as long as the interaction lasts — the next settle pauses it again.
+  // effect cleanup resumes on unmount too, so a mode switch never leaves the
+  // next mount staring at a frozen frame of the previous one.
+  $effect(() => {
+    const eng = engine
+    const wrap = wrapEl
+    if (!eng || !wrap || !isPhoneViewport()) return
+    const wake = () => {
+      try {
+        eng.resumeAnimation()
+        wrap?.removeAttribute('data-paused')
+      } catch {
+        /* same knobless engine as the settle side */
+      }
+    }
+    wrap.addEventListener('pointerdown', wake, { passive: true })
+    wrap.addEventListener('wheel', wake, { passive: true })
+    return () => {
+      wrap.removeEventListener('pointerdown', wake)
+      wrap.removeEventListener('wheel', wake)
+      wrap.removeAttribute('data-paused')
+      try {
+        eng.resumeAnimation()
+      } catch {
+        /* ignore */
+      }
+    }
   })
 
   function click(node: OrgRoamNode): void {

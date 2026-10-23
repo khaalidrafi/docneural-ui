@@ -17,6 +17,7 @@ import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
 import { loadLayout, writeLayout } from './layout'
 import { loadSaved, writeSaved, type SavedMark } from './saved'
+import { loadVisited, writeVisited } from './visited'
 
 export type Mode = 'graph' | 'reader'
 
@@ -78,6 +79,14 @@ export class DocneuralStore {
   }
   isSaved(slug: string, anchor: string | null): boolean {
     return this.saved.some((m) => m.slug === slug && m.anchor === (anchor ?? null))
+  }
+
+  /** Chapters opened at least once (core/visited.ts), mirrored into reactive
+   *  state so the sidebar's seen-marks paint the moment a chapter opens —
+   *  same reason lastRead and saved are mirrored instead of read live. */
+  visited = $state<string[]>(loadVisited())
+  seen(slug: string): boolean {
+    return this.visited.includes(slug)
   }
 
   // Graph-mode UI filter state (ported from org-roam-lite-ui filters).
@@ -384,6 +393,9 @@ export class DocneuralStore {
    *  valid, shareable deep link even though a different chapter renders. */
   goto(doc: DocNode, mode?: Mode, anchor?: string | null): void {
     if (mode) this.mode = mode
+    // Opening a page is the visit event — graph clicks, palette jumps and
+    // pager steps all count, which is exactly what the sidebar's shape is for.
+    if (!this.visited.includes(doc.slug)) this.visited = writeVisited(this.visited, doc.slug)
     // Opening a doc retargets the TOC to its manual — the sidebar you see
     // is the one containing the page you are reading (a palette jump from
     // Org to Emacs carries the whole TOC along with it).

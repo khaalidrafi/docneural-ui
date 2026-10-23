@@ -186,15 +186,67 @@
 
   /** The page as a block an LLM can use: identity first, then the text the
    *  reader is looking at, plus the lossless raw-Org URL for the agent that
-   *  wants more than the excerpt. */
+   *  wants more than the excerpt. The two pager chapters ride along as
+   *  one-line pointers — the single most useful thing for the follow-up
+   *  question (“what should I read next?”) that costs the paste nothing. */
   function pageAsContext(): string {
     if (!doc || !proseEl) return ''
     const raw = new URL(`${store.base}/docs/${doc.slug}.org`, location.href).toString()
+    const neighbours = [
+      prev ? `prev — ${prev.title}` : null,
+      next ? `next — ${next.title}` : null
+    ]
+      .filter(Boolean)
+      .join('; ')
     const head =
       `# ${doc.title}\n` +
       `Source: docneural · ${doc.tags[0] ?? 'corpus'} · ${linkFor(null)}\n` +
-      `Raw Org: ${raw}\n\n`
+      `Raw Org: ${raw}\n` +
+      (neighbours ? `Neighbours: ${neighbours}\n` : '') +
+      `\n`
     return head + (proseEl.innerText ?? '').trim() + '\n'
+  }
+
+  /** `c` — the section-sized cousin of pageAsContext: from the heading the
+   *  scroll-spy currently names to the next heading of any level. A section
+   *  is the unit an agent can actually be asked about, and pasting a whole
+   *  69 kB chapter to cite 8 kB of it spends the reader's own budget. Blocks
+   *  are joined with blank lines and list items keep their bullets, so the
+   *  paste keeps the shape of the page without becoming HTML. */
+  function sectionAsContext(): string {
+    if (!doc || !proseEl) return ''
+    const heads = [...proseEl.querySelectorAll('h2[id], h3[id]')]
+    const anchor = currentAnchor()
+    const start = anchor ? heads.findIndex((h) => h.id === anchor) : -1
+    const startEl = heads[start === -1 ? 0 : start]
+    if (!startEl) return ''
+    const endEl = heads[start + 1]
+    const range = document.createRange()
+    range.setStartBefore(startEl)
+    if (endEl) range.setEndBefore(endEl)
+    else range.selectNodeContents(proseEl)
+    const block = (b: Element): string => {
+      if (b.tagName === 'UL' || b.tagName === 'OL') {
+        return [...b.children]
+          .map((li, i) => {
+            const t = (li.textContent ?? '').replace(/\s+/g, ' ').trim()
+            return t ? (b.tagName === 'OL' ? `${i + 1}. ${t}` : `- ${t}`) : ''
+          })
+          .filter(Boolean)
+          .join('\n')
+      }
+      return (b.textContent ?? '').replace(/\s+/g, ' ').trim()
+    }
+    const body = [...range.cloneContents().children].map(block).filter(Boolean).join('\n\n')
+    const title = (startEl.textContent ?? '').replace(/^\/\/\s*/, '').trim()
+    const raw = new URL(`${store.base}/docs/${doc.slug}.org`, location.href).toString()
+    return (
+      `# ${title} — ${doc.title}\n` +
+      `Source: docneural · ${doc.tags[0] ?? 'corpus'} · ${linkFor(startEl.id)}\n` +
+      `Raw Org: ${raw}\n\n` +
+      body +
+      '\n'
+    )
   }
 
   /* A paste budget, in characters. Long chapters (69 kB measured) are more
@@ -223,6 +275,23 @@
           : `copied page as context · ${kb(full)}`
         : 'copy blocked by browser'
     )
+  }
+
+  /** Same paste budget as the page copy — a section is smaller by
+   *  construction, but an unheaded chapter (one h2, 60 kB of table) is not. */
+  async function copySection(): Promise<void> {
+    let text = sectionAsContext()
+    if (!text) {
+      say('nothing to copy yet — the section is still loading')
+      return
+    }
+    if (text.length > CONTEXT_BUDGET) {
+      const cut = text.slice(0, CONTEXT_BUDGET)
+      const nl = cut.lastIndexOf('\n')
+      text = `${cut.slice(0, nl > 0 ? nl : CONTEXT_BUDGET)}\n\n[… truncated — the whole chapter is at the Raw Org URL above. ]\n`
+    }
+    const copied = await copyText(text)
+    say(copied ? `copied section as context · ${(text.length / 1024).toFixed(1)} kB` : 'copy blocked by browser')
   }
 
   // Progress: how far through THIS chapter you are. Written straight to the
@@ -284,6 +353,7 @@
       if (k === 'j') { e.preventDefault(); nudge(1) }
       else if (k === 'k') { e.preventDefault(); nudge(-1) }
       else if (k === 'y') { e.preventDefault(); void copyLink(currentAnchor()) }
+      else if (k === 'c') { e.preventDefault(); void copySection() }
       else if (k === 'b') { e.preventDefault(); mark() }
       else if (k === 'v') {
         e.preventDefault()
@@ -464,6 +534,8 @@
                   title="Copy a link to this position (y)">⧉ link</button>
           <button class="cpy" onclick={copyContext}
                   title="Copy this page as plain text with its sources, for an LLM">⧉ llm</button>
+          <button class="cpy" onclick={copySection}
+                  title="Copy just this section — heading to heading — for an LLM (c)">⧉ §</button>
           <a class="raw" href="{store.base}/docs/{doc.slug}.org"
              title="This page as plain Org (lossless, LLM-friendly)">raw org</a>
         </span>

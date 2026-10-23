@@ -281,6 +281,7 @@
         <dt>[  /  ]</dt><dd>previous / next chapter</dd>
         <dt>j  /  k</dt><dd>scroll down / up inside the chapter</dd>
         <dt>y</dt><dd>copy a link to exactly where you are reading</dd>
+        <dt>c</dt><dd>copy just this section as agent context</dd>
         <dt>b</dt><dd>mark this section — they wait on the front door</dd>
         <dt>v</dt><dd>distraction-free: hide the panels, esc brings them back</dd>
         <dt>click a heading</dt><dd>copy a link to that section</dd>
