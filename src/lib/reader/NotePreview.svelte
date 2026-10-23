@@ -6,6 +6,9 @@
   import type { DocneuralStore } from '../core/store.svelte'
   import { backlinks, outlinks } from '../core/graph'
   import { sourceTitle, sourceVars } from '../core/source'
+  import { parseDocHref } from '../core/href'
+  import LinkPeek from './LinkPeek.svelte'
+  import { createPeekPointer } from './peek.svelte'
 
   let { store }: { store: DocneuralStore } = $props()
 
@@ -19,14 +22,41 @@
   function onContentClick(e: MouseEvent): void {
     const a = (e.target as HTMLElement).closest('a')
     if (!a) return
-    const href = a.getAttribute('href') ?? ''
-    const m = href.match(/(?:^|\/)?docs\/([^#]+)\.html(?:$|#)/)
+    const m = parseDocHref(a.getAttribute('href') ?? '')
     if (!m) return // external or in-page anchor: let the browser handle it
-    const target = store.bySlug(m[1])
+    const target = store.bySlug(m.slug)
     if (!target) return
     e.preventDefault()
     store.goto(target)
   }
+
+  /* ---------- hover peek: the citation card, same as the reader ----------
+     This panel previews the SAME prose DocReader shows, so a cross-reference
+     here gets the same answer: the card (reader/LinkPeek.svelte) over the
+     citation sentence from ctx/<id>.json — the lazy fetch the synapse rail
+     already makes, zero new bytes. The restraint rules live in the shared
+     peek.svelte.ts machine (300 ms hover-intent, 420 ms long-press on touch,
+     pointer-events: none card); this surface only adds what it alone knows:
+     which box scrolls, and when a selection counts as new. */
+  const peeker = createPeekPointer(() => store, () => doc?.id)
+
+  // The preview pane is its own scroller (the whole bottom sheet on a phone):
+  // the card is pinned to the link's viewport box, so scrolling invalidates
+  // it. Closing is cheaper and less confusing than repositioning per frame.
+  let paneEl: HTMLElement | undefined = $state()
+  $effect(() => {
+    const el = paneEl
+    if (!el) return
+    const onScroll = () => peeker.closePeek()
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  })
+
+  // A new selection is a new document: a card describing the last node's
+  // wire must not survive the jump (the rule DocReader applies per chapter).
+  $effect(() => {
+    if (store.selected?.id) peeker.closePeek()
+  })
 
   // Preview fetch is a side effect of selection, not of this component's
   // markup; trigger it here so the store cache stays the single source.
@@ -36,7 +66,7 @@
 </script>
 
 {#if doc}
-  <aside class="note-preview" aria-label="Note preview" style={sourceVars(doc.tags[0])}>
+  <aside class="note-preview" bind:this={paneEl} aria-label="Note preview" style={sourceVars(doc.tags[0])}>
     <header>
       <p class="kicker dn-label">node // preview</p>
       <h2 class="dn-mono">{doc.title}</h2>
@@ -57,7 +87,10 @@
     {:else}
       <!-- Organically trusted content: our own build pipeline's static
            files only (never user input), hence raw {@html} is fine. -->
-      <div class="dn-org" onclick={onContentClick} role="presentation">
+      <div class="dn-org" onclick={onContentClick} role="presentation"
+           onpointerover={peeker.onPeekMove} onpointerout={peeker.onPeekLeave}
+           onpointerdown={peeker.onPeekDown} onpointerup={peeker.onPeekUp}
+           onpointercancel={peeker.onPeekUp} onpointerleave={peeker.closePeek}>
         {@html html}
       </div>
     {/if}
@@ -67,6 +100,10 @@
     <p class="dn-mono"><span class="dn-neuron-mark" aria-hidden="true"></span> select a neuron — its text lands here</p>
   </aside>
 {/if}
+
+<!-- The peek card itself: fixed-position, pointer-events:none, rendered
+     outside the scrolling pane so the pane's own scroll can never move it. -->
+<LinkPeek {store} peek={peeker.peek} />
 
 <style>
   .note-preview {
