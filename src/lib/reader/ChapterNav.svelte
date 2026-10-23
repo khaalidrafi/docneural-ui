@@ -20,6 +20,9 @@
     const list = store.chapters
     return q ? list.filter((c) => c.title.toLowerCase().includes(q)) : list
   })
+  // How much of the visible manual has been opened — the “how far am I” line
+  // under the filter, one glance instead of scanning for dots.
+  const seenShown = $derived(shown.filter((c) => store.seen(c.slug)).length)
 </script>
 
 <nav class="chapters" aria-label="Contents" style={sourceVars(store.manual)}>
@@ -38,6 +41,9 @@
   </div>
   <div class="meta dn-label">
     <span>{shown.length} / {store.chapters.length} chapters</span>
+    {#if store.visited.length > 0}
+      <span class="seen-note dn-mono">· {seenShown} seen</span>
+    {/if}
   </div>
   {#if store.checked.length > 0}
     <div class="pinned dn-mono">
@@ -60,6 +66,7 @@
           <button
             class="chapter"
             class:active={store.selected?.id === c.id}
+            class:visited={store.seen(c.slug)}
             onclick={() => store.goto(c)}
             onpointerenter={() => store.prefetch([c.slug])}
           >{c.title}</button>
@@ -210,5 +217,22 @@
     font-weight: 600;
   }
   .chapter.active::before { color: var(--dn-src, var(--dn-accent)); }
+  /* Visited: a small tick dot at the row's right edge. Deliberately quieter
+     than the active row — this is a shape of where you have been, not a
+     second selection state. Opens only ever ADD marks: a manual read over
+     weeks accumulates a map instead of resetting it. */
+  .chapter.visited::after {
+    content: '';
+    position: absolute;
+    right: 0.45em;
+    top: 50%;
+    width: 0.34em;
+    height: 0.34em;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
+  }
+  .chapter.visited.active::after { background: var(--dn-src, var(--dn-accent)); }
+  .seen-note { color: var(--dn-fg-faint); font-size: 0.62rem; letter-spacing: 0.05em; }
   .empty { color: var(--dn-fg-faint); font-size: 0.78rem; padding: 0.5em; }
 </style>

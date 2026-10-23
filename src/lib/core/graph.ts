@@ -207,6 +207,39 @@ export function commonTags(data: GraphData, min = 2): string[] {
     .map(([t]) => t)
 }
 
+/**
+ * PHONE CAP: the most graph a small screen is handed, measured in nodes.
+ *
+ * The corpus overview is 1,559 neurons and 29,017 wires; on the project's own
+ * 4 GB Celeron phone that is a sim worth skipping and a paint worth capping.
+ * The cap keeps the chapters a reader can actually be looking for — the most
+ * connected ones (a hub IS the index of its region) — plus every id in
+ * `keep`, the selection's hot set, so an ego view that happens to run on a
+ * phone never loses the node the reader arrived at. Links between dropped
+ * nodes go with them; the canvas never draws a dangling wire.
+ *
+ * Identity is preserved when the graph already fits: callers re-run this on
+ * every `visible` recompute, and returning the same object keeps the canvas
+ * snapshot comparison cheap.
+ */
+export function capForPhone(g: GraphData, cap: number, keep?: Set<string>): GraphData {
+  if (g.nodes.length <= cap) return g
+  const deg = degreesOf(g.links)
+  const ranked = g.nodes
+    .map((n, i) => ({ n, d: deg.get(n.id) ?? 0, i }))
+    .sort((a, b) => b.d - a.d || a.i - b.i) // ties keep corpus order: stable across reloads
+  const kept = new Set<string>()
+  if (keep) for (const id of keep) if (g.nodes.some((n) => n.id === id)) kept.add(id)
+  for (const { n } of ranked) {
+    if (kept.size >= cap) break
+    kept.add(n.id)
+  }
+  return {
+    nodes: g.nodes.filter((n) => kept.has(n.id)),
+    links: g.links.filter((l) => kept.has(l.source) && kept.has(l.target))
+  }
+}
+
 /* ---------- label geometry ----------
    Shared by the painter (how big a label box is) and the spread layout (how
    much room that box needs). Both must use the SAME string: the canvas prints

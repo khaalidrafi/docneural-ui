@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   backlinks,
+  capForPhone,
   coCitations,
   commonTags,
   degreesOf,
@@ -292,5 +293,64 @@ describe('label geometry', () => {
     expect(e.t).toBeGreaterThan(8) // the soma itself is inside its own box
     expect(labelExtent('Fonts', 8).l).toBeLessThan(labelExtent('Agenda Views', 8).l)
     expect(labelExtent(undefined, 8).l).toBeGreaterThan(0)
+  })
+})
+
+/* ---------- capForPhone ----------
+   The phone cap is a cost bound, not a layout: hubs stay, the selection's hot
+   set stays, no wire is left hanging, and a graph that already fits returns
+   the SAME object so the canvas snapshot comparison stays cheap. */
+describe('capForPhone', () => {
+  // n0..n9 in a chain, plus three extra wires INTO n0 — n0 is the hub.
+  function chain(): GraphData {
+    const nodes = Array.from({ length: 10 }, (_, i) => node(`n${i}`))
+    const links = [
+      ...Array.from({ length: 9 }, (_, i) => ({ source: `n${i}`, target: `n${i + 1}` })),
+      { source: 'n9', target: 'n0' },
+      { source: 'n8', target: 'n0' },
+      { source: 'n7', target: 'n0' }
+    ]
+    return { nodes, links }
+  }
+
+  it('returns the same object when the graph already fits', () => {
+    const g = chain()
+    expect(capForPhone(g, 10)).toBe(g)
+    expect(capForPhone(g, 50)).toBe(g)
+  })
+
+  it('caps node count and keeps hubs over the far tail', () => {
+    const capped = capForPhone(chain(), 4)
+    expect(capped.nodes.length).toBe(4)
+    expect(capped.nodes.map((n) => n.id)).toContain('n0')
+    expect(capped.nodes.map((n) => n.id)).not.toContain('n9')
+  })
+
+  it('never draws a dangling wire', () => {
+    const capped = capForPhone(chain(), 4)
+    const ids = new Set(capped.nodes.map((n) => n.id))
+    for (const l of capped.links) {
+      expect(ids.has(l.source)).toBe(true)
+      expect(ids.has(l.target)).toBe(true)
+    }
+  })
+
+  it('keeps the hot set even when it is a leaf, without exceeding the cap', () => {
+    const capped = capForPhone(chain(), 2, new Set(['n9']))
+    expect(capped.nodes.length).toBe(2)
+    expect(capped.nodes.map((n) => n.id)).toContain('n9')
+  })
+
+  it('drops keep ids the graph does not contain', () => {
+    const capped = capForPhone(chain(), 3, new Set(['ghost']))
+    expect(capped.nodes.length).toBe(3)
+    expect(capped.nodes.map((n) => n.id)).not.toContain('ghost')
+  })
+
+  it('is deterministic across runs', () => {
+    const a = capForPhone(chain(), 5)
+    const b = capForPhone(chain(), 5)
+    expect(a.nodes.map((n) => n.id)).toEqual(b.nodes.map((n) => n.id))
+    expect(a.links).toEqual(b.links)
   })
 })
