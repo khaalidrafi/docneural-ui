@@ -259,3 +259,59 @@ describe('?mode=graph deep link', () => {
     expect(store.mode).toBe('reader')
   })
 })
+
+// The ego view's synthesized edge category: visible must carry the co-cite
+// marker at SYNTHESIS time (the canvas tests it O(1) per link per frame — no
+// context string matching anywhere), and every unmarked link it emits must be
+// a real wire straight out of graph.json.
+describe('visible: co-citation edges', () => {
+  function cociteFixture(): GraphData {
+    return {
+      nodes: [
+        node({ id: 'center', title: 'Centre' }),
+        node({ id: 'hub', title: 'Hub' }),
+        node({ id: 'x', title: 'Co-cited' })
+      ],
+      links: [
+        { source: 'hub', target: 'center' },
+        { source: 'hub', target: 'x' }
+      ]
+    }
+  }
+
+  it('synthesizes co-cite wires WITH the kind marker and their evidence', () => {
+    const store = new DocneuralStore()
+    store.data = cociteFixture()
+    store.goto(store.byId('center')!)
+    const cocites = store.visible.links.filter((l) => l.kind === 'cocite')
+    expect(cocites.map((l) => `${l.source}>${l.target}`)).toEqual(['center>x'])
+    expect(cocites[0].context).toBe('co-cited: 1 chapter cite both')
+  })
+
+  it('leaves every unmarked link a real wire from graph.json, unchanged', () => {
+    const store = new DocneuralStore()
+    store.data = cociteFixture()
+    store.goto(store.byId('center')!)
+    for (const l of store.visible.links) {
+      if (l.kind === 'cocite') continue
+      expect(store.data.links).toContain(l) // same object, no marker, no rewrite
+    }
+  })
+
+  it('honours the co-cite cap: 9 candidates still yield at most COCITE_CAP edges', () => {
+    const store = new DocneuralStore()
+    // Nine hubs each cite the centre AND one distinct chapter of their own —
+    // every candidate is two hops out, so all nine qualify before the cap.
+    store.data = {
+      nodes: [node({ id: 'center' }), ...Array.from({ length: 9 }, (_, i) => node({ id: `h${i}` })), ...Array.from({ length: 9 }, (_, i) => node({ id: `t${i}` }))],
+      links: [
+        ...Array.from({ length: 9 }, (_, i) => ({ source: `h${i}`, target: 'center' })),
+        ...Array.from({ length: 9 }, (_, i) => ({ source: `h${i}`, target: `t${i}` }))
+      ]
+    }
+    store.goto(store.byId('center')!)
+    const cocites = store.visible.links.filter((l) => l.kind === 'cocite')
+    expect(cocites.length).toBe(8)
+    expect(cocites[0].context).toMatch(/^co-cited: 1 chapter cite both$/)
+  })
+})

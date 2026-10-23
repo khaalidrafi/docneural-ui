@@ -127,6 +127,11 @@
      custom properties or parse color-mix(), so the embed bridges
      --orui-link-color to this resolved value (DocneuralGraph). */
   --dn-graph-link: rgba(0, 229, 255, 0.3);
+  /* The synthesized co-citation edge: the SAME wire hue, less than half the
+     alpha, and the painter dashes it — a ghost of a wire, because the corpus
+     never claims this link. Literal like its twin, same bridge
+     (--orui-link-cocite, read by neuronEngine's painter). */
+  --dn-graph-link-cocite: rgba(0, 229, 255, 0.14);
 
   /* The canvas backdrop: one step lighter than the page, so the graph reads
      as a lit panel sunk into the HUD. GraphView paints a transparent canvas,
@@ -176,6 +181,7 @@
   --dn-hot: #7d5600;
   --dn-amber: #8a5a00;
   --dn-graph-link: rgba(0, 102, 141, 0.45);
+  --dn-graph-link-cocite: rgba(0, 102, 141, 0.22);
   --dn-graph-bg: #ffffff;
   --dn-dish-dot-1: rgba(0, 102, 141, 0.2);
   --dn-dish-dot-2: rgba(201, 24, 108, 0.09);
@@ -202,6 +208,7 @@
     --dn-hot: #7d5600;
     --dn-amber: #8a5a00;
     --dn-graph-link: rgba(0, 102, 141, 0.45);
+    --dn-graph-link-cocite: rgba(0, 102, 141, 0.22);
     --dn-graph-bg: #ffffff;
     --dn-dish-dot-1: rgba(0, 102, 141, 0.2);
     --dn-dish-dot-2: rgba(201, 24, 108, 0.09);

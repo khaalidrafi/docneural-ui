@@ -167,6 +167,57 @@ export function coCitations(
   )
 }
 
+/* ---------- co-citation painting ----------
+   How a synthesized co-citation edge is told apart from a real wire on the
+   canvas. Pure and O(1) on purpose: force-graph calls the style accessors per
+   link PER FRAME (a 1,559-node corpus is 29,017 calls), so each helper is a
+   field comparison returning a constant — no context-string matching, no
+   allocation, no scanning. The marker itself is set once, at synthesis time
+   (store.cociteInto), and rides the link objects all the way to the engine
+   (roamBridge -> GraphView sync keeps every field). */
+
+/** True for a synthesized co-citation wire. A real citation carries no `kind`
+ *  and fails in one comparison; a wire with any other kind fails too, so a
+ *  future edge category cannot be silently painted as a co-citation. */
+export function isCociteLink(l: { kind?: string }): boolean {
+  return l.kind === 'cocite'
+}
+
+/** Dash segments, in canvas (world) units, of one co-citation wire. ONE shared
+ *  array instance for every co-cite link: force-graph bundles strokes per
+ *  unique color/width/dash each frame, so a constant identity keeps that
+ *  bundling allocation-free (and `2,3` reads as a dotted evidence line, not a
+ *  solid claim). */
+export const COCITE_DASH: number[] = [2, 3]
+
+/** Dash for one wire, or null for the solid stroke a real wire keeps — the
+ *  regular-link answer is exactly what force-graph's default is. */
+export function linkDashFor(l: { kind?: string }): number[] | null {
+  return isCociteLink(l) ? COCITE_DASH : null
+}
+
+/** Stroke width (canvas units) of one wire. `hot` = it touches the selection.
+ *  A co-citation wire is thinner than even a cold real wire, and NEVER earns
+ *  the hot width, however much it touches the selection: in the ego view every
+ *  co-cite edge touches it by construction, and the firing-synapse treatment
+ *  is what makes a hairball. Regular links keep force-graph's previous
+ *  contract verbatim (0.5 cold, 1.4 hot). */
+export function linkWidthFor(l: { kind?: string }, hot: boolean): number {
+  return isCociteLink(l) ? 0.3 : hot ? 1.4 : 0.5
+}
+
+/** Stroke colour of one wire, chosen between two resolved literals: the
+ *  theme's `--dn-graph-link` (bridged as --orui-link-color) for real wires,
+ *  the dimmer `--dn-graph-link-cocite` twin for synthesized ones. Both arrive
+ *  from CSS per theme; this helper only picks — a canvas cannot resolve
+ *  var(), so no colour arithmetic lives here. */
+export function linkStrokeFor(
+  l: { kind?: string },
+  colors: { link: string; cocite: string }
+): string {
+  return isCociteLink(l) ? colors.cocite : colors.link
+}
+
 /** Collapse repeated wires to the same chapter into one row, keeping the
  *  first link (its `context` is the sentence shown) and counting the rest.
  *
