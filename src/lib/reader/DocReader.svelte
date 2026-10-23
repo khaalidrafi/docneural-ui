@@ -11,7 +11,9 @@
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import { copyText } from '../core/clipboard'
-  import type { DocNode, Peek } from '../core/types'
+  import { parseDocHref } from '../core/href'
+  import { createPeekPointer } from './peek.svelte'
+  import type { DocNode } from '../core/types'
 
   let { store }: { store: DocneuralStore } = $props()
 
@@ -312,7 +314,7 @@
     const onScroll = () => {
       // The card is pinned to the link's viewport box, so scrolling invalidates
       // it. Closing is cheaper and less confusing than repositioning per frame.
-      if (peek) closePeek()
+      if (peeker.peek) peeker.closePeek()
       if (!raf) raf = requestAnimationFrame(() => { raf = 0; measure() })
     }
     src.addEventListener('scroll', onScroll, { passive: true })
@@ -370,15 +372,11 @@
      reader makes you break your place to check it. Here the promise can be
      answered in place, because the exporter kept the SENTENCE each citation
      was made in: that is the card's body, and it is already on disk per node.
-     One timer, one delegation pair, no new payload — a hover-intent delay
-     (300 ms) is what keeps it from firing on the way past a paragraph. */
-  let peek = $state<Peek | null>(null)
-  let peekTimer: ReturnType<typeof setTimeout> | 0 = 0
-  /** The link the timer is armed for — one at a time, so moving along a
-   *  paragraph resets the delay instead of stacking cards. */
-  let peekToEl: HTMLAnchorElement | null = null
-  let pressTimer: ReturnType<typeof setTimeout> | 0 = 0
-  const HREF = /(?:^|\/)?docs\/([^#]+)\.html(?:#(.*))?$/
+     One timer, one delegation pair, no new payload. The state machine lives
+     in peek.svelte.ts, shared with graph mode's NotePreview, so both surfaces
+     run the same restraint rules (300 ms hover-intent, 420 ms long-press,
+     closed on scroll and on chapter change). */
+  const peeker = createPeekPointer(() => store, () => doc?.id)
 
   // A chapter change should feel like turning to a page, not like a reload.
   // The Web Animations API on the scroller is the cheap way: compositor-only
@@ -396,58 +394,6 @@
     )
   })
 
-  function openPeek(a: HTMLAnchorElement): void {
-    if (!doc) return
-    const m = (a.getAttribute('href') ?? '').match(HREF)
-    if (!m) return // an external link is its own destination; nothing to peek
-    const to = store.bySlug(m[1])
-    if (!to || to.id === doc.id) return
-    // The prose for a wire lives in either endpoint's file; ctxFor() checks
-    // both, so ask for both (each is ~1.3 kB and de-duplicated by the store).
-    store.loadContext(doc.id)
-    store.loadContext(to.id)
-    const r = a.getBoundingClientRect()
-    peek = { x: r.left, y: r.bottom, fromId: doc.id, toId: to.id,
-      degree: store.views.get(to.id)?.degree ?? 0 }
-  }
-
-  function onPeekMove(e: PointerEvent): void {
-    const a = (e.target as HTMLElement).closest?.('a') as HTMLAnchorElement | null
-    if (!a || a === peekToEl) return // already armed for this very link
-    clearTimeout(peekTimer)
-    peekToEl = a
-    // Touch has no hover: a long-press is the same intent (see onPeekDown).
-    if (e.pointerType !== 'mouse') return
-    peekTimer = setTimeout(() => openPeek(a), 300)
-  }
-
-  function onPeekLeave(e: PointerEvent): void {
-    const a = (e.target as HTMLElement).closest?.('a') as HTMLAnchorElement | null
-    if (!a) return
-    clearTimeout(peekTimer)
-    if (a === peekToEl) {
-      peekToEl = null
-      peek = null
-    }
-  }
-
-  function onPeekDown(e: PointerEvent): void {
-    if (e.pointerType === 'mouse') return
-    const a = (e.target as HTMLElement).closest?.('a') as HTMLAnchorElement | null
-    if (!a) return
-    clearTimeout(pressTimer)
-    pressTimer = setTimeout(() => openPeek(a), 420)
-  }
-
-  function onPeekUp(): void {
-    clearTimeout(pressTimer)
-  }
-
-  function closePeek(): void {
-    peekToEl = null
-    peek = null
-  }
-
   function onContentClick(e: MouseEvent): void {
     const el = e.target as HTMLElement
     const a = el.closest('a')
@@ -461,13 +407,12 @@
       }
       return
     }
-    const href = a.getAttribute('href') ?? ''
-    const m = href.match(/(?:^|\/)?docs\/([^#]+)\.html(?:#(.*))?$/)
+    const m = parseDocHref(a.getAttribute('href') ?? '')
     if (!m) return // external link: let the browser handle it
     e.preventDefault()
-    const target = store.bySlug(m[1])
+    const target = store.bySlug(m.slug)
     if (!target) return
-    if (target.id === doc?.id && m[2]) scrollTo(decodeURIComponent(m[2]))
+    if (target.id === doc?.id && m.anchor) scrollTo(decodeURIComponent(m.anchor))
     else store.goto(target)
   }
 
@@ -480,7 +425,7 @@
       drawer = false
       // A new chapter is a new document: a card describing the last one's
       // wire must not survive the jump.
-      closePeek()
+      peeker.closePeek()
     }
   })
 
@@ -550,9 +495,9 @@
       {:else}
         <div class="dn-org" bind:this={proseEl} role="presentation"
              onclick={onContentClick}
-             onpointerover={onPeekMove} onpointerout={onPeekLeave}
-             onpointerdown={onPeekDown} onpointerup={onPeekUp}
-             onpointercancel={onPeekUp} onpointerleave={closePeek}>
+             onpointerover={peeker.onPeekMove} onpointerout={peeker.onPeekLeave}
+             onpointerdown={peeker.onPeekDown} onpointerup={peeker.onPeekUp}
+             onpointercancel={peeker.onPeekUp} onpointerleave={peeker.closePeek}>
           {@html html}
         </div>
 
@@ -580,7 +525,7 @@
     <SynapseRail {store} {toc} {activeId} onJump={scrollTo} />
   {/if}
 
-  <LinkPeek {store} {peek} />
+  <LinkPeek {store} peek={peeker.peek} />
 
   {#if note}
     <p class="note dn-mono" role="status" aria-live="polite">{note}</p>
