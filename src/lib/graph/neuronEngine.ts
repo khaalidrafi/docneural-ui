@@ -23,7 +23,16 @@
 // per frame would freeze this machine. Label ink/paper come from the site's
 // own --dn-fg/--dn-bg so text stays readable on both themes.
 import { canvasTokens, nodeColor, type CanvasTokens } from 'orui/graph/colors'
-import { LABEL_LINE, labelExtent, shortTitle, spreadStrength } from '../core/graph'
+import {
+  LABEL_LINE,
+  isCociteLink,
+  labelExtent,
+  linkDashFor,
+  linkStrokeFor,
+  linkWidthFor,
+  shortTitle,
+  spreadStrength
+} from '../core/graph'
 import {
   forceFitContainer,
   forceLabelBoxes,
@@ -240,6 +249,12 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let ink = '#d7e2dc'
   let paper = '#10151a'
   let hotCol = '#ffd60a'
+  // The dim twin of the wire colour, for synthesized co-citation edges. Read
+  // from --orui-link-cocite (bridged from --dn-graph-link-cocite in
+  // DocneuralGraph) on the same 500 ms beat as every other token; until it
+  // resolves, a co-cite edge falls back to the regular wire colour and stays
+  // distinct by dash and width alone.
+  let cociteCol = ''
   let readAt = 0
   const tokensNow = (): CanvasTokens => {
     const t = performance.now()
@@ -252,9 +267,15 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         ink = get('--dn-fg').trim() || ink
         paper = get('--dn-bg').trim() || paper
         hotCol = get('--dn-hot').trim() || hotCol
+        cociteCol = get('--orui-link-cocite').trim() || tokens.link
       }
     }
     return tokens
+  }
+  /** Both wire colours, resolved once per painter run that needs them. */
+  const wireColors = (): { link: string; cocite: string } => {
+    const t = tokensNow()
+    return { link: t.link, cocite: cociteCol || t.link }
   }
 
   const isHot = (id: string): boolean => {
@@ -426,11 +447,50 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       const sel = focus.selected()
       return sel != null && (l.source?.id === sel || l.target?.id === sel)
     }
+    /* A co-citation edge paints ITSELF, and every real wire keeps the exact
+       stroke it had before. Two facts of the seam force this shape:
+
+       - GraphView OWNS linkColor — it re-sets the accessor at mount and on
+         every theme flip — so a per-link dimmer colour cannot ride linkColor
+         without fighting the component. force-graph's per-link
+         linkCanvasObjectMode 'replace' is the one painter neither GraphView
+         nor anything else claims: it hands us ONLY the synthesized edges and
+         leaves every real wire to the default bundled painter, untouched.
+       - The replacement draws the same geometry the default painter would
+         (a straight line — nothing in this app sets linkCurvature), so the
+         only visible change is dash + width + the dimmer token colour.
+
+       All three style decisions come from core/graph.ts helpers, each an O(1)
+       field test: force-graph calls these accessors per link PER FRAME, and a
+       per-frame scan or allocation would freeze a Celeron. Replace-mode edges
+       paint in the engine's BEFORE pass, so co-citations layer UNDER the real
+       wires — evidence under claim. */
+    const paintCocite = (l: any, ctx: Ctx, globalScale: number): void => {
+      const s = l.source
+      const t = l.target
+      if (!s || !t || s.x == null || t.x == null) return // the engine's own guards
+      ctx.save()
+      ctx.beginPath()
+      ctx.moveTo(s.x, s.y)
+      ctx.lineTo(t.x, t.y)
+      ctx.strokeStyle = linkStrokeFor(l, wireColors())
+      ctx.lineWidth = linkWidthFor(l, false) / globalScale
+      ctx.setLineDash(linkDashFor(l) as number[])
+      ctx.stroke()
+      ctx.restore()
+    }
     engine
       // 0.25 was invisible on the light theme; axons should read as wires.
-      .linkWidth((l: any) => (touches(l) ? 1.4 : 0.5))
-      .linkDirectionalParticles((l: any) => (touches(l) ? 3 : 0))
+      // A co-cite edge is thinner than a cold wire and never earns the hot
+      // one, however much it touches the selection (linkWidthFor).
+      .linkWidth((l: any) => linkWidthFor(l, touches(l)))
+      // The firing-synapse particles are a REAL-citation signal: in the ego
+      // view every co-cite edge touches the selection by construction, so
+      // without this opt-out they would all fire — the hairball again.
+      .linkDirectionalParticles((l: any) => (isCociteLink(l) ? 0 : touches(l) ? 3 : 0))
       .linkDirectionalParticleWidth(1.8)      // After graphData() force-graph resolves endpoints to node objects.
       .linkDirectionalParticleColor((l: any) => nodeColor(l.source ?? {}, tokensNow()))
+      .linkCanvasObjectMode((l: any) => (isCociteLink(l) ? 'replace' : undefined))
+      .linkCanvasObject(paintCocite)
   }
 }
