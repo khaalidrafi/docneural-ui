@@ -403,6 +403,7 @@
        the site carries them as --dn-* tokens per theme in docneural-ui.css)
        repaint the nodes AND wires when the site's theme toggle flips. */
     --orui-link-color: var(--dn-graph-link);
+    --orui-link-cocite: var(--dn-graph-link-cocite);
     --orui-node-palette: var(--dn-graph-palette);
     /* The agar dish (dots + vignette) lives in .dn-dish (docneural-ui.css §2b) —
        same treatment, per-theme dot colors, in hero mode and the rail

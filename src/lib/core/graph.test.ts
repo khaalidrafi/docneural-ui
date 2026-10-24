@@ -2,6 +2,7 @@
 // the exporter's output contract can be checked here without a DOM or canvas.
 import { describe, expect, it } from 'vitest'
 import {
+  COCITE_DASH,
   backlinks,
   capForPhone,
   coCitations,
@@ -10,8 +11,12 @@ import {
   egoGraph,
   filteredGraph,
   groupWires,
+  isCociteLink,
   labelExtent,
   labelWidth,
+  linkDashFor,
+  linkStrokeFor,
+  linkWidthFor,
   localGraph,
   neighborIds,
   nodeMatches,
@@ -20,7 +25,7 @@ import {
   shortTitle,
   spreadStrength
 } from './graph'
-import type { DocNode, GraphData } from './types'
+import type { DocLink, DocNode, GraphData } from './types'
 
 function node(id: string, title = id, tags: string[] = []): DocNode {
   return { id, slug: id, title, tags }
@@ -218,6 +223,52 @@ describe('coCitations', () => {
   })
   it('is empty for a chapter nobody cites', () => {
     expect(coCitations(CITED, 'far').size).toBe(0)
+  })
+})
+
+/* ---------- co-citation painting ----------
+   The canvas style accessors run PER LINK PER FRAME (29,017 links on the
+   corpus view), so these must stay field comparisons and return shared
+   constants. A regression into per-frame string matching or allocation is
+   exactly what these cases exist to catch. */
+describe('cocite painting helpers', () => {
+  const solid: DocLink = { source: 'a', target: 'b', context: 'a cites b' }
+  const cocite: DocLink = { source: 'a', target: 'b', context: 'co-cited: 3 chapters cite both', kind: 'cocite' }
+  const bare: DocLink = { source: 'a', target: 'b' }
+  // A kind the current DocLink union does not allow — reachable on the engine
+  // side (its links are untyped), so the runtime guard must hold anyway.
+  const foreign = { source: 'a', target: 'b', kind: 'mentions' } as unknown as DocLink
+
+  it('isCociteLink: the synthesis marker is the ONLY thing it tests', () => {
+    expect(isCociteLink(cocite)).toBe(true)
+    // A real citation (no marker) and a missing field both fail in O(1).
+    expect(isCociteLink(solid)).toBe(false)
+    expect(isCociteLink(bare)).toBe(false)
+    // Any OTHER kind is not a co-citation — a future edge category must not
+    // be silently painted as one.
+    expect(isCociteLink(foreign)).toBe(false)
+  })
+
+  it('linkDashFor: co-cite gets the shared dash, a real wire stays solid', () => {
+    expect(linkDashFor(cocite)).toBe(COCITE_DASH) // toBe: ONE instance, shared
+    expect(linkDashFor(solid)).toBeNull()
+    expect(linkDashFor(bare)).toBeNull()
+  })
+
+  it('linkWidthFor: real wires keep their contract verbatim, co-cite is thinner than both', () => {
+    expect(linkWidthFor(solid, false)).toBe(0.5)
+    expect(linkWidthFor(solid, true)).toBe(1.4)
+    // In the ego view every co-cite edge touches the selection by
+    // construction — it must never earn the firing-synapse width.
+    expect(linkWidthFor(cocite, false)).toBe(0.3)
+    expect(linkWidthFor(cocite, true)).toBe(0.3)
+    expect(linkWidthFor(cocite, true)).toBeLessThan(linkWidthFor(solid, false))
+  })
+
+  it('linkStrokeFor: co-cite wears its token, a real wire keeps the theme wire colour', () => {
+    const colors = { link: 'rgba(0, 229, 255, 0.3)', cocite: 'rgba(0, 229, 255, 0.14)' }
+    expect(linkStrokeFor(cocite, colors)).toBe(colors.cocite)
+    expect(linkStrokeFor(solid, colors)).toBe(colors.link)
   })
 })
 
