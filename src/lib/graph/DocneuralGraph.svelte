@@ -24,10 +24,12 @@
   //    same one Emacs `follow` uses. A plain pan (no `fit`), because the
   //    user never wants a click to also yank the zoom level.
   import GraphView from 'orui/graph/GraphView.svelte'
+  import { onMount } from 'svelte'
   import { createGraphStore } from 'orui/state/graphStore'
   import type { OrgRoamNode } from 'orui/api'
   import { toRoam } from './roamBridge'
   import { applyLayout, fitReadable, makeNeuronLoader } from './neuronEngine'
+  import { createPhoneWake } from './phoneWake'
   import type { Blocker } from './spreadForces'
   import type { Engine as NeuronEngine } from './neuronEngine'
   import { neighborIds, capForPhone, isCociteLink } from '../core/graph'
@@ -73,11 +75,11 @@
     // effect is about to hand the canvas (see hasCocites above).
     hasCocites = g.links.some(isCociteLink)
     // Coming back from a pause: a filter keystroke or a selection while the
-    // render loop is stopped must not leave the canvas on a stale frame.
-    if (phone) {
-      engine?.resumeAnimation()
-      wrapEl?.removeAttribute('data-paused')
-    }
+    // render loop is stopped must not leave the canvas on a stale frame. The
+    // wake machine dispatches the resume from its own handle — this effect
+    // reads nothing through it, so its dependencies stay exactly the data
+    // below.
+    if (phone) wake.resume()
     // The hot set is read only on a phone (short-circuit), so a selection on
     // desktop does NOT re-run this effect — the canvas data has not changed,
     // and a full re-sync per click would spend the physics' saved positions.
@@ -140,9 +142,15 @@
   // Layout is the one thing the visitor can ask the canvas for that is not a
   // filter: how far apart the neurons sit. Pushing it means reaching the
   // engine, which GraphView keeps private — so the construction seam hands it
-  // back through `onEngine` and this holds it as STATE, so the effect below
-  // re-runs the moment the lazy chunk lands instead of firing at nothing.
-  let engine: NeuronEngine = null
+  // back through `onEngine`. The handle is STATE, and that is load-bearing:
+  // the engine is a lazy 174 kB chunk that lands AFTER first paint, and a
+  // plain variable read inside an $effect registers no dependency — the
+  // layout effect below would run once at mount, see no engine, and never
+  // run again: onEngineStop never arms (no fit on settle, no phone settle-
+  // park) and a stored spread layout never replays (the audit's dead-engine-
+  // read defect). As state, the effect re-runs the moment the chunk lands;
+  // the wake listeners ride the same arrival through onEngine (see below).
+  let engine: NeuronEngine | null = $state(null)
   let lastMode: LayoutMode | null = null
   let stopArmed = false
   let fitNextStop = false
@@ -239,60 +247,85 @@
     const changed = mode !== lastMode
     lastMode = mode
     if (!changed) return
-    // A first run into the shipped layout must neither reheat nor re-frame:
-    // that is already what the canvas looks like. Honouring a stored `spread`
-    // is another matter — that one is the visitor's own request, replayed.
-    if (boot && mode === 'cluster') return
-    // Hand the spread layout the rect it is being packed to fill; cluster is a
-    // shape view and takes no container.
-    const vp = viewport()
-    applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined)
-    fitNextStop = true
+    // The stop handler arms ONCE, on the first live engine sighting — boot
+    // included. The phone's settle-park waits on this event after EVERY
+    // settle, not only after the ones a relayout asked for: a filter
+    // keystroke or a selection reheats the sim, and its settle must park the
+    // canvas exactly like the first one did. stopArmed is the guard: one
+    // registration, never two.
     if (!stopArmed) {
       stopArmed = true
       // Frame it when the physics FINISH, not on click: the fit reads the
       // current positions, so framing mid-relayout frames the old cluster. One
       // shot because this event also fires after every filter keystroke, and a
-      // camera that lurches on each letter is unusable.
+      // camera that lurches on each letter is unusable. The fit only runs when
+      // a relayout asked for one (fitNextStop); the park below runs on every
+      // settle.
       eng.onEngineStop(() => {
-        if (!fitNextStop) return
-        fitNextStop = false
-        const vp = viewport()
-        if (!vp || !wrapEl) {
-          eng.zoomToFit(420, PAD) // no box yet (detached): take force-graph's word for it
-          return
+        const frame = wrapEl
+        if (fitNextStop) {
+          fitNextStop = false
+          const vp = viewport()
+          if (!vp || !frame) {
+            eng.zoomToFit(420, PAD) // no box yet (detached): take force-graph's word for it
+            return
+          }
+          const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
+            pad: PAD,
+            inset: vp.inset,
+            // 1:1 is the spread layout's authored scale, so never zoom IN past it;
+            // cluster is a shape view and takes whatever fit it whole needs.
+            maxScale: store.layout === 'spread' ? 1 : Infinity
+          })
+          frame.dataset.fit = k.toFixed(3)
+          // The other half of the evidence: `fit: 0.6` alone cannot tell a camera
+          // bug from a layout that packed loose, and both look the same on screen.
+          frame.dataset.field = `${Math.round(w)}x${Math.round(h)}`
         }
-        const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
-          pad: PAD,
-          inset: vp.inset,
-          // 1:1 is the spread layout's authored scale, so never zoom IN past it;
-          // cluster is a shape view and takes whatever fit it whole needs.
-          maxScale: store.layout === 'spread' ? 1 : Infinity
-        })
-        wrapEl.dataset.fit = k.toFixed(3)
-        // The other half of the evidence: `fit: 0.6` alone cannot tell a camera
-        // bug from a layout that packed loose, and both look the same on screen.
-        wrapEl.dataset.field = `${Math.round(w)}x${Math.round(h)}`
         // PHONE, the other half of the cap: once the layout has settled, a
         // parked canvas is repaints-for-nobody — force-graph's loop keeps
         // painting every neuron per frame even when nothing moves. Pause the
-        // loop after each settle; the wake listener below resumes it the
-        // moment a finger or wheel touches the dish, and a data change resumes
-        // it in the snapshot effect. data-paused publishes the fact for the
-        // verify gate, the way data-fit publishes the camera's.
-        if (isPhoneViewport()) {
+        // loop after each settle; the wake machine resumes it the moment a
+        // finger or wheel touches the dish, and a data change resumes it in
+        // the snapshot effect. data-paused publishes the fact for the verify
+        // gate, the way data-fit publishes the camera's.
+        if (frame && isPhoneViewport()) {
           try {
             eng.pauseAnimation()
             // The verify gate's phone assertion reads this — the same pattern
             // as data-fit: publish the state as a DOM fact, assert the fact.
-            wrapEl.dataset.paused = '1'
+            frame.dataset.paused = '1'
           } catch {
             /* an engine without the knob keeps running: the cap still bound it */
           }
         }
       })
     }
+    // A first run into the shipped layout must neither reheat nor re-frame:
+    // that is already what the canvas looks like. The stop handler above is
+    // armed regardless — the boot settle is exactly the one a phone parks on.
+    // Honouring a stored `spread` is another matter — that one is the
+    // visitor's own request, replayed.
+    if (boot && mode === 'cluster') return
+    // Hand the spread layout the rect it is being packed to fill; cluster is a
+    // shape view and takes no container.
+    const vp = viewport()
+    applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined)
+    fitNextStop = true
   })
+
+  // PHONE, the wake side of the settle-park: touch or wheel the dish and the
+  // canvas wakes up for as long as the interaction lasts — the next settle
+  // pauses it again; a data change (wake.resume() above) and unmount resume
+  // too. The machine owns the listeners and the arming contract (phoneWake.ts,
+  // pinned by phoneWake.test.ts). It is wired through the same explicit
+  // construction seams that proved out for the co-cite painter (89af16b) —
+  // onEngine for the engine, the element's use: action for the wrap — instead
+  // of an $effect over component state: those seams fire AT the two arrivals
+  // that matter (element mounted, lazy chunk landed), and a machine with no
+  // effects of its own is one node tests can pin (vitest compiles runes
+  // modules for the server, where effects are no-ops).
+  const wake = createPhoneWake(isPhoneViewport)
 
   const neuronLoad = makeNeuronLoader({
     tokenEl: () => wrapEl,
@@ -300,45 +333,29 @@
     neighbors: () => selNb,
     spread: () => store.layout === 'spread',
     hasCocites: () => hasCocites,
-    onEngine: (e) => { engine = e }
+    // One sighting per engine instance: the same arrival that makes the
+    // layout effect above re-run arms the wake listeners, exactly once.
+    onEngine: (e) => { engine = e; wake.setEngine(e) }
   })
 
-  // PHONE, the resume side: touch or scroll the dish and the canvas wakes up
-  // for as long as the interaction lasts — the next settle pauses it again.
-  // effect cleanup resumes on unmount too, so a mode switch never leaves the
-  // next mount staring at a frozen frame of the previous one.
-  $effect(() => {
-    const eng = engine
-    const wrap = wrapEl
-    if (!eng || !wrap || !isPhoneViewport()) return
-    const wake = () => {
-      try {
-        eng.resumeAnimation()
-        wrap?.removeAttribute('data-paused')
-      } catch {
-        /* same knobless engine as the settle side */
-      }
-    }
-    wrap.addEventListener('pointerdown', wake, { passive: true })
-    wrap.addEventListener('wheel', wake, { passive: true })
-    return () => {
-      wrap.removeEventListener('pointerdown', wake)
-      wrap.removeEventListener('wheel', wake)
-      wrap.removeAttribute('data-paused')
-      try {
-        eng.resumeAnimation()
-      } catch {
-        /* ignore */
-      }
-    }
-  })
+  // The wrap element joins the wake machine when it mounts and leaves it
+  // when it unmounts — the element's own lifecycle is the seam, so a wrap
+  // rebind re-arms and an unmount resumes rather than freezing a parked
+  // canvas into the next mode.
+  const captureWrap = (el: HTMLDivElement): { destroy: () => void } => {
+    wake.setWrap(el)
+    return { destroy: () => wake.setWrap(undefined) }
+  }
+  // The element's action already covers teardown; this is the same explicit
+  // destroy contract every surface gives its machine (QA-1(d)).
+  onMount(() => wake.destroy)
 
   function click(node: OrgRoamNode): void {
     onNodeClick(node.id)
   }
 </script>
 
-<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl}>
+<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl} use:captureWrap>
   <!-- loadEngine comes from neuronEngine so the force-graph import resolves
        from SYNAPT's node_modules (Vite resolves bare specifiers relative to
        the importing file, and GraphView.svelte lives in the sibling orui
