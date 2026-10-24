@@ -42,6 +42,12 @@ export type DocLink = {
   source: string
   target: string
   context?: string
+  /** Edge category, set at SYNTHESIS time only (store.cociteInto): a
+   *  co-citation wire is evidence two chapters are cited together, not a
+   *  citation the corpus itself claims. Absent = a real wire. The canvas
+   *  accessor path tests this field in O(1) per link per frame — it must
+   *  never string-match `context` to recognise one. */
+  kind?: 'cocite'
 }
 
 export type GraphData = {
