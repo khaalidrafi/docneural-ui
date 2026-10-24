@@ -9,6 +9,7 @@
   import { parseDocHref } from '../core/href'
   import LinkPeek from './LinkPeek.svelte'
   import { createPeekPointer } from './peek.svelte'
+  import { onMount } from 'svelte'
 
   let { store }: { store: DocneuralStore } = $props()
 
@@ -39,6 +40,10 @@
      pointer-events: none card); this surface only adds what it alone knows:
      which box scrolls, and when a selection counts as new. */
   const peeker = createPeekPointer(() => store, () => doc?.id)
+  // Same teardown contract as the reader (QA-1(d)): no armed timer outlives
+  // the surface — a late fire would warm a ctx file nobody shows and write
+  // $state nobody reads.
+  onMount(() => peeker.destroy)
 
   // The preview pane is its own scroller (the whole bottom sheet on a phone):
   // the card is pinned to the link's viewport box, so scrolling invalidates

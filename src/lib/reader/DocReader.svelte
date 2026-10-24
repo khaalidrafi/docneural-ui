@@ -377,6 +377,10 @@
      run the same restraint rules (300 ms hover-intent, 420 ms long-press,
      closed on scroll and on chapter change). */
   const peeker = createPeekPointer(() => store, () => doc?.id)
+  // A pending hover/press timer must not fire after the reader unmounts: it
+  // would warm a ctx file nobody shows and write $state nobody reads
+  // (QA-1(d)). The machine's own teardown is the one place both timers live.
+  onMount(() => peeker.destroy)
 
   // A chapter change should feel like turning to a page, not like a reload.
   // The Web Animations API on the scroller is the cheap way: compositor-only

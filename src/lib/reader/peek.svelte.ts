@@ -45,6 +45,10 @@ export type PeekPointer = {
   onPeekUp: () => void
   /** Close now — on scroll, and whenever the chapter/selection changes. */
   closePeek: () => void
+  /** Unmount teardown: clear both armed timers and drop the card. Without
+   *  it, a pending 300/420 ms open at unmount fires one late loadContext
+   *  warm and writes $state nobody will ever read (QA-1(d)). */
+  destroy: () => void
 }
 
 /** Create the machine for one prose surface.
@@ -115,6 +119,22 @@ export function createPeekPointer(
   }
 
   function closePeek(): void {
+    // An armed open must not survive the close. A stationary pointer that
+    // scroll-closed the card would otherwise re-open it the instant its
+    // hover timer fires, and a long-press interrupted by a scroll would
+    // open one late — both after the box the card was measured against has
+    // already moved under the pointer.
+    clearTimeout(peekTimer)
+    clearTimeout(pressTimer)
+    peekToEl = null
+    peek = null
+  }
+
+  function destroy(): void {
+    clearTimeout(peekTimer)
+    clearTimeout(pressTimer)
+    peekTimer = 0
+    pressTimer = 0
     peekToEl = null
     peek = null
   }
@@ -125,6 +145,7 @@ export function createPeekPointer(
     onPeekLeave,
     onPeekDown,
     onPeekUp,
-    closePeek
+    closePeek,
+    destroy
   }
 }
