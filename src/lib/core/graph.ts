@@ -264,10 +264,16 @@ export function commonTags(data: GraphData, min = 2): string[] {
  * The corpus overview is 1,559 neurons and 29,017 wires; on the project's own
  * 4 GB Celeron phone that is a sim worth skipping and a paint worth capping.
  * The cap keeps the chapters a reader can actually be looking for — the most
- * connected ones (a hub IS the index of its region) — plus every id in
- * `keep`, the selection's hot set, so an ego view that happens to run on a
- * phone never loses the node the reader arrived at. Links between dropped
- * nodes go with them; the canvas never draws a dangling wire.
+ * connected ones (a hub IS the index of its region) — plus the selection's
+ * hot set, so an ego view that happens to run on a phone never loses the node
+ * the reader arrived at. The FINAL set is what gets capped, in the function's
+ * priority order: the hot set first — in its own iteration order, so a caller
+ * that needs a specific id to survive puts it first (DocneuralGraph builds
+ * `new Set([selId, ...selNb])`) — then hubs by degree. A hot set wider than
+ * the cap (a hub measured 1,122 neighbours) yields exactly `cap` nodes, the
+ * selected one among them: the cap is never defeated by the very set it
+ * keeps. Links between dropped nodes go with them; the canvas never draws a
+ * dangling wire.
  *
  * Identity is preserved when the graph already fits: callers re-run this on
  * every `visible` recompute, and returning the same object keeps the canvas
@@ -279,8 +285,14 @@ export function capForPhone(g: GraphData, cap: number, keep?: Set<string>): Grap
   const ranked = g.nodes
     .map((n, i) => ({ n, d: deg.get(n.id) ?? 0, i }))
     .sort((a, b) => b.d - a.d || a.i - b.i) // ties keep corpus order: stable across reloads
+  const present = new Set(g.nodes.map((n) => n.id))
   const kept = new Set<string>()
-  if (keep) for (const id of keep) if (g.nodes.some((n) => n.id === id)) kept.add(id)
+  if (keep) {
+    for (const id of keep) {
+      if (kept.size >= cap) break
+      if (present.has(id)) kept.add(id)
+    }
+  }
   for (const { n } of ranked) {
     if (kept.size >= cap) break
     kept.add(n.id)

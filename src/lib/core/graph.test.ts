@@ -392,6 +392,30 @@ describe('capForPhone', () => {
     expect(capped.nodes.map((n) => n.id)).toContain('n9')
   })
 
+  it('caps the FINAL set when the hot set alone is wider than the cap — the hub hairball', () => {
+    // The audit's over-cap: selecting a hub hands the hot set its whole
+    // neighbourhood (measured 1,122 ids), and the keep set was inserted
+    // BEFORE the cap check, handing a phone 1,123 nodes. Five hot ids, cap
+    // 4 — exactly 4 come out, the selection (first in the keep order)
+    // among them, and no hub slot is left for n0.
+    const capped = capForPhone(chain(), 4, new Set(['n9', 'n8', 'n7', 'n6', 'n5']))
+    expect(capped.nodes.length).toBe(4)
+    expect(capped.nodes.map((n) => n.id)).toContain('n9')
+    expect(capped.nodes.map((n) => n.id)).not.toContain('n5') // the tail the cap cut
+    expect(capped.nodes.map((n) => n.id)).not.toContain('n0') // the cap bit inside the hot set
+    // Cutting nodes never leaves a wire hanging, even in the hairball.
+    const ids = new Set(capped.nodes.map((n) => n.id))
+    for (const l of capped.links) {
+      expect(ids.has(l.source)).toBe(true)
+      expect(ids.has(l.target)).toBe(true)
+    }
+  })
+
+  it('a graph that already fits stays the same object even with a hot set', () => {
+    const g = chain()
+    expect(capForPhone(g, 10, new Set(['n9', 'n0']))).toBe(g)
+  })
+
   it('drops keep ids the graph does not contain', () => {
     const capped = capForPhone(chain(), 3, new Set(['ghost']))
     expect(capped.nodes.length).toBe(3)
