@@ -66,11 +66,18 @@ export type NeuronFocus = {
    *  changes into it. GraphView keeps the instance private and exposes no
    *  physics knob, so the construction seam is the only door. */
   onEngine?: (engine: Engine) => void
+  /** True when the current snapshot carries synthesized co-citation edges
+   *  (ego scope with a selection — corpus scope never has any). Read when
+   *  data lands on the engine, never per frame; see the arming note in
+   *  installNeuron for why the link painter must be conditional. */
+  hasCocites?: () => boolean
 }
 
 /** Wrap force-graph's module loader. GraphView does `create()(container)`,
  *  so we return a module-shaped object whose default builds a neuron-configured
- *  instance. */
+ *  instance. (installNeuron below does the configuring; it is exported so the
+ *  link-painter arming can be pinned by neuronEngine.test.ts against a mock
+ *  engine — the real one cannot exist in node.) */
 export function makeNeuronLoader(focus: NeuronFocus): () => Promise<unknown> {
   return async () => {
     // The engine is a lazy 174 kB chunk behind first paint, so it is DYNAMIC: a
@@ -244,7 +251,7 @@ export function fitReadable(
   return { k, w: worldW, h: worldH }
 }
 
-function installNeuron(engine: Engine, focus: NeuronFocus): void {
+export function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let tokens: CanvasTokens = canvasTokens(() => '')
   let ink = '#d7e2dc'
   let paper = '#10151a'
@@ -272,10 +279,17 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     }
     return tokens
   }
-  /** Both wire colours, resolved once per painter run that needs them. */
-  const wireColors = (): { link: string; cocite: string } => {
+  /** Both wire colours, resolved once per painter run that needs them. The
+   *  pair is ONE shared instance — its only consumer reads it and is done
+   *  with it in the same call — so the per-edge painter allocates nothing:
+   *  COCITE_CAP co-cite edges on the canvas would otherwise hand the GC up
+   *  to eight fresh objects every frame for the same two strings. */
+  const wireColors: { link: string; cocite: string } = { link: '', cocite: '' }
+  const readWireColors = (): { link: string; cocite: string } => {
     const t = tokensNow()
-    return { link: t.link, cocite: cociteCol || t.link }
+    wireColors.link = t.link
+    wireColors.cocite = cociteCol || t.link
+    return wireColors
   }
 
   const isHot = (id: string): boolean => {
@@ -473,7 +487,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       ctx.beginPath()
       ctx.moveTo(s.x, s.y)
       ctx.lineTo(t.x, t.y)
-      ctx.strokeStyle = linkStrokeFor(l, wireColors())
+      ctx.strokeStyle = linkStrokeFor(l, readWireColors())
       ctx.lineWidth = linkWidthFor(l, false) / globalScale
       ctx.setLineDash(linkDashFor(l) as number[])
       ctx.stroke()
@@ -490,7 +504,38 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       .linkDirectionalParticles((l: any) => (isCociteLink(l) ? 0 : touches(l) ? 3 : 0))
       .linkDirectionalParticleWidth(1.8)      // After graphData() force-graph resolves endpoints to node objects.
       .linkDirectionalParticleColor((l: any) => nodeColor(l.source ?? {}, tokensNow()))
-      .linkCanvasObjectMode((l: any) => (isCociteLink(l) ? 'replace' : undefined))
-      .linkCanvasObject(paintCocite)
+
+    /* QA-1(b): force-graph's paintLinks routes EVERY visible link through
+       its {before,after,replace} mode buckets whenever a linkCanvasObject is
+       installed — one object literal + push per link per frame, plus a full
+       ~29k-entry defaultPaintLinks spread — even when the mode accessor
+       selects nothing. Co-citation edges exist ONLY in the ego scope, so the
+       painter is installed CONDITIONALLY: a graph without them keeps
+       state.linkCanvasObject falsy, which is the exact branch paintLinks
+       tests, and force-graph runs its own bundling path — the
+       zero-allocation one — untouched. */
+    let armed = false
+    const armCocitePainter = (): void => {
+      const want = focus.hasCocites?.() ?? false
+      if (armed === want) return
+      armed = want
+      engine.linkCanvasObjectMode(want ? (l: any) => (isCociteLink(l) ? 'replace' : undefined) : null)
+      engine.linkCanvasObject(want ? paintCocite : null)
+    }
+    armCocitePainter()
+    /* The answer can only change when the canvas is handed new data, and
+       every snapshot swap crosses exactly here (GraphView's syncNow goes
+       through engine.graphData). Re-evaluate at that moment — synchronously
+       before the new data's first paint, so no frame ever routes (or misses)
+       the painter for a snapshot it is not looking at. No per-frame cost, no
+       reliance on sim ticks or on the render loop running (a phone parked by
+       the settle-pause still arms correctly). A flip costs two kapsule sets
+       (triggerUpdate: false plus a repaint flag), never an engine rebuild. */
+    const setGraphData = engine.graphData
+    engine.graphData = (...args: unknown[]): unknown => {
+      const r = setGraphData.apply(engine, args)
+      armCocitePainter()
+      return r
+    }
   }
 }
