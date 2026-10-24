@@ -6,7 +6,7 @@
   import type { DocneuralStore } from '../core/store.svelte'
   import { backlinks, outlinks } from '../core/graph'
   import { sourceTitle, sourceVars } from '../core/source'
-  import { parseDocHref } from '../core/href'
+  import { routeDocLink } from '../core/href'
   import LinkPeek from './LinkPeek.svelte'
   import { createPeekPointer } from './peek.svelte'
   import { onMount } from 'svelte'
@@ -20,15 +20,17 @@
 
   // Intercept in-preview link clicks: a cross-doc link re-selects the node
   // and swaps the preview in place (no page load, no losing the graph).
+  // Same routing decision as the reader (core/href.ts), so a citation's
+  // #heading reaches goto instead of dying in the swap.
   function onContentClick(e: MouseEvent): void {
     const a = (e.target as HTMLElement).closest('a')
     if (!a) return
-    const m = parseDocHref(a.getAttribute('href') ?? '')
-    if (!m) return // external or in-page anchor: let the browser handle it
-    const target = store.bySlug(m.slug)
-    if (!target) return
+    const route = routeDocLink(a.getAttribute('href') ?? '', (s) => store.bySlug(s), doc)
+    if (route.kind === 'external' || route.kind === 'dead') {
+      return // external or in-page anchor: let the browser handle it
+    }
     e.preventDefault()
-    store.goto(target)
+    store.goto(route.doc, undefined, route.anchor)
   }
 
   /* ---------- hover peek: the citation card, same as the reader ----------

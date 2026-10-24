@@ -11,7 +11,7 @@
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import { copyText } from '../core/clipboard'
-  import { parseDocHref } from '../core/href'
+  import { routeDocLink } from '../core/href'
   import { createPeekPointer } from './peek.svelte'
   import type { DocNode } from '../core/types'
 
@@ -411,13 +411,17 @@
       }
       return
     }
-    const m = parseDocHref(a.getAttribute('href') ?? '')
-    if (!m) return // external link: let the browser handle it
-    e.preventDefault()
-    const target = store.bySlug(m.slug)
-    if (!target) return
-    if (target.id === doc?.id && m.anchor) scrollTo(decodeURIComponent(m.anchor))
-    else store.goto(target)
+    // One routing decision for both prose surfaces (core/href.ts), so a
+    // citation's #heading reaches goto instead of dying in the parse.
+    const route = routeDocLink(a.getAttribute('href') ?? '', (s) => store.bySlug(s), doc)
+    if (route.kind === 'external') return // external link: let the browser handle it
+    e.preventDefault() // a corpus href is ours — dead or not, the browser stays put
+    if (route.kind === 'dead') return // a page the graph never had: nothing to open
+    if (route.kind === 'here') {
+      scrollTo(route.anchor)
+      return
+    }
+    store.goto(route.doc, undefined, route.anchor)
   }
 
   // Mobile: the sidebar is an off-canvas drawer (a static strip above the
