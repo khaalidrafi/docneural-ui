@@ -3,6 +3,7 @@
 // pager that must skip stubs. These run in node; the URL/fetch side of `goto`
 // is exercised with tiny global stubs, not jsdom.
 import { beforeEach, describe, expect, it } from 'vitest'
+import { gzipSync } from 'node:zlib'
 import { DocneuralStore } from './store.svelte'
 import type { DocNode, GraphData } from './types'
 
@@ -31,14 +32,19 @@ beforeEach(() => {
   const g = globalThis as Record<string, unknown>
   g.location = { href: 'http://site.test/', search: '' }
   g.history = { replaceState: (_: unknown, __: string, url: URL) => { lastUrl = url.toString() } }
-  g.fetch = () => {
+  // Serves the fixture the way the pipeline does: the transport ladder asks
+  // for graph.json.gz first (node has no DecompressionStream('br')), so the
+  // gz sibling is a real gzip response and the happy path stays one request.
+  // Fragment and ctx fetches keep their old shapes ('' body / json fixture).
+  g.fetch = (input: RequestInfo | URL) => {
     fetchCount++
+    const url = String(input)
+    if (url.endsWith('.html')) return Promise.resolve(new Response(''))
     const body = JSON.stringify(fixture())
-    return Promise.resolve({
-      ok: true,
-      text: () => Promise.resolve(''),
-      json: () => Promise.resolve(JSON.parse(body))
-    })
+    if (url.endsWith('.gz')) {
+      return Promise.resolve(new Response(new Uint8Array(gzipSync(Buffer.from(body)))))
+    }
+    return Promise.resolve(new Response(body))
   }
 })
 
