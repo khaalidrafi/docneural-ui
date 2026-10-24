@@ -115,6 +115,25 @@ describe('goto', () => {
     expect(lastUrl).toContain('doc=r') // deep link stays shareable
     expect(fetchCount).toBeGreaterThan(0) // body of canonical fetched
   })
+  it('lands on an explicit heading: the anchor reaches the store and the URL hash', () => {
+    // What a cross-doc citation click now hands goto (core/href.ts
+    // routeDocLink): the doc plus the heading the link named.
+    const store = new DocneuralStore()
+    store.data = fixture()
+    store.goto(store.byId('c1')!, undefined, 'Exporting')
+    expect(store.selected?.id).toBe('c1')
+    expect(store.anchor).toBe('Exporting') // the reader's scroll effect consumes this
+    expect(lastUrl).toContain('doc=c1')
+    expect(lastUrl).toContain('#Exporting') // a copied link is a real deep link
+  })
+  it('an explicit anchor wins over a stub redirect’s own heading', () => {
+    const store = new DocneuralStore()
+    store.data = fixture()
+    store.goto(store.byId('r')!, undefined, 'Other Heading')
+    expect(store.selected?.id).toBe('c2')
+    expect(store.anchor).toBe('Other Heading') // the reader asked, not the redirect
+    expect(lastUrl).toContain('#Other%20Heading') // re-encoded for the hash
+  })
 })
 
 describe('goHome', () => {
