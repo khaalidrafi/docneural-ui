@@ -30,7 +30,7 @@
   import { applyLayout, fitReadable, makeNeuronLoader } from './neuronEngine'
   import type { Blocker } from './spreadForces'
   import type { Engine as NeuronEngine } from './neuronEngine'
-  import { neighborIds, capForPhone } from '../core/graph'
+  import { neighborIds, capForPhone, isCociteLink } from '../core/graph'
   import { isPhoneViewport } from '../core/layout'
   import type { LayoutMode } from '../core/types'
   import type { DocneuralStore } from '../core/store.svelte'
@@ -53,10 +53,25 @@
   // so a resize across the breakpoint hands the canvas more or less graph.
   const PHONE_NODE_CAP = 400
 
+  // Whether the CURRENT snapshot carries synthesized co-citation edges (ego
+  // scope with a selection — corpus scope never has any). The neuron painter
+  // installs its co-cite painter CONDITIONALLY on this (QA-1(b): with the
+  // painter installed, force-graph routes every visible wire through its
+  // per-frame mode buckets even when none of them is a co-cite; without it,
+  // the corpus view stays on force-graph's zero-allocation default path).
+  // Written by the snapshot effect below — one scan per snapshot swap — and
+  // read by the engine only when data lands on it. A plain var on purpose:
+  // the engine reads it through the focus closure at graphData time, so no
+  // effect ever has to observe it.
+  let hasCocites = false
+
   // Data, query or tags moved -> swap the snapshot the canvas sees.
   $effect(() => {
     const g = store.visible
     const phone = isPhoneViewport()
+    // The painter's arming decision, derived from the same snapshot this
+    // effect is about to hand the canvas (see hasCocites above).
+    hasCocites = g.links.some(isCociteLink)
     // Coming back from a pause: a filter keystroke or a selection while the
     // render loop is stopped must not leave the canvas on a stale frame.
     if (phone) {
@@ -284,6 +299,7 @@
     selected: () => selId,
     neighbors: () => selNb,
     spread: () => store.layout === 'spread',
+    hasCocites: () => hasCocites,
     onEngine: (e) => { engine = e }
   })
 
