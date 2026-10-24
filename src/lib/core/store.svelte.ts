@@ -12,6 +12,7 @@
 // no page of its own) are transparently followed to their canonical home.
 
 import type { DocLink, DocNode, GraphData, LayoutMode } from './types'
+import { fetchGraph } from './transport'
 import { coCitations, egoGraph, filteredGraph, localGraph, nodeViews, type NodeView } from './graph'
 import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
@@ -204,12 +205,13 @@ export class DocneuralStore {
     this.lite = lite
   }
 
-  /** Load graph.json once; then honor the deep link in the URL if present. */
+  /** Load the graph once; then honor the deep link in the URL if present.
+   *  The fetch itself is the transport pass (core/transport.ts): smallest
+   *  artifact first — 78 kB brotli / 109 kB gzip instead of the 2.2 MB
+   *  parsed JSON, one request either way. */
   async load(): Promise<void> {
     try {
-      const res = await fetch(`${this.base}/graph.json`)
-      if (!res.ok) throw new Error(`graph.json: HTTP ${res.status}`)
-      this.data = (await res.json()) as GraphData
+      this.data = await fetchGraph(this.base)
       this.ready = true
       // Home opens on the first manual's contents (the exporter scans
       // manuals in --doc order); a deep link below overrides via goto().
