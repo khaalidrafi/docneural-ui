@@ -426,10 +426,16 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       const sel = focus.selected()
       return sel != null && (l.source?.id === sel || l.target?.id === sel)
     }
+    // Synthetic co-citations (toRoam's `type: 'cocite'`) stay background even
+    // when the selection touches them: thinner, no firing particles. The
+    // graph's own kind-aware paint already dims and dashes them — a synthetic
+    // wire must not shout as loud as a citation the corpus claims.
     engine
       // 0.25 was invisible on the light theme; axons should read as wires.
-      .linkWidth((l: any) => (touches(l) ? 1.4 : 0.5))
-      .linkDirectionalParticles((l: any) => (touches(l) ? 3 : 0))
+      .linkWidth((l: any) => (l.type === 'cocite' ? 0.4 : touches(l) ? 1.4 : 0.5))
+      .linkDirectionalParticles((l: any) =>
+        touches(l) && l.type !== 'cocite' ? 3 : 0
+      )
       .linkDirectionalParticleWidth(1.8)      // After graphData() force-graph resolves endpoints to node objects.
       .linkDirectionalParticleColor((l: any) => nodeColor(l.source ?? {}, tokensNow()))
   }
