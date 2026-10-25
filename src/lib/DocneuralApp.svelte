@@ -65,8 +65,27 @@
   }
 
   function toggleLite(): void {
-    forceLite = !forceLite;
-    location.reload();
+    // The FULL/FAST flip is fully reactive: forceLite ($state) -> liteOn
+    // ($derived) -> a fresh DocneuralStore ($derived) -> the {#if store.lite}
+    // branches swap the surfaces and the store effect re-fetches. The old
+    // location.reload() did not merely waste the session — it UNDID the
+    // click: forceLite is component state, so a reload dropped it and, with
+    // no URL change, liteOn came back exactly as it was. A no-op with a
+    // flash. (Audit dispatch #2.)
+    // The toggle targets the EFFECTIVE state: when ?lite=1 drove lite mode,
+    // flipping the flag would leave the URL in charge, so the param is
+    // rewritten away (replaceState, no navigation) and the visitor's explicit
+    // wish wins. A visitor who toggled from the canvas asked for a different
+    // engine, not a different room — graph mode is re-entered on the fresh
+    // full store; a lite store ignores it (setMode guards) and lands reader.
+    const wasGraph = store.mode === 'graph' && !store.lite
+    forceLite = !liteOn
+    if (new URLSearchParams(location.search).get('lite') === '1') {
+      const url = new URL(location.href)
+      url.searchParams.delete('lite')
+      history.replaceState(null, '', url)
+    }
+    if (wasGraph) store.setMode('graph')
   }
 
   function onNodeClick(id: string): void {
