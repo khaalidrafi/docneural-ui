@@ -37,11 +37,15 @@ export type DocNode = {
 
 
 /** source links TO target; `context` is the source line around the link,
- *  shown in backlink lists (org-roam-style). */
+ *  shown in backlink lists (org-roam-style). `kind: 'cocite'` marks a
+ *  SYNTHETIC edge the UI itself computed (a co-citation: two chapters cited
+ *  together by the corpus) — never a corpus wire — so the graph can paint
+ *  it differently (dashed, dimmed) instead of passing it off as real. */
 export type DocLink = {
   source: string
   target: string
   context?: string
+  kind?: 'cocite'
 }
 
 export type GraphData = {

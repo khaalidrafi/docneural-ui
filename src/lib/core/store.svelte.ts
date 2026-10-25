@@ -283,9 +283,11 @@ export class DocneuralStore {
   })
 
   /** Add the co-citation wires to an ego graph, in place. They are synthetic
-   *  (the corpus never claims a link that is not there), so each carries its
-   *  evidence as `context` — which is exactly the field the rail and the note
-   *  preview print, so a dashed-looking edge explains itself on click. */
+   *  (the corpus never claims a link that is not there), so each is tagged
+   *  `kind: 'cocite'` — which is what the graph engine reads to paint them
+   *  dashed and dimmed, so a synthetic edge never masquerades as a real wire —
+   *  and carries its evidence as `context`, exactly the field the rail and the
+   *  note preview print, so a dashed-looking edge explains itself on click. */
   private cociteInto(g: GraphData, centerId: string): void {
     const inGraph = new Set(g.nodes.map((n) => n.id))
     for (const [id, shared] of coCitations(this.data, centerId, COCITE_CAP)) {
@@ -295,7 +297,8 @@ export class DocneuralStore {
       g.links.push({
         source: centerId,
         target: id,
-        context: `co-cited: ${shared} chapter${shared === 1 ? '' : 's'} cite both`
+        context: `co-cited: ${shared} chapter${shared === 1 ? '' : 's'} cite both`,
+        kind: 'cocite'
       })
     }
   }

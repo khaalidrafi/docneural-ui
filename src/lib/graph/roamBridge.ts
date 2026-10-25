@@ -26,13 +26,17 @@ export function toRoam(g: GraphData): OrgRoamGraphReponse {
     },
     tags: n.tags
   }))
-  // `type: 'id'` = the id: citations the exporter resolved. Duplicate pairs
-  // collapse engine-side (linkKey dedup in GraphView's sync), so no dedup
-  // pass is needed here.
+  // `type: 'id'` = the id: citations the exporter resolved. Synthetic UI edges
+  // keep their kind: the wire's `type` is what orui's GraphView reads to decide
+  // the link paint, so a co-citation rides through as type 'cocite' and is
+  // drawn dashed and dimmed instead of looking like a real citation. Duplicate
+  // pairs collapse engine-side (linkKey dedup in GraphView's sync — the kind
+  // is part of the key, so a real wire can never absorb a cocite edge), so no
+  // dedup pass is needed here.
   const links: OrgRoamLink[] = g.links.map((l) => ({
     source: l.source,
     target: l.target,
-    type: 'id'
+    type: l.kind === 'cocite' ? 'cocite' : 'id'
   }))
   return { nodes, links, tags: [] }
 }
