@@ -238,6 +238,75 @@ describe('manual scoping', () => {
   })
 })
 
+describe('co-citation edges in the ego view', () => {
+  it('tag synthetic edges kind:cocite and leave real wires untagged', () => {
+    const store = new DocneuralStore()
+    store.ready = true
+    // a and b both cite the hub AND both cite far: hub and far are
+    // co-cited, and no real wire joins them, so the ego view of the hub
+    // draws ONE synthetic edge (hub -> far), tagged kind:cocite. The real
+    // wires (a -> hub, b -> far, ...) arrive untagged.
+    store.data = {
+      nodes: [
+        node({ id: 'hub', title: 'Hub' }),
+        node({ id: 'a', title: 'A' }),
+        node({ id: 'b', title: 'B' }),
+        node({ id: 'far', title: 'Far' })
+      ],
+      links: [
+        { source: 'a', target: 'hub', context: 'a cites hub' },
+        { source: 'b', target: 'hub', context: 'b cites hub' },
+        { source: 'a', target: 'far', context: 'a cites far' },
+        { source: 'b', target: 'far', context: 'b cites far' }
+      ]
+    }
+    store.selected = store.data.nodes[0]
+    expect(store.visible.links.filter((l) => l.kind === 'cocite')).toEqual([
+      {
+        source: 'hub',
+        target: 'far',
+        context: 'co-cited: 2 chapters cite both',
+        kind: 'cocite'
+      }
+    ])
+    // A node the hub already cites is no synthetic edge — that pair is a
+    // plain real wire, which stays a plain real wire.
+    expect(store.visible.links).toContainEqual({
+      source: 'a',
+      target: 'hub',
+      context: 'a cites hub'
+    })
+  })
+
+  it('never duplicate an edge a real wire already carries, and rank by shared citers', () => {
+    const store = new DocneuralStore()
+    store.ready = true
+    // Same co-citation as before (a + b cite hub and far), but this time a
+    // REAL wire hub -> far exists: cociteInto must not push a second edge
+    // for the pair, whatever direction the paths came from.
+    store.data = {
+      nodes: [
+        node({ id: 'hub', title: 'Hub' }),
+        node({ id: 'a', title: 'A' }),
+        node({ id: 'b', title: 'B' }),
+        node({ id: 'far', title: 'Far' })
+      ],
+      links: [
+        { source: 'a', target: 'hub', context: 'a cites hub' },
+        { source: 'b', target: 'hub', context: 'b cites hub' },
+        { source: 'a', target: 'far', context: 'a cites far' },
+        { source: 'b', target: 'far', context: 'b cites far' },
+        { source: 'hub', target: 'far', context: 'hub wires far' }
+      ]
+    }
+    store.selected = store.data.nodes[0]
+    expect(store.visible.links.filter((l) => l.kind === 'cocite')).toEqual([])
+    expect(store.visible.links.filter((l) => l.source === 'hub' && l.target === 'far')).toEqual([
+      { source: 'hub', target: 'far', context: 'hub wires far' }
+    ])
+  })
+})
+
 describe('?mode=graph deep link', () => {
   it('opens straight on the canvas after the data loads', async () => {
     ;(globalThis as Record<string, unknown>).location = {
