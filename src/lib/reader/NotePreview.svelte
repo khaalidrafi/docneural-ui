@@ -6,6 +6,8 @@
   import type { DocneuralStore } from '../core/store.svelte'
   import { backlinks, outlinks } from '../core/graph'
   import { sourceTitle, sourceVars } from '../core/source'
+  import LinkPeek from './LinkPeek.svelte'
+  import type { Peek } from '../core/types'
 
   let { store }: { store: DocneuralStore } = $props()
 
@@ -13,6 +15,81 @@
   const html = $derived(doc ? store.bodies.get(doc.slug) : undefined)
   const ins = $derived(doc ? backlinks(store.data, doc.id).length : 0)
   const outs = $derived(doc ? outlinks(store.data, doc.id).length : 0)
+
+  /* ---------- hover peek: the same citation card DocReader has ----------
+     A cross-doc link in the preview is the same promise as one in the
+     reader: "explained there". Hover it and the LinkPeek card answers in
+     place — the target's title plus the citation sentence that created the
+     wire, straight from store.ctxFor(). Same machinery as DocReader.svelte,
+     no 200 ms grace-period touch (Owner-box): hover-intent delay (300 ms),
+     one delegation pair on the .dn-org div, and the card itself is
+     pointer-events: none inside LinkPeek, so it can never steal the click
+     that follows the node. */
+  let peek = $state<Peek | null>(null)
+  let peekTimer: ReturnType<typeof setTimeout> | 0 = 0
+  /** The link the timer is armed for — one at a time, so moving along a
+   *  paragraph resets the delay instead of stacking cards. */
+  let peekToEl: HTMLAnchorElement | null = null
+  let pressTimer: ReturnType<typeof setTimeout> | 0 = 0
+  const HREF = /(?:^|\/)?docs\/([^#]+)\.html(?:#(.*))?$/
+
+  function openPeek(a: HTMLAnchorElement): void {
+    if (!doc) return
+    const m = (a.getAttribute('href') ?? '').match(HREF)
+    if (!m) return // an external link is its own destination; nothing to peek
+    const to = store.bySlug(m[1])
+    if (!to || to.id === doc.id) return
+    // The prose for a wire lives in either endpoint's file; ctxFor() checks
+    // both, so ask for both (each is ~1.3 kB and de-duplicated by the store).
+    store.loadContext(doc.id)
+    store.loadContext(to.id)
+    const r = a.getBoundingClientRect()
+    peek = { x: r.left, y: r.bottom, fromId: doc.id, toId: to.id,
+      degree: store.views.get(to.id)?.degree ?? 0 }
+  }
+
+  function onPeekMove(e: PointerEvent): void {
+    const a = (e.target as HTMLElement).closest?.('a') as HTMLAnchorElement | null
+    if (!a || a === peekToEl) return // already armed for this very link
+    clearTimeout(peekTimer)
+    peekToEl = a
+    // Touch has no hover: a long-press is the same intent (see onPeekDown).
+    if (e.pointerType !== 'mouse') return
+    peekTimer = setTimeout(() => openPeek(a), 300)
+  }
+
+  function onPeekLeave(e: PointerEvent): void {
+    const a = (e.target as HTMLElement).closest?.('a') as HTMLAnchorElement | null
+    if (!a) return
+    clearTimeout(peekTimer)
+    if (a === peekToEl) {
+      peekToEl = null
+      peek = null
+    }
+  }
+
+  function onPeekDown(e: PointerEvent): void {
+    if (e.pointerType === 'mouse') return
+    const a = (e.target as HTMLElement).closest?.('a') as HTMLAnchorElement | null
+    if (!a) return
+    clearTimeout(pressTimer)
+    pressTimer = setTimeout(() => openPeek(a), 420)
+  }
+
+  function onPeekUp(): void {
+    clearTimeout(pressTimer)
+  }
+
+  function closePeek(): void {
+    peekToEl = null
+    peek = null
+  }
+
+  // Following a cross-doc link swaps the preview in place: a card describing
+  // the previous wire must not survive the jump.
+  $effect(() => {
+    if (doc?.id) closePeek()
+  })
 
   // Intercept in-preview link clicks: a cross-doc link re-selects the node
   // and swaps the preview in place (no page load, no losing the graph).
@@ -57,11 +134,17 @@
     {:else}
       <!-- Organically trusted content: our own build pipeline's static
            files only (never user input), hence raw {@html} is fine. -->
-      <div class="dn-org" onclick={onContentClick} role="presentation">
+      <div class="dn-org" onclick={onContentClick}
+           onpointerover={onPeekMove} onpointerout={onPeekLeave}
+           onpointerdown={onPeekDown} onpointerup={onPeekUp}
+           onpointercancel={onPeekUp} onpointerleave={closePeek}
+           onscroll={closePeek} role="presentation">
         {@html html}
       </div>
     {/if}
   </aside>
+
+  <LinkPeek {store} {peek} />
 {:else}
   <aside class="note-preview empty">
     <p class="dn-mono"><span class="dn-neuron-mark" aria-hidden="true"></span> select a neuron — its text lands here</p>
