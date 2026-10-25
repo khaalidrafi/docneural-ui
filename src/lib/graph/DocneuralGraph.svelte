@@ -12,7 +12,11 @@
   // Bridge rules, in order of consequence:
   //  - PAINTING: GraphView accepts no custom-painter prop — the neuron look
   //    (glow rings, node titles, firing-synapse particles) is injected via
-  //    the loadEngine seam. See neuronEngine.ts.
+  //    the loadEngine seam. See neuronEngine.ts. Synthetic co-citations ride
+  //    through the snapshot tagged kind:'cocite' (store.cociteInto, across
+  //    roamBridge as type:'cocite') and the graph paints them dimmed + dashed;
+  //    the neuron loader keeps them thin and particleless, so they never read
+  //    as claimed wires.
   //  - FILTERS: docneural-ui's tag chips are INCLUSIVE ("show docs carrying one of
   //    these tags"), orui's store filter only excludes. So instead of
   //    mapping the filter across, we swap whole snapshots: the effect reads
