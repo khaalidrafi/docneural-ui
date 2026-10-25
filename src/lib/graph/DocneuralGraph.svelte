@@ -104,9 +104,14 @@
   // Layout is the one thing the visitor can ask the canvas for that is not a
   // filter: how far apart the neurons sit. Pushing it means reaching the
   // engine, which GraphView keeps private — so the construction seam hands it
-  // back through `onEngine` and this holds it as STATE, so the effect below
-  // re-runs the moment the lazy chunk lands instead of firing at nothing.
-  let engine: NeuronEngine = null
+  // back through `onEngine`. That hand-back lands AFTER this component's first
+  // effect run (the chunk is a lazy 174 kB download), so the reference must be
+  // a $state.raw: the REASSIGNMENT is what has to wake the layout effect below.
+  // raw, not $state, because the engine is a live physics object — proxying it
+  // deep would tax every tick and could break force-graph's identity checks.
+  // (Audit dispatch #2: with a plain `let` here the effect fired at nothing
+  // once and never re-ran — the boot layout/park never armed.)
+  let engine: NeuronEngine = $state.raw(null)
   let lastMode: LayoutMode | null = null
   let stopArmed = false
   let fitNextStop = false
