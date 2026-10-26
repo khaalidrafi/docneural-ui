@@ -40,7 +40,8 @@
   // removed the SYNAPSES tab and the graph — the product's hero surface — on
   // exactly the devices that most wanted to see it. The graph ships on every
   // device; FAST remains a choice a visitor makes in the open, never a guess
-  // made for them behind their back.
+  // made for them behind their back. (signal-design; the LOD painter in
+  // neuronEngine.ts is what keeps the full canvas cheap enough to promise.)
   let liteOn = $derived(
     lite ||
       forceLite ||
@@ -394,13 +395,18 @@
     font-weight: 400;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--dn-fg);
-    /* Split glow: a cyan bloom behind, a whisper of magenta off the right —
-       the chromatic offset of the hero glitch, miniaturized. */
+    /* The wordmark wears the neon-sign decay (cyan -> violet -> pink) with
+       the chromatic fringe — the designer's wordmark treatment, on the one
+       piece of chrome that is always on screen. background-clip:text keeps
+       the letters selectable and the accessible name intact. Replaces the
+       SIGNAL split-glow, which it extends into a full gradient. */
+    background: var(--dn-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     text-shadow:
-      0 0 12px color-mix(in srgb, var(--dn-accent) 42%, transparent),
-      1px 0 0 color-mix(in srgb, var(--dn-accent-2) 28%, transparent);
-    background: none;
+      -1px 0 color-mix(in srgb, var(--dn-accent-2) 45%, transparent),
+      1px 0 color-mix(in srgb, var(--dn-accent) 35%, transparent);
     border: none;
     padding: 0;
     cursor: pointer;
@@ -408,8 +414,7 @@
     align-items: center;
     gap: 0.45em;
   }
-  .brand:hover { color: var(--dn-accent); text-shadow: var(--dn-glow); }
-  .brand:hover .dn-neuron-mark { box-shadow: 0 0 16px color-mix(in srgb, var(--dn-accent) 70%, transparent); }
+  .brand:hover { text-shadow: var(--dn-glow); }
 
   /* Segmented control: square cells, brackets around the label so an active
      mode reads as a selected switch rather than a painted pill. */
@@ -439,7 +444,9 @@
     color: var(--dn-src, var(--dn-accent));
     font-weight: 600;
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
-    /* Active label at full brightness: the glow IS the on-state. */
+    /* Active label at full brightness: the glow IS the on-state. The lit
+       fill itself is the sliding thumb's job (below) — one surface owns the
+       fill so the switch reads as one moving keycap, not two painted pills. */
     text-shadow: 0 0 9px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
   }
   /* The sliding thumb paints the fill: one lit block gliding between the
@@ -486,12 +493,14 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--dn-accent);
-    /* SIGNAL pass: a real lamp — core glow plus a halo ring, on a heartbeat
-       (transform+opacity only, see §2's dn-led). */
+    /* Acid: the LIVE color (r3). The corpus readout is the one place the site
+       says "online", so the LED wears the acid signal, not the accent — while
+       keeping the SIGNAL lamp's heartbeat (transform+opacity only, §2's
+       dn-led) and its halo-ring shadow recipe. */
+    background: var(--dn-acid);
     box-shadow:
-      0 0 9px var(--dn-accent),
-      0 0 20px color-mix(in srgb, var(--dn-accent) 55%, transparent);
+      0 0 9px var(--dn-acid),
+      0 0 20px color-mix(in srgb, var(--dn-acid) 55%, transparent);
     animation: dn-led 1.6s ease-in-out infinite;
   }
   .status.down .led { background: var(--dn-amber); box-shadow: 0 0 9px var(--dn-amber), 0 0 20px color-mix(in srgb, var(--dn-amber) 55%, transparent); }
@@ -604,8 +613,11 @@
      filter chip does. */
   .layout.spread {
     color: var(--dn-accent);
-    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
-    background: color-mix(in srgb, var(--dn-accent) 12%, var(--dn-bg) 82%, black);
+    border: 1px solid transparent;
+    background:
+      linear-gradient(color-mix(in srgb, var(--dn-bg) 82%, black), color-mix(in srgb, var(--dn-bg) 82%, black)) padding-box,
+      linear-gradient(135deg, color-mix(in srgb, var(--dn-accent) 70%, transparent), color-mix(in srgb, var(--dn-violet) 55%, transparent)) border-box;
+    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-accent) 24%, transparent);
   }
   /* Controls panel: desktop floats over the canvas top-left; the summary
      doubles as the live wire-count badge. Notched corner + brackets = it
@@ -723,14 +735,15 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     color: var(--dn-bg-sunken);
-    background: var(--dn-accent);
+    /* The one saturated CTA on the failure panel: the cyberpunk gradient. */
+    background: linear-gradient(135deg, var(--dn-accent), var(--dn-violet));
     border: none;
     border-radius: 3px;
     padding: 0.6em 1.4em;
     cursor: pointer;
     box-shadow: 0 0 18px color-mix(in srgb, var(--dn-accent) 40%, transparent);
   }
-  .retry:hover { background: var(--dn-hot); box-shadow: 0 0 22px color-mix(in srgb, var(--dn-hot) 45%, transparent); }
+  .retry:hover { box-shadow: var(--dn-glow); filter: brightness(1.15); }
 
   .boot-wrap {
     display: grid;

@@ -22,7 +22,7 @@
 // read through `tokenEl` at most twice a second — a getComputedStyle per node
 // per frame would freeze this machine. Label ink/paper come from the site's
 // own --dn-fg/--dn-bg so text stays readable on both themes.
-import { canvasTokens, nodeColor, type CanvasTokens } from 'orui/graph/colors'
+import { canvasTokens, nodeColor, dimColor, type CanvasTokens } from 'orui/graph/colors'
 import { LABEL_LINE, labelExtent, shortTitle, spreadStrength } from '../core/graph'
 import {
   forceFitContainer,
@@ -309,6 +309,67 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   const fade = (col: string): string =>
     /^#[0-9a-fA-F]{6}$/.test(col) ? col + '34' : col
 
+  /* ---------- LEVEL OF DETAIL (designer round-3 spec §3) ----------
+     The corpus view used to paint all ~31k wires at token alpha plus halo
+     rings per node, every zoom, every frame: additive overlap burned the
+     whole field into one cyan mass — unreadable on a laptop and WORSE on a
+     phone (390px of canvas under 31k wires). The fix is three zoom bands,
+     re-evaluated per frame from the globalScale paintNode already receives:
+
+       band 0 "corpus"  (gs < 0.45)  structure only: cold wires HIDDEN, halo
+                                     rings off, hub labels only (deg >= 60)
+       band 1 "backbone" (0.45..0.85) hub-to-hub wires only (either end
+                                     degree >= 5) at 55% link alpha, one
+                                     halo ring, hub + hot labels (deg >= 20)
+       band 2 "detail"   (gs > 0.85)  everything, full alpha — the full web
+
+     The selected node's own wires are hot and NEVER cull: selection must
+     read identically at every zoom. Ego dimming (fade, below) still applies
+     WITHIN every band — the two systems compose: LOD culls the far field,
+     the ego fade recesses what remains around a selection.
+
+     Mechanics that make this legal: force-graph re-reads linkVisibility/
+     linkColor/linkWidth accessors on EVERY frame (paintLinks() builds fresh
+     accessorFn wrappers per paint), so plain closures over `band` update the
+     wires with zero accessor re-registration. The one accessor GraphView
+     OWNS is linkColor (it sets it at construction and re-asserts it on theme
+     token changes, clobbering ours) — so applyLinkLod() re-asserts our LOD
+     chain on the first painted frame (after GraphView's construction chain)
+     and again whenever the band changes. GraphView's clobber path (a theme
+     flip) only restores the static color until the next band crossing or
+     token-set, and a cocite dash needs preserving, so applyLinkLod carries
+     the same dashed/dim cocite semantics GraphView paints (l.type). */
+  let band = 2
+  const touchesSel = (l: any): boolean => {
+    const sel = focus.selected()
+    return sel != null && (l.source?.id === sel || l.target?.id === sel)
+  }
+  const COCITE_DASH = [4, 4]
+  const applyLinkLod = (): void => {
+    engine
+      .linkVisibility((l: any) =>
+        touchesSel(l) ||
+        (band === 2) ||
+        (band === 1 && (traffic(l) >= 10 || (l.source?.degree ?? 0) >= 5 || (l.target?.degree ?? 0) >= 5))
+      )
+      .linkColor((l: any) => {
+        // Compose the three color systems, quietest wins at distance:
+        //   hot (selection)  >  SIGNAL ego fade  >  LOD band dim.
+        if (touchesSel(l)) return hotCol
+        const base = fade(nodeColor(l.source ?? {}, tokensNow()))
+        return band === 2 ? base : dimColor(base, band === 1 ? 0.55 : 0.4)
+      })
+      .linkLineDash((l: any) => (l.type === 'cocite' ? COCITE_DASH : null))
+      .linkWidth((l: any) =>
+        touchesSel(l)
+          ? 2.0
+          : band === 2
+            ? Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l)))
+            : 0.35)
+      .linkCurvature(curvature)
+  }
+
+
   /* Label boxes claimed this frame. force-graph has no per-frame hook — only
      onEngineTick, which STOPS firing once the simulation cools while the
      canvas keeps repainting on every pan and zoom. So the reset is counted
@@ -357,6 +418,16 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   }
 
   const paintNode = (n: any, ctx: Ctx, globalScale: number): void => {
+    // Per-frame LOD bookkeeping: the node painter is the one hook that sees
+    // globalScale, so it is also what keeps the link accessors honest. A band
+    // crossing re-asserts the LOD link chain (see the block above for why the
+    // re-assert, not a set-once, is required).
+    const nextBand = globalScale < 0.45 ? 0 : globalScale < 0.85 ? 1 : 2
+    if (nextBand !== band || !linkLodArmed) {
+      band = nextBand
+      linkLodArmed = true
+      if (!focus.compact) applyLinkLod()
+    }
     if (drawn >= frameNodes) {
       cells = new Map()
       drawn = 0
@@ -407,10 +478,13 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       return
     }
 
-    // Dendritic tree: inner halo (always), outer haze. SIGNAL pass: the hot
-    // bloom is bigger and brighter (the sprite is drawn at 5.2r, alpha up),
-    // and even COLD rings rose a step — at corpus zoom a neuron must read as
-    // a lit body, not a dot.
+    // Dendritic tree, per LOD band composed with the SIGNAL ego-dim factor:
+    // at corpus zoom the rings are what turned 1,400 neurons into one glow,
+    // so band 0 drops them entirely (hot nodes keep a single inner ring — the
+    // selection must still read at fit-all); band 1 keeps the inner ring
+    // only; band 2 is the full two-ring tree at SIGNAL brightness. `dim`
+    // multiplies whatever the band allows, so a selected neuron's
+    // non-neighbors recede at every zoom.
     ctx.save()
     // The sprite glow under hot neurons: a real radial bloom instead of a
     // flat disc, at drawImage cost. Cold neurons keep the stroke rings.
@@ -422,15 +496,20 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       ctx.globalAlpha = 1
     }
     ctx.strokeStyle = col
-    ctx.lineWidth = (hot ? 1.7 : 1) / globalScale
-    ctx.globalAlpha = (dim ? 0.35 : 1) * (hot ? 1 : 0.55)
-    ctx.beginPath()
-    ctx.arc(x, y, r * 1.5, 0, 2 * Math.PI)
-    ctx.stroke()
-    ctx.globalAlpha = (dim ? 0.35 : 1) * (hot ? 0.6 : 0.3)
-    ctx.beginPath()
-    ctx.arc(x, y, r * 2.4, 0, 2 * Math.PI)
-    ctx.stroke()
+    const halo = dim ? 0.35 : 1
+    if (band === 2 || hot) {
+      ctx.lineWidth = (hot ? 1.7 : 1) / globalScale
+      ctx.globalAlpha = halo * (hot ? 1 : band === 2 ? 0.55 : 0.7)
+      ctx.beginPath()
+      ctx.arc(x, y, r * 1.5, 0, 2 * Math.PI)
+      ctx.stroke()
+    }
+    if (band === 2) {
+      ctx.globalAlpha = halo * (hot ? 0.6 : 0.3)
+      ctx.beginPath()
+      ctx.arc(x, y, r * 2.4, 0, 2 * Math.PI)
+      ctx.stroke()
+    }
     if (chosen) {
       // Four corner ticks + a bloom on the soma: the HUD "locked on" mark.
       ctx.globalAlpha = 1
@@ -450,11 +529,23 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     }
     ctx.restore()
 
-    // Titles: hubs always (that is how you recognise the chapters), the hot
-    // set always, everything else once the user zooms in — or once they ask
-    // for the spread layout, whose entire point is a name per neuron.
+    // Titles, per LOD band (designer spec §3, adapted for a DOCS corpus:
+    // hub names are how the overview reads, so band 0 keeps the top hubs
+    // rather than going fully blank):
+    //   spread: every neuron is eligible — the layout's whole point — but at
+    //           corpus zoom only the hubs (deg >= 60); the claim grid below
+    //           still drops whichever names would overprint.
+    //   band 0: hubs only (deg >= 60). A dozen names on a starfield.
+    //   band 1: hot set + chapter hubs (deg >= 20).
+    //   band 2: everything once the user zooms in (gs > 1.15), hubs, hot.
     const spread = !!focus.spread?.()
-    if (spread || globalScale > 1.15 || hot || (n.degree ?? 0) >= 60) {
+    const deg = n.degree ?? 0
+    const labelOk = spread
+      ? band === 0 ? deg >= 60 : true
+      : band === 0 ? deg >= 60
+      : band === 1 ? (hot || deg >= 20)
+      : (globalScale > 1.15 || hot || deg >= 60)
+    if (labelOk) {
       const label = shortTitle(n.title ?? '')
       if (!label) return
       const fontSize = 11 / globalScale
@@ -494,22 +585,21 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     }
   }
 
+  let linkLodArmed = false
   engine
     .nodeCanvasObjectMode(() => (focus.compact ? 'replace' : 'after'))
     .nodeCanvasObject(paintNode)
 
   if (!focus.compact) {
-    const touches = (l: any): boolean => {
-      const sel = focus.selected()
-      return sel != null && (l.source?.id === sel || l.target?.id === sel)
-    }
     engine
-      // Axons read as wires: 0.4 base, swollen by the traffic the two ends
-      // carry (sqrt keeps hubs from eating the picture), 2.0 on the selected
-      // neuron's synapses — the SIGNAL pass fattened both so the wires carry
-      // the brighter palette without looking like hairlines.
+      // Initial wire state; the LOD chain (applyLinkLod) re-asserts
+      // visibility/color/width/dash/curvature on the first painted frame and
+      // at every zoom-band crossing, composing these SIGNAL recipes with the
+      // band gates. Axons read as wires: width swollen by the traffic the two
+      // ends carry (sqrt keeps hubs from eating the picture), 2.0 on the
+      // selected neuron's synapses.
       .linkWidth((l: any) =>
-        touches(l)
+        touchesSel(l)
           ? 2.0
           : Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l))))
       // Wires bend apart so reciprocal pairs read as two roads, not one.
@@ -520,14 +610,14 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       // threshold dropped (64, was 80 — more of the corpus visibly fires)
       // and the stream itself got fatter and faster (width/speed below).
       .linkDirectionalParticles((l: any) =>
-        touches(l) ? 4 : traffic(l) >= 64 ? 1 : 0)
-      .linkDirectionalParticleWidth((l: any) => (touches(l) ? 2.6 : 2))
+        touchesSel(l) ? 4 : traffic(l) >= 64 ? 1 : 0)
+      .linkDirectionalParticleWidth((l: any) => (touchesSel(l) ? 2.6 : 2))
       .linkDirectionalParticleSpeed(0.0055)
       // After graphData() force-graph resolves endpoints to node objects.
       .linkDirectionalParticleColor((l: any) => nodeColor(l.source ?? {}, tokensNow()))
       // Untouched wires recede with the nodes when an ego view is up.
       .linkColor((l: any) =>
-        touches(l)
+        touchesSel(l)
           ? nodeColor(l.source ?? {}, tokensNow())
           : fade(nodeColor(l.source ?? {}, tokensNow())))
   }

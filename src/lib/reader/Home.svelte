@@ -164,7 +164,7 @@
     <!-- The corpus readout, stated plainly. The size of the site IS the pitch,
          so the numbers get a panel of their own — but as a panel, not as a
          pretend shell session: no prompt, no window buttons, no "[ ok ]". -->
-    <div class="stats" role="status" aria-live="polite">
+    <div class="stats dn-hud" role="status" aria-live="polite">
       <div class="stats-hd dn-label">
         <span class="dn-neuron-mark" aria-hidden="true"></span>
         <span>this corpus</span>
@@ -338,21 +338,13 @@
     isolation: isolate;
     padding: 1.6rem 1.4rem 0.4rem;
   }
-  .hero::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -30% -12% -20%;
-    background:
-      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--dn-accent) 11%, transparent), transparent 70%),
-      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--dn-accent-2) 9%, transparent), transparent 70%);
-    filter: blur(8px);
-    pointer-events: none;
-  }
   .kicker {
-    color: var(--dn-hot);
+    /* Acid: this line is the site's "online" lamp — // knowledge uplink ·
+       online — so it wears the live signal, with a matching glow. */
+    color: var(--dn-acid);
     letter-spacing: 0.2em;
     margin: 0 0 0.9rem;
+    text-shadow: 0 0 12px color-mix(in srgb, var(--dn-acid) 45%, transparent);
   }
   .wordmark {
     font-family: var(--dn-font-display);
@@ -363,12 +355,21 @@
     font-weight: 400;
     /* Display face, tight tracking, uppercase: the brand mark. The letters
        are the glitch's real text — the ::before/::after ghosts in .dn-glitch
-       carry the same string from data-text. */
+       carry the same string from data-text. R2: the fill is the neon-sign
+       decay gradient with the chromatic fringe under it. */
     letter-spacing: 0.02em;
-    color: var(--dn-fg);
+    /* R3: the fill is the neon-sign decay gradient (cyan -> violet -> hot
+       pink) with the chromatic fringe under it — the SIGNAL split-glow,
+       extended into a full gradient. background-clip keeps the letters
+       selectable and the accessible name intact. */
+    background: var(--dn-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     text-shadow:
-      0 0 18px color-mix(in srgb, var(--dn-accent) 32%, transparent),
-      0 0 60px color-mix(in srgb, var(--dn-accent) 16%, transparent);
+      -2px 0 color-mix(in srgb, var(--dn-accent-2) 50%, transparent),
+      2px 0 color-mix(in srgb, var(--dn-accent) 40%, transparent),
+      0 0 34px color-mix(in srgb, var(--dn-accent) 28%, transparent);
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
@@ -422,6 +423,21 @@
     box-shadow:
       inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 14%, transparent),
       0 14px 40px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
+  }
+  /* The glow behind the wordmark: three radial blooms in the signal hues
+     (cyan left, hot pink right, violet top), blurred — the night-city
+     ambience. Sits under the hero (z-index -1) and never repaints. */
+  .hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -30% -12% -20%;
+    background:
+      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--dn-accent) 13%, transparent), transparent 70%),
+      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--dn-accent-2) 10%, transparent), transparent 70%),
+      radial-gradient(30% 40% at 55% 20%, color-mix(in srgb, var(--dn-violet) 8%, transparent), transparent 70%);
+    filter: blur(8px);
+    pointer-events: none;
   }
   .stats-hd {
     display: flex;
@@ -703,7 +719,19 @@
   .cta-k.spark { color: var(--dn-hot); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
   .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
-  .cta.graph { border-style: dashed; }
+  .cta.graph {
+    /* The synapses CTA is the door to the canvas: gradient border, not a
+       dashed outline — it should read as the highest-voltage control here. */
+    border: 1px solid transparent;
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--dn-accent) 10%, transparent), transparent 55%),
+      var(--dn-bg-raise) padding-box,
+      linear-gradient(135deg, var(--dn-accent), var(--dn-violet), var(--dn-accent-2)) border-box;
+  }
+  .cta.graph:hover {
+    box-shadow: 0 0 26px color-mix(in srgb, var(--dn-violet) 35%, transparent);
+  }
 
   /* ---------- contents grid ---------- */
   .chapters-grid { width: min(68rem, 100%); }

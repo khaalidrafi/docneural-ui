@@ -93,71 +93,72 @@
      instrument panel. */
   --dn-track: 0.16em;
 
-  /* Surfaces — ink-blue black, like a terminal with the backlight on, one
-     room away. Cool, never neutral grey: the cast is what sells the
-     night-city look. SIGNAL pass: sunken one step deeper than before so the
-     raised panels and the neon edges read against a darker floor. */
-  --dn-bg: #04060c;
-  --dn-bg-raise: #0c1322; /* panels, table stripes, code wells */
-  --dn-bg-sunken: #020409; /* page backdrop behind the raise panels */
+  /* Surfaces — VOID black (designer round-3 spec: "deeper pit, so emissive
+     elements breathe"), keeping the SIGNAL pass's raised text tiers so the
+     contrast complaint stays answered. Cool, never neutral grey: the cast
+     is what sells the night-city look. */
+  --dn-bg: #030608;
+  --dn-bg-raise: #0c1219; /* panels, table stripes, code wells */
+  --dn-bg-sunken: #05090d; /* page backdrop behind the raise panels */
   --dn-fg: #eaf3fc;
   /* Secondary text and hairlines have to survive a dim room on a cheap
-     laptop panel. These four are tuned for contrast, not for subtlety:
-     --dn-fg-muted and --dn-fg-faint both clear 4.5:1 against --dn-bg with
-     headroom (the SIGNAL pass lifted them ~2 luminance steps), and the
-     borders clear 3:1, which is what a UI boundary needs to be SEEN, not
-     merely sensed. */
+     laptop panel. Tuned for contrast, not subtlety (r3 spec §5, lifted by
+     the SIGNAL pass): body ~16:1, muted ~9:1, faint ~5.5:1, borders 3:1. */
   --dn-fg-muted: #a9bfd6;
   --dn-fg-faint: #8ba3bd;
-  --dn-border: #3b5f85;
-  --dn-border-strong: #6490ba;
+  --dn-border: #2e4a68;
+  --dn-border-strong: #5d89b4;
 
-  /* Signals — the neon trio, turned up: cyan is the wire, magenta the
-     synapse, yellow the alert. The SIGNAL pass raised every hue's
-     luminance so the actives read at full brightness on ink (cyan 13:1,
-     magenta 6.5:1, yellow 15:1 against the page floor). */
-  --dn-accent: #19e6ff;   /* primary: links, focus, active chrome */
+  /* Signals — the cyberpunk set (designer r3): cyan is the wire, hot pink
+     the synapse, yellow the alert, acid the LIVE readout, violet the brand
+     gradient. Hues at SIGNAL-pass brightness. */
+  --dn-accent: #00f0ff;   /* primary: links, focus, active chrome */
   --dn-accent-dim: #2cc4e3; /* accent, safe as text on ink */
-  --dn-accent-2: #ff44b0; /* secondary: tags, counts, the firing set */
-  --dn-hot: #ffdf3f;      /* attention: hover, backlink arrows */
+  --dn-accent-2: #ff3366; /* secondary: tags, counts, the firing set */
+  --dn-hot: #ffdf3f;      /* attention: hover, backlink arrows, reticle */
   --dn-amber: #ffb347;    /* TODO markers, warnings */
+  --dn-acid: #39ff14;     /* live/online readouts: LED, uplink kicker */
+  --dn-violet: #bd00ff;   /* gradient borders + the wordmark's middle stop */
+
+  /* The wordmark: a neon-sign decay from electric cyan through violet into
+     hot pink. One recipe, shared by the header brand and the hero. */
+  --dn-wordmark: linear-gradient(135deg,
+    #7df9ff 0%, var(--dn-accent) 26%, var(--dn-violet) 62%, var(--dn-accent-2) 100%);
 
   /* One shared glow recipe, so "neon" is a constant and not 40 hand-tuned
-     box-shadows. The SIGNAL pass doubled the reach of the far stop: edges
-     should feel live, not labeled. */
-  --dn-glow: 0 0 7px color-mix(in srgb, var(--dn-accent) 65%, transparent),
-    0 0 24px color-mix(in srgb, var(--dn-accent) 28%, transparent);
-  --dn-glow-2: 0 0 7px color-mix(in srgb, var(--dn-accent-2) 65%, transparent),
-    0 0 24px color-mix(in srgb, var(--dn-accent-2) 28%, transparent);
+     box-shadows. R3: hotter — the bloom is the cyberpunk tell. */
+  --dn-glow: 0 0 7px color-mix(in srgb, var(--dn-accent) 70%, transparent),
+    0 0 26px color-mix(in srgb, var(--dn-accent) 30%, transparent);
+  --dn-glow-2: 0 0 7px color-mix(in srgb, var(--dn-accent-2) 70%, transparent),
+    0 0 26px color-mix(in srgb, var(--dn-accent-2) 30%, transparent);
 
   /* Graph wires, as a LITERAL color: the force-graph canvas cannot read
      custom properties or parse color-mix(), so the embed bridges
-     --orui-link-color to this resolved value (DocneuralGraph). SIGNAL pass:
-     0.30 -> 0.42 alpha — the corpus should read as live circuitry from the
-     first frame, and the painter still scales alpha down by traffic. */
-  --dn-graph-link: rgba(25, 230, 255, 0.42);
+     --orui-link-color to this resolved value (DocneuralGraph). The engine's
+     LOD tiers multiply this per zoom band (neuronEngine.ts), so the token is
+     the NEAR-band color: at corpus zoom wires drop far below this, which is
+     how the cyan burn-out died. 0.28 keeps the mini-map (no LOD there)
+     readable while the canvas tiers go quieter at distance. */
+  --dn-graph-link: rgba(0, 240, 255, 0.28);
 
   /* The canvas backdrop: one step lighter than the page, so the graph reads
-     as a lit panel sunk into the HUD (1.20:1 over the page floor — the old
-     #0a1424 was 1.11, which melted into the board on cheap panels).
-     GraphView paints a transparent canvas, so this DOM color shows through
-     it (DocneuralGraph .roam-wrap). */
-  --dn-graph-bg: #0e1c33;
+     as a lit panel sunk into the HUD. GraphView paints a transparent canvas,
+     so this DOM color shows through it (DocneuralGraph .roam-wrap). */
+  --dn-graph-bg: #0a1524;
 
   /* The graph's grid: fine circuit lines rather than petri-dish dots. These
      are the colors the grid's linear-gradients paint with; both themes carry
      the same two tokens so the well reads as one material everywhere. */
-  --dn-dish-dot-1: rgba(25, 230, 255, 0.12);
-  --dn-dish-dot-2: rgba(255, 68, 176, 0.08);
+  --dn-dish-dot-1: rgba(0, 240, 255, 0.1);
+  --dn-dish-dot-2: rgba(255, 51, 102, 0.06);
 
   /* Node colors, as a LITERAL comma list: orui's canvas reads
      --orui-node-palette off the container (see DocneuralGraph/SynapseRail) and
      picks hue = hash(first tag) % length. core/source.ts hashes the SAME way
      and indexes THIS SAME list, so a source's DOM colour and its graph colour
-     are one value, not two that happen to look alike. SIGNAL pass: every hue
-     lifted toward full brightness — somas should glow like they carry
-     current. */
-  --dn-graph-palette: #19e6ff, #ff44b0, #ffdf3f, #a06bff, #00ff9d, #ff7a45, #56c8ff, #ff5c8a;
+     are one value, not two that happen to look alike. R3 palette: the
+     designer's cyberpunk hues at SIGNAL-pass brightness. */
+  --dn-graph-palette: #00f0ff, #ff3366, #ffdf3f, #bd00ff, #39ff14, #ff7a45, #56c8ff, #ff5c8a;
 
   /* Geometry — sharp. The one notch is the signature; --dn-notch feeds the
      clip-path shapes in §2b. */
@@ -191,6 +192,12 @@
   --dn-accent-2: #c91375;
   --dn-hot: #7a5c00;
   --dn-amber: #8f5600;
+  /* Ink-jet versions of the two new signals: readable as text on paper. */
+  --dn-acid: #0b7a12;
+  --dn-violet: #8a00d1;
+  /* The wordmark keeps its decay on paper with the darkened stops. */
+  --dn-wordmark: linear-gradient(135deg,
+    #056a8a 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
   --dn-graph-link: rgba(0, 104, 143, 0.5);
   --dn-graph-bg: #ffffff;
   --dn-dish-dot-1: rgba(0, 104, 143, 0.16);
@@ -217,6 +224,10 @@
     --dn-accent-2: #c91375;
     --dn-hot: #7a5c00;
     --dn-amber: #8f5600;
+    --dn-acid: #0b7a12;
+    --dn-violet: #8a00d1;
+    --dn-wordmark: linear-gradient(135deg,
+      #056a8a 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
     --dn-graph-link: rgba(0, 104, 143, 0.5);
     --dn-graph-bg: #ffffff;
     --dn-dish-dot-1: rgba(0, 104, 143, 0.16);
@@ -252,16 +263,29 @@ body.dn-body {
   color: var(--dn-fg);
   /* The circuit board the HUD sits on: one fine grid, one coarse grid. Two
      sizes so the page has depth without a heavy pattern, and both are hairline
-     1px lines — SIGNAL pass: the coarse grid came in (96 -> 72px) and the fine
-     one tightened (16 -> 14px) so the texture reads finer, and both alphas
-     rose a step so the board is present at arm's length, not only on retina. */
+     1px lines — SIGNAL pass sizing (72/14px), alphas up a step. R3 adds the
+     layer the designer called the vignette mask: a fixed radial that pulls
+     the page's edges into the void, so the center of every surface reads
+     closer to the eye than its frame. background-attachment is per-layer;
+     only the vignette is fixed, so the grid scrolls and the void does not. */
   background-color: var(--dn-bg);
   background-image:
+    radial-gradient(ellipse at 50% 42%, transparent 52%, color-mix(in srgb, black 62%, transparent) 100%),
     linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 5.5%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 5.5%, transparent) 1px, transparent 1px),
     linear-gradient(to right, color-mix(in srgb, var(--dn-accent-2) 3.5%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent-2) 3.5%, transparent) 1px, transparent 1px);
-  background-size: 72px 72px, 72px 72px, 14px 14px, 14px 14px;
+  background-size: 100% 100%, 72px 72px, 72px 72px, 14px 14px, 14px 14px;
+  background-attachment: fixed, scroll, scroll, scroll, scroll;
+}
+:root[data-theme='light'] body.dn-body {
+  /* On paper the void is a soft grey bloom, not black. */
+  background-image:
+    radial-gradient(ellipse at 50% 42%, transparent 55%, color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent) 100%),
+    linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 5.5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 5.5%, transparent) 1px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--dn-accent-2) 3.5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent-2) 3.5%, transparent) 1px, transparent 1px);
 }
 
 /* The aurora: four slow, pre-blurred signal glows pinned off the corners of
@@ -323,6 +347,12 @@ body.dn-body::after {
   -webkit-mask-image: radial-gradient(130% 130% at 50% 44%, transparent 46%, black 100%);
   mask-image: radial-gradient(130% 130% at 50% 44%, transparent 46%, black 100%);
 }
+
+/* The scan SWEEP was considered here (designer effect #3) and dropped in the
+   R3 merge: the SIGNAL aurora already owns body::before, and aurora +
+   scanlines + vignette + brackets is the right effect budget — a third
+   full-viewport animated layer bought nothing but frame risk. The retrace
+   idea survives in the scanline mask deepening toward the tube's edge. */
 :root[data-theme='light'] body.dn-body::after {
   /* On paper the overlay has to be light-on-dark or it just greys the page. */
   mix-blend-mode: screen;
@@ -471,9 +501,10 @@ body.dn-body::after {
 
 /* Corner brackets: the signature. Two pseudo-elements draw an L at opposite
    corners, so any region reads as a framed HUD target — the trick that
-   replaces a soft drop shadow. Needs position:relative on the host, and the
-   host must not clip its own overflow. SIGNAL pass: 12px arms at 2px so the
-   brackets carry at hero size, not just at chip size. */
+   replaces a soft drop shadow. SIGNAL pass took the strokes to 2px/12px;
+   R3 extends the arms to 14px and adds the designer's neon bleed under the
+   strokes. Needs position:relative on the host, and the host must not clip
+   its own overflow. */
 .dn-hud {
   position: relative;
 }
@@ -481,11 +512,12 @@ body.dn-body::after {
 .dn-hud::after {
   content: "";
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   pointer-events: none;
   color: var(--dn-src, var(--dn-accent));
   opacity: 0.9;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, currentColor 60%, transparent));
 }
 .dn-hud::before {
   top: -1px;
@@ -607,19 +639,23 @@ body.dn-body::after {
   94% { opacity: 0; }
 }
 
-/* Brand gradient text — the wordmark and section headers. Kept as a
-   background-clip trick so it survives every theme (both stops are live
-   tokens, not baked hues). */
+/* Brand gradient text — the wordmark and section headers. R2: the gradient
+   IS the neon-sign decay (cyan -> violet -> hot pink, the designer's token),
+   and the aberration shadows ride underneath it: text-shadow paints the
+   glyph silhouette even when the fill is transparent, so the fringe reads
+   while the gradient carries the face. Kept as a background-clip trick so it
+   survives every theme (both stops are live tokens, not baked hues). */
 .dn-gradient-text {
-  background: linear-gradient(100deg,
-    var(--dn-fg) 0%,
-    var(--dn-accent) 45%,
-    var(--dn-accent-2) 80%,
-    var(--dn-fg) 100%);
+  background: var(--dn-wordmark, linear-gradient(100deg,
+    var(--dn-accent), var(--dn-violet), var(--dn-accent-2)));
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  text-shadow:
+    -2px 0 color-mix(in srgb, var(--dn-accent-2) 55%, transparent),
+    2px 0 color-mix(in srgb, var(--dn-accent) 45%, transparent),
+    0 0 30px color-mix(in srgb, var(--dn-accent) 30%, transparent);
   animation: dn-sweep 9s ease-in-out infinite;
 }
 @keyframes dn-sweep {
@@ -674,6 +710,7 @@ body.dn-body::after {
 @media (prefers-reduced-motion: reduce) {
   .spark { animation: none; }
   .dn-firing { animation: none; }
+  body.dn-body::before { animation: none; opacity: 0; }
   .dn-gradient-text { animation: none; }
   .dn-trace::after { animation: none; }
   .dn-neuron-mark { animation: none; }
