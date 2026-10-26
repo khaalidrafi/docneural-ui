@@ -3,6 +3,8 @@
   // promise kept: click a node, its text appears; follow its links
   // and the graph selection follows you. org-roam-lite-ui got its text via
   // a `getText` WS frame; here we fetch the static Org-export fragment.
+  import { fly } from 'svelte/transition'
+  import { cubicOut } from 'svelte/easing'
   import type { DocneuralStore } from '../core/store.svelte'
   import { backlinks, outlinks } from '../core/graph'
   import { sourceTitle, sourceVars } from '../core/source'
@@ -113,7 +115,14 @@
 </script>
 
 {#if doc}
-  <aside class="note-preview" aria-label="Note preview" style={sourceVars(doc.tags[0])}>
+  <!-- Slide-in: the panel is a HUD surface arriving, not a div blinking in.
+       Fly from the right (the edge it is docked to), 200ms, spring-ish ease. -->
+  <aside
+    class="note-preview"
+    aria-label="Note preview"
+    style={sourceVars(doc.tags[0])}
+    in:fly={{ x: 24, duration: 200, easing: cubicOut }}
+  >
     <header>
       <p class="kicker dn-label">node // preview</p>
       <h2 class="dn-mono">{doc.title}</h2>
