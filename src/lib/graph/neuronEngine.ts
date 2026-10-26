@@ -241,6 +241,11 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let paper = '#10151a'
   let hotCol = '#ffd60a'
   let readAt = 0
+  // Phones get +1.5px of label: at fit ~0.15 the 11px screen size the desktop
+  // overview uses sits at the edge of legibility on a 390px viewport (designer
+  // review r3: "increase node label font-size ... labels are sub-9px and bleed").
+  // Read once per token poll — innerWidth does not change mid-frame usefully.
+  let labelPx = 11
   const tokensNow = (): CanvasTokens => {
     const t = performance.now()
     if (t - readAt > 500) {
@@ -252,6 +257,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         ink = get('--dn-fg').trim() || ink
         paper = get('--dn-bg').trim() || paper
         hotCol = get('--dn-hot').trim() || hotCol
+        labelPx = (typeof window !== 'undefined' && window.innerWidth < 700) ? 12.5 : 11
       }
     }
     return tokens
@@ -548,7 +554,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     if (labelOk) {
       const label = shortTitle(n.title ?? '')
       if (!label) return
-      const fontSize = 11 / globalScale
+      const fontSize = labelPx / globalScale
       ctx.save()
       ctx.font = `600 ${fontSize}px "JetBrains Mono", ui-monospace, monospace`
       ctx.textAlign = 'center'
