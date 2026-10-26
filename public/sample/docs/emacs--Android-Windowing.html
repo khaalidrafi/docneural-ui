@@ -1,0 +1,116 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Android-Window-System">1. H.6 The Android Window System ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Android-Fonts.html">Font Backends and Selection under Android</a>   Previous: <a href="docs/emacs--Android-Environment.html">Running Emacs under Android</a>   Up: <a href="docs/emacs--Android.html">Emacs and Android</a>
+</p>
+
+<p>
+<a id="Android-Windowing"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Android-Window-System" class="outline-2">
+<h2 id="The-Android-Window-System"><span class="section-number-2">1.</span> H.6 The Android Window System <a href="#The-Android-Window-System">¶</a></h2>
+<div class="outline-text-2" id="text-The-Android-Window-System">
+<p>
+Android's window system is unusual in that all windows are reported to applications as maximized or full-screen, and, in the general case, only one window can be displayed at a time. On larger devices, the system permits simultaneously tiling up to four windows on the screen, though in emulators or installations configured for “desktop” systems stacks freely resizable windows as other desktop window managers do.
+</p>
+
+<p>
+Windows, or, in system nomenclature, activities, do not exist indefinitely after creation, as the system may choose to pause windows that are not visible in order to conserve memory, on the assumption that the program will save its contents to disk, to be restored when the user selects those windows from the task switcher. Furthermore, a window is created by the operating system at Emacs startup that is afforded special treatment, which Emacs is expected to adopt.
+</p>
+
+<p>
+Emacs approaches window management with the general objective of minimizing differences in frame behavior exposed to Lisp from that of frames on ordinary window systems, such as X Windows; the degree to which this goal is actually attained varies by the availability of facilities for window management in the version of Android where it is installed, and operating system policy towards inactive windows. When it is unavoidable that concessions should be made to such policy, Emacs prefers destroying frames to retaining ones with no activities to display them, unless such a frame is the initial frame and therefore displayed in the activity created at startup, which it is possible to open and identify so long as Emacs is yet executing.
+</p>
+
+<p>
+Android 5.0 and later support an accurate implementation of window management where frames hold a one-to-one relation to the activities in which they are displayed, enabling deletion of activities in the task switcher to directly affect the frames concerned, and vice versa. There are just two exceptions:
+</p>
+
+<ul class="org-ul">
+<li>After the system pauses an activity that remains in the task switcher in response to inactivity, removing it from the task switcher while it remains in its inactive state will not delete the frame inside, as Emacs is not notified of the deletion of its activities in such circumstances. The frame will be deleted upon the next window management operation that prompts an examination of the list of live windows. Likewise, an inactive activity displaying a frame will not be immediately deleted with its frame, but will be if it is selected from the window list or upon another examination of the window list.</li>
+<li>Any frame besides the initial frame might be deleted after 4 to 6 hours of inactivity in the background, if it is removed by the system in “trimming” the task switcher of excess, and presumably unwanted, tasks; the initial frame is exempt from this treatment because it can be reopened otherwise than from the task switcher, but as deletion by this mechanism is indistinguishable from legitimate user action to remove activities from the task switcher, the latter will also be ignored by the initial frame after a 4-hour interval elapses from the time of last activity.</li>
+</ul>
+
+<p>
+Android 4.4 and earlier provide considerably inferior interfaces inadequate for a complete implementation of window management. On such systems, Emacs substitutes a fairly primitive mechanism where all but the initial frame are deleted when their activities are paused, only a single activity (not counting the activity created at startup) is visible at a time, and unattached frames are displayed in the first unoccupied activity available.
+</p>
+
+<p>
+Emacs only supports a limited subset of GUI features on Android; the limitations are as follows:
+</p>
+
+<ul class="org-ul">
+<li>Scroll bars are not supported, as they are close to useless on Android devices.</li>
+<li>The <code>alpha</code>, <code>alpha-background</code>, <code>z-group</code>, <code>override-redirect</code>, <code>mouse-color</code>, <code>title</code>, <code>wait-for-wm</code>, <code>sticky</code>, and <code>undecorated</code> frame parameters (see <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in the Emacs Lisp Reference Manual) are unsupported.</li>
+<li>On Android 4.0 and earlier, the <code>fullscreen</code> frame parameter is always <code>maximized</code> for top-level frames; on later versions of Android, it can also be <code>fullscreen</code>.</li>
+</ul>
+
+<p>
+Emacs does not implement all selection related features supported under the X Window System on Android. For example, only the <code>CLIPBOARD</code> and <code>PRIMARY</code> selections (see <a href="docs/emacs--Cut-and-Paste.html">“Cut and Paste” Operations on Graphical Displays</a>) are supported, and Emacs is only able to set selections to plain text.
+</p>
+
+<p>
+In addition, the Android system itself places certain restrictions on what selection data Emacs can access:
+</p>
+
+<ul class="org-ul">
+<li>On Android 2.3 and earlier, the function <code>gui-selection-owner-p</code> always returns <code>nil</code> for the clipboard selection.</li>
+<li>Between Android 3.0 and Android 9.0, Emacs is able to access the clipboard whenever it wants, and <code>gui-selection-owner-p</code> always returns accurate results.</li>
+<li>Under Android 10.0 and later, Emacs can only access clipboard data when one of its frames has the input focus, and <code>gui-selection-owner-p</code> always returns <code>nil</code> for the clipboard selection.</li>
+</ul>
+
+<p>
+Since the Android system itself has no concept of a primary selection, Emacs provides an emulation instead. This means there is no way to transfer the contents of the primary selection to another application via cut-and-paste.
+</p>
+
+<p>
+The volume keys are normally reserved by Emacs and used to provide the ability to quit Emacs without a physical keyboard (see <a href="docs/emacs--On_002dScreen-Keyboards.html">Using Emacs with Virtual Keyboards</a>). However, if you want them to adjust the volume instead, you can set the variable <code>android-pass-multimedia-buttons-to-system</code> to a non-<code>nil</code> value; note that you will no longer be able to quit Emacs using the volume buttons in that case, and that it is generally easier to activate the notification shade or another interface that momentarily deprives Emacs of the keyboard focus while the volume buttons are being depressed.
+</p>
+
+<p>
+Emacs is unable to display dialog boxes (see <a href="docs/emacs--Dialog-Boxes.html">Using Dialog Boxes</a>) while it does not have the input focus on Android 6.0 or later. If this is important to you, this capability can be restored by granting Emacs permission to display over other programs. On most systems, this can be done from the following Settings menu:
+</p>
+
+<pre class="example" id="org87594b7">
+System -&gt; Apps -&gt; Emacs -&gt; More -&gt; Display over other apps
+</pre>
+
+<p>
+There is a direct relation between physical modifier keys and Emacs modifiers (see <a href="docs/emacs--Modifier-Keys.html">Modifier Keys</a>) reported within key events, subject to a single exception: if Alt on your keyboard is depressed, then the Meta modifier will be reported by Emacs in its place, and vice versa. This irregularity is since most keyboards possess no special Meta key, and the Alt modifier is seldom employed in Emacs.
+</p>
+
+<p>
+Bear in mind that Android uses a different name for the Super modifier: it is referred to as SYM on Android keyboards and within the Settings keymap menu.
+</p>
+
+<p>
+Android input methods have a penchant for irritating users by silently discarding key sequences containing C-SPC during the event filtering process, that they normally have no real application for such key sequences notwithstanding. By default, Emacs intercepts these key sequences before they can be filtered by the input method.
+</p>
+
+<p>
+If this proves unwanted (for instance, if the input method treats C-SPC as a shortcut key for switching languages), it can be disabled by setting the variable <code>android-intercept-control-space</code> to <code>nil</code>.
+</p>
+
+<p>
+The keyboard bell installed within Android systems takes the form of a vibrating element that is activated for a number of milliseconds whenever the bell is rung. The duration of this vibration can be customized through altering the variable <code>android-keyboard-bell-duration</code> to any value between <code>10</code> and <code>1000</code>.
+</p>
+
+<p>
+Color-related characteristics of the display are not automatically detectable on Android, so the variable <code>android-display-planes</code> should be configured to a suitable value if Emacs is to realize faces and images in a manner consistent with the true visual attributes of a grayscale or monochrome display: to <code>8</code> for the former class of display, and <code>1</code> for the latter, which will, respectively, force all colors to be rendered in 256 grays, or in monochrome. As this variable is processed at the time the display connection is established, customizations will not take effect unless they be performed from <code>early-init.el</code> (see <a href="docs/emacs--Early-Init-File.html">The Early Init File</a>).
+</p>
+
+<p>
+The value of this variable does not affect anti-aliasing in the font driver, as monochrome displays nevertheless expect Emacs to provide antialiased text, which they receive after it is processed into bitmap data by the display driver.
+</p>
+
+<hr />
+</div>
+</div>

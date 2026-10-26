@@ -1,0 +1,182 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#upgrading-guix">1.0.1. 2.5 Upgrading Guix</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Upgrading-Guix"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Application-Setup.html">Application Setup</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Upgrading-Guix-1"></a>
+</p>
+</div>
+<div id="outline-container-upgrading-guix" class="outline-4">
+<h4 id="upgrading-guix"><span class="section-number-4">1.0.1.</span> 2.5 Upgrading Guix</h4>
+<div class="outline-text-4" id="text-upgrading-guix">
+<p>
+<a id="index-Upgrading-Guix_002c-on-a-foreign-distro"></a>
+To upgrade Guix, run:
+</p>
+
+<pre class="example" id="orgf2370d5">
+guix pull
+</pre>
+
+<p>
+See <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>, for more information.
+</p>
+
+<p>
+<a id="index-upgrading-Guix-for-the-root-user_002c-on-a-foreign-distro"></a> <a id="index-upgrading-the-Guix-daemon_002c-on-a-foreign-distro"></a> <a id="index-guix-pull-for-the-root-user_002c-on-a-foreign-distro"></a>
+If you installed Guix on a foreign distro with <code>guix-install.sh</code>, you can upgrade the build daemon by running:
+</p>
+
+<pre class="example" id="org62fe6b0">
+sudo -i guix pull
+</pre>
+
+<p>
+followed by (assuming your distro uses the systemd service management tool):
+</p>
+
+<pre class="example" id="orgd14d395">
+systemctl restart guix-daemon.service
+</pre>
+
+<p>
+While this works for <code>guix-install.sh</code>, it will most likely not work if you installed Guix through the package manager of another distribution (for instance with <code>sudo apt install guix</code>, <code>pacman -S guix</code>, or similar commands) because on many distributions <code>guix-daemon.service</code> will only run the Guix daemon provided by the distribution.
+</p>
+
+<p>
+Waiting for your distribution to provide security fixes sometimes work, but fixing security issues in the Guix package takes times for distributions because Guix doesn't backport the security fixes to the releases used by the distributions. On some distribution versions, the Guix package is never fixed.
+</p>
+
+<p>
+However since Guix updates also comes with a new daemon, so you can simply configure your distribution to use the guix-daemon provided by Guix instead. The following will assume that your distribution uses systemd.
+</p>
+
+<p>
+You first need to override <code>guix-daemon.service</code> with the following command:
+</p>
+
+<pre class="example" id="org94dca61">
+sudo install -m 644 \
+     /lib/systemd/system/guix-daemon.service \
+     /etc/systemd/system/guix-daemon.service
+</pre>
+
+<p>
+You will then need to edit <code>/etc/systemd/system/guix-daemon.service</code>. To do that open this file with a text editor that has root permissions:
+</p>
+
+<pre class="example" id="org1f6f187">
+sudo $EDITOR /etc/systemd/system/guix-daemon.service
+</pre>
+
+<p>
+Then try to find a line with <i>ExecStart=</i>, it should look a bit like that:
+</p>
+
+<pre class="example" id="org53bfa13">
+...
+[Service]
+ExecStart=/usr/bin/guix-daemon --build-users-group=_guixbuild
+...
+</pre>
+
+<p>
+Then change <i>/usr/bin/guix-daemon</i> into <i>/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon</i> and save the changes.
+</p>
+
+<p>
+Once done you need to tell systemd that <i>guix-daemon.service</i> was overriden:
+</p>
+
+<pre class="example" id="org66a7bad">
+sudo systemctl daemon-reload
+</pre>
+
+<p>
+Once done you can then update the Guix daemon in the same way than if you installed Guix with <code>guix-install.sh</code>:
+</p>
+
+<pre class="example" id="org38ad180">
+sudo -i guix pull
+sudo systemctl restart guix-daemon.service
+</pre>
+
+<p>
+On Guix System, upgrading the daemon is achieved by reconfiguring the system (see <a href="docs/guix--Invoking-guix-system.html"><code>guix system reconfigure</code></a>).
+</p>
+
+<p>
+To migrate an existing installation to the <i>unprivileged daemon</i> where <code>guix-daemon</code> does not run as root, see <a href="docs/guix--Build-Environment-Setup.html#unprivileged_002ddaemon_002dmigration">unprivileged-daemon-migration</a>.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Application-Setup.html">Application Setup</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

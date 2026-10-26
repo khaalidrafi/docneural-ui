@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Change-Logs-and-VC-1">1. 30.1.12.1 Change Logs and VC ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--VC-Delete_002fRename.html">Deleting and Renaming Version-Controlled Files</a>   Up: <a href="docs/emacs--Miscellaneous-VC.html">Miscellaneous Commands and Features of VC</a>
+</p>
+
+<p>
+<a id="Change-Logs-and-VC"></a>
+</p>
+
+<hr />
+<div id="outline-container-Change-Logs-and-VC-1" class="outline-2">
+<h2 id="Change-Logs-and-VC-1"><span class="section-number-2">1.</span> 30.1.12.1 Change Logs and VC <a href="#Change-Logs-and-VC-1">¶</a></h2>
+<div class="outline-text-2" id="text-Change-Logs-and-VC-1">
+<p>
+If you use RCS or CVS for a program with a <code>ChangeLog</code> file (see <a href="docs/emacs--Change-Log.html">Change Logs</a>), you can generate change log entries from the version control log entries of previous commits.
+</p>
+
+<p>
+Note that this only works with RCS or CVS. This procedure would be particularly incorrect on a modern changeset-based version control system, where changes to the <code>ChangeLog</code> file would normally be committed as part of a changeset. In that case, you should write the change log entries first, then pull them into the ‘=*vc-log*=' buffer when you commit (see <a href="docs/emacs--Log-Buffer.html">Features of the Log Entry Buffer</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-v-a"></a>C-x v a </dt><dd>Visit the current directory's <code>ChangeLog</code> file and, for registered files in that directory, create new entries for versions committed since the most recent change log entry (<code>vc-update-change-log</code>).</dd>
+
+<dt>C-u C-x v a</dt><dd>As above, but only find entries for the current buffer's file.</dd>
+</dl>
+
+<p>
+For example, suppose the first line of <code>ChangeLog</code> is dated 1999-04-10, and that the only check-in since then was by Nathaniel Bowditch to <code>rcs2log</code> on 1999-05-22 with log entry ‘=Ignore log messages that start with '#'.='. Then C-x v a inserts this <code>ChangeLog</code> entry:
+</p>
+
+<pre class="example" id="orgb84e220">
+1999-05-22  Nathaniel Bowditch  &lt;nat@apn.org&gt;
+
+        * rcs2log: Ignore log messages that start with '#'.
+</pre>
+
+<p>
+If the version control log entry specifies a function name (in parenthesis at the beginning of a line), that is reflected in the <code>ChangeLog</code> entry. For example, if a log entry for <code>vc.el</code> is ‘=(vc-do-command): Check call-process status.=', the <code>ChangeLog</code> entry is:
+</p>
+
+<pre class="example" id="orgdd18530">
+1999-05-06  Nathaniel Bowditch  &lt;nat@apn.org&gt;
+
+        * vc.el (vc-do-command): Check call-process status.
+</pre>
+
+<p>
+When C-x v a adds several change log entries at once, it groups related log entries together if they all are checked in by the same author at nearly the same time. If the log entries for several such files all have the same text, it coalesces them into a single entry.
+</p>
+
+<hr />
+</div>
+</div>

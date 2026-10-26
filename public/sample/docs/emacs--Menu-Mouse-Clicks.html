@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Clicks-for-Menus">1. 23.4 Mouse Clicks for Menus ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mode-Line-Mouse.html">Mode Line Mouse Commands</a>   Previous: <a href="docs/emacs--Mouse-References.html">Following References with the Mouse</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Menu-Mouse-Clicks"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Clicks-for-Menus" class="outline-2">
+<h2 id="Mouse-Clicks-for-Menus"><span class="section-number-2">1.</span> 23.4 Mouse Clicks for Menus <a href="#Mouse-Clicks-for-Menus">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Clicks-for-Menus">
+<p>
+Several mouse clicks with the Ctrl and SHIFT modifiers bring up menus.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dmouse_002d1"></a>C-mouse-1 </dt><dd><p>
+This menu is for selecting a buffer.
+</p>
+
+<p>
+The MSB (“mouse select buffer”) global minor mode makes this menu smarter and more customizable. See <a href="docs/emacs--Buffer-Menus.html">Customizing Buffer Menus</a>.
+</p></dd>
+
+<dt><a id="index-C_002dmouse_002d2"></a>C-mouse-2 </dt><dd>This menu contains entries for examining faces and other text properties, and well as for setting them (the latter is mainly useful when editing enriched text; see <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>).</dd>
+
+<dt><a id="index-C_002dmouse_002d3"></a>C-mouse-3 </dt><dd>This menu is mode-specific. For most modes if Menu-bar mode is on, this menu has the same items as all the mode-specific menu-bar menus put together. Some modes may specify a different menu for this button. If Menu Bar mode is off, this menu contains all the items which would be present in the menu bar&#x2014;not just the mode-specific ones&#x2014;so that you can access them without having to display the menu bar.</dd>
+
+<dt>S-mouse-1</dt><dd>This menu is for changing the default face within the window's buffer. See <a href="docs/emacs--Text-Scale.html">Text Scale</a>.</dd>
+</dl>
+
+<p>
+Many GUI applications use mouse-3 to display <i>context menus</i>: menus that provide access to various pertinent settings and actions for the location and context of the mouse click. If you prefer this in Emacs over the default function of mouse-3, which is bound to the <code>mouse-save-then-kill</code> command (see <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>), you can enable the minor mode <code>context-menu-mode</code>. Then Emacs will show context menus when you click mouse-3. The exact contents of these context menus depends on the current major mode and the buffer contents around the place where you click the mouse. To customize the contents of the context menu, you can use the variable <code>context-menu-functions</code> (see <a href="../elisp_html/Major-Mode-Conventions.html#Major-Mode-Conventions">Major Mode Conventions</a> in The Emacs Lisp Reference Manual). You can also invoke the context menu by pressing S-F10.
+</p>
+
+<hr />
+</div>
+</div>

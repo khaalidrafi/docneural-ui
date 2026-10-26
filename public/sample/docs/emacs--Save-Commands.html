@@ -1,0 +1,120 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Commands-for-Saving-Files">1. 20.3.1 Commands for Saving Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Backup.html">Backup Files</a>   Up: <a href="docs/emacs--Saving.html">Saving Files</a>
+</p>
+
+<p>
+<a id="Save-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Commands-for-Saving-Files" class="outline-2">
+<h2 id="Commands-for-Saving-Files"><span class="section-number-2">1.</span> 20.3.1 Commands for Saving Files <a href="#Commands-for-Saving-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Commands-for-Saving-Files">
+<p>
+These are the commands that relate to saving and writing files.
+</p>
+
+<dl class="org-dl">
+<dt>C-x C-s</dt><dd>Save the current buffer to its file (<code>save-buffer</code>).</dd>
+
+<dt>C-x s</dt><dd>Save any or all buffers to their files (<code>save-some-buffers</code>).</dd>
+
+<dt>M-~</dt><dd>Forget that the current buffer has been changed (<code>not-modified</code>). With prefix argument (C-u), mark the current buffer as changed.</dd>
+
+<dt>C-x C-w</dt><dd>Save the current buffer with a specified file name (<code>write-file</code>).</dd>
+
+<dt>M-x set-visited-file-name</dt><dd>Change the file name under which the current buffer will be saved.</dd>
+
+<dt>M-x rename-visited-file</dt><dd>The same as M-x set-visited-file-name, but also rename the file the buffer is visiting (if any).</dd>
+</dl>
+
+<p>
+When you wish to save the file and make your changes permanent, type C-x C-s (<code>save-buffer</code>). After saving is finished, C-x C-s displays a message like this:
+</p>
+
+<pre class="example" id="orgd19aba1">
+Wrote /u/rms/gnu/gnu.tasks
+</pre>
+
+<p>
+If the current buffer is not modified (no changes have been made in it since the buffer was created or last saved), saving is not really done, because it would have no effect. Instead, C-x C-s displays a message like this in the echo area:
+</p>
+
+<pre class="example" id="org8714225">
+(No changes need to be saved)
+</pre>
+
+<p>
+With a prefix argument, C-u C-x C-s, Emacs also marks the buffer to be backed up when the next save is done. See <a href="docs/emacs--Backup.html">Backup Files</a>.
+</p>
+
+<p>
+The command C-x s (<code>save-some-buffers</code>) offers to save any or all modified buffers. It asks you what to do with each buffer. The possible responses are analogous to those of <code>query-replace</code>:
+</p>
+
+<ul class="org-ul">
+<li>y<br />
+SPC :: Save this buffer and ask about the rest of the buffers.</li>
+
+<li>n<br />
+DEL :: Don't save this buffer, but ask about the rest of the buffers.</li>
+
+<li id="!">Save this buffer and all the rest with no more questions.</li>
+
+<li>q<br />
+RET :: Terminate <code>save-some-buffers</code> without any more saving.</li>
+
+<li id=".">Save this buffer, then exit <code>save-some-buffers</code> without even asking about other buffers.</li>
+
+<li id="C-r">View the buffer that you are currently being asked about. When you exit View mode, you get back to <code>save-some-buffers</code>, which asks the question again.</li>
+
+<li id="C-f">Exit <code>save-some-buffers</code> and visit the buffer that you are currently being asked about.</li>
+
+<li id="d">Diff the buffer against its corresponding file, so you can see what changes you would be saving. This calls the command <code>diff-buffer-with-file</code> (see <a href="docs/emacs--Comparing-Files.html">Comparing Files</a>).</li>
+
+<li id="C-h">Display a help message about these options.</li>
+</ul>
+
+<p>
+You can customize the value of <code>save-some-buffers-default-predicate</code> to control which buffers Emacs will ask about.
+</p>
+
+<p>
+C-x C-c, the key sequence to exit Emacs, invokes <code>save-some-buffers</code> and therefore asks the same questions.
+</p>
+
+<p>
+If you have changed a buffer but do not wish to save the changes, you should take some action to prevent it. Otherwise, each time you use C-x s or C-x C-c, you are liable to save this buffer by mistake. One thing you can do is type M-~ (<code>not-modified</code>), which clears out the indication that the buffer is modified. If you do this, none of the save commands will believe that the buffer needs to be saved. (‘=~=' is often used as a mathematical symbol for “not”; thus M-~ is “not”, metafied.) Alternatively, you can cancel all the changes made since the file was visited or saved, by reading the text from the file again. This is called <i>reverting</i>. See <a href="docs/emacs--Reverting.html">Reverting a Buffer</a>. (You could also undo all the changes by repeating the undo command C-x u until you have undone all the changes; but reverting is easier.)
+</p>
+
+<p>
+M-x set-visited-file-name alters the name of the file that the current buffer is visiting. It reads the new file name using the minibuffer. Then it marks the buffer as visiting that file name, and changes the buffer name correspondingly. <code>set-visited-file-name</code> does not save the buffer in the newly visited file; it just alters the records inside Emacs in case you do save later. It also marks the buffer as modified so that C-x C-s in that buffer <i>will</i> save.
+</p>
+
+<p>
+If you wish to mark the buffer as visiting a different file and save it right away, use C-x C-w (<code>write-file</code>). This is equivalent to <code>set-visited-file-name</code> followed by C-x C-s, except that C-x C-w asks for confirmation if the file exists. C-x C-s used on a buffer that is not visiting a file has the same effect as C-x C-w; that is, it reads a file name, marks the buffer as visiting that file, and saves it there. The default file name in a buffer that is not visiting a file is made by combining the buffer name with the buffer's default directory (see <a href="docs/emacs--File-Names.html">File Names</a>).
+</p>
+
+<p>
+If the new file name implies a major mode, then C-x C-w switches to that major mode, in most cases. The command <code>set-visited-file-name</code> also does this. See <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>.
+</p>
+
+<p>
+If you wish to save the current buffer to a different file without visiting that file, use <code>mark-whole-buffer</code> (C-x h), then M-x write-region (see <a href="docs/emacs--Misc-File-Ops.html">Miscellaneous File Operations</a>).
+</p>
+
+<p>
+If Emacs is about to save a file and sees that the date of the latest version on disk does not match what Emacs last read or wrote, Emacs notifies you of this fact, because it probably indicates a problem caused by simultaneous editing and requires your immediate attention. See <a href="docs/emacs--Interlocking.html">Simultaneous Editing</a>.
+</p>
+
+<hr />
+</div>
+</div>

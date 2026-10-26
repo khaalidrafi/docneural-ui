@@ -1,0 +1,105 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customization-of-Display">1. 16.24 Customization of Display ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Visual-Line-Mode.html">Visual Line Mode</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Display-Custom"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customization-of-Display" class="outline-2">
+<h2 id="Customization-of-Display"><span class="section-number-2">1.</span> 16.24 Customization of Display <a href="#Customization-of-Display">¶</a></h2>
+<div class="outline-text-2" id="text-Customization-of-Display">
+<p>
+This section describes variables that control miscellaneous aspects of the appearance of the Emacs screen. Beginning users can skip it.
+</p>
+
+<p>
+If you want to have Emacs display line numbers for every line in the buffer, customize the buffer-local variable <code>display-line-numbers</code>; it is <code>nil</code> by default. This variable can have several different values to support various modes of line-number display:
+</p>
+
+<dl class="org-dl">
+<dt><code>t</code></dt><dd>Display (an absolute) line number before each non-continuation screen line that displays buffer text. If the line is a continuation line, or if the entire screen line displays a display or an overlay string, that line will not be numbered.</dd>
+
+<dt><code>relative</code></dt><dd>Display relative line numbers before non-continuation lines which show buffer text. The line numbers are relative to the line showing point, so the numbers grow both up and down as lines become farther from the current line.</dd>
+
+<dt><code>visual</code></dt><dd>This value causes Emacs to count lines visually: only lines actually shown on the display will be counted (disregarding any lines in invisible parts of text), and lines which wrap to consume more than one screen line will be numbered that many times. The displayed numbers are relative, as with <code>relative</code> value above. This is handy in modes that fold text, such as Outline mode (see <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>), and when you need to move by exact number of screen lines.</dd>
+
+<dt>anything else</dt><dd>Any other non-<code>nil</code> value is treated as <code>t</code>.</dd>
+</dl>
+
+<p>
+The command M-x display-line-numbers-mode provides a convenient way to turn on display of line numbers. This mode has a globalized variant, <code>global-display-line-numbers-mode</code>. The user option <code>display-line-numbers-type</code> controls which sub-mode of line-number display, described above, these modes will activate.
+</p>
+
+<p>
+Note that line numbers are not displayed in the minibuffer and in the tooltips, even if you turn on <code>display-line-numbers-mode</code> globally.
+</p>
+
+<p>
+When Emacs displays relative line numbers, you can control the number displayed before the current line, the line showing point. By default, Emacs displays the absolute number of the current line there, even though all the other line numbers are relative. If you customize the variable <code>display-line-numbers-current-absolute</code> to a <code>nil</code> value, the number displayed for the current line will be zero. This is handy if you don't care about the number of the current line, and want to leave more horizontal space for text in large buffers.
+</p>
+
+<p>
+In a narrowed buffer (see <a href="docs/emacs--Narrowing.html">Narrowing</a>) lines are normally numbered starting at the beginning of the narrowing. However, if you customize the variable <code>display-line-numbers-widen</code> to a non-<code>nil</code> value, line numbers will disregard any narrowing and will start at the first character of the buffer.
+</p>
+
+<p>
+If the value of <code>display-line-numbers-offset</code> is non-zero, it is added to each absolute line number, and lines are counted from the beginning of the buffer, as if <code>display-line-numbers-widen</code> were non-<code>nil</code>. It has no effect when set to zero, or when line numbers are not absolute.
+</p>
+
+<p>
+In selective display mode (see <a href="docs/emacs--Selective-Display.html">Selective Display</a>), and other modes that hide many lines from display (such as Outline and Org modes), you may wish to customize the variables <code>display-line-numbers-width-start</code> and <code>display-line-numbers-grow-only</code>, or set <code>display-line-numbers-width</code> to a large enough value, to avoid occasional miscalculations of space reserved for the line numbers.
+</p>
+
+<p>
+The line numbers are displayed in a special face <code>line-number</code>. The current line number is displayed in a different face, <code>line-number-current-line</code>, so you can make the current line's number have a distinct appearance, which will help locating the line showing point. Additional faces <code>line-number-major-tick</code> and <code>line-number-minor-tick</code> can be used to highlight the line numbers of lines which are a multiple of certain numbers. Customize <code>display-line-numbers-major-tick</code> and <code>display-line-numbers-minor-tick</code> respectively to set those numbers.
+</p>
+
+<p>
+If the variable <code>visible-bell</code> is non-<code>nil</code>, Emacs attempts to make the whole screen blink when it would normally make an audible bell sound. This variable has no effect if your terminal does not have a way to make the screen blink.
+</p>
+
+<p>
+The variable <code>echo-keystrokes</code> controls the echoing of multi-character keys; its value is the number of seconds of pause required to cause echoing to start, or zero, meaning don't echo at all. The value takes effect when there is something to echo. See <a href="docs/emacs--Echo-Area.html">The Echo Area</a>.
+</p>
+
+<p>
+If the variable <code>echo-keystrokes-help</code> is non-<code>nil</code> (the default), the multi-character key sequence echo shown according to <code>echo-keystrokes</code> will include a short help text about keys which will invoke <code>describe-prefix-bindings</code> (see <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>) to show the list of commands for the prefix you already typed. For a related help facility, see <a href="docs/emacs--Key-Help.html#which_002dkey">which-key</a>.
+</p>
+
+<p>
+On graphical displays, Emacs displays the mouse pointer as an hourglass if Emacs is busy. To disable this feature, set the variable <code>display-hourglass</code> to <code>nil</code>. The variable <code>hourglass-delay</code> determines the number of seconds of busy time before the hourglass is shown; the default is 1.
+</p>
+
+<p>
+If the mouse pointer lies inside an Emacs frame, Emacs makes it invisible each time you type a character to insert text, to prevent it from obscuring the text. (To be precise, the hiding occurs when you type a self-inserting character. See <a href="docs/emacs--Inserting-Text.html">Inserting Text</a>.) Moving the mouse pointer makes it visible again. To disable this feature, set the variable <code>make-pointer-invisible</code> to <code>nil</code>.
+</p>
+
+<p>
+On graphical displays, the variable <code>underline-minimum-offset</code> determines the minimum distance between the baseline and underline, in pixels, for underlined text. By default, the value is 1; increasing it may improve the legibility of underlined text for certain fonts. (However, Emacs will never draw the underline below the current line area.) The variable <code>x-underline-at-descent-line</code> determines how to draw underlined text. The default is <code>nil</code>, which means to draw it at the baseline level of the font; if you change it to <code>t</code>, Emacs draws the underline at the same height as the font's descent line. (If non-default line spacing was specified for the underlined text, see <a href="../elisp_html/Line-Height.html#Line-Height">Line Height</a> in The Emacs Lisp Reference Manual, Emacs draws the underline below the additional spacing.)
+</p>
+
+<p>
+The variable <code>overline-margin</code> specifies the vertical position of an overline above the text, including the height of the overline itself, in pixels; the default is 2.
+</p>
+
+<p>
+On some text terminals, bold face and inverse video together result in text that is hard to read. Call the function <code>tty-suppress-bold-inverse-default-colors</code> with a non-<code>nil</code> argument to suppress the effect of bold-face in this case.
+</p>
+
+<p>
+Raw bytes are displayed in octal format by default, for example a byte with a decimal value of 128 is displayed as <code>\200</code>. To change display to the hexadecimal format of <code>\x80</code>, set the variable <code>display-raw-bytes-as-hex</code> to <code>t</code>. Care may be needed when interpreting a raw byte when copying text from a terminal containing an Emacs session, or when a terminal's <code>escape-glyph</code> face looks like the default face. For example, by default Emacs displays the four characters ‘=\=', ‘=2=', ‘=0=', ‘=0=' with the same characters it displays a byte with decimal value 128. The problem can be worse with hex displays, where the raw byte 128 followed by the character ‘=7=' is displayed as <code>\x807</code>, which Emacs Lisp reads as the single character U+0807 SAMARITAN LETTER IT; this confusion does not occur with the corresponding octal display <code>\2007</code> because octal escapes contain at most three digits.
+</p>
+
+<hr />
+</div>
+</div>

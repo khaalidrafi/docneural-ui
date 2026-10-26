@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Submodes-of-Emerge-1">1. 30.6.2 Submodes of Emerge ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--State-of-Difference.html">State of a Difference</a>   Previous: <a href="docs/emacs--Overview-of-Emerge.html">Overview of Emerge</a>   Up: <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>
+</p>
+
+<p>
+<a id="Submodes-of-Emerge"></a>
+</p>
+
+<hr />
+<div id="outline-container-Submodes-of-Emerge-1" class="outline-2">
+<h2 id="Submodes-of-Emerge-1"><span class="section-number-2">1.</span> 30.6.2 Submodes of Emerge <a href="#Submodes-of-Emerge-1">¶</a></h2>
+<div class="outline-text-2" id="text-Submodes-of-Emerge-1">
+<p>
+You can choose between two modes for giving merge commands: Fast mode and Edit mode. In Fast mode, basic merge commands are single characters, but ordinary Emacs commands are disabled. This is convenient if you use only merge commands. In Edit mode, all merge commands start with the prefix key C-c C-c, and the normal Emacs commands are also available. This allows editing the merge buffer, but slows down Emerge operations.
+</p>
+
+<p>
+Use e to switch to Edit mode, and C-c C-c f to switch to Fast mode. The mode line indicates Edit and Fast modes with ‘=E=' and ‘=F='.
+</p>
+
+<p>
+Emerge has two additional submodes that affect how particular merge commands work: Auto Advance mode and Skip Prefers mode.
+</p>
+
+<p>
+If Auto Advance mode is in effect, the a and b commands advance to the next difference. This lets you go through the merge faster as long as you simply choose one of the alternatives from the input. The mode line indicates Auto Advance mode with ‘=A='.
+</p>
+
+<p>
+If Skip Prefers mode is in effect, the n and p commands skip over differences in states “prefer-A” and “prefer-B” (see <a href="docs/emacs--State-of-Difference.html">State of a Difference</a>). Thus you see only differences for which neither version is presumed correct. The mode line indicates Skip Prefers mode with ‘=S='. This mode is only relevant when there is an ancestor.
+</p>
+
+<p>
+Use the command s a (<code>emerge-auto-advance</code>) to set or clear Auto Advance mode. Use s s (<code>emerge-skip-prefers</code>) to set or clear Skip Prefers mode. These commands turn on the mode with a positive argument, turn it off with a negative or zero argument, and toggle the mode with no argument.
+</p>
+
+<hr />
+</div>
+</div>

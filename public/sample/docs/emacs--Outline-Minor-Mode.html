@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Outline-Minor-Mode-1">1. 27.9.1 Outline Minor Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Outline-Format.html">Format of Outlines</a>   Up: <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>
+</p>
+
+<p>
+<a id="Outline-Minor-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Outline-Minor-Mode-1" class="outline-2">
+<h2 id="Outline-Minor-Mode-1"><span class="section-number-2">1.</span> 27.9.1 Outline Minor Mode <a href="#Outline-Minor-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Outline-Minor-Mode-1">
+<p>
+Outline minor mode is a buffer-local minor mode which provides the same commands as the major mode, Outline mode, but can be used in conjunction with other major modes. You can type M-x outline-minor-mode to toggle Outline minor mode in the current buffer, or use a file-local variable setting to enable it in a specific file (see <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>).
+</p>
+
+<p>
+The major mode, Outline mode, provides special key bindings on the C-c prefix. Outline minor mode provides similar bindings with C-c @ as the prefix; this is to reduce the conflicts with the major mode's special commands. (The variable <code>outline-minor-mode-prefix</code> controls the prefix used.)
+</p>
+
+<p>
+If <code>outline-minor-mode-use-buttons</code> is non-<code>nil</code>, Outline minor mode will use buttons at the beginning of the heading lines, in addition to ellipsis, to show that a section is hidden. Clicking the mouse on the button toggles display of the section. If the value of this variable is <code>insert</code>, the buttons are inserted directly into the buffer text, so RET on the button will also toggle display of the section, like a mouse click does. Using the value <code>insert</code> is not recommended in editable buffers because it modifies them. If the value is <code>in-margins</code>, Outline minor mode will use the window margins to indicate that a section is hidden. The buttons are customizable as icons (see <a href="docs/emacs--Icons.html">Icons</a>).
+</p>
+
+<p>
+If the <code>outline-minor-mode-cycle</code> user option is non-<code>nil</code>, the TAB and S-TAB keys that cycle the visibility are enabled on the outline heading lines (see <a href="docs/emacs--Outline-Visibility.html">outline-cycle</a>). TAB cycles hiding, showing the sub-heading, and showing all for the current section. S-TAB does the same for the entire buffer.
+</p>
+
+<hr />
+</div>
+</div>

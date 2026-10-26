@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Date-Display-Format-1">1. 33.13.4 Date Display Format ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Time-Display-Format.html">Time Display Format</a>   Previous: <a href="docs/emacs--Mayan-Calendar.html">Converting from the Mayan Calendar</a>   Up: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>
+</p>
+
+<p>
+<a id="Date-Display-Format"></a>
+</p>
+
+<hr />
+<div id="outline-container-Date-Display-Format-1" class="outline-2">
+<h2 id="Date-Display-Format-1"><span class="section-number-2">1.</span> 33.13.4 Date Display Format <a href="#Date-Display-Format-1">¶</a></h2>
+<div class="outline-text-2" id="text-Date-Display-Format-1">
+<p>
+You can customize the way dates are displayed in the diary, mode lines, and messages by setting <code>calendar-date-display-form</code>. This variable holds a list of expressions that can involve the variables <code>month</code>, <code>day</code>, and <code>year</code>, which are all numbers in string form, and <code>monthname</code> and <code>dayname</code>, which are both alphabetic strings. In the American style, the default value of this list is as follows:
+</p>
+
+<pre class="example" id="org0f53842">
+((if dayname (concat dayname ", ")) monthname " " day ", " year)
+</pre>
+
+<p>
+while in the European style this value is the default:
+</p>
+
+<pre class="example" id="orgaabbe59">
+((if dayname (concat dayname ", ")) day " " monthname " " year)
+</pre>
+
+<p>
+The default ISO date representation is:
+</p>
+
+<pre class="example" id="org1cabf58">
+((format "%s-%.2d-%.2d" year (string-to-number month)
+         (string-to-number day)))
+</pre>
+
+<p>
+Another typical American format is:
+</p>
+
+<pre class="example" id="org595e4b2">
+(month "/" day "/" (substring year -2))
+</pre>
+</div>
+</div>

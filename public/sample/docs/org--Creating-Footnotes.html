@@ -1,0 +1,125 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-Footnotes-1">1. 12.10 Creating Footnotes ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (126)</a></li>
+<li><a href="#section-1">1.0.2. (127)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Creating-Footnotes"></a>
+Previous: <a href="docs/org--Horizontal-Rules.html">Horizontal Rules</a>, Up: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Creating-Footnotes-1" class="outline-2">
+<h2 id="Creating-Footnotes-1"><span class="section-number-2">1.</span> 12.10 Creating Footnotes <a href="#Creating-Footnotes-1">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-Footnotes-1">
+<p>
+A footnote is started by a footnote marker in square brackets in column 0, no indentation allowed. It ends at the next footnote definition, headline, or after two consecutive empty lines. The footnote reference is simply the marker in square brackets, inside text. Markers always start with ‘=fn:='. For example:
+</p>
+
+<pre class="example" id="org40d37e3">
+The Org website[fn:1] now looks a lot better than it used to.
+...
+[fn:50] The link is: https://orgmode.org
+</pre>
+
+<p>
+Org mode extends the number-based syntax to <i>named</i> footnotes and optional inline definition. Here are the valid references:
+</p>
+
+<dl class="org-dl">
+<dt>‘=='</dt><dd>A named footnote reference, where <code>NAME</code> is a unique label word, or, for simplicity of automatic creation, a number.</dd>
+
+<dt>‘=='</dt><dd>An anonymous footnote where the definition is given directly at the reference point.</dd>
+
+<dt>‘=='</dt><dd>An inline definition of a footnote, which also specifies a name for the note. Since Org allows multiple references to the same note, you can then use ‘==' to create additional references.</dd>
+</dl>
+
+<p>
+Footnote labels can be created automatically, or you can create names yourself. This is handled by the variable <code>org-footnote-auto-label</code> and its corresponding ‘=STARTUP=' keywords. See the docstring of that variable for details.
+</p>
+
+<p>
+The following command handles footnotes:
+</p>
+
+<dl class="org-dl">
+<dt>C-c C-x f</dt><dd><p>
+The footnote action command.
+</p>
+
+<p>
+When point is on a footnote reference, jump to the definition. When it is at a definition, jump to the&#x2014;first&#x2014;reference.
+</p>
+
+<p>
+Otherwise, create a new footnote. Depending on the variable <code>org-footnote-define-inline</code>, the definition is placed right into the text as part of the reference, or separately into the location determined by the variable <code>org-footnote-section</code>.
+</p>
+
+<p>
+When this command is called with a prefix argument, a menu of additional options is offered:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">Sort the footnote definitions by reference sequence.</td>
+</tr>
+
+<tr>
+<td class="org-left">r</td>
+<td class="org-left">Renumber the simple ‘=fn:N=' footnotes.</td>
+</tr>
+
+<tr>
+<td class="org-left">S</td>
+<td class="org-left">Short for first r, then s action.</td>
+</tr>
+
+<tr>
+<td class="org-left">n</td>
+<td class="org-left">Rename all footnotes into a ‘=fn:1=' &#x2026; ‘=fn:n=' sequence.</td>
+</tr>
+
+<tr>
+<td class="org-left">d</td>
+<td class="org-left">Delete the footnote at point, including definition and references.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Depending on the variable <code>org-footnote-auto-adjust</code>, renumbering and sorting footnotes can be automatic after each insertion or deletion.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002dc-16"></a>C-c C-c </dt><dd>If point is on a footnote reference, jump to the definition. If it is at the definition, jump back to the reference. When called at a footnote location with a prefix argument, offer the same menu as C-c C-x f.</dd>
+
+<dt><a id="index-C_002dc-C_002do-3"></a>C-c C-o or mouse-1/2 </dt><dd>Footnote labels are also links to the corresponding definition or reference, and you can use the usual commands to follow these links.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

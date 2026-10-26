@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Moving-by-Defuns-1">1. 28.2.2 Moving by Defuns ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Moving-by-Sentences.html">Moving by Sentences</a>   Previous: <a href="docs/emacs--Left-Margin-Paren.html">Left Margin Convention</a>   Up: <a href="docs/emacs--Defuns.html">Top-Level Definitions, or Defuns</a>
+</p>
+
+<p>
+<a id="Moving-by-Defuns"></a>
+</p>
+
+<hr />
+<div id="outline-container-Moving-by-Defuns-1" class="outline-2">
+<h2 id="Moving-by-Defuns-1"><span class="section-number-2">1.</span> 28.2.2 Moving by Defuns <a href="#Moving-by-Defuns-1">¶</a></h2>
+<div class="outline-text-2" id="text-Moving-by-Defuns-1">
+<p>
+These commands move point or set up the region based on top-level major definitions, also called <i>defuns</i>.
+</p>
+
+<dl class="org-dl">
+<dt>C-M-a</dt><dd>Move to beginning of current or preceding defun (<code>beginning-of-defun</code>).</dd>
+
+<dt>C-M-e</dt><dd>Move to end of current or following defun (<code>end-of-defun</code>).</dd>
+
+<dt>C-M-h</dt><dd>Put region around whole current or following defun (<code>mark-defun</code>).</dd>
+</dl>
+
+<p>
+The commands to move to the beginning and end of the current defun are C-M-a (<code>beginning-of-defun</code>) and C-M-e (<code>end-of-defun</code>). If you repeat one of these commands, or use a positive numeric argument, each repetition moves to the next defun in the direction of motion.
+</p>
+
+<p>
+C-M-a with a negative argument −=n= moves forward <code>n</code> times to the next beginning of a defun. This is not exactly the same place that C-M-e with argument <code>n</code> would move to; the end of this defun is not usually exactly the same place as the beginning of the following defun. (Whitespace, comments, and perhaps declarations can separate them.) Likewise, C-M-e with a negative argument moves back to an end of a defun, which is not quite the same as C-M-a with a positive argument.
+</p>
+
+<p>
+To operate on the current defun, use C-M-h (<code>mark-defun</code>), which sets the mark at the end of the current defun and puts point at its beginning. See <a href="docs/emacs--Marking-Objects.html">Commands to Mark Textual Objects</a>. This is the easiest way to get ready to kill the defun in order to move it to a different place in the file. If the defun is directly preceded by comments (with no intervening blank lines), they are marked, too. If you use the command while point is between defuns, it uses the following defun. If you use the command while the mark is already active, it extends the end of the region to include one more defun. With a prefix argument, it marks that many defuns or extends the region by the appropriate number of defuns. With negative prefix argument it marks defuns in the opposite direction and also changes the direction of selecting for subsequent uses of <code>mark-defun</code>.
+</p>
+
+<p>
+In C mode, C-M-h runs the function <code>c-mark-function</code>, which is almost the same as <code>mark-defun</code>; the difference is that it backs up over the argument declarations, function name and returned data type so that the entire C function is inside the region. This is an example of how major modes adjust the standard key bindings so that they do their standard jobs in a way better fitting a particular language. Other major modes may replace any or all of these key bindings for that purpose.
+</p>
+
+<p>
+Some programming languages supported <i>nested defuns</i>, whereby a defun (such as a function or a method or a class) can be defined inside (i.e., as part of the body) of another defun. The commands described above by default find the beginning and the end of the <i>innermost</i> defun around point. Major modes based on the tree-sitter library provide control of this behavior: if the variable <code>treesit-defun-tactic</code> is set to the value <code>top-level</code>, the defun commands will find the <i>outermost</i> defuns instead.
+</p>
+
+<hr />
+</div>
+</div>

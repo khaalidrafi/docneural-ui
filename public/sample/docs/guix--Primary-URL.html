@@ -1,0 +1,96 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#primary-url">1.0.1. 6.11 Primary URL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Primary-URL"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Writing-Channel-News.html">Writing Channel News</a>, Previous: <a href="docs/guix--Specifying-Channel-Authorizations.html">Specifying Channel Authorizations</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Primary-URL-1"></a>
+</p>
+</div>
+<div id="outline-container-primary-url" class="outline-4">
+<h4 id="primary-url"><span class="section-number-4">1.0.1.</span> 6.11 Primary URL</h4>
+<div class="outline-text-4" id="text-primary-url">
+<p>
+<a id="index-primary-URL_002c-channels"></a>
+Channel authors can indicate the primary URL of their channel's Git repository in the <code>.guix-channel</code> file, like so:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(channel
+  (version 0)
+  (url "https://example.org/guix.git"))
+</pre>
+</div>
+
+<p>
+This allows <code>guix pull</code> to determine whether it is pulling code from a mirror of the channel; when that is the case, it warns the user that the mirror might be stale and displays the primary URL. That way, users cannot be tricked into fetching code from a stale mirror that does not receive security updates.
+</p>
+
+<p>
+This feature only makes sense for authenticated repositories, such as the official <code>guix</code> channel, for which <code>guix pull</code> ensures the code it fetches is authentic.
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,95 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Headlines-1">0.0.1. 2.1 Headlines ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6eee4af">1. First (top) level headline</a>
+<ul>
+<li><a href="#org8e03c46">1.1. Second level</a>
+<ul>
+<li><a href="#orgc222526">1.1.1. Third level</a></li>
+<li><a href="#org8a54e2e">1.1.2. Third level</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org76fae3b">2. Another first (top) level headline</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Headlines"></a>
+Next: <a href="docs/org--Visibility-Cycling.html">Visibility Cycling</a>, Up: <a href="docs/org--Document-Structure.html">Document Structure</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Headlines-1" class="outline-4">
+<h4 id="Headlines-1"><span class="section-number-4">0.0.1.</span> 2.1 Headlines <a href="#Headlines-1">¶</a></h4>
+<div class="outline-text-4" id="text-Headlines-1">
+<p>
+Headlines define the structure of an outline tree. Org headlines start on the left margin with one or more stars followed by a space. For example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org6eee4af" class="outline-2">
+<h2 id="org6eee4af"><span class="section-number-2">1.</span> First (top) level headline</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org8e03c46" class="outline-3">
+<h3 id="org8e03c46"><span class="section-number-3">1.1.</span> Second level</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-orgc222526" class="outline-4">
+<h4 id="orgc222526"><span class="section-number-4">1.1.1.</span> Third level</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+some text
+</p>
+</div>
+</div>
+<div id="outline-container-org8a54e2e" class="outline-4">
+<h4 id="org8a54e2e"><span class="section-number-4">1.1.2.</span> Third level</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+more text
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org76fae3b" class="outline-2">
+<h2 id="org76fae3b"><span class="section-number-2">2.</span> Another first (top) level headline</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+The name defined in <code>org-footnote-section</code> is reserved. Do not use it as a title for your own headings.
+</p>
+
+<p>
+Some people find the many stars too noisy and would prefer an outline that has whitespace followed by a single star as headline markers. This can be achieved using the Org Indent minor mode. See <a href="docs/org--Clean-View.html">A Cleaner Outline View</a> for more information.
+</p>
+
+<p>
+Headlines are not numbered. However, you may want to dynamically number some, or all, of them. See <a href="docs/org--Dynamic-Headline-Numbering.html">Dynamic Headline Numbering</a>.
+</p>
+
+<p>
+An empty line after the end of a subtree is considered part of it and is hidden when the subtree is folded. However, if you leave at least two empty lines, one empty line remains visible after folding the subtree, in order to structure the collapsed view. See the variable <code>org-cycle-separator-lines</code> to modify this behavior.
+</p>
+
+<hr />
+</div>
+</div>

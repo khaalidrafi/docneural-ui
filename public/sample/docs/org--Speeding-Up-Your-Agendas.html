@@ -1,0 +1,82 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Speeding-Up-Your-Agendas-1">1. A.9 Speeding Up Your Agendas ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Speeding-Up-Your-Agendas"></a>
+Next: <a href="docs/org--Extracting-Agenda-Information.html">Extracting Agenda Information</a>, Previous: <a href="docs/org--Special-Agenda-Views.html">Special Agenda Views</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Speeding-Up-Your-Agendas-1" class="outline-2">
+<h2 id="Speeding-Up-Your-Agendas-1"><span class="section-number-2">1.</span> A.9 Speeding Up Your Agendas <a href="#Speeding-Up-Your-Agendas-1">¶</a></h2>
+<div class="outline-text-2" id="text-Speeding-Up-Your-Agendas-1">
+<p>
+Some agenda commands slow down when the Org files grow in size or number. Here are tips to speed up:
+</p>
+
+<ul class="org-ul">
+<li>Reduce the number of Org agenda files to avoid slowdowns due to hard drive accesses.</li>
+
+<li>Reduce the number of DONE and archived headlines so agenda operations that skip over these can finish faster.</li>
+
+<li><p>
+Do not dim blocked tasks:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-dim-blocked-tasks nil)
+</pre>
+</div></li>
+
+<li><p>
+Stop preparing agenda buffers on startup:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-inhibit-startup t)
+</pre>
+</div></li>
+
+<li><p>
+Disable tag inheritance for agendas:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-use-tag-inheritance nil)
+</pre>
+</div></li>
+
+<li><p>
+Disable parsing of some properties:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-ignore-properties '(stats))
+</pre>
+</div>
+
+<p>
+This will disable parsing and updating statistic cookies.
+</p></li>
+</ul>
+
+<p>
+These options can be applied to selected agenda views. For more details about generation of agenda views, see the docstrings for the relevant variables, and this <a href="https://orgmode.org/worg/agenda-optimization.html">dedicated Worg page</a> for agenda optimization.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Extracting-Agenda-Information.html">Extracting Agenda Information</a>, Previous: <a href="docs/org--Special-Agenda-Views.html">Special Agenda Views</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

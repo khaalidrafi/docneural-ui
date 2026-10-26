@@ -1,0 +1,80 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Matching-Parentheses">1. 28.4.3 Matching Parentheses ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Moving-by-Parens.html">Moving in the Parenthesis Structure</a>   Up: <a href="docs/emacs--Parentheses.html">Commands for Editing with Parentheses</a>
+</p>
+
+<p>
+<a id="Matching"></a>
+</p>
+
+<hr />
+<div id="outline-container-Matching-Parentheses" class="outline-2">
+<h2 id="Matching-Parentheses"><span class="section-number-2">1.</span> 28.4.3 Matching Parentheses <a href="#Matching-Parentheses">¶</a></h2>
+<div class="outline-text-2" id="text-Matching-Parentheses">
+<p>
+Emacs has a number of <i>parenthesis matching</i> features, which make it easy to see how and whether parentheses (or other delimiters) match up.
+</p>
+
+<p>
+Whenever you type a self-inserting character that is a closing delimiter, Emacs briefly indicates the location of the matching opening delimiter, provided that is on the screen. If it is not on the screen, Emacs displays some of the text near it in the echo area. Either way, you can tell which grouping you are closing off. If the opening delimiter and closing delimiter are mismatched&#x2014;such as in ‘=[x)='&#x2014;a warning message is displayed in the echo area.
+</p>
+
+<p>
+Three variables control the display of matching parentheses:
+</p>
+
+<ul class="org-ul">
+<li><code>blink-matching-paren</code> turns the feature on or off: <code>nil</code> disables it, but the default is <code>t</code> to enable it. Set it to <code>jump</code> to make indication work by momentarily moving the cursor to the matching opening delimiter. Set it to <code>jump-offscreen</code> to make the cursor jump, even if the opening delimiter is off screen.</li>
+<li><code>blink-matching-delay</code> says how many seconds to keep indicating the matching opening delimiter. This may be an integer or floating-point number; the default is 1.</li>
+<li><code>blink-matching-paren-distance</code> specifies how many characters back to search to find the matching opening delimiter. If the match is not found in that distance, Emacs stops scanning and nothing is displayed. The default is 102400.</li>
+</ul>
+
+<p>
+Show Paren mode is a minor mode that provides a more powerful kind of automatic matching. Whenever point is before an opening delimiter or after a closing delimiter, the delimiter, its matching delimiter, and optionally the text between them are highlighted. To toggle Show Paren mode globally, type M-x show-paren-mode. To toggle it only in the current buffer, type M-x show-paren-local-mode.
+</p>
+
+<p>
+By default, this mode is switched on in all buffers that are meant for editing, but is not enabled in buffers that show data. This is controlled by the <code>show-paren-predicate</code> user option.
+</p>
+
+<p>
+To customize the mode, type M-x customize-group RET paren-showing. The customizable options which control the operation of this mode include:
+</p>
+
+<ul class="org-ul">
+<li><code>show-paren-highlight-openparen</code> controls whether to highlight an open paren when point is just before it, and hence its position is marked by the cursor anyway. The default is non-<code>nil</code> (yes).</li>
+<li><code>show-paren-style</code> controls whether just the two parens, or also the text between them get highlighted. The valid options here are <code>parenthesis</code> (show the matching paren), <code>expression</code> (highlight the entire expression enclosed by the parens), and <code>mixed</code> (highlight the matching paren if it is visible in the window, the expression otherwise).</li>
+<li><code>show-paren-when-point-inside-paren</code>, when non-<code>nil</code>, causes highlighting also when point is inside of the parentheses. The default is <code>nil</code>.</li>
+<li><code>show-paren-when-point-in-periphery</code>, when non-<code>nil</code>, causes highlighting also when point is in whitespace at the beginning of a line and there is a paren at the first or last non-whitespace position on the line, or when point is at the end of a line and there is a paren at the last non-whitespace position on the line.</li>
+<li><code>show-paren-context-when-offscreen</code>, when non-<code>nil</code>, shows some context in the echo area when point is in a closing delimiter and the opening delimiter is offscreen. The context is usually the line that contains the opening delimiter, except if the opening delimiter is on its own line, in which case the context includes the previous nonblank line.</li>
+</ul>
+
+<p>
+Electric Pair mode, a global minor mode, provides a way to easily insert matching delimiters: parentheses, braces, brackets, etc. Whenever you insert an opening delimiter, the matching closing delimiter is automatically inserted as well, leaving point between the two. Conversely, when you insert a closing delimiter over an existing one, no insertion takes places, and that position is simply skipped over. If the region is active (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>), insertion of a delimiter operates on the region: the characters in the region are enclosed in a pair of matching delimiters, leaving point after the delimiter you typed.
+</p>
+
+<p>
+These variables control additional features of Electric Pair mode:
+</p>
+
+<ul class="org-ul">
+<li><code>electric-pair-preserve-balance</code>, when non-<code>nil</code>, makes the default pairing logic balance out the number of opening and closing delimiters.</li>
+<li><code>electric-pair-delete-adjacent-pairs</code>, when non-<code>nil</code>, makes backspacing between two adjacent delimiters also automatically delete the closing delimiter.</li>
+<li><code>electric-pair-open-newline-between-pairs</code>, when non-<code>nil</code>, makes inserting a newline between two adjacent pairs also automatically open an extra newline after point.</li>
+<li><code>electric-pair-skip-whitespace</code>, when non-<code>nil</code>, causes the minor mode to skip whitespace forward before deciding whether to skip over the closing delimiter.</li>
+</ul>
+
+<p>
+To toggle Electric Pair mode, type M-x electric-pair-mode. To toggle the mode in a single buffer, use M-x electric-pair-local-mode.
+</p>
+
+<hr />
+</div>
+</div>

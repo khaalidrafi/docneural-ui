@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Other-Features-Useful-for-Editing-Programs">1. 28.11 Other Features Useful for Editing Programs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--C-Modes.html">C and Related Modes</a>   Previous: <a href="docs/emacs--Semantic.html">Semantic</a>   Up: <a href="docs/emacs--Programs.html">Editing Programs</a>
+</p>
+
+<p>
+<a id="Misc-for-Programs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Other-Features-Useful-for-Editing-Programs" class="outline-2">
+<h2 id="Other-Features-Useful-for-Editing-Programs"><span class="section-number-2">1.</span> 28.11 Other Features Useful for Editing Programs <a href="#Other-Features-Useful-for-Editing-Programs">¶</a></h2>
+<div class="outline-text-2" id="text-Other-Features-Useful-for-Editing-Programs">
+<p>
+Some Emacs commands that aren't designed specifically for editing programs are useful for that nonetheless.
+</p>
+
+<p>
+The Emacs commands that operate on words, sentences and paragraphs are useful for editing code. Most symbol names contain words (see <a href="docs/emacs--Words.html">Words</a>), while sentences can be found in strings and comments (see <a href="docs/emacs--Sentences.html">Sentences</a>). As for paragraphs, they are defined in most programming language modes to begin and end at blank lines (see <a href="docs/emacs--Paragraphs.html">Paragraphs</a>). Therefore, judicious use of blank lines to make the program clearer will also provide useful chunks of text for the paragraph commands to work on. Auto Fill mode, if enabled in a programming language major mode, indents the new lines which it creates.
+</p>
+
+<p>
+Superword mode is a buffer-local minor mode that causes editing and motion commands to treat symbols (e.g., ‘=this<sub>is</sub><sub>a</sub><sub>symbol</sub>=') as words. When Superword mode is enabled, the minor mode indicator ‘=²=' appears in the mode line. See also the similar <code>subword-mode</code> (see <a href="docs/emacs--MixedCase-Words.html">MixedCase Words</a>).
+</p>
+
+<p>
+Electric Layout mode (M-x electric-layout-mode) is a global minor mode that automatically inserts newlines when you type certain characters; for example, ‘={<code>', ‘</code>}=' and ‘=;=' in Javascript mode.
+</p>
+
+<p>
+Apart from Hideshow mode (see <a href="docs/emacs--Hideshow.html">Hideshow minor mode</a>), another way to selectively display parts of a program is to use the selective display feature (see <a href="docs/emacs--Selective-Display.html">Selective Display</a>). Programming modes often also support Outline minor mode (see <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>), which can be used with the Foldout package (see <a href="docs/emacs--Foldout.html">Folding Editing</a>).
+</p>
+
+<p>
+Prettify Symbols mode is a buffer-local minor mode that replaces certain strings with more attractive versions for display purposes. For example, in Emacs Lisp mode, it replaces the string ‘=lambda=' with the Greek lambda character ‘=λ='. In a TeX buffer, it will replace ‘=&alpha;=' &#x2026; ‘=&omega;=' and other math macros with their Unicode characters. You may wish to use this in non-programming modes as well. You can customize the mode by adding more entries to <code>prettify-symbols-alist</code>. More elaborate customization is available via customizing <code>prettify-symbols-compose-predicate</code> if its default value <code>prettify-symbols-default-compose-p</code> is not appropriate. There is also a global version, <code>global-prettify-symbols-mode</code>, which enables the mode in all buffers that support it.
+</p>
+
+<p>
+The symbol at point can be shown in its original form. This is controlled by the variable <code>prettify-symbols-unprettify-at-point</code>: if non-<code>nil</code>, the original form of symbol at point will be restored for as long as point is at it.
+</p>
+
+<hr />
+</div>
+</div>

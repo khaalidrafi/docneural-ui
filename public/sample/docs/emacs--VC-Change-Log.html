@@ -1,0 +1,115 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#VC-Change-Log-1">1. 30.1.7 VC Change Log ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--VC-Undo.html">Undoing Version Control Actions</a>   Previous: <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>   Up: <a href="docs/emacs--Version-Control.html">Version Control</a>
+</p>
+
+<p>
+<a id="VC-Change-Log"></a>
+</p>
+
+<hr />
+<div id="outline-container-VC-Change-Log-1" class="outline-2">
+<h2 id="VC-Change-Log-1"><span class="section-number-2">1.</span> 30.1.7 VC Change Log <a href="#VC-Change-Log-1">¶</a></h2>
+<div class="outline-text-2" id="text-VC-Change-Log-1">
+<dl class="org-dl">
+<dt>C-x v l</dt><dd>Display the change history for the current fileset (<code>vc-print-log</code>).</dd>
+
+<dt>C-x v L</dt><dd>Display the change history for the current repository (<code>vc-print-root-log</code>).</dd>
+
+<dt>C-u 1 C-x v L <code>revision</code> RET</dt><dd>Display the log entry and changes (diffs) of a single <code>revision</code> (<code>vc-print-root-log</code>).</dd>
+
+<dt>C-x v b l</dt><dd>Display the change history for another branch (<code>vc-print-branch-log</code>).</dd>
+
+<dt>C-x v I</dt><dd>Display the changes that a “pull” operation will retrieve (<code>vc-log-incoming</code>).</dd>
+
+<dt>C-x v O</dt><dd>Display the changes that will be sent by the next “push” operation (<code>vc-log-outgoing</code>).</dd>
+
+<dt>C-x v h</dt><dd>Display the history of changes made in the region of file visited by the current buffer (<code>vc-region-history</code>).</dd>
+
+<dt>M-x vc-log-search RET</dt><dd>Search the change history for a specified pattern.</dd>
+</dl>
+
+<p>
+C-x v l (<code>vc-print-log</code>) displays a buffer named <code>*vc-change-log*</code>, showing the history of changes made to the current fileset in the long form, including who made the changes, the dates, and the log entry for each change (these are the same log entries you would enter via the <code>*vc-log*</code> buffer; see <a href="docs/emacs--Log-Buffer.html">Features of the Log Entry Buffer</a>). If invoked from a buffer visiting a file, the current fileset consists of that single file, and point in the displayed <code>*vc-change-log*</code> buffer is centered at the revision of that file. If invoked from a VC Directory buffer (see <a href="docs/emacs--VC-Directory-Mode.html">VC Directory Mode</a>) or from a Dired buffer (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>), the fileset consists of all the marked files, defaulting to the file shown on the current line in the directory buffer if no file is marked.
+</p>
+
+<p>
+If the fileset includes one or more directories, the resulting <code>*vc-change-log*</code> buffer shows a short log of changes (one line for each change), if the VC backend supports that; otherwise it shows the log in the long form.
+</p>
+
+<p>
+With a prefix argument, the command prompts for the revision to center on in the <code>*vc-change-log*</code> buffer and for the maximum number of revisions to display.
+</p>
+
+<p>
+C-x v L (<code>vc-print-root-log</code>) displays a <code>*vc-change-log*</code> buffer showing the history of the entire version-controlled directory tree (RCS, SCCS, CVS, and SRC do not support this feature). With a prefix argument, the command prompts for the maximum number of revisions to display. A numeric prefix argument specifies the maximum number of revisions without prompting.
+</p>
+
+<p>
+If the numeric prefix argument is 1, as in C-1 C-x v L or C-u 1 C-x v L, the command prompts for the revision ID, and displays the log entry of that revision together with the changes (diffs) it introduced. (Some less capable version control systems, such as RCS and CVS, don't have commands to show a revision log with its diffs; for them the command displays only the log entry, and you can request to show the diffs by typing d or D, see below.)
+</p>
+
+<p>
+The C-x v L history is shown in a compact form, usually showing only the first line of each log entry. However, you can type RET (<code>log-view-toggle-entry-display</code>) in the <code>*vc-change-log*</code> buffer to reveal the entire log entry for the revision at point. A second RET hides it again.
+</p>
+
+<p>
+C-x v b l <code>branch-name</code> RET (<code>vc-print-branch-log</code>) displays a <code>*vc-change-log*</code> buffer showing the history of the version-controlled directory tree, like <code>vc-print-root-log</code> does, but it shows the history of a branch other than the current one; it prompts for the branch whose history to display.
+</p>
+
+<p>
+On a decentralized version control system, the C-x v I (<code>vc-log-incoming</code>) command displays a log buffer showing the changes that will be applied, the next time you run the version control system's pull command to get new revisions from another remote location (see <a href="docs/emacs--Pulling-_002f-Pushing.html">Pulling/Pushing Changes into/from a Branch</a>). This other remote location is the default one from which changes are pulled, as defined by the version control system; with a prefix argument, <code>vc-log-incoming</code> prompts for a specific remote location. Similarly, C-x v O (<code>vc-log-outgoing</code>) shows the changes that will be sent to another remote location, the next time you run the push command; with a prefix argument, it prompts for a specific destination that in case of some version control system can be a branch name.
+</p>
+
+<p>
+In the <code>*vc-change-log*</code> buffer, you can use the following keys to move between the logs of revisions and of files, and to examine and compare past revisions (see <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>):
+</p>
+
+<dl class="org-dl">
+<dt>p</dt><dd>Move to the previous revision entry. (Revision entries in the log buffer are usually in reverse-chronological order, so the previous revision-item usually corresponds to a newer revision.) A numeric prefix argument is a repeat count.</dd>
+
+<dt>n</dt><dd>Move to the next revision entry. A numeric prefix argument is a repeat count.</dd>
+
+<dt>a</dt><dd>Annotate the revision on the current line (see <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>).</dd>
+
+<dt>e</dt><dd>Modify the change comment displayed at point. Note that not all VC systems support modifying change comments.</dd>
+
+<dt>f</dt><dd>Visit the revision indicated at the current line.</dd>
+
+<dt>d</dt><dd>Display a diff between the revision at point and the next earlier revision, for the specific file.</dd>
+
+<dt>D</dt><dd>Display the changeset diff between the revision at point and the next earlier revision. This shows the changes to all files made in that revision.</dd>
+
+<dt>RET</dt><dd>In a compact-style log buffer (e.g., the one created by C-x v L), toggle between showing and hiding the full log entry for the revision at point.</dd>
+</dl>
+
+<p>
+Because fetching many log entries can be slow, the <code>*vc-change-log*</code> buffer displays no more than 2000 revisions by default. The variable <code>vc-log-show-limit</code> specifies this limit; if you set the value to zero, that removes the limit. You can also increase the number of revisions shown in an existing <code>*vc-change-log*</code> buffer by clicking on the ‘=Show 2X entries=' or ‘=Show unlimited entries=' buttons at the end of the buffer. However, RCS, SCCS, CVS, and SRC do not support this feature.
+</p>
+
+<p>
+A useful variant of examining history of changes is provided by the command vc-region-history (by default bound to C-x v h), which shows a <code>*VC-history*</code> buffer with the history of changes made in the region of the current buffer's file between point and the mark (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>). The history of changes includes the commit log messages and also the changes themselves in the Diff format.
+</p>
+
+<p>
+Invoke this command after marking in the current buffer the region in whose changes you are interested. In the <code>*VC-history*</code> buffer it pops up, you can use all of the commands available in the <code>*vc-change-log*</code> buffer described above, and also the commands defined by Diff mode (see <a href="docs/emacs--Diff-Mode.html">Diff Mode</a>).
+</p>
+
+<p>
+This command is currently available only with Git and Mercurial (hg).
+</p>
+
+<p>
+The command <code>vc-log-search</code> allows searching for a pattern in the log of changes. It prompts for a pattern (a regular expression), and displays all entries in the change history whose log messages match the pattern. When invoked with a prefix argument, the command will also prompt for a specific VCS shell command to run for this purpose.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,160 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="mpv-Media-Player"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Niri-window-manager.html">Niri window manager</a>, Previous: <a href="docs/guix--Media-Home-Services.html">Media Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="mpv-Media-Player-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="mpv-media-player"></a>13.3.16 mpv Media Player<br />
+<div class="outline-text-5" id="text-mpv-media-player">
+<p>
+<a id="index-mpv_002c-Home-Service"></a> <a id="index-mpv_002c-configuration"></a>
+Configuring the <a href="https://mpv.io/">mpv media player</a> can be somewhat daunting task, due to the sheer amount of options available, especially if one wants to be able to inherit the configuration in their code. The <code>home-mpv-service-type</code> is provided to help with that problem. When the service is added to your home environment, file based on the passed configuration is generated and placed into the correct location.
+</p>
+
+<p>
+Due to the bug #74748, it does not use Guix Records to represent the configuration, but uses keyword arguments to achieve similar result. Example follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-mpv-service-type
+         (make-home-mpv-configuration
+          #:global (make-mpv-profile-configuration
+                    #:fullscreen? #t
+                    #:alang '("jpn" "eng"))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: home-mpv-service-type </dt><dd>This is the type of the mpv home service, whose value is a <code>home-mpv-configuration</code> object.</dd>
+
+<dt>Procedure: make-home-mpv-configuration </dt><dd>Return a new instance of <code>home-mpv-configuration</code>. Available keyword arguments are:
+
+<dl class="org-dl">
+<dt><code>inherit</code> (default: <code>#t</code>)</dt><dd>Inherit fields from an another instance.</dd>
+
+<dt><code>global</code> (default: <code>(make-mpv-profile-configuration)</code>)</dt><dd>The global configuration preceding all profiles.</dd>
+
+<dt><code>profiles</code> (default: <code>()</code>)</dt><dd><p>
+An alist containing configuration for any additional profiles to include in the configuration file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(make-home-mpv-configuration
+ #:profiles `((fullscreen . ,(make-mpv-profile-configuration
+                              #:fullscreen? #t))))
+</pre>
+</div></dd>
+
+<dt><code>extra-config</code> (default: <code>#f</code>)</dt><dd>Additional content to include in the configuration file. It is placed at the end of the file.</dd>
+</dl></dd>
+
+<dt>Procedure: make-mpv-profile-configuration </dt><dd><p>
+Return a new instance of <code>mpv-profile-configuration</code>. As above, it also supports the <code>#:inherit</code> argument. Additionally it supports keyword arguments named after the options of <code>mpv</code>. Hence <code>--fullscreen</code> (or <code>fullscreen</code> in the configuration file) becomes <code>#:fullscreen?</code>.
+</p>
+
+<p>
+Few options are using their aliases instead. <code>audio</code> instead of <code>aid</code>, <code>video</code> instead of <code>vid</code>, <code>sub</code> instead of <code>sid</code>, <code>screenshot-directory</code> instead of <code>screenshot-dir</code> and <code>watch-later-directory</code> instead of <code>watch-later-dir</code>.
+</p>
+
+<p>
+Valid values for the fields depend on their type.
+</p>
+
+<dl class="org-dl">
+<dt>Flags</dt><dd>The value should be <code>#f</code> or <code>#t</code>.</dd>
+
+<dt>Numerical fields</dt><dd>Integer and integer64 fields are validated by <code>integer?</code>, float and double fields by <code>real?</code>. Ranges are checked when applicable.</dd>
+
+<dt>Aspect</dt><dd>Same as integer.</dd>
+
+<dt>ByteSize</dt><dd>Same as integer64.</dd>
+
+<dt>Choice</dt><dd>The value should be a symbol representing member of the enumeration. If the choice has ‘=or &#x2026;=' part, it can also be value of that alternative type.</dd>
+
+<dt><code>type</code> list</dt><dd>The value should be a list of the <code>type</code>.</dd>
+</dl>
+
+<p>
+Other types accept strings, with validation of the values where possible (e.g. type ‘=Color=' is validated, but type ‘=Audio channels or channel map=' is not). If an option is marked as taking a file, values satisfying <code>file-like?</code> can also be used.
+</p>
+
+<p>
+The full list of currently supported keyword arguments is below. For the types, allowed values and full description please refer to the <code>mpv --list-options</code> and <a href="https://mpv.io/manual/stable/#options">mpv manual</a>.
+</p>
+
+<p>
+Only set fields are output to the configuration file. Accessors are provided for every field, returning either their value or a sentinel object <code>%unset-value</code> (from <code>(gnu services configuration)</code>).
+</p>
+
+<p>
+<code>ab-loop-a</code>, <code>ab-loop-b</code>, <code>ab-loop-count</code>, <code>access-references?</code>, <code>ad</code>, <code>ad-lavc-ac3drc</code>, <code>ad-lavc-downmix?</code>, <code>ad-lavc-o</code>, <code>ad-lavc-threads</code>, <code>ad-queue-enable?</code>, <code>ad-queue-max-bytes</code>, <code>ad-queue-max-samples</code>, <code>ad-queue-max-secs</code>, <code>af</code>, <code>audio</code>, <code>alang</code>, <code>allow-delayed-peak-detect?</code>, <code>alsa-buffer-time</code>, <code>alsa-ignore-chmap?</code>, <code>alsa-mixer-device</code>, <code>alsa-mixer-index</code>, <code>alsa-mixer-name</code>, <code>alsa-non-interleaved?</code>, <code>alsa-periods</code>, <code>alsa-resample?</code>, <code>ao</code>, <code>ao-null-broken-delay?</code>, <code>ao-null-broken-eof?</code>, <code>ao-null-buffer</code>, <code>ao-null-channel-layouts</code>, <code>ao-null-format</code>, <code>ao-null-latency</code>, <code>ao-null-outburst</code>, <code>ao-null-speed</code>, <code>ao-null-untimed?</code>, <code>ao-pcm-append?</code>, <code>ao-pcm-file</code>, <code>ao-pcm-waveheader?</code>, <code>archive-exts</code>, <code>audio-backward-batch</code>, <code>audio-backward-overlap</code>, <code>audio-buffer</code>, <code>audio-channels</code>, <code>audio-client-name</code>, <code>audio-delay</code>, <code>audio-demuxer</code>, <code>audio-device</code>, <code>audio-display</code>, <code>audio-exclusive?</code>, <code>audio-exts</code>, <code>audio-fallback-to-null?</code>, <code>audio-file-auto</code>, <code>audio-file-paths</code>, <code>audio-files</code>, <code>audio-format</code>, <code>audio-normalize-downmix?</code>, <code>audio-pitch-correction?</code>, <code>audio-resample-cutoff</code>, <code>audio-resample-filter-size</code>, <code>audio-resample-linear?</code>, <code>audio-resample-max-output-size</code>, <code>audio-resample-phase-shift</code>, <code>audio-reversal-buffer</code>, <code>audio-samplerate</code>, <code>audio-spdif</code>, <code>audio-stream-silence?</code>, <code>audio-swresample-o</code>, <code>audio-wait-open</code>, <code>auto-window-resize?</code>, <code>autocreate-playlist</code>, <code>autofit</code>, <code>autofit-larger</code>, <code>autofit-smaller</code>, <code>autoload-files?</code>, <code>autosync</code>, <code>background</code>, <code>background-color</code>, <code>blend-subtitles</code>, <code>bluray-device</code>, <code>border?</code>, <code>border-background</code>, <code>brightness</code>, <code>cache</code>, <code>cache-on-disk?</code>, <code>cache-pause?</code>, <code>cache-pause-initial?</code>, <code>cache-pause-wait</code>, <code>cache-secs</code>, <code>cdda-cdtext?</code>, <code>cdda-device</code>, <code>cdda-overlap</code>, <code>cdda-paranoia</code>, <code>cdda-sector-size</code>, <code>cdda-skip?</code>, <code>cdda-span-a</code>, <code>cdda-span-b</code>, <code>cdda-speed</code>, <code>cdda-toc-offset</code>, <code>chapter-merge-threshold</code>, <code>chapter-seek-threshold</code>, <code>chapters-file</code>, <code>clipboard-backends</code>, <code>clipboard-monitor?</code>, <code>config?</code>, <code>container-fps-override</code>, <code>contrast</code>, <code>cookies?</code>, <code>cookies-file</code>, <code>corner-rounding</code>, <code>correct-downscaling?</code>, <code>correct-pts?</code>, <code>cover-art-auto</code>, <code>cover-art-files</code>, <code>cover-art-whitelist</code>, <code>cscale</code>, <code>cscale-antiring</code>, <code>cscale-blur</code>, <code>cscale-clamp</code>, <code>cscale-param1</code>, <code>cscale-param2</code>, <code>cscale-radius</code>, <code>cscale-taper</code>, <code>cscale-window</code>, <code>cscale-wparam</code>, <code>cscale-wtaper</code>, <code>cursor-autohide</code>, <code>cursor-autohide-fs-only?</code>, <code>deband?</code>, <code>deband-grain</code>, <code>deband-iterations</code>, <code>deband-range</code>, <code>deband-threshold</code>, <code>deinterlace</code>, <code>deinterlace-field-parity</code>, <code>demuxer</code>, <code>demuxer-backward-playback-step</code>, <code>demuxer-cache-dir</code>, <code>demuxer-cache-unlink-files</code>, <code>demuxer-cache-wait?</code>, <code>demuxer-donate-buffer?</code>, <code>demuxer-hysteresis-secs</code>, <code>demuxer-lavf-allow-mimetype?</code>, <code>demuxer-lavf-analyzeduration</code>, <code>demuxer-lavf-buffersize</code>, <code>demuxer-lavf-format</code>, <code>demuxer-lavf-hacks?</code>, <code>demuxer-lavf-linearize-timestamps</code>, <code>demuxer-lavf-o</code>, <code>demuxer-lavf-probe-info</code>, <code>demuxer-lavf-probescore</code>, <code>demuxer-lavf-probesize</code>, <code>demuxer-lavf-propagate-opts?</code>, <code>demuxer-max-back-bytes</code>, <code>demuxer-max-bytes</code>, <code>demuxer-mkv-crop-compat?</code>, <code>demuxer-mkv-probe-start-time?</code>, <code>demuxer-mkv-probe-video-duration</code>, <code>demuxer-mkv-subtitle-preroll</code>, <code>demuxer-mkv-subtitle-preroll-secs</code>, <code>demuxer-mkv-subtitle-preroll-secs-index</code>, <code>demuxer-rawaudio-channels</code>, <code>demuxer-rawaudio-format</code>, <code>demuxer-rawaudio-rate</code>, <code>demuxer-rawvideo-codec</code>, <code>demuxer-rawvideo-format</code>, <code>demuxer-rawvideo-fps</code>, <code>demuxer-rawvideo-h</code>, <code>demuxer-rawvideo-mp-format</code>, <code>demuxer-rawvideo-size</code>, <code>demuxer-rawvideo-w</code>, <code>demuxer-readahead-secs</code>, <code>demuxer-seekable-cache</code>, <code>demuxer-termination-timeout</code>, <code>demuxer-thread?</code>, <code>directory-filter-types</code>, <code>directory-mode</code>, <code>display-fps-override</code>, <code>display-tags</code>, <code>dither</code>, <code>dither-depth</code>, <code>dither-size-fruit</code>, <code>drag-and-drop</code>, <code>dscale</code>, <code>dscale-antiring</code>, <code>dscale-blur</code>, <code>dscale-clamp</code>, <code>dscale-param1</code>, <code>dscale-param2</code>, <code>dscale-radius</code>, <code>dscale-taper</code>, <code>dscale-window</code>, <code>dscale-wparam</code>, <code>dscale-wtaper</code>, <code>dump-stats</code>, <code>dvbin-card</code>, <code>dvbin-channel-switch-offset</code>, <code>dvbin-file</code>, <code>dvbin-full-transponder?</code>, <code>dvbin-prog</code>, <code>dvbin-timeout</code>, <code>dvd-angle</code>, <code>dvd-device</code>, <code>dvd-speed</code>, <code>edition</code>, <code>egl-config-id</code>, <code>egl-output-format</code>, <code>embeddedfonts?</code>, <code>end</code>, <code>error-diffusion</code>, <code>external-files</code>, <code>fbo-format</code>, <code>focus-on</code>, <code>force-media-title</code>, <code>force-render?</code>, <code>force-rgba-osd-rendering?</code>, <code>force-seekable?</code>, <code>force-window</code>, <code>force-window-position?</code>, <code>framedrop</code>, <code>frames</code>, <code>fs-screen</code>, <code>fs-screen-name</code>, <code>fullscreen?</code>, <code>gamma</code>, <code>gamma-auto?</code>, <code>gamma-factor</code>, <code>gamut-mapping-mode</code>, <code>gapless-audio</code>, <code>geometry</code>, <code>glsl-shader-opts</code>, <code>glsl-shaders</code>, <code>gpu-api</code>, <code>gpu-context</code>, <code>gpu-debug?</code>, <code>gpu-dumb-mode</code>, <code>gpu-hwdec-interop</code>, <code>gpu-shader-cache?</code>, <code>gpu-shader-cache-dir</code>, <code>gpu-sw?</code>, <code>gpu-tex-pad-x</code>, <code>gpu-tex-pad-y</code>, <code>hdr-compute-peak</code>, <code>hdr-contrast-recovery</code>, <code>hdr-contrast-smoothness</code>, <code>hdr-peak-decay-rate</code>, <code>hdr-peak-percentile</code>, <code>hdr-scene-threshold-high</code>, <code>hdr-scene-threshold-low</code>, <code>hidpi-window-scale?</code>, <code>hls-bitrate</code>, <code>hr-seek</code>, <code>hr-seek-demuxer-offset</code>, <code>hr-seek-framedrop?</code>, <code>http-header-fields</code>, <code>http-proxy</code>, <code>hue</code>, <code>hwdec</code>, <code>hwdec-codecs</code>, <code>hwdec-extra-frames</code>, <code>hwdec-image-format</code>, <code>hwdec-software-fallback</code>, <code>icc-3dlut-size</code>, <code>icc-cache?</code>, <code>icc-cache-dir</code>, <code>icc-force-contrast</code>, <code>icc-intent</code>, <code>icc-profile</code>, <code>icc-profile-auto?</code>, <code>icc-use-luma?</code>, <code>idle</code>, <code>ignore-path-in-watch-later-config?</code>, <code>image-display-duration</code>, <code>image-exts</code>, <code>image-lut</code>, <code>image-lut-type</code>, <code>image-subs-video-resolution?</code>, <code>include</code>, <code>index</code>, <code>initial-audio-sync?</code>, <code>input-ar-delay</code>, <code>input-ar-rate</code>, <code>input-builtin-bindings?</code>, <code>input-builtin-dragging?</code>, <code>input-commands</code>, <code>input-conf</code>, <code>input-cursor?</code>, <code>input-cursor-passthrough?</code>, <code>input-default-bindings?</code>, <code>input-doubleclick-time</code>, <code>input-dragging-deadzone</code>, <code>input-ime?</code>, <code>input-ipc-client</code>, <code>input-ipc-server</code>, <code>input-key-fifo-size</code>, <code>input-media-keys?</code>, <code>input-preprocess-wheel?</code>, <code>input-right-alt-gr?</code>, <code>input-terminal?</code>, <code>input-test?</code>, <code>input-touch-emulate-mouse?</code>, <code>input-vo-keyboard?</code>, <code>interpolation?</code>, <code>interpolation-preserve?</code>, <code>interpolation-threshold</code>, <code>inverse-tone-mapping?</code>, <code>jack-autostart?</code>, <code>jack-connect?</code>, <code>jack-name</code>, <code>jack-port</code>, <code>jack-std-channel-layout</code>, <code>keep-open</code>, <code>keep-open-pause?</code>, <code>keepaspect?</code>, <code>keepaspect-window?</code>, <code>lavfi-complex</code>, <code>length</code>, <code>libplacebo-opts</code>, <code>linear-downscaling?</code>, <code>linear-upscaling?</code>, <code>load-auto-profiles</code>, <code>load-commands?</code>, <code>load-console?</code>, <code>load-positioning?</code>, <code>load-scripts?</code>, <code>load-select?</code>, <code>load-stats-overlay?</code>, <code>load-unsafe-playlists?</code>, <code>log-file</code>, <code>loop-file</code>, <code>loop-playlist</code>, <code>lut</code>, <code>lut-type</code>, <code>mc</code>, <code>media-controls?</code>, <code>merge-files?</code>, <code>metadata-codepage</code>, <code>mf-fps</code>, <code>mf-type</code>, <code>monitoraspect</code>, <code>monitorpixelaspect</code>, <code>msg-color?</code>, <code>msg-level</code>, <code>msg-module?</code>, <code>msg-time?</code>, <code>mute?</code>, <code>native-fs?</code>, <code>native-keyrepeat?</code>, <code>native-touch?</code>, <code>network-timeout</code>, <code>oac</code>, <code>oacopts</code>, <code>ocopy-metadata?</code>, <code>of</code>, <code>ofopts</code>, <code>on-all-workspaces?</code>, <code>ontop?</code>, <code>ontop-level</code>, <code>opengl-check-pattern-a</code>, <code>opengl-check-pattern-b</code>, <code>opengl-early-flush</code>, <code>opengl-es</code>, <code>opengl-glfinish?</code>, <code>opengl-pbo?</code>, <code>opengl-rectangle-textures?</code>, <code>opengl-swapinterval</code>, <code>opengl-waitvsync?</code>, <code>orawts?</code>, <code>ordered-chapters?</code>, <code>ordered-chapters-files</code>, <code>oremove-metadata</code>, <code>osc?</code>, <code>osd-align-x</code>, <code>osd-align-y</code>, <code>osd-back-color</code>, <code>osd-bar?</code>, <code>osd-bar-align-x</code>, <code>osd-bar-align-y</code>, <code>osd-bar-h</code>, <code>osd-bar-marker-min-size</code>, <code>osd-bar-marker-scale</code>, <code>osd-bar-marker-style</code>, <code>osd-bar-outline-size</code>, <code>osd-bar-w</code>, <code>osd-blur</code>, <code>osd-bold?</code>, <code>osd-border-style</code>, <code>osd-color</code>, <code>osd-duration</code>, <code>osd-font</code>, <code>osd-font-provider</code>, <code>osd-font-size</code>, <code>osd-fonts-dir</code>, <code>osd-fractions?</code>, <code>osd-italic?</code>, <code>osd-justify</code>, <code>osd-level</code>, <code>osd-margin-x</code>, <code>osd-margin-y</code>, <code>osd-msg1</code>, <code>osd-msg2</code>, <code>osd-msg3</code>, <code>osd-on-seek</code>, <code>osd-outline-color</code>, <code>osd-outline-size</code>, <code>osd-playing-msg</code>, <code>osd-playing-msg-duration</code>, <code>osd-playlist-entry</code>, <code>osd-scale</code>, <code>osd-scale-by-window?</code>, <code>osd-selected-color</code>, <code>osd-selected-outline-color</code>, <code>osd-shadow-offset</code>, <code>osd-spacing</code>, <code>osd-status-msg</code>, <code>oset-metadata</code>, <code>ovc</code>, <code>ovcopts</code>, <code>panscan</code>, <code>pause?</code>, <code>pipewire-buffer</code>, <code>pipewire-remote</code>, <code>pipewire-volume-mode</code>, <code>pitch</code>, <code>play-direction</code>, <code>player-operation-mode</code>, <code>playlist-exts</code>, <code>playlist-start</code>, <code>prefetch-playlist?</code>, <code>profile</code>, <code>pulse-allow-suspended?</code>, <code>pulse-buffer</code>, <code>pulse-host</code>, <code>pulse-latency-hacks?</code>, <code>quiet?</code>, <code>really-quiet?</code>, <code>rebase-start-time?</code>, <code>referrer</code>, <code>replaygain</code>, <code>replaygain-clip?</code>, <code>replaygain-fallback</code>, <code>replaygain-preamp</code>, <code>reset-on-next-file</code>, <code>resume-playback?</code>, <code>resume-playback-check-mtime?</code>, <code>rtsp-transport</code>, <code>saturation</code>, <code>save-position-on-quit?</code>, <code>save-watch-history?</code>, <code>scale</code>, <code>scale-antiring</code>, <code>scale-blur</code>, <code>scale-clamp</code>, <code>scale-param1</code>, <code>scale-param2</code>, <code>scale-radius</code>, <code>scale-taper</code>, <code>scale-window</code>, <code>scale-wparam</code>, <code>scale-wtaper</code>, <code>scaler-resizes-only?</code>, <code>screen</code>, <code>screen-name</code>, <code>screenshot-avif-encoder</code>, <code>screenshot-avif-opts</code>, <code>screenshot-avif-pixfmt</code>, <code>screenshot-directory</code>, <code>screenshot-format</code>, <code>screenshot-high-bit-depth?</code>, <code>screenshot-jpeg-quality</code>, <code>screenshot-jpeg-source-chroma?</code>, <code>screenshot-jxl-distance</code>, <code>screenshot-jxl-effort</code>, <code>screenshot-png-compression</code>, <code>screenshot-png-filter</code>, <code>screenshot-sw?</code>, <code>screenshot-tag-colorspace?</code>, <code>screenshot-template</code>, <code>screenshot-webp-compression</code>, <code>screenshot-webp-lossless?</code>, <code>screenshot-webp-quality</code>, <code>script-opts</code>, <code>scripts</code>, <code>secondary-sid</code>, <code>secondary-sub-ass-override</code>, <code>secondary-sub-delay</code>, <code>secondary-sub-pos</code>, <code>secondary-sub-visibility?</code>, <code>sharpen</code>, <code>show-in-taskbar?</code>, <code>shuffle?</code>, <code>sub</code>, <code>sigmoid-center</code>, <code>sigmoid-slope</code>, <code>sigmoid-upscaling?</code>, <code>slang</code>, <code>snap-window?</code>, <code>speed</code>, <code>spirv-compiler</code>, <code>sstep</code>, <code>start</code>, <code>stop-playback-on-init-failure?</code>, <code>stop-screensaver</code>, <code>stream-buffer-size</code>, <code>stream-dump</code>, <code>stream-lavf-o</code>, <code>stream-record</code>, <code>stretch-dvd-subs?</code>, <code>stretch-image-subs-to-screen?</code>, <code>sub-align-x</code>, <code>sub-align-y</code>, <code>sub-ass?</code>, <code>sub-ass-force-margins?</code>, <code>sub-ass-justify?</code>, <code>sub-ass-override</code>, <code>sub-ass-prune-delay</code>, <code>sub-ass-scale-with-window?</code>, <code>sub-ass-style-overrides</code>, <code>sub-ass-styles</code>, <code>sub-ass-use-video-data</code>, <code>sub-ass-video-aspect-override</code>, <code>sub-ass-vsfilter-color-compat</code>, <code>sub-auto</code>, <code>sub-auto-exts</code>, <code>sub-back-color</code>, <code>sub-blur</code>, <code>sub-bold?</code>, <code>sub-border-style</code>, <code>sub-clear-on-seek?</code>, <code>sub-codepage</code>, <code>sub-color</code>, <code>sub-create-cc-track?</code>, <code>sub-delay</code>, <code>sub-demuxer</code>, <code>sub-file-paths</code>, <code>sub-files</code>, <code>sub-filter-jsre</code>, <code>sub-filter-regex</code>, <code>sub-filter-regex-enable?</code>, <code>sub-filter-regex-plain?</code>, <code>sub-filter-regex-warn?</code>, <code>sub-filter-sdh?</code>, <code>sub-filter-sdh-enclosures</code>, <code>sub-filter-sdh-harder?</code>, <code>sub-fix-timing?</code>, <code>sub-font</code>, <code>sub-font-provider</code>, <code>sub-font-size</code>, <code>sub-fonts-dir</code>, <code>sub-forced-events-only?</code>, <code>sub-fps</code>, <code>sub-gauss</code>, <code>sub-gray?</code>, <code>sub-hinting</code>, <code>sub-italic?</code>, <code>sub-justify</code>, <code>sub-lavc-o</code>, <code>sub-line-spacing</code>, <code>sub-margin-x</code>, <code>sub-margin-y</code>, <code>sub-outline-color</code>, <code>sub-outline-size</code>, <code>sub-past-video-end?</code>, <code>sub-pos</code>, <code>sub-scale</code>, <code>sub-scale-by-window?</code>, <code>sub-scale-signs?</code>, <code>sub-scale-with-window?</code>, <code>sub-shadow-offset</code>, <code>sub-shaper</code>, <code>sub-spacing</code>, <code>sub-speed</code>, <code>sub-stretch-durations?</code>, <code>sub-use-margins?</code>, <code>sub-visibility?</code>, <code>sub-vsfilter-bidi-compat?</code>, <code>subs-fallback</code>, <code>subs-fallback-forced</code>, <code>subs-match-os-language?</code>, <code>subs-with-matching-audio</code>, <code>swapchain-depth</code>, <code>sws-allow-zimg?</code>, <code>sws-bitexact?</code>, <code>sws-cgb</code>, <code>sws-chs</code>, <code>sws-cs</code>, <code>sws-cvs</code>, <code>sws-fast?</code>, <code>sws-lgb</code>, <code>sws-ls</code>, <code>sws-scaler</code>, <code>target-colorspace-hint</code>, <code>target-contrast</code>, <code>target-gamut</code>, <code>target-lut</code>, <code>target-peak</code>, <code>target-prim</code>, <code>target-trc</code>, <code>taskbar-progress?</code>, <code>teletext-page</code>, <code>temporal-dither?</code>, <code>temporal-dither-period</code>, <code>term-osd</code>, <code>term-osd-bar?</code>, <code>term-osd-bar-chars</code>, <code>term-playing-msg</code>, <code>term-status-msg</code>, <code>term-title</code>, <code>terminal?</code>, <code>title</code>, <code>title-bar?</code>, <code>tls-ca-file</code>, <code>tls-cert-file</code>, <code>tls-key-file</code>, <code>tls-verify?</code>, <code>tone-mapping</code>, <code>tone-mapping-max-boost</code>, <code>tone-mapping-param</code>, <code>tone-mapping-visualize?</code>, <code>track-auto-selection?</code>, <code>tscale</code>, <code>tscale-antiring</code>, <code>tscale-blur</code>, <code>tscale-clamp</code>, <code>tscale-param1</code>, <code>tscale-param2</code>, <code>tscale-radius</code>, <code>tscale-taper</code>, <code>tscale-window</code>, <code>tscale-wparam</code>, <code>tscale-wtaper</code>, <code>untimed?</code>, <code>use-embedded-icc-profile?</code>, <code>use-filedir-conf?</code>, <code>user-agent</code>, <code>vaapi-device</code>, <code>vd</code>, <code>vd-apply-cropping?</code>, <code>vd-lavc-assume-old-x264?</code>, <code>vd-lavc-bitexact?</code>, <code>vd-lavc-check-hw-profile?</code>, <code>vd-lavc-dr</code>, <code>vd-lavc-fast?</code>, <code>vd-lavc-film-grain</code>, <code>vd-lavc-framedrop</code>, <code>vd-lavc-o</code>, <code>vd-lavc-show-all?</code>, <code>vd-lavc-skipframe</code>, <code>vd-lavc-skipidct</code>, <code>vd-lavc-skiploopfilter</code>, <code>vd-lavc-threads</code>, <code>vd-queue-enable?</code>, <code>vd-queue-max-bytes</code>, <code>vd-queue-max-samples</code>, <code>vd-queue-max-secs</code>, <code>vf</code>, <code>video</code>, <code>video-align-x</code>, <code>video-align-y</code>, <code>video-aspect-method</code>, <code>video-aspect-override</code>, <code>video-backward-batch</code>, <code>video-backward-overlap</code>, <code>video-crop</code>, <code>video-exts</code>, <code>video-latency-hacks?</code>, <code>video-margin-ratio-bottom</code>, <code>video-margin-ratio-left</code>, <code>video-margin-ratio-right</code>, <code>video-margin-ratio-top</code>, <code>video-osd?</code>, <code>video-output-levels</code>, <code>video-pan-x</code>, <code>video-pan-y</code>, <code>video-recenter?</code>, <code>video-reversal-buffer</code>, <code>video-rotate</code>, <code>video-scale-x</code>, <code>video-scale-y</code>, <code>video-sync</code>, <code>video-sync-max-audio-change</code>, <code>video-sync-max-factor</code>, <code>video-sync-max-video-change</code>, <code>video-timing-offset</code>, <code>video-unscaled</code>, <code>video-zoom</code>, <code>vlang</code>, <code>vo</code>, <code>vo-image-avif-encoder</code>, <code>vo-image-avif-opts</code>, <code>vo-image-avif-pixfmt</code>, <code>vo-image-format</code>, <code>vo-image-high-bit-depth?</code>, <code>vo-image-jpeg-quality</code>, <code>vo-image-jpeg-source-chroma?</code>, <code>vo-image-jxl-distance</code>, <code>vo-image-jxl-effort</code>, <code>vo-image-outdir</code>, <code>vo-image-png-compression</code>, <code>vo-image-png-filter</code>, <code>vo-image-tag-colorspace?</code>, <code>vo-image-webp-compression</code>, <code>vo-image-webp-lossless?</code>, <code>vo-image-webp-quality</code>, <code>vo-kitty-alt-screen?</code>, <code>vo-kitty-cols</code>, <code>vo-kitty-config-clear?</code>, <code>vo-kitty-height</code>, <code>vo-kitty-left</code>, <code>vo-kitty-rows</code>, <code>vo-kitty-top</code>, <code>vo-kitty-use-shm?</code>, <code>vo-kitty-width</code>, <code>vo-null-fps</code>, <code>vo-sixel-alt-screen?</code>, <code>vo-sixel-buffered?</code>, <code>vo-sixel-cols</code>, <code>vo-sixel-config-clear?</code>, <code>vo-sixel-dither</code>, <code>vo-sixel-fixedpalette?</code>, <code>vo-sixel-height</code>, <code>vo-sixel-left</code>, <code>vo-sixel-pad-x</code>, <code>vo-sixel-pad-y</code>, <code>vo-sixel-reqcolors</code>, <code>vo-sixel-rows</code>, <code>vo-sixel-threshold</code>, <code>vo-sixel-top</code>, <code>vo-sixel-width</code>, <code>vo-tct-256?</code>, <code>vo-tct-algo</code>, <code>vo-tct-buffering</code>, <code>vo-tct-height</code>, <code>vo-tct-width</code>, <code>vo-vaapi-scaled-osd?</code>, <code>vo-vaapi-scaling</code>, <code>vo-vdpau-chroma-deint?</code>, <code>vo-vdpau-colorkey</code>, <code>vo-vdpau-composite-detect?</code>, <code>vo-vdpau-denoise</code>, <code>vo-vdpau-force-yuv?</code>, <code>vo-vdpau-fps</code>, <code>vo-vdpau-hqscaling</code>, <code>vo-vdpau-output-surfaces</code>, <code>vo-vdpau-pullup?</code>, <code>vo-vdpau-queuetime-fs</code>, <code>vo-vdpau-queuetime-windowed</code>, <code>vo-vdpau-sharpen</code>, <code>volume</code>, <code>volume-gain</code>, <code>volume-gain-max</code>, <code>volume-gain-min</code>, <code>volume-max</code>, <code>vulkan-async-compute?</code>, <code>vulkan-async-transfer?</code>, <code>vulkan-device</code>, <code>vulkan-display-display</code>, <code>vulkan-display-mode</code>, <code>vulkan-display-plane</code>, <code>vulkan-queue-count</code>, <code>vulkan-swap-mode</code>, <code>watch-history-path</code>, <code>watch-later-directory</code>, <code>watch-later-options</code>, <code>wayland-app-id</code>, <code>wayland-configure-bounds</code>, <code>wayland-content-type</code>, <code>wayland-disable-vsync?</code>, <code>wayland-edge-pixels-pointer</code>, <code>wayland-edge-pixels-touch</code>, <code>wayland-internal-vsync</code>, <code>wayland-present?</code>, <code>wid</code>, <code>window-dragging?</code>, <code>window-maximized?</code>, <code>window-minimized?</code>, <code>window-scale</code>, <code>write-filename-in-watch-later-config?</code>, <code>x11-bypass-compositor</code>, <code>x11-name</code>, <code>x11-netwm</code>, <code>x11-present</code>, <code>x11-wid-title?</code>, <code>xv-adaptor</code>, <code>xv-buffers</code>, <code>xv-ck</code>, <code>xv-ck-method</code>, <code>xv-colorkey</code>, <code>xv-port</code>, <code>ytdl?</code>, <code>ytdl-format</code>, <code>ytdl-raw-options</code>, <code>zimg-dither</code>, <code>zimg-fast?</code>, <code>zimg-scaler</code>, <code>zimg-scaler-chroma</code>, <code>zimg-scaler-chroma-param-a</code>, <code>zimg-scaler-chroma-param-b</code>, <code>zimg-scaler-param-a</code>, <code>zimg-scaler-param-b</code>, and <code>zimg-threads</code>.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Niri-window-manager.html">Niri window manager</a>, Previous: <a href="docs/guix--Media-Home-Services.html">Media Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

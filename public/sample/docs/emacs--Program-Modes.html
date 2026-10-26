@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Major-Modes-for-Programming-Languages">1. 28.1 Major Modes for Programming Languages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Defuns.html">Top-Level Definitions, or Defuns</a>   Up: <a href="docs/emacs--Programs.html">Editing Programs</a>
+</p>
+
+<p>
+<a id="Program-Modes"></a>
+</p>
+
+<hr />
+<div id="outline-container-Major-Modes-for-Programming-Languages" class="outline-2">
+<h2 id="Major-Modes-for-Programming-Languages"><span class="section-number-2">1.</span> 28.1 Major Modes for Programming Languages <a href="#Major-Modes-for-Programming-Languages">¶</a></h2>
+<div class="outline-text-2" id="text-Major-Modes-for-Programming-Languages">
+<p>
+Emacs has specialized major modes (see <a href="docs/emacs--Major-Modes.html">Major Modes</a>) for many programming languages. A programming language mode typically specifies the syntax of expressions, the customary rules for indentation, how to do syntax highlighting for the language, and how to find the beginning or end of a function definition. It often has features for compiling and debugging programs as well. The major mode for each language is named after the language; for instance, the major mode for the C programming language is <code>c-mode</code>.
+</p>
+
+<p>
+Emacs has programming language modes for Lisp, Scheme, the Scheme-based DSSSL expression language, Ada, ASM, AWK, C, C++, C#, Elixir, Fortran, Icon, IDL (CORBA), HEEx, IDLWAVE, Java, Javascript, Lua, M4, Makefiles, Metafont (TeX's companion for font creation), Modula2, Object Pascal, Objective-C, Octave, Pascal, Perl, PHP, Pike, PostScript, Prolog, Python, Ruby, Simula, SQL, Tcl, TypeScript, Verilog, and VHDL. The recommended mode for Perl is called CPerl mode. Modes are also available for the scripting languages of the common GNU and Unix shells, and MS-DOS/MS-Windows ‘=BAT=' files, JSON, DNS master files, CSS (Cascading Style Sheets), Dockerfiles, CMake files, and various sorts of configuration files.
+</p>
+
+<p>
+Ideally, Emacs should have a major mode for each programming language that you might want to edit. If it doesn't have a mode for your favorite language, the mode might be implemented in a package not distributed with Emacs (see <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>); or you can contribute one.
+</p>
+
+<p>
+If Emacs has been compiled with the ‘=tree-sitter=' library, it offers several optional editing modes based on that library, which utilize the incremental parsing capabilities provided by ‘=tree-sitter='. These modes have ‘=-ts-<code>' in their names; for example =c-ts-mode</code>, <code>python-ts-mode</code>, etc.
+</p>
+
+<p>
+In most programming languages, indentation should vary from line to line to illustrate the structure of the program. Therefore, in most programming language modes, typing TAB updates the indentation of the current line (see <a href="docs/emacs--Program-Indent.html">Indentation for Programs</a>). Furthermore, DEL is usually bound to <code>backward-delete-char-untabify</code>, which deletes backward treating each tab as if it were the equivalent number of spaces, so that you can delete one column of indentation without worrying whether the whitespace consists of spaces or tabs.
+</p>
+
+<p>
+Entering a programming language mode runs the custom Lisp functions specified in the hook variable <code>prog-mode-hook</code>, followed by those specified in the mode's own mode hook (see <a href="docs/emacs--Major-Modes.html">Major Modes</a>). For instance, entering C mode runs the hooks <code>prog-mode-hook</code> and <code>c-mode-hook</code>. See <a href="docs/emacs--Hooks.html">Hooks</a>, for information about hooks.
+</p>
+
+<p>
+Separate manuals are available for the modes for Ada (see <a href="../ada-mode_html/index.html#Top">Ada Mode</a> in Ada Mode), C/C++/Objective C/Java/Corba IDL/Pike/AWK (see <a href="../ccmode_html/index.html#Top">CC Mode</a> in CC Mode), Octave, VHDL, and IDLWAVE (see <a href="../idlwave_html/index.html#Top">IDLWAVE</a> in IDLWAVE User Manual).
+</p>
+
+<hr />
+</div>
+</div>

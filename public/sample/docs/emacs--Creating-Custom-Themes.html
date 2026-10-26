@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-Custom-Themes-1">1. 51.1.8 Creating Custom Themes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Custom-Themes.html">Custom Themes</a>   Up: <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>
+</p>
+
+<p>
+<a id="Creating-Custom-Themes"></a>
+</p>
+
+<hr />
+<div id="outline-container-Creating-Custom-Themes-1" class="outline-2">
+<h2 id="Creating-Custom-Themes-1"><span class="section-number-2">1.</span> 51.1.8 Creating Custom Themes <a href="#Creating-Custom-Themes-1">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-Custom-Themes-1">
+<p>
+You can define a Custom theme using an interface similar to the customization buffer, by typing M-x customize-create-theme. This switches to a buffer named <code>*Custom Theme*</code>. It also offers to insert some common Emacs faces into the theme (a convenience, since Custom themes are often used to customize faces). If you answer no, the theme will initially contain no settings.
+</p>
+
+<p>
+Near the top of the <code>*Custom Theme*</code> buffer, there are editable fields where you can enter the theme's name and description. The name can be anything except ‘=user='. The description is the one that will be shown when you invoke M-x describe-theme for the theme. Its first line should be a brief one-sentence summary; in the buffer made by M-x customize-themes, this sentence is displayed next to the theme name.
+</p>
+
+<p>
+To add a new setting to the theme, use the ‘=[Insert Additional Face]=' or ‘=[Insert Additional Variable]=' buttons. Each button reads a face or variable name using the minibuffer, with completion, and inserts a customization entry for the face or variable. You can edit the variable values or face attributes in the same way as in a normal customization buffer. To remove a face or variable from the theme, uncheck the checkbox next to its name.
+</p>
+
+<p>
+After specifying the Custom theme's faces and variables, type C-x C-s (<code>custom-theme-write</code>) or use the buffer's ‘=[Save Theme]=' button. This saves the theme file, named <code>name=</code>-theme.el= where <code>name</code> is the theme name, in the directory named by <code>custom-theme-directory</code>.
+</p>
+
+<p>
+From the <code>*Custom Theme*</code> buffer, you can view and edit an existing Custom theme by activating the ‘=[Visit Theme]=' button and specifying the theme name. You can also add the settings of another theme into the buffer, using the ‘=[Merge Theme]=' button. You can import your non-theme settings into a Custom theme by using the ‘=[Merge Theme]=' button and specifying the special theme named ‘=user='.
+</p>
+
+<p>
+A theme file is simply an Emacs Lisp source file, and loading the Custom theme works by loading the Lisp file. Therefore, you can edit a theme file directly instead of using the <code>*Custom Theme*</code> buffer. See <a href="../elisp_html/Custom-Themes.html#Custom-Themes">Custom Themes</a> in The Emacs Lisp Reference Manual, for details.
+</p>
+
+<hr />
+</div>
+</div>

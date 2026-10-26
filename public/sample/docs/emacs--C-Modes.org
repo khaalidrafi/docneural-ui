@@ -1,0 +1,23 @@
+:PROPERTIES:
+:ID: emacs--C-Modes
+:END:
+#+filetags: :emacs:
+#+title: C Modes
+
+Next: [[id:emacs--Asm-Mode][Asm Mode]]   Previous: [[id:emacs--Misc-for-Programs][Other Features Useful for Editing Programs]]   Up: [[id:emacs--Programs][Editing Programs]]
+
+<<C-Modes>>
+
+--------------
+
+*** 28.12 C and Related Modes [[#C-and-Related-Modes][¶]]
+:PROPERTIES:
+:CUSTOM_ID: C-and-Related-Modes
+:CLASS: section
+:END:
+This section gives a brief description of the special features available in C, C++, Objective-C, Java, CORBA IDL, Pike and AWK modes. (These are called “C mode and related modes”.) For more details, see the CC mode Info manual, which is distributed with Emacs.
+
+- [[id:emacs--Motion-in-C][C Mode Motion Commands]]
+- [[id:emacs--Electric-C][Electric C Characters]]
+- [[id:emacs--Hungry-Delete][Hungry Delete Feature in C]]
+- [[id:emacs--Other-C-Commands][Other Commands for C Mode]]

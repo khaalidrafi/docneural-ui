@@ -1,0 +1,79 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Link-Format-1">1. 4.1 Link Format ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (24)</a></li>
+<li><a href="#section-1">1.0.2. (25)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Link-Format"></a>
+Next: <a href="docs/org--Internal-Links.html">Internal Links</a>, Up: <a href="docs/org--Hyperlinks.html">Hyperlinks</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Link-Format-1" class="outline-2">
+<h2 id="Link-Format-1"><span class="section-number-2">1.</span> 4.1 Link Format <a href="#Link-Format-1">¶</a></h2>
+<div class="outline-text-2" id="text-Link-Format-1">
+<p>
+Org recognizes plain URIs, possibly wrapped within angle brackets, and activates them as clickable links.
+</p>
+
+<p>
+The general link format, however, looks like this:
+</p>
+
+<pre class="example" id="orgc2888bb">
+[[LINK][DESCRIPTION]]
+</pre>
+
+<p>
+or alternatively
+</p>
+
+<pre class="example" id="org6d3ad0c">
+[[LINK]]
+</pre>
+
+<p>
+Some ‘=\=', ‘=[=' and ‘=]=' characters in the <code>LINK</code> part need to be “escaped”, i.e., preceded by another ‘=\=' character. More specifically, only the following characters must be escaped:
+</p>
+
+<ol class="org-ol">
+<li>all ‘=[=' and ‘=]=' characters,</li>
+<li>every ‘=\=' character preceding either ‘=]=' or ‘=[=',</li>
+<li>every ‘=\=' character at the end of the link.</li>
+</ol>
+
+<p>
+Functions inserting links (see <a href="docs/org--Handling-Links.html">Handling Links</a>) properly escape ambiguous characters. You only need to bother about the rules above when inserting directly, or yanking, a URI within square brackets. When in doubt, you may use the function <code>org-link-escape</code>, which turns a link string into its escaped form.
+</p>
+
+<p>
+Once a link in the buffer is complete, with all brackets present, Org changes the display so that ‘=DESCRIPTION=' is displayed instead of ‘==' and ‘=LINK=' is displayed instead of ‘=='. Links are highlighted in the <code>org-link</code> face, which, by default, is an underlined face.
+</p>
+
+<p>
+You can directly edit the visible part of a link. This can be either the <code>LINK</code> part, if there is no description, or the <code>DESCRIPTION</code> part otherwise. To also edit the invisible <code>LINK</code> part, use C-c C-l with point on the link (see <a href="docs/org--Handling-Links.html">Handling Links</a>).
+</p>
+
+<p>
+If you place point at the beginning or just behind the end of the displayed text and press BS, you remove the&#x2014;invisible&#x2014;bracket at that location. This makes the link incomplete and the internals are again displayed as plain text. Inserting the missing bracket hides the link internals again. To show the internal structure of all links, use the menu: Org → Hyperlinks → Literal links, customize <code>org-link-descriptive</code>, or use the ‘=literallinks=' <a href="docs/org--In_002dbuffer-Settings.html">startup option</a>.
+</p>
+
+<hr />
+</div>
+</div>

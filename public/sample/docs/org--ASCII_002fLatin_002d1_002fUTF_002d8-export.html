@@ -1,0 +1,133 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#ASCII_002fLatin_002d1_002fUTF_002d8-export-1">1. 13.7 ASCII/Latin-1/UTF-8 export ¶</a>
+<ul>
+<li><a href="#ASCII-export-commands-1">1.1. ASCII export commands ¶</a></li>
+<li><a href="#ASCII-specific-export-settings-1">1.2. ASCII specific export settings ¶</a></li>
+<li><a href="#Header-and-sectioning-structure-1">1.3. Header and sectioning structure ¶</a></li>
+<li><a href="#Quoting-ASCII-text-1">1.4. Quoting ASCII text ¶</a></li>
+<li><a href="#ASCII-specific-attributes-1">1.5. ASCII specific attributes ¶</a></li>
+<li><a href="#ASCII-special-blocks-1">1.6. ASCII special blocks ¶</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="ASCII_002fLatin_002d1_002fUTF_002d8-export"></a>
+Next: <a href="docs/org--Beamer-Export.html">Beamer Export</a>, Previous: <a href="docs/org--Comment-Lines.html">Comment Lines</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-ASCII_002fLatin_002d1_002fUTF_002d8-export-1" class="outline-2">
+<h2 id="ASCII_002fLatin_002d1_002fUTF_002d8-export-1"><span class="section-number-2">1.</span> 13.7 ASCII/Latin-1/UTF-8 export <a href="#ASCII_002fLatin_002d1_002fUTF_002d8-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-ASCII_002fLatin_002d1_002fUTF_002d8-export-1">
+<p>
+ASCII export produces an output file containing only plain ASCII characters. This is the simplest and most direct text output. It does not contain any Org markup. Latin-1 and UTF-8 export use additional characters and symbols available in these encoding standards. All three of these export formats offer the most basic of text output for maximum portability.
+</p>
+
+<p>
+On export, Org fills and justifies text according to the text width set in <code>org-ascii-text-width</code>.
+</p>
+
+<p>
+Org exports links using a footnote-like style where the descriptive part is in the text and the link is in a note before the next heading. See the variable <code>org-ascii-links-to-notes</code> for details.
+</p>
+</div>
+<div id="outline-container-ASCII-export-commands-1" class="outline-3">
+<h3 id="ASCII-export-commands-1"><span class="section-number-3">1.1.</span> ASCII export commands <a href="#ASCII-export-commands-1">¶</a></h3>
+<div class="outline-text-3" id="text-ASCII-export-commands-1">
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002de-t-a"></a>C-c C-e t a (<code>org-ascii-export-to-ascii</code>), C-c C-e t l, C-c C-e t u </dt><dd>Export as an ASCII file with a ‘=.txt=' extension. For ‘=myfile.org=', Org exports to ‘=myfile.txt=', overwriting without warning. For ‘=myfile.txt=', Org exports to ‘=myfile.txt.txt=' in order to prevent data loss.</dd>
+
+<dt><a id="index-C_002dc-C_002de-t-A"></a>C-c C-e t A (<code>org-ascii-export-to-ascii</code>), C-c C-e t L, C-c C-e t U </dt><dd>Export to a temporary buffer. Does not create a file.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-ASCII-specific-export-settings-1" class="outline-3">
+<h3 id="ASCII-specific-export-settings-1"><span class="section-number-3">1.2.</span> ASCII specific export settings <a href="#ASCII-specific-export-settings-1">¶</a></h3>
+<div class="outline-text-3" id="text-ASCII-specific-export-settings-1">
+<p>
+The ASCII export backend has one extra keyword for customizing ASCII output. Setting this keyword works similar to the general options (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-SUBTITLE_002c-keyword"></a>‘=SUBTITLE=' </dt><dd>The document subtitle. For long subtitles, use multiple ‘=#+SUBTITLE=' lines in the Org file. Org prints them on one continuous line, wrapping into multiple lines if necessary.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Header-and-sectioning-structure-1" class="outline-3">
+<h3 id="Header-and-sectioning-structure-1"><span class="section-number-3">1.3.</span> Header and sectioning structure <a href="#Header-and-sectioning-structure-1">¶</a></h3>
+<div class="outline-text-3" id="text-Header-and-sectioning-structure-1">
+<p>
+Org converts the first three outline levels into headlines for ASCII export. The remaining levels are turned into lists. To change this cut-off point where levels become lists, see <a href="docs/org--Export-Settings.html">Export Settings</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-Quoting-ASCII-text-1" class="outline-3">
+<h3 id="Quoting-ASCII-text-1"><span class="section-number-3">1.4.</span> Quoting ASCII text <a href="#Quoting-ASCII-text-1">¶</a></h3>
+<div class="outline-text-3" id="text-Quoting-ASCII-text-1">
+<p>
+To insert text within the Org file by the ASCII backend, use one the following constructs, inline, keyword, or export block:
+</p>
+
+<pre class="example" id="org10a65bf">
+Inline text @@ascii:and additional text@@ within a paragraph.
+
+#+ASCII: Some text
+
+#+BEGIN_EXPORT ascii
+Org exports text in this block only when using ASCII backend.
+#+END_EXPORT
+</pre>
+</div>
+</div>
+<div id="outline-container-ASCII-specific-attributes-1" class="outline-3">
+<h3 id="ASCII-specific-attributes-1"><span class="section-number-3">1.5.</span> ASCII specific attributes <a href="#ASCII-specific-attributes-1">¶</a></h3>
+<div class="outline-text-3" id="text-ASCII-specific-attributes-1">
+<p>
+ASCII backend recognizes only one attribute, ‘=:width=', which specifies the width of a horizontal rule in number of characters. The keyword and syntax for specifying widths is:
+</p>
+
+<pre class="example" id="org26e1261">
+#+ATTR_ASCII: :width 10
+-----
+</pre>
+</div>
+</div>
+<div id="outline-container-ASCII-special-blocks-1" class="outline-3">
+<h3 id="ASCII-special-blocks-1"><span class="section-number-3">1.6.</span> ASCII special blocks <a href="#ASCII-special-blocks-1">¶</a></h3>
+<div class="outline-text-3" id="text-ASCII-special-blocks-1">
+<p>
+Besides ‘=#+BEGIN<sub>CENTER</sub>=' blocks (see <a href="docs/org--Paragraphs.html">Paragraphs</a>), ASCII backend has these two left and right justification blocks:
+</p>
+
+<pre class="example" id="org0f52c03">
+#+BEGIN_JUSTIFYLEFT
+It's just a jump to the left...
+</pre>
+
+<div class="JUSTIFYRIGHT" id="org507c389">
+<p>
+&#x2026;and then a step to the right.
+</p>
+
+</div>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Beamer-Export.html">Beamer Export</a>, Previous: <a href="docs/org--Comment-Lines.html">Comment Lines</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

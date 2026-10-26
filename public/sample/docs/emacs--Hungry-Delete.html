@@ -1,0 +1,46 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Hungry-Delete-Feature-in-C">1. 28.12.3 Hungry Delete Feature in C ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Other-C-Commands.html">Other Commands for C Mode</a>   Previous: <a href="docs/emacs--Electric-C.html">Electric C Characters</a>   Up: <a href="docs/emacs--C-Modes.html">C and Related Modes</a>
+</p>
+
+<p>
+<a id="Hungry-Delete"></a>
+</p>
+
+<hr />
+<div id="outline-container-Hungry-Delete-Feature-in-C" class="outline-2">
+<h2 id="Hungry-Delete-Feature-in-C"><span class="section-number-2">1.</span> 28.12.3 Hungry Delete Feature in C <a href="#Hungry-Delete-Feature-in-C">¶</a></h2>
+<div class="outline-text-2" id="text-Hungry-Delete-Feature-in-C">
+<p>
+If you want to delete an entire block of whitespace at point, you can use <i>hungry deletion</i>. This deletes all the contiguous whitespace either before point or after point in a single operation. <i>Whitespace</i> here includes tabs and newlines, but not comments or preprocessor commands.
+</p>
+
+<ul class="org-ul">
+<li><a id="index-c_002dhungry_002ddelete_002dbackwards"></a>C-c C-DEL <br />
+C-c DEL :: Delete the entire block of whitespace preceding point (<code>c-hungry-delete-backwards</code>).</li>
+
+<li><a id="index-c_002dhungry_002ddelete_002dforward"></a>C-c C-d <br />
+C-c C-Delete<br />
+C-c Delete :: Delete the entire block of whitespace after point (<code>c-hungry-delete-forward</code>).</li>
+</ul>
+
+<p>
+As an alternative to the above commands, you can enable <i>hungry delete mode</i>. When this feature is enabled (indicated by ‘=h=' after a ‘=/=' in the mode line after the mode name), a single DEL deletes all preceding whitespace, not just one space, and a single C-d (but <i>not</i> plain Delete) deletes all following whitespace.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-c_002dtoggle_002dhungry_002dstate"></a>M-x c-toggle-hungry-state </dt><dd>Toggle the hungry-delete feature (<code>c-toggle-hungry-state</code>). With a prefix argument, this command turns the hungry-delete feature on if the argument is positive, and off if it is negative.</dd>
+</dl>
+
+<p>
+The variable <code>c-hungry-delete-key</code> controls whether the hungry-delete feature is enabled.
+</p>
+</div>
+</div>

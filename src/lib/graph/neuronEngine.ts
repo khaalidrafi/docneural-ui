@@ -301,10 +301,13 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   const traffic = (l: any): number =>
     (l.source?.degree ?? 0) + (l.target?.degree ?? 0)
 
-  /** Fade a color to ~30%: 8-digit hex when the color is hex (the palette
-   *  always is), untouched otherwise (hsl fallbacks stay full-strength). */
+  /** Fade a color toward the paper: 8-digit hex when the color is hex (the
+   *  palette always is), untouched otherwise (hsl fallbacks stay full-strength).
+   *  SIGNAL pass: 4d (30%) -> 34 (20%) — with somas dimmed harder too, a
+   *  non-neighbor wire must recede AT LEAST as far as its endpoints or the
+   *  ego view reads as fog instead of focus. */
   const fade = (col: string): string =>
-    /^#[0-9a-fA-F]{6}$/.test(col) ? col + '4d' : col
+    /^#[0-9a-fA-F]{6}$/.test(col) ? col + '34' : col
 
   /* Label boxes claimed this frame. force-graph has no per-frame hook — only
      onEngineTick, which STOPS firing once the simulation cools while the
@@ -370,14 +373,17 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     const x = n.x ?? 0
     const y = n.y ?? 0
     // Ego dimming: when a neuron is selected, everything outside its 1-hop
-    // recedes toward the paper so the synapses under inspection read first.
-    // The base disc was already painted by force-graph ('after' mode), so
-    // receding = a paper wash over it; hue-parity gates sample ALPHA and the
-    // wash keeps every pixel's color channel the node's own hue.
+    // recedes HARD toward the paper — ~15% visibility — so the synapses under
+    // inspection read first. This is the SIGNAL pass's main depth cue: the
+    // old 0.42 wash left non-neighbors at 58%, which competed with the hot
+    // set at corpus scale. The base disc was already painted by force-graph
+    // ('after' mode), so receding = a paper wash over it; hue-parity gates
+    // sample ALPHA and the wash keeps every pixel's color channel the node's
+    // own hue.
     const dim = !hot && focus.selected() != null
     if (dim && !focus.compact) {
       ctx.save()
-      ctx.globalAlpha = 0.42
+      ctx.globalAlpha = 0.85
       ctx.fillStyle = paper
       ctx.beginPath()
       ctx.arc(x, y, r * 1.08, 0, 2 * Math.PI)
@@ -393,34 +399,35 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       ctx.fill()
       if (hot) {
         ctx.strokeStyle = col
-        ctx.lineWidth = 1.2 / globalScale
+        ctx.lineWidth = 1.6 / globalScale
         ctx.beginPath()
-        ctx.arc(x, y, r * 2.1, 0, 2 * Math.PI)
+        ctx.arc(x, y, r * 2.3, 0, 2 * Math.PI)
         ctx.stroke()
       }
       return
     }
 
-    // Dendritic tree: inner halo (always), outer haze. Cold nodes get a
-    // BRIGHTER halo than before — at corpus zoom the old 0.14 alpha outer
-    // ring was invisible, which is exactly what made neurons untrackable.
+    // Dendritic tree: inner halo (always), outer haze. SIGNAL pass: the hot
+    // bloom is bigger and brighter (the sprite is drawn at 5.2r, alpha up),
+    // and even COLD rings rose a step — at corpus zoom a neuron must read as
+    // a lit body, not a dot.
     ctx.save()
     // The sprite glow under hot neurons: a real radial bloom instead of a
     // flat disc, at drawImage cost. Cold neurons keep the stroke rings.
     if (hot) {
       const sp = glowSprite(col)
-      const gs = r * 4.6
-      ctx.globalAlpha = chosen ? 0.5 : 0.34
+      const gs = r * 5.2
+      ctx.globalAlpha = chosen ? 0.62 : 0.42
       ctx.drawImage(sp, x - gs / 2, y - gs / 2, gs, gs)
       ctx.globalAlpha = 1
     }
     ctx.strokeStyle = col
-    ctx.lineWidth = (hot ? 1.6 : 1) / globalScale
-    ctx.globalAlpha = (dim ? 0.5 : 1) * (hot ? 0.85 : 0.4)
+    ctx.lineWidth = (hot ? 1.7 : 1) / globalScale
+    ctx.globalAlpha = (dim ? 0.35 : 1) * (hot ? 1 : 0.55)
     ctx.beginPath()
     ctx.arc(x, y, r * 1.5, 0, 2 * Math.PI)
     ctx.stroke()
-    ctx.globalAlpha = (dim ? 0.5 : 1) * (hot ? 0.5 : 0.22)
+    ctx.globalAlpha = (dim ? 0.35 : 1) * (hot ? 0.6 : 0.3)
     ctx.beginPath()
     ctx.arc(x, y, r * 2.4, 0, 2 * Math.PI)
     ctx.stroke()
@@ -473,12 +480,14 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       }
       claim(box)
       // Paper-coloured stroke behind the glyphs: readable on either theme and
-      // over any wire hairball.
+      // over any wire hairball. Dimmed neurons' labels dim WITH them — a
+      // full-brightness name over a 15% soma was the one place the old ego
+      // view lied about what was connected.
       ctx.strokeStyle = paper
-      ctx.globalAlpha = 0.8
+      ctx.globalAlpha = dim ? 0.4 : 0.8
       ctx.lineWidth = fontSize * 0.32
       ctx.strokeText(label, x, ly)
-      ctx.globalAlpha = 1
+      ctx.globalAlpha = dim ? 0.3 : 1
       ctx.fillStyle = chosen ? hotCol : hot ? col : ink
       ctx.fillText(label, x, ly)
       ctx.restore()
@@ -495,22 +504,25 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       return sel != null && (l.source?.id === sel || l.target?.id === sel)
     }
     engine
-      // Axons read as wires: 0.5 base, swollen by the traffic the two ends
-      // carry (sqrt keeps hubs from eating the picture), 1.6 on the selected
-      // neuron's synapses.
+      // Axons read as wires: 0.4 base, swollen by the traffic the two ends
+      // carry (sqrt keeps hubs from eating the picture), 2.0 on the selected
+      // neuron's synapses — the SIGNAL pass fattened both so the wires carry
+      // the brighter palette without looking like hairlines.
       .linkWidth((l: any) =>
         touches(l)
-          ? 1.6
-          : Math.min(1.3, 0.35 + 0.06 * Math.sqrt(traffic(l))))
+          ? 2.0
+          : Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l))))
       // Wires bend apart so reciprocal pairs read as two roads, not one.
       .linkCurvature(curvature)
       // Firing traffic: the selected synapses get the full particle stream,
       // high-traffic axons fire a single ambient pulse so the corpus is
-      // alive even before you pick anything.
+      // alive even before you pick anything. SIGNAL pass: the ambient
+      // threshold dropped (64, was 80 — more of the corpus visibly fires)
+      // and the stream itself got fatter and faster (width/speed below).
       .linkDirectionalParticles((l: any) =>
-        touches(l) ? 3 : traffic(l) >= 80 ? 1 : 0)
-      .linkDirectionalParticleWidth(1.8)
-      .linkDirectionalParticleSpeed(0.004)
+        touches(l) ? 4 : traffic(l) >= 64 ? 1 : 0)
+      .linkDirectionalParticleWidth((l: any) => (touches(l) ? 2.6 : 2))
+      .linkDirectionalParticleSpeed(0.0055)
       // After graphData() force-graph resolves endpoints to node objects.
       .linkDirectionalParticleColor((l: any) => nodeColor(l.source ?? {}, tokensNow()))
       // Untouched wires recede with the nodes when an ego view is up.

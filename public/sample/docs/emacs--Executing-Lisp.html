@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Executing-Lisp-Expressions">1. 29.7 Executing Lisp Expressions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Lisp-Libraries.html">Libraries of Lisp Code for Emacs</a>   Previous: <a href="docs/emacs--Debuggers.html">Running Debuggers Under Emacs</a>   Up: <a href="docs/emacs--Building.html">Compiling and Testing Programs</a>
+</p>
+
+<p>
+<a id="Executing-Lisp"></a>
+</p>
+
+<hr />
+<div id="outline-container-Executing-Lisp-Expressions" class="outline-2">
+<h2 id="Executing-Lisp-Expressions"><span class="section-number-2">1.</span> 29.7 Executing Lisp Expressions <a href="#Executing-Lisp-Expressions">¶</a></h2>
+<div class="outline-text-2" id="text-Executing-Lisp-Expressions">
+<p>
+Emacs has major modes for several variants of Lisp. They use the same editing commands as other programming language modes (see <a href="docs/emacs--Programs.html">Editing Programs</a>). In addition, they provide special commands for executing Lisp expressions.
+</p>
+
+<dl class="org-dl">
+<dt>Emacs Lisp mode</dt><dd>The mode for editing Emacs Lisp source files. It defines C-M-x to evaluate the current top-level Lisp expression. See <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>.</dd>
+
+<dt>Lisp Interaction mode</dt><dd>The mode for an interactive Emacs Lisp session. It defines C-j to evaluate the expression before point and insert its value in the buffer. See <a href="docs/emacs--Lisp-Interaction.html">Lisp Interaction Buffers</a>.</dd>
+
+<dt>Lisp mode</dt><dd>The mode for editing source files of programs that run in Lisps other than Emacs Lisp. It defines C-M-x to evaluate the current top-level expression in an external Lisp. See <a href="docs/emacs--External-Lisp.html">Running an External Lisp</a>.</dd>
+
+<dt>Inferior Lisp mode</dt><dd>The mode for an interactive session with an external Lisp which is being run as a subprocess (or <i>inferior process</i>) of Emacs. See <a href="docs/emacs--External-Lisp.html">Running an External Lisp</a>.</dd>
+
+<dt>Scheme mode</dt><dd>Like Lisp mode, but for Scheme programs.</dd>
+
+<dt>Inferior Scheme mode</dt><dd>Like Inferior Lisp mode, but for Scheme.</dd>
+</dl>
+</div>
+</div>

@@ -1,0 +1,531 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+<li><a href="#gnu-guix-reference-manual">2. GNU Guix Reference Manual</a></li>
+<li><a href="#gnu-guix">3. GNU Guix</a>
+<ul>
+<li><a href="#table-of-contents">3.1. Table of Contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+</div>
+</div>
+<div id="outline-container-gnu-guix-reference-manual" class="outline-2">
+<h2 id="gnu-guix-reference-manual"><span class="section-number-2">2.</span> GNU Guix Reference Manual</h2>
+<div class="outline-text-2" id="text-gnu-guix-reference-manual">
+<p>
+<a id="Top"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Introduction.html">Introduction</a>, Up: <a href="file:///manual/1.5.0/en">(dir)</a>   [][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="GNU-Guix"></a>
+</p>
+</div>
+</div>
+<div id="outline-container-gnu-guix" class="outline-2">
+<h2 id="gnu-guix"><span class="section-number-2">3.</span> GNU Guix</h2>
+<div class="outline-text-2" id="text-gnu-guix">
+<p>
+This document describes GNU Guix version 1.5.0, a functional package management tool written for the GNU system.
+</p>
+
+<p>
+This manual is also available in Simplified Chinese (see <a href="https://guix.gnu.org/manual/1.5.0/zh-cn/html_node/index.html#Top">GNU Guix参考手册</a>), French (see <a href="https://guix.gnu.org/manual/1.5.0/fr/html_node/index.html#Top">Manuel de référence de GNU Guix</a>), German (see <a href="https://guix.gnu.org/manual/1.5.0/de/html_node/index.html#Top">Referenzhandbuch zu GNU Guix</a>), Spanish (see <a href="https://guix.gnu.org/manual/1.5.0/es/html_node/index.html#Top">Manual de referencia de GNU Guix</a>), Italian (see <a href="https://guix.gnu.org/manual/1.5.0/it/html_node/index.html#Top">Manuale di riferimento di GNU Guix</a>), Brazilian Portuguese (see <a href="https://guix.gnu.org/manual/1.5.0/pt-br/html_node/index.html#Top">Manual de referência do GNU Guix</a>), and Russian (see <a href="https://guix.gnu.org/manual/1.5.0/ru/html_node/index.html#Top">Руководство GNU Guix</a>). If you would like to translate it in your native language, consider joining <a href="https://translate.codeberg.org/projects/guix/documentation-manual">Weblate</a> (see <a href="docs/guix--Translating-Guix.html">Translating Guix</a>).
+</p>
+
+<p>
+<a id="SEC_Contents"></a>
+</p>
+</div>
+<div id="outline-container-table-of-contents" class="outline-3">
+<h3 id="table-of-contents"><span class="section-number-3">3.1.</span> Table of Contents</h3>
+<div class="outline-text-3" id="text-table-of-contents">
+<ul class="org-ul">
+<li><a href="docs/guix--Introduction.html">1 Introduction</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Managing-Software-the-Guix-Way.html">1.1 Managing Software the Guix Way</a></li>
+<li><a href="docs/guix--GNU-Distribution.html">1.2 GNU Distribution</a></li>
+</ul></li>
+<li><a href="docs/guix--Installation.html">2 Installation</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Binary-Installation.html">2.1 Binary Installation</a></li>
+<li><a href="docs/guix--Setting-Up-the-Daemon.html">2.2 Setting Up the Daemon</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Build-Environment-Setup.html">2.2.1 Build Environment Setup</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Build-Environment-Setup.html#Daemon-Running-as-Root">Daemon Running as Root</a></li>
+<li><a href="docs/guix--Build-Environment-Setup.html#Daemon-Running-Without-Privileges">Daemon Running Without Privileges</a></li>
+<li><a href="docs/guix--Build-Environment-Setup.html#Migrating-to-the-Unprivileged-Daemon">Migrating to the Unprivileged Daemon</a></li>
+<li><a href="docs/guix--Build-Environment-Setup.html#The-Isolated-Build-Environment">The Isolated Build Environment</a></li>
+</ul></li>
+<li><a href="docs/guix--Daemon-Offload-Setup.html">2.2.2 Using the Offload Facility</a></li>
+<li><a href="docs/guix--SELinux-Support.html">2.2.3 SELinux Support</a>
+<ul class="org-ul">
+<li><a href="docs/guix--SELinux-Support.html#Installing-the-SELinux-policy">2.2.3.1 Installing the SELinux policy</a></li>
+<li><a href="docs/guix--SELinux-Support.html#Limitations-1">2.2.3.2 Limitations</a></li>
+</ul></li>
+<li><a href="docs/guix--AppArmor-Support.html">2.2.4 AppArmor Support</a>
+<ul class="org-ul">
+<li><a href="docs/guix--AppArmor-Support.html#Installing-the-AppArmor-profile">2.2.4.1 Installing the AppArmor profile</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/guix--Invoking-guix_002ddaemon.html">2.3 Invoking <code>guix-daemon</code></a></li>
+<li><a href="docs/guix--Application-Setup.html">2.4 Application Setup</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Application-Setup.html#Locales-1">2.4.1 Locales</a></li>
+<li><a href="docs/guix--Application-Setup.html#Name-Service-Switch-1">2.4.2 Name Service Switch</a></li>
+<li><a href="docs/guix--Application-Setup.html#X11-Fonts">2.4.3 X11 Fonts</a></li>
+<li><a href="docs/guix--Application-Setup.html#X_002e509-Certificates-1">2.4.4 X.509 Certificates</a></li>
+<li><a href="docs/guix--Application-Setup.html#Emacs-Packages-1">2.4.5 Emacs Packages</a></li>
+</ul></li>
+<li><a href="docs/guix--Upgrading-Guix.html">2.5 Upgrading Guix</a></li>
+</ul></li>
+<li><a href="docs/guix--System-Installation.html">3 System Installation</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Limitations.html">3.1 Limitations</a></li>
+<li><a href="docs/guix--Hardware-Considerations.html">3.2 Hardware Considerations</a></li>
+<li><a href="docs/guix--USB-Stick-and-DVD-Installation.html">3.3 USB Stick and DVD Installation</a>
+<ul class="org-ul">
+<li><a href="docs/guix--USB-Stick-and-DVD-Installation.html#Copying-to-a-USB-Stick">Copying to a USB Stick</a></li>
+<li><a href="docs/guix--USB-Stick-and-DVD-Installation.html#Burning-on-a-DVD">Burning on a DVD</a></li>
+<li><a href="docs/guix--USB-Stick-and-DVD-Installation.html#Booting">Booting</a></li>
+</ul></li>
+<li><a href="docs/guix--Preparing-for-Installation.html">3.4 Preparing for Installation</a></li>
+<li><a href="docs/guix--Guided-Graphical-Installation.html">3.5 Guided Graphical Installation</a></li>
+<li><a href="docs/guix--Manual-Installation.html">3.6 Manual Installation</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html">3.6.1 Keyboard Layout, Networking, and Partitioning</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html#Keyboard-Layout-1">3.6.1.1 Keyboard Layout</a></li>
+<li><a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html#Networking">3.6.1.2 Networking</a></li>
+<li><a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html#Disk-Partitioning">3.6.1.3 Disk Partitioning</a></li>
+</ul></li>
+<li><a href="docs/guix--Proceeding-with-the-Installation.html">3.6.2 Proceeding with the Installation</a></li>
+</ul></li>
+<li><a href="docs/guix--After-System-Installation.html">3.7 After System Installation</a></li>
+<li><a href="docs/guix--Installing-Guix-in-a-VM.html">3.8 Installing Guix in a Virtual Machine</a></li>
+<li><a href="docs/guix--Building-the-Installation-Image.html">3.9 Building the Installation Image</a></li>
+<li><a href="docs/guix--Building-the-Installation-Image.html#Building-the-Installation-Image-for-ARM-Boards">3.10 Building the Installation Image for ARM Boards</a></li>
+</ul></li>
+<li><a href="docs/guix--Getting-Started.html">4 Getting Started</a></li>
+<li><a href="docs/guix--Package-Management.html">5 Package Management</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Features.html">5.1 Features</a></li>
+<li><a href="docs/guix--Invoking-guix-package.html">5.2 Invoking <code>guix package</code></a></li>
+<li><a href="docs/guix--Substitutes.html">5.3 Substitutes</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Official-Substitute-Servers.html">5.3.1 Official Substitute Servers</a></li>
+<li><a href="docs/guix--Substitute-Server-Authorization.html">5.3.2 Substitute Server Authorization</a></li>
+<li><a href="docs/guix--Getting-Substitutes-from-Other-Servers.html">5.3.3 Getting Substitutes from Other Servers</a></li>
+<li><a href="docs/guix--Substitute-Authentication.html">5.3.4 Substitute Authentication</a></li>
+<li><a href="docs/guix--Proxy-Settings.html">5.3.5 Proxy Settings</a></li>
+<li><a href="docs/guix--Substitution-Failure.html">5.3.6 Substitution Failure</a></li>
+<li><a href="docs/guix--On-Trusting-Binaries.html">5.3.7 On Trusting Binaries</a></li>
+</ul></li>
+<li><a href="docs/guix--Packages-with-Multiple-Outputs.html">5.4 Packages with Multiple Outputs</a></li>
+<li><a href="docs/guix--Invoking-guix-locate.html">5.5 Invoking <code>guix locate</code></a></li>
+<li><a href="docs/guix--Invoking-guix-gc.html">5.6 Invoking <code>guix gc</code></a></li>
+<li><a href="docs/guix--Invoking-guix-pull.html">5.7 Invoking <code>guix pull</code></a></li>
+<li><a href="docs/guix--Invoking-guix-time_002dmachine.html">5.8 Invoking <code>guix time-machine</code></a></li>
+<li><a href="docs/guix--Inferiors.html">5.9 Inferiors</a></li>
+<li><a href="docs/guix--Invoking-guix-describe.html">5.10 Invoking <code>guix describe</code></a></li>
+<li><a href="docs/guix--Invoking-guix-archive.html">5.11 Invoking <code>guix archive</code></a></li>
+</ul></li>
+<li><a href="docs/guix--Channels.html">6 Channels</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Specifying-Additional-Channels.html">6.1 Specifying Additional Channels</a></li>
+<li><a href="docs/guix--Using-a-Custom-Guix-Channel.html">6.2 Using a Custom Guix Channel</a></li>
+<li><a href="docs/guix--Replicating-Guix.html">6.3 Replicating Guix</a></li>
+<li><a href="docs/guix--Customizing-the-System_002dWide-Guix.html">6.4 Customizing the System-Wide Guix</a></li>
+<li><a href="docs/guix--Channel-Authentication.html">6.5 Channel Authentication</a></li>
+<li><a href="docs/guix--Channels-with-Substitutes.html">6.6 Channels with Substitutes</a></li>
+<li><a href="docs/guix--Creating-a-Channel.html">6.7 Creating a Channel</a></li>
+<li><a href="docs/guix--Package-Modules-in-a-Sub_002ddirectory.html">6.8 Package Modules in a Sub-directory</a></li>
+<li><a href="docs/guix--Declaring-Channel-Dependencies.html">6.9 Declaring Channel Dependencies</a></li>
+<li><a href="docs/guix--Specifying-Channel-Authorizations.html">6.10 Specifying Channel Authorizations</a></li>
+<li><a href="docs/guix--Primary-URL.html">6.11 Primary URL</a></li>
+<li><a href="docs/guix--Writing-Channel-News.html">6.12 Writing Channel News</a></li>
+</ul></li>
+<li><a href="docs/guix--Development.html">7 Development</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Invoking-guix-shell.html">7.1 Invoking <code>guix shell</code></a></li>
+<li><a href="docs/guix--Invoking-guix-environment.html">7.2 Invoking <code>guix environment</code></a></li>
+<li><a href="docs/guix--Invoking-guix-pack.html">7.3 Invoking <code>guix pack</code></a></li>
+<li><a href="docs/guix--The-GCC-toolchain.html">7.4 The GCC toolchain</a></li>
+<li><a href="docs/guix--Invoking-guix-git-authenticate.html">7.5 Invoking <code>guix git authenticate</code></a></li>
+</ul></li>
+<li><a href="docs/guix--Programming-Interface.html">8 Programming Interface</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Package-Modules.html">8.1 Package Modules</a></li>
+<li><a href="docs/guix--Defining-Packages.html">8.2 Defining Packages</a>
+<ul class="org-ul">
+<li><a href="docs/guix--package-Reference.html">8.2.1 <code>package</code> Reference</a></li>
+<li><a href="docs/guix--origin-Reference.html">8.2.2 <code>origin</code> Reference</a></li>
+</ul></li>
+<li><a href="docs/guix--Defining-Package-Variants.html">8.3 Defining Package Variants</a></li>
+<li><a href="docs/guix--Writing-Manifests.html">8.4 Writing Manifests</a></li>
+<li><a href="docs/guix--Build-Systems.html">8.5 Build Systems</a></li>
+<li><a href="docs/guix--Build-Phases.html">8.6 Build Phases</a></li>
+<li><a href="docs/guix--Build-Utilities.html">8.7 Build Utilities</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Build-Utilities.html#Dealing-with-Store-File-Names">8.7.1 Dealing with Store File Names</a></li>
+<li><a href="docs/guix--Build-Utilities.html#File-Types">8.7.2 File Types</a></li>
+<li><a href="docs/guix--Build-Utilities.html#File-Manipulation">8.7.3 File Manipulation</a></li>
+<li><a href="docs/guix--Build-Utilities.html#File-Search">8.7.4 File Search</a></li>
+<li><a href="docs/guix--Build-Utilities.html#Program-Invocation">8.7.5 Program Invocation</a></li>
+<li><a href="docs/guix--Build-Utilities.html#Build-Phases-2">8.7.6 Build Phases</a></li>
+<li><a href="docs/guix--Build-Utilities.html#Wrappers">8.7.7 Wrappers</a></li>
+</ul></li>
+<li><a href="docs/guix--Search-Paths.html">8.8 Search Paths</a></li>
+<li><a href="docs/guix--The-Store.html">8.9 The Store</a></li>
+<li><a href="docs/guix--Derivations.html">8.10 Derivations</a></li>
+<li><a href="docs/guix--The-Store-Monad.html">8.11 The Store Monad</a></li>
+<li><a href="docs/guix--G_002dExpressions.html">8.12 G-Expressions</a></li>
+<li><a href="docs/guix--Invoking-guix-repl.html">8.13 Invoking <code>guix repl</code></a></li>
+<li><a href="docs/guix--Using-Guix-Interactively.html">8.14 Using Guix Interactively</a></li>
+</ul></li>
+<li><a href="docs/guix--Utilities.html">9 Utilities</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Invoking-guix-build.html">9.1 Invoking <code>guix build</code></a>
+<ul class="org-ul">
+<li><a href="docs/guix--Common-Build-Options.html">9.1.1 Common Build Options</a></li>
+<li><a href="docs/guix--Package-Transformation-Options.html">9.1.2 Package Transformation Options</a></li>
+<li><a href="docs/guix--Additional-Build-Options.html">9.1.3 Additional Build Options</a></li>
+<li><a href="docs/guix--Debugging-Build-Failures.html">9.1.4 Debugging Build Failures</a></li>
+</ul></li>
+<li><a href="docs/guix--Invoking-guix-edit.html">9.2 Invoking <code>guix edit</code></a></li>
+<li><a href="docs/guix--Invoking-guix-download.html">9.3 Invoking <code>guix download</code></a></li>
+<li><a href="docs/guix--Invoking-guix-hash.html">9.4 Invoking <code>guix hash</code></a></li>
+<li><a href="docs/guix--Invoking-guix-import.html">9.5 Invoking <code>guix import</code></a></li>
+<li><a href="docs/guix--Invoking-guix-refresh.html">9.6 Invoking <code>guix refresh</code></a></li>
+<li><a href="docs/guix--Invoking-guix-style.html">9.7 Invoking <code>guix style</code></a></li>
+<li><a href="docs/guix--Invoking-guix-lint.html">9.8 Invoking <code>guix lint</code></a></li>
+<li><a href="docs/guix--Invoking-guix-size.html">9.9 Invoking <code>guix size</code></a></li>
+<li><a href="docs/guix--Invoking-guix-graph.html">9.10 Invoking <code>guix graph</code></a></li>
+<li><a href="docs/guix--Invoking-guix-publish.html">9.11 Invoking <code>guix publish</code></a></li>
+<li><a href="docs/guix--Invoking-guix-challenge.html">9.12 Invoking <code>guix challenge</code></a></li>
+<li><a href="docs/guix--Invoking-guix-copy.html">9.13 Invoking <code>guix copy</code></a></li>
+<li><a href="docs/guix--Invoking-guix-container.html">9.14 Invoking <code>guix container</code></a></li>
+<li><a href="docs/guix--Invoking-guix-weather.html">9.15 Invoking <code>guix weather</code></a></li>
+<li><a href="docs/guix--Invoking-guix-processes.html">9.16 Invoking <code>guix processes</code></a></li>
+</ul></li>
+<li><a href="docs/guix--Foreign-Architectures.html">10 Foreign Architectures</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Cross_002dCompilation.html">10.1 Cross-Compilation</a></li>
+<li><a href="docs/guix--Native-Builds.html">10.2 Native Builds</a></li>
+</ul></li>
+<li><a href="docs/guix--System-Configuration.html">11 System Configuration</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Getting-Started-with-the-System.html">11.1 Getting Started</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html">11.2 Using the Configuration System</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Using-the-Configuration-System.html#Bootloader">Bootloader</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html#Globally_002dVisible-Packages">Globally-Visible Packages</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html#System-Services">System Services</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html#Inspecting-Services">Inspecting Services</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html#Instantiating-the-System">Instantiating the System</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html#The-Programming-Interface">The Programming Interface</a></li>
+</ul></li>
+<li><a href="docs/guix--operating_002dsystem-Reference.html">11.3 <code>operating-system</code> Reference</a></li>
+<li><a href="docs/guix--File-Systems.html">11.4 File Systems</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Btrfs-file-system.html">11.4.1 Btrfs file system</a></li>
+</ul></li>
+<li><a href="docs/guix--Mapped-Devices.html">11.5 Mapped Devices</a></li>
+<li><a href="docs/guix--Swap-Space.html">11.6 Swap Space</a></li>
+<li><a href="docs/guix--User-Accounts.html">11.7 User Accounts</a></li>
+<li><a href="docs/guix--Keyboard-Layout.html">11.8 Keyboard Layout</a></li>
+<li><a href="docs/guix--Locales.html">11.9 Locales</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Locales.html#Locale-Data-Compatibility-Considerations">11.9.1 Locale Data Compatibility Considerations</a></li>
+</ul></li>
+<li><a href="docs/guix--Services.html">11.10 Services</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Base-Services.html">11.10.1 Base Services</a></li>
+<li><a href="docs/guix--Scheduled-Job-Execution.html">11.10.2 Scheduled Job Execution</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Scheduled-Job-Execution.html#Shepherd-Timers">11.10.2.1 Shepherd Timers</a></li>
+<li><a href="docs/guix--Scheduled-Job-Execution.html#Mcron">11.10.2.2 Mcron</a></li>
+</ul></li>
+<li><a href="docs/guix--Log-Rotation.html">11.10.3 Log Rotation</a></li>
+<li><a href="docs/guix--Networking-Setup.html">11.10.4 Networking Setup</a></li>
+<li><a href="docs/guix--Networking-Services.html">11.10.5 Networking Services</a></li>
+<li><a href="docs/guix--Unattended-Upgrades.html">11.10.6 Unattended Upgrades</a></li>
+<li><a href="docs/guix--X-Window.html">11.10.7 X Window</a></li>
+<li><a href="docs/guix--Printing-Services.html">11.10.8 Printing Services</a></li>
+<li><a href="docs/guix--Desktop-Services.html">11.10.9 Desktop Services</a></li>
+<li><a href="docs/guix--Sound-Services.html">11.10.10 Sound Services</a></li>
+<li><a href="docs/guix--File-Search-Services.html">11.10.11 File Search Services</a></li>
+<li><a href="docs/guix--Database-Services.html">11.10.12 Database Services</a></li>
+<li><a href="docs/guix--Mail-Services.html">11.10.13 Mail Services</a></li>
+<li><a href="docs/guix--Messaging-Services.html">11.10.14 Messaging Services</a></li>
+<li><a href="docs/guix--Telephony-Services.html">11.10.15 Telephony Services</a></li>
+<li><a href="docs/guix--File_002dSharing-Services.html">11.10.16 File-Sharing Services</a></li>
+<li><a href="docs/guix--Monitoring-Services.html">11.10.17 Monitoring Services</a></li>
+<li><a href="docs/guix--Kerberos-Services.html">11.10.18 Kerberos Services</a></li>
+<li><a href="docs/guix--LDAP-Services.html">11.10.19 LDAP Services</a></li>
+<li><a href="docs/guix--Web-Services.html">11.10.20 Web Services</a></li>
+<li><a href="docs/guix--High-Availability-Services.html">11.10.21 High Availability Services</a></li>
+<li><a href="docs/guix--Certificate-Services.html">11.10.22 Certificate Services</a></li>
+<li><a href="docs/guix--DNS-Services.html">11.10.23 DNS Services</a></li>
+<li><a href="docs/guix--VNC-Services.html">11.10.24 VNC Services</a></li>
+<li><a href="docs/guix--VPN-Services.html">11.10.25 VPN Services</a></li>
+<li><a href="docs/guix--Network-File-System.html">11.10.26 Network File System</a></li>
+<li><a href="docs/guix--Samba-Services.html">11.10.27 Samba Services</a></li>
+<li><a href="docs/guix--Continuous-Integration.html">11.10.28 Continuous Integration</a></li>
+<li><a href="docs/guix--Power-Management-Services.html">11.10.29 Power Management Services</a></li>
+<li><a href="docs/guix--Audio-Services.html">11.10.30 Audio Services</a></li>
+<li><a href="docs/guix--Virtualization-Services.html">11.10.31 Virtualization Services</a></li>
+<li><a href="docs/guix--Version-Control-Services.html">11.10.32 Version Control Services</a></li>
+<li><a href="docs/guix--Game-Services.html">11.10.33 Game Services</a></li>
+<li><a href="docs/guix--PAM-Mount-Service.html">11.10.34 PAM Mount Service</a></li>
+<li><a href="docs/guix--Guix-Services.html">11.10.35 Guix Services</a></li>
+<li><a href="docs/guix--Linux-Services.html">11.10.36 Linux Services</a></li>
+<li><a href="docs/guix--Hurd-Services.html">11.10.37 Hurd Services</a></li>
+<li><a href="docs/guix--Miscellaneous-Services.html">11.10.38 Miscellaneous Services</a></li>
+</ul></li>
+<li><a href="docs/guix--Privileged-Programs.html">11.11 Privileged Programs</a></li>
+<li><a href="docs/guix--X_002e509-Certificates.html">11.12 X.509 Certificates</a></li>
+<li><a href="docs/guix--Name-Service-Switch.html">11.13 Name Service Switch</a></li>
+<li><a href="docs/guix--Initial-RAM-Disk.html">11.14 Initial RAM Disk</a></li>
+<li><a href="docs/guix--Bootloader-Configuration.html">11.15 Bootloader Configuration</a></li>
+<li><a href="docs/guix--Invoking-guix-system.html">11.16 Invoking <code>guix system</code></a></li>
+<li><a href="docs/guix--Invoking-guix-deploy.html">11.17 Invoking <code>guix deploy</code></a></li>
+<li><a href="docs/guix--Running-Guix-in-a-VM.html">11.18 Running Guix in a Virtual Machine</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Running-Guix-in-a-VM.html#Connecting-Through-SSH">11.18.1 Connecting Through SSH</a></li>
+<li><a href="docs/guix--Running-Guix-in-a-VM.html#Using-virt_002dviewer-with-Spice">11.18.2 Using <code>virt-viewer</code> with Spice</a></li>
+</ul></li>
+<li><a href="docs/guix--Defining-Services.html">11.19 Defining Services</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Service-Composition.html">11.19.1 Service Composition</a></li>
+<li><a href="docs/guix--Service-Types-and-Services.html">11.19.2 Service Types and Services</a></li>
+<li><a href="docs/guix--Service-Reference.html">11.19.3 Service Reference</a></li>
+<li><a href="docs/guix--Shepherd-Services.html">11.19.4 Shepherd Services</a></li>
+<li><a href="docs/guix--Complex-Configurations.html">11.19.5 Complex Configurations</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/guix--System-Troubleshooting-Tips.html">12 System Troubleshooting Tips</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Chrooting-into-an-existing-system.html">12.1 Chrooting into an existing system</a></li>
+</ul></li>
+<li><a href="docs/guix--Home-Configuration.html">13 Home Configuration</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Declaring-the-Home-Environment.html">13.1 Declaring the Home Environment</a></li>
+<li><a href="docs/guix--Configuring-the-Shell.html">13.2 Configuring the Shell</a></li>
+<li><a href="docs/guix--Home-Services.html">13.3 Home Services</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Essential-Home-Services.html">13.3.1 Essential Home Services</a></li>
+<li><a href="docs/guix--Shells-Home-Services.html">13.3.2 Shells</a></li>
+<li><a href="docs/guix--Mcron-Home-Service.html">13.3.3 Scheduled User's Job Execution</a></li>
+<li><a href="docs/guix--Power-Management-Home-Services.html">13.3.4 Power Management Home Services</a></li>
+<li><a href="docs/guix--Shepherd-Home-Service.html">13.3.5 Managing User Daemons</a></li>
+<li><a href="docs/guix--Secure-Shell.html">13.3.6 Secure Shell</a></li>
+<li><a href="docs/guix--GNU-Privacy-Guard.html">13.3.7 GNU Privacy Guard</a></li>
+<li><a href="docs/guix--Desktop-Home-Services.html">13.3.8 Desktop Home Services</a></li>
+<li><a href="docs/guix--Guix-Home-Services.html">13.3.9 Guix Home Services</a></li>
+<li><a href="docs/guix--Backup-Home-Services.html">13.3.10 Backup Services</a></li>
+<li><a href="docs/guix--Fonts-Home-Services.html">13.3.11 Fonts Home Services</a></li>
+<li><a href="docs/guix--Sound-Home-Services.html">13.3.12 Sound Home Services</a></li>
+<li><a href="docs/guix--Mail-Home-Services.html">13.3.13 Mail Home Services</a></li>
+<li><a href="docs/guix--Messaging-Home-Services.html">13.3.14 Messaging Home Services</a></li>
+<li><a href="docs/guix--Media-Home-Services.html">13.3.15 Media Home Services</a></li>
+<li><a href="docs/guix--mpv-Media-Player.html">13.3.16 mpv Media Player</a></li>
+<li><a href="docs/guix--Niri-window-manager.html">13.3.17 Niri window manager</a></li>
+<li><a href="docs/guix--Sway-window-manager.html">13.3.18 Sway window manager</a></li>
+<li><a href="docs/guix--Networking-Home-Services.html">13.3.19 Networking Home Services</a></li>
+<li><a href="docs/guix--Secrets-Home-Services.html">13.3.20 Secrets Home Services</a></li>
+<li><a href="docs/guix--Miscellaneous-Home-Services.html">13.3.21 Miscellaneous Home Services</a></li>
+</ul></li>
+<li><a href="docs/guix--Invoking-guix-home.html">13.4 Invoking <code>guix home</code></a></li>
+</ul></li>
+<li><a href="docs/guix--Documentation.html">14 Documentation</a></li>
+<li><a href="docs/guix--Platforms.html">15 Platforms</a>
+<ul class="org-ul">
+<li><a href="docs/guix--platform-Reference.html">15.1 <code>platform</code> Reference</a></li>
+<li><a href="docs/guix--Supported-Platforms.html">15.2 Supported Platforms</a></li>
+</ul></li>
+<li><a href="docs/guix--System-Images.html">16 Creating System Images</a>
+<ul class="org-ul">
+<li><a href="docs/guix--image-Reference.html">16.1 <code>image</code> Reference</a>
+<ul class="org-ul">
+<li><a href="docs/guix--partition-Reference.html">16.1.1 <code>partition</code> Reference</a></li>
+</ul></li>
+<li><a href="docs/guix--Instantiate-an-Image.html">16.2 Instantiate an Image</a></li>
+<li><a href="docs/guix--image_002dtype-Reference.html">16.3 image-type Reference</a></li>
+<li><a href="docs/guix--Image-Modules.html">16.4 Image Modules</a></li>
+</ul></li>
+<li><a href="docs/guix--Installing-Debugging-Files.html">17 Installing Debugging Files</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Separate-Debug-Info.html">17.1 Separate Debug Info</a></li>
+<li><a href="docs/guix--Rebuilding-Debug-Info.html">17.2 Rebuilding Debug Info</a></li>
+</ul></li>
+<li><a href="docs/guix--Using-TeX-and-LaTeX.html">18 Using TeX and LaTeX</a></li>
+<li><a href="docs/guix--Security-Updates.html">19 Security Updates</a></li>
+<li><a href="docs/guix--Bootstrapping.html">20 Bootstrapping</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Full_002dSource-Bootstrap.html">20.1 The Full-Source Bootstrap</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html">20.2 Preparing to Use the Bootstrap Binaries</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html#Building-the-Build-Tools">Building the Build Tools</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html#Building-the-Bootstrap-Binaries">Building the Bootstrap Binaries</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html#Reducing-the-Set-of-Bootstrap-Binaries">Reducing the Set of Bootstrap Binaries</a></li>
+</ul></li>
+<li><a href="docs/guix--Porting.html">21 Porting to a New Platform</a></li>
+<li><a href="docs/guix--Contributing.html">22 Contributing</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Requirements.html">22.1 Requirements</a></li>
+<li><a href="docs/guix--Building-from-Git.html">22.2 Building from Git</a></li>
+<li><a href="docs/guix--Running-the-Test-Suite.html">22.3 Running the Test Suite</a></li>
+<li><a href="docs/guix--Running-Guix-Before-It-Is-Installed.html">22.4 Running Guix Before It Is Installed</a></li>
+<li><a href="docs/guix--The-Perfect-Setup.html">22.5 The Perfect Setup</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Viewing-Bugs-within-Emacs.html">22.5.1 Viewing Bugs within Emacs</a></li>
+</ul></li>
+<li><a href="docs/guix--Alternative-Setups.html">22.6 Alternative Setups</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Guile-Studio.html">22.6.1 Guile Studio</a></li>
+<li><a href="docs/guix--Vim-and-NeoVim.html">22.6.2 Vim and NeoVim</a></li>
+</ul></li>
+<li><a href="docs/guix--Source-Tree-Structure.html">22.7 Source Tree Structure</a></li>
+<li><a href="docs/guix--Packaging-Guidelines.html">22.8 Packaging Guidelines</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Software-Freedom.html">22.8.1 Software Freedom</a></li>
+<li><a href="docs/guix--Package-Naming.html">22.8.2 Package Naming</a></li>
+<li><a href="docs/guix--Version-Numbers.html">22.8.3 Version Numbers</a></li>
+<li><a href="docs/guix--Synopses-and-Descriptions.html">22.8.4 Synopses and Descriptions</a></li>
+<li><a href="docs/guix--Snippets-versus-Phases.html">22.8.5 Snippets versus Phases</a></li>
+<li><a href="docs/guix--Cyclic-Module-Dependencies.html">22.8.6 Cyclic Module Dependencies</a></li>
+<li><a href="docs/guix--Bulk-Updates.html">22.8.7 Bulk Updates</a></li>
+<li><a href="docs/guix--Emacs-Packages.html">22.8.8 Emacs Packages</a></li>
+<li><a href="docs/guix--Python-Modules.html">22.8.9 Python Modules</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Python-Modules.html#Specifying-Dependencies">22.8.9.1 Specifying Dependencies</a></li>
+</ul></li>
+<li><a href="docs/guix--Perl-Modules.html">22.8.10 Perl Modules</a></li>
+<li><a href="docs/guix--Java-Packages.html">22.8.11 Java Packages</a></li>
+<li><a href="docs/guix--Rust-Crates.html">22.8.12 Rust Crates</a></li>
+<li><a href="docs/guix--Elm-Packages.html">22.8.13 Elm Packages</a></li>
+<li><a href="docs/guix--Fonts.html">22.8.14 Fonts</a></li>
+</ul></li>
+<li><a href="docs/guix--Coding-Style.html">22.9 Coding Style</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Programming-Paradigm.html">22.9.1 Programming Paradigm</a></li>
+<li><a href="docs/guix--Modules.html">22.9.2 Modules</a></li>
+<li><a href="docs/guix--Data-Types-and-Pattern-Matching.html">22.9.3 Data Types and Pattern Matching</a></li>
+<li><a href="docs/guix--Formatting-Code.html">22.9.4 Formatting Code</a></li>
+</ul></li>
+<li><a href="docs/guix--Submitting-Patches.html">22.10 Submitting Patches</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Configuring-Git.html">22.10.1 Configuring Git</a></li>
+<li><a href="docs/guix--Sending-a-Patch-Series.html">22.10.2 Sending a Patch Series</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Sending-a-Patch-Series.html#Single-Patches-1">Single Patches</a></li>
+<li><a href="docs/guix--Sending-a-Patch-Series.html#Notifying-Teams-1">Notifying Teams</a></li>
+<li><a href="docs/guix--Sending-a-Patch-Series.html#Multiple-Patches-1">Multiple Patches</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/guix--Tracking-Bugs-and-Changes.html">22.11 Tracking Bugs and Changes</a>
+<ul class="org-ul">
+<li><a href="docs/guix--The-Issue-Tracker.html">22.11.1 The Issue Tracker</a></li>
+<li><a href="docs/guix--Managing-Patches-and-Branches.html">22.11.2 Managing Patches and Branches</a></li>
+<li><a href="docs/guix--Debbugs-User-Interfaces.html">22.11.3 Debbugs User Interfaces</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Debbugs-User-Interfaces.html#Web-interface">22.11.3.1 Web interface</a></li>
+<li><a href="docs/guix--Debbugs-User-Interfaces.html#Command_002dLine-Interface">22.11.3.2 Command-Line Interface</a></li>
+<li><a href="docs/guix--Debbugs-User-Interfaces.html#Emacs-Interface">22.11.3.3 Emacs Interface</a></li>
+</ul></li>
+<li><a href="docs/guix--Debbugs-Usertags.html">22.11.4 Debbugs Usertags</a></li>
+<li><a href="docs/guix--Cuirass-Build-Notifications.html">22.11.5 Cuirass Build Notifications</a></li>
+</ul></li>
+<li><a href="docs/guix--Teams.html">22.12 Teams</a></li>
+<li><a href="docs/guix--Making-Decisions.html">22.13 Making Decisions</a></li>
+<li><a href="docs/guix--Commit-Access.html">22.14 Commit Access</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Commit-Access.html#Applying-for-Commit-Access">22.14.1 Applying for Commit Access</a></li>
+<li><a href="docs/guix--Commit-Access.html#Commit-Policy">22.14.2 Commit Policy</a></li>
+<li><a href="docs/guix--Commit-Access.html#Addressing-Issues">22.14.3 Addressing Issues</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Commit-Access.html#Reverting-commits">22.14.3.1 Reverting commits</a></li>
+</ul></li>
+<li><a href="docs/guix--Commit-Access.html#Commit-Revocation">22.14.4 Commit Revocation</a></li>
+<li><a href="docs/guix--Commit-Access.html#Helping-Out">22.14.5 Helping Out</a></li>
+</ul></li>
+<li><a href="docs/guix--Reviewing-the-Work-of-Others.html">22.15 Reviewing the Work of Others</a></li>
+<li><a href="docs/guix--Updating-the-Guix-Package.html">22.16 Updating the Guix Package</a></li>
+<li><a href="docs/guix--Deprecation-Policy.html">22.17 Deprecation Policy</a></li>
+<li><a href="docs/guix--Writing-Documentation.html">22.18 Writing Documentation</a></li>
+<li><a href="docs/guix--Translating-Guix.html">22.19 Translating Guix</a></li>
+<li><a href="docs/guix--Contributing-to-Guix_0027s-Infrastructure.html">22.20 Contributing to Guix's Infrastructure</a>
+<ul class="org-ul">
+<li><a href="docs/guix--Coding.html">22.20.1 Coding</a></li>
+<li><a href="docs/guix--System-Administration.html">22.20.2 System Administration</a></li>
+<li><a href="docs/guix--Day_002dto_002dDay-System-Administration.html">22.20.3 Day-to-Day System Administration</a></li>
+<li><a href="docs/guix--On_002dSite-Intervention.html">22.20.4 On-Site Intervention</a></li>
+<li><a href="docs/guix--Hosting.html">22.20.5 Hosting</a></li>
+<li><a href="docs/guix--Administrative-Tasks.html">22.20.6 Administrative Tasks</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/guix--Acknowledgments.html">23 Acknowledgments</a></li>
+<li><a href="docs/guix--GNU-Free-Documentation-License.html">Appendix A GNU Free Documentation License</a></li>
+<li><a href="docs/guix--Concept-Index.html">Concept Index</a></li>
+<li><a href="docs/guix--Programming-Index.html">Programming Index</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Introduction.html">Introduction</a>, Up: <a href="file:///manual/1.5.0/en">(dir)</a>   [][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

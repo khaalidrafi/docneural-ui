@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Line-Truncation-1">1. 16.22 Line Truncation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Visual-Line-Mode.html">Visual Line Mode</a>   Previous: <a href="docs/emacs--Cursor-Display.html">Displaying the Cursor</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Line-Truncation"></a>
+</p>
+
+<hr />
+<div id="outline-container-Line-Truncation-1" class="outline-2">
+<h2 id="Line-Truncation-1"><span class="section-number-2">1.</span> 16.22 Line Truncation <a href="#Line-Truncation-1">¶</a></h2>
+<div class="outline-text-2" id="text-Line-Truncation-1">
+<p>
+As an alternative to continuation (see <a href="docs/emacs--Continuation-Lines.html">Continuation Lines</a>), Emacs can display long lines by <i>truncation</i>. This means that all the characters that do not fit in the width of the screen or window do not appear at all. On graphical displays, a small straight arrow in the fringe indicates truncation at either end of the line. On text terminals, this is indicated with ‘=$=' signs in the rightmost and/or leftmost columns.
+</p>
+
+<p>
+Horizontal scrolling automatically causes line truncation (see <a href="docs/emacs--Horizontal-Scrolling.html">Horizontal Scrolling</a>). You can explicitly enable line truncation for a particular buffer with the command C-x x t (<code>toggle-truncate-lines</code>). This works by locally changing the variable <code>truncate-lines</code>. If that variable is non-<code>nil</code>, long lines are truncated; if it is <code>nil</code>, they are continued onto multiple screen lines. Setting the variable <code>truncate-lines</code> in any way makes it local to the current buffer; until that time, the default value, which is normally <code>nil</code>, is in effect.
+</p>
+
+<p>
+Since line truncation and word wrap (described in the next section) are contradictory, <code>toggle-truncate-lines</code> disables word wrap when it turns on line truncation.
+</p>
+
+<p>
+If a split window becomes too narrow, Emacs may automatically enable line truncation. See <a href="docs/emacs--Split-Window.html">Splitting Windows</a>, for the variable <code>truncate-partial-width-windows</code> which controls this.
+</p>
+</div>
+</div>

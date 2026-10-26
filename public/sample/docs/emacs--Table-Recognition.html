@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Table-Recognition-1">1. 27.15.3 Table Recognition ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Cell-Commands.html">Commands for Table Cells</a>   Previous: <a href="docs/emacs--Table-Creation.html">Creating a Table</a>   Up: <a href="docs/emacs--Text-Based-Tables.html">Editing Text-based Tables</a>
+</p>
+
+<p>
+<a id="Table-Recognition"></a>
+</p>
+
+<hr />
+<div id="outline-container-Table-Recognition-1" class="outline-2">
+<h2 id="Table-Recognition-1"><span class="section-number-2">1.</span> 27.15.3 Table Recognition <a href="#Table-Recognition-1">¶</a></h2>
+<div class="outline-text-2" id="text-Table-Recognition-1">
+<p>
+Existing text-based tables in a buffer, which lack the special text properties applied by M-x table-insert, are not treated specially as tables. To apply those text properties, type M-x table-recognize. This command scans the current buffer, <i>recognizes</i> valid table cells, and applies the relevant text properties. Conversely, type M-x table-unrecognize to <i>unrecognize</i> all tables in the current buffer, removing the special text properties and converting tables back to plain text.
+</p>
+
+<p>
+You can also use the following commands to selectively recognize or unrecognize tables:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-table_002drecognize_002dregion"></a>M-x table-recognize-region </dt><dd>Recognize tables within the current region.</dd>
+
+<dt><a id="index-table_002dunrecognize_002dregion"></a>M-x table-unrecognize-region </dt><dd>Unrecognize tables within the current region.</dd>
+
+<dt><a id="index-table_002drecognize_002dtable"></a>M-x table-recognize-table </dt><dd>Recognize the table at point and activate it.</dd>
+
+<dt><a id="index-table_002dunrecognize_002dtable"></a>M-x table-unrecognize-table </dt><dd>Deactivate the table at point.</dd>
+
+<dt><a id="index-table_002drecognize_002dcell"></a>M-x table-recognize-cell </dt><dd>Recognize the cell at point and activate it.</dd>
+
+<dt><a id="index-table_002dunrecognize_002dcell"></a>M-x table-unrecognize-cell </dt><dd>Deactivate the cell at point.</dd>
+</dl>
+
+<p>
+See <a href="docs/emacs--Table-Conversion.html">Converting Between Plain Text and Tables</a>, for another way to recognize a table.
+</p>
+</div>
+</div>

@@ -1,0 +1,48 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Adding-Export-Backends-1">1. A.5 Adding Export Backends ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Adding-Export-Backends"></a>
+Next: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>, Previous: <a href="docs/org--Adding-Hyperlink-preview.html">Adding Hyperlink preview</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Adding-Export-Backends-1" class="outline-2">
+<h2 id="Adding-Export-Backends-1"><span class="section-number-2">1.</span> A.5 Adding Export Backends <a href="#Adding-Export-Backends-1">¶</a></h2>
+<div class="outline-text-2" id="text-Adding-Export-Backends-1">
+<p>
+Org's export engine makes it easy for writing new backends. The framework on which the engine was built makes it easy to derive new backends from existing ones.
+</p>
+
+<p>
+The two main entry points to the export engine are: <code>org-export-define-backend</code> and <code>org-export-define-derived-backend</code>. To grok these functions, see ‘=ox-latex.el=' for an example of defining a new backend from scratch, and ‘=ox-beamer.el=' for an example of deriving from an existing engine.
+</p>
+
+<p>
+For creating a new backend from scratch, first set its name as a symbol in an alist consisting of elements and export functions. To make the backend visible to the export dispatcher, set <code>:menu-entry</code> keyword. For export options specific to this backend, set the <code>:options-alist</code>.
+</p>
+
+<p>
+For creating a new backend from an existing one, set <code>:translate-alist</code> to an alist of export functions. This alist replaces the parent backend functions.
+</p>
+
+<p>
+For complete documentation, see <a href="https://orgmode.org/worg/dev/org-export-reference.html">the Org Export Reference on Worg</a>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>, Previous: <a href="docs/org--Adding-Hyperlink-preview.html">Adding Hyperlink preview</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

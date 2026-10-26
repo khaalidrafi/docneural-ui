@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Frame-Parameters-1">1. 23.11 Frame Parameters ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Scroll-Bars.html">Scroll Bars</a>   Previous: <a href="docs/emacs--Multiple-Displays.html">Multiple Displays</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Frame-Parameters"></a>
+</p>
+
+<hr />
+<div id="outline-container-Frame-Parameters-1" class="outline-2">
+<h2 id="Frame-Parameters-1"><span class="section-number-2">1.</span> 23.11 Frame Parameters <a href="#Frame-Parameters-1">¶</a></h2>
+<div class="outline-text-2" id="text-Frame-Parameters-1">
+<p>
+You can control the default appearance and behavior of all frames by specifying a default list of <i>frame parameters</i> in the variable <code>default-frame-alist</code>. Its value should be a list of entries, each specifying a parameter name and a value for that parameter. These entries take effect whenever Emacs creates a new frame, including the initial frame.
+</p>
+
+<p>
+For example, you can add the following lines to your init file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>) to set the default frame width to 90 character columns, the default frame height to 40 character rows, and the default font to ‘=Monospace-10=':
+</p>
+
+<pre class="example" id="orgebb2388">
+(add-to-list 'default-frame-alist '(width  . 90))
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(font . "Monospace-10"))
+</pre>
+
+<p>
+For a list of frame parameters and their effects, see <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+You can also specify a list of frame parameters which apply to just the initial frame, by customizing the variable <code>initial-frame-alist</code>.
+</p>
+
+<p>
+If Emacs is compiled to use an X toolkit, frame parameters that specify colors and fonts don't affect menus and the menu bar, since those are drawn by the toolkit and not directly by Emacs.
+</p>
+
+<p>
+Frame appearance and behavior can also be customized through X resources (see <a href="docs/emacs--X-Resources.html">X Options and Resources</a>); these override the parameters of the initial frame specified in your init file.
+</p>
+
+<p>
+Note that if you are using the desktop library to save and restore your sessions, the frames to be restored are recorded in the desktop file, together with their parameters. When these frames are restored, the recorded parameters take precedence over the frame parameters specified by <code>default-frame-alist</code> and <code>initial-frame-alist</code> in your init file. See <a href="docs/emacs--Saving-Emacs-Sessions.html">Saving Emacs Sessions</a>, for how to avoid that.
+</p>
+
+<hr />
+</div>
+</div>

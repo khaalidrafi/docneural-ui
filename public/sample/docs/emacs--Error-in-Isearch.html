@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Errors-in-Incremental-Search">1. 17.1.4 Errors in Incremental Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Special-Isearch.html">Special Input for Incremental Search</a>   Previous: <a href="docs/emacs--Isearch-Yank.html">Isearch Yanking</a>   Up: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>
+</p>
+
+<p>
+<a id="Error-in-Isearch"></a>
+</p>
+
+<hr />
+<div id="outline-container-Errors-in-Incremental-Search" class="outline-2">
+<h2 id="Errors-in-Incremental-Search"><span class="section-number-2">1.</span> 17.1.4 Errors in Incremental Search <a href="#Errors-in-Incremental-Search">¶</a></h2>
+<div class="outline-text-2" id="text-Errors-in-Incremental-Search">
+<p>
+If your string is not found at all, the echo area says ‘=Failing I-Search=', and the cursor moves past the place where Emacs found as much of your string as it could. Thus, if you search for ‘=FOOT=', and there is no ‘=FOOT=', you might see the cursor after the ‘=FOO=' in ‘=FOOL='. In the echo area, the part of the search string that failed to match is highlighted using the face <code>isearch-fail</code>.
+</p>
+
+<p>
+At this point, there are several things you can do. If your string was mistyped, use DEL to cancel a previous input item (see <a href="docs/emacs--Basic-Isearch.html">Basics of Incremental Search</a>), C-M-d to erase one character at a time, or M-e to edit it. If you like the place you have found, you can type RET to remain there. Or you can type C-g, which removes from the search string the characters that could not be found (the ‘=T=' in ‘=FOOT='), leaving those that were found (the ‘=FOO=' in ‘=FOOT='). A second C-g at that point cancels the search entirely, returning point to where it was when the search started.
+</p>
+
+<p>
+The quit command, C-g, does special things during searches; just what it does depends on the status of the search. If the search has found what you specified and is waiting for input, C-g cancels the entire search, moving the cursor back to where you started the search. If C-g is typed when there are characters in the search string that have not been found&#x2014;because Emacs is still searching for them, or because it has failed to find them&#x2014;then the search string characters which have not been found are discarded from the search string. With them gone, the search is now successful and waiting for more input, so a second C-g will cancel the entire search.
+</p>
+
+<hr />
+</div>
+</div>

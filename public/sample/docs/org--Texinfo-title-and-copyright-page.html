@@ -1,0 +1,68 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orge9d7279">1. Legalese</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Texinfo-title-and-copyright-page"></a>
+Next: <a href="docs/org--Info-directory-file.html">Info directory file</a>, Previous: <a href="docs/org--Texinfo-file-header.html">Texinfo file header</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Texinfo-title-and-copyright-page-1"></a>13.14.4 Texinfo title and copyright page <a href="#Texinfo-title-and-copyright-page-1">¶</a><br />
+<div class="outline-text-5" id="text-Texinfo-title-and-copyright-page-1">
+<p>
+The default template for hard copy output has a title page with ‘=TITLE=' and ‘=AUTHOR=' keywords (see <a href="docs/org--Export-Settings.html">Export Settings</a>). To replace the regular title with something different for the printed version, use the ‘=TEXINFO<sub>PRINTED</sub><sub>TITLE</sub>=' and ‘=SUBTITLE=' keywords. Both expect raw Texinfo code for setting their values.
+</p>
+
+<p>
+If one ‘=AUTHOR=' line is not sufficient, add multiple ‘=SUBAUTHOR=' keywords. They have to be set in raw Texinfo code.
+</p>
+
+<pre class="example" id="org7080f96">
+#+AUTHOR: Jane Smith
+#+SUBAUTHOR: John Doe
+#+TEXINFO_PRINTED_TITLE: This Long Title@@inlinefmt{tex,@*} Is Broken in @TeX{}
+</pre>
+
+<p>
+Copying material is defined in a dedicated headline with a non-<code>nil</code> ‘=COPYING=' property. The backend inserts the contents within a ‘=@copying=' command at the beginning of the document. The heading itself does not appear in the structure of the document.
+</p>
+
+<p>
+Copyright information is printed on the back of the title page.
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-orge9d7279" class="outline-2">
+<h2 id="orge9d7279"><span class="section-number-2">1.</span> Legalese</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This is a short example of a complete Texinfo file, version 1.0.
+</p>
+
+<p>
+  Copyright &copy; 2016 Free Software Foundation, Inc.
+#+end<sub>src</sub>
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Info-directory-file.html">Info directory file</a>, Previous: <a href="docs/org--Texinfo-file-header.html">Texinfo file header</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,122 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#installing-guix-in-a-virtual-machine">1.0.1. 3.8 Installing Guix in a Virtual Machine</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Installing-Guix-in-a-VM"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Building-the-Installation-Image.html">Building the Installation Image</a>, Previous: <a href="docs/guix--After-System-Installation.html">After System Installation</a>, Up: <a href="docs/guix--System-Installation.html">System Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Installing-Guix-in-a-Virtual-Machine"></a>
+</p>
+</div>
+<div id="outline-container-installing-guix-in-a-virtual-machine" class="outline-4">
+<h4 id="installing-guix-in-a-virtual-machine"><span class="section-number-4">1.0.1.</span> 3.8 Installing Guix in a Virtual Machine</h4>
+<div class="outline-text-4" id="text-installing-guix-in-a-virtual-machine">
+<p>
+<a id="index-virtual-machine_002c-Guix-System-installation"></a> <a id="index-virtual-private-server-_0028VPS_0029"></a> <a id="index-VPS-_0028virtual-private-server_0029"></a>
+If you'd like to install Guix System in a virtual machine (VM) or on a virtual private server (VPS) rather than on your beloved machine, this section is for you.
+</p>
+
+<p>
+To boot a <a href="https://qemu.org/">QEMU</a> VM for installing Guix System in a disk image, follow these steps:
+</p>
+
+<ol class="org-ol">
+<li>First, retrieve and decompress the Guix system installation image as described previously (see <a href="docs/guix--USB-Stick-and-DVD-Installation.html">USB Stick and DVD Installation</a>).</li>
+
+<li><p>
+Create a disk image that will hold the installed system. To make a qcow2-formatted disk image, use the <code>qemu-img</code> command:
+</p>
+
+<pre class="example" id="orgcdfdd7f">
+qemu-img create -f qcow2 guix-system.img 50G
+</pre>
+
+<p>
+The resulting file will be much smaller than 50 GB (typically less than 1 MB), but it will grow as the virtualized storage device is filled up.
+</p></li>
+
+<li><p>
+Boot the USB installation image in a VM:
+</p>
+
+<pre class="example" id="org071a5e3">
+qemu-system-x86_64 -m 1024 -smp 1 -enable-kvm \
+  -nic user,model=virtio-net-pci -boot menu=on,order=d \
+  -drive file=guix-system.img \
+  -drive media=cdrom,readonly=on,file=guix-system-install-1.5.0.system.iso
+</pre>
+
+<p>
+<code>-enable-kvm</code> is optional, but significantly improves performance, see <a href="docs/guix--Running-Guix-in-a-VM.html">Running Guix in a Virtual Machine</a>.
+</p></li>
+
+<li>You're now root in the VM, proceed with the installation process. See <a href="docs/guix--Preparing-for-Installation.html">Preparing for Installation</a>, and follow the instructions.</li>
+</ol>
+
+<p>
+Once installation is complete, you can boot the system that's on your <code>guix-system.img</code> image. See <a href="docs/guix--Running-Guix-in-a-VM.html">Running Guix in a Virtual Machine</a>, for how to do that.
+</p>
+</div>
+</div>
+</div>

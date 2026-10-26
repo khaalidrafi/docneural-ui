@@ -1,0 +1,409 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Shepherd-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Complex-Configurations.html">Complex Configurations</a>, Previous: <a href="docs/guix--Service-Reference.html">Service Reference</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Shepherd-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="shepherd-services"></a>11.19.4 Shepherd Services<br />
+<div class="outline-text-5" id="text-shepherd-services">
+<p>
+<a id="index-shepherd-services"></a> <a id="index-PID-1"></a> <a id="index-init-system"></a>
+The <code>(gnu services shepherd)</code> module provides a way to define services managed by the GNU Shepherd, which is the initialization system&#x2014;the first process that is started when the system boots, also known as PID 1 (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Introduction.html#Introduction">Introduction</a> in The GNU Shepherd Manual).
+</p>
+
+<p>
+Services in the Shepherd can depend on each other. For instance, the SSH daemon may need to be started after the syslog daemon has been started, which in turn can only happen once all the file systems have been mounted. The simple operating system defined earlier (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>) results in a service graph like this:
+</p>
+
+<p>
+You can actually generate such a graph for any operating system definition using the <code>guix system shepherd-graph</code> command (see <a href="docs/guix--Invoking-guix-system.html#system_002dshepherd_002dgraph"><code>guix system shepherd-graph</code></a>).
+</p>
+
+<p>
+The <code>%shepherd-root-service</code> is a service object representing PID 1, of type <code>shepherd-root-service-type</code>; it can be extended by passing it lists of <code>&lt;shepherd-service&gt;</code> objects.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: shepherd-service </dt><dd>The data type representing a service managed by the Shepherd.
+
+<dl class="org-dl">
+<dt><code>provision</code></dt><dd><p>
+This is a list of symbols denoting what the service provides.
+</p>
+
+<p>
+These are the names that may be passed to <code>herd start</code>, <code>herd status</code>, and similar commands (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Invoking-herd.html#Invoking-herd">Invoking herd</a> in The GNU Shepherd Manual). See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Defining-Services.html#Defining-Services">Defining Services</a> in The GNU Shepherd Manual, for details.
+</p></dd>
+
+<dt><code>requirement</code> (default: <code>'()</code>)</dt><dd><p>
+List of symbols denoting the Shepherd services this one depends on.
+</p>
+
+<p>
+<a id="index-user_002dprocesses-Shepherd-service"></a>
+</p>
+
+<p>
+With very few exceptions, services that start a daemon must depend at least on the <code>user-processes</code> service; this ensures that these daemons are started after all the file systems have been mounted and that, during shutdown, they are stopped before attempting to terminate remaining user processes.
+</p>
+
+<p>
+Similarly, services that do make mounts during their startup or operation, should have <code>user-file-systems</code> as a requirement. <code>user-processes</code> does depend on <code>user-file-systems</code> as well. So direct requirement only on <code>user-processes</code> is sufficient.
+</p>
+
+<p>
+<a id="index-one_002dshot-services_002c-for-the-Shepherd"></a>
+</p></dd>
+
+<dt><code>one-shot?</code> (default: <code>#f</code>)</dt><dd>Whether this service is <i>one-shot</i>. One-shot services stop immediately after their <code>start</code> action has completed. See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Slots-of-services.html#Slots-of-services">Slots of services</a> in The GNU Shepherd Manual, for more info.</dd>
+
+<dt><code>respawn?</code> (default: <code>#t</code>)</dt><dd>Whether to restart the service when it stops, for instance when the underlying process dies.</dd>
+
+<dt><code>respawn-limit</code> (default: <code>#f</code>)</dt><dd>Set a limit on how many times and how frequently a service may be restarted by Shepherd before it is disabled. See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Defining-Services.html#Defining-Services">Defining Services</a> in The GNU Shepherd Manual, for details.</dd>
+
+<dt><code>respawn-delay</code> (default: <code>#f</code>)</dt><dd>When true, this is the delay in seconds before restarting a failed service.</dd>
+
+<dt>(no term)</dt><dd><code>start</code> (default: <code>#~(const #t)</code>)<br />
+<code>stop</code> (default: <code>#~(const #f)</code>) :: The <code>start</code> and <code>stop</code> fields refer to the Shepherd's facilities to start and stop processes (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Service-De_002d-and-Constructors.html#Service-De_002d-and-Constructors">Service De- and Constructors</a> in The GNU Shepherd Manual). They are given as G-expressions that get expanded in the Shepherd configuration file (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).</dd>
+
+<dt><code>actions</code> (default: <code>'()</code>) </dt><dd><p>
+This is a list of <code>shepherd-action</code> objects (see below) defining <i>actions</i> supported by the service, in addition to the standard <code>start</code> and <code>stop</code> actions. Actions listed here become available as <code>herd</code> sub-commands:
+</p>
+
+<pre class="example" id="orgde05a74">
+herd action service [arguments…]
+</pre></dd>
+
+<dt><code>free-form</code> (default: <code>#f</code>)</dt><dd><p>
+When set, this field replaces the <code>start</code>, <code>stop</code>, and <code>actions</code> fields. It is meant to be used when the service definition comes from some other source, typically the service collection provided by the Shepherd proper (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Service-Collection.html#Service-Collection">Service Collection</a> in The GNU Shepherd Manual).
+</p>
+
+<p>
+<a id="index-REPL-service_002c-for-shepherd"></a>
+</p>
+
+<p>
+For example, the snippet below defines a service for the Shepherd's built-in REPL (read-eval-print loop) service (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/REPL-Service.html#REPL-Service">REPL Service</a> in The GNU Shepherd Manual):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(shepherd-service
+  (provision '(repl))
+  (modules '((shepherd service repl)))
+  (free-form #~(repl-service)))
+</pre>
+</div>
+
+<p>
+In this case, the service object is returned by the <code>repl-service</code> procedure of the Shepherd, so all the <code>free-form</code> G-expression does is call that procedure. Note that the <code>provision</code> field must be consistent with the actual service provision.
+</p></dd>
+
+<dt><code>auto-start?</code> (default: <code>#t</code>)</dt><dd>Whether this service should be started automatically by the Shepherd. If it is <code>#f</code> the service has to be started manually with <code>herd start</code>.</dd>
+
+<dt><code>documentation</code></dt><dd><p>
+A documentation string, as shown when running:
+</p>
+
+<pre class="example" id="orgaebe9f9">
+herd doc service-name
+</pre>
+
+<p>
+where <code>service-name</code> is one of the symbols in <code>provision</code> (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Invoking-herd.html#Invoking-herd">Invoking herd</a> in The GNU Shepherd Manual).
+</p></dd>
+
+<dt><code>modules</code> (default: <code>%default-modules</code>)</dt><dd>This is the list of modules that must be in scope when <code>start</code> and <code>stop</code> are evaluated.</dd>
+</dl></dd>
+</dl>
+
+<p>
+The example below defines a Shepherd service that spawns <code>syslogd</code>, the system logger from the GNU Networking Utilities (see <a href="https://www.gnu.org/software/inetutils/manual/html_node/syslogd-invocation.html#syslogd-invocation"><code>syslogd</code></a> in GNU Inetutils):
+</p>
+
+<pre class="example" id="org2b0c056">
+(let ((config (plain-file "syslogd.conf" "…")))
+  (shepherd-service
+    (documentation "Run the syslog daemon (syslogd).")
+    (provision '(syslogd))
+    (requirement '(user-processes))
+    (start #~(make-forkexec-constructor
+               (list #$(file-append inetutils "/libexec/syslogd")
+                     "--rcfile" #$config)
+               #:pid-file "/var/run/syslog.pid"))
+    (stop #~(make-kill-destructor))))
+</pre>
+
+<p>
+Key elements in this example are the <code>start</code> and <code>stop</code> fields: they are <i>staged</i> code snippets that use the <code>make-forkexec-constructor</code> procedure provided by the Shepherd and its dual, <code>make-kill-destructor</code> (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Service-De_002d-and-Constructors.html#Service-De_002d-and-Constructors">Service De- and Constructors</a> in The GNU Shepherd Manual). The <code>start</code> field will have <code>shepherd</code> spawn <code>syslogd</code> with the given option; note that we pass <code>config</code> after <code>--rcfile</code>, which is a configuration file declared above (contents of this file are omitted). Likewise, the <code>stop</code> field tells how this service is to be stopped; in this case, it is stopped by making the <code>kill</code> system call on its PID. Code staging is achieved using G-expressions: <code>#~</code> stages code, while <code>#$</code> “escapes” back to host code (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: shepherd-action </dt><dd><p>
+This is the data type that defines additional actions implemented by a Shepherd service (see above).
+</p>
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>Symbol naming the action.</dd>
+
+<dt><code>documentation</code></dt><dd><p>
+This is a documentation string for the action. It can be viewed by running:
+</p>
+
+<pre class="example" id="org2a2f30b">
+herd doc service action action
+</pre></dd>
+
+<dt><code>procedure</code></dt><dd>This should be a gexp that evaluates to a procedure of at least one argument, which is the “running value” of the service (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Slots-of-services.html#Slots-of-services">Slots of services</a> in The GNU Shepherd Manual).</dd>
+</dl>
+
+<p>
+The following example defines an action called <code>say-hello</code> that kindly greets the user:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(shepherd-action
+  (name 'say-hello)
+  (documentation "Say hi!")
+  (procedure #~(lambda (running . args)
+                 (format #t "Hello, friend! arguments: ~s\n"
+                         args)
+                 #t)))
+</pre>
+</div>
+
+<p>
+Assuming this action is added to the <code>example</code> service, then you can do:
+</p>
+
+<pre class="example" id="orgfe36fd8">
+# herd say-hello example
+Hello, friend! arguments: ()
+# herd say-hello example a b c
+Hello, friend! arguments: ("a" "b" "c")
+</pre>
+
+<p>
+This, as you can see, is a fairly sophisticated way to say hello. See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Defining-Services.html#Defining-Services">Defining Services</a> in The GNU Shepherd Manual, for more info on actions.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-configuration-file_002c-of-Shepherd-services"></a>
+</p>
+<dl class="org-dl">
+<dt>Procedure: shepherd-configuration-action </dt><dd><p>
+Return a <code>configuration</code> action to display <code>file</code>, which should be the name of the service's configuration file.
+</p>
+
+<p>
+It can be useful to equip services with that action. For example, the service for the Tor anonymous router (see <a href="docs/guix--Networking-Services.html"><code>tor-service-type</code></a>) is defined roughly like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(let ((torrc (plain-file "torrc" …)))
+  (shepherd-service
+    (provision '(tor))
+    (requirement '(user-processes loopback syslogd))
+
+    (start #~(make-forkexec-constructor
+              (list #$(file-append tor "/bin/tor") "-f" #$torrc)
+              #:user "tor" #:group "tor"))
+    (stop #~(make-kill-destructor))
+    (actions (list (shepherd-configuration-action torrc)))
+    (documentation "Run the Tor anonymous network overlay.")))
+</pre>
+</div>
+
+<p>
+Thanks to this action, administrators can inspect the configuration file passed to <code>tor</code> with this shell command:
+</p>
+
+<pre class="example" id="org97994f1">
+cat $(herd configuration tor)
+</pre>
+
+<p>
+This can come in as a handy debugging tool!
+</p></dd>
+
+<dt>Variable: shepherd-root-service-type </dt><dd><p>
+The service type for the Shepherd “root service”&#x2014;i.e., PID 1.
+</p>
+
+<p>
+This is the service type that extensions target when they want to create shepherd services (see <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, for an example). Each extension must pass a list of <code>&lt;shepherd-service&gt;</code>. Its value must be a <code>shepherd-configuration</code>, as described below.
+</p></dd>
+
+<dt>Data Type: shepherd-configuration </dt><dd>This data type represents the Shepherd's configuration.
+
+<dl class="org-dl">
+<dt><code>shepherd (default: ==shepherd=</code>)=</dt><dd>The Shepherd package to use.</dd>
+
+<dt><code>services (default: =</code>'()==)=</dt><dd>A list of <code>&lt;shepherd-service&gt;</code> to start. You should probably use the service extension mechanism instead (see ).</dd>
+</dl></dd>
+</dl>
+
+<p>
+The following example specifies the Shepherd package for the operating system:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; ...
+  (services (append (list openssh-service-type))
+            ;; ...
+            %desktop-services)
+  ;; ...
+  ;; Use own Shepherd package.
+  (essential-services
+   (modify-services (operating-system-default-essential-services
+                     this-operating-system)
+     (shepherd-root-service-type config =&gt; (shepherd-configuration
+                                            (inherit config)
+                                            (shepherd my-shepherd))))))
+</pre>
+</div>
+
+<p>
+<a id="shepherd_002dtransient_002dtimer_002dservices"></a><a id="index-transient-service_002c-Shepherd"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: shepherd-transient-service-type </dt><dd><p>
+This service type represents the Shepherd's <code>transient</code> service, which lets you spawn commands in the background and interact with them as regular Shepherd services; it is similar to <code>systemd-run</code>.
+</p>
+
+<p>
+For example, the command below spawns <code>rsync</code> in the background, in an environment where the <code>SSH_AUTH_SOCK</code> environment variable has the given value:
+</p>
+
+<pre class="example" id="org79e2cdd">
+herd spawn transient -E SSH_AUTH_SOCK=$SSH_AUTH_SOCK -- \
+  rsync -e ssh -vur . backup.example.org:
+</pre>
+
+<p>
+See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Transient-Service-Maker.html#Transient-Service-Maker">Transient Service Maker</a> in The GNU Shepherd Manual, for more info on the <code>transient</code> service.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-timer-service_002c-Shepherd"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: shepherd-timer-service-type </dt><dd><p>
+This is the service type representing the Shepherd's <code>timer</code> service, which lets you schedule the execution of commands, similar to the venerable <code>at</code> command. Here is an example:
+</p>
+
+<pre class="example" id="org8954022">
+herd schedule timer at 07:00 -- mpg123 Music/alarm.mp3
+</pre>
+
+<p>
+See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Timer-Service.html#Timer-Service">Timer Service</a> in The GNU Shepherd Manual, for more info on the <code>timer</code> service.
+</p></dd>
+</dl>
+
+<p>
+<a id="shepherd_002dsystem_002dlog"></a><a id="index-system-log-service_002c-from-Shepherd"></a> <a id="index-syslogd_002c-Shepherd-system-log-service"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: shepherd-system-log-service-type </dt><dd><p>
+This service implements a <i>system log</i>, reading messages applications send to <code>/dev/log</code> and writing them to files or terminals according to user-defined rules. It provides functionality traditionally implemented by <code>syslogd</code> programs.
+</p>
+
+<p>
+The value of services of this type must be a <code>system-log-configuration</code> record, as described below.
+</p>
+
+<p>
+This service is part of <code>%base-services</code> (see <a href="docs/guix--Base-Services.html">Base Services</a>).
+</p></dd>
+
+<dt>Data Type: system-log-configuration </dt><dd>Available <code>system-log-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>provision</code> (default: <code>(system-log syslogd)</code>) (type: list-of-symbols)</dt><dd>The name(s) of the system log service.</dd>
+
+<dt><code>requirement</code> (default: <code>(root-file-system)</code>) (type: list-of-symbols)</dt><dd>Dependencies of the system log service.</dd>
+
+<dt><code>kernel-log-file</code> (type: gexp-or-string-or-false)</dt><dd>File from which kernel messages are read, <code>/dev/kmsg</code> by default.</dd>
+
+<dt><code>message-destination</code> (default: <code>#f</code>) (type: gexp-or-false)</dt><dd>This gexp must evaluate to a procedure that, when passed a log message, returns the list of files to write it to; <code>#f</code> is equivalent to using <code>(default-message-destination-procedure)</code>. See <a href="https://www.gnu.org/software/shepherd/manual/html_node/System-Log-Service.html#System-Log-Service">System Log Service</a> in The GNU Shepherd Manual, for information on how to write that procedure.</dd>
+
+<dt><code>date-format</code> (type: gexp-or-string)</dt><dd>String or string-valued gexp specifying how to format timestamps in log files. It must be a valid string for <code>strftime</code> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Time.html#Time">Time</a> in GNU Guile Reference Manual), including delimiting space&#x2014;e.g., <code>"%c "</code> for a format identical to that of traditional syslogd implementations.</dd>
+
+<dt><code>history-size</code> (type: gexp-or-integer)</dt><dd>Number of logging messages kept in memory for the purposes of making them available to <code>herd status system-log</code>.</dd>
+
+<dt><code>max-silent-time</code> (type: gexp-or-integer-or-false)</dt><dd>Time after which a mark is written to log files if nothing was logged during that time frame. When set to <code>#f</code>, this feature is disabled.</dd>
+</dl></dd>
+
+<dt>Variable: %shepherd-root-service </dt><dd>This service represents PID 1.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Complex-Configurations.html">Complex Configurations</a>, Previous: <a href="docs/guix--Service-Reference.html">Service Reference</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

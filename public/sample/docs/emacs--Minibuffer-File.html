@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Minibuffers-for-File-Names">1. 10.2 Minibuffers for File Names ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Minibuffer-Edit.html">Editing in the Minibuffer</a>   Previous: <a href="docs/emacs--Basic-Minibuffer.html">Using the Minibuffer</a>   Up: <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>
+</p>
+
+<p>
+<a id="Minibuffer-File"></a>
+</p>
+
+<hr />
+<div id="outline-container-Minibuffers-for-File-Names" class="outline-2">
+<h2 id="Minibuffers-for-File-Names"><span class="section-number-2">1.</span> 10.2 Minibuffers for File Names <a href="#Minibuffers-for-File-Names">¶</a></h2>
+<div class="outline-text-2" id="text-Minibuffers-for-File-Names">
+<p>
+Commands such as C-x C-f (<code>find-file</code>) use the minibuffer to read a file name argument (see <a href="docs/emacs--Basic-Files.html">Files</a>). When the minibuffer is used to read a file name, it typically starts out with some initial text ending in a slash. This is the <i>default directory</i>. For example, it may start out like this:
+</p>
+
+<pre class="example" id="org4c0aa60">
+Find file: /u2/emacs/src/
+</pre>
+
+<p>
+Here, ‘=Find file: <code>' is the prompt and ‘=/u2/emacs/src/</code>' is the default directory. If you now type buffer.c as input, that specifies the file <code>/u2/emacs/src/buffer.c</code>. See <a href="docs/emacs--File-Names.html">File Names</a>, for information about the default directory.
+</p>
+
+<p>
+Alternative defaults for the file name you may want are available by typing M-n, see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>.
+</p>
+
+<p>
+You can specify a file in the parent directory with <code>..</code>: <code>/a/b/../foo.el</code> is equivalent to <code>/a/foo.el</code>. Alternatively, you can use M-DEL to kill directory names backwards (see <a href="docs/emacs--Words.html">Words</a>).
+</p>
+
+<p>
+To specify a file in a completely different directory, you can kill the entire default with C-a C-k (see <a href="docs/emacs--Minibuffer-Edit.html">Editing in the Minibuffer</a>). Alternatively, you can ignore the default, and enter an absolute file name starting with a slash or a tilde after the default directory. For example, you can specify <code>/etc/termcap</code> as follows:
+</p>
+
+<pre class="example" id="org68a35db">
+Find file: /u2/emacs/src//etc/termcap
+</pre>
+
+<p>
+A double slash causes Emacs to ignore everything before the second slash in the pair. In the example above, <code>/u2/emacs/src/</code> is ignored, so the argument you supplied is <code>/etc/termcap</code>. The ignored part of the file name is dimmed if the terminal allows it. (To disable this dimming, turn off File Name Shadow mode with the command M-x file-name-shadow-mode.)
+</p>
+
+<p>
+When completing remote file names (see <a href="docs/emacs--Remote-Files.html">Remote Files</a>), a double slash behaves slightly differently: it causes Emacs to ignore only the file-name part, leaving the rest (method, host and username, etc.) intact. Typing three slashes in a row ignores everything in remote file names. See <a href="../tramp_html/File-name-completion.html#File-name-completion">File name completion</a> in The Tramp Manual.
+</p>
+
+<p>
+Emacs interprets <code>~/</code> as your home directory. Thus, <code>~/foo/bar.txt</code> specifies a file named <code>bar.txt</code>, inside a directory named <code>foo</code>, which is in turn located in your home directory. In addition, <code>~==user-id==/</code> means the home directory of a user whose login name is <code>user-id</code>. Any leading directory name in front of the <code>~</code> is ignored: thus, <code>/u2/emacs/~/foo/bar.txt</code> is equivalent to <code>~/foo/bar.txt</code>.
+</p>
+
+<p>
+On MS-Windows and MS-DOS systems, where a user doesn't always have a home directory, Emacs uses several alternatives. For MS-Windows, see <a href="docs/emacs--Windows-HOME.html">HOME and Startup Directories on MS-Windows</a>; for MS-DOS, see <a href="docs/emacs--MS_002dDOS-File-Names.html">File Names on MS-DOS</a>. On these systems, the <code>~==user-id==/</code> construct is supported only for the current user, i.e., only if <code>user-id</code> is the current user's login name.
+</p>
+
+<p>
+To prevent Emacs from inserting the default directory when reading file names, change the variable <code>insert-default-directory</code> to <code>nil</code>. In that case, the minibuffer starts out empty. Nonetheless, relative file name arguments are still interpreted based on the same default directory.
+</p>
+
+<p>
+You can also enter remote file names in the minibuffer. See <a href="docs/emacs--Remote-Files.html">Remote Files</a>.
+</p>
+
+<hr />
+</div>
+</div>

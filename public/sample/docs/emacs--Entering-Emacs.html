@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Entering-Emacs-1">1. 7 Entering Emacs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Exiting.html">Exiting Emacs</a>   Previous: <a href="docs/emacs--Other-Input.html">Touchscreen Input and Virtual Keyboards</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Entering-Emacs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Entering-Emacs-1" class="outline-2">
+<h2 id="Entering-Emacs-1"><span class="section-number-2">1.</span> 7 Entering Emacs <a href="#Entering-Emacs-1">¶</a></h2>
+<div class="outline-text-2" id="text-Entering-Emacs-1">
+<p>
+The usual way to invoke Emacs is with the shell command <code>emacs</code>. From a terminal window running a Unix shell on a GUI terminal, you can run Emacs in the background with emacs &amp;; this way, Emacs won't tie up the terminal window, so you can use it to run other shell commands. (For comparable methods of starting Emacs on MS-Windows, see <a href="docs/emacs--Windows-Startup.html">How to Start Emacs on MS-Windows</a>.)
+</p>
+
+<p>
+When Emacs starts up, the initial frame displays a special buffer named ‘=*GNU Emacs*='. This <i>startup screen</i> contains information about Emacs and <i>links</i> to common tasks that are useful for beginning users. For instance, activating the ‘=Emacs Tutorial=' link opens the Emacs tutorial; this does the same thing as the command C-h t (<code>help-with-tutorial</code>). To activate a link, either move point onto it and type RET, or click on it with mouse-1 (the left mouse button).
+</p>
+
+<p>
+Using a command line argument, you can tell Emacs to visit one or more files as soon as it starts up. For example, <code>emacs foo.txt</code> starts Emacs with a buffer displaying the contents of the file ‘=foo.txt='. This feature exists mainly for compatibility with other editors, which are designed to be launched from the shell for short editing sessions. If you call Emacs this way, the initial frame is split into two windows&#x2014;one showing the specified file, and the other showing the startup screen. See <a href="docs/emacs--Windows.html">Multiple Windows</a>.
+</p>
+
+<p>
+Generally, it is unnecessary and wasteful to start Emacs afresh each time you want to edit a file. The recommended way to use Emacs is to start it just once, just after you log in, and do all your editing in the same Emacs session. See <a href="docs/emacs--Files.html">File Handling</a>, for information on visiting more than one file. If you use Emacs this way, the Emacs session accumulates valuable context, such as the kill ring, registers, undo history, and mark ring data, which together make editing more convenient. These features are described later in the manual.
+</p>
+
+<p>
+To edit a file from another program while Emacs is running, you can use the <code>emacsclient</code> helper program to open a file in the existing Emacs session. See <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>.
+</p>
+
+<p>
+Emacs accepts other command line arguments that tell it to load certain Lisp files, where to put the initial frame, and so forth. See <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>.
+</p>
+
+<p>
+If the variable <code>inhibit-startup-screen</code> is non-<code>nil</code>, Emacs does not display the startup screen. In that case, if one or more files were specified on the command line, Emacs simply displays those files; otherwise, it displays a buffer named <code>*scratch*</code>, which can be used to evaluate Emacs Lisp expressions interactively. See <a href="docs/emacs--Lisp-Interaction.html">Lisp Interaction Buffers</a>. You can set the variable <code>inhibit-startup-screen</code> using the Customize facility (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>), or by editing your initialization file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>).
+</p>
+
+<p>
+You can also force Emacs to display a file or directory at startup by setting the variable <code>initial-buffer-choice</code> to a string naming that file or directory. The value of <code>initial-buffer-choice</code> may also be a function (of no arguments) that should return a buffer which is then displayed. If <code>initial-buffer-choice</code> is non-<code>nil</code>, then if you specify any files on the command line, Emacs still visits them, but does not display them initially.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Nonincremental-Search-1">1. 17.2 Nonincremental Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Word-Search.html">Word Search</a>   Previous: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Nonincremental-Search"></a>
+</p>
+
+<hr />
+<div id="outline-container-Nonincremental-Search-1" class="outline-2">
+<h2 id="Nonincremental-Search-1"><span class="section-number-2">1.</span> 17.2 Nonincremental Search <a href="#Nonincremental-Search-1">¶</a></h2>
+<div class="outline-text-2" id="text-Nonincremental-Search-1">
+<p>
+Emacs also has conventional nonincremental search commands, which require you to type the entire search string before searching begins.
+</p>
+
+<dl class="org-dl">
+<dt>C-s RET <code>string</code> RET</dt><dd>Search for <code>string</code>.</dd>
+
+<dt>C-r RET <code>string</code> RET</dt><dd>Search backward for <code>string</code>.</dd>
+</dl>
+
+<p>
+To start a nonincremental search, first type C-s RET. This enters the minibuffer to read the search string; terminate the string with RET, and then the search takes place. If the string is not found, the search command signals an error.
+</p>
+
+<p>
+When you type C-s RET, the C-s invokes incremental search as usual. That command is specially programmed to invoke the command for nonincremental search, if the string you specify is empty. (Such an empty argument would otherwise be useless.) C-r RET does likewise, invoking the nonincremental backward-searching command.
+</p>
+
+<p>
+Nonincremental search can also be invoked from the menu bar's ‘=Edit-&gt;Search=' menu.
+</p>
+
+<p>
+You can also use two simpler commands, M-x search-forward and M-x search-backward. These commands look for the literal strings you specify, and don't support any of the lax-search features (see <a href="docs/emacs--Lax-Search.html">Lax Matching During Searching</a>) except case folding.
+</p>
+</div>
+</div>

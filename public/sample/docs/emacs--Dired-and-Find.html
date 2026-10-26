@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Dired-and-find">1. 32.17 Dired and <code>find</code> ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Wdired.html">Editing the Dired Buffer</a>   Previous: <a href="docs/emacs--Dired-Updating.html">Updating the Dired Buffer</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Dired-and-Find"></a>
+</p>
+
+<hr />
+<div id="outline-container-Dired-and-find" class="outline-2">
+<h2 id="Dired-and-find"><span class="section-number-2">1.</span> 32.17 Dired and <code>find</code> <a href="#Dired-and-find">¶</a></h2>
+<div class="outline-text-2" id="text-Dired-and-find">
+<p>
+You can select a set of files for display in a Dired buffer more flexibly by using the <code>find</code> utility to choose the files.
+</p>
+
+<p>
+To search for files with names matching a wildcard pattern use M-x find-name-dired. It reads arguments <code>directory</code> and <code>pattern</code>, and chooses all the files in <code>directory</code> or its subdirectories whose individual names match <code>pattern</code>.
+</p>
+
+<p>
+The files thus chosen are displayed in a Dired buffer, in which the ordinary Dired commands are available.
+</p>
+
+<p>
+If you want to test the contents of files, rather than their names, use M-x find-grep-dired. This command reads two minibuffer arguments, <code>directory</code> and <code>regexp</code>; it chooses all the files in <code>directory</code> or its subdirectories that contain a match for <code>regexp</code>. It works by running the programs <code>find</code> and <code>grep</code>. See also M-x grep-find, in <a href="docs/emacs--Grep-Searching.html">Searching with Grep under Emacs</a>. Remember to write the regular expression for <code>grep</code>, not for Emacs. (An alternative method of showing files whose contents match a given regexp is the % g <code>regexp</code> command, see <a href="docs/emacs--Marks-vs-Flags.html">Dired Marks vs. Flags</a>.)
+</p>
+
+<p>
+The most general command in this series is M-x find-dired, which lets you specify any condition that <code>find</code> can test. It takes two minibuffer arguments, <code>directory</code> and <code>find-args</code>; it runs <code>find</code> in <code>directory</code>, passing <code>find-args</code> to tell <code>find</code> what condition to test. To use this command, you need to know how to use <code>find</code>.
+</p>
+
+<p>
+The format of listing produced by these commands is controlled by the variable <code>find-ls-option</code>. This is a pair of options; the first specifying how to call <code>find</code> to produce the file listing, and the second telling Dired to parse the output.
+</p>
+
+<p>
+The command M-x locate provides a similar interface to the <code>locate</code> program. M-x locate-with-filter is similar, but keeps only files whose names match a given regular expression.
+</p>
+
+<p>
+These buffers don't work entirely like ordinary Dired buffers: file operations work, but do not always automatically update the buffer. Reverting the buffer with g deletes all inserted subdirectories, and erases all flags and marks.
+</p>
+
+<hr />
+</div>
+</div>

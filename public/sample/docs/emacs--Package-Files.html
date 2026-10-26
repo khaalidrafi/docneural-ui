@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Package-Files-and-Directory-Layout">1. 50.4 Package Files and Directory Layout ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fetching-Package-Sources.html">Fetching Package Sources</a>   Previous: <a href="docs/emacs--Package-Installation.html">Package Installation</a>   Up: <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>
+</p>
+
+<p>
+<a id="Package-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Package-Files-and-Directory-Layout" class="outline-2">
+<h2 id="Package-Files-and-Directory-Layout"><span class="section-number-2">1.</span> 50.4 Package Files and Directory Layout <a href="#Package-Files-and-Directory-Layout">¶</a></h2>
+<div class="outline-text-2" id="text-Package-Files-and-Directory-Layout">
+<p>
+Each package is downloaded from the package archive in the form of a single <i>package file</i>&#x2014;either an Emacs Lisp source file, or a tar file containing multiple Emacs Lisp source and other files. Package files are automatically retrieved, processed, and disposed of by the Emacs commands that install packages. Normally, you will not need to deal directly with them, unless you are making a package (see <a href="../elisp_html/Packaging.html#Packaging">Packaging</a> in The Emacs Lisp Reference Manual). Should you ever need to install a package directly from a package file, use the command M-x package-install-file.
+</p>
+
+<p>
+Once installed, the contents of a package are placed in a subdirectory of <code>~/.emacs.d/elpa/</code> (you can change the name of that directory by customizing the variable <code>package-user-dir</code>). The package subdirectory is named <code>name=</code>-<code>=version</code>, where <code>name</code> is the package name and <code>version</code> is its version string.
+</p>
+
+<p>
+In addition to <code>package-user-dir</code>, Emacs looks for installed packages in the directories listed in <code>package-directory-list</code>. These directories are meant for system administrators to make Emacs packages available system-wide; Emacs itself never installs packages there. The package subdirectories for <code>package-directory-list</code> are laid out in the same way as in <code>package-user-dir</code>.
+</p>
+
+<p>
+Deleting a package (see <a href="docs/emacs--Package-Menu.html">The Package Menu Buffer</a>) involves deleting the corresponding package subdirectory. This only works for packages installed in <code>package-user-dir</code>; if told to act on a package in a system-wide package directory, the deletion command signals an error.
+</p>
+
+<hr />
+</div>
+</div>

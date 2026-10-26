@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Types-of-Log-File-1">1. 30.1.1.7 Types of Log File ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--VCS-Repositories.html">Decentralized vs Centralized Repositories</a>   Up: <a href="docs/emacs--Introduction-to-VC.html">Introduction to Version Control</a>
+</p>
+
+<p>
+<a id="Types-of-Log-File"></a>
+</p>
+
+<hr />
+<div id="outline-container-Types-of-Log-File-1" class="outline-2">
+<h2 id="Types-of-Log-File-1"><span class="section-number-2">1.</span> 30.1.1.7 Types of Log File <a href="#Types-of-Log-File-1">¶</a></h2>
+<div class="outline-text-2" id="text-Types-of-Log-File-1">
+<p>
+Projects that use a version control system can have two types of log for changes. One is the log maintained by the version control system: each time you commit a change, you fill out a <i>log entry</i> for the change (see <a href="docs/emacs--Log-Buffer.html">Features of the Log Entry Buffer</a>). This is called the <i>version control log</i>.
+</p>
+
+<p>
+The other kind of log is the file <code>ChangeLog</code> (see <a href="docs/emacs--Change-Log.html">Change Logs</a>). It provides a chronological record of all changes to a large portion of a program&#x2014;typically one directory and its subdirectories. A small program would use one <code>ChangeLog</code> file; a large program may have a <code>ChangeLog</code> file in each major directory. See <a href="docs/emacs--Change-Log.html">Change Logs</a>. Programmers have used change logs since long before version control systems.
+</p>
+
+<p>
+Changeset-based version systems typically maintain a changeset-based modification log for the entire system, which makes change log files somewhat redundant. One advantage that they retain is that it is sometimes useful to be able to view the transaction history of a single directory separately from those of other directories. Another advantage is that commit logs can't be fixed in many version control systems.
+</p>
+
+<p>
+A project maintained with version control can use just the version control log, or it can use both kinds of logs. It can handle some files one way and some files the other way. Each project has its policy, which you should follow.
+</p>
+
+<p>
+When the policy is to use both, you typically want to write an entry for each change just once, then put it into both logs. You can write the entry in <code>ChangeLog</code>, then copy it to the log buffer with C-c C-a when committing the change (see <a href="docs/emacs--Log-Buffer.html">Features of the Log Entry Buffer</a>). Or you can write the entry in the log buffer while committing the change (with the help of C-c C-w), and later use the C-x v a command to copy it to <code>ChangeLog</code> (see <a href="docs/emacs--Change-Logs-and-VC.html">Change Logs and VC</a>).
+</p>
+
+<hr />
+</div>
+</div>

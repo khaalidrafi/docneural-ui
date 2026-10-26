@@ -1,0 +1,84 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Interactive-Highlighting">1. 16.14 Interactive Highlighting ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fringes.html">Window Fringes</a>   Previous: <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Highlight-Interactively"></a>
+</p>
+
+<hr />
+<div id="outline-container-Interactive-Highlighting" class="outline-2">
+<h2 id="Interactive-Highlighting"><span class="section-number-2">1.</span> 16.14 Interactive Highlighting <a href="#Interactive-Highlighting">¶</a></h2>
+<div class="outline-text-2" id="text-Interactive-Highlighting">
+<p>
+Highlight Changes mode is a minor mode that <i>highlights</i> the parts of the buffer that were changed most recently, by giving that text a different face. To enable or disable Highlight Changes mode, use M-x highlight-changes-mode.
+</p>
+
+<p>
+Hi Lock mode is a minor mode that highlights text that matches regular expressions you specify. For example, you can use it to highlight all the references to a certain variable in a program source file, highlight certain parts in a voluminous output of some program, or highlight certain names in an article. To enable or disable Hi Lock mode, use the command M-x hi-lock-mode. To enable Hi Lock mode for all buffers, use M-x global-hi-lock-mode or place <code>(global-hi-lock-mode 1)</code> in your <code>.emacs</code> file.
+</p>
+
+<p>
+Hi Lock mode works like Font Lock mode (see <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>), except that you specify explicitly the regular expressions to highlight. You can control them with the following commands. (The key bindings below that begin with C-x w are deprecated in favor of the global M-s h bindings, and will be removed in some future Emacs version.)
+</p>
+
+<ul class="org-ul">
+<li><p>
+<a id="index-M_002ds-h-r"></a>M-s h r <code>regexp</code> RET <code>face</code> RET <br />
+C-x w h <code>regexp</code> RET <code>face</code> RET :: Highlight text that matches <code>regexp</code> using face <code>face</code> (<code>highlight-regexp</code>). The highlighting will remain as long as the buffer is loaded. For example, to highlight all occurrences of the word “whim” using the default face (a yellow background), type M-s h r whim RET RET. Any face can be used for highlighting, Hi Lock provides several of its own and these are pre-loaded into a list of default values. While being prompted for a face use M-n and M-p to cycle through them. A prefix numeric argument limits the highlighting to the corresponding subexpression.
+</p>
+
+<p>
+Setting the option <code>hi-lock-auto-select-face</code> to a non-<code>nil</code> value causes this command (and other Hi Lock commands that read faces) to automatically choose the next face from the default list without prompting.
+</p>
+
+<p>
+You can use this command multiple times, specifying various regular expressions to highlight in different ways.
+</p></li>
+
+<li><a id="index-M_002ds-h-u"></a>M-s h u <code>regexp</code> RET <br />
+C-x w r <code>regexp</code> RET :: Unhighlight <code>regexp</code> (<code>unhighlight-regexp</code>). If you invoke this from the menu, you select the expression to unhighlight from a list. If you invoke this from the keyboard, you use the minibuffer. It will show the most recently added regular expression; use M-n to show the next older expression and M-p to select the next newer expression. (You can also type the expression by hand, with completion.) When the expression you want to unhighlight appears in the minibuffer, press RET to exit the minibuffer and unhighlight it.</li>
+
+<li><a id="index-M_002ds-h-l"></a>M-s h l <code>regexp</code> RET <code>face</code> RET <br />
+C-x w l <code>regexp</code> RET <code>face</code> RET :: Highlight entire lines containing a match for <code>regexp</code>, using face <code>face</code> (<code>highlight-lines-matching-regexp</code>).</li>
+
+<li><a id="index-M_002ds-h-p"></a>M-s h p <code>phrase</code> RET <code>face</code> RET <br />
+C-x w p <code>phrase</code> RET <code>face</code> RET :: Highlight matches of <code>phrase</code>, using face <code>face</code> (<code>highlight-phrase</code>). <code>phrase</code> can be any regexp, but spaces will be replaced by matches to whitespace and initial lower-case letters will become case insensitive.</li>
+
+<li><a id="index-M_002ds-h-_002e"></a>M-s h . <br />
+C-x w . :: Highlight the symbol found near point, using the next available face (<code>highlight-symbol-at-point</code>).</li>
+
+<li><p>
+<a id="index-M_002ds-h-w"></a>M-s h w <br />
+C-x w b :: Insert all the current highlighting regexp/face pairs into the buffer at point, with comment delimiters to prevent them from changing your program. (This key binding runs the <code>hi-lock-write-interactive-patterns</code> command.)
+</p>
+
+<p>
+These patterns are extracted from the comments, if appropriate, if you invoke M-x hi-lock-find-patterns, or if you visit the file while Hi Lock mode is enabled (since that runs <code>hi-lock-find-patterns</code>).
+</p></li>
+
+<li><p>
+<a id="index-M_002ds-h-f"></a>M-s h f <br />
+C-x w i :: Extract regexp/face pairs from comments in the current buffer (<code>hi-lock-find-patterns</code>). Thus, you can enter patterns interactively with <code>highlight-regexp</code>, store them into the file with <code>hi-lock-write-interactive-patterns</code>, edit them (perhaps including different faces for different parenthesized parts of the match), and finally use this command (<code>hi-lock-find-patterns</code>) to have Hi Lock highlight the edited patterns.
+</p>
+
+<p>
+The variable <code>hi-lock-file-patterns-policy</code> controls whether Hi Lock mode should automatically extract and highlight patterns found in a file when it is visited. Its value can be <code>nil</code> (never highlight), <code>ask</code> (query the user), or a function. If it is a function, <code>hi-lock-find-patterns</code> calls it with the patterns as argument; if the function returns non-<code>nil</code>, the patterns are used. The default is <code>ask</code>. Note that patterns are always highlighted if you call <code>hi-lock-find-patterns</code> directly, regardless of the value of this variable.
+</p>
+
+<p>
+Also, <code>hi-lock-find-patterns</code> does nothing if the current major mode's symbol is a member of the list <code>hi-lock-exclude-modes</code>.
+</p></li>
+</ul>
+
+<hr />
+</div>
+</div>

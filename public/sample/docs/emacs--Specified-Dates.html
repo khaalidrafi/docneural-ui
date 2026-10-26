@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Specified-Dates-1">1. 33.1.3 Specified Dates ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Move-to-Beginning-or-End.html">Beginning or End of Week, Month or Year</a>   Up: <a href="docs/emacs--Calendar-Motion.html">Movement in the Calendar</a>
+</p>
+
+<p>
+<a id="Specified-Dates"></a>
+</p>
+
+<hr />
+<div id="outline-container-Specified-Dates-1" class="outline-2">
+<h2 id="Specified-Dates-1"><span class="section-number-2">1.</span> 33.1.3 Specified Dates <a href="#Specified-Dates-1">¶</a></h2>
+<div class="outline-text-2" id="text-Specified-Dates-1">
+<p>
+Calendar mode provides commands for moving to a particular date specified in various ways.
+</p>
+
+<dl class="org-dl">
+<dt>g d</dt><dd>Move point to specified date (<code>calendar-goto-date</code>).</dd>
+
+<dt>g D</dt><dd>Move point to specified day of year (<code>calendar-goto-day-of-year</code>).</dd>
+
+<dt>g w</dt><dd>Move point to specified week of year (<code>calendar-iso-goto-week</code>).</dd>
+
+<dt>o</dt><dd>Center calendar around specified month (<code>calendar-other-month</code>).</dd>
+
+<dt>.</dt><dd>Move point to today's date (<code>calendar-goto-today</code>).</dd>
+</dl>
+
+<p>
+g d (<code>calendar-goto-date</code>) prompts for a year, a month, and a day of the month, and then moves to that date. Because the calendar includes all dates from the beginning of the current era, you must type the year in its entirety; that is, type ‘=2010=', not ‘=10='.
+</p>
+
+<p>
+g D (<code>calendar-goto-day-of-year</code>) prompts for a year and day number, and moves to that date. Negative day numbers count backward from the end of the year. g w (<code>calendar-iso-goto-week</code>) prompts for a year and week number, and moves to that week.
+</p>
+
+<p>
+o (<code>calendar-other-month</code>) prompts for a month and year, then centers the three-month calendar around that month.
+</p>
+
+<p>
+You can return to today's date with . (<code>calendar-goto-today</code>).
+</p>
+</div>
+</div>

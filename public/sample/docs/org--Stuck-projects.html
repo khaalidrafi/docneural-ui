@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Stuck-projects-1">1. 11.3.5 Stuck projects ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Stuck-projects"></a>
+Previous: <a href="docs/org--Search-view.html">Search view</a>, Up: <a href="docs/org--Built_002din-Agenda-Views.html">The Built-in Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Stuck-projects-1" class="outline-2">
+<h2 id="Stuck-projects-1"><span class="section-number-2">1.</span> 11.3.5 Stuck projects <a href="#Stuck-projects-1">¶</a></h2>
+<div class="outline-text-2" id="text-Stuck-projects-1">
+<p>
+If you are following a system like David Allen's GTD to organize your work, one of the “duties” you have is a regular review to make sure that all projects move along. A <i>stuck</i> project is a project that has no defined next actions, so it never shows up in the TODO lists Org mode produces. During the review, you need to identify such projects and define next actions for them.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-_0023-_0028Agenda-dispatcher_0029"></a>M-x org-agenda # (<code>org-agenda-list-stuck-projects</code>) </dt><dd>List projects that are stuck.</dd>
+
+<dt><a id="index-_0021-_0028Agenda-dispatcher_0029"></a>M-x org-agenda ! </dt><dd>Customize the variable <code>org-stuck-projects</code> to define what a stuck project is and how to find it.</dd>
+</dl>
+
+<p>
+You almost certainly need to configure this view before it works for you. The built-in default assumes that all your projects are level-2 headlines, and that a project is not stuck if it has at least one entry marked with a TODO keyword ‘=TODO=' or ‘=NEXT=' or ‘=NEXTACTION='.
+</p>
+
+<p>
+Let's assume that you, in your own way of using Org mode, identify projects with a tag ‘=:PROJECT:=', and that you use a TODO keyword ‘=MAYBE=' to indicate a project that should not be considered yet. Let's further assume that the TODO keyword ‘=DONE=' marks finished projects, and that ‘=NEXT=' and ‘=TODO=' indicate next actions. The tag ‘=:@shop:=' indicates shopping and is a next action even without the NEXT tag. Finally, if the project contains the special word ‘=IGNORE=' anywhere, it should not be listed either. In this case you would start by identifying eligible projects with a tags/TODO match (see <a href="docs/org--Tag-Searches.html">Tag Searches</a>) ‘=+PROJECT/-MAYBE-DONE=', and then check for ‘=TODO=', ‘=NEXT=', ‘=@shop=', and ‘=IGNORE=' in the subtree to identify projects that are not stuck. The correct customization for this is:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-stuck-projects
+      '("+PROJECT/-MAYBE-DONE" ("NEXT" "TODO") ("@shop")
+        "\\&lt;IGNORE\\&gt;"))
+</pre>
+</div>
+
+<p>
+Note that if a project is identified as non-stuck, the subtree of this entry is searched for stuck projects.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Search-view.html">Search view</a>, Up: <a href="docs/org--Built_002din-Agenda-Views.html">The Built-in Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

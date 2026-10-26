@@ -1,0 +1,184 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-repl">1.0.1. 8.13 Invoking <code>guix repl</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-repl"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>, Previous: <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-repl-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-repl" class="outline-4">
+<h4 id="invoking-guix-repl"><span class="section-number-4">1.0.1.</span> 8.13 Invoking <code>guix repl</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-repl">
+<p>
+<a id="index-guix-repl"></a> <a id="index-REPL_002c-read_002deval_002dprint-loop_002c-script"></a>
+The <code>guix repl</code> command makes it easier to program Guix in Guile by launching a Guile <i>read-eval-print loop</i> (REPL) for interactive programming (see <a href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-Interactively.html#Using-Guile-Interactively">Using Guile Interactively</a> in GNU Guile Reference Manual), or by running Guile scripts (see <a href="https://www.gnu.org/software/guile/manual/html_node/Running-Guile-Scripts.html#Running-Guile-Scripts">Running Guile Scripts</a> in GNU Guile Reference Manual). Compared to just launching the <code>guile</code> command, <code>guix repl</code> guarantees that all the Guix modules and all its dependencies are available in the search path.
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="orge9e8670">
+guix repl options [file args]
+</pre>
+
+<p>
+When a <code>file</code> argument is provided, <code>file</code> is executed as a Guile script:
+</p>
+
+<pre class="example" id="org739d94e">
+guix repl my-script.scm
+</pre>
+
+<p>
+To pass arguments to the script, use <code>--</code> to prevent them from being interpreted as arguments to <code>guix repl</code> itself:
+</p>
+
+<pre class="example" id="orgfc308f8">
+guix repl -- my-script.scm --input=foo.txt
+</pre>
+
+<p>
+To make a script executable directly from the shell, using the guix executable that is on the user's search path, add the following two lines at the top of the script:
+</p>
+
+<pre class="example" id="org784edd4">
+#!/usr/bin/env -S guix repl --
+!#
+</pre>
+
+<p>
+To make a script that launches an interactive REPL directly from the shell, use the <code>--interactive</code> flag:
+</p>
+
+<pre class="example" id="org552dda7">
+#!/usr/bin/env -S guix repl --interactive
+!#
+</pre>
+
+<p>
+Without a file name argument, a Guile REPL is started, allowing for interactive use (see <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>):
+</p>
+
+<pre class="example" id="org7c7a371">
+$ guix repl
+scheme@(guile-user)&gt; ,use (gnu packages base)
+scheme@(guile-user)&gt; coreutils
+$1 = #&lt;package coreutils@8.29 gnu/packages/base.scm:327 3e28300&gt;
+</pre>
+
+<p>
+<a id="index-inferiors-1"></a>
+In addition, <code>guix repl</code> implements a simple machine-readable REPL protocol for use by <code>(guix inferior)</code>, a facility to interact with <i>inferiors</i>, separate processes running a potentially different revision of Guix.
+</p>
+
+<p>
+The available options are as follows:
+</p>
+
+<dl class="org-dl">
+<dt><code>--list-types</code></dt><dd>Display the <code>TYPE</code> options for <code>guix repl --type=TYPE</code> and exit.</dd>
+
+<dt>(no term)</dt><dd><code>--type===type</code><br />
+<code>-t ==type</code> :: Start a REPL of the given <code>TYPE</code>, which can be one of the following:
+
+<dl class="org-dl">
+<dt><code>guile</code></dt><dd>This is default, and it spawns a standard full-featured Guile REPL.</dd>
+
+<dt><code>machine</code></dt><dd>Spawn a REPL that uses the machine-readable protocol. This is the protocol that the <code>(guix inferior)</code> module speaks.</dd>
+</dl></dd>
+
+<dt><code>--listen===endpoint</code></dt><dd>By default, <code>guix repl</code> reads from standard input and writes to standard output. When this option is passed, it will instead listen for connections on <code>endpoint</code>. Here are examples of valid options:
+
+<dl class="org-dl">
+<dt><code>--listen=tcp:37146</code></dt><dd>Accept connections on localhost on port 37146.</dd>
+
+<dt><code>--listen=unix:/tmp/socket</code></dt><dd>Accept connections on the Unix-domain socket <code>/tmp/socket</code>.</dd>
+</dl></dd>
+
+<dt>(no term)</dt><dd><code>--interactive</code><br />
+<code>-i</code> :: Launch the interactive REPL after <code>file</code> is executed.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--load-path===directory</code><br />
+<code>-L ==directory</code> :: Add <code>directory</code> to the front of the package module search path (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+This allows users to define their own packages and make them visible to the script or REPL.
+</p></dd>
+
+<dt><code>-q</code></dt><dd>Inhibit loading of the <code>~/.guile</code> file. By default, that configuration file is loaded when spawning a <code>guile</code> REPL.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>, Previous: <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

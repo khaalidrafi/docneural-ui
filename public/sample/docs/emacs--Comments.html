@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Manipulating-Comments">1. 28.5 Manipulating Comments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Documentation.html">Documentation Lookup</a>   Previous: <a href="docs/emacs--Parentheses.html">Commands for Editing with Parentheses</a>   Up: <a href="docs/emacs--Programs.html">Editing Programs</a>
+</p>
+
+<p>
+<a id="Comments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Manipulating-Comments" class="outline-2">
+<h2 id="Manipulating-Comments"><span class="section-number-2">1.</span> 28.5 Manipulating Comments <a href="#Manipulating-Comments">¶</a></h2>
+<div class="outline-text-2" id="text-Manipulating-Comments">
+<p>
+Because comments are such an important part of programming, Emacs provides special commands for editing and inserting comments. It can also do spell checking on comments with Flyspell Prog mode (see <a href="docs/emacs--Spelling.html">Checking and Correcting Spelling</a>).
+</p>
+
+<p>
+Some major modes have special rules for indenting different kinds of comments. For example, in Lisp code, comments starting with two semicolons are indented as if they were lines of code, while those starting with three semicolons are supposed to be aligned to the left margin and are often used for sectioning purposes. Emacs understands these conventions; for instance, typing TAB on a comment line will indent the comment to the appropriate position.
+</p>
+
+<pre class="example" id="orgb6c2c0b">
+;; This function is just an example.
+;;; Here either two or three semicolons are appropriate.
+(defun foo (x)
+;;;  And now, the first part of the function:
+  ;; The following line adds one.
+  (1+ x))           ; This line adds one.
+</pre>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Comment-Commands.html">Comment Commands</a></li>
+<li><a href="docs/emacs--Multi_002dLine-Comments.html">Multiple Lines of Comments</a></li>
+<li><a href="docs/emacs--Options-for-Comments.html">Options Controlling Comments</a></li>
+</ul>
+</div>
+</div>

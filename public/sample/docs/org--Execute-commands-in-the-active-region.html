@@ -1,0 +1,34 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Execute-commands-in-the-active-region-1">1. 17.5 Execute commands in the active region ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Execute-commands-in-the-active-region"></a>
+Next: <a href="docs/org--Dynamic-Headline-Numbering.html">Dynamic Headline Numbering</a>, Previous: <a href="docs/org--Clean-View.html">A Cleaner Outline View</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Execute-commands-in-the-active-region-1" class="outline-2">
+<h2 id="Execute-commands-in-the-active-region-1"><span class="section-number-2">1.</span> 17.5 Execute commands in the active region <a href="#Execute-commands-in-the-active-region-1">¶</a></h2>
+<div class="outline-text-2" id="text-Execute-commands-in-the-active-region-1">
+<p>
+When in an Org buffer and the region is active, some commands will apply to all the subtrees in the active region. For example, hitting C-c C-s when multiple headlines are within the active region will successively prompt you for a new schedule date and time. To disable this, set the option <code>org-loop-over-headlines-in-active-region</code> to non-<code>t</code>, activate the region and run the command normally.
+</p>
+
+<p>
+<code>org-agenda-loop-over-headlines-in-active-region</code> is the equivalent option of the agenda buffer, where you can also use <a href="docs/org--Agenda-Commands.html#Bulk-remote-editing-selected-entries">bulk editing of selected entries</a>.
+</p>
+
+<p>
+Not all commands can loop in the active region and what subtrees or headlines are considered can be refined: see the docstrings of these options for more details.
+</p>
+</div>
+</div>

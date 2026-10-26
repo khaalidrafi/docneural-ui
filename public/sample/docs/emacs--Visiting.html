@@ -1,0 +1,169 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Visiting-Files">1. 20.2 Visiting Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Saving.html">Saving Files</a>   Previous: <a href="docs/emacs--File-Names.html">File Names</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Visiting"></a>
+</p>
+
+<hr />
+<div id="outline-container-Visiting-Files" class="outline-2">
+<h2 id="Visiting-Files"><span class="section-number-2">1.</span> 20.2 Visiting Files <a href="#Visiting-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Visiting-Files">
+<dl class="org-dl">
+<dt>C-x C-f</dt><dd>Visit a file (<code>find-file</code>).</dd>
+
+<dt>C-x C-r</dt><dd>Visit a file for viewing, without allowing changes to it (<code>find-file-read-only</code>).</dd>
+
+<dt>C-x C-v</dt><dd>Visit a different file instead of the one visited last (<code>find-alternate-file</code>).</dd>
+
+<dt>C-x 4 f</dt><dd>Visit a file, in another window (<code>find-file-other-window</code>). Don't alter what is displayed in the selected window.</dd>
+
+<dt>C-x 5 f</dt><dd>Visit a file, in a new frame (<code>find-file-other-frame</code>). Don't alter what is displayed in the selected frame.</dd>
+
+<dt>M-x find-file-literally</dt><dd>Visit a file with no conversion of the contents.</dd>
+</dl>
+
+<p>
+<i>Visiting</i> a file means reading its contents into an Emacs buffer so you can edit them. Emacs makes a new buffer for each file that you visit.
+</p>
+
+<p>
+To visit a file, type C-x C-f (<code>find-file</code>) and use the minibuffer to enter the name of the desired file. While in the minibuffer, you can abort the command by typing C-g. See <a href="docs/emacs--File-Names.html">File Names</a>, for details about entering file names into minibuffers.
+</p>
+
+<p>
+If the specified file exists but the system does not allow you to read it, an error message is displayed in the echo area (on GNU and Unix systems you might be able to visit such a file using the ‘=su=' or ‘=sudo=' methods; see <a href="docs/emacs--Remote-Files.html">Remote Files</a>). Otherwise, you can tell that C-x C-f has completed successfully by the appearance of new text on the screen, and by the buffer name shown in the mode line (see <a href="docs/emacs--Mode-Line.html">The Mode Line</a>). Emacs normally constructs the buffer name from the file name, omitting the directory name. For example, a file named <code>/usr/rms/emacs.tex</code> is visited in a buffer named ‘=emacs.tex='. If there is already a buffer with that name, Emacs constructs a unique name; the normal method is to add a suffix based on the directory name (e.g., ‘=&lt;rms&gt;=', ‘=&lt;tmp&gt;=', and so on), but you can select other methods. See <a href="docs/emacs--Uniquify.html">Making Buffer Names Unique</a>.
+</p>
+
+<p>
+To create a new file, just visit it using the same command, C-x C-f. Emacs displays ‘=(New file)=' in the echo area, but in other respects behaves as if you had visited an existing empty file.
+</p>
+
+<p>
+After visiting a file, the changes you make with editing commands are made in the Emacs buffer. They do not take effect in the visited file, until you <i>save</i> the buffer (see <a href="docs/emacs--Saving.html">Saving Files</a>). If a buffer contains changes that have not been saved, we say the buffer is <i>modified</i>. This implies that some changes will be lost if the buffer is not saved. The mode line displays two stars near the left margin to indicate that the buffer is modified.
+</p>
+
+<p>
+If you visit a file that is already in Emacs, C-x C-f switches to the existing buffer instead of making another copy. Before doing so, it checks whether the file has changed since you last visited or saved it. If the file has changed, Emacs offers to reread it.
+</p>
+
+<p>
+If you try to visit a file larger than <code>large-file-warning-threshold</code> (the default is 10000000, which is about 10 megabytes), Emacs asks you for confirmation first. You can answer y to proceed with visiting the file or l to visit the file literally (see below). Visiting large files literally speeds up navigation and editing of such files, because various potentially-expensive features are turned off. Note, however, that Emacs cannot visit files that are larger than the maximum Emacs buffer size, which is limited by the amount of memory Emacs can allocate and by the integers that Emacs can represent (see <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>). If you try, Emacs displays an error message saying that the maximum buffer size has been exceeded.
+</p>
+
+<p>
+If you try to visit a file whose major mode (see <a href="docs/emacs--Major-Modes.html">Major Modes</a>) uses the tree-sitter parsing library, Emacs will display a warning if the file's size in bytes is larger than the value of the variable <code>treesit-max-buffer-size</code>. The default value is 40 megabytes for 64-bit Emacs and 15 megabytes for 32-bit Emacs. This avoids the danger of having Emacs run out of memory by preventing the activation of major modes based on tree-sitter in such large buffers, because a typical tree-sitter parser needs about 10 times as much memory as the text it parses.
+</p>
+
+<p>
+If the file name you specify contains shell-style wildcard characters, Emacs visits all the files that match it. (On case-insensitive filesystems, Emacs matches the wildcards disregarding the letter case.) Wildcards include ‘=?=', ‘=*=', and ‘=[…]=' sequences. To enter the wild card ‘=?=' in a file name in the minibuffer, you need to type C-q ?. See <a href="docs/emacs--Quoted-File-Names.html">Quoted File Names</a>, for information on how to visit a file whose name actually contains wildcard characters. You can disable the wildcard feature by customizing <code>find-file-wildcards</code>.
+</p>
+
+<p>
+If you're asking to visit a file that's already visited in a buffer, but the file has changed externally, Emacs normally asks you whether you want to re-read the file from disk. But if you set <code>query-about-changed-file</code> to <code>nil</code>, Emacs won't query you, but will instead just display the buffer's contents before the changes, and show an echo-area message telling you how to revert the buffer from the file.
+</p>
+
+<p>
+If you visit the wrong file unintentionally by typing its name incorrectly, type C-x C-v (<code>find-alternate-file</code>) to visit the file you really wanted. C-x C-v is similar to C-x C-f, but it kills the current buffer (after first offering to save it if it is modified). When C-x C-v reads the file name to visit, it inserts the entire default file name in the buffer, with point just after the directory part; this is convenient if you made a slight error in typing the name.
+</p>
+
+<p>
+If you visit a file that is actually a directory, Emacs invokes Dired, the Emacs directory browser. See <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>. You can disable this behavior by setting the variable <code>find-file-run-dired</code> to <code>nil</code>; in that case, it is an error to try to visit a directory.
+</p>
+
+<p>
+Files which are actually collections of other files, or <i>file archives</i>, are visited in special modes which invoke a Dired-like environment to allow operations on archive members. See <a href="docs/emacs--File-Archives.html">File Archives</a>, for more about these features.
+</p>
+
+<p>
+If you visit a file that the operating system won't let you modify, or that is marked read-only, Emacs makes the buffer read-only too, so that you won't go ahead and make changes that you'll have trouble saving afterward. You can make the buffer writable with C-x C-q (<code>read-only-mode</code>). See <a href="docs/emacs--Misc-Buffer.html">Miscellaneous Buffer Operations</a>.
+</p>
+
+<p>
+If you want to visit a file as read-only in order to protect yourself from entering changes accidentally, visit it with the command C-x C-r (<code>find-file-read-only</code>) instead of C-x C-f.
+</p>
+
+<p>
+C-x 4 f (<code>find-file-other-window</code>) is like C-x C-f except that the buffer containing the specified file is selected in another window. The window that was selected before C-x 4 f continues to show the same buffer it was already showing. If this command is used when only one window is being displayed, that window is split in two, with one window showing the same buffer as before, and the other one showing the newly requested file. See <a href="docs/emacs--Windows.html">Multiple Windows</a>.
+</p>
+
+<p>
+C-x 5 f (<code>find-file-other-frame</code>) is similar, but opens a new frame, or selects any existing frame showing the specified file. See <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>.
+</p>
+
+<p>
+On graphical displays, there are two additional methods for visiting files. Firstly, when Emacs is built with a suitable GUI toolkit, commands invoked with the mouse (by clicking on the menu bar or tool bar) use the toolkit's standard file selection dialog instead of prompting for the file name in the minibuffer. On GNU/Linux and Unix platforms, Emacs does this when built with GTK+, LessTif, and Motif toolkits; on MS-Windows and Mac, the GUI version does that by default. For information on how to customize this, see <a href="docs/emacs--Dialog-Boxes.html">Using Dialog Boxes</a>.
+</p>
+
+<p>
+Secondly, Emacs supports drag and drop: dropping a file into an ordinary Emacs window visits the file using that window. As an exception, dropping a file into a window displaying a Dired buffer moves or copies the file into the displayed directory. For details, see <a href="docs/emacs--Drag-and-Drop.html">Drag and Drop</a>, and <a href="docs/emacs--Misc-Dired-Features.html">Other Dired Features</a>.
+</p>
+
+<p>
+On text-mode terminals and on graphical displays when Emacs was built without a GUI toolkit, you can visit files via the menu-bar ‘=File=' menu, which has the ‘=Visit New File=' and the ‘=Open File=' items.
+</p>
+
+<p>
+Each time you visit a file, Emacs automatically scans its contents to detect what character encoding and end-of-line convention it uses, and converts these to Emacs's internal encoding and end-of-line convention within the buffer. When you save the buffer, Emacs performs the inverse conversion, writing the file to disk with its original encoding and end-of-line convention. See <a href="docs/emacs--Coding-Systems.html">Coding Systems</a>.
+</p>
+
+<p>
+If you wish to edit a file as a sequence of ASCII characters with no special encoding or conversion, use the M-x find-file-literally command. This visits a file, like C-x C-f, but does not do format conversion (see <a href="../elisp_html/Format-Conversion.html#Format-Conversion">Format Conversion</a> in the Emacs Lisp Reference Manual), character code conversion (see <a href="docs/emacs--Coding-Systems.html">Coding Systems</a>), or automatic uncompression (see <a href="docs/emacs--Compressed-Files.html">Accessing Compressed Files</a>), and does not add a final newline because of <code>require-final-newline</code> (see <a href="docs/emacs--Customize-Save.html">Customizing Saving of Files</a>). If you have already visited the same file in the usual (non-literal) manner, this command asks you whether to visit it literally instead.
+</p>
+
+<p>
+Files are sometimes (loosely) tied to other files, and you could call these files <i>sibling files</i>. For instance, when editing C files, if you have a file called ‘="foo.c"<code>', you often also have a file called ‘</code>"foo.h"<code>', and that could be its sibling file. Or you may have different versions of a file, for instance ‘</code>"src/emacs/emacs-27/lisp/allout.el"<code>' and ‘</code>"src/emacs/emacs-28/lisp/allout.el"<code>' might be considered siblings. Emacs provides the =find-sibling-file</code> command to jump between sibling files, but it's impossible to guess at which files a user might want to be considered siblings, so Emacs lets you configure this freely by altering the <code>find-sibling-rules</code> user option. This is a list of match/expansion elements.
+</p>
+
+<p>
+For instance, to do the ‘=".c"<code>' to ‘</code>".h"=' mapping, you could say:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq find-sibling-rules
+      '(("\\([^/]+\\)\\.c\\'" "\\1.h")))
+</pre>
+</div>
+
+<p>
+(<code>ff-find-related-file</code> offers similar functionality especially geared towards C files, see <a href="docs/emacs--Other-C-Commands.html">Other Commands for C Mode</a>.)
+</p>
+
+<p>
+Or, if you want to consider all files under ‘="src/emacs/DIR/file-name"=' to be siblings of other =dir=s, you could say:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq find-sibling-rules
+      '(("src/emacs/[^/]+/\\(.*\\)\\'" "src/emacs/.*/\\1")))
+</pre>
+</div>
+
+<p>
+As you can see, this is a list of <code>(==MATCH=</code> <code>=EXPANSION=</code>&#x2026;)= elements. The <code>match</code> is a regular expression that matches the visited file name, and each <code>expansion</code> may refer to match groups by using ‘=\\1=' and so on. The resulting expansion string is then applied to the file system to see if any files match this expansion (interpreted as a regexp).
+</p>
+
+<p>
+Two special hook variables allow extensions to modify the operation of visiting files. Visiting a file that does not exist runs the functions in <code>find-file-not-found-functions</code>; this variable holds a list of functions, which are called one by one (with no arguments) until one of them returns non-<code>nil</code>. This is not a normal hook, and the name ends in ‘=-functions=' rather than ‘=-hook=' to indicate that fact.
+</p>
+
+<p>
+Successful visiting of any file, whether existing or not, calls the functions in <code>find-file-hook</code>, with no arguments. This variable is a normal hook. In the case of a nonexistent file, the <code>find-file-not-found-functions</code> are run first. See <a href="docs/emacs--Hooks.html">Hooks</a>.
+</p>
+
+<p>
+There are several ways to specify automatically the major mode for editing the file (see <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>), and to specify local variables defined for that file (see <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>).
+</p>
+
+<hr />
+</div>
+</div>

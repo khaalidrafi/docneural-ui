@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Link-Abbreviations-1">1. 4.7 Link Abbreviations ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Link-Abbreviations"></a>
+Next: <a href="docs/org--Search-Options.html">Search Options in File Links</a>, Previous: <a href="docs/org--Using-Links-Outside-Org.html">Using Links Outside Org</a>, Up: <a href="docs/org--Hyperlinks.html">Hyperlinks</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Link-Abbreviations-1" class="outline-2">
+<h2 id="Link-Abbreviations-1"><span class="section-number-2">1.</span> 4.7 Link Abbreviations <a href="#Link-Abbreviations-1">¶</a></h2>
+<div class="outline-text-2" id="text-Link-Abbreviations-1">
+<p>
+Long URLs can be cumbersome to type, and often many similar links are needed in a document. For this you can use link abbreviations. An abbreviated link looks like this
+</p>
+
+<pre class="example" id="org0b58671">
+[[linkword:tag][description]]
+</pre>
+
+<p>
+where the tag is optional. The <i>linkword</i> must be a word, starting with a letter, followed by letters, numbers, ‘=-<code>', and ‘=_</code>'. Abbreviations are resolved according to the information in the variable <code>org-link-abbrev-alist</code> that relates the linkwords to replacement text. Here is an example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-link-abbrev-alist
+      '(("bugzilla"        . "https://10.1.2.9/bugzilla/show_bug.cgi?id=")
+        ("Nu Html Checker" . "https://validator.w3.org/nu/?doc=%h")
+        ("duckduckgo"      . "https://duckduckgo.com/?q=%s")
+        ("omap"            . "https://nominatim.openstreetmap.org/search?q=%s&amp;polygon=1")
+        ("ads"             . "https://ui.adsabs.harvard.edu/search/q=%20author%3A\"%s\"")))
+</pre>
+</div>
+
+<p>
+If the replacement text contains the string ‘=%s=', it is replaced with the tag. Using ‘=%h=' instead of ‘=%s=' percent-encodes the tag (see the example above, where we need to encode the URL parameter). Using ‘=%(my-function)=' passes the tag to a custom Lisp function, and replaces it by the resulting string.
+</p>
+
+<p>
+If the replacement text does not contain any specifier, it is simply appended to the string in order to create the link.
+</p>
+
+<p>
+Instead of a string, you may also specify a Lisp function to create the link. Such a function will be called with the tag as the only argument.
+</p>
+
+<p>
+With the above setting, you could link to a specific bug with ‘==', search the web for ‘=OrgMode=' with ‘==', show the map location of the Free Software Foundation ‘==' or of Carsten's office ‘==' and find out what the Org author is doing besides Emacs hacking with ‘=='.
+</p>
+
+<p>
+If you need special abbreviations just for a single Org buffer, you can define them in the file with
+</p>
+
+<pre class="example" id="orgeb7e9da">
+#+LINK: bugzilla  https://10.1.2.9/bugzilla/show_bug.cgi?id=
+#+LINK: duckduckgo https://duckduckgo.com/?q=%s
+#+LINK: "Nu Html Checker" https://validator.w3.org/nu/?doc=%h
+</pre>
+
+<p>
+The abbreviations containing spaces must be quoted.
+</p>
+
+<p>
+In-buffer completion (see <a href="docs/org--Completion.html">Completion</a>) can be used after ‘=[=' to complete link abbreviations. You may also define a Lisp function that implements special (e.g., completion) support for inserting such a link with C-c C-l. Such a function should not accept any arguments, and should return the full link with a prefix. You can set the link completion function like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(org-link-set-parameter "type" :complete #'some-completion-function)
+</pre>
+</div>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Search-Options.html">Search Options in File Links</a>, Previous: <a href="docs/org--Using-Links-Outside-Org.html">Using Links Outside Org</a>, Up: <a href="docs/org--Hyperlinks.html">Hyperlinks</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

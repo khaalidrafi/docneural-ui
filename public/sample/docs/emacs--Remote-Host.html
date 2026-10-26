@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Remote-Host-Shell">1. 40.10 Remote Host Shell ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Serial-Terminal.html">Serial Terminal</a>   Previous: <a href="docs/emacs--Term-Mode.html">Term Mode</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Remote-Host"></a>
+</p>
+
+<hr />
+<div id="outline-container-Remote-Host-Shell" class="outline-2">
+<h2 id="Remote-Host-Shell"><span class="section-number-2">1.</span> 40.10 Remote Host Shell <a href="#Remote-Host-Shell">¶</a></h2>
+<div class="outline-text-2" id="text-Remote-Host-Shell">
+<p>
+You can login to a remote computer, using whatever commands you would from a regular terminal (e.g., the <code>ssh</code> command), from a Term window.
+</p>
+
+<p>
+A program that asks you for a password will normally suppress echoing of the password, so the password will not show up in the buffer. This will happen just as if you were using a real terminal, if the buffer is in char mode. If it is in line mode, the password is temporarily visible, but will be erased when you hit return. (This happens automatically; there is no special password processing.)
+</p>
+
+<p>
+When you log in to a different machine, you need to specify the type of terminal you're using, by setting the <code>TERM</code> environment variable in the environment for the remote login command. (If you use bash, you do that by writing the variable assignment before the remote login command, without a separating comma.) Terminal types ‘=ansi=' or ‘=vt100=' will work on most systems.
+</p>
+</div>
+</div>

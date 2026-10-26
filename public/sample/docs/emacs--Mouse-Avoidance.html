@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Avoidance-1">1. 23.20 Mouse Avoidance ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Text-Terminals.html">Text Terminals</a>   Previous: <a href="docs/emacs--Tooltips.html">Tooltips</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Mouse-Avoidance"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Avoidance-1" class="outline-2">
+<h2 id="Mouse-Avoidance-1"><span class="section-number-2">1.</span> 23.20 Mouse Avoidance <a href="#Mouse-Avoidance-1">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Avoidance-1">
+<p>
+On graphical terminals, the mouse pointer may obscure the text in the Emacs frame. Emacs provides two methods to avoid this problem.
+</p>
+
+<p>
+Firstly, Emacs hides the mouse pointer each time you type a self-inserting character, if the pointer lies inside an Emacs frame; moving the mouse pointer makes it visible again. To disable this feature, set the variable <code>make-pointer-invisible</code> to <code>nil</code>. See <a href="docs/emacs--Display-Custom.html">Customization of Display</a>.
+</p>
+
+<p>
+Secondly, you can use Mouse Avoidance mode, a minor mode, to keep the mouse pointer away from point. To use Mouse Avoidance mode, customize the variable <code>mouse-avoidance-mode</code>. You can set this to various values to move the mouse in several ways:
+</p>
+
+<dl class="org-dl">
+<dt><code>banish</code></dt><dd>Move the pointer to a corner of the frame on any key-press. You can customize the variable <code>mouse-avoidance-banish-position</code> to specify where the pointer goes when it is banished.</dd>
+
+<dt><code>exile</code></dt><dd>Banish the pointer only if the cursor gets too close, and allow it to return once the cursor is out of the way.</dd>
+
+<dt><code>jump</code></dt><dd>If the cursor gets too close to the pointer, displace the pointer by a random distance and direction.</dd>
+
+<dt><code>animate</code></dt><dd>As <code>jump</code>, but shows steps along the way for illusion of motion.</dd>
+
+<dt><code>cat-and-mouse</code></dt><dd>The same as <code>animate</code>.</dd>
+
+<dt><code>proteus</code></dt><dd>As <code>animate</code>, but changes the shape of the mouse pointer too.</dd>
+</dl>
+
+<p>
+You can also use the command M-x mouse-avoidance-mode to enable the mode. Whenever Mouse Avoidance mode moves the mouse, it also raises the frame.
+</p>
+
+<hr />
+</div>
+</div>

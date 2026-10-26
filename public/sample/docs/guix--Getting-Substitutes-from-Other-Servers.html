@@ -1,0 +1,177 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Getting-Substitutes-from-Other-Servers"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Substitute-Authentication.html">Substitute Authentication</a>, Previous: <a href="docs/guix--Substitute-Server-Authorization.html">Substitute Server Authorization</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Getting-Substitutes-from-Other-Servers-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="getting-substitutes-from-other-servers"></a>5.3.3 Getting Substitutes from Other Servers<br />
+<div class="outline-text-5" id="text-getting-substitutes-from-other-servers">
+<p>
+<a id="index-substitute-servers_002c-adding-more"></a>
+Guix can look up and fetch substitutes from several servers. This is useful when you are using packages from additional channels for which the official server does not have substitutes but another server provides them. Another situation where this is useful is when you would prefer to download from your organization's substitute server, resorting to the official server only as a fallback or dismissing it altogether.
+</p>
+
+<p>
+You can give Guix a list of substitute server URLs and it will check them in the specified order. You also need to explicitly authorize the public keys of substitute servers to instruct Guix to accept the substitutes they sign.
+</p>
+
+<p>
+On Guix System, this is achieved by modifying the configuration of the <code>guix</code> service. Since the <code>guix</code> service is part of the default lists of services, <code>%base-services</code> and <code>%desktop-services</code>, you can use <code>modify-services</code> to change its configuration and add the URLs and substitute keys that you want (see <a href="docs/guix--Service-Reference.html"><code>modify-services</code></a>).
+</p>
+
+<p>
+As an example, suppose you want to fetch substitutes from <code>guix.example.org</code> and to authorize the signing key of that server, in addition to the default <code>bordeaux.guix.gnu.org</code> and <code>ci.guix.gnu.org</code>. The resulting operating system configuration will look something like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; …
+  (services
+    ;; Assume we're starting from '%desktop-services'.  Replace it
+    ;; with the list of services you're actually using.
+    (modify-services %desktop-services
+      (guix-service-type config =&gt;
+                        (guix-configuration
+                          (inherit config)
+                          (substitute-urls
+                            (append (list "https://guix.example.org")
+                                    %default-substitute-urls))
+                          (authorized-keys
+                            (append (list (local-file "./key.pub"))
+                                    %default-authorized-guix-keys)))))))
+</pre>
+</div>
+
+<p>
+This assumes that the file <code>key.pub</code> contains the signing key of <code>guix.example.org</code>. With this change in place in your operating system configuration file (say <code>/etc/config.scm</code>), you can reconfigure and restart the <code>guix-daemon</code> service or reboot so the changes take effect:
+</p>
+
+<pre class="example" id="org28b7f51">
+$ sudo guix system reconfigure /etc/config.scm
+$ sudo herd restart guix-daemon
+</pre>
+
+<p>
+If you're running Guix on a “foreign distro”, you would instead take the following steps to get substitutes from additional servers:
+</p>
+
+<ol class="org-ol">
+<li><p>
+Edit the service configuration file for <code>guix-daemon</code>; when using systemd, this is normally <code>/etc/systemd/system/guix-daemon.service</code>. Add the <code>--substitute-urls</code> option on the <code>guix-daemon</code> command line and list the URLs of interest (see <a href="docs/guix--Invoking-guix_002ddaemon.html#daemon_002dsubstitute_002durls"><code>guix-daemon --substitute-urls</code></a>):
+</p>
+
+<pre class="example" id="orgdfd263d">
+… --substitute-urls='https://guix.example.org https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'
+</pre></li>
+
+<li><p>
+Restart the daemon. For systemd, it goes like this:
+</p>
+
+<pre class="example" id="org8a42e09">
+systemctl daemon-reload
+systemctl restart guix-daemon.service
+</pre></li>
+
+<li><p>
+Authorize the key of the new server (see <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>):
+</p>
+
+<pre class="example" id="org25a06be">
+guix archive --authorize &lt; key.pub
+</pre>
+
+<p>
+Again this assumes <code>key.pub</code> contains the public key that <code>guix.example.org</code> uses to sign substitutes.
+</p></li>
+</ol>
+
+<p>
+Now you're all set! Substitutes will be preferably taken from <code>https://guix.example.org</code>, using <code>bordeaux.guix.gnu.org</code> then <code>ci.guix.gnu.org</code> as fallback options. Of course you can list as many substitute servers as you like, with the caveat that substitute lookup can be slowed down if too many servers need to be contacted.
+</p>
+
+<blockquote>
+<p>
+<b>Troubleshooting:</b> To diagnose problems, you can run <code>guix weather</code>. For example, running:
+</p>
+
+<pre class="example" id="orgf96708f">
+guix weather coreutils
+</pre>
+
+<p>
+not only tells you which of the currently-configured servers has substitutes for the <code>coreutils</code> package, it also reports whether one of these servers is unauthorized. See <a href="docs/guix--Invoking-guix-weather.html">Invoking <code>guix weather</code></a>, for more information.
+</p>
+</blockquote>
+
+<p>
+Note that there are also situations where one may want to add the URL of a substitute server <i>without</i> authorizing its key. See <a href="docs/guix--Substitute-Authentication.html">Substitute Authentication</a>, to understand this fine point.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Substitute-Authentication.html">Substitute Authentication</a>, Previous: <a href="docs/guix--Substitute-Server-Authorization.html">Substitute Server Authorization</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

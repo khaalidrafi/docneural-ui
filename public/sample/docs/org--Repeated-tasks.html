@@ -1,0 +1,144 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Repeated-tasks-1">0.0.1. 8.3.2 Repeated tasks ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org97c8271">1. <span class="todo TODO">TODO</span> Pay the rent</a></li>
+<li><a href="#org8431386">2. <span class="todo TODO">TODO</span> Pay the rent</a></li>
+<li><a href="#org91df84e">3. <span class="todo TODO">TODO</span> Call Father</a></li>
+<li><a href="#orgc59f625">4. <span class="todo TODO">TODO</span> Empty kitchen trash</a></li>
+<li><a href="#orgfa311f3">5. <span class="todo TODO">TODO</span> Check the batteries in the smoke detectors</a></li>
+<li><a href="#org53c436c">6. <span class="todo TODO">TODO</span> Wash my hands</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Repeated-tasks"></a>
+Previous: <a href="docs/org--Inserting-deadline_002fschedule.html">Inserting deadlines or schedules</a>, Up: <a href="docs/org--Deadlines-and-Scheduling.html">Deadlines and Scheduling</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Repeated-tasks-1" class="outline-4">
+<h4 id="Repeated-tasks-1"><span class="section-number-4">0.0.1.</span> 8.3.2 Repeated tasks <a href="#Repeated-tasks-1">¶</a></h4>
+<div class="outline-text-4" id="text-Repeated-tasks-1">
+<p>
+Some tasks need to be repeated again and again. Org mode helps to organize such tasks using a so-called repeater in a ‘=DEADLINE=', ‘=SCHEDULED=', or plain timestamps. In the following example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org97c8271" class="outline-2">
+<h2 id="org97c8271"><span class="section-number-2">1.</span> <span class="todo TODO">TODO</span> Pay the rent</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+the ‘=+1m=' is a repeater; the intended interpretation is that the task has a deadline on ‘=<span class="timestamp-wrapper"><span class="timestamp">&lt;2005-10-01 Sat&gt;</span></span>=' and repeats itself every (one) month starting from that time. You can use yearly, monthly, weekly, daily and hourly repeat cookies by using the ‘=y=', ‘=m=', ‘=w=', ‘=d=' and ‘=h=' letters. If you need both a repeater and a special warning period in a deadline entry, the repeater should come first and the warning period last
+</p>
+
+<pre class="example" id="org0f2e433">
+DEADLINE: &lt;2005-10-01 Sat +1m -3d&gt;
+</pre>
+
+<p>
+Deadlines and scheduled items produce entries in the agenda when they are over-due, so it is important to be able to mark such an entry as done once you have done so. When you mark a ‘=DEADLINE=' or a ‘=SCHEDULED=' with the TODO keyword ‘=DONE=', it no longer produces entries in the agenda. The problem with this is, however, is that then also the <i>next</i> instance of the repeated entry will not be active. Org mode deals with this in the following way: when you try to mark such an entry as done, using C-c C-t, it shifts the base date of the repeating timestamp by the repeater interval, and immediately sets the entry state back to TODO. In the example above, setting the state to ‘=DONE=' would actually switch the date like this:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org8431386" class="outline-2">
+<h2 id="org8431386"><span class="section-number-2">2.</span> <span class="todo TODO">TODO</span> Pay the rent</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+When task contains multiple timestamps with repeater interval, all these timestamps are shifted.
+</p>
+
+<p>
+To mark a task with a repeater as DONE, use C&#x2013; 1 C-c C-t, i.e., <code>org-todo</code> with a numeric prefix argument of ‘=-1='.
+</p>
+
+<p>
+A timestamp is added under the deadline, to keep a record that you actually acted on the previous instance of this deadline.
+</p>
+
+<p>
+As a consequence of shifting the base date, this entry is no longer visible in the agenda when checking past dates, but all future instances will be visible.
+</p>
+
+<p>
+With the ‘=+1m=' cookie, the date shift is always exactly one month. So if you have not paid the rent for three months, marking this entry DONE still keeps it as an overdue deadline. Depending on the task, this may not be the best way to handle it. For example, if you forgot to call your father for 3 weeks, it does not make sense to call him 3 times in a single day to make up for it. Finally, there are tasks, like changing batteries, which should always repeat a certain time <i>after</i> the last time you did it. For these tasks, Org mode has special repeaters ‘=++=' and ‘=.+='. For example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org91df84e" class="outline-2">
+<h2 id="org91df84e"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> Call Father</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Marking this as DONE shifts the date by at least one week, but also
+by as many weeks as it takes to get this date into the future.
+However, it stays on a Sunday, even if you called and marked it
+done on Saturday.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc59f625" class="outline-2">
+<h2 id="orgc59f625"><span class="section-number-2">4.</span> <span class="todo TODO">TODO</span> Empty kitchen trash</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Marking this as DONE shifts the date by at least one day, and also
+by as many days as it takes to get the timestamp into the future.
+Since there is a time in the timestamp, the next deadline in the
+future will be on today's date if you complete the task before
+20:00.
+</p>
+</div>
+</div>
+<div id="outline-container-orgfa311f3" class="outline-2">
+<h2 id="orgfa311f3"><span class="section-number-2">5.</span> <span class="todo TODO">TODO</span> Check the batteries in the smoke detectors</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Marking this as DONE shifts the date to one month after today.
+</p>
+</div>
+</div>
+<div id="outline-container-org53c436c" class="outline-2">
+<h2 id="org53c436c"><span class="section-number-2">6.</span> <span class="todo TODO">TODO</span> Wash my hands</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+   Marking this as DONE shifts the date to exactly one hour from now.
+#+end<sub>src</sub>
+</p>
+
+<p>
+You may have both scheduling and deadline information for a specific task. If the repeater is set for the scheduling information only, you probably want the repeater to be ignored after the deadline. If so, set the variable <code>org-agenda-skip-scheduled-repeats-after-deadline</code> to <code>t</code>. However, any scheduling information without a repeater is no longer relevant once the task is done, and thus, removed upon repeating the task. If you want both scheduling and deadline information to repeat after the same interval, set the same repeater for both timestamps.
+</p>
+
+<p>
+An alternative to using a repeater is to create a number of copies of a task subtree, with dates shifted in each copy. The command C-c C-x c was created for this purpose; it is described in <a href="docs/org--Structure-Editing.html">Structure Editing</a>.
+</p>
+
+<hr />
+</div>
+</div>

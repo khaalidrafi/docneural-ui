@@ -1,0 +1,117 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="partition-Reference"></a>
+</p>
+
+<p>
+Up: <a href="docs/guix--image-Reference.html"><code>image</code> Reference</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="partition-Reference-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="partition-reference"></a>16.1.1 <code>partition</code> Reference<br />
+<div class="outline-text-5" id="text-partition-reference">
+<p>
+In <code>image</code> record may contain some partitions.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: partition </dt><dd>This is the data type representing an image partition.
+
+<dl class="org-dl">
+<dt><code>size</code> (default: <code>'guess</code>)</dt><dd>The partition size in bytes or <code>'guess</code>. The <code>'guess</code> symbol, which is the default, means that the partition size will be inferred based on the partition content.</dd>
+
+<dt><code>offset</code> (default: <code>0</code>)</dt><dd>The partition's start offset in bytes, relative to the image start or the previous partition end. It defaults to <code>0</code> which means that there is no offset applied.</dd>
+
+<dt><code>file-system</code> (default: <code>"ext4"</code>)</dt><dd><p>
+The partition file system as a string, defaulting to <code>"ext4"</code>.
+</p>
+
+<p>
+The supported values are <code>"btrfs"</code>, <code>"ext4"</code>, <code>"fat16"</code>, <code>"f2fs"</code>, <code>"fat32"</code>, <code>"vfat"</code>, and <code>"swap"</code>.
+</p>
+
+<p>
+<code>"vfat"</code>, <code>"fat16"</code>, and <code>"fat32"</code> partitions without the <code>'esp</code> flag are by default LBA compatible.
+</p></dd>
+
+<dt><code>file-system-options</code> (default: <code>'()</code>)</dt><dd><p>
+The partition file system creation options that should be passed to the partition creation tool, as a list of strings. This is only supported when creating <code>"vfat"</code>, <code>"fat16"</code>, <code>"fat32"</code> or <code>"ext4"</code> partitions.
+</p>
+
+<p>
+See the <code>"extended-options"</code> man page section of the <code>"mke2fs"</code> tool for a more complete reference.
+</p></dd>
+
+<dt><code>label</code></dt><dd>The partition label as a mandatory string, <code>"my-root"</code> for instance.</dd>
+
+<dt><code>uuid</code> (default: <code>#false</code>)</dt><dd>The partition UUID as an <code>uuid</code> record (see <a href="docs/guix--File-Systems.html">File Systems</a>). By default it is <code>#false</code>, which means that the partition creation tool will attribute a random UUID to the partition.</dd>
+
+<dt><code>flags</code> (default: <code>'()</code>)</dt><dd>The partition flags as a list of symbols. Possible values are <code>'boot</code> and <code>'esp</code>. The <code>'boot</code> flags should be set if you want to boot from this partition. Exactly one partition should have this flag set, usually the root one. The <code>'esp</code> flag identifies a UEFI System Partition.</dd>
+
+<dt><code>initializer</code> (default: <code>#false</code>)</dt><dd>The partition initializer procedure as a gexp. This procedure is called to populate a partition. If no initializer is passed, the <code>initialize-root-partition</code> procedure from the <code>(gnu build image)</code> module is used.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Up: <a href="docs/guix--image-Reference.html"><code>image</code> Reference</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

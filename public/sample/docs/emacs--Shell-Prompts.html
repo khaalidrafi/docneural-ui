@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Shell-Prompts-1">1. 40.4 Shell Prompts ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Shell-History.html">Shell Command History</a>   Previous: <a href="docs/emacs--Shell-Mode.html">Shell Mode</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Shell-Prompts"></a>
+</p>
+
+<hr />
+<div id="outline-container-Shell-Prompts-1" class="outline-2">
+<h2 id="Shell-Prompts-1"><span class="section-number-2">1.</span> 40.4 Shell Prompts <a href="#Shell-Prompts-1">¶</a></h2>
+<div class="outline-text-2" id="text-Shell-Prompts-1">
+<p>
+A prompt is text output by a program to show that it is ready to accept new user input. Normally, Comint mode (and thus Shell mode) automatically figures out which part of the buffer is a prompt, based on the output of the subprocess. (Specifically, it assumes that any received output line which doesn't end with a newline is a prompt.)
+</p>
+
+<p>
+Comint mode divides the buffer into two types of <i>fields</i>: input fields (where user input is typed) and output fields (everywhere else). Prompts are part of the output fields. Most Emacs motion commands do not cross field boundaries, unless they move over multiple lines. For instance, when point is in the input field on a shell command line, C-a puts point at the beginning of the input field, after the prompt. Internally, the fields are implemented using the <code>field</code> text property (see <a href="../elisp_html/Text-Properties.html#Text-Properties">Text Properties</a> in the Emacs Lisp Reference Manual).
+</p>
+
+<p>
+If you change the variable <code>comint-use-prompt-regexp</code> to a non-<code>nil</code> value, then Comint mode will recognize prompts using a regular expression (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). In Shell mode, the regular expression is specified by the variable <code>shell-prompt-pattern</code>. The default value of <code>comint-use-prompt-regexp</code> is <code>nil</code>, because this method for recognizing prompts is unreliable, but you may want to set it to a non-<code>nil</code> value in unusual circumstances. In that case, Emacs does not divide the Comint buffer into fields, so the general motion commands behave as they normally do in buffers without special text properties. However, you can use the paragraph motion commands to conveniently navigate the buffer (see <a href="docs/emacs--Paragraphs.html">Paragraphs</a>); in Shell mode, Emacs uses <code>shell-prompt-pattern</code> as paragraph boundaries.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-a-Keyboard-Macro">1. 19.6 Editing a Keyboard Macro ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Keyboard-Macro-Step_002dEdit.html">Stepwise Editing a Keyboard Macro</a>   Previous: <a href="docs/emacs--Save-Keyboard-Macro.html">Naming and Saving Keyboard Macros</a>   Up: <a href="docs/emacs--Keyboard-Macros.html">Keyboard Macros</a>
+</p>
+
+<p>
+<a id="Edit-Keyboard-Macro"></a>
+</p>
+
+<hr />
+<div id="outline-container-Editing-a-Keyboard-Macro" class="outline-2">
+<h2 id="Editing-a-Keyboard-Macro"><span class="section-number-2">1.</span> 19.6 Editing a Keyboard Macro <a href="#Editing-a-Keyboard-Macro">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-a-Keyboard-Macro">
+<dl class="org-dl">
+<dt>C-x C-k C-e</dt><dd>Edit the last defined keyboard macro (<code>kmacro-edit-macro</code>).</dd>
+
+<dt>C-x C-k e <code>name</code> RET</dt><dd>Edit a previously defined keyboard macro <code>name</code> (<code>edit-kbd-macro</code>).</dd>
+
+<dt>C-x C-k l</dt><dd>Edit the last 300 keystrokes as a keyboard macro (<code>kmacro-edit-lossage</code>).</dd>
+</dl>
+
+<p>
+You can edit the last keyboard macro by typing C-x C-k C-e or C-x C-k RET (<code>kmacro-edit-macro</code>). This formats the macro definition in a buffer and enters a specialized major mode for editing it. Type C-h m once in that buffer to display details of how to edit the macro. When you are finished editing, type C-c C-c.
+</p>
+
+<p>
+<code>edmacro-mode</code>, the major mode used by <code>kmacro-edit-macro</code>, provides commands for more easily editing the formatted macro. Use C-c C-q (<code>edmacro-insert-key</code>) to insert the next key sequence that you type into the buffer using the correct format, similar to C-q (<code>quoted-insert</code>). Use C-c C-r (<code>edmacro-set-macro-to-region-lines</code>) to replace the macro's text with the text in the region. If the region does not begin at the start of a line or if it does not end at the end of a line, the region is extended to include complete lines. If the region ends at the beginning of a line, that final line is excluded.
+</p>
+
+<p>
+You can edit a named keyboard macro or a macro bound to a key by typing C-x C-k e (<code>edit-kbd-macro</code>). Follow that with the keyboard input that you would use to invoke the macro&#x2014;C-x e or M-x <code>name</code> or some other key sequence.
+</p>
+
+<p>
+You can edit the last 300 keystrokes as a macro by typing C-x C-k l (<code>kmacro-edit-lossage</code>). By default, your most recent keystrokes are listed at the bottom of the buffer. To list a macro's key sequences in reverse order, set <code>edmacro-reverse-macro-lines</code> to <code>t</code>.
+</p>
+
+<hr />
+</div>
+</div>

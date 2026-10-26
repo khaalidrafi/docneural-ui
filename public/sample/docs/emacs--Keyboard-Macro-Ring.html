@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Keyboard-Macro-Ring">1. 19.2 The Keyboard Macro Ring ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Keyboard-Macro-Counter.html">The Keyboard Macro Counter</a>   Previous: <a href="docs/emacs--Basic-Keyboard-Macro.html">Basic Use</a>   Up: <a href="docs/emacs--Keyboard-Macros.html">Keyboard Macros</a>
+</p>
+
+<p>
+<a id="Keyboard-Macro-Ring"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Keyboard-Macro-Ring" class="outline-2">
+<h2 id="The-Keyboard-Macro-Ring"><span class="section-number-2">1.</span> 19.2 The Keyboard Macro Ring <a href="#The-Keyboard-Macro-Ring">¶</a></h2>
+<div class="outline-text-2" id="text-The-Keyboard-Macro-Ring">
+<p>
+All defined keyboard macros are recorded in the <i>keyboard macro ring</i>. There is only one keyboard macro ring, shared by all buffers.
+</p>
+
+<dl class="org-dl">
+<dt>C-x C-k C-k</dt><dd>Execute the keyboard macro at the head of the ring (<code>kmacro-end-or-call-macro-repeat</code>).</dd>
+
+<dt>C-x C-k C-n</dt><dd>Rotate the keyboard macro ring to the next macro (defined earlier) (<code>kmacro-cycle-ring-next</code>).</dd>
+
+<dt>C-x C-k C-p</dt><dd>Rotate the keyboard macro ring to the previous macro (defined later) (<code>kmacro-cycle-ring-previous</code>).</dd>
+</dl>
+
+<p>
+All commands which operate on the keyboard macro ring use the same C-x C-k prefix. Most of these commands can be executed and repeated immediately after each other without repeating the C-x C-k prefix. For example,
+</p>
+
+<pre class="example" id="org3401a88">
+C-x C-k C-p C-p C-k C-k C-k C-n C-n C-k C-p C-k C-d
+</pre>
+
+<p>
+will rotate the keyboard macro ring to the second-previous macro, execute the resulting head macro three times, rotate back to the original head macro, execute that once, rotate to the previous macro, execute that, and finally delete it from the macro ring.
+</p>
+
+<p>
+The command C-x C-k C-k (<code>kmacro-end-or-call-macro-repeat</code>) executes the keyboard macro at the head of the macro ring. You can repeat the macro immediately by typing another C-k, or you can rotate the macro ring immediately by typing C-n or C-p.
+</p>
+
+<p>
+When a keyboard macro is being defined, C-x C-k C-k behaves like F4 except that, immediately afterward, you can use most key bindings of this section without the C-x C-k prefix. For instance, another C-k will re-execute the macro.
+</p>
+
+<p>
+The commands C-x C-k C-n (<code>kmacro-cycle-ring-next</code>) and C-x C-k C-p (<code>kmacro-cycle-ring-previous</code>) rotate the macro ring, bringing the next or previous keyboard macro to the head of the macro ring. The definition of the new head macro is displayed in the echo area. You can continue to rotate the macro ring immediately by repeating just C-n and C-p until the desired macro is at the head of the ring. To execute the new macro ring head immediately, just type C-k.
+</p>
+
+<p>
+Note that Emacs treats the head of the macro ring as the last defined keyboard macro. For instance, F4 will execute that macro, and C-x C-k n will give it a name.
+</p>
+
+<p>
+The maximum number of macros stored in the keyboard macro ring is determined by the customizable variable <code>kmacro-ring-max</code>.
+</p>
+
+<hr />
+</div>
+</div>

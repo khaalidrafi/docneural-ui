@@ -1,0 +1,123 @@
+:PROPERTIES:
+:ID: guix--Running-the-Test-Suite
+:END:
+#+filetags: :guix:
+#+title: Running the Test Suite
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Running-the-Test-Suite>>
+
+Next: [[id:guix--Running-Guix-Before-It-Is-Installed][Running Guix Before It Is Installed]], Previous: [[id:guix--Building-from-Git][Building from Git]], Up: [[id:guix--Contributing][Contributing]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Running-the-Test-Suite-1>>
+*** 22.3 Running the Test Suite
+:PROPERTIES:
+:CUSTOM_ID: running-the-test-suite
+:CLASS: section
+:END:
+<<index-test-suite>>
+After a successful =configure= and =make= run, it is a good idea to run the test suite. It can help catch issues with the setup or environment, or bugs in Guix itself---and really, reporting test failures is a good way to help improve the software. To run the test suite, type:
+
+#+begin_example
+make check
+#+end_example
+
+Test cases can run in parallel: you can use the =-j= option of GNU make to speed things up. The first run may take a few minutes on a recent machine; subsequent runs will be faster because the store that is created for test purposes will already have various things in cache.
+
+It is also possible to run a subset of the tests by defining the =TESTS= makefile variable as in this example:
+
+#+begin_example
+make check TESTS="tests/store.scm tests/cpio.scm"
+#+end_example
+
+By default, tests results are displayed at a file level. In order to see the details of every individual test cases, it is possible to define the =SCM_LOG_DRIVER_FLAGS= makefile variable as in this example:
+
+#+begin_example
+make check TESTS="tests/base64.scm" SCM_LOG_DRIVER_FLAGS="--brief=no"
+#+end_example
+
+The underlying SRFI 64 custom Automake test driver used for the 'check' test suite (located at =build-aux/test-driver.scm=) also allows selecting which test cases to run at a finer level, via its =--select= and =--exclude= options. Here's an example, to run all the test cases from the =tests/packages.scm= test file whose names start with “transaction-upgrade-entry”:
+
+#+begin_example
+export SCM_LOG_DRIVER_FLAGS="--select=^transaction-upgrade-entry"
+make check TESTS="tests/packages.scm"
+#+end_example
+
+Those wishing to inspect the results of failed tests directly from the command line can add the =--errors-only=yes= option to the =SCM_LOG_DRIVER_FLAGS= makefile variable and set the =VERBOSE= Automake makefile variable, as in:
+
+#+begin_example
+make check SCM_LOG_DRIVER_FLAGS="--brief=no --errors-only=yes" VERBOSE=1
+#+end_example
+
+The =--show-duration=yes= option can be used to print the duration of the individual test cases, when used in combination with =--brief=no=:
+
+#+begin_example
+make check SCM_LOG_DRIVER_FLAGS="--brief=no --show-duration=yes"
+#+end_example
+
+See [[https://www.gnu.org/software/automake/manual/html_node/Parallel-Test-Harness.html#Parallel-Test-Harness][Parallel Test Harness]] in GNU Automake for more information about the Automake Parallel Test Harness.
+
+Upon failure, please email [[mailto:bug-guix@gnu.org][bug-guix@gnu.org]] and attach the =test-suite.log= file. Please specify the Guix version being used as well as version numbers of the dependencies (see [[id:guix--Requirements][Requirements]]) in your message.
+
+Guix also comes with a whole-system test suite that tests complete Guix System instances. It can only run on systems where Guix is already installed, using:
+
+#+begin_example
+make check-system
+#+end_example
+
+or, again, by defining =TESTS= to select a subset of tests to run:
+
+#+begin_example
+make check-system TESTS="basic mcron"
+#+end_example
+
+These system tests are defined in the =(gnu tests …)= modules. They work by running the operating systems under test with lightweight instrumentation in a virtual machine (VM). They can be computationally intensive or rather cheap, depending on whether substitutes are available for their dependencies (see [[id:guix--Substitutes][Substitutes]]). Some of them require a lot of storage space to hold VM images.
+
+If you encounter an error like:
+
+#+begin_example
+Compiling Scheme modules...
+ice-9/eval.scm:142:16: In procedure compile-top-call:
+error: all-system-tests: unbound variable
+hint: Did you forget `(use-modules (gnu tests))'?
+#+end_example
+
+there may be inconsistencies in the work tree from previous builds. To resolve this, try running =make clean-go= followed by =make=.
+
+Again in case of test failures, please send [[mailto:bug-guix@gnu.org][bug-guix@gnu.org]] all the details.
+
+--------------
+
+Next: [[id:guix--Running-Guix-Before-It-Is-Installed][Running Guix Before It Is Installed]], Previous: [[id:guix--Building-from-Git][Building from Git]], Up: [[id:guix--Contributing][Contributing]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]

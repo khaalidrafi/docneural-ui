@@ -1,0 +1,256 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#getting-started">1.0.1. 11.1 Getting Started</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Getting-Started-with-the-System"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Getting-Started-2"></a>
+</p>
+</div>
+<div id="outline-container-getting-started" class="outline-4">
+<h4 id="getting-started"><span class="section-number-4">1.0.1.</span> 11.1 Getting Started</h4>
+<div class="outline-text-4" id="text-getting-started">
+<p>
+<a id="index-system-configuration-file"></a> <a id="index-configuration-file_002c-of-the-system"></a>
+You're reading this section probably because you have just installed Guix System (see <a href="docs/guix--System-Installation.html">System Installation</a>) and would like to know where to go from here. If you're already familiar with GNU/Linux system administration, the way Guix System is configured is very different from what you're used to: you won't install a system service by running <code>guix install</code>, you won't configure services by modifying files under <code>/etc</code>, and you won't create user accounts by invoking <code>useradd</code>; instead, all these aspects are spelled out in a <i>system configuration file</i>.
+</p>
+
+<p>
+The first step with Guix System is thus to write the <i>system configuration file</i>; luckily, system installation already generated one for you and stored it under <code>/etc/config.scm</code>.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> You can store your system configuration file anywhere you like&#x2014;it doesn't have to be at <code>/etc/config.scm</code>. It's a good idea to keep it under version control, for instance in a <a href="https://git-scm.com/book/en/">Git repository</a>.
+</p>
+</blockquote>
+
+<p>
+The <i>entire</i> configuration of the system&#x2014;user accounts, system services, timezone, locale settings&#x2014;is declared in this file, which follows this template:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu))
+(use-package-modules …)
+(use-service-modules …)
+
+(operating-system
+  (host-name …)
+  (timezone …)
+  (locale …)
+  (bootloader …)
+  (file-systems …)
+  (users …)
+  (packages …)
+  (services …))
+</pre>
+</div>
+
+<p>
+This configuration file is in fact a Scheme program; the first lines pull in modules providing variables you might need in the rest of the file&#x2014;e.g., packages, services, etc. The <code>operating-system</code> form declares the system configuration as a <i>record</i> with a number of <i>fields</i>. See <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>, to view complete examples and learn what to put in there.
+</p>
+
+<p>
+The second step, once you have this configuration file, is to test it. Of course, you can skip this step if you're feeling lucky&#x2014;you choose! To do that, pass your configuration file to <code>guix system vm</code> (no need to be root, you can do that as a regular user):
+</p>
+
+<pre class="example" id="org62032f7">
+guix system vm /etc/config.scm
+</pre>
+
+<p>
+This command returns the name of a shell script that starts a virtual machine (VM) running the system <i>as described in the configuration file</i>:
+</p>
+
+<pre class="example" id="org7c59dbf">
+/gnu/store/…-run-vm.sh
+</pre>
+
+<p>
+In this VM, you can log in as <code>root</code> with no password. That's a good way to check that your configuration file is correct and that it gives the expected result, without touching your system. See <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>, for more information.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> When using <code>guix system vm</code>, aspects tied to your hardware such as file systems and mapped devices are overridden because they cannot be meaningfully tested in the VM. Other aspects such as static network configuration (see <a href="docs/guix--Networking-Setup.html"><code>static-networking-service-type</code></a>) are <i>not</i> overridden but they may not work inside the VM.
+</p>
+</blockquote>
+
+<p>
+<a id="index-system-instantiation"></a> <a id="index-reconfiguring-the-system"></a>
+The third step, once you're happy with your configuration, is to <i>instantiate</i> it&#x2014;make this configuration effective on your system. To do that, run:
+</p>
+
+<pre class="example" id="org4271784">
+sudo guix system reconfigure /etc/config.scm
+</pre>
+
+<p>
+<a id="index-upgrading-system-services"></a> <a id="index-system-services_002c-upgrading"></a>
+This operation is <i>transactional</i>: either it succeeds and you end up with an upgraded system, or it fails and nothing has changed. Note that it does <i>not</i> restart system services that were already running. Thus, to upgrade those services, you have to reboot or to explicitly restart them; for example, to restart the secure shell (SSH) daemon, you would run:
+</p>
+
+<pre class="example" id="org4638b4d">
+sudo herd restart sshd
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> System services are managed by the Shepherd (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Jump-Start.html#Jump-Start">Jump Start</a> in The GNU Shepherd Manual). The <code>herd</code> command lets you inspect, start, and stop services. To view the status of services, run:
+</p>
+
+<pre class="example" id="org5d72d16">
+sudo herd status
+</pre>
+
+<p>
+To view detailed information about a given service, add its name to the command:
+</p>
+
+<pre class="example" id="org05df83a">
+sudo herd status sshd
+</pre>
+
+<p>
+See <a href="docs/guix--Services.html">Services</a>, for more information.
+</p>
+</blockquote>
+
+<p>
+<a id="index-provenance_002c-of-the-system"></a>
+The system records its <i>provenance</i>&#x2014;the configuration file and channels that were used to deploy it. You can view it like so:
+</p>
+
+<pre class="example" id="org8e0c78f">
+guix system describe
+</pre>
+
+<p>
+Additionally, <code>guix system reconfigure</code> preserves previous system generations, which you can list:
+</p>
+
+<pre class="example" id="orgf0c71cb">
+guix system list-generations
+</pre>
+
+<p>
+<a id="index-roll-back_002c-for-the-system"></a> Crucially, that means that you can always <i>roll back</i> to an earlier generation should something go wrong! When you eventually reboot, you'll notice a sub-menu in the bootloader that reads “Old system generations”: it's what allows you to boot <i>an older generation of your system</i>, should the latest generation be “broken” or otherwise unsatisfying. You can also “permanently” roll back, like so:
+</p>
+
+<pre class="example" id="org98df8e7">
+sudo guix system roll-back
+</pre>
+
+<p>
+Alternatively, you can use <code>guix system switch-generation</code> to switch to a specific generation.
+</p>
+
+<p>
+Once in a while, you'll want to delete old generations that you do not need anymore to allow <i>garbage collection</i> to free space (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>). For example, to remove generations older than 4 months, run:
+</p>
+
+<pre class="example" id="org88994b4">
+sudo guix system delete-generations 4m
+</pre>
+
+<p>
+From there on, anytime you want to change something in the system configuration, be it adding a user account or changing parameters of a service, you will first update your configuration file and then run <code>guix system reconfigure</code> as shown above. <a id="index-upgrade_002c-of-the-system"></a> Likewise, to <i>upgrade</i> system software, you first fetch an up-to-date Guix and then reconfigure your system with that new Guix:
+</p>
+
+<pre class="example" id="orgaa6b3bf">
+guix pull
+sudo guix system reconfigure /etc/config.scm
+</pre>
+
+<p>
+We recommend doing that regularly so that your system includes the latest security updates (see <a href="docs/guix--Security-Updates.html">Security Updates</a>).
+</p>
+
+<blockquote>
+<p>
+<a id="index-sudo-vs_002e-guix-pull"></a>
+</p>
+
+<p>
+<b>Note:</b> <code>sudo guix</code> runs your user's <code>guix</code> command and <i>not</i> root's, because <code>sudo</code> leaves <code>PATH</code> unchanged.
+</p>
+
+<p>
+The difference matters here, because <code>guix pull</code> updates the <code>guix</code> command and package definitions only for the user it is run as. This means that if you choose to use <code>guix system reconfigure</code> in root's login shell, you'll need to <code>guix pull</code> separately.
+</p>
+</blockquote>
+
+<p>
+That's it! If you're getting started with Guix entirely, see <a href="docs/guix--Getting-Started.html">Getting Started</a>. The next sections dive in more detail into the crux of the matter: system configuration.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

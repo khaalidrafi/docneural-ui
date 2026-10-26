@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org8d1ab12">1. <span class="todo TODO">TODO</span> Log each state with only a time</a></li>
+<li><a href="#orgb0ee76c">2. <span class="todo TODO">TODO</span> Only log when switching to WAIT, and when repeating</a></li>
+<li><a href="#org07dd9f2">3. <span class="todo TODO">TODO</span> No logging at all</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tracking-TODO-state-changes"></a>
+Next: <a href="docs/org--Tracking-your-habits.html">Tracking your habits</a>, Previous: <a href="docs/org--Closing-items.html">Closing items</a>, Up: <a href="docs/org--Progress-Logging.html">Progress Logging</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Tracking-TODO-state-changes-1"></a>5.3.2 Tracking TODO state changes <a href="#Tracking-TODO-state-changes-1">¶</a><br />
+<div class="outline-text-5" id="text-Tracking-TODO-state-changes-1">
+<p>
+You might want to automatically keep track of when a state change occurred and maybe take a note about this change. You can either record just a timestamp, or a time-stamped note. These records are inserted after the headline as an itemized list, the newest first. When taking a lot of notes, you might want to get the notes out of the way into a drawer (see <a href="docs/org--Drawers.html">Drawers</a>). Customize the variable <code>org-log-into-drawer</code> to get this behavior&#x2014;the recommended drawer for this is called ‘=LOGBOOK='. You can also overrule the setting of this variable for a subtree by setting a ‘=LOG<sub>INTO</sub><sub>DRAWER</sub>=' property.
+</p>
+
+<p>
+Since it is normally too much to record a note for every state, Org mode expects configuration on a per-keyword basis for this. This is achieved by adding special markers ‘=!=' (for a timestamp) or ‘=@=' (for a note with timestamp) in parentheses after each keyword. For example, with the setting
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-todo-keywords
+      '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+</pre>
+</div>
+
+<p>
+You not only define global TODO keywords and fast access keys, but also request that a time is recorded when the entry is set to ‘=DONE=', and that a note is recorded when switching to ‘=WAIT=' or ‘=CANCELED='. The setting for ‘=WAIT=' is even more special: the ‘=!=' after the slash means that in addition to the note taken when entering the state, a timestamp should be recorded when <i>leaving</i> the ‘=WAIT=' state, if and only if the <i>target</i> state does not configure logging for entering it. So it has no effect when switching from ‘=WAIT=' to ‘=DONE=', because ‘=DONE=' is configured to record only a timestamp. But when switching from ‘=WAIT=' back to ‘=TODO=', the ‘=/!=' in the ‘=WAIT=' setting now triggers a timestamp even though ‘=TODO=' has no logging configured.
+</p>
+
+<p>
+You can use the exact same syntax for setting logging preferences local to a buffer:
+</p>
+
+<pre class="example" id="orge9b4447">
+#+TODO: TODO(t) WAIT(w@/!) | DONE(d!) CANCELED(c@)
+</pre>
+
+<p>
+To record a timestamp without a note for TODO keywords configured with ‘=@=', just type C-c C-c to enter a blank note when prompted.
+</p>
+
+<p>
+In order to define logging settings that are local to a subtree or a single item, define a ‘=LOGGING=' property in this entry. Any non-empty ‘=LOGGING=' property resets all logging settings to <code>nil</code>. You may then turn on logging for this specific tree using ‘=STARTUP=' keywords like ‘=lognotedone=' or ‘=logrepeat=', as well as adding state specific settings like ‘=TODO(!)='. For example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-org8d1ab12" class="outline-2">
+<h2 id="org8d1ab12"><span class="section-number-2">1.</span> <span class="todo TODO">TODO</span> Log each state with only a time</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+</div>
+<div id="outline-container-orgb0ee76c" class="outline-2">
+<h2 id="orgb0ee76c"><span class="section-number-2">2.</span> <span class="todo TODO">TODO</span> Only log when switching to WAIT, and when repeating</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+</div>
+<div id="outline-container-org07dd9f2" class="outline-2">
+<h2 id="org07dd9f2"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> No logging at all</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<hr />
+</div>
+</div>

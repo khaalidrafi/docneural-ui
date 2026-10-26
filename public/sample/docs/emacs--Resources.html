@@ -1,0 +1,97 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#X-Resources-1">1. D.1 X Resources ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Table-of-Resources.html">Table of X Resources for Emacs</a>   Up: <a href="docs/emacs--X-Resources.html">X Options and Resources</a>
+</p>
+
+<p>
+<a id="Resources"></a>
+</p>
+
+<hr />
+<div id="outline-container-X-Resources-1" class="outline-2">
+<h2 id="X-Resources-1"><span class="section-number-2">1.</span> D.1 X Resources <a href="#X-Resources-1">¶</a></h2>
+<div class="outline-text-2" id="text-X-Resources-1">
+<p>
+Programs running under the X Window System organize their user options under a hierarchy of classes and resources. You can specify default values for these options in your <i>X resource file</i>, usually named <code>~/.Xdefaults</code> or <code>~/.Xresources</code>. Changes in this file do not take effect immediately, because the X server stores its own list of resources; to update it, use the command <code>xrdb</code>&#x2014;for instance, ‘=xrdb ~/.Xdefaults='.
+</p>
+
+<p>
+Settings specified via X resources in general override the equivalent settings in Emacs init files (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>), in particular for parameters of the initial frame (see <a href="docs/emacs--Frame-Parameters.html">Frame Parameters</a>).
+</p>
+
+<p>
+(MS-Windows systems do not support X resource files; on such systems, Emacs looks for X resources in the Windows Registry, first under the key ‘=HKEY<sub>CURRENT</sub><sub>USER\SOFTWARE\GNU\Emacs</sub>=', which affects only the current user and override the system-wide settings, and then under the key ‘=HKEY<sub>LOCAL</sub><sub>MACHINE\SOFTWARE\GNU\Emacs</sub>=', which affects all users of the system. The menu and scroll bars are native widgets on MS-Windows, so they are only customizable via the system-wide settings in the Display Control Panel. You can also set resources using the ‘=-xrm=' command line option, as explained below.)
+</p>
+
+<p>
+Each line in the X resource file specifies a value for one option or for a collection of related options. The order in which the lines appear in the file does not matter. Each resource specification consists of a <i>program name</i> and a <i>resource name</i>. Case distinctions are significant in each of these names. Here is an example:
+</p>
+
+<pre class="example" id="orgb391a5b">
+emacs.cursorColor: dark green
+</pre>
+
+<p>
+The program name is the name of the executable file to which the resource applies. For Emacs, this is normally ‘=emacs='. To specify a definition that applies to all instances of Emacs, regardless of the name of the Emacs executable, use ‘=Emacs='.
+</p>
+
+<p>
+The resource name is the name of a program setting. For instance, Emacs recognizes a ‘=cursorColor=' resource that controls the color of the text cursor.
+</p>
+
+<p>
+Resources are grouped into named classes. For instance, the ‘=Foreground=' class contains the ‘=cursorColor=', ‘=foreground=' and ‘=pointerColor=' resources (see <a href="docs/emacs--Table-of-Resources.html">Table of X Resources for Emacs</a>). Instead of using a resource name, you can use a class name to specify the default value for all resources in that class, like this:
+</p>
+
+<pre class="example" id="org36d2ad3">
+emacs.Foreground: dark green
+</pre>
+
+<p>
+Emacs does not process X resources at all if you set the variable <code>inhibit-x-resources</code> to a non-<code>nil</code> value. If you invoke Emacs with the ‘=-Q=' (or ‘=&#x2013;quick=') command-line option, <code>inhibit-x-resources</code> is automatically set to <code>t</code> (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>).
+</p>
+
+<p>
+In addition, you can use the following command-line options to override the X resources file:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-resource-name_002c-command_002dline-argument"></a>‘=-name <code>=name</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;name===name='</dt><dd><p>
+This option sets the program name of the initial Emacs frame to <code>name</code>. It also sets the title of the initial frame to <code>name</code>. This option does not affect subsequent frames.
+</p>
+
+<p>
+If you don't specify this option, the default is to use the Emacs executable's name as the program name.
+</p>
+
+<p>
+For consistency, ‘=-name=' also specifies the name to use for other resource values that do not belong to any particular frame.
+</p>
+
+<p>
+The resources that name Emacs invocations also belong to a class, named ‘=Emacs='. If you write ‘=Emacs=' instead of ‘=emacs=', the resource applies to all frames in all Emacs jobs, regardless of frame titles and regardless of the name of the executable file.
+</p></dd>
+
+<dt><a id="index-resource-values_002c-command_002dline-argument"></a>‘=-xrm <code>=resource-value</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;xrm===resource-value='</dt><dd><p>
+This option specifies X resource values for the present Emacs job.
+</p>
+
+<p>
+<code>resource-value</code> should have the same format that you would use inside a file of X resources. Several ‘=-xrm=' options are possible to include multiple resource specifications. You can also use ‘=#include "<code>=filename=</code>"<code>' as =resource-value</code> to include a file full of resource specifications. Resource values specified with ‘=-xrm=' take precedence over all other resource specifications.
+</p></dd>
+</dl>
+
+<hr />
+</div>
+</div>

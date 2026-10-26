@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fast-access-to-TODO-states-1">1. 5.2.4 Fast access to TODO states ¶</a>
+<ul>
+<li><a href="#section">1.1. (40)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Fast-access-to-TODO-states"></a>
+Next: <a href="docs/org--Per_002dfile-keywords.html">Setting up keywords for individual files</a>, Previous: <a href="docs/org--Multiple-sets-in-one-file.html">Multiple keyword sets in one file</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Fast-access-to-TODO-states-1" class="outline-2">
+<h2 id="Fast-access-to-TODO-states-1"><span class="section-number-2">1.</span> 5.2.4 Fast access to TODO states <a href="#Fast-access-to-TODO-states-1">¶</a></h2>
+<div class="outline-text-2" id="text-Fast-access-to-TODO-states-1">
+<p>
+If you would like to quickly change an entry to an arbitrary TODO state instead of cycling through the states, you can set up keys for single-letter access to the states. This is done by adding the selection character after each keyword, in parentheses. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d)")
+        (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+        (sequence "|" "CANCELED(c)")))
+</pre>
+</div>
+
+<p>
+If you then press C-c C-t followed by the selection key, the entry is switched to this state. SPC can be used to remove any TODO keyword from an entry.
+</p>
+
+<hr />
+</div>
+</div>

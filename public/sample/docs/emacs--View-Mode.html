@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#View-Mode-1">1. 16.6 View Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Follow-Mode.html">Follow Mode</a>   Previous: <a href="docs/emacs--Narrowing.html">Narrowing</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="View-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-View-Mode-1" class="outline-2">
+<h2 id="View-Mode-1"><span class="section-number-2">1.</span> 16.6 View Mode <a href="#View-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-View-Mode-1">
+<p>
+View mode is a minor mode that lets you scan a buffer by sequential screenfuls. It provides commands for scrolling through the buffer conveniently but not for changing it. Apart from the usual Emacs cursor motion commands, you can type SPC to scroll forward one windowful, S-SPC or DEL to scroll backward, and s to start an incremental search.
+</p>
+
+<p>
+Typing q (<code>View-quit</code>) disables View mode, and switches back to the buffer and position before View mode was enabled. Typing e (<code>View-exit</code>) disables View mode, keeping the current buffer and position.
+</p>
+
+<p>
+M-x view-buffer prompts for an existing Emacs buffer, switches to it, and enables View mode. M-x view-file prompts for a file and visits it with View mode enabled.
+</p>
+</div>
+</div>

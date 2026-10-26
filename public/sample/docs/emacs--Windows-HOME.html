@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#HOME-and-Startup-Directories-on-MS_002dWindows">1. I.5 HOME and Startup Directories on MS-Windows ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (31)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Windows-Keyboard.html">Keyboard Usage on MS-Windows</a>   Previous: <a href="docs/emacs--ls-in-Lisp.html">Emulation of ls on MS-Windows</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="Windows-HOME"></a>
+</p>
+
+<hr />
+<div id="outline-container-HOME-and-Startup-Directories-on-MS_002dWindows" class="outline-2">
+<h2 id="HOME-and-Startup-Directories-on-MS_002dWindows"><span class="section-number-2">1.</span> I.5 HOME and Startup Directories on MS-Windows <a href="#HOME-and-Startup-Directories-on-MS_002dWindows">¶</a></h2>
+<div class="outline-text-2" id="text-HOME-and-Startup-Directories-on-MS_002dWindows">
+<p>
+The Windows equivalent of <code>HOME</code> is the <i>user-specific application data directory</i>. The actual location depends on the Windows version; typical values are <code>C:\Documents and Settings\==username=</code>\Application Data= on Windows 2000 up to XP, <code>C:\Users\==username=</code>\AppData\Roaming= on Windows Vista and later, and either <code>C:\WINDOWS\Application Data</code> or <code>C:\WINDOWS\Profiles\==username=</code>\Application Data= on Windows 9X/ME. If this directory does not exist or cannot be accessed, Emacs falls back to <code>C:\</code> as the default value of <code>HOME</code>.
+</p>
+
+<p>
+You can override this default value of <code>HOME</code> by explicitly setting the environment variable <code>HOME</code> to point to any directory on your system. <code>HOME</code> can be set either from the command shell prompt or from ‘=Properties=' dialog of ‘=My Computer='. <code>HOME</code> can also be set in the system registry, see <a href="docs/emacs--MS_002dWindows-Registry.html">The MS-Windows System Registry</a>.
+</p>
+
+<p>
+For compatibility with older versions of Emacs, if there is a file named <code>.emacs</code> in <code>C:\</code>, the root directory of drive <code>C:</code>, and <code>HOME</code> is set neither in the environment nor in the Registry, Emacs will treat <code>C:\</code> as the default <code>HOME</code> location, and will not look in the application data directory, even if it exists. Note that only <code>.emacs</code> is looked for in <code>C:\</code>; the older name <code>_emacs</code> (see below) is not. This use of <code>C:\.emacs</code> to define <code>HOME</code> is deprecated; Emacs will display a warning about its use during startup.
+</p>
+
+<p>
+Whatever the final place is, Emacs sets the internal value of the <code>HOME</code> environment variable to point to it, and it will use that location for other files and directories it normally looks for or creates in your home directory.
+</p>
+
+<p>
+You can always find out what Emacs thinks is your home directory's location by typing C-x d ~/ RET. This should present the list of files in the home directory, and show its full name on the first line. Likewise, to visit your init file, type C-x C-f ~/.emacs RET (assuming the file's name is <code>.emacs</code>).
+</p>
+
+<p>
+Your init file can have any name mentioned in <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>.
+</p>
+
+<p>
+Because MS-DOS does not allow file names with leading dots, and older Windows systems made it hard to create files with such names, the Windows port of Emacs supports an init file name <code>_emacs</code>, if such a file exists in the home directory and <code>.emacs</code> does not. This name is considered obsolete, so Emacs will display a warning if it is used.
+</p>
+
+<hr />
+</div>
+</div>

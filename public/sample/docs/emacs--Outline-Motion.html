@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Outline-Motion-Commands">1. 27.9.3 Outline Motion Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Outline-Visibility.html">Outline Visibility Commands</a>   Previous: <a href="docs/emacs--Outline-Format.html">Format of Outlines</a>   Up: <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>
+</p>
+
+<p>
+<a id="Outline-Motion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Outline-Motion-Commands" class="outline-2">
+<h2 id="Outline-Motion-Commands"><span class="section-number-2">1.</span> 27.9.3 Outline Motion Commands <a href="#Outline-Motion-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Outline-Motion-Commands">
+<p>
+Outline mode provides special motion commands that move backward and forward to heading lines.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-outline_002dnext_002dvisible_002dheading"></a>C-c C-n </dt><dd>Move point to the next visible heading line (<code>outline-next-visible-heading</code>).</dd>
+
+<dt><a id="index-outline_002dprevious_002dvisible_002dheading"></a>C-c C-p </dt><dd>Move point to the previous visible heading line (<code>outline-previous-visible-heading</code>).</dd>
+
+<dt><a id="index-outline_002dforward_002dsame_002dlevel"></a>C-c C-f </dt><dd>Move point to the next visible heading line at the same level as the one point is on (<code>outline-forward-same-level</code>).</dd>
+
+<dt><a id="index-outline_002dbackward_002dsame_002dlevel"></a>C-c C-b </dt><dd>Move point to the previous visible heading line at the same level (<code>outline-backward-same-level</code>).</dd>
+
+<dt><a id="index-outline_002dup_002dheading"></a>C-c C-u </dt><dd>Move point up to a lower-level (more inclusive) visible heading line (<code>outline-up-heading</code>).</dd>
+</dl>
+
+<p>
+All of the above commands accept numeric arguments as repeat counts. For example, C-c C-f, when given an argument, moves forward that many visible heading lines on the same level, and C-c C-u with an argument moves out of that many nested levels.
+</p>
+</div>
+</div>

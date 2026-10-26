@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#GTK_002b-Widget-Names-in-Emacs">1. D.5.3 GTK+ Widget Names in Emacs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--GTK-styles.html">GTK+ styles</a>   Previous: <a href="docs/emacs--GTK-Widget-Names.html">GTK+ widget names</a>   Up: <a href="docs/emacs--GTK-resources.html">GTK+ resources</a>
+</p>
+
+<p>
+<a id="GTK-Names-in-Emacs"></a>
+</p>
+
+<hr />
+<div id="outline-container-GTK_002b-Widget-Names-in-Emacs" class="outline-2">
+<h2 id="GTK_002b-Widget-Names-in-Emacs"><span class="section-number-2">1.</span> D.5.3 GTK+ Widget Names in Emacs <a href="#GTK_002b-Widget-Names-in-Emacs">¶</a></h2>
+<div class="outline-text-2" id="text-GTK_002b-Widget-Names-in-Emacs">
+<p>
+The GTK+ widgets used by an Emacs frame are listed below:
+</p>
+
+<p>
+<code>Emacs</code> (class <code>GtkWindow</code>)
+<code>pane</code> (class <code>GtkVBox</code>)
+<code>menubar</code> (class <code>GtkMenuBar</code>)
+[menu item widgets]
+[unnamed widget] (class <code>GtkHandleBox</code>)
+<code>emacs-toolbar</code> (class <code>GtkToolbar</code>)
+[tool bar item widgets]
+<code>emacs</code> (class <code>GtkFixed</code>)
+<code>verticalScrollBar</code> (class <code>GtkVScrollbar</code>)
+The contents of Emacs windows are drawn in the <code>emacs</code> widget. Note that even if there are multiple Emacs windows, each scroll bar widget is named <code>verticalScrollBar</code>.
+</p>
+
+<p>
+For example, here are two different ways to set the menu bar style:
+</p>
+
+<pre class="example" id="org4173dc8">
+widget "Emacs.pane.menubar.*" style "my_style"
+widget_class "GtkWindow.GtkVBox.GtkMenuBar.*" style "my_style"
+</pre>
+
+<p>
+For GTK+ dialogs, Emacs uses a widget named <code>emacs-dialog</code>, of class <code>GtkDialog</code>. For file selection, Emacs uses a widget named <code>emacs-filedialog</code>, of class <code>GtkFileSelection</code>.
+</p>
+
+<p>
+Because the widgets for pop-up menus and dialogs are free-standing windows and not contained in the <code>Emacs</code> widget, their GTK+ absolute names do not start with ‘=Emacs='. To customize these widgets, use wildcards like this:
+</p>
+
+<pre class="example" id="org7a36e2a">
+widget "*emacs-dialog*" style "my_dialog_style"
+widget "*emacs-filedialog* style "my_file_style"
+widget "*emacs-menuitem* style "my_menu_style"
+</pre>
+
+<p>
+If you want to apply a style to all menus in Emacs, use this:
+</p>
+
+<pre class="example" id="org6ffd8e4">
+widget_class "*Menu*" style "my_menu_style"
+</pre>
+
+<hr />
+</div>
+</div>

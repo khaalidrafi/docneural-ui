@@ -1,0 +1,104 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Viewing-Image-Files">1. 20.19 Viewing Image Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Filesets.html">Filesets</a>   Previous: <a href="docs/emacs--File-Conveniences.html">Convenience Features for Finding Files</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Image-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Viewing-Image-Files" class="outline-2">
+<h2 id="Viewing-Image-Files"><span class="section-number-2">1.</span> 20.19 Viewing Image Files <a href="#Viewing-Image-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Viewing-Image-Files">
+<p>
+Visiting image files automatically selects Image mode. In this major mode, you can type C-c C-c (<code>image-toggle-display</code>) to toggle between displaying the file as an image in the Emacs buffer, and displaying its underlying text (or raw byte) representation. Additionally you can type C-c C-x (<code>image-toggle-hex-display</code>) to toggle between displaying the file as an image in the Emacs buffer, and displaying it in hex representation. Displaying the file as an image works only if Emacs is compiled with support for displaying such images.
+</p>
+
+<p>
+If the displayed image is wider or taller than the window in which it is displayed, the usual point motion keys (C-f, C-p, and so forth) cause different parts of the image to be displayed. However, by default images are resized automatically to fit the window, so this is only necessary if you customize the default behavior by using the options <code>image-auto-resize</code> and <code>image-auto-resize-on-window-resize</code>.
+</p>
+
+<p>
+To resize the image manually you can use the command <code>image-transform-fit-to-window</code> bound to s w that fits the image to both the window height and width. To scale the image to a percentage of its original size, use the command <code>image-transform-set-percent</code> bound to s p. To scale the image specifying a scale factor, use the command <code>image-transform-set-scale</code> bound to s s. To reset all transformations to the initial state, use <code>image-transform-reset-to-initial</code> bound to s 0, or <code>image-transform-reset-to-original</code> bound to s o.
+</p>
+
+<p>
+You can press n (<code>image-next-file</code>) and p (<code>image-previous-file</code>) to visit the next image file and the previous image file in the same directory, respectively. These commands will consult the “parent” dired buffer to determine what the next/previous image file is. These commands also work when opening a file from archive files (like zip or tar files), and will then instead consult the archive mode buffer. If neither an archive nor a dired “parent” buffer can be found, a dired buffer is opened.
+</p>
+
+<p>
+When looking through images, it's sometimes convenient to be able to mark the files for later processing (for instance, if you want to select a group of images to copy somewhere else). The m (<code>image-mode-mark-file</code>) command will mark the current file in any Dired buffer(s) that display the current file's directory. If no such buffer is open, the directory is opened in a new buffer. To unmark files, use the u (<code>image-mode-mark-file</code>) command. Finally, if you just want to copy the current buffers file name to the kill ring, you can use the w (<code>image-mode-copy-file-name-as-kill</code>) command.
+</p>
+
+<p>
+If the image can be animated, the command RET (<code>image-toggle-animation</code>) starts or stops the animation. Animation plays once, unless the option <code>image-animate-loop</code> is non-<code>nil</code>. With f (<code>image-next-frame</code>) and b (<code>image-previous-frame</code>) you can step through the individual frames. Both commands accept a numeric prefix to step through several frames at once. You can go to a specific frame with F (<code>image-goto-frame</code>). Frames are indexed from 1. Typing a + (<code>image-increase-speed</code>) increases the speed of the animation, a - (<code>image-decrease-speed</code>) decreases it, and a r (<code>image-reverse-speed</code>) reverses it. The command a 0 (<code>image-reset-speed</code>) resets the speed to the original value.
+</p>
+
+<p>
+In addition to the above key bindings, which are specific to Image mode, images shown in any Emacs buffer have special key bindings when point is at or inside the image:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-resize-images"></a>i + </dt><dd>Increase the image size (<code>image-increase-size</code>) by 20%. Prefix numeric argument controls the increment; the value of <code>n</code> means to multiply the size by the factor of <code>1 + ==n=</code> / 10=, so C-u 5 i + means to increase the size by 50%.</dd>
+
+<dt><a id="index-image_002ddecrease_002dsize"></a>i - </dt><dd>Decrease the image size (<code>image-decrease-size</code>) by 20%. Prefix numeric argument controls the decrement; the value of <code>n</code> means to multiply the size by the factor of <code>1 - ==n=</code> / 10=, so C-u 3 i - means to decrease the size by 30%.</dd>
+
+<dt><a id="index-rotating-images"></a>i r </dt><dd>Rotate the image by 90 degrees clockwise (<code>image-rotate</code>). With the prefix argument, rotate by 90 degrees counter-clockwise instead. Note that this command is not available for sliced images.</dd>
+
+<dt><a id="index-image_002dflip_002dhorizontally"></a>i h </dt><dd>Flip the image horizontally (<code>image-flip-horizontally</code>). This presents the image as if reflected in a vertical mirror. Note that this command is not available for sliced images.</dd>
+
+<dt><a id="index-image_002dflip_002dvertically"></a>i v </dt><dd>Flip the image vertically (<code>image-flip-vertically</code>). This presents the image as if reflected in a horizontal mirror. Note that this command is not available for sliced images.</dd>
+
+<dt><a id="index-image_002dsave"></a>i o </dt><dd>Save the image to a file (<code>image-save</code>). This command prompts you for the name of the file to save the image.</dd>
+
+<dt><a id="index-cropping-images"></a>i c </dt><dd>Crop the image (<code>image-crop</code>). This command is available only if your system has an external program installed that can be used for cropping and cutting of images; the user option <code>image-crop-crop-command</code> determines what program to use, and defaults to the ImageMagick's <code>convert</code> program. The command displays the image with a rectangular frame superimposed on it, and lets you use the mouse to move and resize the frame. Type m to cause mouse movements to move the frame instead of resizing it; type s to move a square frame instead. When you are satisfied with the position and size of the cropping frame, type RET to actually crop the part under the frame; or type q to exit without cropping. You can then save the cropped image using i o or M-x image-save.</dd>
+
+<dt><a id="index-image_002dcut"></a>i x </dt><dd>Cut a rectangle from the image (<code>image-cut</code>). This works the same as <code>image-crop</code> (and also requires an external program, defined by the variable <code>image-crop-cut-command</code>, to perform the image cut), but instead of cropping the image, it removes the part inside the frame and fills that part with the color specified by <code>image-cut-color</code>. With prefix argument, the command prompts for the color to use.</dd>
+</dl>
+
+<p>
+The size and rotation commands are “repeating”, which means that you can continue adjusting the image without using the i prefix.
+</p>
+
+<p>
+If Emacs was compiled with support for the ImageMagick library, it can use ImageMagick to render a wide variety of images. The variable <code>imagemagick-enabled-types</code> lists the image types that Emacs may render using ImageMagick; each element in the list should be an internal ImageMagick name for an image type, as a symbol or an equivalent string (e.g., <code>BMP</code> for <code>.bmp</code> images). To enable ImageMagick for all possible image types, change <code>imagemagick-enabled-types</code> to <code>t</code>. The variable <code>imagemagick-types-inhibit</code> lists the image types which should never be rendered using ImageMagick, regardless of the value of <code>imagemagick-enabled-types</code> (the default list includes types like <code>C</code> and <code>HTML</code>, which ImageMagick can render as an image but Emacs should not). To disable ImageMagick entirely, change <code>imagemagick-types-inhibit</code> to <code>t</code>.
+</p>
+
+<p>
+If Emacs doesn't have native support for the image format in question, and <code>image-use-external-converter</code> is non-<code>nil</code>, Emacs will try to determine whether there are external utilities that can be used to transform the image in question to PNG before displaying. GraphicsMagick, ImageMagick and <code>ffmpeg</code> are currently supported for image conversions.
+</p>
+
+<p>
+In addition, you may wish to add special handlers for certain image formats. These can be added with the <code>image-converter-add-handler</code> function. For instance, to allow viewing Krita files as simple images, you could say something like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(image-converter-add-handler
+ "kra"
+ (lambda (file data-p)
+   (if data-p
+       (error "Can't decode non-files")
+     (call-process "unzip" nil t nil
+                   "-qq" "-c" "-x" file "mergedimage.png"))))
+</pre>
+</div>
+
+<p>
+The function takes two parameters, where the first is a file name suffix, and the second is a function to do the “conversion”. This function takes two parameters, where the first is the file name or a string with the data, and the second says whether the first parameter is data or not, and should output an image in <code>image-convert-to-format</code> format in the current buffer.
+</p>
+
+<p>
+The Image-Dired package can also be used to view images as thumbnails. See <a href="docs/emacs--Image_002dDired.html">Viewing Image Thumbnails in Dired</a>.
+</p>
+
+<hr />
+</div>
+</div>

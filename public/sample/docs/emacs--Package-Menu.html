@@ -1,0 +1,100 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Package-Menu-Buffer">1. 50.1 The Package Menu Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Package-Statuses.html">Package Statuses</a>   Up: <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>
+</p>
+
+<p>
+<a id="Package-Menu"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Package-Menu-Buffer" class="outline-2">
+<h2 id="The-Package-Menu-Buffer"><span class="section-number-2">1.</span> 50.1 The Package Menu Buffer <a href="#The-Package-Menu-Buffer">¶</a></h2>
+<div class="outline-text-2" id="text-The-Package-Menu-Buffer">
+<p>
+The command M-x list-packages brings up the <i>package menu</i>. This is a buffer listing all the packages that Emacs knows about, one on each line, with the following information:
+</p>
+
+<ul class="org-ul">
+<li>The package name (e.g., ‘=auctex=').</li>
+<li>The package's version number (e.g., ‘=11.86=').</li>
+<li>The package's status&#x2014;normally one of ‘=available=' (can be downloaded from the package archive), ‘=installed=', or ‘=built-in=' (included in Emacs by default). See <a href="docs/emacs--Package-Statuses.html">Package Statuses</a>.</li>
+<li>Which package archive this package is from, if you have more than one package archive enabled.</li>
+<li>A short description of the package.</li>
+</ul>
+
+<p>
+The <code>list-packages</code> command accesses the network, to retrieve the list of available packages from package archive servers. If the network is unavailable, it falls back on the most recently retrieved list.
+</p>
+
+<p>
+The main command to use in the package list buffer is the x command. If the package under point isn't installed already, this command will install it. If the package under point is already installed, this command will delete it.
+</p>
+
+<p>
+The following commands are available in the package menu:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-h-_0028Package-Menu_0029"></a>h </dt><dd>Print a short message summarizing how to use the package menu (<code>package-menu-quick-help</code>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-_003f-_0028Package-Menu_0029"></a>? <br />
+RET :: Display a help buffer for the package on the current line (<code>package-menu-describe-package</code>), similar to the help window displayed by the C-h P command (see <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>).</dd>
+
+<dt><a id="index-i-_0028Package-Menu_0029"></a>i </dt><dd>Mark the package on the current line for installation (<code>package-menu-mark-install</code>). If the package status is ‘=available=', this adds an ‘=I=' character to the start of the line; typing x (see below) will download and install the package.</dd>
+
+<dt><a id="index-d-_0028Package-Menu_0029"></a>d </dt><dd>Mark the package on the current line for deletion (<code>package-menu-mark-delete</code>). If the package status is ‘=installed=', this adds a ‘=D=' character to the start of the line; typing x (see below) will delete the package. See <a href="docs/emacs--Package-Files.html">Package Files and Directory Layout</a>, for information about what package deletion entails.</dd>
+
+<dt><a id="index-w-_0028Package-Menu_0029"></a>w </dt><dd>Open the package website on the current line in a browser (<code>package-browse-url</code>). <code>browse-url</code> is used to open the browser.</dd>
+
+<dt><a id="index-_007e-_0028Package-Menu_0029"></a>~ </dt><dd>Mark all obsolete packages for deletion (<code>package-menu-mark-obsolete-for-deletion</code>). This marks for deletion all the packages whose status is ‘=obsolete='.</dd>
+
+<dt>(no term)</dt><dd><a id="index-u-_0028Package-Menu_0029"></a>u <br />
+DEL :: Remove any installation or deletion mark previously added to the current line by an i or d command (<code>package-menu-mark-unmark</code>).</dd>
+
+<dt><a id="index-U-_0028Package-Menu_0029"></a>U </dt><dd>Mark all package with a newer available version for upgrading (<code>package-menu-mark-upgrades</code>). This places an installation mark on the new available versions, and a deletion mark on the old installed versions (marked with status ‘=obsolete='). By default, this won't mark built-in packages for which a newer version is available, but customizing <code>package-install-upgrade-built-in</code> can change that. See <a href="docs/emacs--Package-Installation.html">Package Installation</a>. If you customize <code>package-install-upgrade-built-in</code> to a non-<code>nil</code> value, be sure to review all the built-in packages the U command marks, to avoid updating built-in packages you don't want to overwrite.</dd>
+
+<dt><a id="index-x-_0028Package-Menu_0029"></a>x </dt><dd>Download and install all packages marked with i, and their dependencies; also, delete all packages marked with d (<code>package-menu-execute</code>). This also removes the marks. If no packages are marked, this command will install the package under point (if it isn't installed already), or delete the package under point (if it's already installed).</dd>
+
+<dt>(no term)</dt><dd>g<br />
+<a id="index-g-_0028Package-Menu_0029"></a>r :: Refresh the package list (<code>revert-buffer</code>). This fetches the list of available packages from the package archive again, and redisplays the package list.</dd>
+
+<dt><a id="index-H-_0028Package-Menu_0029"></a>H </dt><dd>Hide packages whose names match a regexp (<code>package-menu-hide-package</code>). This prompts for a regexp, and then hides the packages with matching names. The default value of the regexp will hide only the package whose name is at point, so just pressing RET to the prompt will hide the current package.</dd>
+
+<dt><a id="index-_0028-_0028Package-Menu_0029"></a>( </dt><dd>Toggle visibility of old versions of packages and also of versions from lower-priority archives (<code>package-menu-toggle-hiding</code>).</dd>
+
+<dt><a id="index-_002f-a-_0028Package-Menu_0029"></a>/ a </dt><dd>Filter package list by archive (<code>package-menu-filter-by-archive</code>). This prompts for a package archive (e.g., ‘=gnu='), then shows only packages from that archive. You can specify several archives by typing their names separated by commas.</dd>
+
+<dt><a id="index-_002f-d-_0028Package-Menu_0029"></a>/ d </dt><dd>Filter package list by description (<code>package-menu-filter-by-description</code>). This prompts for a regular expression, then shows only packages with descriptions matching that regexp.</dd>
+
+<dt><a id="index-_002f-k-_0028Package-Menu_0029"></a>/ k </dt><dd>Filter package list by keyword (<code>package-menu-filter-by-keyword</code>). This prompts for a keyword (e.g., ‘=games='), then shows only packages with that keyword. You can specify several keywords by typing them separated by commas.</dd>
+
+<dt><a id="index-_002f-N-_0028Package-Menu_0029"></a>/ N </dt><dd>Filter package list by name or description (<code>package-menu-filter-by-name-or-description</code>). This prompts for a regular expression, then shows only packages with a name or description matching that regexp.</dd>
+
+<dt><a id="index-_002f-n-_0028Package-Menu_0029"></a>/ n </dt><dd>Filter package list by name (<code>package-menu-filter-by-name</code>). This prompts for a regular expression, then shows only packages with names matching that regexp.</dd>
+
+<dt><a id="index-_002f-s-_0028Package-Menu_0029"></a>/ s </dt><dd>Filter package list by status (<code>package-menu-filter-by-status</code>). This prompts for one or more statuses (e.g., ‘=available=', see <a href="docs/emacs--Package-Statuses.html">Package Statuses</a>), then shows only packages with matching status. You can specify several status values by typing them separated by commas.</dd>
+
+<dt><a id="index-_002f-v-_0028Package-Menu_0029"></a>/ v </dt><dd>Filter package list by version (<code>package-menu-filter-by-version</code>). This prompts first for one of the comparison symbols ‘=&lt;=', ‘=&gt;=' or ‘===' and for a version string, and then shows packages whose versions are correspondingly lower, equal or higher than the version you typed.</dd>
+
+<dt><a id="index-_002f-m-_0028Package-Menu_0029"></a>/ m </dt><dd>Filter package list by non-empty mark (<code>package-menu-filter-marked</code>). This shows only the packages that have been marked to be installed or deleted.</dd>
+
+<dt><a id="index-_002f-u-_0028Package-Menu_0029"></a>/ u </dt><dd>Filter package list to show only packages for which there are available upgrades (<code>package-menu-filter-upgradable</code>). By default, this filter excludes the built-in packages for which a newer version is available, but customizing <code>package-install-upgrade-built-in</code> can change that. See <a href="docs/emacs--Package-Installation.html">Package Installation</a>.</dd>
+
+<dt><a id="index-_002f-_002f-_0028Package-Menu_0029"></a>/ / </dt><dd>Clear filter currently applied to the package list (<code>package-menu-filter-clear</code>).</dd>
+</dl>
+
+<p>
+For example, you can install a package by typing i on the line listing that package, followed by x.
+</p>
+
+<hr />
+</div>
+</div>

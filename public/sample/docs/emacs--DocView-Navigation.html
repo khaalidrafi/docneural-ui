@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#DocView-Navigation-1">1. 39.1 DocView Navigation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--DocView-Searching.html">DocView Searching</a>   Up: <a href="docs/emacs--Document-View.html">Document Viewing</a>
+</p>
+
+<p>
+<a id="DocView-Navigation"></a>
+</p>
+
+<hr />
+<div id="outline-container-DocView-Navigation-1" class="outline-2">
+<h2 id="DocView-Navigation-1"><span class="section-number-2">1.</span> 39.1 DocView Navigation <a href="#DocView-Navigation-1">¶</a></h2>
+<div class="outline-text-2" id="text-DocView-Navigation-1">
+<p>
+In DocView mode, you can scroll the current page using the usual Emacs movement keys: C-p, C-n, C-b, C-f, and the arrow keys.
+</p>
+
+<p>
+By default, the line-motion keys C-p and C-n stop scrolling at the beginning and end of the current page, respectively. However, if you change the variable <code>doc-view-continuous</code> to a non-<code>nil</code> value, then C-p displays the previous page if you are already at the beginning of the current page, and C-n displays the next page if you are at the end of the current page.
+</p>
+
+<p>
+You can also display the next page by typing n, PageDown, next or C-x ] (<code>doc-view-next-page</code>). To display the previous page, type p, PageUp, prior or C-x [ (<code>doc-view-previous-page</code>).
+</p>
+
+<p>
+SPC (<code>doc-view-scroll-up-or-next-page</code>) is a convenient way to advance through the document. It scrolls within the current page or advances to the next. DEL moves backwards in a similar way (<code>doc-view-scroll-down-or-previous-page</code>).
+</p>
+
+<p>
+To go to the first page, type M-&lt; (<code>doc-view-first-page</code>); to go to the last one, type M-&gt; (<code>doc-view-last-page</code>). To jump to a page by its number, type M-g M-g or M-g g (<code>doc-view-goto-page</code>).
+</p>
+
+<p>
+You can enlarge or shrink the document with + (<code>doc-view-enlarge</code>) and - (<code>doc-view-shrink</code>). By default, these commands just rescale the already-rendered image. If you instead want the image to be re-rendered at the new size, set <code>doc-view-scale-internally</code> to <code>nil</code>. To specify the default size for DocView, customize the variable <code>doc-view-resolution</code>.
+</p>
+
+<p>
+When the <code>mutool</code> program is available, DocView will use it to generate entries for an outline menu, making it accessible via the <code>imenu</code> facility (see <a href="docs/emacs--Imenu.html">Imenu</a>). To disable this functionality even when <code>mutool</code> can be found on your system, customize the variable <code>doc-view-imenu-enabled</code> to the <code>nil</code> value. You can further customize how <code>imenu</code> items are formatted and displayed using the variables <code>doc-view-imenu-format</code> and <code>doc-view-imenu-flatten</code>.
+</p>
+
+<hr />
+</div>
+</div>

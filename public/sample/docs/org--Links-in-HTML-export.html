@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Links-in-HTML-export-1">1. 13.9.8 Links in HTML export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Links-in-HTML-export"></a>
+Next: <a href="docs/org--Tables-in-HTML-export.html">Tables in HTML export</a>, Previous: <a href="docs/org--Headlines-in-HTML-export.html">Headlines in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Links-in-HTML-export-1" class="outline-2">
+<h2 id="Links-in-HTML-export-1"><span class="section-number-2">1.</span> 13.9.8 Links in HTML export <a href="#Links-in-HTML-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Links-in-HTML-export-1">
+<p>
+The HTML export backend transforms Org's internal links (see <a href="docs/org--Internal-Links.html">Internal Links</a>) to equivalent HTML links in the output. The backend similarly handles Org's automatic links created by radio targets (see <a href="docs/org--Radio-Targets.html">Radio Targets</a>) similarly. For Org links to external files, the backend transforms the links to <i>relative</i> paths.
+</p>
+
+<p>
+For Org links to other ‘=.org=' files, the backend automatically changes the file extension to ‘=.html=' and makes file paths relative. If the ‘=.org=' files have an equivalent ‘=.html=' version at the same location, then the converted links should work without any further manual intervention. However, to disable this automatic path translation, set <code>org-html-link-org-files-as-html</code> to <code>nil</code>. When disabled, the HTML export backend substitutes the ID-based links in the HTML output. For more about linking files when publishing to a directory, see <a href="docs/org--Publishing-links.html">Publishing links</a>.
+</p>
+
+<p>
+Org files can also have special directives to the HTML export backend. For example, by using ‘=#+ATTR<sub>HTML</sub>=' lines to specify new format attributes to <code>&lt;a&gt;</code> or <code>&lt;img&gt;</code> tags. This example shows changing the link's title and style:
+</p>
+
+<pre class="example" id="org2549dce">
+#+ATTR_HTML: :title The Org mode website :style color:red;
+[[https://orgmode.org]]
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Tables-in-HTML-export.html">Tables in HTML export</a>, Previous: <a href="docs/org--Headlines-in-HTML-export.html">Headlines in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

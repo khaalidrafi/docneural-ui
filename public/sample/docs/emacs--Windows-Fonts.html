@@ -1,0 +1,92 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Specifying-Fonts-on-MS_002dWindows">1. I.10 Specifying Fonts on MS-Windows ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Windows-Misc.html">Miscellaneous Windows-specific features</a>   Previous: <a href="docs/emacs--Windows-Printing.html">Printing and MS-Windows</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="Windows-Fonts"></a>
+</p>
+
+<hr />
+<div id="outline-container-Specifying-Fonts-on-MS_002dWindows" class="outline-2">
+<h2 id="Specifying-Fonts-on-MS_002dWindows"><span class="section-number-2">1.</span> I.10 Specifying Fonts on MS-Windows <a href="#Specifying-Fonts-on-MS_002dWindows">¶</a></h2>
+<div class="outline-text-2" id="text-Specifying-Fonts-on-MS_002dWindows">
+<p>
+Fonts are specified by their name, size and optional properties. The format for specifying fonts comes from the fontconfig library used in modern Free desktops:
+</p>
+
+<pre class="example" id="org547ad81">
+[Family[-PointSize]][:Option1=Value1[:Option2=Value2[...]]]
+</pre>
+
+<p>
+The old XLFD based format is also supported for backwards compatibility.
+</p>
+
+<p>
+Emacs on MS-Windows supports a number of font backends. Currently, the <code>gdi</code>, <code>uniscribe</code>, and <code>harfbuzz</code> backends are available. The <code>gdi</code> font backend is available on all versions of Windows, and supports all fonts that are natively supported by Windows. The <code>uniscribe</code> font backend is available on Windows 2000 and later, and supports TrueType and OpenType fonts. The <code>harfbuzz</code> font backend is available if Emacs was built with HarfBuzz support, and if the HarfBuzz DLL is installed on your system; like <code>uniscribe</code>, this backend supports only TrueType and OpenType fonts. Some languages requiring complex layout can only be properly supported by the Uniscribe or HarfBuzz backends. By default, two backends are enabled for each frame: <code>gdi</code> and either <code>harfbuzz</code> or <code>uniscribe</code>, depending on which one is available (if both are available, only <code>harfbuzz</code> is enabled by default). The <code>harfbuzz</code> and <code>uniscribe</code> backends take priority over <code>gdi</code> when Emacs looks for a suitable font. To override that and use the GDI backend even if Uniscribe is available, invoke Emacs with the -xrm Emacs.fontBackend:gdi command-line argument, or add a <code>Emacs.fontBackend</code> resource with the value <code>gdi</code> in the Registry under either the ‘=HKEY<sub>CURRENT</sub><sub>USER\SOFTWARE\GNU\Emacs</sub>=' or the ‘=HKEY<sub>LOCAL</sub><sub>MACHINE\SOFTWARE\GNU\Emacs</sub>=' key (see <a href="docs/emacs--Resources.html">X Resources</a>). Similarly, to use the Uniscribe backend even if HarfBuzz is available, use -xrm Emacs.fontBackend:uniscribe on the command line that invokes Emacs. You can also request all the 3 backends via the <code>font-backend</code> frame parameter, but be warned that in that case font searches for characters for which no fonts are available on the system will take longer.
+</p>
+
+<p>
+Alternatively, you could specify a font backend for a frame via the <code>font-backend</code> frame parameter, using <code>modify-frame-parameters</code> (see <a href="../elisp_html/Parameter-Access.html#Parameter-Access">Parameter Access</a> in The Emacs Lisp Reference Manual). You can also request specific font backend(s) for all your frames via <code>default-frame-alist</code> and <code>initial-frame-alist</code> (see <a href="docs/emacs--Frame-Parameters.html">Frame Parameters</a>). Note that the value of the <code>font-backend</code> parameter should be a list of symbols, as in <code>(uniscribe)</code> or <code>(harfbuzz uniscribe gdi)</code>.
+</p>
+
+<p>
+Optional font properties supported on MS-Windows are:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-font_002dweight_002dtable-_0028MS_002dWindows_0029"></a>=weight= </dt><dd>Specifies the weight of the font. Special values <code>light</code>, <code>medium</code>, <code>demibold</code>, <code>bold</code>, and <code>black</code> can be specified without <code>weight=</code> (e.g., Courier New-12:bold). Otherwise, the weight should be a numeric value between 100 and 900, or one of the named weights in <code>font-weight-table</code>. If unspecified, a regular font is assumed.</dd>
+
+<dt><a id="index-font_002dslant_002dtable-_0028MS_002dWindows_0029"></a>=slant= </dt><dd>Specifies whether the font is italic. Special values <code>roman</code>, <code>italic</code> and <code>oblique</code> can be specified without <code>slant=</code> (e.g., Courier New-12:italic). Otherwise, the slant should be a numeric value, or one of the named slants in <code>font-slant-table</code>. On Windows, any slant above 150 is treated as italics, and anything below as roman.</dd>
+
+<dt><code>family</code></dt><dd>Specifies the font family, but normally this will be specified at the start of the font name.</dd>
+
+<dt><code>pixelsize</code></dt><dd>Specifies the font size in pixels. This can be used instead of the point size specified after the family name.</dd>
+
+<dt><code>adstyle</code></dt><dd>Specifies additional style information for the font. On MS-Windows, the values <code>mono</code>, <code>sans</code>, <code>serif</code>, <code>script</code> and <code>decorative</code> are recognized. These are most useful as a fallback with the font family left unspecified.</dd>
+
+<dt><a id="index-w32_002dcharset_002dinfo_002dalist"></a>=registry= </dt><dd>Specifies the character set registry that the font is expected to cover. Most TrueType and OpenType fonts will be Unicode fonts that cover several national character sets, but you can narrow down the selection of fonts to those that support a particular character set by using a specific registry from <code>w32-charset-info-alist</code> here.</dd>
+
+<dt><code>spacing</code></dt><dd>Specifies how the font is spaced. The <code>p</code> spacing specifies a proportional font, and <code>m</code> or <code>c</code> specify a monospaced font.</dd>
+
+<dt><code>foundry</code></dt><dd>Not used on Windows, but for informational purposes and to prevent problems with code that expects it to be set, is set internally to <code>raster</code> for bitmapped fonts, <code>outline</code> for scalable fonts, or <code>unknown</code> if the type cannot be determined as one of those.</dd>
+
+<dt><a id="index-font-scripts-_0028MS-Windows_0029"></a>=script= </dt><dd><p>
+Specifies a Unicode subrange the font should support.
+</p>
+
+<p>
+All the scripts known to Emacs (which generally means all the scripts defined by the latest Unicode Standard) are recognized on MS-Windows. However, <code>GDI</code> fonts support only a subset of the known scripts: <code>greek</code>, <code>hangul</code>, <code>kana</code>, <code>kanbun</code>, <code>bopomofo</code>, <code>tibetan</code>, <code>yi</code>, <code>mongolian</code>, <code>hebrew</code>, <code>arabic</code>, and <code>thai</code>.
+</p></dd>
+
+<dt><a id="index-font-antialiasing-_0028MS-Windows_0029"></a>=antialias= </dt><dd>Specifies the antialiasing method. The value <code>none</code> means no antialiasing, <code>standard</code> means use standard antialiasing, <code>subpixel</code> means use subpixel antialiasing (known as <i>Cleartype</i> on Windows), and <code>natural</code> means use subpixel antialiasing with adjusted spacing between letters. If unspecified, the font will use the system default antialiasing.</dd>
+</dl>
+
+<p>
+The method used by Emacs on MS-Windows to look for fonts suitable for displaying a given non-ASCII character might fail for some rare scripts, specifically those added by Unicode relatively recently, even if you have fonts installed on your system that support those scripts. That is because these scripts have no Unicode Subrange Bits (USBs) defined for them in the information used by Emacs on MS-Windows to look for fonts. You can use the <code>w32-find-non-USB-fonts</code> function to overcome these problems. It needs to be run once at the beginning of the Emacs session, and again if you install new fonts. You can add the following line to your init file to have this function run every time you start Emacs:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(w32-find-non-USB-fonts)
+</pre>
+</div>
+
+<p>
+Alternatively, you can run this function manually via M-: (see <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>) at any time. On a system that has many fonts installed, running <code>w32-find-non-USB-fonts</code> might take a couple of seconds; if you consider that to be too long to be run during startup, and if you install new fonts only rarely, run this function once via M-:, and then assign the value it returns, if non-<code>nil</code>, to the variable <code>w32-non-USB-fonts</code> in your init file. (If the function returns <code>nil</code>, you have no fonts installed that can display characters from the scripts which need this facility.)
+</p>
+
+<p>
+The variable <code>w32-use-w32-font-dialog</code> controls the way fonts can be selected via S-mouse-1 (<code>mouse-appearance-menu</code>). If the value is <code>t</code>, the default, Emacs uses the standard Windows font selection dialog. If the value is <code>nil</code>, Emacs instead pops a menu of a fixed set of fonts. The fonts to appear in the menu are determined by <code>w32-fixed-font-alist</code>.
+</p>
+
+<hr />
+</div>
+</div>

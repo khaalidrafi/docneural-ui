@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Concepts-of-Emacs-Windows">1. 22.1 Concepts of Emacs Windows ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Split-Window.html">Splitting Windows</a>   Up: <a href="docs/emacs--Windows.html">Multiple Windows</a>
+</p>
+
+<p>
+<a id="Basic-Window"></a>
+</p>
+
+<hr />
+<div id="outline-container-Concepts-of-Emacs-Windows" class="outline-2">
+<h2 id="Concepts-of-Emacs-Windows"><span class="section-number-2">1.</span> 22.1 Concepts of Emacs Windows <a href="#Concepts-of-Emacs-Windows">¶</a></h2>
+<div class="outline-text-2" id="text-Concepts-of-Emacs-Windows">
+<p>
+Each Emacs window displays one Emacs buffer at any time. A single buffer may appear in more than one window; if it does, any changes in its text are displayed in all the windows where it appears. But these windows can show different parts of the buffer, because each window has its own value of point.
+</p>
+
+<p>
+At any time, one Emacs window is the <i>selected window</i>; the buffer this window is displaying is the current buffer. On graphical displays, the point is indicated by a solid blinking cursor in the selected window, and by a hollow box in non-selected windows. On text terminals, the cursor is drawn only in the selected window. See <a href="docs/emacs--Cursor-Display.html">Displaying the Cursor</a>.
+</p>
+
+<p>
+Commands to move point affect the value of point for the selected Emacs window only. They do not change the value of point in other Emacs windows, even those showing the same buffer. The same is true for buffer-switching commands such as C-x b; they do not affect other windows at all. However, there are other commands such as C-x 4 b that select a different window and switch buffers in it. Also, all commands that display information in a window, including (for example) C-h f (<code>describe-function</code>) and C-x C-b (<code>list-buffers</code>), usually work by displaying buffers in a nonselected window without affecting the selected window.
+</p>
+
+<p>
+When multiple windows show the same buffer, they can have different regions, because they can have different values of point. However, they all have the same value for the mark, because each buffer has only one mark position.
+</p>
+
+<p>
+Each window has its own mode line, which displays the buffer name, modification status and major and minor modes of the buffer that is displayed in the window. The selected window's mode line appears in a different color. See <a href="docs/emacs--Mode-Line.html">The Mode Line</a>, for details.
+</p>
+
+<hr />
+</div>
+</div>

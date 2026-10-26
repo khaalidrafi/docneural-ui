@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Sending-Replies">1. 35.10 Sending Replies ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Summary.html">Summaries</a>   Previous: <a href="docs/emacs--Rmail-Attributes.html">Rmail Attributes</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Reply"></a>
+</p>
+
+<hr />
+<div id="outline-container-Sending-Replies" class="outline-2">
+<h2 id="Sending-Replies"><span class="section-number-2">1.</span> 35.10 Sending Replies <a href="#Sending-Replies">¶</a></h2>
+<div class="outline-text-2" id="text-Sending-Replies">
+<p>
+Rmail has several commands to send outgoing mail. See <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>, for information on using Message mode, including certain features meant to work with Rmail. What this section documents are the special commands of Rmail for entering the mail buffer used to compose the outgoing message. Note that the usual keys for sending mail&#x2014;C-x m, C-x 4 m, and C-x 5 m&#x2014;also work normally in Rmail mode.
+</p>
+
+<dl class="org-dl">
+<dt>m</dt><dd>Send a message (<code>rmail-mail</code>).</dd>
+
+<dt>c</dt><dd>Continue editing the already started outgoing message (<code>rmail-continue</code>).</dd>
+
+<dt>r</dt><dd>Send a reply to the current Rmail message (<code>rmail-reply</code>).</dd>
+
+<dt>f</dt><dd>Forward the current message to other users (<code>rmail-forward</code>).</dd>
+
+<dt>C-u f</dt><dd>Resend the current message to other users (<code>rmail-resend</code>).</dd>
+
+<dt>M-m</dt><dd>Try sending a bounced message a second time (<code>rmail-retry-failure</code>).</dd>
+</dl>
+
+<p>
+The most common reason to send a message while in Rmail is to reply to the message you are reading. To do this, type r (<code>rmail-reply</code>). This displays a mail composition buffer in another window, much like C-x 4 m, but preinitializes the ‘=Subject=', ‘=To=', ‘=CC=', ‘=In-Reply-To=' and ‘=References=' header fields based on the message you are replying to. The ‘=To=' field starts out as the address of the person who sent the message you received, and the ‘=CC=' field starts out with all the other recipients of that message.
+</p>
+
+<p>
+You can exclude certain recipients from being included automatically in replies, using the variable <code>mail-dont-reply-to-names</code>. Its value should be a regular expression; any recipients that match are excluded from the ‘=CC=' field. They are also excluded from the ‘=To=' field, unless this would leave the field empty. If this variable is <code>nil</code>, then the first time you compose a reply it is initialized to a default value that matches your own address.
+</p>
+
+<p>
+To reply only to the sender of the original message, enter the reply command with a numeric argument: C-u r or 1 r. This omits the ‘=CC=' field completely for a particular reply.
+</p>
+
+<p>
+Once the mail composition buffer has been initialized, editing and sending the mail goes as usual (see <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>). You can edit the presupplied header fields if they are not what you want. You can also use commands such as C-c C-y, which yanks in the message that you are replying to (see <a href="docs/emacs--Mail-Commands.html">Mail Commands</a>). You can also switch to the Rmail buffer, select a different message there, switch back, and yank the new current message.
+</p>
+
+<p>
+Sometimes a message does not reach its destination. Mailers usually send the failed message back to you, enclosed in a <i>failure message</i>. The Rmail command M-m (<code>rmail-retry-failure</code>) prepares to send the same message a second time: it sets up a mail composition buffer with the same text and header fields as before. If you type C-c C-c right away, you send the message again exactly the same as the first time. Alternatively, you can edit the text or headers and then send it. The variable <code>rmail-retry-ignored-headers</code>, in the same format as <code>rmail-ignored-headers</code> (see <a href="docs/emacs--Rmail-Display.html">Display of Messages</a>), controls which headers are stripped from the failed message when retrying it.
+</p>
+
+<p>
+Another frequent reason to send mail in Rmail is to <i>forward</i> the current message to other users. f (<code>rmail-forward</code>) makes this easy by preinitializing the mail composition buffer with the current message as the text, and a subject of the form <code>[==from=</code>: <code>=subject==]</code>, where <code>from</code> and <code>subject</code> are the sender and subject of the original message. All you have to do is fill in the recipients and send. When you forward a message, recipients get a message which is from you, and which has the original message in its contents.
+</p>
+
+<p>
+Rmail offers two formats for forwarded messages. The default is to use the MIME format (see <a href="docs/emacs--Rmail-Display.html">Display of Messages</a>). This includes the original message as a separate part. You can use a simpler format if you prefer, by setting the variable <code>rmail-enable-mime-composing</code> to <code>nil</code>. In this case, Rmail just includes the original message enclosed between two delimiter lines. It also modifies every line that starts with a dash, by inserting ‘=- <code>' at the start of the line. When you receive a forwarded message in this format, if it contains something besides ordinary text---for example, program source code---you might find it useful to undo that transformation. You can do this by selecting the forwarded message and typing M-x unforward-rmail-message. This command extracts the original forwarded message, deleting the inserted ‘</code>- =' strings, and inserts it into the Rmail file as a separate message immediately following the current one.
+</p>
+
+<p>
+<i>Resending</i> is an alternative similar to forwarding; the difference is that resending sends a message that is from the original sender, just as it reached you&#x2014;with a few added header fields (‘=Resent-From=' and ‘=Resent-To=') to indicate that it came via you. To resend a message in Rmail, use C-u f. (f runs <code>rmail-forward</code>, which invokes <code>rmail-resend</code> if you provide a numeric argument.)
+</p>
+
+<p>
+Use the m (<code>rmail-mail</code>) command to start editing an outgoing message that is not a reply. It leaves the header fields empty. Its only difference from C-x 4 m is that it makes the Rmail buffer accessible for C-c C-y, just as r does.
+</p>
+
+<p>
+The c (<code>rmail-continue</code>) command resumes editing the mail composition buffer, to finish editing an outgoing message you were already composing, or to alter a message you have sent.
+</p>
+
+<p>
+If you set the variable <code>rmail-mail-new-frame</code> to a non-<code>nil</code> value, then all the Rmail commands to start sending a message create a new frame to edit it in. This frame is deleted when you send the message (but not if it is the only visible frame on the current display, or if it's a text-mode frame). If this frame cannot be deleted when you send the message, Emacs will try to reuse it for composing subsequent messages.
+</p>
+
+<p>
+All the Rmail commands to send a message use the mail-composition method that you have chosen (see <a href="docs/emacs--Mail-Methods.html">Mail-Composition Methods</a>).
+</p>
+
+<hr />
+</div>
+</div>

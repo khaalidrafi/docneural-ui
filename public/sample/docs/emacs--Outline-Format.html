@@ -1,0 +1,101 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgfc609d6">1. Food</a>
+<ul>
+<li><a href="#org5b26d62">1.1. Delicious Food</a></li>
+<li><a href="#org4c91007">1.2. Distasteful Food</a>
+<ul>
+<li><a href="#orgbb67fe1">1.2.1. Dormitory Food</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgcfcbfc2">2. Shelter</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Outline-Motion.html">Outline Motion Commands</a>   Previous: <a href="docs/emacs--Outline-Minor-Mode.html">Outline Minor Mode</a>   Up: <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>
+</p>
+
+<p>
+<a id="Outline-Format"></a>
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Format-of-Outlines"></a>27.9.2 Format of Outlines <a href="#Format-of-Outlines">¶</a><br />
+<div class="outline-text-5" id="text-Format-of-Outlines">
+<p>
+Outline mode assumes that the lines in the buffer are of two types: <i>heading lines</i> and <i>body lines</i>. A heading line represents a topic in the outline. Heading lines start with one or more asterisk (‘=*=') characters; the number of asterisks determines the depth of the heading in the outline structure. Thus, a heading line with one ‘=*=' is a major topic; all the heading lines with two ‘=*='s between it and the next one-‘=*=' heading are its subtopics; and so on. Any line that is not a heading line is a body line. Body lines belong with the preceding heading line. Here is an example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-orgfc609d6" class="outline-2">
+<h2 id="orgfc609d6"><span class="section-number-2">1.</span> Food</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This is the body,
+which says something about the topic of food.
+</p>
+</div>
+<div id="outline-container-org5b26d62" class="outline-3">
+<h3 id="org5b26d62"><span class="section-number-3">1.1.</span> Delicious Food</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+This is the body of the second-level header.
+</p>
+</div>
+</div>
+<div id="outline-container-org4c91007" class="outline-3">
+<h3 id="org4c91007"><span class="section-number-3">1.2.</span> Distasteful Food</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+This could have
+a body too, with
+several lines.
+</p>
+</div>
+<div id="outline-container-orgbb67fe1" class="outline-4">
+<h4 id="orgbb67fe1"><span class="section-number-4">1.2.1.</span> Dormitory Food</h4>
+</div>
+</div>
+</div>
+<div id="outline-container-orgcfcbfc2" class="outline-2">
+<h2 id="orgcfcbfc2"><span class="section-number-2">2.</span> Shelter</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Another first-level topic with its header line.
+#+end<sub>src</sub>
+</p>
+
+<p>
+A heading line together with all following body lines is called collectively an <i>entry</i>. A heading line together with all following deeper heading lines and their body lines is called a <i>subtree</i>.
+</p>
+
+<p>
+You can customize the criterion for distinguishing heading lines by setting the variable <code>outline-regexp</code>. (The recommended ways to do this are in a major mode function or with a file local variable.) Any line whose beginning has a match for this regexp is considered a heading line. Matches that start within a line (not at the left margin) do not count.
+</p>
+
+<p>
+The length of the matching text determines the level of the heading; longer matches make a more deeply nested level. Thus, for example, if a text formatter has commands ‘=@chapter=', ‘=@section=' and ‘=@subsection=' to divide the document into chapters and sections, you could make those lines count as heading lines by setting <code>outline-regexp</code> to ‘="@chap\\|@\\(sub\\)*section"<code>'. Note the trick: the two words ‘=chapter</code>' and ‘=section=' are equally long, but by defining the regexp to match only ‘=chap=' we ensure that the length of the text matched on a chapter heading is shorter, so that Outline mode will know that sections are contained in chapters. This works as long as no other command starts with ‘=@chap='.
+</p>
+
+<p>
+Instead of setting the variable <code>outline-regexp</code>, you can set the variable <code>outline-search-function</code> to a function that matches the current heading and searches for the next one (see <a href="../elisp_html/Outline-Minor-Mode.html#Outline-Minor-Mode">Outline Minor Mode</a> in the Emacs Lisp Reference Manual).
+</p>
+
+<p>
+You can explicitly specify a rule for calculating the level of a heading line by setting the variable <code>outline-level</code>. The value of <code>outline-level</code> should be a function that takes no arguments and returns the level of the current heading. The recommended ways to set this variable are in a major mode command or with a file local variable.
+</p>
+
+<hr />
+</div>
+</div>

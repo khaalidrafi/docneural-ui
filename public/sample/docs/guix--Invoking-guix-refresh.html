@@ -1,0 +1,519 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-refresh">1.0.1. 9.6 Invoking <code>guix refresh</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-refresh"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-style.html">Invoking <code>guix style</code></a>, Previous: <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-refresh-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-refresh" class="outline-4">
+<h4 id="invoking-guix-refresh"><span class="section-number-4">1.0.1.</span> 9.6 Invoking <code>guix refresh</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-refresh">
+<p>
+<a id="index-guix-refresh"></a>
+The primary audience of the <code>guix refresh</code> command is packagers. As a user, you may be interested in the <code>--with-latest</code> option, which can bring you package update superpowers built upon <code>guix refresh</code> (see <a href="docs/guix--Package-Transformation-Options.html"><code>--with-latest</code></a>). By default, <code>guix refresh</code> reports any packages provided by the distribution that are outdated compared to the latest upstream version, like this:
+</p>
+
+<pre class="example" id="orgf9502d9">
+$ guix refresh
+gnu/packages/gettext.scm:29:13: gettext would be upgraded from 0.18.1.1 to 0.18.2.1
+gnu/packages/glib.scm:77:12: glib would be upgraded from 2.34.3 to 2.37.0
+</pre>
+
+<p>
+Alternatively, one can specify packages to consider, in which case a warning is emitted for packages that lack an updater:
+</p>
+
+<pre class="example" id="orgbd92234">
+$ guix refresh coreutils guile guile-ssh
+gnu/packages/ssh.scm:205:2: warning: no updater for guile-ssh
+gnu/packages/guile.scm:136:12: guile would be upgraded from 2.0.12 to 2.0.13
+</pre>
+
+<p>
+<code>guix refresh</code> browses the upstream repository of each package and determines the highest version number of the releases therein. The command knows how to update specific types of packages: GNU packages, ELPA packages, etc.&#x2014;see the documentation for <code>--type</code> below. There are many packages, though, for which it lacks a method to determine whether a new upstream release is available. However, the mechanism is extensible, so feel free to get in touch with us to add a new method!
+</p>
+
+<p>
+If for some reason you don't want to update to the latest version, you can update to a specific version by appending an equal sign and the desired version number to the package specification. Note that not all updaters support this; an error is reported when an updater cannot refresh to the specified version.
+</p>
+
+<pre class="example" id="org70f0abd">
+$ guix refresh -u guile=3.0.4
+…
+gnu/packages/guile.scm:392:2: guile: updating from version 3.0.3 to version 3.0.4...
+…
+$ guix refresh -u guile@2.0=2.0.12
+…
+gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0.12...
+…
+</pre>
+
+<p>
+<a id="index-target-version_002c-guix-refresh"></a>
+In some specific cases, you may have many packages specified via a manifest or a module selection which should all be updated together; for these cases, the <code>--target-version</code> option can be provided to have them all refreshed to the same version, as shown in the examples below:
+</p>
+
+<pre class="example" id="orgc0d3446">
+$ guix refresh qtbase qtdeclarative --target-version=6.5.2
+gnu/packages/qt.scm:1248:13: qtdeclarative would be upgraded from 6.3.2 to 6.5.2
+gnu/packages/qt.scm:584:2: qtbase would be upgraded from 6.3.2 to 6.5.2
+</pre>
+
+<pre class="example" id="org101cce4">
+$ guix refresh --manifest=qt5-manifest.scm --target-version=5.15.10
+gnu/packages/qt.scm:1173:13: qtxmlpatterns would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1202:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:1762:13: qtserialbus would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:2070:13: qtquickcontrols2 would be upgraded from 5.15.8 to 5.15.10
+…
+</pre>
+
+<pre class="example" id="org70e9b66">
+$ guix refresh -s module:kde-plasma --target-version=6.3.6
+[…] plasma-systemmonitor would be upgraded from 6.3.4 to 6.3.6
+[…] plasma-workspace-wallpapers would be upgraded from 6.3.4 to 6.3.6
+[…] plasma-browser-integration would be upgraded from 6.3.4 to 6.3.6
+…
+</pre>
+
+<p>
+<a id="index-partial-target-version_002c-guix-refresh"></a>
+The <code>--target-version</code> option accepts partial version prefixes, which can be useful to update to the latest major or major-minor prefixed version:
+</p>
+
+<pre class="example" id="orgfbe9ceb">
+$ guix refresh qtbase@5 qtdeclarative@5 --target-version=5
+gnu/packages/qt.scm:1472:13: qtdeclarative would be upgraded from 5.15.8 to 5.15.10
+gnu/packages/qt.scm:452:13: qtbase would be upgraded from 5.15.8 to 5.15.10
+</pre>
+
+<p>
+<a id="index-partial-version-specification_002c-guix-refresh"></a>
+A per-package equivalent to &#x2013;target-version is made available by prefixing the version specification with the ‘=~=' (tilde) character. For example:
+</p>
+
+<pre class="example" id="org2c5a484">
+$ guix refresh bash=~5 guile=~3
+gnu/packages/guile.scm:354:13: guile would be upgraded from 3.0.9 to 3.0.10
+gnu/packages/bash.scm:150:15: bash would be upgraded from 5.1.16 to 5.2.37
+</pre>
+
+<p>
+Sometimes the upstream name differs from the package name used in Guix, and <code>guix refresh</code> needs a little help. Most updaters honor the <code>upstream-name</code> property in package definitions, which can be used to that effect:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-public network-manager
+  (package
+    (name "network-manager")
+    ;; …
+    (properties '((upstream-name . "NetworkManager")))))
+</pre>
+</div>
+
+<p>
+When passed <code>--update</code>, it modifies distribution source files to update the version numbers and source code hashes of those package definitions, as well as possibly their inputs (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>). This is achieved by downloading each package's latest source tarball and its associated OpenPGP signature, authenticating the downloaded tarball against its signature using <code>gpgv</code>, and finally computing its hash&#x2014;note that GnuPG must be installed and in <code>$PATH</code>; run <code>guix install gnupg</code> if needed.
+</p>
+
+<p>
+You might also want to update definitions that correspond to the packages installed in your profile:
+</p>
+
+<pre class="example" id="orgf6eb99e">
+$ ./pre-inst-env guix refresh -u \
+       $(guix package --list-installed | cut -f1)
+</pre>
+
+<p>
+When considering whether to upgrade a package, it is sometimes convenient to know which packages would be affected by the upgrade and should be checked for compatibility. For this the <code>--list-dependent</code> option may be used when passing <code>guix refresh</code> one or more package names.
+</p>
+
+<p>
+When the public key used to sign the tarball is missing from the user's keyring, an attempt is made to automatically retrieve it from a public key server; when this is successful, the key is added to the user's keyring; otherwise, <code>guix refresh</code> reports an error.
+</p>
+
+<p>
+The following options are supported:
+</p>
+
+<dl class="org-dl">
+<dt><code>--recursive</code></dt><dd><p>
+Consider the packages specified, and all the packages upon which they depend.
+</p>
+
+<pre class="example" id="orgead9a02">
+$ guix refresh --recursive coreutils
+gnu/packages/acl.scm:40:13: acl would be upgraded from 2.2.53 to 2.3.1
+gnu/packages/m4.scm:30:12: 1.4.18 is already the latest version of m4
+gnu/packages/xml.scm:68:2: warning: no updater for expat
+gnu/packages/multiprecision.scm:40:12: 6.1.2 is already the latest version of gmp
+…
+</pre></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Consider the package <code>expr</code> evaluates to.
+</p>
+
+<p>
+This is useful to precisely refer to a package, as in this example:
+</p>
+
+<pre class="example" id="org662391c">
+guix refresh -l -e '(@@ (gnu packages commencement) glibc-final)'
+</pre>
+
+<p>
+This command lists the dependents of the “final” libc (essentially all the packages).
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--update</code><br />
+<code>-u</code> :: Update distribution source files (package definitions) in place. This is usually run from a checkout of the Guix source tree (see <a href="docs/guix--Running-Guix-Before-It-Is-Installed.html">Running Guix Before It Is Installed</a>):
+</p>
+
+<pre class="example" id="orgba112eb">
+./pre-inst-env guix refresh -s non-core -u
+</pre>
+
+<p>
+See <a href="docs/guix--Defining-Packages.html">Defining Packages</a>, for more information on package definitions. You can also run it on packages from a third-party channel:
+</p>
+
+<pre class="example" id="org8dd74b3">
+guix refresh -L /path/to/channel -u package
+</pre>
+
+<p>
+See <a href="docs/guix--Creating-a-Channel.html">Creating a Channel</a>, on how to create a channel.
+</p>
+
+<p>
+This command updates the version and source code hash of the package. Depending on the updater being used, it can also update the various ‘=inputs=' fields of the package. In some cases, the updater might get inputs wrong&#x2014;it might not know about an extra input that's necessary, or it might add an input that should be avoided.
+</p>
+
+<p>
+<a id="index-updater_002dextra_002dinputs_002c-package-property"></a> <a id="index-updater_002dignored_002dinputs_002c-package-property"></a>
+</p>
+
+<p>
+To address that, packagers can add properties stating inputs that should be added to those found by the updater or inputs that should be ignored: the <code>updater-extra-inputs</code> and <code>updater-ignored-inputs</code> properties pertain to “regular” inputs, and there are equivalent properties for ‘=native=' and ‘=propagated=' inputs. In the example below, we tell the updater that we need ‘=openmpi=' as an additional input:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-public python-mpi4py
+  (package
+    (name "python-mpi4py")
+    ;; …
+    (inputs (list openmpi))
+    (properties
+     '((updater-extra-inputs . ("openmpi"))))))
+</pre>
+</div>
+
+<p>
+That way, <code>guix refresh -u python-mpi4py</code> will leave the ‘=openmpi=' input, even if it is not among the inputs it would normally add.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--select</code>[==subset==]=<br />
+<code>-s ==subset</code> :: Select all the packages in <code>subset</code>, one of <code>core</code>, <code>non-core</code> or <code>module:==name</code>.
+</p>
+
+<p>
+The <code>core</code> subset refers to all the packages at the core of the distribution&#x2014;i.e., packages that are used to build “everything else”. This includes GCC, libc, Binutils, Bash, etc. Usually, changing one of these packages in the distribution entails a rebuild of all the others. Thus, such updates are an inconvenience to users in terms of build time or bandwidth used to achieve the upgrade.
+</p>
+
+<p>
+The <code>non-core</code> subset refers to the remaining packages. It is typically useful in cases where an update of the core packages would be inconvenient.
+</p>
+
+<p>
+The <code>module:==name</code> subset refers to all the packages in a specified guile module. The module can be specified as <code>module:guile</code> or <code>module:(gnu packages guile)</code>, the former is a shorthand for the later.
+</p></dd>
+
+<dt>(no term)</dt><dd><code>--manifest===file</code><br />
+<code>-m ==file</code> :: Select all the packages from the manifest in <code>file</code>. This is useful to check if any packages of the user manifest can be updated.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--type===updater</code><br />
+<code>-t ==updater</code> :: Select only packages handled by <code>updater</code> (may be a comma-separated list of updaters). Currently, <code>updater</code> may be one of:
+</p>
+
+<dl class="org-dl">
+<dt><code>gnu</code></dt><dd>the updater for GNU packages;</dd>
+
+<dt><code>savannah</code></dt><dd>the updater for packages hosted at <a href="https://savannah.gnu.org">Savannah</a>;</dd>
+
+<dt><code>sourceforge</code></dt><dd>the updater for packages hosted at <a href="https://sourceforge.net">SourceForge</a>;</dd>
+
+<dt><code>gnome</code></dt><dd>the updater for GNOME packages;</dd>
+
+<dt><code>kde</code></dt><dd>the updater for KDE packages;</dd>
+
+<dt><code>xorg</code></dt><dd>the updater for X.org packages;</dd>
+
+<dt><code>kernel.org</code></dt><dd>the updater for packages hosted on kernel.org;</dd>
+
+<dt><code>egg</code></dt><dd>the updater for <a href="https://wiki.call-cc.org/eggs/">Egg</a> packages;</dd>
+
+<dt><code>elpa</code></dt><dd>the updater for <a href="https://elpa.gnu.org/">ELPA</a> packages;</dd>
+
+<dt><code>cran</code></dt><dd>the updater for <a href="https://cran.r-project.org/">CRAN</a> packages;</dd>
+
+<dt><code>bioconductor</code></dt><dd>the updater for <a href="https://www.bioconductor.org/">Bioconductor</a> R packages;</dd>
+
+<dt><code>cpan</code></dt><dd>the updater for <a href="https://www.cpan.org/">CPAN</a> packages;</dd>
+
+<dt><code>pypi</code></dt><dd>the updater for <a href="https://pypi.python.org">PyPI</a> packages.</dd>
+
+<dt><code>gem</code></dt><dd>the updater for <a href="https://rubygems.org">RubyGems</a> packages.</dd>
+
+<dt><code>github</code></dt><dd><p>
+the updater for <a href="https://github.com">GitHub</a> packages.
+</p>
+
+<p>
+The <code>github</code> updater uses the <a href="https://developer.github.com/v3/">GitHub API</a> to query for new releases. When used repeatedly e.g. when refreshing all packages, GitHub will eventually refuse to answer any further API requests. By default 60 API requests per hour are allowed, and a full refresh on all GitHub packages in Guix requires more than this. Authentication with GitHub through the use of an API token alleviates these limits. To use an API token, set the environment variable <code>GUIX_GITHUB_TOKEN</code> to a token procured from <a href="https://github.com/settings/tokens">https://github.com/settings/tokens</a> or otherwise.
+</p></dd>
+
+<dt><code>hackage</code></dt><dd>the updater for <a href="https://hackage.haskell.org">Hackage</a> packages.</dd>
+
+<dt><code>stackage</code></dt><dd>the updater for <a href="https://www.stackage.org">Stackage</a> packages.</dd>
+
+<dt><code>crate</code></dt><dd>the updater for <a href="https://crates.io">Crates</a> packages.</dd>
+
+<dt><code>launchpad</code></dt><dd>the updater for <a href="https://launchpad.net">Launchpad</a> packages.</dd>
+
+<dt><code>generic-html</code></dt><dd><p>
+a generic updater that crawls, by default, the HTML page where the source tarball of the package is hosted, when applicable. Behavior can be customized with the following package properties:
+</p>
+
+<dl class="org-dl">
+<dt><code>release-monitoring-url</code></dt><dd>an alternate URL to crawl;</dd>
+
+<dt><code>release-file-regexp</code></dt><dd>an regular expression matching release file names, whose first subexpression must correspond to the version string.</dd>
+</dl>
+
+<p>
+Here is an example package with a custom release monitoring URL and a regexp matching an unconventional release file name (it's unconventional due to the use of upper case letter and the lack of a hyphen before the version string):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(package
+  ;; …
+  (home-page "http://example.org/software/the-package.html")
+  (properties
+    `((release-monitoring-url . ,home-page)
+      (release-file-regexp . "ThePackage([0-9\\.]+)\\.tgz"))))
+</pre>
+</div></dd>
+
+<dt><code>generic-git</code></dt><dd><p>
+a generic updater for packages hosted on Git repositories. It tries to be smart about parsing Git tag names, but if it is not able to parse the tag name and compare tags correctly, users can define the following properties for a package.
+</p>
+
+<ul class="org-ul">
+<li><code>release-tag-prefix</code>: a regular expression for matching a prefix of the tag name.</li>
+<li><code>release-tag-suffix</code>: a regular expression for matching a suffix of the tag name.</li>
+<li><code>release-tag-version-delimiter</code>: a string used as the delimiter in the tag name for separating the numbers of the version.</li>
+<li><code>accept-pre-releases</code>: by default, the updater will ignore pre-releases; to make it also look for pre-releases, set the this property to <code>#t</code>.</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(package
+  (name "foo")
+  ;; ...
+  (properties
+    '((release-tag-prefix . "^release0-")
+      (release-tag-suffix . "[a-z]?$")
+      (release-tag-version-delimiter . ":"))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+For instance, the following command only checks for updates of Emacs packages hosted at <code>elpa.gnu.org</code> and for updates of CRAN packages:
+</p>
+
+<pre class="example" id="orgdbdf3a6">
+$ guix refresh --type=elpa,cran
+gnu/packages/statistics.scm:819:13: r-testthat would be upgraded from 0.10.0 to 0.11.0
+gnu/packages/emacs.scm:856:13: emacs-auctex would be upgraded from 11.88.6 to 11.88.9
+</pre></dd>
+
+<dt><code>--list-updaters</code></dt><dd><p>
+List available updaters and exit (see <code>--type</code> above).
+</p>
+
+<p>
+For each updater, display the fraction of packages it covers; at the end, display the fraction of packages covered by all these updaters.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--list-dependent</code><br />
+<code>-l</code> :: List top-level dependent packages that would need to be rebuilt as a result of upgrading one or more packages.
+</p>
+
+<p>
+See <a href="docs/guix--Invoking-guix-graph.html">the <code>reverse-package</code> type of <code>guix graph</code></a>, for information on how to visualize the list of dependents of a package.
+</p>
+
+<p>
+See <a href="docs/guix--Additional-Build-Options.html#build_002ddependents"><code>guix build --dependents</code></a>, for a convenient way to build all the dependents of a package.
+</p>
+
+<p>
+Be aware that the <code>--list-dependent</code> option only <i>approximates</i> the rebuilds that would be required as a result of an upgrade. More rebuilds might be required under some circumstances.
+</p>
+
+<pre class="example" id="org3657c64">
+$ guix refresh --list-dependent flex
+Building the following 120 packages would ensure 213 dependent packages are rebuilt:
+hop@2.4.0 emacs-geiser@0.13 notmuch@0.18 mu@0.9.9.5 cflow@1.4 idutils@4.6 …
+</pre>
+
+<p>
+The command above lists a set of packages that could be built to check for compatibility with an upgraded <code>flex</code> package.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--list-transitive</code><br />
+<code>-T</code> :: List all the packages which one or more packages depend upon.
+</p>
+
+<pre class="example" id="orga5ac39a">
+$ guix refresh --list-transitive flex
+flex@2.6.4 depends on the following 25 packages: perl@5.28.0 help2man@1.47.6
+bison@3.0.5 indent@2.2.10 tar@1.30 gzip@1.9 bzip2@1.0.6 xz@5.2.4 file@5.33 …
+</pre>
+
+<p>
+The command above lists a set of packages which, when changed, would cause <code>flex</code> to be rebuilt.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--load-path===directory</code><br />
+<code>-L ==directory</code> :: Add <code>directory</code> to the front of the package module search path (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+This allows users to define their own packages and make them visible to the command-line tools.
+</p></dd>
+</dl>
+
+<p>
+The following options can be used to customize GnuPG operation:
+</p>
+
+<dl class="org-dl">
+<dt><code>--gpg===command</code></dt><dd>Use <code>command</code> as the GnuPG 2.x command. <code>command</code> is searched for in <code>$PATH</code>.</dd>
+
+<dt><code>--keyring===file</code></dt><dd><p>
+Use <code>file</code> as the keyring for upstream keys. <code>file</code> must be in the <i>keybox format</i>. Keybox files usually have a name ending in <code>.kbx</code> and the GNU Privacy Guard (GPG) can manipulate these files (see <a href="https://www.gnupg.org/documentation/manuals/gnupg/kbxutil.html#kbxutil"><code>kbxutil</code></a> in Using the GNU Privacy Guard, for information on a tool to manipulate keybox files).
+</p>
+
+<p>
+When this option is omitted, <code>guix refresh</code> uses <code>~/.config/guix/upstream/trustedkeys.kbx</code> as the keyring for upstream signing keys. OpenPGP signatures are checked against keys from this keyring; missing keys are downloaded to this keyring as well (see <code>--key-download</code> below).
+</p>
+
+<p>
+You can fetch keys to a specific keybox file like this:
+</p>
+
+<pre class="example" id="org7da7774">
+gpg --no-default-keyring --keyring mykeyring.kbx \
+  --recv-keys A28BF40C3E551372662D14F741AAE7DCCA3D8351
+</pre>
+
+<p>
+See <a href="https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html#GPG-Configuration-Options"><code>--keyring</code></a> in Using the GNU Privacy Guard, for more information on GPG's <code>--keyring</code> option.
+</p></dd>
+
+<dt><code>--key-download===policy</code></dt><dd>Handle missing OpenPGP keys according to <code>policy</code>, which may be one of:
+
+<dl class="org-dl">
+<dt><code>always</code></dt><dd>Always download missing OpenPGP keys from the key server, and add them to the user's GnuPG keyring.</dd>
+
+<dt><code>never</code></dt><dd>Never try to download missing OpenPGP keys. Instead just bail out.</dd>
+
+<dt><code>interactive</code></dt><dd>When a package signed with an unknown OpenPGP key is encountered, ask the user whether to download it or not.</dd>
+
+<dt><code>auto</code></dt><dd>Automatically selects the <code>interactive</code> policy when the standard input is connected to a pseudo terminal (TTY), else <code>always</code>. This is the default behavior.</dd>
+</dl></dd>
+
+<dt><code>--key-server===host</code></dt><dd>Use <code>host</code> as the OpenPGP key server when importing a public key.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-style.html">Invoking <code>guix style</code></a>, Previous: <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

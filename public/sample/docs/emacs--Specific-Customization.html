@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-Specific-Items">1. 51.1.6 Customizing Specific Items ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Custom-Themes.html">Custom Themes</a>   Previous: <a href="docs/emacs--Face-Customization.html">Customizing Faces</a>   Up: <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>
+</p>
+
+<p>
+<a id="Specific-Customization"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-Specific-Items" class="outline-2">
+<h2 id="Customizing-Specific-Items"><span class="section-number-2">1.</span> 51.1.6 Customizing Specific Items <a href="#Customizing-Specific-Items">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-Specific-Items">
+<ul class="org-ul">
+<li>M-x customize-option RET <code>option</code> RET<br />
+M-x customize-variable RET <code>option</code> RET :: Set up a customization buffer for just one user option, <code>option</code>.</li>
+
+<li id="M-x customize-face RET <code>face</code> RET">Set up a customization buffer for just one face, <code>face</code>.</li>
+
+<li id="M-x customize-icon RET <code>face</code> RET">Set up a customization buffer for just one icon, <code>icon</code>.</li>
+
+<li id="M-x customize-group RET <code>group</code> RET">Set up a customization buffer for just one group, <code>group</code>.</li>
+
+<li id="M-x customize-apropos RET <code>regexp</code> RET">Set up a customization buffer for all the settings and groups that match <code>regexp</code>.</li>
+
+<li id="M-x customize-changed RET <code>version</code> RET">Set up a customization buffer with all the user options, faces and groups whose meaning has changed since (or been added after) Emacs version <code>version</code>.</li>
+
+<li id="M-x customize-saved">Set up a customization buffer containing all settings that you have saved with customization buffers.</li>
+
+<li id="M-x customize-unsaved">Set up a customization buffer containing all settings that you have set but not saved.</li>
+</ul>
+
+<p>
+If you want to customize a particular user option, type M-x customize-option. This reads the variable name, and sets up the customization buffer with just that one user option. When entering the variable name into the minibuffer, completion is available, but only for the names of variables that have been loaded into Emacs.
+</p>
+
+<p>
+Likewise, you can customize a specific face using M-x customize-face. You can set up a customization buffer for a specific customization group using M-x customize-group.
+</p>
+
+<p>
+M-x customize-apropos prompts for a search term&#x2014;either one or more words separated by spaces, or a regular expression&#x2014;and sets up a customization buffer for all <i>loaded</i> settings and groups with matching names. This is like using the search field at the top of the customization buffer (see <a href="docs/emacs--Customization-Groups.html">Customization Groups</a>).
+</p>
+
+<p>
+When you upgrade to a new Emacs version, you might want to consider customizing new settings, and settings whose meanings or default values have changed. To do this, use M-x customize-changed and specify a previous Emacs version number using the minibuffer. It creates a customization buffer which shows all the settings and groups whose definitions have been changed since the specified version, loading them if necessary.
+</p>
+
+<p>
+If you change settings and then decide the change was a mistake, you can use two commands to revisit your changes. Use M-x customize-saved to customize settings that you have saved. Use M-x customize-unsaved to customize settings that you have set but not saved.
+</p>
+
+<hr />
+</div>
+</div>

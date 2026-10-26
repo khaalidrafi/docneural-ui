@@ -1,0 +1,136 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Elm-Packages"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Fonts.html">Fonts</a>, Previous: <a href="docs/guix--Rust-Crates.html">Rust Crates</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Elm-Packages-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="elm-packages"></a>22.8.13 Elm Packages<br />
+<div class="outline-text-5" id="text-elm-packages">
+<p>
+<a id="index-Elm"></a>
+Elm applications can be named like other software: their names need not mention Elm.
+</p>
+
+<p>
+Packages in the Elm sense (see <code>elm-build-system</code> under <a href="docs/guix--Build-Systems.html">Build Systems</a>) are required use names of the format <code>author==/==project</code>, where both the <code>author</code> and the <code>project</code> may contain hyphens internally, and the <code>author</code> sometimes contains uppercase letters.
+</p>
+
+<p>
+To form the Guix package name from the upstream name, we follow a convention similar to Python packages (see <a href="docs/guix--Python-Modules.html">Python Modules</a>), adding an <code>elm-</code> prefix unless the name would already begin with <code>elm-</code>.
+</p>
+
+<p>
+In many cases we can reconstruct an Elm package's upstream name heuristically, but, since conversion to a Guix-style name involves a loss of information, this is not always possible. Care should be taken to add the <code>'upstream-name</code> property when necessary so that ‘=guix import elm=' will work correctly (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>). The most notable scenarios when explicitly specifying the upstream name is necessary are:
+</p>
+
+<ol class="org-ol">
+<li>When the <code>author</code> is <code>elm</code> and the <code>project</code> contains one or more hyphens, as with <code>elm/virtual-dom</code>; and</li>
+<li>When the <code>author</code> contains hyphens or uppercase letters, as with <code>Elm-Canvas/raster-shapes</code>&#x2014;unless the <code>author</code> is <code>elm-explorations</code>, which is handled as a special case, so packages like <code>elm-explorations/markdown</code> do <i>not</i> need to use the <code>'upstream-name</code> property.</li>
+</ol>
+
+<p>
+The module <code>(guix build-system elm)</code> provides the following utilities for working with names and related conventions:
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: elm-package-origin <code>elm-name</code> <code>version</code> <code>hash</code></dt><dd><p>
+Returns a Git origin using the repository naming and tagging regime required for a published Elm package with the upstream name <code>elm-name</code> at version <code>version</code> with sha256 checksum <code>hash</code>.
+</p>
+
+<p>
+For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(package
+  (name "elm-html")
+  (version "1.0.0")
+  (source
+   (elm-package-origin
+    "elm/html"
+    version
+    (base32 "15k1679ja57vvlpinpv06znmrxy09lbhzfkzdc89i01qa8c4gb4a")))
+  ...)
+</pre>
+</div></dd>
+
+<dt>Procedure: elm-&gt;package-name <code>elm-name</code></dt><dd><p>
+Returns the Guix-style package name for an Elm package with upstream name <code>elm-name</code>.
+</p>
+
+<p>
+Note that there is more than one possible <code>elm-name</code> for which <code>elm-&gt;package-name</code> will produce a given result.
+</p></dd>
+
+<dt>Procedure: guix-package-&gt;elm-name <code>package</code></dt><dd>Given an Elm <code>package</code>, returns the possibly-inferred upstream name, or <code>#f</code> the upstream name is not specified via the <code>'upstream-name</code> property and can not be inferred by <code>infer-elm-package-name</code>.</dd>
+
+<dt>Procedure: infer-elm-package-name <code>guix-name</code></dt><dd>Given the <code>guix-name</code> of an Elm package, returns the inferred upstream name, or <code>#f</code> if the upstream name can't be inferred. If the result is not <code>#f</code>, supplying it to <code>elm-&gt;package-name</code> would produce <code>guix-name</code>.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Fonts.html">Fonts</a>, Previous: <a href="docs/guix--Rust-Crates.html">Rust Crates</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

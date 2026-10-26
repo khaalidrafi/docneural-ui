@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Dired_002c-the-Directory-Editor">1. 32 Dired, the Directory Editor ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Calendar_002fDiary.html">The Calendar and the Diary</a>   Previous: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Dired"></a>
+</p>
+
+<hr />
+<div id="outline-container-Dired_002c-the-Directory-Editor" class="outline-2">
+<h2 id="Dired_002c-the-Directory-Editor"><span class="section-number-2">1.</span> 32 Dired, the Directory Editor <a href="#Dired_002c-the-Directory-Editor">¶</a></h2>
+<div class="outline-text-2" id="text-Dired_002c-the-Directory-Editor">
+<p>
+Dired makes an Emacs buffer containing a listing of a directory, and optionally some of its subdirectories as well. You can use the normal Emacs commands to move around in this buffer, and special Dired commands to operate on the listed files. Dired works with both local and remote directories.
+</p>
+
+<p>
+The Dired buffer is normally read-only, and inserting text in it is not allowed (however, the Wdired mode allows that, see <a href="docs/emacs--Wdired.html">Editing the Dired Buffer</a>). Ordinary printing characters such as d and x are redefined for special Dired commands. Some Dired commands <i>mark</i> or <i>flag</i> the <i>current file</i> (that is, the file on the current line); other commands operate on the marked files or on the flagged files. You first mark certain files in order to operate on all of them with one command.
+</p>
+
+<p>
+The Dired-X package provides various extra features for Dired mode. See <a href="../dired-x_html/index.html#Top">Dired-X</a> in Dired Extra User's Manual.
+</p>
+
+<p>
+You can also view a list of files in a directory with C-x C-d (<code>list-directory</code>). Unlike Dired, this command does not allow you to operate on the listed files. See <a href="docs/emacs--Directories.html">File Directories</a>.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Dired-Enter.html">Entering Dired</a></li>
+<li><a href="docs/emacs--Dired-Navigation.html">Navigation in the Dired Buffer</a></li>
+<li><a href="docs/emacs--Dired-Deletion.html">Deleting Files with Dired</a></li>
+<li><a href="docs/emacs--Flagging-Many-Files.html">Flagging Many Files at Once</a></li>
+<li><a href="docs/emacs--Dired-Visiting.html">Visiting Files in Dired</a></li>
+<li><a href="docs/emacs--Marks-vs-Flags.html">Dired Marks vs. Flags</a></li>
+<li><a href="docs/emacs--Operating-on-Files.html">Operating on Files</a></li>
+<li><a href="docs/emacs--Shell-Commands-in-Dired.html">Shell Commands in Dired</a></li>
+<li><a href="docs/emacs--Shell-Command-Guessing.html">Shell Command Guessing</a></li>
+<li><a href="docs/emacs--Transforming-File-Names.html">Transforming File Names in Dired</a></li>
+<li><a href="docs/emacs--Comparison-in-Dired.html">File Comparison with Dired</a></li>
+<li><a href="docs/emacs--Subdirectories-in-Dired.html">Subdirectories in Dired</a></li>
+<li><a href="docs/emacs--Subdir-Switches.html">Subdirectory Switches in Dired</a></li>
+<li><a href="docs/emacs--Subdirectory-Motion.html">Moving Over Subdirectories</a></li>
+<li><a href="docs/emacs--Hiding-Subdirectories.html">Hiding Subdirectories</a></li>
+<li><a href="docs/emacs--Dired-Updating.html">Updating the Dired Buffer</a></li>
+<li><a href="docs/emacs--Dired-and-Find.html">Dired and <code>find</code></a></li>
+<li><a href="docs/emacs--Wdired.html">Editing the Dired Buffer</a></li>
+<li><a href="docs/emacs--Image_002dDired.html">Viewing Image Thumbnails in Dired</a></li>
+<li><a href="docs/emacs--Misc-Dired-Features.html">Other Dired Features</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

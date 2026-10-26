@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tables-in-ODT-export-1">1. 13.12.7 Tables in ODT export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tables-in-ODT-export"></a>
+Next: <a href="docs/org--Images-in-ODT-export.html">Images in ODT export</a>, Previous: <a href="docs/org--Links-in-ODT-export.html">Links in ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tables-in-ODT-export-1" class="outline-2">
+<h2 id="Tables-in-ODT-export-1"><span class="section-number-2">1.</span> 13.12.7 Tables in ODT export <a href="#Tables-in-ODT-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tables-in-ODT-export-1">
+<p>
+The ODT export backend handles native Org mode tables (see <a href="docs/org--Tables.html">Tables</a>) and simple ‘=table.el=' tables. Complex ‘=table.el=' tables having column or row spans are not supported. Such tables are stripped from the exported document.
+</p>
+
+<p>
+By default, the ODT export backend exports a table with top and bottom frames and with ruled lines separating row and column groups (see <a href="docs/org--Column-Groups.html">Column Groups</a>). All tables are typeset to occupy the same width. The ODT export backend honors any table alignments and relative widths for columns (see <a href="docs/org--Column-Width-and-Alignment.html">Column Width and Alignment</a>).
+</p>
+
+<p>
+Note that the ODT export backend interprets column widths as weighted ratios, the default weight being 1.
+</p>
+
+<p>
+Specifying ‘=:rel-width=' property on an ‘=ATTR<sub>ODT</sub>=' line controls the width of the table. For example:
+</p>
+
+<pre class="example" id="org07db4f8">
+#+ATTR_ODT: :rel-width 50
+| Area/Month    |   Jan |   Feb |   Mar |   Sum |
+|---------------+-------+-------+-------+-------|
+| /             |     &lt; |       |       |     &lt; |
+| &lt;l13&gt;         |  &lt;r5&gt; |  &lt;r5&gt; |  &lt;r5&gt; |  &lt;r6&gt; |
+| North America |     1 |    21 |   926 |   948 |
+| Middle East   |     6 |    75 |   844 |   925 |
+| Asia Pacific  |     9 |    27 |   790 |   826 |
+|---------------+-------+-------+-------+-------|
+| Sum           |    16 |   123 |  2560 |  2699 |
+</pre>
+
+<p>
+On export, the above table takes 50% of text width area. The exporter sizes the columns in the ratio: 13:5:5:5:6. The first column is left-aligned and rest of the columns, right-aligned. Vertical rules separate the header and the last column. Horizontal rules separate the header and the last row.
+</p>
+
+<p>
+For even more customization, create custom table styles and associate them with a table using the ‘=ATTR<sub>ODT</sub>=' keyword. See <a href="docs/org--Advanced-topics-in-ODT-export.html#Customizing-tables-in-ODT-export">Customizing tables in ODT export</a>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Images-in-ODT-export.html">Images in ODT export</a>, Previous: <a href="docs/org--Links-in-ODT-export.html">Links in ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mail-Miscellany">1. 34.4.4 Mail Miscellany ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Citing-Mail.html">Citing Mail</a>   Up: <a href="docs/emacs--Mail-Commands.html">Mail Commands</a>
+</p>
+
+<p>
+<a id="Mail-Misc"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mail-Miscellany" class="outline-2">
+<h2 id="Mail-Miscellany"><span class="section-number-2">1.</span> 34.4.4 Mail Miscellany <a href="#Mail-Miscellany">¶</a></h2>
+<div class="outline-text-2" id="text-Mail-Miscellany">
+<p>
+You can <i>attach</i> a file to an outgoing message by typing C-c C-a (<code>mml-attach-file</code>) in the mail buffer. Attaching is done using the Multipurpose Internet Mail Extensions (MIME) standard.
+</p>
+
+<p>
+The <code>mml-attach-file</code> command prompts for the name of the file, and for the attachment's <i>content type</i>, <i>description</i>, and <i>disposition</i>. The content type is normally detected automatically; just type RET to accept the default. The description is a single line of text that the recipient will see next to the attachment; you may also choose to leave this empty. The disposition is either ‘=inline=', which means the recipient will see a link to the attachment within the message body, or ‘=attachment=', which means the link will be separate from the body.
+</p>
+
+<p>
+The <code>mml-attach-file</code> command is specific to Message mode; in Mail mode use mail-add-attachment instead. It will prompt only for the name of the file, and will determine the content type and the disposition automatically. If you want to include some description of the attached file, type that in the message body.
+</p>
+
+<p>
+The actual contents of the attached file are not inserted into the mail buffer. Instead, some placeholder text is inserted into the mail buffer, like this:
+</p>
+
+<pre class="example" id="org368cee1">
+&lt;#part type="text/plain" filename="~/foo.txt" disposition=inline&gt;
+&lt;#/part&gt;
+</pre>
+
+<p>
+When you type C-c C-c or C-c C-s to send the message, the attached file will be delivered with it.
+</p>
+
+<p>
+While composing a message, you can do spelling correction on the message text by typing M-x ispell-message. If you have yanked an incoming message into the outgoing draft, this command skips what was yanked, but it checks the text that you yourself inserted (it looks for indentation or <code>mail-yank-prefix</code> to distinguish the cited lines from your input). See <a href="docs/emacs--Spelling.html">Checking and Correcting Spelling</a>.
+</p>
+
+<p>
+Turning on Message mode (which C-x m does automatically) runs the normal hooks <code>text-mode-hook</code> and <code>message-mode-hook</code>. Initializing a new outgoing message runs the normal hook <code>message-setup-hook</code>; you can use this hook if you want to make changes to the appearance of the mail buffer. See <a href="docs/emacs--Hooks.html">Hooks</a>.
+</p>
+
+<p>
+The main difference between these hooks is just when they are invoked. Whenever you type C-x m, <code>message-mode-hook</code> runs as soon as the mail buffer is created. Then the <code>message-setup</code> function inserts the default contents of the buffer. After these default contents are inserted, <code>message-setup-hook</code> runs.
+</p>
+
+<p>
+If you use C-x m to continue an existing composition, <code>message-mode-hook</code> runs immediately after switching to the mail buffer. If the buffer is unmodified, or if you decide to erase it and start again, <code>message-setup-hook</code> runs after the default contents are inserted.
+</p>
+
+<hr />
+</div>
+</div>

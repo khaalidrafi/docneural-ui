@@ -1,0 +1,229 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#instantiate-an-image">1.0.1. 16.2 Instantiate an Image</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Instantiate-an-Image"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--image_002dtype-Reference.html">image-type Reference</a>, Previous: <a href="docs/guix--image-Reference.html"><code>image</code> Reference</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Instantiate-an-Image-1"></a>
+</p>
+</div>
+<div id="outline-container-instantiate-an-image" class="outline-4">
+<h4 id="instantiate-an-image"><span class="section-number-4">1.0.1.</span> 16.2 Instantiate an Image</h4>
+<div class="outline-text-4" id="text-instantiate-an-image">
+<p>
+Let's say you would like to create an MBR image with three distinct partitions:
+</p>
+
+<ul class="org-ul">
+<li>The ESP (EFI System Partition), a partition of 40 MiB at offset 1024 KiB with a vfat file system.</li>
+<li>an ext4 partition of 50 MiB data file, and labeled “data”.</li>
+<li>an ext4 bootable partition containing the <code>%simple-os</code> operating-system.</li>
+</ul>
+
+<p>
+You would then write the following image definition in a <code>my-image.scm</code> file for instance.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu)
+             (gnu image)
+             (gnu tests)
+             (gnu system image)
+             (guix gexp))
+
+(define MiB (expt 2 20))
+
+(image
+ (format 'disk-image)
+ (operating-system %simple-os)
+ (partitions
+  (list
+   (partition
+    (size (* 40 MiB))
+    (offset (* 1024 1024))
+    (label "GNU-ESP")
+    (file-system "vfat")
+    (flags '(esp))
+    (initializer (gexp initialize-efi-partition)))
+   (partition
+    (size (* 50 MiB))
+    (label "DATA")
+    (file-system "ext4")
+    (initializer #~(lambda* (root . rest)
+                     (mkdir root)
+                     (call-with-output-file
+                         (string-append root "/data")
+                       (lambda (port)
+                         (format port "my-data"))))))
+   (partition
+    (size 'guess)
+    (label root-label)
+    (file-system "ext4")
+    (flags '(boot))
+    (initializer (gexp initialize-root-partition))))))
+</pre>
+</div>
+
+<p>
+Note that the first and third partitions use generic initializers procedures, initialize-efi-partition and initialize-root-partition respectively. The initialize-efi-partition installs a GRUB EFI loader that is loading the GRUB bootloader located in the root partition. The initialize-root-partition instantiates a complete system as defined by the <code>%simple-os</code> operating-system.
+</p>
+
+<p>
+You can now run:
+</p>
+
+<pre class="example" id="org5c8596d">
+guix system image my-image.scm
+</pre>
+
+<p>
+to instantiate the <code>image</code> definition. That produces a disk image which has the expected structure:
+</p>
+
+<pre class="example" id="org5de5cbd">
+$ parted $(guix system image my-image.scm) print
+…
+Model:  (file)
+Disk /gnu/store/yhylv1bp5b2ypb97pd3bbhz6jk5nbhxw-disk-image: 1714MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  43.0MB  41.9MB  primary  fat16        esp
+ 2      43.0MB  95.4MB  52.4MB  primary  ext4
+ 3      95.4MB  1714MB  1619MB  primary  ext4         boot
+</pre>
+
+<p>
+The size of the <code>boot</code> partition has been inferred to <code>1619MB</code> so that it is large enough to host the <code>%simple-os</code> operating-system.
+</p>
+
+<p>
+You can also use existing <code>image</code> record definitions and inherit from them to simplify the <code>image</code> definition. The <code>(gnu system image)</code> module provides the following <code>image</code> definition variables.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: mbr-disk-image </dt><dd>An MBR disk-image composed of a single ROOT partition. The ROOT partition starts at a 1 MiB offset so that the bootloader can install itself in the post-MBR gap.</dd>
+
+<dt>Variable: mbr-hybrid-disk-image </dt><dd>An MBR disk-image composed of two partitions: a 64 bits ESP partition and a ROOT boot partition. The ESP partition starts at a 1 MiB offset so that a BIOS compatible bootloader can install itself in the post-MBR gap. The image can be used by <code>x86_64</code> and <code>i686</code> machines supporting only legacy BIOS booting. The ESP partition ensures that it can also be used by newer machines relying on UEFI booting, hence the <i>hybrid</i> denomination.</dd>
+
+<dt>Variable: efi-disk-image </dt><dd>A GPT disk-image composed of two partitions: a 64 bits ESP partition and a ROOT boot partition. This image can be used on most <code>x86_64</code> and <code>i686</code> machines, supporting BIOS or UEFI booting.</dd>
+
+<dt>Variable: efi32-disk-image </dt><dd>Same as <code>efi-disk-image</code> but with a 32 bits EFI partition.</dd>
+
+<dt>Variable: iso9660-image </dt><dd>An ISO-9660 image composed of a single bootable partition. This image can also be used on most <code>x86_64</code> and <code>i686</code> machines.</dd>
+
+<dt>Variable: docker-image </dt><dd>A Docker image that can be used to spawn a Docker container.</dd>
+</dl>
+
+<p>
+Using the <code>efi-disk-image</code> we can simplify our previous <code>image</code> declaration this way:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu)
+             (gnu image)
+             (gnu tests)
+             (gnu system image)
+             (guix gexp)
+             (ice-9 match))
+
+(define MiB (expt 2 20))
+
+(define data
+  (partition
+   (size (* 50 MiB))
+   (label "DATA")
+   (file-system "ext4")
+   (initializer #~(lambda* (root . rest)
+                    (mkdir root)
+                    (call-with-output-file
+                        (string-append root "/data")
+                      (lambda (port)
+                        (format port "my-data")))))))
+
+(image
+ (inherit efi-disk-image)
+ (operating-system %simple-os)
+ (partitions
+  (match (image-partitions efi-disk-image)
+    ((esp root)
+     (list esp data root)))))
+</pre>
+</div>
+
+<p>
+This will give the exact same <code>image</code> instantiation but the <code>image</code> declaration is simpler.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--image_002dtype-Reference.html">image-type Reference</a>, Previous: <a href="docs/guix--image-Reference.html"><code>image</code> Reference</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

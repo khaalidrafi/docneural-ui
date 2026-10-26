@@ -1,0 +1,42 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Quoting-HTML-tags-1">1. 13.9.6 Quoting HTML tags ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Quoting-HTML-tags"></a>
+Next: <a href="docs/org--Headlines-in-HTML-export.html">Headlines in HTML export</a>, Previous: <a href="docs/org--Bare-HTML.html">Exporting to minimal HTML</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Quoting-HTML-tags-1" class="outline-2">
+<h2 id="Quoting-HTML-tags-1"><span class="section-number-2">1.</span> 13.9.6 Quoting HTML tags <a href="#Quoting-HTML-tags-1">¶</a></h2>
+<div class="outline-text-2" id="text-Quoting-HTML-tags-1">
+<p>
+The HTML export backend transforms ‘=&lt;=' and ‘=&gt;=' to ‘=&amp;lt;=' and ‘=&amp;gt;='. To include raw HTML code in the Org file, so the HTML export backend can insert that HTML code in the output, use this inline syntax: ‘=...='. For example:
+</p>
+
+<pre class="example" id="orgc0361ff">
+@@html:&lt;b&gt;@@bold text@@html:&lt;/b&gt;@@
+</pre>
+
+<p>
+For larger raw HTML code blocks, use these HTML export code blocks:
+</p>
+
+<pre class="example" id="orgc4cd421">
+#+HTML: Literal HTML code for export
+
+#+BEGIN_EXPORT html
+  All lines between these markers are exported literally
+#+END_EXPORT
+</pre>
+</div>
+</div>

@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Making-Summaries">1. 35.11.1 Making Summaries ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Summary-Edit.html">Editing in Summaries</a>   Up: <a href="docs/emacs--Rmail-Summary.html">Summaries</a>
+</p>
+
+<p>
+<a id="Rmail-Make-Summary"></a>
+</p>
+
+<hr />
+<div id="outline-container-Making-Summaries" class="outline-2">
+<h2 id="Making-Summaries"><span class="section-number-2">1.</span> 35.11.1 Making Summaries <a href="#Making-Summaries">¶</a></h2>
+<div class="outline-text-2" id="text-Making-Summaries">
+<p>
+Here are the commands to create a summary for the current Rmail buffer. Once the Rmail buffer has a summary, changes in the Rmail buffer (such as deleting or expunging messages, and getting new mail) automatically update the summary.
+</p>
+
+<ul class="org-ul">
+<li>h<br />
+C-M-h :: Summarize all messages (<code>rmail-summary</code>).</li>
+
+<li>l <code>labels</code> RET<br />
+C-M-l <code>labels</code> RET :: Summarize messages that have one or more of the specified labels (<code>rmail-summary-by-labels</code>).</li>
+
+<li id="C-M-r <code>rcpts</code> RET">Summarize messages that match the specified recipients (<code>rmail-summary-by-recipients</code>).</li>
+
+<li id="C-M-t <code>topic</code> RET">Summarize messages that have a match for the specified regexp <code>topic</code> in their subjects (<code>rmail-summary-by-topic</code>).</li>
+
+<li id="C-M-s <code>regexp</code> RET">Summarize messages whose headers match the specified regular expression <code>regexp</code> (<code>rmail-summary-by-regexp</code>).</li>
+
+<li id="C-M-f <code>senders</code> RET">Summarize messages that match the specified senders. (<code>rmail-summary-by-senders</code>).</li>
+</ul>
+
+<p>
+The h or C-M-h (<code>rmail-summary</code>) command fills the summary buffer for the current Rmail buffer with a summary of all the messages in the buffer. It then displays and selects the summary buffer in another window.
+</p>
+
+<p>
+C-M-l <code>labels</code> RET (<code>rmail-summary-by-labels</code>) makes a partial summary mentioning only the messages that have one or more of the labels <code>labels</code>. <code>labels</code> should contain label names separated by commas.
+</p>
+
+<p>
+C-M-r <code>rcpts</code> RET (<code>rmail-summary-by-recipients</code>) makes a partial summary mentioning only the messages that have one or more recipients matching the regular expression <code>rcpts</code>. This is matched against the ‘=To=', ‘=From=', and ‘=CC=' headers (supply a prefix argument to exclude the ‘=CC=' header).
+</p>
+
+<p>
+C-M-t <code>topic</code> RET (<code>rmail-summary-by-topic</code>) makes a partial summary mentioning only the messages whose subjects have a match for the regular expression <code>topic</code>. With a prefix argument, the match is against the whole message, not just the subject.
+</p>
+
+<p>
+C-M-s <code>regexp</code> RET (<code>rmail-summary-by-regexp</code>) makes a partial summary that mentions only the messages whose headers (including the date and the subject lines) match the regular expression <code>regexp</code>.
+</p>
+
+<p>
+C-M-f <code>senders</code> RET (<code>rmail-summary-by-senders</code>) makes a partial summary that mentions only the messages whose ‘=From=' fields match the regular expression <code>senders</code>.
+</p>
+
+<p>
+Note that there is only one summary buffer for any Rmail buffer; making any kind of summary discards any previous summary.
+</p>
+
+<p>
+The variable <code>rmail-summary-window-size</code> says how many lines to use for the summary window. The variable <code>rmail-summary-line-count-flag</code> controls whether the summary line for a message should include the line count of the message. Setting this option to <code>nil</code> might speed up the generation of summaries.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,74 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#LaTeX-specific-export-settings-1">1. 13.10.2 LaTeX specific export settings ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="LaTeX-specific-export-settings"></a>
+Next: <a href="docs/org--LaTeX-header-and-sectioning.html">LaTeX header and sectioning structure</a>, Previous: <a href="docs/org--LaTeX_002fPDF-export-commands.html">LaTeX/PDF export commands</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-LaTeX-specific-export-settings-1" class="outline-2">
+<h2 id="LaTeX-specific-export-settings-1"><span class="section-number-2">1.</span> 13.10.2 LaTeX specific export settings <a href="#LaTeX-specific-export-settings-1">¶</a></h2>
+<div class="outline-text-2" id="text-LaTeX-specific-export-settings-1">
+<p>
+The LaTeX export backend has several additional keywords for customizing LaTeX output. Setting these keywords works similar to the general options (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-DESCRIPTION_002c-keyword-2"></a>‘=DESCRIPTION=' </dt><dd>The document's description. The description along with author name, keywords, and related file metadata are inserted in the output file by the hyperref package. See <code>org-latex-hyperref-template</code> for customizing metadata items. See <code>org-latex-title-command</code> for typesetting description into the document's front matter. Use multiple ‘=DESCRIPTION=' keywords for long descriptions.</dd>
+
+<dt><a id="index-LANGUAGE_002c-keyword-1"></a>‘=LANGUAGE=' </dt><dd><p>
+Language code of the primary document language. When ‘=LANGUAGE=' keyword is not specified use the value of <code>org-export-default-language</code> (by default - ‘=en=', American English)
+</p>
+
+<p>
+The list of language codes supported by Org is stored in the variable <code>org-latex-language-alist</code>.
+</p>
+
+<p>
+In order to be effective, the ‘=babel=' or ‘=polyglossia=' packages&#x2014;according to the LaTeX compiler used&#x2014;must be loaded with the appropriate language as argument. This can be accomplished by modifying the <code>org-latex-packages-alist</code> variable, e.g., with the following snippet (note that ‘=polyglossia=' does not work with pdfLaTeX):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(add-to-list 'org-latex-packages-alist
+             '("AUTO" "babel" t ("pdflatex" "xelatex" "lualatex")))
+(add-to-list 'org-latex-packages-alist
+             '("AUTO" "polyglossia" t ("xelatex" "lualatex")))
+</pre>
+</div></dd>
+
+<dt><a id="index-LATEX_005fCLASS_002c-keyword"></a>‘=LATEX<sub>CLASS</sub>=' </dt><dd>This is LaTeX document class, such as <i>article</i>, <i>report</i>, <i>book</i>, and so on, which contain predefined preamble and headline level mapping that the LaTeX export backend needs. The backend reads the default class name from the <code>org-latex-default-class</code> variable. Org has <i>article</i> as the default class. A valid default class must be an element of <code>org-latex-classes</code>.</dd>
+
+<dt><a id="index-LATEX_005fCLASS_005fOPTIONS_002c-keyword"></a>‘=LATEX<sub>CLASS</sub><sub>OPTIONS</sub>=' </dt><dd>Options the LaTeX export backend uses when calling the LaTeX document class.</dd>
+
+<dt><a id="index-LATEX_005fCOMPILER_002c-keyword-1"></a>‘=LATEX<sub>COMPILER</sub>=' </dt><dd>The compiler, such as ‘=pdflatex=', ‘=xelatex=', ‘=lualatex=', for producing the PDF. See <code>org-latex-compiler</code>.</dd>
+
+<dt><a id="index-LATEX_005fHEADER_002c-keyword-1"></a>‘=LATEX<sub>HEADER</sub>=', ‘=LATEX<sub>HEADER</sub><sub>EXTRA</sub>=' </dt><dd>Arbitrary lines to add to the document's preamble, before the hyperref settings. See <code>org-latex-classes</code> for adjusting the structure and order of the LaTeX headers.</dd>
+
+<dt><a id="index-LATEX_005fCLASS_005fPRE_002c-keyword"></a>‘=LATEX<sub>CLASS</sub><sub>PRE</sub>=' </dt><dd>Arbitrary lines to prepend before the LaTeX preamble.</dd>
+
+<dt><a id="index-KEYWORDS_002c-keyword-2"></a>‘=KEYWORDS=' </dt><dd>The keywords for the document. The description along with author name, keywords, and related file metadata are inserted in the output file by the hyperref package. See <code>org-latex-hyperref-template</code> for customizing metadata items. See <code>org-latex-title-command</code> for typesetting description into the document's front matter. Use multiple ‘=KEYWORDS=' lines if necessary.</dd>
+
+<dt><a id="index-SUBTITLE_002c-keyword-3"></a>‘=SUBTITLE=' </dt><dd>The document's subtitle. It is typeset as per <code>org-latex-subtitle-format</code>. If <code>org-latex-subtitle-separate</code> is non-<code>nil</code>, it is typed outside the <code>\title</code> macro. See <code>org-latex-hyperref-template</code> for customizing metadata items. See <code>org-latex-title-command</code> for typesetting description into the document's front matter.</dd>
+</dl>
+
+<p>
+The following sections have further details.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--LaTeX-header-and-sectioning.html">LaTeX header and sectioning structure</a>, Previous: <a href="docs/org--LaTeX_002fPDF-export-commands.html">LaTeX/PDF export commands</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

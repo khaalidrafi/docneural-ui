@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Imenu-1">1. 28.2.4 Imenu ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Which-Function.html">Which Function Mode</a>   Previous: <a href="docs/emacs--Moving-by-Sentences.html">Moving by Sentences</a>   Up: <a href="docs/emacs--Defuns.html">Top-Level Definitions, or Defuns</a>
+</p>
+
+<p>
+<a id="Imenu"></a>
+</p>
+
+<hr />
+<div id="outline-container-Imenu-1" class="outline-2">
+<h2 id="Imenu-1"><span class="section-number-2">1.</span> 28.2.4 Imenu <a href="#Imenu-1">¶</a></h2>
+<div class="outline-text-2" id="text-Imenu-1">
+<p>
+The Imenu facility offers a way to find the major definitions in a file by name. It is useful both in programming-language major modes, where the definitions are variables, functions, etc., and in text formatter major modes, where it treats each chapter, section, etc., as a definition. (See <a href="docs/emacs--Xref.html">Find Identifier References</a>, for a more powerful feature that handles multiple files together.)
+</p>
+
+<p>
+If you type M-g i (<code>imenu</code>), it reads the name of a definition using the minibuffer, then moves point to that definition. You can use completion to specify the name; the command displays the list of matching valid names in the completions buffer. If the index is hierarchical, then by default the completion candidates are also shown hierarchically, as a nested list: first you need to choose a section, then a subsection, etc., and finally the name of the definition. However, if you set <code>imenu-flatten</code> to a non-<code>nil</code> value, then instead of the nested menu you can select a completion candidate from a flattened list of definitions. How the sections and subsections are shown in the flattened list of completion candidates depends on the value of <code>imenu-flatten</code>, which can be one of the following:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-imenu_002dlevel_002dseparator"></a>=prefix= </dt><dd>This shows each candidate prefixed by names of its section, subsection, subsubsection, etc., with each level separated from the next by the string that is the value of <code>imenu-level-separator</code>, by default ‘=:='.</dd>
+
+<dt><code>annotation</code></dt><dd>This shows the section names as annotations, following each definition name.</dd>
+
+<dt><code>group</code></dt><dd>This shows the completion candidates grouped by their sections.</dd>
+</dl>
+
+<p>
+Alternatively, you can bind the command <code>imenu</code> to a mouse click. Then it displays mouse menus for you to select a definition name. You can also add the buffer's index to the menu bar by calling <code>imenu-add-menubar-index</code>. If you want to have this menu bar item available for all buffers in a certain major mode, you can do this by adding <code>imenu-add-menubar-index</code> to its mode hook. But if you have done that, you will have to wait a little while each time you visit a file in that mode, while Emacs finds all the definitions in that buffer.
+</p>
+
+<p>
+When you change the contents of a buffer, if you add or delete definitions, you can update the buffer's index based on the new contents by invoking the ‘=*Rescan*=' item in the menu. Rescanning happens automatically if you set <code>imenu-auto-rescan</code> to a non-<code>nil</code> value. There is no need to rescan because of small changes in the text.
+</p>
+
+<p>
+<code>imenu-auto-rescan</code> will be disabled in buffers that are larger than <code>imenu-auto-rescan-maxout</code> in bytes, and scanning is stopped if it takes more than <code>imenu-max-index-time</code> seconds.
+</p>
+
+<p>
+You can customize the way the menus are sorted by setting the variable <code>imenu-sort-function</code>. By default, names are ordered as they occur in the buffer; if you want alphabetic sorting, use the symbol <code>imenu--sort-by-name</code> as the value. You can also define your own comparison function by writing Lisp code.
+</p>
+
+<p>
+You can also customize how Imenu completions are sorted by changing the variable <code>completion-category-overrides</code> and setting its <code>display-sort-function</code> for the category <code>imenu</code>.
+</p>
+
+<p>
+If Eglot is activated for the current buffer's project (see <a href="docs/emacs--Projects.html">Working with Projects</a>) and the current buffer's major mode, Eglot provides its own facility for producing the buffer's index based on the analysis of the program source by the language-server which manages the current buffer. See <a href="../eglot_html/Eglot-Features.html#Eglot-Features">Eglot Features</a> in Eglot: The Emacs LSP Client.
+</p>
+
+<p>
+Imenu provides the information to guide Which Function mode (see <a href="docs/emacs--Which-Function.html">Which Function Mode</a>). The Speedbar can also use it (see <a href="docs/emacs--Speedbar.html">Speedbar Frames</a>).
+</p>
+
+<hr />
+</div>
+</div>

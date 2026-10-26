@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Other-Kill-Commands-1">1. 14.1.3 Other Kill Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Kill-Options.html">Options for Killing</a>   Previous: <a href="docs/emacs--Killing-by-Lines.html">Killing by Lines</a>   Up: <a href="docs/emacs--Deletion-and-Killing.html">Deletion and Killing</a>
+</p>
+
+<p>
+<a id="Other-Kill-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Other-Kill-Commands-1" class="outline-2">
+<h2 id="Other-Kill-Commands-1"><span class="section-number-2">1.</span> 14.1.3 Other Kill Commands <a href="#Other-Kill-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-Other-Kill-Commands-1">
+<dl class="org-dl">
+<dt>C-w</dt><dd>Kill the region (<code>kill-region</code>).</dd>
+
+<dt>M-w</dt><dd>Copy the region into the kill ring (<code>kill-ring-save</code>).</dd>
+
+<dt>M-d</dt><dd>Kill the next word (<code>kill-word</code>). See <a href="docs/emacs--Words.html">Words</a>.</dd>
+
+<dt>M-DEL</dt><dd>Kill one word backwards (<code>backward-kill-word</code>).</dd>
+
+<dt>C-x DEL</dt><dd>Kill back to beginning of sentence (<code>backward-kill-sentence</code>). See <a href="docs/emacs--Sentences.html">Sentences</a>.</dd>
+
+<dt>M-k</dt><dd>Kill to the end of the sentence (<code>kill-sentence</code>).</dd>
+
+<dt>C-M-k</dt><dd>Kill the following balanced expression (<code>kill-sexp</code>). See <a href="docs/emacs--Expressions.html">Expressions with Balanced Parentheses</a>.</dd>
+
+<dt>M-z <code>char</code></dt><dd>Kill through the next occurrence of <code>char</code> (<code>zap-to-char</code>).</dd>
+
+<dt>M-x zap-up-to-char <code>char</code></dt><dd>Kill up to, but not including, the next occurrence of <code>char</code>.</dd>
+</dl>
+
+<p>
+One of the commonly-used kill commands is C-w (<code>kill-region</code>), which kills the text in the region (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>). Similarly, M-w (<code>kill-ring-save</code>) copies the text in the region into the kill ring without removing it from the buffer. If the mark is inactive when you type C-w or M-w, the command acts on the text between point and where you last set the mark (see <a href="docs/emacs--Using-Region.html">Operating on the Region</a>).
+</p>
+
+<p>
+Emacs also provides commands to kill specific syntactic units: words, with M-DEL and M-d (see <a href="docs/emacs--Words.html">Words</a>); balanced expressions, with C-M-k (see <a href="docs/emacs--Expressions.html">Expressions with Balanced Parentheses</a>); and sentences, with C-x DEL and M-k (see <a href="docs/emacs--Sentences.html">Sentences</a>).
+</p>
+
+<p>
+The command M-z (<code>zap-to-char</code>) combines killing with searching: it reads a character and kills from point up to (and including) the next occurrence of that character in the buffer. A numeric argument acts as a repeat count; a negative argument means to search backward and kill text before point. A history of previously used characters is maintained and can be accessed via the M-p/M-n keystrokes. This is mainly useful if the character to be used has to be entered via a complicated input method. A similar command <code>zap-up-to-char</code> kills from point up to, but not including the next occurrence of a character, with numeric argument acting as a repeat count.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,108 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Mcron-Home-Service"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Power-Management-Home-Services.html">Power Management Home Services</a>, Previous: <a href="docs/guix--Shells-Home-Services.html">Shells</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Scheduled-User_0027s-Job-Execution"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="scheduled-users-job-execution"></a>13.3.3 Scheduled User's Job Execution<br />
+<div class="outline-text-5" id="text-scheduled-users-job-execution">
+<p>
+<a id="index-cron_002c-per_002duser"></a> <a id="index-mcron_002c-per_002duser"></a> <a id="index-scheduling-jobs-per_002duser"></a>
+The <code>(gnu home services mcron)</code> module provides an interface to GNU mcron, a daemon to run jobs at scheduled times (see <a href="https://www.gnu.org/software/mcron/manual/html_node/index.html#Top">GNU mcron</a>). The information about system's mcron is applicable here (see <a href="docs/guix--Scheduled-Job-Execution.html#mcron_002dservice">mcron reference</a>), the only difference for home services is that they have to be declared in a <code>home-environment</code> record instead of an <code>operating-system</code> record.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> We recommend defining periodic tasks as Shepherd timers, which provide more flexibility than mcron. See <a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a>, for more info.
+</p>
+</blockquote>
+
+<dl class="org-dl">
+<dt>Variable: home-mcron-service-type </dt><dd><p>
+This is the type of the <code>mcron</code> home service, whose value is a <code>home-mcron-configuration</code> object. It allows to manage scheduled tasks.
+</p>
+
+<p>
+This service type can be the target of a service extension that provides additional job specifications (see <a href="docs/guix--Service-Composition.html">Service Composition</a>). In other words, it is possible to define services that provide additional mcron jobs to run.
+</p></dd>
+
+<dt>Data Type: home-mcron-configuration </dt><dd>Available <code>home-mcron-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>mcron</code> (default: <code>mcron</code>) (type: file-like)</dt><dd>The mcron package to use.</dd>
+
+<dt><code>jobs</code> (default: <code>'()</code>) (type: list-of-gexps)</dt><dd>This is a list of gexps (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>), where each gexp corresponds to an mcron job specification (see <a href="https://www.gnu.org/software/mcron/manual/html_node/Syntax.html#Syntax">mcron job specifications</a> in GNU mcron).</dd>
+
+<dt><code>log?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Log messages to standard output.</dd>
+
+<dt><code>log-format</code> (default: <code>"~1@*~a ~a: ~a~%"</code>) (type: string)</dt><dd><code>(ice-9 format)</code> format string for log messages. The default value produces messages like "‘=pid== <code>=name=</code>: <code>=message=</code>"=' (see <a href="https://www.gnu.org/software/mcron/manual/html_node/Invoking-mcron.html#Invoking-mcron">Invoking</a> in GNU mcron). Each message is also prefixed by a timestamp by GNU Shepherd.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Power-Management-Home-Services.html">Power Management Home Services</a>, Previous: <a href="docs/guix--Shells-Home-Services.html">Shells</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

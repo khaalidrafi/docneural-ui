@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Recovering-Data-from-Auto_002dSaves">1. 20.6.3 Recovering Data from Auto-Saves ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Auto-Save-Control.html">Controlling Auto-Saving</a>   Up: <a href="docs/emacs--Auto-Save.html">Auto-Saving: Protection Against Disasters</a>
+</p>
+
+<p>
+<a id="Recover"></a>
+</p>
+
+<hr />
+<div id="outline-container-Recovering-Data-from-Auto_002dSaves" class="outline-2">
+<h2 id="Recovering-Data-from-Auto_002dSaves"><span class="section-number-2">1.</span> 20.6.3 Recovering Data from Auto-Saves <a href="#Recovering-Data-from-Auto_002dSaves">¶</a></h2>
+<div class="outline-text-2" id="text-Recovering-Data-from-Auto_002dSaves">
+<p>
+You can use the contents of an auto-save file to recover from a loss of data with the command M-x recover-file RET <code>file</code> RET. This visits <code>file</code> and then (after your confirmation) restores the contents from its auto-save file <code>#==file==#</code>. You can then save with C-x C-s to put the recovered text into <code>file</code> itself. For example, to recover file <code>foo.c</code> from its auto-save file <code>#foo.c#</code>, do:
+</p>
+
+<pre class="example" id="org94a0b29">
+M-x recover-file RET foo.c RET
+yes RET
+C-x C-s
+</pre>
+
+<p>
+Before asking for confirmation, M-x recover-file displays a directory listing describing the specified file and the auto-save file, so you can compare their sizes and dates. If the auto-save file is older, M-x recover-file does not offer to read it.
+</p>
+
+<p>
+When M-x recover-file asks for confirmation, if you answer with diff or <code>, it shows the diffs between =file</code> and its auto-save file <code>#==file==#</code> and reprompts you for confirmation.
+</p>
+
+<p>
+If Emacs or the computer crashes, you can recover all the files you were editing from their auto save files with the command M-x recover-session. This first shows you a list of recorded interrupted sessions. Move point to the one you choose, and type C-c C-c.
+</p>
+
+<p>
+Then <code>recover-session</code> asks about each of the files that were being edited during that session, asking whether to recover that file. If you answer y, it calls <code>recover-file</code>, which works in its normal fashion. It shows the dates of the original file and its auto-save file, and asks once again whether to recover that file.
+</p>
+
+<p>
+When <code>recover-session</code> is done, the files you've chosen to recover are present in Emacs buffers. You should then save them. Only this&#x2014;saving them&#x2014;updates the files themselves.
+</p>
+
+<p>
+Emacs records information about interrupted sessions in files named <code>.saves-==pid=</code>-<code>=hostname==~</code> in the directory <code>~/.emacs.d/auto-save-list/</code>. This directory is determined by the variable <code>auto-save-list-file-prefix</code>. If you set <code>auto-save-list-file-prefix</code> to <code>nil</code>, sessions are not recorded for recovery.
+</p>
+
+<hr />
+</div>
+</div>

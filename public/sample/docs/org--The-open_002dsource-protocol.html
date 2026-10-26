@@ -1,0 +1,91 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-open_002dsource-protocol-1">1. 17.16.3 The <code>open-source</code> protocol ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="The-open_002dsource-protocol"></a>
+Previous: <a href="docs/org--The-capture-protocol.html">The <code>capture</code> protocol</a>, Up: <a href="docs/org--Protocols.html">Protocols for External Access</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-open_002dsource-protocol-1" class="outline-2">
+<h2 id="The-open_002dsource-protocol-1"><span class="section-number-2">1.</span> 17.16.3 The <code>open-source</code> protocol <a href="#The-open_002dsource-protocol-1">¶</a></h2>
+<div class="outline-text-2" id="text-The-open_002dsource-protocol-1">
+<p>
+The <code>open-source</code> handler is designed to help with editing local sources when reading a document. To that effect, you can use a bookmark with the following location:
+</p>
+
+<pre class="example" id="orgedcb5be">
+javascript:location.href='org-protocol://open-source?url='+
+      encodeURIComponent(location.href);void(0)
+</pre>
+
+<p>
+The variable <code>org-protocol-project-alist</code> maps URLs to local file names, by stripping URL parameters from the end and replacing the <code>:base-url</code> with <code>:working-directory</code> and <code>:online-suffix</code> with <code>:working-suffix</code>. For example, assuming you own a local copy of ‘=<a href="https://orgmode.org/worg/">https://orgmode.org/worg/</a>=' contents at ‘=/home/user/worg=', you can set <code>org-protocol-project-alist</code> to the following
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-protocol-project-alist
+      '(("Worg"
+         :base-url "https://orgmode.org/worg/"
+         :working-directory "/home/user/worg/"
+         :online-suffix ".html"
+         :working-suffix ".org")))
+</pre>
+</div>
+
+<p>
+If you are now browsing ‘=<a href="https://orgmode.org/worg/org-contrib/org-protocol.html">https://orgmode.org/worg/org-contrib/org-protocol.html</a>=' and find a typo or have an idea about how to enhance the documentation, simply click the bookmark and start editing.
+</p>
+
+<p>
+However, such mapping may not always yield the desired results. Suppose you maintain an online store located at ‘=<a href="https://example.com/">https://example.com/</a>='. The local sources reside in ‘=/home/user/example/='. It is common practice to serve all products in such a store through one file and rewrite URLs that do not match an existing file on the server. That way, a request to ‘=<a href="https://example.com/print/posters.html">https://example.com/print/posters.html</a>=' might be rewritten on the server to something like ‘=<a href="https://example.com/shop/products.php/posters.html.php">https://example.com/shop/products.php/posters.html.php</a>='. The <code>open-source</code> handler probably cannot find a file named ‘=/home/user/example/print/posters.html.php=' and fails.
+</p>
+
+<p>
+Such an entry in <code>org-protocol-project-alist</code> may hold an additional property <code>:rewrites</code>. This property is a list of cons cells, each of which maps a regular expression to a path relative to the <code>:working-directory</code>.
+</p>
+
+<p>
+Now map the URL to the path ‘=/home/user/example/products.php=' by adding <code>:rewrites</code> rules like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-protocol-project-alist
+      '(("example.com"
+         :base-url "https://example.com/"
+         :working-directory "/home/user/example/"
+         :online-suffix ".php"
+         :working-suffix ".php"
+         :rewrites (("example.com/print/" . "products.php")
+                    ("example.com/$" . "index.php")))))
+</pre>
+</div>
+
+<p>
+Since ‘=example.com/$=' is used as a regular expression, it maps ‘=<a href="https://example.com/">https://example.com/</a>=', ‘=<a href="https://www.example.com/">https://www.example.com/</a>=' and similar to ‘=/home/user/example/index.php='.
+</p>
+
+<p>
+The <code>:rewrites</code> rules are searched as a last resort if and only if no existing file name is matched.
+</p>
+
+<p>
+Two functions can help you filling <code>org-protocol-project-alist</code> with valid contents: <code>org-protocol-create</code> and <code>org-protocol-create-for-org</code>. The latter is of use if you're editing an Org file that is part of a publishing project.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--The-capture-protocol.html">The <code>capture</code> protocol</a>, Up: <a href="docs/org--Protocols.html">Protocols for External Access</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,347 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Keyboard-Layout-and-Networking-and-Partitioning"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Proceeding-with-the-Installation.html">Proceeding with the Installation</a>, Up: <a href="docs/guix--Manual-Installation.html">Manual Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Keyboard-Layout_002c-Networking_002c-and-Partitioning"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="keyboard-layout-networking-and-partitioning"></a>3.6.1 Keyboard Layout, Networking, and Partitioning<br />
+<div class="outline-text-5" id="text-keyboard-layout-networking-and-partitioning">
+<p>
+Before you can install the system, you may want to adjust the keyboard layout, set up networking, and partition your target hard disk. This section will guide you through this.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Keyboard-Layout-1"></a>
+</p>
+</div>
+</li>
+<li><a id="keyboard-layout"></a>3.6.1.1 Keyboard Layout<br />
+<div class="outline-text-5" id="text-keyboard-layout">
+<p>
+<a id="index-keyboard-layout"></a>
+The installation image uses the US qwerty keyboard layout. If you want to change it, you can use the <code>loadkeys</code> command. For example, the following command selects the Dvorak keyboard layout:
+</p>
+
+<pre class="example" id="orgeba90d8">
+loadkeys dvorak
+</pre>
+
+<p>
+See the files under <code>/run/current-system/profile/share/keymaps</code> for a list of available keyboard layouts. Run <code>man loadkeys</code> for more information.
+</p>
+
+<p>
+<a id="manual_002dinstallation_002dnetworking"></a>
+</p>
+
+<p>
+<a id="Networking"></a>
+</p>
+</div>
+</li>
+<li><a id="networking"></a>3.6.1.2 Networking<br />
+<div class="outline-text-5" id="text-networking">
+<p>
+Run the following command to see what your network interfaces are called:
+</p>
+
+<pre class="example" id="org236986f">
+ifconfig -a
+</pre>
+
+<p>
+&#x2026; or, using the GNU/Linux-specific <code>ip</code> command:
+</p>
+
+<pre class="example" id="orga49cfb2">
+ip address
+</pre>
+
+<p>
+Wired interfaces have a name starting with ‘=e='; for example, the interface corresponding to the first on-board Ethernet controller is called ‘=eno1='. Wireless interfaces have a name starting with ‘=w=', like ‘=w1p2s0='.
+</p>
+
+<dl class="org-dl">
+<dt>Wired connection</dt><dd><p>
+To configure a wired network run the following command, substituting <code>interface</code> with the name of the wired interface you want to use.
+</p>
+
+<pre class="example" id="orgf8d044e">
+ifconfig interface up
+</pre>
+
+<p>
+&#x2026; or, using the GNU/Linux-specific <code>ip</code> command:
+</p>
+
+<pre class="example" id="orgfcb7e13">
+ip link set interface up
+</pre></dd>
+
+<dt>Wireless connection </dt><dd><p>
+<a id="index-WiFi"></a>
+</p>
+
+<p>
+To configure wireless networking, you can create a configuration file for the <code>wpa_supplicant</code> configuration tool (its location is not important) using one of the available text editors such as <code>nano</code>:
+</p>
+
+<pre class="example" id="orge0b50b5">
+nano wpa_supplicant.conf
+</pre>
+
+<p>
+As an example, the following stanza can go to this file and will work for many wireless networks, provided you give the actual SSID and passphrase for the network you are connecting to:
+</p>
+
+<pre class="example" id="org3656e6e">
+network={
+  ssid="my-ssid"
+  key_mgmt=WPA-PSK
+  psk="the network's secret passphrase"
+}
+</pre>
+
+<p>
+Start the wireless service and run it in the background with the following command (substitute <code>interface</code> with the name of the network interface you want to use):
+</p>
+
+<pre class="example" id="orgd62f4c3">
+wpa_supplicant -c wpa_supplicant.conf -i interface -B
+</pre>
+
+<p>
+Run <code>man wpa_supplicant</code> for more information.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-DHCP"></a>
+At this point, you need to acquire an IP address. On a network where IP addresses are automatically assigned <i>via</i> DHCP, you can run:
+</p>
+
+<pre class="example" id="orga2b99f9">
+dhclient -v interface
+</pre>
+
+<p>
+Try to ping a server to see if networking is up and running:
+</p>
+
+<pre class="example" id="org41b3dd1">
+ping -c 3 gnu.org
+</pre>
+
+<p>
+Setting up network access is almost always a requirement because the image does not contain all the software and tools that may be needed.
+</p>
+
+<p>
+<a id="index-proxy_002c-during-system-installation"></a>
+If you need HTTP and HTTPS access to go through a proxy, run the following command:
+</p>
+
+<pre class="example" id="orga2432e8">
+herd set-http-proxy guix-daemon URL
+</pre>
+
+<p>
+where <code>URL</code> is the proxy URL, for example <code>http://example.org:8118</code>.
+</p>
+
+<p>
+<a id="index-installing-over-SSH"></a>
+If you want to, you can continue the installation remotely by starting an SSH server:
+</p>
+
+<pre class="example" id="orgc76f093">
+herd start ssh-daemon
+</pre>
+
+<p>
+Make sure to either set a password with <code>passwd</code>, or configure OpenSSH public key authentication before logging in.
+</p>
+
+<p>
+<a id="Disk-Partitioning"></a>
+</p>
+</div>
+</li>
+<li><a id="disk-partitioning"></a>3.6.1.3 Disk Partitioning<br />
+<div class="outline-text-5" id="text-disk-partitioning">
+<p>
+Unless this has already been done, the next step is to partition, and then format the target partition(s).
+</p>
+
+<p>
+The installation image includes several partitioning tools, including Parted (see <a href="https://www.gnu.org/software/parted/manual/html_node/Overview.html#Overview">Overview</a> in GNU Parted User Manual), <code>fdisk</code>, and <code>cfdisk</code>. Run it and set up your disk with the partition layout you want:
+</p>
+
+<pre class="example" id="org9da2f0d">
+cfdisk
+</pre>
+
+<p>
+If your disk uses the GUID Partition Table (GPT) format and you plan to install BIOS-based GRUB (which is the default), make sure a BIOS Boot Partition is available (see <a href="https://www.gnu.org/software/grub/manual/html_node/BIOS-installation.html#BIOS-installation">BIOS installation</a> in GNU GRUB manual).
+</p>
+
+<p>
+<a id="index-EFI_002c-installation"></a> <a id="index-UEFI_002c-installation"></a> <a id="index-ESP_002c-EFI-system-partition"></a>
+If you instead wish to use EFI-based GRUB, a FAT32 <i>EFI System Partition</i> (ESP) is required. This partition can be mounted at <code>/boot/efi</code> for instance and must have the <code>esp</code> flag set. E.g., for <code>parted</code>:
+</p>
+
+<pre class="example" id="org400aef6">
+parted /dev/sda set 1 esp on
+</pre>
+
+<blockquote>
+<p>
+<a id="index-grub_002dbootloader"></a> <a id="index-grub_002defi_002dbootloader"></a>
+</p>
+
+<p>
+<b>Note:</b> Unsure whether to use EFI- or BIOS-based GRUB? If the directory <code>/sys/firmware/efi</code> exists in the installation image, then you should probably perform an EFI installation, using <code>grub-efi-bootloader</code>. Otherwise you should use the BIOS-based GRUB, known as <code>grub-bootloader</code>. See <a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a>, for more info on bootloaders.
+</p>
+</blockquote>
+
+<p>
+Once you are done partitioning the target hard disk drive, you have to create a file system on the relevant partition(s). For the ESP, if you have one and assuming it is <code>/dev/sda1</code>, run:
+</p>
+
+<pre class="example" id="orgf57dd95">
+mkfs.fat -F32 /dev/sda1
+</pre>
+
+<p>
+For the root file system, ext4 is the most widely used format. Other file systems, such as Btrfs, support compression, which is reported to nicely complement file deduplication that the daemon performs independently of the file system (see <a href="docs/guix--Invoking-guix_002ddaemon.html">deduplication</a>).
+</p>
+
+<p>
+Preferably, assign file systems a label so that you can easily and reliably refer to them in <code>file-system</code> declarations (see <a href="docs/guix--File-Systems.html">File Systems</a>). This is typically done using the <code>-L</code> option of <code>mkfs.ext4</code> and related commands. So, assuming the target root partition lives at <code>/dev/sda2</code>, a file system with the label <code>my-root</code> can be created with:
+</p>
+
+<pre class="example" id="org88e162e">
+mkfs.ext4 -L my-root /dev/sda2
+</pre>
+
+<p>
+<a id="index-encrypted-disk"></a>
+If you are instead planning to encrypt the root partition, you can use the Cryptsetup/LUKS utilities to do that (see <a href="https://linux.die.net/man/8/cryptsetup"><code>man cryptsetup</code></a> for more information).
+</p>
+
+<p>
+Assuming you want to store the root partition on <code>/dev/sda2</code>, the command sequence to format it as a LUKS partition would be along these lines:
+</p>
+
+<pre class="example" id="org4a3f309">
+cryptsetup luksFormat /dev/sda2
+cryptsetup open /dev/sda2 my-partition
+mkfs.ext4 -L my-root /dev/mapper/my-partition
+</pre>
+
+<p>
+Once that is done, mount the target file system under <code>/mnt</code> with a command like (again, assuming <code>my-root</code> is the label of the root file system):
+</p>
+
+<pre class="example" id="org981f0d2">
+mount LABEL=my-root /mnt
+</pre>
+
+<p>
+Also mount any other file systems you would like to use on the target system relative to this path. If you have opted for <code>/boot/efi</code> as an EFI mount point for example, mount it at <code>/mnt/boot/efi</code> now so it is found by <code>guix system init</code> afterwards.
+</p>
+
+<p>
+Finally, if you plan to use one or more swap partitions (see <a href="docs/guix--Swap-Space.html">Swap Space</a>), make sure to initialize them with <code>mkswap</code>. Assuming you have one swap partition on <code>/dev/sda3</code>, you would run:
+</p>
+
+<pre class="example" id="org5a9b6b2">
+mkswap /dev/sda3
+swapon /dev/sda3
+</pre>
+
+<p>
+Alternatively, you may use a swap file. For example, assuming that in the new system you want to use the file <code>/swapfile</code> as a swap file, you would run:
+</p>
+
+<pre class="example" id="orgc48b38e">
+# This is 10 GiB of swap space.  Adjust "count" to change the size.
+dd if=/dev/zero of=/mnt/swapfile bs=1MiB count=10240
+# For security, make the file readable and writable only by root.
+chmod 600 /mnt/swapfile
+mkswap /mnt/swapfile
+swapon /mnt/swapfile
+</pre>
+
+<p>
+Note that if you have encrypted the root partition and created a swap file in its file system as described above, then the encryption also protects the swap file, just like any other file in that file system.
+</p>
+
+<hr />
+</div>
+</li>
+</div>

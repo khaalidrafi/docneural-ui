@@ -1,0 +1,197 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#running-guix-in-a-virtual-machine">1.0.1. 11.18 Running Guix in a Virtual Machine</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Running-Guix-in-a-VM"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Defining-Services.html">Defining Services</a>, Previous: <a href="docs/guix--Invoking-guix-deploy.html">Invoking <code>guix deploy</code></a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Running-Guix-in-a-Virtual-Machine"></a>
+</p>
+</div>
+<div id="outline-container-running-guix-in-a-virtual-machine" class="outline-4">
+<h4 id="running-guix-in-a-virtual-machine"><span class="section-number-4">1.0.1.</span> 11.18 Running Guix in a Virtual Machine</h4>
+<div class="outline-text-4" id="text-running-guix-in-a-virtual-machine">
+<p>
+<a id="index-virtual-machine-1"></a>
+To run Guix in a virtual machine (VM), one can use the pre-built Guix VM image distributed at <a href="https://ftpmirror.gnu.org/gnu/guix/guix-system-vm-image-1.5.0.x86_64-linux.qcow2">https://ftpmirror.gnu.org/gnu/guix/guix-system-vm-image-1.5.0.x86_64-linux.qcow2</a>. This image is a compressed image in QCOW format. You can pass it to an emulator such as <a href="https://qemu.org/">QEMU</a> (see below for details).
+</p>
+
+<p>
+This image boots the Xfce graphical environment and it contains some commonly used tools. You can install more software in the image by running <code>guix package</code> in a terminal (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). You can also reconfigure the system based on its initial configuration file available as <code>/run/current-system/configuration.scm</code> (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>).
+</p>
+
+<p>
+Instead of using this pre-built image, one can also build their own image using <code>guix system image</code> (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>).
+</p>
+
+<p>
+<a id="index-QEMU"></a>
+If you built your own image, you must copy it out of the store (see <a href="docs/guix--The-Store.html">The Store</a>) and give yourself permission to write to the copy before you can use it. When invoking QEMU, you must choose a system emulator that is suitable for your hardware platform. Here is a minimal QEMU invocation that will boot the result of <code>guix system image -t qcow2</code> on x86<sub>64</sub> hardware:
+</p>
+
+<pre class="example" id="org8d04021">
+$ qemu-system-x86_64 \
+   -nic user,model=virtio-net-pci \
+   -enable-kvm -m 2048 \
+   -device virtio-blk,drive=myhd \
+   -drive if=none,file=guix-system-vm-image-1.5.0.x86_64-linux.qcow2,id=myhd
+</pre>
+
+<p>
+Here is what each of these options means:
+</p>
+
+<dl class="org-dl">
+<dt><code>qemu-system-x86_64</code></dt><dd>This specifies the hardware platform to emulate. This should match the host.</dd>
+
+<dt><code>-nic user,model=virtio-net-pci</code></dt><dd>Enable the unprivileged user-mode network stack. The guest OS can access the host but not vice versa. This is the simplest way to get the guest OS online. <code>model</code> specifies which network device to emulate: <code>virtio-net-pci</code> is a special device made for virtualized operating systems and recommended for most uses. Assuming your hardware platform is x86<sub>64</sub>, you can get a list of available NIC models by running <code>qemu-system-x86_64 -nic model=help</code>.</dd>
+
+<dt><code>-enable-kvm</code></dt><dd>If your system has hardware virtualization extensions, enabling the virtual machine support (KVM) of the Linux kernel will make things run faster.</dd>
+
+<dt><code>-m 2048</code></dt><dd>RAM available to the guest OS, in mebibytes. Defaults to 128 MiB, which may be insufficient for some operations.</dd>
+
+<dt><code>-device virtio-blk,drive=myhd</code></dt><dd>Create a <code>virtio-blk</code> drive called “myhd”. <code>virtio-blk</code> is a “paravirtualization” mechanism for block devices that allows QEMU to achieve better performance than if it were emulating a complete disk drive. See the QEMU and KVM documentation for more info.</dd>
+
+<dt><code>-drive if=none,file=/tmp/qemu-image,id=myhd</code></dt><dd>Use our QCOW image, the <code>guix-system-vm-image-1.5.0.x86_64-linux.qcow2</code> file, as the backing store of the “myhd” drive.</dd>
+</dl>
+
+<p>
+The default <code>run-vm.sh</code> script that is returned by an invocation of <code>guix system vm</code> does not add a <code>-nic user</code> flag by default. To get network access from within the vm add the <code>(dhcp-client-service)</code> to your system definition and start the VM using <code>$(guix system vm config.scm) -nic user</code>. An important caveat of using <code>-nic user</code> for networking is that <code>ping</code> will not work, because it uses the ICMP protocol. You'll have to use a different command to check for network connectivity, for example <code>guix download</code>.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Connecting-Through-SSH"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="connecting-through-ssh"></a>11.18.1 Connecting Through SSH<br />
+<div class="outline-text-5" id="text-connecting-through-ssh">
+<p>
+<a id="index-SSH-1"></a> <a id="index-SSH-server-1"></a>
+To enable SSH inside a VM you need to add an SSH server like <code>openssh-service-type</code> to your VM (see <a href="docs/guix--Networking-Services.html"><code>openssh-service-type</code></a>). In addition you need to forward the SSH port, 22 by default, to the host. You can do this with
+</p>
+
+<pre class="example" id="orgee827cb">
+$(guix system vm config.scm) -nic user,model=virtio-net-pci,hostfwd=tcp::10022-:22
+</pre>
+
+<p>
+To connect to the VM you can run
+</p>
+
+<pre class="example" id="orgb562bc8">
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p 10022 localhost
+</pre>
+
+<p>
+The <code>-p</code> tells <code>ssh</code> the port you want to connect to. <code>-o UserKnownHostsFile=/dev/null</code> prevents <code>ssh</code> from complaining every time you modify your <code>config.scm</code> file and the <code>-o StrictHostKeyChecking=no</code> prevents you from having to allow a connection to an unknown host every time you connect.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> If you find the above ‘=hostfwd=' example not to be working (e.g., your SSH client hangs attempting to connect to the mapped port of your VM), make sure that your Guix System VM has networking support, such as by using the <code>dhcp-client-service-type</code> service type.
+</p>
+</blockquote>
+
+<p>
+<a id="Using-virt_002dviewer-with-Spice"></a>
+</p>
+</div>
+</li>
+<li><a id="using-virt-viewer-with-spice"></a>11.18.2 Using <code>virt-viewer</code> with Spice<br />
+<div class="outline-text-5" id="text-using-virt-viewer-with-spice">
+<p>
+As an alternative to the default <code>qemu</code> graphical client you can use the <code>remote-viewer</code> from the <code>virt-viewer</code> package. To connect pass the <code>-spice port=5930,disable-ticketing</code> flag to <code>qemu</code>. See previous section for further information on how to do this.
+</p>
+
+<p>
+Spice also allows you to do some nice stuff like share your clipboard with your VM. To enable that you'll also have to pass the following flags to <code>qemu</code>:
+</p>
+
+<pre class="example" id="orgefc9487">
+-device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5
+-chardev spicevmc,name=vdagent,id=vdagent
+-device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\
+name=com.redhat.spice.0
+</pre>
+
+<p>
+You'll also need to add the <code>(spice-vdagent-service)</code> to your system definition (see <a href="docs/guix--Miscellaneous-Services.html">Spice service</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Defining-Services.html">Defining Services</a>, Previous: <a href="docs/guix--Invoking-guix-deploy.html">Invoking <code>guix deploy</code></a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>

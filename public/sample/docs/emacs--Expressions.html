@@ -1,0 +1,72 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Expressions-with-Balanced-Parentheses">1. 28.4.1 Expressions with Balanced Parentheses ¶</a>
+<ul>
+<li><a href="#section">1.1. (14)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Moving-by-Parens.html">Moving in the Parenthesis Structure</a>   Up: <a href="docs/emacs--Parentheses.html">Commands for Editing with Parentheses</a>
+</p>
+
+<p>
+<a id="Expressions"></a>
+</p>
+
+<hr />
+<div id="outline-container-Expressions-with-Balanced-Parentheses" class="outline-2">
+<h2 id="Expressions-with-Balanced-Parentheses"><span class="section-number-2">1.</span> 28.4.1 Expressions with Balanced Parentheses <a href="#Expressions-with-Balanced-Parentheses">¶</a></h2>
+<div class="outline-text-2" id="text-Expressions-with-Balanced-Parentheses">
+<p>
+Each programming language mode has its own definition of a <i>balanced expression</i>. Balanced expressions typically include individual symbols, numbers, and string constants, as well as pieces of code enclosed in a matching pair of delimiters. The following commands deal with balanced expressions (in Emacs, such expressions are referred to internally as <i>sexps</i>).
+</p>
+
+<dl class="org-dl">
+<dt>C-M-f</dt><dd>Move forward over a balanced expression (<code>forward-sexp</code>).</dd>
+
+<dt>C-M-b</dt><dd>Move backward over a balanced expression (<code>backward-sexp</code>).</dd>
+
+<dt>C-M-k</dt><dd>Kill balanced expression forward (<code>kill-sexp</code>).</dd>
+
+<dt>C-M-t</dt><dd>Transpose expressions (<code>transpose-sexps</code>).</dd>
+
+<dt>(no term)</dt><dd>C-M-@<br />
+C-M-SPC :: Put mark after following expression (<code>mark-sexp</code>).</dd>
+</dl>
+
+<p>
+To move forward over a balanced expression, use C-M-f (<code>forward-sexp</code>). If the first significant character after point is an opening delimiter (e.g., ‘=(<code>', ‘</code>[=' or ‘={=' in C), this command moves past the matching closing delimiter. If the character begins a symbol, string, or number, the command moves over that.
+</p>
+
+<p>
+The command C-M-b (<code>backward-sexp</code>) moves backward over a balanced expression&#x2014;like C-M-f, but in the reverse direction. If the expression is preceded by any prefix characters (single-quote, backquote and comma, in Lisp), the command moves back over them as well.
+</p>
+
+<p>
+C-M-f or C-M-b with an argument repeats that operation the specified number of times; with a negative argument means to move in the opposite direction. In most modes, these two commands move across comments as if they were whitespace. Note that their keys, C-M-f and C-M-b, are analogous to C-f and C-b, which move by characters (see <a href="docs/emacs--Moving-Point.html">Changing the Location of Point</a>), and M-f and M-b, which move by words (see <a href="docs/emacs--Words.html">Words</a>).
+</p>
+
+<p>
+To kill a whole balanced expression, type C-M-k (<code>kill-sexp</code>). This kills the text that C-M-f would move over.
+</p>
+
+<p>
+C-M-t (<code>transpose-sexps</code>) switches the positions of the previous balanced expression and the next one. It is analogous to the C-t command, which transposes characters (see <a href="docs/emacs--Transpose.html">Transposing Text</a>). An argument to C-M-t serves as a repeat count, moving the previous expression over that many following ones. A negative argument moves the previous balanced expression backwards across those before it. An argument of zero, rather than doing nothing, transposes the balanced expressions ending at or after point and the mark.
+</p>
+
+<p>
+To operate on balanced expressions with a command which acts on the region, type C-M-SPC (<code>mark-sexp</code>). This sets the mark where C-M-f would move to. While the mark is active, each successive call to this command extends the region by shifting the mark by one expression. Positive or negative numeric arguments move the mark forward or backward by the specified number of expressions. The alias C-M-@ is equivalent to C-M-SPC. See <a href="docs/emacs--Marking-Objects.html">Commands to Mark Textual Objects</a>, for more information about this and related commands.
+</p>
+
+<p>
+In languages that use infix operators, such as C, it is not possible to recognize all balanced expressions because there can be multiple possibilities at a given position. For example, C mode does not treat ‘=foo + bar=' as a single expression, even though it <i>is</i> one C expression; instead, it recognizes ‘=foo=' as one expression and ‘=bar=' as another, with the ‘=+=' as punctuation between them. However, C mode recognizes ‘=(foo + bar)=' as a single expression, because of the parentheses.
+</p>
+
+<hr />
+</div>
+</div>

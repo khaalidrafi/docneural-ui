@@ -1,0 +1,228 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="PAM-Mount-Service"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Guix-Services.html">Guix Services</a>, Previous: <a href="docs/guix--Game-Services.html">Game Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="PAM-Mount-Service-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="pam-mount-service"></a>11.10.34 PAM Mount Service<br />
+<div class="outline-text-5" id="text-pam-mount-service">
+<p>
+<a id="index-pam_002dmount"></a>
+The <code>(gnu services pam-mount)</code> module provides a service allowing users to mount volumes when they log in. It should be able to mount any volume format supported by the system.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: pam-mount-service-type </dt><dd>Service type for PAM Mount support.</dd>
+
+<dt>Data Type: pam-mount-configuration </dt><dd><p>
+Data type representing the configuration of PAM Mount.
+</p>
+
+<p>
+It takes the following parameters:
+</p>
+
+<dl class="org-dl">
+<dt><code>rules</code></dt><dd><p>
+The configuration rules that will be used to generate <code>/etc/security/pam_mount.conf.xml</code>.
+</p>
+
+<p>
+The configuration rules are SXML elements (see <a href="https://www.gnu.org/software/guile/manual/html_node/SXML.html#SXML">SXML</a> in GNU Guile Reference Manual), and the default ones don't mount anything for anyone at login:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`((debug (@ (enable "0")))
+  (mntoptions (@ (allow ,(string-join
+                          '("nosuid" "nodev" "loop"
+                            "encryption" "fsck" "nonempty"
+                            "allow_root" "allow_other")
+                          ","))))
+  (mntoptions (@ (require "nosuid,nodev")))
+  (logout (@ (wait "0")
+             (hup "0")
+             (term "no")
+             (kill "no")))
+  (mkmountpoint (@ (enable "1")
+                   (remove "true"))))
+</pre>
+</div>
+
+<p>
+Some <code>volume</code> elements must be added to automatically mount volumes at login. Here's an example allowing the user <code>alice</code> to mount her encrypted <code>HOME</code> directory and allowing the user <code>bob</code> to mount the partition where he stores his data:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define pam-mount-rules
+`((debug (@ (enable "0")))
+            (volume (@ (user "alice")
+                       (fstype "crypt")
+                       (path "/dev/sda2")
+                       (mountpoint "/home/alice")))
+            (volume (@ (user "bob")
+                       (fstype "auto")
+                       (path "/dev/sdb3")
+                       (mountpoint "/home/bob/data")
+                       (options "defaults,autodefrag,compress")))
+            (mntoptions (@ (allow ,(string-join
+                                    '("nosuid" "nodev" "loop"
+                                      "encryption" "fsck" "nonempty"
+                                      "allow_root" "allow_other")
+                                    ","))))
+            (mntoptions (@ (require "nosuid,nodev")))
+            (logout (@ (wait "0")
+                       (hup "0")
+                       (term "no")
+                       (kill "no")))
+            (mkmountpoint (@ (enable "1")
+                             (remove "true")))))
+
+(service pam-mount-service-type
+         (pam-mount-configuration
+           (rules pam-mount-rules)))
+</pre>
+</div>
+
+<p>
+The complete list of possible options can be found in the man page for <a href="http://pam-mount.sourceforge.net/pam_mount.conf.5.html">pam<sub>mount.conf</sub></a>.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="PAM-Mount-Volume-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="pam-mount-volume-service"></a>PAM Mount Volume Service<br />
+<div class="outline-text-5" id="text-pam-mount-volume-service">
+<p>
+<a id="index-pam-volume-mounting"></a>
+PAM mount volumes are automatically mounted at login by the PAM login service according to a set of per-volume rules. Because they are mounted by PAM the password entered during login may be used directly to mount authenticated volumes, such as <code>cifs</code>, using the same credentials.
+</p>
+
+<p>
+These volumes will be added in addition to any volumes directly specified in <code>pam-mount-rules</code>.
+</p>
+
+<p>
+Here is an example of a rule which will mount a remote CIFS share from <code>//remote-server/share</code> into a sub-directory of <code>/shares</code> named after the user logging in:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'pam-mount-remote-share pam-mount-volume-service-type
+                (list (pam-mount-volume
+                       (secondary-group "users")
+                       (file-system-type "cifs")
+                       (server "remote-server")
+                       (file-name "share")
+                       (mount-point "/shares/%(USER)")
+                       (options "nosuid,nodev,seal,cifsacl"))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Data Type: pam-mount-volume-service-type </dt><dd>Configuration for a single volume to be mounted. Any fields not specified will be omitted from the run-time PAM configuration. See <a href="http://pam-mount.sourceforge.net/pam_mount.conf.5.html">the man page</a> for the default values when unspecified.
+
+<dl class="org-dl">
+<dt><code>user-name</code> (type: maybe-string)</dt><dd>Mount the volume for the given user.</dd>
+
+<dt><code>user-id</code> (type: maybe-integer-or-range)</dt><dd>Mount the volume for the user with this ID. This field may also be specified as a pair of <code>(start . end)</code> indicating a range of user IDs for whom to mount the volume.</dd>
+
+<dt><code>primary-group</code> (type: maybe-string)</dt><dd>Mount the volume for users with this primary group name.</dd>
+
+<dt><code>group-id</code> (type: maybe-integer-or-range)</dt><dd>Mount the volume for the users with this primary group ID. This field may also be specified as a cons cell of <code>(start . end)</code> indicating a range of group ids for whom to mount the volume.</dd>
+
+<dt><code>secondary-group</code> (type: maybe-string)</dt><dd>Mount the volume for users who are members of this group as either a primary or secondary group.</dd>
+
+<dt><code>file-system-type</code> (type: maybe-string)</dt><dd>The file system type for the volume being mounted (e.g., <code>cifs</code>)</dd>
+
+<dt><code>no-mount-as-root?</code> (type: maybe-boolean)</dt><dd>Whether or not to mount the volume with root privileges. This is normally disabled, but may be enabled for mounts of type <code>fuse</code>, or other user-level mounts.</dd>
+
+<dt><code>server</code> (type: maybe-string)</dt><dd>The name of the remote server to mount the volume from, when necessary.</dd>
+
+<dt><code>file-name</code> (type: maybe-string)</dt><dd>The location of the volume, either local or remote, depending on the <code>file-system-type</code>.</dd>
+
+<dt><code>mount-point</code> (type: maybe-string)</dt><dd>Where to mount the volume in the local file-system. This may be set to <code>~</code> to indicate the home directory of the user logging in. If this field is omitted then <code>/etc/fstab</code> is consulted for the mount destination.</dd>
+
+<dt><code>options</code> (type: maybe-string)</dt><dd>The options to be passed as-is to the underlying mount program.</dd>
+
+<dt><code>ssh?</code> (type: maybe-boolean)</dt><dd>Enable this option to pass the login password to SSH for use with mounts involving SSH (e.g., <code>sshfs</code>).</dd>
+
+<dt><code>cipher</code> (type: maybe-string)</dt><dd>Cryptsetup cipher name for the volume. To be used with the <code>crypt</code> <code>file-system-type</code>.</dd>
+
+<dt><code>file-system-key-cipher</code> (type: maybe-string)</dt><dd>Cipher name used by the target volume.</dd>
+
+<dt><code>file-system-key-hash</code> (type: maybe-string)</dt><dd>SSL hash name used by the target volume.</dd>
+
+<dt><code>file-system-key-file-name</code> (type: maybe-string)</dt><dd>File name of the file system key for the target volume.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Guix-Services.html">Guix Services</a>, Previous: <a href="docs/guix--Game-Services.html">Game Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

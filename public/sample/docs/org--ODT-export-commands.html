@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#ODT-export-commands-1">1. 13.12.2 ODT export commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="ODT-export-commands"></a>
+Next: <a href="docs/org--ODT-specific-export-settings.html">ODT specific export settings</a>, Previous: <a href="docs/org--Pre_002drequisites-for-ODT-export.html">Pre-requisites for ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-ODT-export-commands-1" class="outline-2">
+<h2 id="ODT-export-commands-1"><span class="section-number-2">1.</span> 13.12.2 ODT export commands <a href="#ODT-export-commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-ODT-export-commands-1">
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002de-o-o"></a>C-c C-e o o (<code>org-odt-export-to-odt</code>) </dt><dd><p>
+Export as OpenDocument Text file.
+</p>
+
+<p>
+If <code>org-odt-preferred-output-format</code> is specified, the ODT export backend automatically converts the exported file to that format.
+</p>
+
+<p>
+For ‘=myfile.org=', Org exports to ‘=myfile.odt=', overwriting without warning. The ODT export backend exports a region only if a region was active.
+</p>
+
+<p>
+If the selected region is a single tree, the ODT export backend makes the tree head the document title. Incidentally, C-c @ selects the current subtree. If the tree head entry has, or inherits, an ‘=EXPORT<sub>FILE</sub><sub>NAME</sub>=' property, the ODT export backend uses that for file name.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002de-o-O"></a>C-c C-e o O </dt><dd><p>
+Export as an OpenDocument Text file and open the resulting file.
+</p>
+
+<p>
+If <code>org-export-odt-preferred-output-format</code> is specified, open the converted file instead. See <a href="docs/org--Extending-ODT-export.html#Automatically-exporting-to-other-formats">Automatically exporting to other formats</a>.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--ODT-specific-export-settings.html">ODT specific export settings</a>, Previous: <a href="docs/org--Pre_002drequisites-for-ODT-export.html">Pre-requisites for ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

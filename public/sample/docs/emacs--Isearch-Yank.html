@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Isearch-Yanking">1. 17.1.3 Isearch Yanking ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Error-in-Isearch.html">Errors in Incremental Search</a>   Previous: <a href="docs/emacs--Repeat-Isearch.html">Repeating Incremental Search</a>   Up: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>
+</p>
+
+<p>
+<a id="Isearch-Yank"></a>
+</p>
+
+<hr />
+<div id="outline-container-Isearch-Yanking" class="outline-2">
+<h2 id="Isearch-Yanking"><span class="section-number-2">1.</span> 17.1.3 Isearch Yanking <a href="#Isearch-Yanking">¶</a></h2>
+<div class="outline-text-2" id="text-Isearch-Yanking">
+<p>
+In many cases, you will want to use text at or near point as your search string. The commands described in this subsection let you do that conveniently.
+</p>
+
+<p>
+C-w (<code>isearch-yank-word-or-char</code>) appends the next character or word at point to the search string. This is an easy way to search for another occurrence of the text at point. (The decision of whether to copy a character or a word is heuristic.) With a prefix numeric argument of <code>n</code>, append the next <code>n</code> characters or words.
+</p>
+
+<p>
+C-M-w (<code>isearch-yank-symbol-or-char</code>) appends the next character or symbol at point to the search string. This is an easy way to search for another occurrence of the symbol at point. (The decision of whether to copy a character or a symbol is heuristic.) With a prefix numeric argument of <code>n</code>, append the next <code>n</code> characters or symbols.
+</p>
+
+<p>
+M-s C-e (<code>isearch-yank-line</code>) appends the rest of the current line to the search string. If point is already at the end of a line, it appends the next line. With a prefix argument <code>n</code>, it appends the next <code>n</code> lines.
+</p>
+
+<p>
+Similarly, C-M-z (<code>isearch-yank-until-char</code>) appends to the search string everything from point until the next occurrence of a specified character (not including that character). This is especially useful for keyboard macros, for example in programming languages or markup languages in which that character marks a token boundary. With a prefix numeric argument of <code>n</code>, the command appends everything from point to the =n=th occurrence of the specified character.
+</p>
+
+<p>
+Within incremental search, C-y (<code>isearch-yank-kill</code>) appends the current kill to the search string. M-y (<code>isearch-yank-pop</code>), if called after C-y during incremental search, replaces that appended text with an earlier kill, similar to the usual M-y (<code>yank-pop</code>) command. Clicking mouse-2 in the echo area appends the current X selection (see <a href="docs/emacs--Primary-Selection.html">Cut and Paste with Other Window Applications</a>) to the search string (<code>isearch-yank-x-selection</code>).
+</p>
+
+<p>
+C-M-d (<code>isearch-del-char</code>) deletes the last character from the search string, and C-M-y (<code>isearch-yank-char</code>) appends the character after point to the search string. An alternative method to add the character after point is to enter the minibuffer with M-e (see <a href="docs/emacs--Repeat-Isearch.html">Repeating Incremental Search</a>) and type C-f or RIGHT at the end of the search string in the minibuffer. Each C-f or RIGHT you type adds another character following point to the search string.
+</p>
+
+<p>
+Normally, when the search is case-insensitive, text yanked into the search string is converted to lower case, so that the search remains case-insensitive (see <a href="docs/emacs--Lax-Search.html">case folding</a>). However, if the value of the variable <code>search-upper-case</code> (see <a href="docs/emacs--Lax-Search.html">search-upper-case</a>) is other than <code>not-yanks</code>, that disables this down-casing.
+</p>
+
+<p>
+To begin a new incremental search with the text near point yanked into the initial search string, type M-s M-. that runs the command <code>isearch-forward-thing-at-point</code>. If the region was active, then it yanks the text from the region into the search string. Otherwise, it tries to yank a URL, a symbol or an expression found near point. What to yank is defined by the user option <code>isearch-forward-thing-at-point</code>.
+</p>
+
+<hr />
+</div>
+</div>

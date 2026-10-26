@@ -1,0 +1,120 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Operating-on-Several-Buffers">1. 21.5 Operating on Several Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Indirect-Buffers.html">Indirect Buffers</a>   Previous: <a href="docs/emacs--Kill-Buffer.html">Killing Buffers</a>   Up: <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>
+</p>
+
+<p>
+<a id="Several-Buffers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Operating-on-Several-Buffers" class="outline-2">
+<h2 id="Operating-on-Several-Buffers"><span class="section-number-2">1.</span> 21.5 Operating on Several Buffers <a href="#Operating-on-Several-Buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Operating-on-Several-Buffers">
+<dl class="org-dl">
+<dt>M-x buffer-menu</dt><dd>Begin editing a buffer listing all Emacs buffers.</dd>
+
+<dt>M-x buffer-menu-other-window</dt><dd>Similar, but do it in another window.</dd>
+</dl>
+
+<p>
+The <i>Buffer Menu</i> opened by C-x C-b (see <a href="docs/emacs--List-Buffers.html">Listing Existing Buffers</a>) does not merely list buffers. It also allows you to perform various operations on buffers, through an interface similar to Dired (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>). You can save buffers, kill them (here called <i>deleting</i> them, for consistency with Dired), or display them.
+</p>
+
+<p>
+To use the Buffer Menu, type C-x C-b and switch to the window displaying the <code>*Buffer List*</code> buffer. You can also type M-x buffer-menu to open the Buffer Menu in the selected window. Alternatively, the command M-x buffer-menu-other-window opens the Buffer Menu in another window, and selects that window.
+</p>
+
+<p>
+The Buffer Menu is a read-only buffer, and can be changed only through the special commands described in this section. The usual cursor motion commands can be used in this buffer. The following commands apply to the buffer described on the current line:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-Buffer_002dmenu_002ddelete"></a>d </dt><dd>Flag the buffer for deletion (killing), then move point to the next line (<code>Buffer-menu-delete</code>). The deletion flag is indicated by the character ‘=D=' on the line, before the buffer name. The deletion occurs only when you type the x command (see below).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002ddelete_002dbackwards"></a>C-d </dt><dd>Like d, but move point up instead of down (<code>Buffer-menu-delete-backwards</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dsave"></a>s </dt><dd>Flag the buffer for saving (<code>Buffer-menu-save</code>). The save flag is indicated by the character ‘=S=' on the line, before the buffer name. The saving occurs only when you type x. You may request both saving and deletion for the same buffer.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dexecute"></a>x </dt><dd>Perform all flagged deletions and saves (<code>Buffer-menu-execute</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dunmark"></a>u </dt><dd>Remove all flags from the current line, and move down (<code>Buffer-menu-unmark</code>). With a prefix argument, moves up after removing the flags.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dbackup_002dunmark"></a>DEL </dt><dd>Move to the previous line and remove all flags on that line (<code>Buffer-menu-backup-unmark</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dunmark_002dall_002dbuffers"></a>M-DEL </dt><dd>Remove a particular flag from all lines (<code>Buffer-menu-unmark-all-buffers</code>). This asks for a single character, and unmarks buffers marked with that character; typing RET removes all marks.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dunmark_002dall"></a>U </dt><dd>Remove all flags from all the lines (<code>Buffer-menu-unmark-all</code>).</dd>
+</dl>
+
+<p>
+The commands for removing flags, d and C-d, accept a numeric argument as a repeat count.
+</p>
+
+<p>
+The following commands operate immediately on the buffer listed on the current line. They also accept a numeric argument as a repeat count.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-Buffer_002dmenu_002dnot_002dmodified"></a>~ </dt><dd>Mark the buffer as unmodified (<code>Buffer-menu-not-modified</code>). See <a href="docs/emacs--Save-Commands.html">Commands for Saving Files</a>.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dtoggle_002dread_002donly"></a>% </dt><dd>Toggle the buffer's read-only status (<code>Buffer-menu-toggle-read-only</code>). See <a href="docs/emacs--Misc-Buffer.html">Miscellaneous Buffer Operations</a>.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dvisit_002dtags_002dtable"></a>t </dt><dd>Visit the buffer as a tags table (<code>Buffer-menu-visit-tags-table</code>). See <a href="docs/emacs--Select-Tags-Table.html">Selecting a Tags Table</a>.</dd>
+</dl>
+
+<p>
+The following commands are used to select another buffer or buffers:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-quit_002dwindow-1"></a>q </dt><dd>Quit the Buffer Menu (<code>quit-window</code>). The most recent formerly visible buffer is displayed in its place.</dd>
+
+<dt>(no term)</dt><dd><a id="index-Buffer_002dmenu_002dthis_002dwindow"></a>RET <br />
+f :: Select this line's buffer, replacing the <code>*Buffer List*</code> buffer in its window (<code>Buffer-menu-this-window</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dother_002dwindow"></a>o </dt><dd>Select this line's buffer in another window, as if by C-x 4 b, leaving <code>*Buffer List*</code> visible (<code>Buffer-menu-other-window</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dswitch_002dother_002dwindow"></a>C-o </dt><dd>Display this line's buffer in another window, without selecting it (<code>Buffer-menu-switch-other-window</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002d1_002dwindow"></a>1 </dt><dd>Select this line's buffer in a full-frame window (<code>Buffer-menu-1-window</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002d2_002dwindow"></a>2 </dt><dd>Set up two windows on the current frame, with this line's buffer selected in one, and a previously current buffer (aside from <code>*Buffer List*</code>) in the other (<code>Buffer-menu-2-window</code>).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dbury"></a>b </dt><dd>Bury this line's buffer (<code>Buffer-menu-bury</code>) (i.e., move it to the end of the buffer list).</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dmark"></a>m </dt><dd>Mark this line's buffer to be displayed in another window if you exit with the v command (<code>Buffer-menu-mark</code>). The display flag is indicated by the character ‘=&gt;=' at the beginning of the line. (A single buffer may not have both deletion and display flags.)</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dselect"></a>v </dt><dd>Select this line's buffer, and also display in other windows any buffers flagged with the m command (<code>Buffer-menu-select</code>). If you have not flagged any buffers, this command is equivalent to 1.</dd>
+</dl>
+
+<p>
+The following commands affect the entire buffer list:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-tabulated_002dlist_002dsort"></a>S </dt><dd>Sort the Buffer Menu entries according to their values in the column at point. With a numeric prefix argument <code>n</code>, sort according to the <code>n</code>-th column (<code>tabulated-list-sort</code>).</dd>
+
+<dt><a id="index-_007d-_0028Buffer-Menu_0029"></a>} </dt><dd>Widen the current column width by <code>n</code> (the prefix numeric argument) characters.</dd>
+
+<dt><a id="index-_007b-_0028Buffer-Menu_0029"></a>{ </dt><dd>Narrow the current column width by <code>n</code> (the prefix numeric argument) characters.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dtoggle_002dfiles_002donly"></a>T </dt><dd>Delete, or reinsert, lines for non-file buffers (<code>Buffer-menu-toggle-files-only</code>). This command toggles the inclusion of such buffers in the buffer list.</dd>
+
+<dt><a id="index-Buffer_002dmenu_002dtoggle_002dinternal"></a>I </dt><dd>Toggle display of internal buffers, those whose names begin with a space.</dd>
+</dl>
+
+<p>
+Normally, the buffer <code>*Buffer List*</code> is not updated automatically when buffers are created and killed; its contents are just text. If you have created, deleted or renamed buffers, the way to update <code>*Buffer List*</code> to show what you have done is to type g (<code>revert-buffer</code>). You can make this happen regularly every <code>auto-revert-interval</code> seconds if you enable Auto Revert mode in this buffer, as long as it is not marked modified. Global Auto Revert mode applies to the <code>*Buffer List*</code> buffer only if <code>global-auto-revert-non-file-buffers</code> is non-<code>nil</code>. See <a href="docs/emacs--Auto-Reverting-the-Buffer-Menu.html">global-auto-revert-non-file-buffers</a>, for details.
+</p>
+
+<hr />
+</div>
+</div>

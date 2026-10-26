@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tool-Bars-1">1. 23.16 Tool Bars ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Tab-Bars.html">Tab Bars</a>   Previous: <a href="docs/emacs--Menu-Bars.html">Menu Bars</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Tool-Bars"></a>
+</p>
+
+<hr />
+<div id="outline-container-Tool-Bars-1" class="outline-2">
+<h2 id="Tool-Bars-1"><span class="section-number-2">1.</span> 23.16 Tool Bars <a href="#Tool-Bars-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tool-Bars-1">
+<p>
+On graphical displays, Emacs puts a <i>tool bar</i> at the top of each frame, just below the menu bar. This is a row of buttons with icons which you can click on with the mouse to invoke various commands. Emacs can also optionally display a tool bar at the top of each window (see <a href="docs/emacs--Window-Tool-Bar.html">Window Tool Bar</a>).
+</p>
+
+<p>
+The global (default) tool bar contains general commands. Some major modes define their own tool bars; whenever a buffer with such a major mode is current, the mode's tool bar replaces the global tool bar. To prevent this replacement from happening, customize the variable <code>tool-bar-always-show-default</code>.
+</p>
+
+<p>
+To toggle the use of tool bars, type M-x tool-bar-mode. This command applies to all frames, including frames yet to be created. To control the use of tool bars at startup, customize the variable <code>tool-bar-mode</code>.
+</p>
+
+<p>
+When Emacs is compiled with GTK+ support, each tool bar item can consist of an image, or a text label, or both. By default, Emacs follows the Gnome desktop's tool bar style setting; if none is defined, it displays tool bar items as just images. To impose a specific tool bar style, customize the variable <code>tool-bar-style</code>.
+</p>
+
+<p>
+You can also control the placement of the tool bar for the GTK+ tool bar with the frame parameter <code>tool-bar-position</code>. See <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+NS builds consider the tool bar to be a window decoration, and therefore do not display it when a window is undecorated. See <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in The Emacs Lisp Reference Manual. On macOS the tool bar is hidden when the frame is put into fullscreen, but can be displayed by moving the mouse pointer to the top of the screen.
+</p>
+
+<p>
+Keyboards often lack one or more of the modifier keys that Emacs might want to use, making it difficult or impossible to input key sequences that contain them. Emacs can optionally display a list of buttons that act as substitutes for modifier keys within the tool bar; these buttons are also referred to as the “modifier bar”. Clicking an icon within the modifier bar will cause a modifier key to be applied to the next keyboard event that is read. The modifier bar is displayed when the global minor mode <code>modifier-bar-mode</code> is enabled; to do so, type M-x modifier-bar-mode.
+</p>
+
+<hr />
+</div>
+</div>

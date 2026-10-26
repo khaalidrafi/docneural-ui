@@ -1,0 +1,118 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Query-Replace-1">1. 17.10.4 Query Replace ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Replacement-and-Lax-Matches.html">Replace Commands and Lax Matches</a>   Up: <a href="docs/emacs--Replace.html">Replacement Commands</a>
+</p>
+
+<p>
+<a id="Query-Replace"></a>
+</p>
+
+<hr />
+<div id="outline-container-Query-Replace-1" class="outline-2">
+<h2 id="Query-Replace-1"><span class="section-number-2">1.</span> 17.10.4 Query Replace <a href="#Query-Replace-1">¶</a></h2>
+<div class="outline-text-2" id="text-Query-Replace-1">
+<dl class="org-dl">
+<dt>M-% <code>string</code> RET <code>newstring</code> RET</dt><dd>Replace some occurrences of <code>string</code> with <code>newstring</code>.</dd>
+
+<dt>C-M-% <code>regexp</code> RET <code>newstring</code> RET</dt><dd>Replace some matches for <code>regexp</code> with <code>newstring</code>.</dd>
+</dl>
+
+<p>
+If you want to change only some of the occurrences of ‘=foo=' to ‘=bar=', not all of them, use M-% (<code>query-replace</code>). This command finds occurrences of ‘=foo=' one by one, displays each occurrence and asks you whether to replace it. Aside from querying, <code>query-replace</code> works just like <code>replace-string</code> (see <a href="docs/emacs--Unconditional-Replace.html">Unconditional Replacement</a>). In particular, it preserves case provided that <code>case-replace</code> is non-<code>nil</code>, as it normally is (see <a href="docs/emacs--Replacement-and-Lax-Matches.html">Replace Commands and Lax Matches</a>). A numeric argument means to consider only occurrences that are bounded by word-delimiter characters. A negative prefix argument replaces backward.
+</p>
+
+<p>
+C-M-% performs regexp search and replace (<code>query-replace-regexp</code>). It works like <code>replace-regexp</code> except that it queries like <code>query-replace</code>.
+</p>
+
+<p>
+You can reuse earlier replacements with these commands. When <code>query-replace</code> or <code>query-replace-regexp</code> prompts for the search string, use M-p and M-n to show previous replacements in the form ‘=from== -&gt; <code>=to</code>', where <code>from</code> is the search pattern, <code>to</code> is its replacement, and the separator between them is determined by the value of the variable <code>query-replace-from-to-separator</code>. Type RET to select the desired replacement. If the value of this variable is <code>nil</code>, replacements are not added to the command history, and cannot be reused.
+</p>
+
+<p>
+These commands highlight the current match using the face <code>query-replace</code>. You can disable this highlight by setting the variable <code>query-replace-highlight</code> to <code>nil</code>. They highlight other matches using <code>lazy-highlight</code> just like incremental search (see <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>); this can be disabled by setting <code>query-replace-lazy-highlight</code> to <code>nil</code>. By default, <code>query-replace-regexp</code> will show the substituted replacement string for the current match in the minibuffer. If you want to keep special sequences ‘=\&amp;=' and ‘=\==n=' unexpanded, customize <code>query-replace-show-replacement</code> variable. Like <code>search-highlight-submatches</code> highlights subexpressions in incremental search (see <a href="docs/emacs--Search-Customizations.html">Tailoring Search to Your Needs</a>), the variable <code>query-replace-highlight-submatches</code> defines whether to highlight subexpressions in the regexp replacement commands.
+</p>
+
+<p>
+The variable <code>query-replace-skip-read-only</code>, if set non-<code>nil</code>, will cause replacement commands to ignore matches in read-only text. The default is not to ignore them.
+</p>
+
+<p>
+The characters you can type when you are shown a match for the string or regexp are:
+</p>
+
+<ul class="org-ul">
+<li>SPC<br />
+y :: to replace the occurrence with <code>newstring</code>.</li>
+
+<li>DEL<br />
+Delete<br />
+BACKSPACE<br />
+n :: to skip to the next occurrence without replacing this one.</li>
+
+<li id=", (Comma)"><p>
+to replace this occurrence and display the result. You are then asked for another input character to say what to do next. Since the replacement has already been made, DEL and SPC are equivalent in this situation; both move to the next occurrence.
+</p>
+
+<p>
+You can type C-r at this point (see below) to alter the replaced text. You can also undo the replacement with the <code>undo</code> command (e.g., type C-x u; see <a href="docs/emacs--Undo.html">Undo</a>); this exits the <code>query-replace</code>, so if you want to do further replacement you must use C-x ESC ESC RET to restart (see <a href="docs/emacs--Repetition.html">Repeating Minibuffer Commands</a>).
+</p></li>
+
+<li>RET<br />
+q :: to exit without doing any more replacements.</li>
+
+<li id=". (Period)">to replace this occurrence and then exit without searching for more occurrences.</li>
+
+<li id="!">to replace all remaining occurrences without asking again.</li>
+
+<li id="^">to go back to the position of the previous occurrence (or what used to be an occurrence), in case you changed it by mistake or want to reexamine it.</li>
+
+<li id="u">to undo the last replacement and go back to where that replacement was made.</li>
+
+<li id="U">to undo all the replacements and go back to where the first replacement was made.</li>
+
+<li id="C-r">to enter a recursive editing level, in case the occurrence needs to be edited rather than just replaced with <code>newstring</code>. When you are done, exit the recursive editing level with C-M-c to proceed to the next occurrence. See <a href="docs/emacs--Recursive-Edit.html">Recursive Editing Levels</a>.</li>
+
+<li id="C-w">to delete the occurrence, and then enter a recursive editing level as in C-r. Use the recursive edit to insert text to replace the deleted occurrence of <code>string</code>. When done, exit the recursive editing level with C-M-c to proceed to the next occurrence.</li>
+
+<li id="e">to edit the replacement string in the minibuffer. When you exit the minibuffer by typing RET, the minibuffer contents replace the current occurrence of the pattern. They also become the new replacement string for any further occurrences.</li>
+
+<li id="E">is like e, but the next replacement will be done with exact case. I.e., if you have a <code>query-replace</code> from ‘=foo=' to ‘=bar=', a text like ‘=Foo=' will be normally be replaced with ‘=Bar='. Use this command to do the current replacement with exact case.</li>
+
+<li id="C-l">to redisplay the screen. Then you must type another character to specify what to do with this occurrence.</li>
+
+<li id="Y (Upper-case)">to replace all remaining occurrences in all remaining buffers in multi-buffer replacements (like the Dired Q command that performs query replace on selected files). It answers this question and all subsequent questions in the series with “yes”, without further user interaction.</li>
+
+<li id="N (Upper-case)">to skip to the next buffer in multi-buffer replacements without replacing remaining occurrences in the current buffer. It answers this question “no”, gives up on the questions for the current buffer, and continues to the next buffer in the sequence.</li>
+
+<li>C-h<br />
+?<br />
+F1 :: to display a message summarizing these options. Then you must type another character to specify what to do with this occurrence.</li>
+</ul>
+
+<p>
+Aside from this, any other character exits the <code>query-replace</code>, and is then reread as part of a key sequence. Thus, if you type C-k, it exits the <code>query-replace</code> and then kills to end of line. In particular, C-g simply exits the <code>query-replace</code>.
+</p>
+
+<p>
+To restart a <code>query-replace</code> once it is exited, use C-x ESC ESC, which repeats the <code>query-replace</code> because it used the minibuffer to read its arguments. See <a href="docs/emacs--Repetition.html">C-x ESC ESC</a>.
+</p>
+
+<p>
+The option <code>search-invisible</code> determines how <code>query-replace</code> treats invisible text. See <a href="docs/emacs--Outline-Visibility.html#Outline-Search">Outline Search</a>.
+</p>
+
+<p>
+See <a href="docs/emacs--Operating-on-Files.html">Operating on Files</a>, for the Dired Q command which performs query replace on selected files. See also <a href="docs/emacs--Transforming-File-Names.html">Transforming File Names in Dired</a>, for Dired commands to rename, copy, or link files by replacing regexp matches in file names.
+</p>
+
+<hr />
+</div>
+</div>

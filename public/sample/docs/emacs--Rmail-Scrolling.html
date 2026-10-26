@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Scrolling-Within-a-Message">1. 35.2 Scrolling Within a Message ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Motion.html">Moving Among Messages</a>   Previous: <a href="docs/emacs--Rmail-Basics.html">Basic Concepts of Rmail</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Scrolling"></a>
+</p>
+
+<hr />
+<div id="outline-container-Scrolling-Within-a-Message" class="outline-2">
+<h2 id="Scrolling-Within-a-Message"><span class="section-number-2">1.</span> 35.2 Scrolling Within a Message <a href="#Scrolling-Within-a-Message">¶</a></h2>
+<div class="outline-text-2" id="text-Scrolling-Within-a-Message">
+<p>
+When Rmail displays a message that does not fit on the screen, you must scroll through it to read the rest. You could do this with the usual scrolling commands: C-v, M-v and M-&lt; (see <a href="docs/emacs--Scrolling.html">Scrolling</a>), but in Rmail scrolling is so frequent that it deserves to be easier.
+</p>
+
+<dl class="org-dl">
+<dt>SPC</dt><dd>Scroll forward (<code>scroll-up-command</code>).</dd>
+
+<dt>(no term)</dt><dd>DEL<br />
+S-SPC :: Scroll backward (<code>scroll-down-command</code>).</dd>
+
+<dt>.</dt><dd>Scroll to start of message (<code>rmail-beginning-of-message</code>).</dd>
+
+<dt>/</dt><dd>Scroll to end of message (<code>rmail-end-of-message</code>).</dd>
+</dl>
+
+<p>
+Since the most common thing to do while reading a message is to scroll through it by screenfuls, Rmail makes SPC and DEL (or S-SPC) do the same as C-v (<code>scroll-up-command</code>) and M-v (<code>scroll-down-command</code>) respectively.
+</p>
+
+<p>
+The command . (<code>rmail-beginning-of-message</code>) scrolls back to the beginning of the selected message. This is not quite the same as M-&lt;: for one thing, it does not set the mark; for another, it resets the buffer boundaries of the current message if you have changed them (e.g., by editing, see <a href="docs/emacs--Rmail-Editing.html">Editing Within a Message</a>). Similarly, the command / (<code>rmail-end-of-message</code>) scrolls forward to the end of the selected message.
+</p>
+</div>
+</div>

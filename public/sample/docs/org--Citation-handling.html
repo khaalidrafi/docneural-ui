@@ -1,0 +1,94 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Citation-handling-1">1. 15 Citation handling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Citation-handling"></a>
+Next: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>, Previous: <a href="docs/org--Publishing.html">Publishing</a>, Up: <a href="docs/org--index.html">The Org Manual</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Citation-handling-1" class="outline-2">
+<h2 id="Citation-handling-1"><span class="section-number-2">1.</span> 15 Citation handling <a href="#Citation-handling-1">¶</a></h2>
+<div class="outline-text-2" id="text-Citation-handling-1">
+<p>
+While links (see <a href="docs/org--Hyperlinks.html">Hyperlinks</a>) are often sufficient to refer to external or internal information from Org, they have their limitations when referring to multiple targets or typesetting printed publications.
+</p>
+
+<p>
+Org mode provides a more sophisticated markup to “cite” external resources. For example, consider the following Org mode snippet
+</p>
+
+<pre class="example" id="org1c90e59">
+#+bibliography: citationdata.bib
+
+Org mode is used by various communities [cite:teaching: @orgteaching;
+and TeX: @orgtex].  [cite/author/caps:@orgtex] uses Org mode to simplify
+writing scientific publications, while [cite/author/caps:@orgteaching]
+experiments with Org babel to improve teaching.
+
+#+print_bibliography:
+</pre>
+
+<p>
+Org mode will gather citation metadata from the ‘=#+bibliography=' database and use it to typeset the exported document in arbitrary formats. For example, the snippet below shows ASCII export output.
+</p>
+
+<pre class="example" id="org4afbb4b">
+Org mode is used by various communities (teaching: Birkenkrahe, Marcus,
+2023, and TeX: Somma, Emmanuele F, 2023).  Somma, Emmanuele F uses Org
+mode to simplify writing scientific publications, while Birkenkrahe,
+Marcus experiment with Org babel to improve teaching.
+
+Birkenkrahe, Marcus (2023). /Teaching Data Science with Literate
+Programming Tools/, MDPI.
+
+Somma, Emmanuele F (2023). /Simplifying LaTeX with ORG-mode in Emacs/,
+TUGboat volume.
+</pre>
+
+<p>
+In addition to export, users can use completion to search and insert citations from the bibliography (via <code>org-cite-insert</code>). Citations also act like ordinary links, jumping to the citation metadata when “following” them using <code>org-open-at-point</code>.
+</p>
+
+<p>
+You can customize every aspect (<i>capability</i>) of citation handling using built-in or external <i>citation processors</i>.
+</p>
+
+<p>
+Org mode ships with several built-in citation processors tailored to work with LaTeX export and BibTeX bibliographies (‘=bibtex=', ‘=biblatex=', and ‘=natbib=' processors), or with more generic formats described using <a href="https://citationstyles.org/">Citation Style Language</a> (‘=csl=' processor). The default citation processor is ‘=basic=' - it works with arbitrary export formats and recognizes both BibTeX and CSL bibliographies. More citation processors are distributed as Emacs packages.
+</p>
+
+<p>
+Multiple citation processors can be mixed to meet your preferences. Configure <code>org-cite-activate-processor</code>, <code>org-cite-follow-processor</code>, <code>org-cite-insert-processor</code>, and <code>org-cite-export-processors</code> to select which processor to use for every citation capability:
+</p>
+
+<dl class="org-dl">
+<dt>activate</dt><dd>Fontification, tooltip preview, etc.</dd>
+
+<dt>follow</dt><dd>At-point actions on citations via <code>org-open-at-point</code>.</dd>
+
+<dt>insert</dt><dd>Add and edit citations via <code>org-cite-insert</code>.</dd>
+
+<dt>export</dt><dd>Via different libraries for different target formats.</dd>
+
+<dt>(no term)</dt><dd><a href="docs/org--Citations.html">Citations</a></dd>
+<dt>(no term)</dt><dd><a href="docs/org--Citation-export-processors.html">Citation export processors</a></dd>
+<dt>(no term)</dt><dd><a href="docs/org--Bibliography-printing.html">Bibliography printing</a></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>, Previous: <a href="docs/org--Publishing.html">Publishing</a>, Up: <a href="docs/org--index.html">The Org Manual</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#What-is-a-Text_002dbased-Table_003f">1. 27.15.1 What is a Text-based Table? ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Table-Creation.html">Creating a Table</a>   Up: <a href="docs/emacs--Text-Based-Tables.html">Editing Text-based Tables</a>
+</p>
+
+<p>
+<a id="Table-Definition"></a>
+</p>
+
+<hr />
+<div id="outline-container-What-is-a-Text_002dbased-Table_003f" class="outline-2">
+<h2 id="What-is-a-Text_002dbased-Table_003f"><span class="section-number-2">1.</span> 27.15.1 What is a Text-based Table? <a href="#What-is-a-Text_002dbased-Table_003f">¶</a></h2>
+<div class="outline-text-2" id="text-What-is-a-Text_002dbased-Table_003f">
+<p>
+A <i>table</i> consists of a rectangular text area which is divided into <i>cells</i>. Each cell must be at least one character wide and one character high, not counting its border lines. A cell can be subdivided into more cells, but they cannot overlap.
+</p>
+
+<p>
+Cell border lines are drawn with three special characters, specified by the following variables:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-table_002dcell_002dvertical_002dchar"></a>=table-cell-vertical-char= </dt><dd>The character used for vertical lines. The default is ‘=|='.</dd>
+
+<dt><a id="index-table_002dcell_002dhorizontal_002dchars"></a>=table-cell-horizontal-chars= </dt><dd>The characters used for horizontal lines. The default is ‘="-<code>"</code>'.</dd>
+
+<dt><a id="index-table_002dcell_002dintersection_002dchar"></a>=table-cell-intersection-char= </dt><dd>The character used for the intersection of horizontal and vertical lines. The default is ‘=+='.</dd>
+</dl>
+
+<p>
+The following are examples of <i>invalid</i> tables:
+</p>
+
+<pre class="example" id="org935fc7d">
++-----+       +--+    +-++--+
+|     |       |  |    | ||  |
+|     |       |  |    | ||  |
++--+  |    +--+--+    +-++--+
+|  |  |    |  |  |    +-++--+
+|  |  |    |  |  |    | ||  |
++--+--+    +--+--+    +-++--+
+   a          b          c
+</pre>
+
+<p>
+From left to right:
+</p>
+
+<ol class="org-ol">
+<li>Overlapped cells or non-rectangular cells are not allowed.</li>
+<li>The border must be rectangular.</li>
+<li>Cells must have a minimum width/height of one character.</li>
+</ol>
+</div>
+</div>

@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Decentralized-vs-Centralized-Repositories">1. 30.1.1.6 Decentralized vs Centralized Repositories ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Types-of-Log-File.html">Types of Log File</a>   Previous: <a href="docs/emacs--VCS-Changesets.html">Changeset-based vs File-based Version Control</a>   Up: <a href="docs/emacs--Introduction-to-VC.html">Introduction to Version Control</a>
+</p>
+
+<p>
+<a id="VCS-Repositories"></a>
+</p>
+
+<hr />
+<div id="outline-container-Decentralized-vs-Centralized-Repositories" class="outline-2">
+<h2 id="Decentralized-vs-Centralized-Repositories"><span class="section-number-2">1.</span> 30.1.1.6 Decentralized vs Centralized Repositories <a href="#Decentralized-vs-Centralized-Repositories">¶</a></h2>
+<div class="outline-text-2" id="text-Decentralized-vs-Centralized-Repositories">
+<p>
+Early version control systems were designed around a <i>centralized</i> model in which each project has only one repository used by all developers. SCCS, RCS, CVS, Subversion, and SRC share this kind of model. One of its drawbacks is that the repository is a choke point for reliability and efficiency.
+</p>
+
+<p>
+GNU Arch pioneered the concept of <i>distributed</i> or <i>decentralized</i> version control, later implemented in Git, Mercurial, and Bazaar. A project may have several different repositories, and these systems support a sort of super-merge between repositories that tries to reconcile their change histories. In effect, there is one repository for each developer, and repository merges take the place of commit operations.
+</p>
+
+<p>
+VC helps you manage the traffic between your personal workfiles and a repository. Whether the repository is a single master, or one of a network of peer repositories, is not something VC has to care about.
+</p>
+</div>
+</div>

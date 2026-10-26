@@ -1,0 +1,70 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Retrieving-Mail-from-Remote-Mailboxes">1. 35.19 Retrieving Mail from Remote Mailboxes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Other-Mailbox-Formats.html">Retrieving Mail from Local Mailboxes in Various Formats</a>   Previous: <a href="docs/emacs--Movemail.html">movemail program</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Remote-Mailboxes"></a>
+</p>
+
+<hr />
+<div id="outline-container-Retrieving-Mail-from-Remote-Mailboxes" class="outline-2">
+<h2 id="Retrieving-Mail-from-Remote-Mailboxes"><span class="section-number-2">1.</span> 35.19 Retrieving Mail from Remote Mailboxes <a href="#Retrieving-Mail-from-Remote-Mailboxes">¶</a></h2>
+<div class="outline-text-2" id="text-Retrieving-Mail-from-Remote-Mailboxes">
+<p>
+Some sites use a method called POP3 for accessing users' inbox data instead of storing the data in inbox files. The Mailutils <code>movemail</code> by default supports POP3 with TLS encryption. <b>Warning:</b> Although the <code>Emacs movemail</code> supports POP3, its use for this is not recommended since it does not support encrypted connections&#x2014;the Mailutils version does. Both versions of <code>movemail</code> work only with POP3, not with older versions of POP.
+</p>
+
+<p>
+You can specify a POP3 inbox by using a POP3 <i>URL</i> (see <a href="docs/emacs--Movemail.html"><code>movemail</code> program</a>). A POP3 URL is of the form ‘=pop://==username==@==hostname==:==port=', where <code>hostname</code> and <code>port</code> are the host name (or IP address) and port number of the remote mail server and <code>username</code> is the user name on that server. Additionally, you may specify the password in the mailbox URL: ‘=pop://==username==:==password==@==hostname==:==port='. In this case, <code>password</code> takes preference over the one set by <code>rmail-remote-password</code> (see below). This is especially useful if you have several remote mailboxes with different passwords. If using Mailutils <code>movemail</code> and the server supports encrypted connections, <code>movemail</code> tries to use it; specify ‘=pops:=' instead of ‘=pop:=' to require such a connection.
+</p>
+
+<p>
+For backward compatibility, Rmail also supports an alternative way of specifying remote POP3 mailboxes. Specifying an inbox name in the form ‘=po:==username==:==hostname==:==port=' is equivalent to ‘=pop://==username==@==hostname==:==port='. If you omit the <code>:hostname</code> part, the <code>MAILHOST</code> environment variable specifies the machine on which to look for the POP3 server.
+</p>
+
+<p>
+Another method for accessing remote mailboxes is IMAP. This method is supported only by the Mailutils <code>movemail</code>, and uses the IMAP4 protocol. To specify an IMAP mailbox in the inbox list, use the following mailbox URL: ‘=imap://==username==[:==password==]@==hostname==:==port='. The <code>password</code> part is optional, as described above. If the server supports it, <code>movemail</code> tries to use an encrypted connection&#x2014;use the ‘=imaps:=' form to require one.
+</p>
+
+<p>
+Accessing a remote mailbox may require a password. Rmail uses the following algorithm to retrieve it:
+</p>
+
+<ol class="org-ol">
+<li>If a <code>password</code> is present in the mailbox URL (see above), it is used.</li>
+<li>If the variable <code>rmail-remote-password-required</code> is <code>nil</code>, Rmail assumes no password is required.</li>
+<li>If the variable <code>rmail-remote-password</code> is non-<code>nil</code>, its value is used.</li>
+<li>Otherwise, Rmail will ask you for the password to use.</li>
+</ol>
+
+<p>
+On some mail servers the usernames include domain information, which can mean they contain the ‘=@=' character. The inbox specifier string uses ‘=@=' to signal the start of the mailserver name. This creates confusion for movemail. If your username contains ‘=@=' and you're using Mailutils <code>movemail</code> then you can fix this: Replace <code>@</code> in the user name with its URL encoding ‘=%40='.
+</p>
+
+<p>
+If you need to pass additional command-line flags to <code>movemail</code>, set the variable <code>rmail-movemail-flags</code> a list of the flags you wish to use. Do not use this variable to pass the ‘=-p=' flag to preserve your inbox contents; use <code>rmail-preserve-inbox</code> instead.
+</p>
+
+<p>
+The <code>movemail</code> program installed at your site may support Kerberos authentication. If it is supported, it is used by default whenever you attempt to retrieve POP3 mail when <code>rmail-remote-password</code> and <code>rmail-remote-password-required</code> are unset.
+</p>
+
+<p>
+Some POP3 servers store messages in reverse order. If your server does this, and you would rather read your mail in the order in which it was received, you can tell <code>movemail</code> to reverse the order of downloaded messages by adding the ‘=-r=' flag to <code>rmail-movemail-flags</code>.
+</p>
+
+<p>
+Mailutils <code>movemail</code> supports TLS encryption. If you wish to use it, add the ‘=&#x2013;tls=' flag to <code>rmail-movemail-flags</code>.
+</p>
+
+<hr />
+</div>
+</div>

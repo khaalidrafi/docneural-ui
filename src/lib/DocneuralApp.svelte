@@ -34,14 +34,17 @@
   // Toggle state for graph/lite mode
   let forceLite = $state(false);
 
-  // Lite resolution mirrors org-roam-lite-ui: explicit ?lite=1 or the
-  // `lite` prop, plus a courtesy auto-detect — a potato with deviceMemory
-  // <= 2 GB should never pay for a force-graph simulation it can't run.
+  // Lite resolution: only EXPLICIT asks — the `lite` prop, the FULL/FAST
+  // toggle, or ?lite=1. There is deliberately NO deviceMemory auto-downgrade:
+  // many Android phones report <= 2 GB, so the old "courtesy" detect silently
+  // removed the SYNAPSES tab and the graph — the product's hero surface — on
+  // exactly the devices that most wanted to see it. The graph ships on every
+  // device; FAST remains a choice a visitor makes in the open, never a guess
+  // made for them behind their back.
   let liteOn = $derived(
     lite ||
       forceLite ||
-      new URLSearchParams(location.search).get('lite') === '1' ||
-      ((navigator as { deviceMemory?: number }).deviceMemory ?? 8) <= 2
+      new URLSearchParams(location.search).get('lite') === '1'
   )
 
   const store = $derived(new DocneuralStore(base, liteOn))
@@ -351,14 +354,39 @@
     gap: 1rem;
     height: var(--dn-header-h);
     padding: 0 1rem;
-    /* A solid ink rail with a lit top edge, not frosted glass: the scanline
-       overlay above it does the atmospheric work, and skipping
-       backdrop-filter here is a real win on a 4 GB machine. */
-    background: color-mix(in srgb, var(--dn-bg-sunken) 92%, transparent);
+    /* Glass-black: a near-opaque ink gradient over the board (the blur is
+       a garnish — every browser that lacks backdrop-filter still sees a
+       solid rail). A 4 GB machine only ever composites this one short bar. */
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--dn-bg-raise) 55%, transparent),
+        color-mix(in srgb, var(--dn-bg-sunken) 92%, transparent)),
+      color-mix(in srgb, var(--dn-bg-sunken) 88%, transparent);
+    backdrop-filter: blur(9px) saturate(1.3);
+    -webkit-backdrop-filter: blur(9px) saturate(1.3);
     border-bottom: 1px solid var(--dn-border-strong);
+    position: relative;
     box-shadow:
       inset 0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent),
-      0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
+      0 2px 18px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
+  }
+  /* The signal rail: a thin cyan→magenta gradient line under the whole bar —
+     the header is now visibly the top of the instrument, not just a strip. */
+  .shell::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      transparent 2%,
+      color-mix(in srgb, var(--dn-accent) 85%, transparent) 28%,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, var(--dn-accent-2)) 55%,
+      color-mix(in srgb, var(--dn-accent-2) 85%, transparent) 78%,
+      transparent 98%);
+    opacity: 0.9;
   }
   .brand {
     font-family: var(--dn-font-display);
@@ -367,6 +395,11 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--dn-fg);
+    /* Split glow: a cyan bloom behind, a whisper of magenta off the right —
+       the chromatic offset of the hero glitch, miniaturized. */
+    text-shadow:
+      0 0 12px color-mix(in srgb, var(--dn-accent) 42%, transparent),
+      1px 0 0 color-mix(in srgb, var(--dn-accent-2) 28%, transparent);
     background: none;
     border: none;
     padding: 0;
@@ -404,10 +437,14 @@
   .seg:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .seg.active {
     color: var(--dn-src, var(--dn-accent));
-    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
+    font-weight: 600;
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
+    /* Active label at full brightness: the glow IS the on-state. */
+    text-shadow: 0 0 9px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
   }
   /* The sliding thumb paints the fill: one lit block gliding between the
-     segments (measured, so unequal labels are honest), a spring on it. */
+     segments (measured, so unequal labels are honest), a spring on it.
+     SIGNAL pass: the fill and halo rose — the thumb reads as a lit keycap. */
   .modes { position: relative; }
   .seg-thumb {
     position: absolute;
@@ -415,9 +452,11 @@
     left: 0;
     height: 100%;
     border-radius: 2px;
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 17%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
+    box-shadow:
+      0 0 14px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 38%, transparent),
+      inset 0 0 8px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
     transition: transform 220ms cubic-bezier(0.3, 1.3, 0.35, 1),
       width 220ms cubic-bezier(0.3, 1.3, 0.35, 1);
     pointer-events: none;
@@ -444,14 +483,18 @@
     white-space: nowrap;
   }
   .status .led {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--dn-accent);
-    box-shadow: 0 0 8px var(--dn-accent);
-    animation: dn-pulse 2.6s ease-in-out infinite;
+    /* SIGNAL pass: a real lamp — core glow plus a halo ring, on a heartbeat
+       (transform+opacity only, see §2's dn-led). */
+    box-shadow:
+      0 0 9px var(--dn-accent),
+      0 0 20px color-mix(in srgb, var(--dn-accent) 55%, transparent);
+    animation: dn-led 1.6s ease-in-out infinite;
   }
-  .status.down .led { background: var(--dn-amber); box-shadow: 0 0 8px var(--dn-amber); }
+  .status.down .led { background: var(--dn-amber); box-shadow: 0 0 9px var(--dn-amber), 0 0 20px color-mix(in srgb, var(--dn-amber) 55%, transparent); }
   .status.down { color: var(--dn-amber); }
   .tool {
     font-family: var(--dn-font-mono);
@@ -467,8 +510,9 @@
   }
   .tool:hover {
     color: var(--dn-accent);
-    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 18%, transparent);
+    border-color: color-mix(in srgb, var(--dn-accent) 65%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-accent) 26%, transparent);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--dn-accent) 45%, transparent);
   }
   .tool .hintkey { color: var(--dn-fg-faint); font-size: 0.68rem; margin-left: 0.3em; }
 
@@ -480,7 +524,8 @@
     /* Phone. The mode switch stays — hiding it left no way at all to reach
        the graph view — but it becomes two icon buttons sized for a thumb.
        What goes instead are the keyboard affordances, since a phone has no
-       keyboard: ⌘K and the shortcut sheet. */
+       keyboard: ⌘K and the shortcut sheet. The shell clears the notch via
+       the same safe-area inset that grew --dn-header-h. */
     .seg {
       padding: 0;
       width: 44px;
@@ -490,7 +535,10 @@
     .seg .bracket, .seg .seg-txt { display: none; }
     .seg .seg-ico { font-size: 1.2rem; }
     .tool.kbd, .tool.keys { display: none; }
-    .shell { padding: 0 0.5rem; gap: 0.5rem; }
+    .shell {
+      padding: env(safe-area-inset-top, 0px) max(0.5rem, env(safe-area-inset-right, 0px)) 0 max(0.5rem, env(safe-area-inset-left, 0px));
+      gap: 0.5rem;
+    }
   }
 
   .synapse-mode {
@@ -510,9 +558,9 @@
     z-index: 5;
     font: inherit;
     letter-spacing: var(--dn-track);
-    color: var(--dn-fg-muted);
+    color: var(--dn-fg);
     background: color-mix(in srgb, var(--dn-bg) 82%, black);
-    border: 1px solid var(--dn-border);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.3em 0.7em;
     cursor: pointer;
@@ -520,10 +568,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
   .scope:hover {
     color: var(--dn-accent);
-    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
+    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-accent) 24%, transparent);
   }
   /* Layout chip: the same HUD pill, and when the scope chip is out it stacks
      ABOVE it rather than sharing a corner with a variable-length label — the
@@ -536,9 +587,9 @@
     z-index: 5;
     font: inherit;
     letter-spacing: var(--dn-track);
-    color: var(--dn-fg-muted);
+    color: var(--dn-fg);
     background: color-mix(in srgb, var(--dn-bg) 82%, black);
-    border: 1px solid var(--dn-border);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.3em 0.7em;
     cursor: pointer;
@@ -546,7 +597,8 @@
   .scope ~ .layout { bottom: 2.9rem; }
   .layout:hover {
     color: var(--dn-accent);
-    border-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
+    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-accent) 24%, transparent);
   }
   /* On means the visitor asked for it, so it wears the accent like an active
      filter chip does. */
@@ -557,7 +609,8 @@
   }
   /* Controls panel: desktop floats over the canvas top-left; the summary
      doubles as the live wire-count badge. Notched corner + brackets = it
-     reads as a module clamped onto the board. */
+     reads as a module clamped onto the board. SIGNAL pass: neon edge + a
+     slightly deeper fill, so the module reads as glass over the field. */
   .controls {
     position: absolute;
     top: 0.9rem;
@@ -565,12 +618,12 @@
     width: 250px;
     z-index: 2;
     padding: 0.7rem;
-    border: 1px solid var(--dn-border-strong);
+    border: 1px solid color-mix(in srgb, var(--dn-accent) 30%, var(--dn-border-strong));
     border-radius: 2px;
-    background: color-mix(in srgb, var(--dn-bg-raise) 94%, transparent);
+    background: color-mix(in srgb, var(--dn-bg-raise) 92%, color-mix(in srgb, var(--dn-bg-sunken) 65%, transparent));
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 14%, transparent),
-      0 10px 30px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
+      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 18%, transparent),
+      0 12px 34px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
   .controls > summary {
@@ -582,21 +635,28 @@
       right: 0.5rem;
       width: auto;
       padding: 0.5rem 0.7rem;
+      top: max(0.5rem, env(safe-area-inset-top, 0px));
     }
+    /* Thumb-reachable: the summary is the collapsed control row — give it a
+       40px+ touch target by padding instead of growing type. */
     .controls > summary {
       display: flex;
       align-items: center;
       gap: 0.5em;
+      min-height: 40px;
       font-size: 0.7rem;
       letter-spacing: 0.12em;
-      color: var(--dn-fg-muted);
+      color: var(--dn-fg);
       cursor: pointer;
       list-style: none;
     }
     .controls > summary::-webkit-details-marker { display: none; }
     .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
-    .controls > summary .chev { margin-left: auto; color: var(--dn-fg-faint); }
+    .controls > summary .chev { margin-left: auto; color: var(--dn-fg-muted); }
     .controls[open] > summary .chev { transform: rotate(180deg); }
+    /* The canvas chips stay clear of the home-indicator zone. */
+    .scope, .layout { bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px)); }
+    .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
   }
   .reader-mode {
     height: calc(100dvh - var(--dn-header-h));
@@ -610,17 +670,23 @@
   }
   /* One panel for both states a visitor can be stuck on: loading, and failed.
      Real borders, real contrast, no fake window chrome — the terminal feel
-     lives in the type and the corners, not in a pretend tty. */
+     lives in the type and the corners, not in a pretend tty. SIGNAL pass:
+     neon edge, deeper floor, sharper notch. */
   .panel {
     width: min(38rem, 100%);
     display: grid;
     gap: 0.7rem;
     justify-items: start;
     padding: 1.6rem 1.8rem;
-    border: 1px solid var(--dn-border-strong);
+    border: 1px solid color-mix(in srgb, var(--dn-accent) 34%, var(--dn-border-strong));
     border-radius: 4px;
-    background: var(--dn-bg-raise);
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--dn-accent) 5%, transparent), transparent 42%),
+      var(--dn-bg-raise);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 16%, transparent),
+      0 16px 44px color-mix(in srgb, var(--dn-bg-sunken) 85%, transparent);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   }
   .panel .dn-neuron-mark { width: 1rem; height: 1rem; }
   .panel h2 {
@@ -654,15 +720,17 @@
   .retry {
     margin-top: 0.4rem;
     font-size: 0.85rem;
+    font-weight: 600;
     letter-spacing: 0.04em;
-    color: var(--dn-bg);
+    color: var(--dn-bg-sunken);
     background: var(--dn-accent);
     border: none;
     border-radius: 3px;
     padding: 0.6em 1.4em;
     cursor: pointer;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-accent) 40%, transparent);
   }
-  .retry:hover { background: var(--dn-hot); }
+  .retry:hover { background: var(--dn-hot); box-shadow: 0 0 22px color-mix(in srgb, var(--dn-hot) 45%, transparent); }
 
   .boot-wrap {
     display: grid;
@@ -702,7 +770,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--dn-bg);
+    color: var(--dn-bg-sunken);
     background: var(--dn-accent);
     border: none;
     border-radius: 2px;

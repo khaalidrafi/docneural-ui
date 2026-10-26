@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Info-Documentation-Lookup">1. 28.6.1 Info Documentation Lookup ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Man-Page.html">Man Page Lookup</a>   Up: <a href="docs/emacs--Documentation.html">Documentation Lookup</a>
+</p>
+
+<p>
+<a id="Info-Lookup"></a>
+</p>
+
+<hr />
+<div id="outline-container-Info-Documentation-Lookup" class="outline-2">
+<h2 id="Info-Documentation-Lookup"><span class="section-number-2">1.</span> 28.6.1 Info Documentation Lookup <a href="#Info-Documentation-Lookup">¶</a></h2>
+<div class="outline-text-2" id="text-Info-Documentation-Lookup">
+<p>
+For major modes that apply to languages which have documentation in Info, you can use C-h S (<code>info-lookup-symbol</code>) to view the Info documentation for a symbol used in the program. You specify the symbol with the minibuffer; the default is the symbol appearing in the buffer at point. For example, in C mode this looks for the symbol in the C Library Manual. The command only works if the appropriate manual's Info files are installed.
+</p>
+
+<p>
+Emacs determines where to look for documentation for the symbol&#x2014;which Info files to look in, and which indices to search&#x2014;based on the major mode. You can also use M-x info-lookup-file to look for documentation for a file name.
+</p>
+
+<p>
+If you use C-h S in a major mode that does not support it, it asks you to specify the symbol help mode. You should enter a command such as <code>c-mode</code> that would select a major mode which C-h S does support.
+</p>
+</div>
+</div>

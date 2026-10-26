@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Options-for-Window-Size-and-Position">1. C.8 Options for Window Size and Position ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Borders-X.html">Internal and Outer Borders</a>   Previous: <a href="docs/emacs--Colors-X.html">Window Color Options</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Window-Size-X"></a>
+</p>
+
+<hr />
+<div id="outline-container-Options-for-Window-Size-and-Position" class="outline-2">
+<h2 id="Options-for-Window-Size-and-Position"><span class="section-number-2">1.</span> C.8 Options for Window Size and Position <a href="#Options-for-Window-Size-and-Position">¶</a></h2>
+<div class="outline-text-2" id="text-Options-for-Window-Size-and-Position">
+<p>
+Here is a list of the command-line options for specifying size and position of the initial Emacs frame:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-_002d_002dgeometry"></a>‘=-g <code>=width==x==height=</code>[{<code>=+-=</code>}==xoffset=={<code>=+-=</code>}==yoffset==]]=' </dt><dd></dd>
+
+<dt>‘=&#x2013;geometry===width==x==height==[{<code>=+-=</code>}==xoffset=={<code>=+-=</code>}==yoffset==]]='</dt><dd>Specify the size <code>width</code> and <code>height</code> (measured in character columns and lines), and positions <code>xoffset</code> and <code>yoffset</code> (measured in pixels). The <code>width</code> and <code>height</code> parameters apply to all frames, whereas <code>xoffset</code> and <code>yoffset</code> only to the initial frame.</dd>
+
+<dt><a id="index-_002d_002dfullscreen"></a>‘=-fs=' </dt><dd></dd>
+
+<dt>‘=&#x2013;fullscreen='</dt><dd>Specify that width and height should be that of the screen. Normally no window manager decorations are shown. (After starting Emacs, you can toggle this state using F11, <code>toggle-frame-fullscreen</code>.)</dd>
+
+<dt><a id="index-_002d_002dmaximized"></a>‘=-mm=' </dt><dd></dd>
+
+<dt>‘=&#x2013;maximized='</dt><dd>Specify that the Emacs frame should be maximized. This normally means that the frame has window manager decorations. (After starting Emacs, you can toggle this state using M-F10, <code>toggle-frame-maximized</code>.)</dd>
+
+<dt><a id="index-_002d_002dfullheight"></a>‘=-fh=' </dt><dd></dd>
+
+<dt>‘=&#x2013;fullheight='</dt><dd>Specify that the height should be the height of the screen.</dd>
+
+<dt><a id="index-_002d_002dfullwidth"></a>‘=-fw=' </dt><dd></dd>
+
+<dt>‘=&#x2013;fullwidth='</dt><dd>Specify that the width should be the width of the screen.</dd>
+</dl>
+
+<p>
+In the ‘=&#x2013;geometry=' option, <code>{==+-=</code>}= means either a plus sign or a minus sign. A plus sign before <code>xoffset</code> means it is the distance from the left side of the screen; a minus sign means it counts from the right side. A plus sign before <code>yoffset</code> means it is the distance from the top of the screen, and a minus sign there indicates the distance from the bottom. The values <code>xoffset</code> and <code>yoffset</code> may themselves be positive or negative, but that doesn't change their meaning, only their direction.
+</p>
+
+<p>
+Emacs uses the same units as <code>xterm</code> does to interpret the geometry. The <code>width</code> and <code>height</code> are measured in characters, so a large font creates a larger frame than a small font. (If you specify a proportional font, Emacs uses its maximum bounds width as the width unit.) The <code>xoffset</code> and <code>yoffset</code> are measured in pixels.
+</p>
+
+<p>
+You do not have to specify all of the fields in the geometry specification. If you omit both <code>xoffset</code> and <code>yoffset</code>, the window manager decides where to put the Emacs frame, possibly by letting you place it with the mouse. For example, ‘=164x55=' specifies a window 164 columns wide, enough for two ordinary width windows side by side, and 55 lines tall.
+</p>
+
+<p>
+The default frame width is 80 characters and the default height is between 35 and 40 lines, depending on the OS and the window manager. You can omit either the width or the height or both. If you start the geometry with an integer, Emacs interprets it as the width. If you start with an ‘=x=' followed by an integer, Emacs interprets it as the height. Thus, ‘=81=' specifies just the width; ‘=x45=' specifies just the height.
+</p>
+
+<p>
+If you start the geometry with ‘=+=' or ‘=-<code>', that introduces an offset, which means both sizes are omitted. Thus, ‘</code>-3=' specifies the <code>xoffset</code> only. (If you give just one offset, it is always <code>xoffset</code>.) ‘=+3-3=' specifies both the <code>xoffset</code> and the <code>yoffset</code>, placing the frame near the bottom left of the screen.
+</p>
+
+<p>
+You can specify a default for any or all of the fields in your X resource file (see <a href="docs/emacs--Resources.html">X Resources</a>), and then override selected fields with a ‘=&#x2013;geometry=' option.
+</p>
+
+<p>
+Since the mode line and the echo area occupy the last 2 lines of the frame, the height of the initial text window is 2 less than the height specified in your geometry. In non-X-toolkit versions of Emacs, the menu bar also takes one line of the specified number. But in the X toolkit version, the menu bar is additional and does not count against the specified height. The tool bar, if present, is also additional.
+</p>
+
+<p>
+Enabling or disabling the menu bar or tool bar alters the amount of space available for ordinary text. Therefore, if Emacs starts up with a tool bar (which is the default), and handles the geometry specification assuming there is a tool bar, and then your initialization file disables the tool bar, you will end up with a frame geometry different from what you asked for. To get the intended size with no tool bar, use an X resource to specify “no tool bar” (see <a href="docs/emacs--Table-of-Resources.html">Table of X Resources for Emacs</a>); then Emacs will already know there's no tool bar when it processes the specified geometry.
+</p>
+
+<p>
+When using one of ‘=&#x2013;fullscreen=', ‘=&#x2013;maximized=', ‘=&#x2013;fullwidth=' or ‘=&#x2013;fullheight=', some window managers require you to set the variable <code>frame-resize-pixelwise</code> to a non-<code>nil</code> value to make a frame appear truly maximized or full-screen.
+</p>
+
+<p>
+Some window managers have options that can make them ignore both program-specified and user-specified positions. If these are set, Emacs fails to position the window correctly.
+</p>
+
+<hr />
+</div>
+</div>

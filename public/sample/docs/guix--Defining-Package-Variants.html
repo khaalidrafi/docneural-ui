@@ -1,0 +1,342 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#defining-package-variants">1.0.1. 8.3 Defining Package Variants</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Defining-Package-Variants"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>, Previous: <a href="docs/guix--Defining-Packages.html">Defining Packages</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Defining-Package-Variants-1"></a>
+</p>
+</div>
+<div id="outline-container-defining-package-variants" class="outline-4">
+<h4 id="defining-package-variants"><span class="section-number-4">1.0.1.</span> 8.3 Defining Package Variants</h4>
+<div class="outline-text-4" id="text-defining-package-variants">
+<p>
+<a id="index-customizing-packages"></a> <a id="index-variants_002c-of-packages"></a>
+One of the nice things with Guix is that, given a package definition, you can easily <i>derive</i> variants of that package&#x2014;for a different upstream version, with different dependencies, different compilation options, and so on. Some of these custom packages can be defined straight from the command line (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>). This section describes how to define package variants in code. This can be useful in “manifests” (see <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>) and in your own package collection (see <a href="docs/guix--Creating-a-Channel.html">Creating a Channel</a>), among others!
+</p>
+
+<p>
+<a id="index-inherit_002c-for-package-definitions"></a>
+As discussed earlier, packages are first-class objects in the Scheme language. The <code>(guix packages)</code> module provides the <code>package</code> construct to define new package objects (see <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>). The easiest way to define a package variant is using the <code>inherit</code> keyword together with <code>package</code>. This allows you to inherit from a package definition while overriding the fields you want.
+</p>
+
+<p>
+For example, given the <code>hello</code> variable, which contains a definition for the current version of GNU Hello, here's how you would define a variant for version 2.2 (released in 2006, it's vintage!):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages base))    ;for 'hello'
+
+(define hello-2.2
+  (package
+    (inherit hello)
+    (version "2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/hello/hello-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0lappv4slgb5spyqbh6yl5r013zv72yqg2pcl30mginf3wdqd8k9"))))))
+</pre>
+</div>
+
+<p>
+The example above corresponds to what the <code>--with-version</code> or <code>--with-source</code> package transformations option do. Essentially <code>hello-2.2</code> preserves all the fields of <code>hello</code>, except <code>version</code> and <code>source</code>, which it overrides. Note that the original <code>hello</code> variable is still there, in the <code>(gnu packages base)</code> module, unchanged. When you define a custom package like this, you are really <i>adding</i> a new package definition; the original one remains available.
+</p>
+
+<p>
+You can just as well define variants with a different set of dependencies than the original package. For example, the default <code>gdb</code> package depends on <code>guile</code>, but since that is an optional dependency, you can define a variant that removes that dependency like so:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages gdb))   ;for 'gdb'
+
+(define gdb-sans-guile
+  (package
+    (inherit gdb)
+    (inputs (modify-inputs (package-inputs gdb)
+              (delete "guile")))))
+</pre>
+</div>
+
+<p>
+The <code>modify-inputs</code> form above removes the <code>"guile"</code> package from the <code>inputs</code> field of <code>gdb</code>. The <code>modify-inputs</code> macro is a helper that can prove useful anytime you want to remove, add, or replace package inputs.
+</p>
+
+<dl class="org-dl">
+<dt>Macro: modify-inputs inputs clauses</dt><dd><p>
+Modify the given package inputs, as returned by <code>package-inputs</code> &amp; co., according to the given clauses. Each clause must have one of the following forms:
+</p>
+
+<dl class="org-dl">
+<dt><code>(delete ==name==…)</code></dt><dd>Delete from the inputs packages with the given =name=s (strings).</dd>
+
+<dt><code>(prepend ==package==…)</code></dt><dd>Add =package=s to the front of the input list.</dd>
+
+<dt><code>(append ==package==…)</code></dt><dd>Add =package=s to the end of the input list.</dd>
+
+<dt><code>(replace ==name=</code> <code>=replacement=</code>)=</dt><dd>Replace the package called <code>name</code> with <code>replacement</code>.</dd>
+</dl>
+
+<p>
+The example below removes the GMP and ACL inputs of Coreutils and adds libcap to the front of the input list:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(modify-inputs (package-inputs coreutils)
+  (delete "gmp" "acl")
+  (prepend libcap))
+</pre>
+</div>
+
+<p>
+The example below replaces the <code>guile</code> package from the inputs of <code>guile-redis</code> with <code>guile-2.2</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(modify-inputs (package-inputs guile-redis)
+  (replace "guile" guile-2.2))
+</pre>
+</div>
+
+<p>
+The last type of clause is <code>append</code>, to add inputs at the back of the list.
+</p></dd>
+</dl>
+
+<p>
+In some cases, you may find it useful to write functions (“procedures”, in Scheme parlance) that return a package based on some parameters. For example, consider the <code>luasocket</code> library for the Lua programming language. We want to create <code>luasocket</code> packages for major versions of Lua. One way to do that is to define a procedure that takes a Lua package and returns a <code>luasocket</code> package that depends on it:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (make-lua-socket name lua)
+  ;; Return a luasocket package built with LUA.
+  (package
+    (name name)
+    (version "3.0")
+    ;; several fields omitted
+    (inputs (list lua))
+    (synopsis "Socket library for Lua")))
+
+(define-public lua5.1-socket
+  (make-lua-socket "lua5.1-socket" lua-5.1))
+
+(define-public lua5.2-socket
+  (make-lua-socket "lua5.2-socket" lua-5.2))
+</pre>
+</div>
+
+<p>
+Here we have defined packages <code>lua5.1-socket</code> and <code>lua5.2-socket</code> by calling <code>make-lua-socket</code> with different arguments. See <a href="https://www.gnu.org/software/guile/manual/html_node/Procedures.html#Procedures">Procedures</a> in GNU Guile Reference Manual, for more info on procedures. Having top-level public definitions for these two packages means that they can be referred to from the command line (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+<a id="index-package-transformations"></a>
+These are pretty simple package variants. As a convenience, the <code>(guix transformations)</code> module provides a high-level interface that directly maps to the more sophisticated package transformation options (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>):
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: options-&gt;transformation opts</dt><dd><p>
+Return a procedure that, when passed an object to build (package, derivation, etc.), applies the transformations specified by <code>opts</code> and returns the resulting objects. <code>opts</code> must be a list of symbol/string pairs such as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">((with-branch . "guile-gcrypt=master")
+ (without-tests . "libgcrypt"))
+</pre>
+</div>
+
+<p>
+Each symbol names a transformation and the corresponding string is an argument to that transformation.
+</p></dd>
+</dl>
+
+<p>
+For instance, a manifest equivalent to this command:
+</p>
+
+<pre class="example" id="orgb6a74e1">
+guix build guix \
+  --with-branch=guile-gcrypt=master \
+  --with-debug-info=zlib
+</pre>
+
+<p>
+&#x2026; would look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix transformations))
+
+(define transform
+  ;; The package transformation procedure.
+  (options-&gt;transformation
+   '((with-branch . "guile-gcrypt=master")
+     (with-debug-info . "zlib"))))
+
+(packages-&gt;manifest
+ (list (transform (specification-&gt;package "guix"))))
+</pre>
+</div>
+
+<p>
+<a id="index-input-rewriting"></a> <a id="index-dependency-graph-rewriting"></a>
+The <code>options-&gt;transformation</code> procedure is convenient, but it's perhaps also not as flexible as you may like. How is it implemented? The astute reader probably noticed that most package transformation options go beyond the superficial changes shown in the first examples of this section: they involve <i>input rewriting</i>, whereby the dependency graph of a package is rewritten by replacing specific inputs by others.
+</p>
+
+<p>
+Dependency graph rewriting, for the purposes of swapping packages in the graph, is what the <code>package-input-rewriting</code> procedure in <code>(guix packages)</code> implements.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: package-input-rewriting replacements [rewrite-name] [#:deep? #t] [#:recursive? #f]</dt><dd><p>
+Return a procedure that, when passed a package, replaces its direct and indirect dependencies, including implicit inputs when <code>deep?</code> is true, according to <code>replacements</code>. <code>replacements</code> is a list of package pairs; the first element of each pair is the package to replace, and the second one is the replacement.
+</p>
+
+<p>
+When <code>recursive?</code> is true, apply replacements to the right-hand sides of <code>replacements</code> as well, recursively.
+</p>
+
+<p>
+Optionally, <code>rewrite-name</code> is a one-argument procedure that takes the name of a package and returns its new name after rewrite.
+</p></dd>
+</dl>
+
+<p>
+Consider this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define libressl-instead-of-openssl
+  ;; This is a procedure to replace OPENSSL by LIBRESSL,
+  ;; recursively.
+  (package-input-rewriting `((,openssl . ,libressl))))
+
+(define git-with-libressl
+  (libressl-instead-of-openssl git))
+</pre>
+</div>
+
+<p>
+Here we first define a rewriting procedure that replaces <code>openssl</code> with <code>libressl</code>. Then we use it to define a <i>variant</i> of the <code>git</code> package that uses <code>libressl</code> instead of <code>openssl</code>. This is exactly what the <code>--with-input</code> command-line option does (see <a href="docs/guix--Package-Transformation-Options.html"><code>--with-input</code></a>).
+</p>
+
+<p>
+The following variant of <code>package-input-rewriting</code> can match packages to be replaced by name rather than by identity.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: package-input-rewriting/spec <code>replacements</code> [#:deep? #t] [#:replace-hidden? #t]</dt><dd><p>
+Return a procedure that, given a package, applies the given <code>replacements</code> to all the package graph, including implicit inputs unless <code>deep?</code> is false.
+</p>
+
+<p>
+<code>replacements</code> is a list of spec/procedures pair; each spec is a package specification such as <code>"gcc"</code> or <code>"guile@2"</code>, and each procedure takes a matching package and returns a replacement for that package. Matching packages that have the <code>hidden?</code> property set are not replaced unless <code>replace-hidden?</code> is set to true.
+</p></dd>
+</dl>
+
+<p>
+The example above could be rewritten this way:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define libressl-instead-of-openssl
+  ;; Replace all the packages called "openssl" with LibreSSL.
+  (package-input-rewriting/spec `(("openssl" . ,(const libressl)))))
+</pre>
+</div>
+
+<p>
+The key difference here is that, this time, packages are matched by spec and not by identity. In other words, any package in the graph that is called <code>openssl</code> will be replaced.
+</p>
+
+<p>
+A more generic procedure to rewrite a package dependency graph is <code>package-mapping</code>: it supports arbitrary changes to nodes in the graph.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: package-mapping proc [cut?] [#:deep? #f]</dt><dd>Return a procedure that, given a package, applies <code>proc</code> to all the packages depended on and returns the resulting package. The procedure stops recursion when <code>cut?</code> returns true for a given package. When <code>deep?</code> is true, <code>proc</code> is applied to implicit inputs as well.</dd>
+</dl>
+
+<blockquote>
+<p>
+<b>Tips:</b> Understanding what a variant really looks like can be difficult as one starts combining the tools shown above. There are several ways to inspect a package before attempting to build it that can prove handy:
+</p>
+
+<ul class="org-ul">
+<li>You can inspect the package interactively at the REPL, for instance to view its inputs, the code of its build phases, or its configure flags (see <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>).</li>
+<li>When rewriting dependencies, <code>guix graph</code> can often help visualize the changes that are made (see <a href="docs/guix--Invoking-guix-graph.html">Invoking <code>guix graph</code></a>).</li>
+</ul>
+</blockquote>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>, Previous: <a href="docs/guix--Defining-Packages.html">Defining Packages</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

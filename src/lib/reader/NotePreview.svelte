@@ -170,13 +170,14 @@
     overflow-y: auto;
     /* Solid ink, not frosted glass: a big backdrop-filter over an animating
        canvas is the first thing that stutters on a potato, and a HUD panel is
-       opaque anyway. The lit left edge carries the source's hue. */
+       opaque anyway. The lit left edge carries the source's hue, and the top
+       edge carries a whisper of the same — a panel plugged into the bus. */
     background: color-mix(in srgb, var(--dn-bg-raise) 97%, transparent);
-    border-left: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, var(--dn-border-strong));
+    border-left: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border-strong));
     padding: 1.2rem 1.6rem 3rem;
     box-shadow:
-      -1px 0 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent),
-      -18px 0 40px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
+      -1px 0 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent),
+      -22px 0 44px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
   }
   .note-preview.empty {
     width: auto;

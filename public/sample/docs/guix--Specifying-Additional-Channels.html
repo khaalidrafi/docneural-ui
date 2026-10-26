@@ -1,0 +1,115 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#specifying-additional-channels">1.0.1. 6.1 Specifying Additional Channels</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Specifying-Additional-Channels"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Using-a-Custom-Guix-Channel.html">Using a Custom Guix Channel</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Specifying-Additional-Channels-1"></a>
+</p>
+</div>
+<div id="outline-container-specifying-additional-channels" class="outline-4">
+<h4 id="specifying-additional-channels"><span class="section-number-4">1.0.1.</span> 6.1 Specifying Additional Channels</h4>
+<div class="outline-text-4" id="text-specifying-additional-channels">
+<p>
+<a id="index-extending-the-package-collection-_0028channels_0029"></a> <a id="index-variant-packages-_0028channels_0029"></a>
+You can specify <i>additional channels</i> to pull from. To use a channel, write <code>~/.config/guix/channels.scm</code> to instruct <code>guix pull</code> to pull from it <i>in addition</i> to the default Guix channel(s):
+</p>
+
+<p>
+<a id="index-_0025default_002dchannels"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Add variant packages to those Guix provides.
+(cons (channel
+        (name 'variant-packages)
+        (url "https://example.org/variant-packages.git"))
+      %default-channels)
+</pre>
+</div>
+
+<p>
+Note that the snippet above is (as always!) Scheme code; we use <code>cons</code> to add a channel the list of channels that the variable <code>%default-channels</code> is bound to (see <a href="https://www.gnu.org/software/guile/manual/html_node/Pairs.html#Pairs"><code>cons</code> and lists</a> in GNU Guile Reference Manual). With this file in place, <code>guix pull</code> builds not only Guix but also the package modules from your own repository. The result in <code>~/.config/guix/current</code> is the union of Guix with your own package modules:
+</p>
+
+<pre class="example" id="org9c8f1c6">
+$ guix describe
+Generation 19   Aug 27 2018 16:20:48
+  guix d894ab8
+    repository URL: https://git.guix.gnu.org/guix.git
+    branch: master
+    commit: d894ab8e9bfabcefa6c49d9ba2e834dd5a73a300
+  variant-packages dd3df5e
+    repository URL: https://example.org/variant-packages.git
+    branch: master
+    commit: dd3df5e2c8818760a8fc0bd699e55d3b69fef2bb
+</pre>
+
+<p>
+The output of <code>guix describe</code> above shows that we're now running Generation 19 and that it includes both Guix and packages from the <code>variant-packages</code> channel (see <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>).
+</p>
+</div>
+</div>
+</div>

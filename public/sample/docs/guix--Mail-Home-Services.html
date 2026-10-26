@@ -1,0 +1,160 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Mail-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Messaging-Home-Services.html">Messaging Home Services</a>, Previous: <a href="docs/guix--Sound-Home-Services.html">Sound Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Mail-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="mail-home-services"></a>13.3.13 Mail Home Services<br />
+<div class="outline-text-5" id="text-mail-home-services">
+<p>
+The <code>(gnu home services mail)</code> module provides services that help you set up the tools to work with emails in your home environment.
+</p>
+
+<p>
+<a id="index-msmtp"></a>
+<a href="https://marlam.de/msmtp">MSMTP</a> is a SMTP (Simple Mail Transfer Protocol) client. It sends mail to a predefined SMTP server that takes care of proper delivery.
+</p>
+
+<p>
+The service reference is given below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-msmtp-service-type </dt><dd><p>
+This is the service type for <code>msmtp</code>. Its value must be a <code>home-msmtp-configuration</code>, as shown below. It provides the <code>~/.config/msmtp/config</code> file.
+</p>
+
+<p>
+As an example, here is how you would configure <code>msmtp</code> for a single account:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-msmtp-service-type
+         (home-msmtp-configuration
+          (accounts
+           (list
+            (msmtp-account
+             (name "alice")
+             (configuration
+              (msmtp-configuration
+               (host "mail.example.org")
+               (port 587)
+               (user "alice")
+               (password-eval "pass Mail/alice"))))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: home-msmtp-configuration </dt><dd>Available <code>home-msmtp-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>defaults</code> (type: msmtp-configuration)</dt><dd>The configuration that will be set as default for all accounts.</dd>
+
+<dt><code>accounts</code> (default: <code>'()</code>) (type: list-of-msmtp-accounts)</dt><dd>A list of <code>msmtp-account</code> records which contain information about all your accounts.</dd>
+
+<dt><code>default-account</code> (type: maybe-string)</dt><dd>Set the default account.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: string)</dt><dd>Extra content appended as-is to the configuration file. Run <code>man msmtp</code> for more information about the configuration file format.</dd>
+</dl></dd>
+
+<dt>Data Type: msmtp-account </dt><dd>Available <code>msmtp-account</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>The unique name of the account.</dd>
+
+<dt><code>configuration</code> (type: msmtp-configuration)</dt><dd>The configuration for this given account.</dd>
+</dl></dd>
+
+<dt>Data Type: msmtp-configuration </dt><dd>Available <code>msmtp-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>auth?</code> (type: maybe-boolean)</dt><dd>Enable or disable authentication.</dd>
+
+<dt><code>tls?</code> (type: maybe-boolean)</dt><dd>Enable or disable TLS (also known as SSL) for secured connections.</dd>
+
+<dt><code>tls-starttls?</code> (type: maybe-boolean)</dt><dd>Choose the TLS variant: start TLS from within the session (‘on', default), or tunnel the session through TLS (‘off').</dd>
+
+<dt><code>tls-trust-file</code> (type: maybe-string)</dt><dd>Activate server certificate verification using a list of trusted Certification Authorities (CAs).</dd>
+
+<dt><code>log-file</code> (type: maybe-string)</dt><dd>Enable logging to the specified file. An empty argument disables logging. The file name ‘-' directs the log information to standard output.</dd>
+
+<dt><code>host</code> (type: maybe-string)</dt><dd>The SMTP server to send the mail to.</dd>
+
+<dt><code>port</code> (type: maybe-integer)</dt><dd>The port that the SMTP server listens on. The default is 25 ("smtp"), unless TLS without STARTTLS is used, in which case it is 465 ("smtps").</dd>
+
+<dt><code>user</code> (type: maybe-string)</dt><dd>Set the user name for authentication.</dd>
+
+<dt><code>from</code> (type: maybe-string)</dt><dd>Set the envelope-from address.</dd>
+
+<dt><code>password-eval</code> (type: maybe-string)</dt><dd>Set the password for authentication to the output (stdout) of the command cmd.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: string)</dt><dd>Extra content appended as-is to the configuration block. Run <code>man msmtp</code> for more information about the configuration file format.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Messaging-Home-Services.html">Messaging Home Services</a>, Previous: <a href="docs/guix--Sound-Home-Services.html">Sound Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

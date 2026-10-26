@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Initial-visibility-1">1. 2.2.2 Initial visibility ¶</a>
+<ul>
+<li><a href="#section">1.1. (6)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Initial-visibility"></a>
+Next: <a href="docs/org--Catching-invisible-edits.html">Catching invisible edits</a>, Previous: <a href="docs/org--Global-and-local-cycling.html">Global and local cycling</a>, Up: <a href="docs/org--Visibility-Cycling.html">Visibility Cycling</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Initial-visibility-1" class="outline-2">
+<h2 id="Initial-visibility-1"><span class="section-number-2">1.</span> 2.2.2 Initial visibility <a href="#Initial-visibility-1">¶</a></h2>
+<div class="outline-text-2" id="text-Initial-visibility-1">
+<p>
+When Emacs first visits an Org file, the global state is set to <code>showeverything</code>, i.e., all file content is visible. This can be configured through the variable <code>org-startup-folded</code>, or on a per-file basis by adding one of the following lines anywhere in the buffer:
+</p>
+
+<pre class="example" id="orga826e3e">
+#+STARTUP: overview
+#+STARTUP: content
+#+STARTUP: showall
+#+STARTUP: show2levels
+#+STARTUP: show3levels
+#+STARTUP: show4levels
+#+STARTUP: show5levels
+#+STARTUP: showeverything
+</pre>
+
+<p>
+Furthermore, any entries with a ‘=VISIBILITY=' property (see <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>) get their visibility adapted accordingly. Allowed values for this property are ‘=folded=', ‘=children=', ‘=content=', and ‘=all='.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002du-C_002du-TAB-1"></a>C-u C-u TAB (<code>org-cycle-set-startup-visibility</code>) </dt><dd>Switch back to the startup visibility of the buffer, i.e., whatever is requested by startup options and ‘=VISIBILITY=' properties in individual entries.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

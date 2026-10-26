@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-Within-a-Message">1. 35.15 Editing Within a Message ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Digest.html">Digest Messages</a>   Previous: <a href="docs/emacs--Rmail-Coding.html">Rmail and Coding Systems</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Editing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Editing-Within-a-Message" class="outline-2">
+<h2 id="Editing-Within-a-Message"><span class="section-number-2">1.</span> 35.15 Editing Within a Message <a href="#Editing-Within-a-Message">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-Within-a-Message">
+<p>
+Most of the usual Emacs key bindings are available in Rmail mode, though a few, such as C-M-n and C-M-h, are redefined by Rmail for other purposes. However, the Rmail buffer is normally read only, and most of the letters are redefined as Rmail commands. If you want to edit the text of a message, you must use the Rmail command e.
+</p>
+
+<dl class="org-dl">
+<dt>e</dt><dd>Edit the current message as ordinary text.</dd>
+</dl>
+
+<p>
+The e command (<code>rmail-edit-current-message</code>) switches from Rmail mode into Rmail Edit mode, another major mode which is nearly the same as Text mode. The mode line indicates this change.
+</p>
+
+<p>
+In Rmail Edit mode, letters insert themselves as usual and the Rmail commands are not available. You can edit the message body and header fields. When you are finished editing the message, type C-c C-c (<code>rmail-cease-edit</code>) to switch back to Rmail mode. Alternatively, you can return to Rmail mode but cancel any editing that you have done, by typing C-c C-] (<code>rmail-abort-edit</code>).
+</p>
+
+<p>
+Entering Rmail Edit mode runs the hook <code>text-mode-hook</code>; then it runs the hook <code>rmail-edit-mode-hook</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>). Returning to ordinary Rmail mode adds the attribute ‘=edited=' to the message, if you have made any changes in it (see <a href="docs/emacs--Rmail-Attributes.html">Rmail Attributes</a>).
+</p>
+</div>
+</div>

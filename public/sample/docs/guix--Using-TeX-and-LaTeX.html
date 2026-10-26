@@ -1,0 +1,177 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#using-tex-and-latex">1.1. 18 Using TeX and LaTeX</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Using-TeX-and-LaTeX"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Security-Updates.html">Security Updates</a>, Previous: <a href="docs/guix--Installing-Debugging-Files.html">Installing Debugging Files</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Using-TeX-and-LaTeX-1"></a>
+</p>
+</div>
+<div id="outline-container-using-tex-and-latex" class="outline-3">
+<h3 id="using-tex-and-latex"><span class="section-number-3">1.1.</span> 18 Using TeX and LaTeX</h3>
+<div class="outline-text-3" id="text-using-tex-and-latex">
+<p>
+<a id="index-TeX-packages"></a> <a id="index-LaTeX-packages"></a>
+Guix provides packages for the TeX, LaTeX, ConTeXt, LuaTeX, and related typesetting systems, taken from the <a href="https://www.tug.org/texlive/">TeX Live distribution</a>. Because TeX Live is so huge and because finding one's way in this maze is tricky, this section provides some guidance on how to deploy the relevant packages to compile TeX and LaTeX documents.
+</p>
+
+<p>
+TeX Live currently comes in two mutually exclusive flavors in Guix:
+</p>
+
+<ul class="org-ul">
+<li>The “monolithic” <code>texlive</code> package: it comes with <i>every single TeX Live package</i> (roughly 4,200), but it is huge&#x2014;more than 4 GiB for a single package!</li>
+<li>A “modular” TeX Live distribution, in which you only install the packages you need, whose name is always prefixed with ‘=texlive-='.</li>
+</ul>
+
+<p>
+To insist, these two flavors cannot be combined. If in the modular setting your document does not compile, the solution is not to add the monolithic <code>texlive</code> package, but to add the set of missing packages from the modular distribution.
+</p>
+
+<p>
+Building a coherent system that provides all the essential tools and, at the same time, satisfies all of its internal dependencies can be a difficult task. It is therefore recommended to start with sets of packages, called <i>collections</i>, and <i>schemes</i>, the name for collections of collections. The following command lists available schemes and collections (see <a href="docs/guix--Invoking-guix-package.html#guix_002dsearch">Invoking guix package</a>):
+</p>
+
+<pre class="example" id="org8d0f677">
+guix search texlive-\(scheme\|collection\) | recsel -p name,description
+</pre>
+
+<p>
+If needed, you may then complete your system with individual packages, particularly when they belong to a large collection you're not otherwise interested in.
+</p>
+
+<p>
+For instance, the following manifest is a reasonable, yet frugal starting point for a French LaTeX user:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(specifications-&gt;manifest
+ '("rubber"
+
+   "texlive-scheme-basic"
+   "texlive-collection-latexrecommended"
+   "texlive-collection-fontsrecommended"
+   "texlive-babel-french"
+
+   ;; From "latexextra" collection.
+   "texlive-tabularray"
+   ;; From "binextra" collection.
+   "texlive-texdoc"))
+</pre>
+</div>
+
+<p>
+If you come across a document that does not compile in such a basic setting, the main difficulty is finding the missing packages. In this case, <code>pdflatex</code> and similar commands tend to fail with obscure error messages along the lines of:
+</p>
+
+<pre class="example" id="orgd4560da">
+doc.tex: File `tikz.sty' not found.
+doc.tex:7: Emergency stop.
+</pre>
+
+<p>
+or, for a missing font:
+</p>
+
+<pre class="example" id="org410cafc">
+kpathsea: Running mktexmf phvr7t
+! I can't find file `phvr7t'.
+</pre>
+
+<p>
+How do you determine what the missing package is? In the first case, you will find the answer by running:
+</p>
+
+<pre class="example" id="org44d1b80">
+$ guix search texlive tikz
+name: texlive-pgf
+version: 59745
+…
+</pre>
+
+<p>
+In the second case, <code>guix search</code> turns up nothing. Instead, you can search the TeX Live package database using the <code>tlmgr</code> command:
+</p>
+
+<pre class="example" id="orgcf82949">
+$ tlmgr info phvr7t
+tlmgr: cannot find package phvr7t, searching for other matches:
+
+Packages containing `phvr7t' in their title/description:
+
+Packages containing files matching `phvr7t':
+helvetic:
+        texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
+        texmf-dist/fonts/tfm/adobe/helvetic/phvr7tn.tfm
+        texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
+        texmf-dist/fonts/vf/adobe/helvetic/phvr7tn.vf
+tex4ht:
+        texmf-dist/tex4ht/ht-fonts/alias/adobe/helvetic/phvr7t.htf
+</pre>
+
+<p>
+The file is available in the TeX Live <code>helvetic</code> package, which is known in Guix as <code>texlive-helvetic</code>. Quite a ride, but you found it!
+</p>
+
+<hr />
+</div>
+</div>
+</div>

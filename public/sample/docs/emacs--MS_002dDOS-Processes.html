@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Subprocesses-on-MS_002dDOS">1. I.12.7 Subprocesses on MS-DOS ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--MS_002dDOS-and-MULE.html">International Support on MS-DOS</a>   Up: <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>
+</p>
+
+<p>
+<a id="MS_002dDOS-Processes"></a>
+</p>
+
+<hr />
+<div id="outline-container-Subprocesses-on-MS_002dDOS" class="outline-2">
+<h2 id="Subprocesses-on-MS_002dDOS"><span class="section-number-2">1.</span> I.12.7 Subprocesses on MS-DOS <a href="#Subprocesses-on-MS_002dDOS">¶</a></h2>
+<div class="outline-text-2" id="text-Subprocesses-on-MS_002dDOS">
+<p>
+Because MS-DOS is a single-process “operating system”, asynchronous subprocesses are not available. In particular, Shell mode and its variants do not work. Most Emacs features that use asynchronous subprocesses also don't work on MS-DOS, including Shell mode and GUD. When in doubt, try and see; commands that don't work output an error message saying that asynchronous processes aren't supported.
+</p>
+
+<p>
+Compilation under Emacs with M-x compile, searching files with M-x grep and displaying differences between files with M-x diff do work, by running the inferior processes synchronously. This means you cannot do any more editing until the inferior process finishes.
+</p>
+
+<p>
+Spell checking also works, by means of special support for synchronous invocation of the <code>ispell</code> program. This is slower than the asynchronous invocation on other platforms.
+</p>
+
+<p>
+Instead of the Shell mode, which doesn't work on MS-DOS, you can use the M-x eshell command. This invokes the Eshell package that implements a POSIX-like shell entirely in Emacs Lisp.
+</p>
+
+<p>
+By contrast, Emacs compiled as a native Windows application <b>does</b> support asynchronous subprocesses. See <a href="docs/emacs--Windows-Processes.html">Subprocesses on Windows 9X/ME and Windows NT/2K/XP/Vista/7/8/10</a>.
+</p>
+
+<p>
+Printing commands, such as <code>lpr-buffer</code> (see <a href="docs/emacs--Printing.html">Printing Hard Copies</a>) and <code>ps-print-buffer</code> (see <a href="docs/emacs--PostScript.html">PostScript Hardcopy</a>), work in MS-DOS by sending the output to one of the printer ports. See <a href="docs/emacs--MS_002dDOS-Printing.html">Printing and MS-DOS</a>.
+</p>
+
+<p>
+When you run a subprocess synchronously on MS-DOS, make sure the program terminates and does not try to read keyboard input. If the program does not terminate on its own, you will be unable to terminate it, because MS-DOS provides no general way to terminate a process. Pressing C-c or C-Break might sometimes help in these cases.
+</p>
+
+<p>
+Accessing files on other machines is not supported on MS-DOS. Other network-oriented commands such as sending mail, Web browsing, remote login, etc., don't work either, unless network access is built into MS-DOS with some network redirector.
+</p>
+
+<p>
+Dired on MS-DOS uses the <code>ls-lisp</code> package (see <a href="docs/emacs--ls-in-Lisp.html">Emulation of <code>ls</code> on MS-Windows</a>). Therefore, Dired on MS-DOS supports only some of the possible options you can mention in the <code>dired-listing-switches</code> variable. The options that work are ‘=-A=', ‘=-a=', ‘=-c=', ‘=-i=', ‘=-r=', ‘=-S=', ‘=-s=', ‘=-t=', and ‘=-u='.
+</p>
+
+<hr />
+</div>
+</div>

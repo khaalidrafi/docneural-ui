@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Quotation-Marks-1">1. 27.5 Quotation Marks ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (12)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Filling.html">Filling Text</a>   Previous: <a href="docs/emacs--Pages.html">Pages</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Quotation-Marks"></a>
+</p>
+
+<hr />
+<div id="outline-container-Quotation-Marks-1" class="outline-2">
+<h2 id="Quotation-Marks-1"><span class="section-number-2">1.</span> 27.5 Quotation Marks <a href="#Quotation-Marks-1">¶</a></h2>
+<div class="outline-text-2" id="text-Quotation-Marks-1">
+<p>
+One common way to quote is the typewriter convention, which quotes using straight apostrophes ‘='like this'<code>' or double-quotes ‘</code>"like this"<code>'. Another common way is the curved quote convention, which uses left and right single or double quotation marks =‘like this’</code> or <code>“like this”</code>. In text files, typewriter quotes are simple and portable; curved quotes are less ambiguous and typically look nicer.
+</p>
+
+<p>
+Electric Quote mode makes it easier to type curved quotes. As you type characters it optionally converts ` to <code>‘</code>, ' to <code>’</code>, `` to <code>“</code>, and '' to <code>”</code>. It's possible to change the default quotes listed above, by customizing the variable <code>electric-quote-chars</code>, a list of four characters, where the items correspond to the left single quote, the right single quote, the left double quote and the right double quote, respectively, whose default value is <code>'(?‘ ?’ ?“ ?”)</code>.
+</p>
+
+<p>
+You can customize the behavior of Electric Quote mode by customizing variables that control where it is active. It is active in text paragraphs if <code>electric-quote-paragraph</code> is non-<code>nil</code>, in programming-language comments if <code>electric-quote-comment</code> is non-<code>nil</code>, and in programming-language strings if <code>electric-quote-string</code> is non-<code>nil</code>. The default is <code>nil</code> for <code>electric-quote-string</code> and <code>t</code> for the other variables.
+</p>
+
+<p>
+You can also set the option <code>electric-quote-replace-double</code> to a non-<code>nil</code> value. Then, typing " inserts an appropriate curved double quote depending on context: <code>“</code> at the beginning of the buffer or after a line break, whitespace, opening parenthesis, or quote character, and <code>”</code> otherwise.
+</p>
+
+<p>
+Electric Quote mode is disabled by default. To toggle it in a single buffer, use M-x electric-quote-local-mode. To toggle it globally, type M-x electric-quote-mode. To suppress it for a single use, type C-q ` or C-q ' instead of ` or '. To insert a curved quote even when Electric Quote is disabled or inactive, you can type C-x 8 [ for <code>‘</code>, C-x 8 ] for <code>’</code>, C-x 8 { for <code>“</code>, and C-x 8 } for <code>”</code>. See <a href="docs/emacs--Inserting-Text.html">Inserting Text</a>. Note that the value of <code>electric-quote-chars</code> does not affect these key bindings, they are not key bindings of <code>electric-quote-mode</code> but bound in <code>global-map</code>.
+</p>
+
+<hr />
+</div>
+</div>

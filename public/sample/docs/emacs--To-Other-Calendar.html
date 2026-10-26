@@ -1,0 +1,60 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Converting-To-Other-Calendars">1. 33.9.2 Converting To Other Calendars ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--From-Other-Calendar.html">Converting From Other Calendars</a>   Previous: <a href="docs/emacs--Calendar-Systems.html">Supported Calendar Systems</a>   Up: <a href="docs/emacs--Other-Calendars.html">Conversion To and From Other Calendars</a>
+</p>
+
+<p>
+<a id="To-Other-Calendar"></a>
+</p>
+
+<hr />
+<div id="outline-container-Converting-To-Other-Calendars" class="outline-2">
+<h2 id="Converting-To-Other-Calendars"><span class="section-number-2">1.</span> 33.9.2 Converting To Other Calendars <a href="#Converting-To-Other-Calendars">¶</a></h2>
+<div class="outline-text-2" id="text-Converting-To-Other-Calendars">
+<p>
+The following commands describe the selected date (the date at point) in various other calendar systems:
+</p>
+
+<ul class="org-ul">
+<li><a id="index-p-_0028Calendar-mode_0029"></a>mouse-3 Other calendars <br />
+p o :: Display the selected date in various other calendars. (<code>calendar-print-other-dates</code>).</li>
+
+<li id="p c">Display ISO commercial calendar equivalent for selected day (<code>calendar-iso-print-date</code>).</li>
+
+<li id="p j">Display Julian date for selected day (<code>calendar-julian-print-date</code>).</li>
+
+<li id="p a">Display astronomical (Julian) day number for selected day (<code>calendar-astro-print-day-number</code>).</li>
+
+<li id="p h">Display Hebrew date for selected day (<code>calendar-hebrew-print-date</code>).</li>
+
+<li id="p i">Display Islamic date for selected day (<code>calendar-islamic-print-date</code>).</li>
+
+<li id="p f">Display French Revolutionary date for selected day (<code>calendar-french-print-date</code>).</li>
+
+<li id="p b">Display Bahá'í date for selected day (<code>calendar-bahai-print-date</code>).</li>
+
+<li id="p C">Display Chinese date for selected day (<code>calendar-chinese-print-date</code>).</li>
+
+<li id="p k">Display Coptic date for selected day (<code>calendar-coptic-print-date</code>).</li>
+
+<li id="p e">Display Ethiopic date for selected day (<code>calendar-ethiopic-print-date</code>).</li>
+
+<li id="p p">Display Persian date for selected day (<code>calendar-persian-print-date</code>).</li>
+
+<li id="p m">Display Mayan date for selected day (<code>calendar-mayan-print-date</code>).</li>
+</ul>
+
+<p>
+Otherwise, move point to the date you want to convert, then type the appropriate command starting with p from the table above. The prefix p is a mnemonic for “print”, since Emacs “prints” the equivalent date in the echo area. p o (<code>calendar-print-other-dates</code>) displays the date in all forms known to Emacs. You can also use mouse-3 and then choose Other calendars from the menu that appears. This displays the equivalent forms of the date in all the calendars Emacs understands, in the form of a menu. (Choosing an alternative from this menu doesn't actually do anything&#x2014;the menu is used only for display.)
+</p>
+
+<hr />
+</div>
+</div>

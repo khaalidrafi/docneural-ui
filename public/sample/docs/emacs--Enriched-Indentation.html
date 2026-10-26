@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Indentation-in-Enriched-Text">1. 27.14.5 Indentation in Enriched Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Enriched-Justification.html">Justification in Enriched Text</a>   Previous: <a href="docs/emacs--Enriched-Faces.html">Faces in Enriched Text</a>   Up: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>
+</p>
+
+<p>
+<a id="Enriched-Indentation"></a>
+</p>
+
+<hr />
+<div id="outline-container-Indentation-in-Enriched-Text" class="outline-2">
+<h2 id="Indentation-in-Enriched-Text"><span class="section-number-2">1.</span> 27.14.5 Indentation in Enriched Text <a href="#Indentation-in-Enriched-Text">¶</a></h2>
+<div class="outline-text-2" id="text-Indentation-in-Enriched-Text">
+<p>
+In Enriched mode, you can specify different amounts of indentation for the right or left margin of a paragraph or a part of a paragraph. These margins also affect fill commands such as M-q (see <a href="docs/emacs--Filling.html">Filling Text</a>).
+</p>
+
+<p>
+The Indentation submenu of Text Properties offers commands for specifying indentation:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-TAB-_0028Enriched-mode_0029"></a>=Indent More= </dt><dd>Indent the region by 4 columns (<code>increase-left-margin</code>). In Enriched mode, this command is also available on C-x TAB; if you supply a numeric argument, that says how many columns to add to the margin (a negative argument reduces the number of columns).</dd>
+
+<dt><code>Indent Less</code></dt><dd>Remove 4 columns of indentation from the region.</dd>
+
+<dt><code>Indent Right More</code></dt><dd>Make the text narrower by indenting 4 columns at the right margin.</dd>
+
+<dt><code>Indent Right Less</code></dt><dd>Remove 4 columns of indentation from the right margin.</dd>
+</dl>
+
+<p>
+The variable <code>standard-indent</code> specifies how many columns these commands should add to or subtract from the indentation. The default value is 4. The default right margin for Enriched mode is controlled by the variable <code>fill-column</code>, as usual.
+</p>
+
+<p>
+You can also type C-c [ (<code>set-left-margin</code>) and C-c ] (<code>set-right-margin</code>) to set the left and right margins. You can specify the margin width with a numeric argument; otherwise these commands prompt for a value via the minibuffer.
+</p>
+
+<p>
+The fill prefix, if any, works in addition to the specified paragraph indentation: C-x . does not include the specified indentation's whitespace in the new value for the fill prefix, and the fill commands look for the fill prefix after the indentation on each line. See <a href="docs/emacs--Fill-Prefix.html">The Fill Prefix</a>.
+</p>
+
+<hr />
+</div>
+</div>

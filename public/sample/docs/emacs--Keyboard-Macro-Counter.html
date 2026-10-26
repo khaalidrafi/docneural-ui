@@ -1,0 +1,87 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Keyboard-Macro-Counter">1. 19.3 The Keyboard Macro Counter ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Keyboard-Macro-Query.html">Executing Macros with Variations</a>   Previous: <a href="docs/emacs--Keyboard-Macro-Ring.html">The Keyboard Macro Ring</a>   Up: <a href="docs/emacs--Keyboard-Macros.html">Keyboard Macros</a>
+</p>
+
+<p>
+<a id="Keyboard-Macro-Counter"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Keyboard-Macro-Counter" class="outline-2">
+<h2 id="The-Keyboard-Macro-Counter"><span class="section-number-2">1.</span> 19.3 The Keyboard Macro Counter <a href="#The-Keyboard-Macro-Counter">¶</a></h2>
+<div class="outline-text-2" id="text-The-Keyboard-Macro-Counter">
+<p>
+Each keyboard macro has an associated counter, which is initialized to 0 when you start defining the macro. This <i>current counter</i> allows you to insert a number into the buffer that depends on the number of times the macro has been called. The counter is normally incremented each time its value is inserted into the buffer.
+</p>
+
+<p>
+In addition to the current counter, keyboard macros also maintain the <i>previous counter</i>, which records the value the current counter had last time it was incremented or set. Note that incrementing the current counter by zero, e.g., with C-u 0 C-x C-k C-i, also records the value of the current counter as the previous counter value.
+</p>
+
+<dl class="org-dl">
+<dt>F3</dt><dd>In a keyboard macro definition, insert the keyboard macro counter value in the buffer (<code>kmacro-start-macro-or-insert-counter</code>).</dd>
+
+<dt>C-x C-k C-i</dt><dd>Insert the keyboard macro counter value in the buffer (<code>kmacro-insert-counter</code>).</dd>
+
+<dt>C-x C-k C-c</dt><dd>Set the keyboard macro counter (<code>kmacro-set-counter</code>).</dd>
+
+<dt>C-x C-k C-a</dt><dd>Add the prefix arg to the keyboard macro counter (<code>kmacro-add-counter</code>).</dd>
+
+<dt>C-x C-k C-f</dt><dd>Specify the format for inserting the keyboard macro counter (<code>kmacro-set-format</code>).</dd>
+</dl>
+
+<p>
+When you are defining a keyboard macro, the command F3 (<code>kmacro-start-macro-or-insert-counter</code>) inserts the current value of the keyboard macro's counter into the buffer, and increments the counter by 1. (If you are not defining a macro, F3 begins a macro definition instead. See <a href="docs/emacs--Basic-Keyboard-Macro.html">Basic Use</a>.) You can use a numeric prefix argument to specify a different increment. If you just specify a C-u prefix, that inserts the previous counter value, and doesn't change the current value.
+</p>
+
+<p>
+As an example, let us show how the keyboard macro counter can be used to build a numbered list. Consider the following key sequence:
+</p>
+
+<pre class="example" id="org200ae30">
+F3 C-a F3 . SPC F4
+</pre>
+
+<p>
+As part of this keyboard macro definition, the string ‘=0. =' was inserted into the beginning of the current line. If you now move somewhere else in the buffer and type F4 to invoke the macro, the string ‘=1. =' is inserted at the beginning of that line. Subsequent invocations insert ‘=2. =', ‘=3. =', and so forth.
+</p>
+
+<p>
+The command C-x C-k C-i (<code>kmacro-insert-counter</code>) does the same thing as F3, but it can be used outside a keyboard macro definition. When no keyboard macro is being defined or executed, it inserts and increments the counter of the macro at the head of the keyboard macro ring.
+</p>
+
+<p>
+The command C-x C-k C-c (<code>kmacro-set-counter</code>) sets the current macro counter to the value of the numeric argument. If you use it inside the macro, it operates on each repetition of the macro. If you specify just C-u as the prefix, while executing the macro, that resets the counter to the value it had at the beginning of the current repetition of the macro (undoing any increments so far in this repetition).
+</p>
+
+<p>
+The command C-x C-k C-a (<code>kmacro-add-counter</code>) adds the prefix argument to the current macro counter. With just C-u as argument, it resets the counter to the last value inserted by any keyboard macro. (Normally, when you use this, the last insertion will be in the same macro and it will be the same counter.)
+</p>
+
+<p>
+The command C-x C-k C-f (<code>kmacro-set-format</code>) prompts for the format to use when inserting the macro counter. The default format is ‘=%d=', which means to insert the number in decimal without any padding. You can exit with empty minibuffer to reset the format to this default. You can specify any format string that the <code>format</code> function accepts and that makes sense with a single integer extra argument (see <a href="../elisp_html/Formatting-Strings.html#Formatting-Strings">Formatting Strings</a> in The Emacs Lisp Reference Manual). Do not put the format string inside double quotes when you insert it in the minibuffer.
+</p>
+
+<p>
+If you use this command while no keyboard macro is being defined or executed, the new format affects all subsequent macro definitions. Existing macros continue to use the format in effect when they were defined. If you set the format while defining a keyboard macro, this affects the macro being defined from that point on, but it does not affect subsequent macros. Execution of the macro will, at each step, use the format in effect at that step during its definition. Changes to the macro format during execution of a macro, like the corresponding changes during its definition, have no effect on subsequent macros.
+</p>
+
+<p>
+The format set by C-x C-k C-f does not affect insertion of numbers stored in registers.
+</p>
+
+<p>
+If you use a register as a counter, incrementing it on each repetition of the macro, that accomplishes the same thing as a keyboard macro counter. See <a href="docs/emacs--Number-Registers.html">Keeping Numbers in Registers</a>. For most purposes, it is simpler to use a keyboard macro counter.
+</p>
+
+<hr />
+</div>
+</div>

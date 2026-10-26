@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays">1. 14.3 “Cut and Paste” Operations on Graphical Displays ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Accumulating-Text.html">Accumulating Text</a>   Previous: <a href="docs/emacs--Yanking.html">Yanking</a>   Up: <a href="docs/emacs--Killing.html">Killing and Moving Text</a>
+</p>
+
+<p>
+<a id="Cut-and-Paste"></a>
+</p>
+
+<hr />
+<div id="outline-container-g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays" class="outline-2">
+<h2 id="g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays"><span class="section-number-2">1.</span> 14.3 “Cut and Paste” Operations on Graphical Displays <a href="#g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays">¶</a></h2>
+<div class="outline-text-2" id="text-g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays">
+<p>
+In most graphical desktop environments, you can transfer data (usually text) between different applications using a system facility called the <i>clipboard</i>. On X, two other similar facilities are available: the primary selection and the secondary selection. When Emacs is run on a graphical display, its kill and yank commands integrate with these facilities, so that you can easily transfer text between Emacs and other graphical applications.
+</p>
+
+<p>
+By default, Emacs uses UTF-8 as the coding system for inter-program text transfers. If you find that the pasted text is not what you expected, you can specify another coding system by typing C-x RET x or C-x RET X. You can also request a different data type by customizing <code>x-select-request-type</code>. See <a href="docs/emacs--Communication-Coding.html">Coding Systems for Interprocess Communication</a>.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Clipboard.html">Using the Clipboard</a></li>
+<li><a href="docs/emacs--Primary-Selection.html">Cut and Paste with Other Window Applications</a></li>
+<li><a href="docs/emacs--Secondary-Selection.html">Secondary Selection</a></li>
+</ul>
+</div>
+</div>

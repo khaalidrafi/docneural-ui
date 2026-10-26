@@ -1,0 +1,47 @@
+:PROPERTIES:
+:ID: emacs--Dired
+:END:
+#+filetags: :emacs:
+#+title: Dired
+
+Next: [[id:emacs--Calendar_002fDiary][The Calendar and the Diary]]   Previous: [[id:emacs--Abbrevs][Abbrevs]]   Up: [[id:emacs--index][The Emacs Editor]]
+
+<<Dired>>
+
+--------------
+
+** 32 Dired, the Directory Editor [[#Dired_002c-the-Directory-Editor][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Dired_002c-the-Directory-Editor
+:CLASS: chapter
+:END:
+Dired makes an Emacs buffer containing a listing of a directory, and optionally some of its subdirectories as well. You can use the normal Emacs commands to move around in this buffer, and special Dired commands to operate on the listed files. Dired works with both local and remote directories.
+
+The Dired buffer is normally read-only, and inserting text in it is not allowed (however, the Wdired mode allows that, see [[id:emacs--Wdired][Editing the Dired Buffer]]). Ordinary printing characters such as d and x are redefined for special Dired commands. Some Dired commands /mark/ or /flag/ the /current file/ (that is, the file on the current line); other commands operate on the marked files or on the flagged files. You first mark certain files in order to operate on all of them with one command.
+
+The Dired-X package provides various extra features for Dired mode. See [[../dired-x_html/index.html#Top][Dired-X]] in Dired Extra User's Manual.
+
+You can also view a list of files in a directory with C-x C-d (=list-directory=). Unlike Dired, this command does not allow you to operate on the listed files. See [[id:emacs--Directories][File Directories]].
+
+- [[id:emacs--Dired-Enter][Entering Dired]]
+- [[id:emacs--Dired-Navigation][Navigation in the Dired Buffer]]
+- [[id:emacs--Dired-Deletion][Deleting Files with Dired]]
+- [[id:emacs--Flagging-Many-Files][Flagging Many Files at Once]]
+- [[id:emacs--Dired-Visiting][Visiting Files in Dired]]
+- [[id:emacs--Marks-vs-Flags][Dired Marks vs. Flags]]
+- [[id:emacs--Operating-on-Files][Operating on Files]]
+- [[id:emacs--Shell-Commands-in-Dired][Shell Commands in Dired]]
+- [[id:emacs--Shell-Command-Guessing][Shell Command Guessing]]
+- [[id:emacs--Transforming-File-Names][Transforming File Names in Dired]]
+- [[id:emacs--Comparison-in-Dired][File Comparison with Dired]]
+- [[id:emacs--Subdirectories-in-Dired][Subdirectories in Dired]]
+- [[id:emacs--Subdir-Switches][Subdirectory Switches in Dired]]
+- [[id:emacs--Subdirectory-Motion][Moving Over Subdirectories]]
+- [[id:emacs--Hiding-Subdirectories][Hiding Subdirectories]]
+- [[id:emacs--Dired-Updating][Updating the Dired Buffer]]
+- [[id:emacs--Dired-and-Find][Dired and =find=]]
+- [[id:emacs--Wdired][Editing the Dired Buffer]]
+- [[id:emacs--Image_002dDired][Viewing Image Thumbnails in Dired]]
+- [[id:emacs--Misc-Dired-Features][Other Dired Features]]
+
+--------------

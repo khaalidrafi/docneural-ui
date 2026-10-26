@@ -1,0 +1,171 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Setting-Tags-1">1. 6.2 Setting Tags ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (53)</a></li>
+<li><a href="#section-1">1.0.2. (54)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Setting-Tags"></a>
+Next: <a href="docs/org--Tag-Hierarchy.html">Tag Hierarchy</a>, Previous: <a href="docs/org--Tag-Inheritance.html">Tag Inheritance</a>, Up: <a href="docs/org--Tags.html">Tags</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Setting-Tags-1" class="outline-2">
+<h2 id="Setting-Tags-1"><span class="section-number-2">1.</span> 6.2 Setting Tags <a href="#Setting-Tags-1">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-Tags-1">
+<p>
+Tags can simply be typed into the buffer at the end of a headline. After a colon, M-TAB offers completion on tags. There is also a special command for inserting tags:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dq-1"></a>C-c C-q (<code>org-set-tags-command</code>) </dt><dd>Enter new tags for the current headline. Org mode either offers completion or a special single-key interface for setting tags, see below. After pressing RET, the tags are inserted and aligned to <code>org-tags-column</code>. When called with a C-u prefix, all tags in the current buffer are aligned to that column, just to make things look nice. Tags are automatically realigned after promotion, demotion, and TODO state changes (see <a href="docs/org--TODO-Basics.html">Basic TODO Functionality</a>).</dd>
+
+<dt><a id="index-C_002dc-C_002dc-7"></a>C-c C-c (<code>org-set-tags-command</code>) </dt><dd>When point is in a headline, this does the same as C-c C-q.</dd>
+</dl>
+
+<p>
+Org supports tag insertion based on a <i>list of tags</i>. By default, this list is constructed dynamically, containing all tags currently used in the buffer. You may also globally specify a hard list of tags with the variable <code>org-tag-alist</code>. Finally, you can set the default tags for a given file using the ‘=TAGS=' keyword, like
+</p>
+
+<pre class="example" id="orgecd5276">
+#+TAGS: @work @home @tennisclub
+#+TAGS: laptop car pc sailboat
+</pre>
+
+<p>
+If you have globally defined your preferred set of tags using the variable <code>org-tag-alist</code>, but would like to use a dynamic tag list in a specific file, add an empty ‘=TAGS=' keyword to that file:
+</p>
+
+<pre class="example" id="org5677948">
+#+TAGS:
+</pre>
+
+<p>
+If you have a preferred set of tags that you would like to use in every file, in addition to those defined on a per-file basis by ‘=TAGS=' keyword, then you may specify a list of tags with the variable <code>org-tag-persistent-alist</code>. You may turn this off on a per-file basis by adding a ‘=STARTUP=' keyword to that file:
+</p>
+
+<pre class="example" id="org7d9ccda">
+#+STARTUP: noptag
+</pre>
+
+<p>
+By default, Org mode uses the standard minibuffer completion facilities for entering tags. However, it also implements another, quicker, tag selection method called <i>fast tag selection</i>. This allows you to select and deselect tags with just a single key press. For this to work well you should assign unique letters to most of your commonly used tags. You can do this globally by configuring the variable <code>org-tag-alist</code> in your Emacs init file. For example, you may find the need to tag many items in different files with ‘=@home='. In this case you can set something like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-tag-alist '(("@work" . ?w) ("@home" . ?h) ("laptop" . ?l)))
+</pre>
+</div>
+
+<p>
+If the tag is only relevant to the file you are working on, then you can instead set the ‘=TAGS=' keyword as:
+</p>
+
+<pre class="example" id="org594ff36">
+#+TAGS: @work(w)  @home(h)  @tennisclub(t)  laptop(l)  pc(p)
+</pre>
+
+<p>
+The tags interface shows the available tags in a splash window. If you want to start a new line after a specific tag, insert ‘=\n=' into the tag list
+</p>
+
+<pre class="example" id="org3945352">
+#+TAGS: @work(w) @home(h) @tennisclub(t) \n laptop(l) pc(p)
+</pre>
+
+<p>
+or write them in two lines:
+</p>
+
+<pre class="example" id="org47e2bba">
+#+TAGS: @work(w)  @home(h)  @tennisclub(t)
+#+TAGS: laptop(l)  pc(p)
+</pre>
+
+<p>
+You can also group together tags that are mutually exclusive by using braces, as in:
+</p>
+
+<pre class="example" id="org8576d1c">
+#+TAGS: { @work(w)  @home(h)  @tennisclub(t) }  laptop(l)  pc(p)
+</pre>
+
+<p>
+you indicate that at most one of ‘=@work=', ‘=@home=', and ‘=@tennisclub=' should be selected. Multiple such groups are allowed.
+</p>
+
+<p>
+Do not forget to press C-c C-c with point in one of these lines to activate any changes.
+</p>
+
+<p>
+To set these mutually exclusive groups in the variable <code>org-tags-alist</code>, you must use the dummy tags <code>:startgroup</code> and <code>:endgroup</code> instead of the braces. Similarly, you can use <code>:newline</code> to indicate a line break. The previous example would be set globally by the following configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-tag-alist '((:startgroup . nil)
+                      ("@work" . ?w) ("@home" . ?h)
+                      ("@tennisclub" . ?t)
+                      (:endgroup . nil)
+                      ("laptop" . ?l) ("pc" . ?p)))
+</pre>
+</div>
+
+<p>
+If at least one tag has a selection key then pressing C-c C-c automatically presents you with a special interface, listing inherited tags, the tags of the current headline, and a list of all valid tags with corresponding keys.
+</p>
+
+<p>
+Pressing keys assigned to tags adds or removes them from the list of tags in the current line. Selecting a tag in a group of mutually exclusive tags turns off any other tag from that group.
+</p>
+
+<p>
+In this interface, you can also use the following special keys:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-TAB-5"></a>TAB </dt><dd>Enter a tag in the minibuffer, even if the tag is not in the predefined list. You can complete on all tags present in the buffer and globally pre-defined tags from <code>org-tag-alist</code> and <code>org-tag-persistent-alist</code>. You can also add several tags: just separate them with a comma.</dd>
+
+<dt><a id="index-SPC"></a>SPC </dt><dd>Clear all tags for this line.</dd>
+
+<dt><a id="index-RET-2"></a>RET </dt><dd>Accept the modified set.</dd>
+
+<dt><a id="index-C_002dg"></a>C-g </dt><dd>Abort without installing changes.</dd>
+
+<dt><a id="index-q"></a>q </dt><dd>If q is not assigned to a tag, it aborts like C-g.</dd>
+
+<dt><a id="index-_0021"></a>! </dt><dd>Turn off groups of mutually exclusive tags. Use this to (as an exception) assign several tags from such a group.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-8"></a>C-c </dt><dd>Toggle auto-exit after the next change (see below). If you are using expert mode, the first C-c displays the selection window.</dd>
+</dl>
+
+<p>
+This method lets you assign tags to a headline with very few keys. With the above setup, you could clear the current tags and set ‘=@home=', ‘=laptop=' and ‘=pc=' tags with just the following keys: C-c C-c SPC h l p RET. Switching from ‘=@home=' to ‘=@work=' would be done with C-c C-c w RET or alternatively with C-c C-c C-c w. Adding the non-predefined tag ‘=sarah=' could be done with C-c C-c TAB s a r a h RET.
+</p>
+
+<p>
+If you find that most of the time you need only a single key press to modify your list of tags, set the variable <code>org-fast-tag-selection-single-key</code>. Then you no longer have to press RET to exit fast tag selection&#x2014;it exits after the first change. If you then occasionally need more keys, press C-c to turn off auto-exit for the current tag selection process (in effect: start selection with C-c C-c C-c instead of C-c C-c). If you set the variable to the value <code>expert</code>, the special window is not even shown for single-key tag selection, it comes up only when you press an extra C-c.
+</p>
+
+<p>
+The number of tags displayed in the fast tag selection interface is limited by <code>org-fast-tag-selection-maximum-tags</code> to avoid running out of keyboard keys. You can customize this variable.
+</p>
+
+<hr />
+</div>
+</div>

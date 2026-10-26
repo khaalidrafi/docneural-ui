@@ -1,0 +1,95 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Running-Commands-by-Name">1. 11 Running Commands by Name ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Help.html">Help</a>   Previous: <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="M_002dx"></a>
+</p>
+
+<hr />
+<div id="outline-container-Running-Commands-by-Name" class="outline-2">
+<h2 id="Running-Commands-by-Name"><span class="section-number-2">1.</span> 11 Running Commands by Name <a href="#Running-Commands-by-Name">¶</a></h2>
+<div class="outline-text-2" id="text-Running-Commands-by-Name">
+<p>
+Every Emacs command has a name that you can use to run it. For convenience, many commands also have key bindings. You can run those commands by typing the keys, or run them by name. Most Emacs commands have no key bindings, so the only way to run them is by name. (See <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>, for how to set up key bindings.)
+</p>
+
+<p>
+By convention, a command name consists of one or more words, separated by hyphens; for example, <code>auto-fill-mode</code> or <code>manual-entry</code>. Command names mostly use complete English words to make them easier to remember.
+</p>
+
+<p>
+To run a command by name, start with M-x, type the command name, then terminate it with RET. M-x uses the minibuffer to read the command name. The string ‘=M-x=' appears at the beginning of the minibuffer as a <i>prompt</i> to remind you to enter a command name to be run. RET exits the minibuffer and runs the command. See <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>, for more information on the minibuffer.
+</p>
+
+<p>
+You can use completion to enter the command name. For example, to invoke the command <code>forward-char</code>, you can type
+</p>
+
+<pre class="example" id="orgc10991f">
+M-x forward-char RET
+</pre>
+
+<p>
+or
+</p>
+
+<pre class="example" id="org2db3848">
+M-x forw TAB c RET
+</pre>
+
+<p>
+Note that <code>forward-char</code> is the same command that you invoke with the key C-f. The existence of a key binding does not stop you from running the command by name.
+</p>
+
+<p>
+When M-x completes on commands, it ignores the commands that were declared <i>obsolete</i> in any previous major version of Emacs; for these, you will have to type their full name. Commands that were marked obsolete in the current version of Emacs are listed. (Obsolete commands are those for which newer, better alternatives exist, and which are slated for removal in some future Emacs release.)
+</p>
+
+<p>
+In addition, M-x completion can exclude commands that are not relevant to, and generally cannot work with, the current buffer's major mode (see <a href="docs/emacs--Major-Modes.html">Major Modes</a>) and minor modes (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>). By default, no commands are excluded, but you can customize the option <code>read-extended-command-predicate</code> to exclude those irrelevant commands from completion results.
+</p>
+
+<p>
+Conversely, Emacs can exclude all commands except those that are particularly relevant to the current buffer. The M-S-x (that's “meta shift x”) command works just like M-x, but instead of listing all (or most) of the commands Emacs knows about, it will only list the commands that have been marked as “belonging” to the current major mode, or any enabled minor modes.
+</p>
+
+<p>
+To cancel the M-x and not run a command, type C-g instead of entering the command name. This takes you back to command level.
+</p>
+
+<p>
+To pass a numeric argument to the command you are invoking with M-x, specify the numeric argument before M-x. The argument value appears in the prompt while the command name is being read, and finally M-x passes the argument to that command. For example, to pass the numeric argument of 42 to the command <code>forward-char</code> you can type C-u 42 M-x forward-char RET.
+</p>
+
+<p>
+When the command you run with M-x has a key binding, Emacs mentions this in the echo area after running the command. For example, if you type M-x forward-word, the message says that you can run the same command by typing M-f. You can turn off these messages by setting the variable <code>suggest-key-bindings</code> to <code>nil</code>. The value of <code>suggest-key-bindings</code> can also be a number, in which case Emacs will show the binding for that many seconds before removing it from display. The default behavior is to display the binding for 2 seconds.
+</p>
+
+<p>
+Additionally, when <code>suggest-key-bindings</code> is non-<code>nil</code>, the completion list of M-x shows equivalent key bindings for all commands that have them.
+</p>
+
+<p>
+Commands that don't have key bindings, can still be invoked after typing less than their full name at the ‘=M-x=' prompt. Emacs mentions such shorthands in the echo area if they are significantly shorter than the full command name, and <code>extended-command-suggest-shorter</code> is non-<code>nil</code>. The setting of <code>suggest-key-bindings</code> affects these hints as well.
+</p>
+
+<p>
+In this manual, when we speak of running a command by name, we often omit the RET that terminates the name. Thus we might say M-x auto-fill-mode rather than M-x auto-fill-mode RET. We mention the RET only for emphasis, such as when the command is followed by arguments.
+</p>
+
+<p>
+M-x works by running the command <code>execute-extended-command</code>, which is responsible for reading the name of another command and invoking it.
+</p>
+
+<hr />
+</div>
+</div>

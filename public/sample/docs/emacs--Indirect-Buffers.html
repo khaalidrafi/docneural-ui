@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Indirect-Buffers-1">1. 21.6 Indirect Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Buffer-Convenience.html">Convenience Features and Customization of Buffer Handling</a>   Previous: <a href="docs/emacs--Several-Buffers.html">Operating on Several Buffers</a>   Up: <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>
+</p>
+
+<p>
+<a id="Indirect-Buffers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Indirect-Buffers-1" class="outline-2">
+<h2 id="Indirect-Buffers-1"><span class="section-number-2">1.</span> 21.6 Indirect Buffers <a href="#Indirect-Buffers-1">¶</a></h2>
+<div class="outline-text-2" id="text-Indirect-Buffers-1">
+<p>
+An <i>indirect buffer</i> shares the text of some other buffer, which is called the <i>base buffer</i> of the indirect buffer. In some ways it is a buffer analogue of a symbolic link between files.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-make_002dindirect_002dbuffer"></a>M-x make-indirect-buffer RET <code>base-buffer</code> RET <code>indirect-name</code> RET </dt><dd>Create an indirect buffer named <code>indirect-name</code> with base buffer <code>base-buffer</code>.</dd>
+
+<dt>M-x clone-indirect-buffer RET</dt><dd>Create an indirect buffer that is a twin copy of the current buffer.</dd>
+
+<dt><a id="index-C_002dx-4-c"></a>C-x 4 c </dt><dd>Create an indirect buffer that is a twin copy of the current buffer, and select it in another window (<code>clone-indirect-buffer-other-window</code>).</dd>
+</dl>
+
+<p>
+The text of the indirect buffer is always identical to the text of its base buffer; changes made by editing either one are visible immediately in the other. “Text” here includes both the characters and their text properties. But in all other respects, the indirect buffer and its base buffer are completely separate. They can have different names, different values of point, different narrowing, different markers, different overlays, different major modes, and different local variables.
+</p>
+
+<p>
+An indirect buffer cannot visit a file, but its base buffer can. If you try to save the indirect buffer, that actually works by saving the base buffer. Killing the base buffer effectively kills the indirect buffer, but killing an indirect buffer has no effect on its base buffer.
+</p>
+
+<p>
+One way to use indirect buffers is to display multiple views of an outline. See <a href="docs/emacs--Outline-Views.html">Viewing One Outline in Multiple Views</a>.
+</p>
+
+<p>
+A quick and handy way to make an indirect buffer is with the command C-x 4 c (<code>clone-indirect-buffer-other-window</code>). It creates and selects an indirect buffer whose base buffer is the current buffer. With a numeric argument, it prompts for the name of the indirect buffer; otherwise it uses the name of the current buffer, with a ‘=&lt;==n==&gt;=' suffix added.
+</p>
+
+<p>
+The more general way to make an indirect buffer is with the command M-x make-indirect-buffer. It creates an indirect buffer named <code>indirect-name</code> from a buffer <code>base-buffer</code>, prompting for both using the minibuffer.
+</p>
+
+<p>
+The functions that create indirect buffers run the hook <code>clone-indirect-buffer-hook</code> after creating the indirect buffer. When this hook runs, the newly created indirect buffer is the current buffer.
+</p>
+
+<p>
+Note: When a modification is made to the text of a buffer, the modification hooks are run only in the base buffer, because most of the functions on those hooks are not prepared to work correctly in indirect buffers. So if you need a modification hook function in an indirect buffer, you need to manually add that function to the hook <i>in the base buffer</i> and then make the function operate in the desired indirect buffer.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,80 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Basic-TODO-Functionality">1. 5.1 Basic TODO Functionality ¶</a></li>
+<li><a href="#org3bb52b1">2. <span class="todo TODO">TODO</span> Write letter to Sam Fortune</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="TODO-Basics"></a>
+Next: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>, Up: <a href="docs/org--TODO-Items.html">TODO Items</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Basic-TODO-Functionality" class="outline-2">
+<h2 id="Basic-TODO-Functionality"><span class="section-number-2">1.</span> 5.1 Basic TODO Functionality <a href="#Basic-TODO-Functionality">¶</a></h2>
+<div class="outline-text-2" id="text-Basic-TODO-Functionality">
+<p>
+Any headline becomes a TODO item when it starts with the word ‘=TODO=', for example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org3bb52b1" class="outline-2">
+<h2 id="org3bb52b1"><span class="section-number-2">2.</span> <span class="todo TODO">TODO</span> Write letter to Sam Fortune</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+The most important commands to work with TODO entries are:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dt"></a>C-c C-t (<code>org-todo</code>) </dt><dd><p>
+Rotate the TODO state of the current item among
+</p>
+
+<pre class="example" id="orgd0e86ab">
+,-&gt; (unmarked) -&gt; TODO -&gt; DONE --.
+'--------------------------------'
+</pre>
+
+<p>
+If TODO keywords have fast access keys (see <a href="docs/org--Fast-access-to-TODO-states.html">Fast access to TODO states</a>), prompt for a TODO keyword through the fast selection interface; this is the default behavior when <code>org-use-fast-todo-selection</code> is non-<code>nil</code>.
+</p>
+
+<p>
+The same state changing can also be done “remotely” from the agenda buffer with the t command key (see <a href="docs/org--Agenda-Commands.html">Commands in the Agenda Buffer</a>).
+</p></dd>
+
+<dt><a id="index-S_002dRIGHT-3"></a>S-RIGHT S-LEFT </dt><dd>Select the following/preceding TODO state, similar to cycling. Useful mostly if more than two TODO states are possible (see <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>). See also <a href="docs/org--Conflicts.html">Packages that conflict with Org mode</a> for a discussion of the interaction with shift-selection. See also the variable <code>org-treat-S-cursor-todo-selection-as-state-change</code>.</dd>
+
+<dt><a id="index-C_002dc-_002f-t"></a>C-c / t (<code>org-show-todo-tree</code>) </dt><dd>View TODO items in a <i>sparse tree</i> (see <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>). Folds the entire buffer, but shows all TODO items&#x2014;with a not-DONE state&#x2014;and the headings hierarchy above them. With a prefix argument, or by using C-c / T, search for a specific TODO. You are prompted for the keyword, and you can also give a list of keywords like ‘=KWD1|KWD2|&#x2026;=' to list entries that match any one of these keywords. With a numeric prefix argument N, show the tree for the Nth keyword in the variable <code>org-todo-keywords</code>. With two prefix arguments, find all TODO states, both un-done and done.</dd>
+
+<dt><a id="index-t-_0028Agenda-dispatcher_0029"></a>M-x org-agenda t (<code>org-todo-list</code>) </dt><dd>Show the global TODO list. Collects the TODO items (with not-DONE states) from all agenda files (see <a href="docs/org--Agenda-Views.html">Agenda Views</a>) into a single buffer. The new buffer is in Org Agenda mode, which provides commands to examine and manipulate the TODO entries from the new buffer (see <a href="docs/org--Agenda-Commands.html">Commands in the Agenda Buffer</a>). See <a href="docs/org--Global-TODO-list.html">The global TODO list</a> for more information.</dd>
+
+<dt><a id="index-S_002dM_002dRET"></a>S-M-RET (<code>org-insert-todo-heading</code>) </dt><dd>Insert a new TODO entry below the current one.</dd>
+</dl>
+
+<p>
+Changing a TODO state can also trigger tag changes. See the docstring of the option <code>org-todo-state-tags-triggers</code> for details.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>, Up: <a href="docs/org--TODO-Items.html">TODO Items</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

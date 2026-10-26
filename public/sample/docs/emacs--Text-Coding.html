@@ -1,0 +1,77 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Specifying-a-Coding-System-for-File-Text">1. 24.9 Specifying a Coding System for File Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Communication-Coding.html">Coding Systems for Interprocess Communication</a>   Previous: <a href="docs/emacs--Output-Coding.html">Choosing Coding Systems for Output</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Text-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Specifying-a-Coding-System-for-File-Text" class="outline-2">
+<h2 id="Specifying-a-Coding-System-for-File-Text"><span class="section-number-2">1.</span> 24.9 Specifying a Coding System for File Text <a href="#Specifying-a-Coding-System-for-File-Text">¶</a></h2>
+<div class="outline-text-2" id="text-Specifying-a-Coding-System-for-File-Text">
+<p>
+In cases where Emacs does not automatically choose the right coding system for a file's contents, you can use these commands to specify one:
+</p>
+
+<dl class="org-dl">
+<dt>C-x RET f <code>coding</code> RET</dt><dd>Use coding system <code>coding</code> to save or revisit the file in the current buffer (<code>set-buffer-file-coding-system</code>).</dd>
+
+<dt>C-x RET c <code>coding</code> RET</dt><dd>Specify coding system <code>coding</code> for the immediately following command (<code>universal-coding-system-argument</code>).</dd>
+
+<dt>C-x RET r <code>coding</code> RET</dt><dd>Revisit the current file using the coding system <code>coding</code> (<code>revert-buffer-with-coding-system</code>).</dd>
+
+<dt>M-x recode-region RET <code>right</code> RET <code>wrong</code> RET</dt><dd>Convert a region that was decoded using coding system <code>wrong</code>, decoding it using coding system <code>right</code> instead.</dd>
+</dl>
+
+<p>
+The command C-x RET f (<code>set-buffer-file-coding-system</code>) sets the file coding system for the current buffer (i.e., the coding system to use when saving or reverting the file). You specify which coding system using the minibuffer. You can also invoke this command by clicking with mouse-3 on the coding system indicator in the mode line (see <a href="docs/emacs--Mode-Line.html">The Mode Line</a>).
+</p>
+
+<p>
+If you specify a coding system that cannot handle all the characters in the buffer, Emacs will warn you about the troublesome characters, and ask you to choose another coding system, when you try to save the buffer (see <a href="docs/emacs--Output-Coding.html">Choosing Coding Systems for Output</a>).
+</p>
+
+<p>
+You can also use this command to specify the end-of-line conversion (see <a href="docs/emacs--Coding-Systems.html">end-of-line conversion</a>) for encoding the current buffer. For example, C-x RET f dos RET will cause Emacs to save the current buffer's text with DOS-style carriage return followed by linefeed line endings.
+</p>
+
+<p>
+Another way to specify the coding system for a file is when you visit the file. First use the command C-x RET c (<code>universal-coding-system-argument</code>); this command uses the minibuffer to read a coding system name. After you exit the minibuffer, the specified coding system is used for <i>the immediately following command</i>.
+</p>
+
+<p>
+So if the immediately following command is C-x C-f, for example, it reads the file using that coding system (and records the coding system for when you later save the file). Or if the immediately following command is C-x C-w, it writes the file using that coding system. When you specify the coding system for saving in this way, instead of with C-x RET f, there is no warning if the buffer contains characters that the coding system cannot handle.
+</p>
+
+<p>
+Other file commands affected by a specified coding system include C-x i and C-x C-v, as well as the other-window variants of C-x C-f. C-x RET c also affects commands that start subprocesses, including M-x shell (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>). If the immediately following command does not use the coding system, then C-x RET c ultimately has no effect.
+</p>
+
+<p>
+An easy way to visit a file with no conversion is with the M-x find-file-literally command. See <a href="docs/emacs--Visiting.html">Visiting Files</a>.
+</p>
+
+<p>
+The default value of the variable <code>buffer-file-coding-system</code> specifies the choice of coding system to use when you create a new file. It applies when you find a new file, and when you create a buffer and then save it in a file. Selecting a language environment typically sets this variable to a good choice of default coding system for that language environment.
+</p>
+
+<p>
+If you visit a file with a wrong coding system, you can correct this with C-x RET r (<code>revert-buffer-with-coding-system</code>). This visits the current file again, using a coding system you specify.
+</p>
+
+<p>
+If a piece of text has already been inserted into a buffer using the wrong coding system, you can redo the decoding of it using M-x recode-region. This prompts you for the proper coding system, then for the wrong coding system that was actually used, and does the conversion. It first encodes the region using the wrong coding system, then decodes it again using the proper coding system.
+</p>
+
+<hr />
+</div>
+</div>

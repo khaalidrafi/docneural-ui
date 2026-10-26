@@ -1,0 +1,96 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Fonts"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Elm-Packages.html">Elm Packages</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Fonts-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="fonts"></a>22.8.14 Fonts<br />
+<div class="outline-text-5" id="text-fonts">
+<p>
+<a id="index-fonts-1"></a>
+For fonts that are in general not installed by a user for typesetting purposes, or that are distributed as part of a larger software package, we rely on the general packaging rules for software; for instance, this applies to the fonts delivered as part of the X.Org system or fonts that are part of TeX Live.
+</p>
+
+<p>
+To make it easier for a user to search for fonts, names for other packages containing only fonts are constructed as follows, independently of the upstream package name.
+</p>
+
+<p>
+The name of a package containing only one font family starts with <code>font-</code>; it is followed by the foundry name and a dash <code>-</code> if the foundry is known, and the font family name, in which spaces are replaced by dashes (and as usual, all upper case letters are transformed to lower case). For example, the Gentium font family by SIL is packaged under the name <code>font-sil-gentium</code>.
+</p>
+
+<p>
+For a package containing several font families, the name of the collection is used in the place of the font family name. For instance, the Liberation fonts consist of three families, Liberation Sans, Liberation Serif and Liberation Mono. These could be packaged separately under the names <code>font-liberation-sans</code> and so on; but as they are distributed together under a common name, we prefer to package them together as <code>font-liberation</code>.
+</p>
+
+<p>
+In the case where several formats of the same font family or font collection are packaged separately, a short form of the format, prepended by a dash, is added to the package name. We use <code>-ttf</code> for TrueType fonts, <code>-otf</code> for OpenType fonts and <code>-type1</code> for PostScript Type 1 fonts.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Elm-Packages.html">Elm Packages</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Early-Init-File">1. 51.4.6 The Early Init File ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Init-Non_002dASCII.html">Non-ASCII Characters in Init Files</a>   Up: <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>
+</p>
+
+<p>
+<a id="Early-Init-File"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Early-Init-File" class="outline-2">
+<h2 id="The-Early-Init-File"><span class="section-number-2">1.</span> 51.4.6 The Early Init File <a href="#The-Early-Init-File">¶</a></h2>
+<div class="outline-text-2" id="text-The-Early-Init-File">
+<p>
+Most customizations for Emacs should be put in the normal init file. See <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>. However, it is sometimes necessary to have customizations take effect during Emacs startup earlier than the normal init file is processed. Such customizations can be put in the early init file, <code>~/.config/emacs/early-init.el</code> or <code>~/.emacs.d/early-init.el</code>. This file is loaded before the package system and GUI is initialized, so in it you can customize variables that affect the package initialization process, such as <code>package-enable-at-startup</code>, <code>package-load-list</code>, and <code>package-user-dir</code>. Note that variables like <code>package-archives</code> which only affect the installation of new packages, and not the process of making already-installed packages available, may be customized in the regular init file. See <a href="docs/emacs--Package-Installation.html">Package Installation</a>.
+</p>
+
+<p>
+We do not recommend that you move into <code>early-init.el</code> customizations that can be left in the normal init files. That is because the early init file is read before the GUI is initialized, so customizations related to GUI features will not work reliably in <code>early-init.el</code>. By contrast, the normal init files are read after the GUI is initialized. If you must have customizations in the early init file that rely on GUI features, make them run off hooks provided by the Emacs startup, such as <code>window-setup-hook</code> or <code>tty-setup-hook</code>. See <a href="docs/emacs--Hooks.html">Hooks</a>.
+</p>
+
+<p>
+For more information on the early init file, see <a href="../elisp_html/Init-File.html#Init-File">Init File</a> in The Emacs Lisp Reference Manual.
+</p>
+</div>
+</div>

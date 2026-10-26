@@ -1,0 +1,288 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#source-tree-structure">1.0.1. 22.7 Source Tree Structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Source-Tree-Structure"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>, Previous: <a href="docs/guix--Alternative-Setups.html">Alternative Setups</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Source-Tree-Structure-1"></a>
+</p>
+</div>
+<div id="outline-container-source-tree-structure" class="outline-4">
+<h4 id="source-tree-structure"><span class="section-number-4">1.0.1.</span> 22.7 Source Tree Structure</h4>
+<div class="outline-text-4" id="text-source-tree-structure">
+<p>
+<a id="index-structure_002c-of-the-source-tree"></a>
+If you're willing to contribute to Guix beyond packages, or if you'd like to learn how it all fits together, this section provides a guided tour in the code base that you may find useful.
+</p>
+
+<p>
+Overall, the Guix source tree contains almost exclusively Guile <i>modules</i>, each of which can be seen as an independent library (see <a href="https://www.gnu.org/software/guile/manual/html_node/Modules.html#Modules">Modules</a> in GNU Guile Reference Manual).
+</p>
+
+<p>
+The following table gives an overview of the main directories and what they contain. Remember that in Guile, each module name is derived from its file name&#x2014;e.g., the module in file <code>guix/packages.scm</code> is called <code>(guix packages)</code>.
+</p>
+
+<dl class="org-dl">
+<dt><code>guix</code></dt><dd><p>
+This is the location of core Guix mechanisms. To illustrate what is meant by “core”, here are a few examples, starting from low-level tools and going towards higher-level tools:
+</p>
+
+<dl class="org-dl">
+<dt><code>(guix store)</code></dt><dd>Connecting to and interacting with the build daemon (see <a href="docs/guix--The-Store.html">The Store</a>).</dd>
+
+<dt><code>(guix derivations)</code></dt><dd>Creating derivations (see <a href="docs/guix--Derivations.html">Derivations</a>).</dd>
+
+<dt><code>(guix gexps)</code></dt><dd>Writing G-expressions (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).</dd>
+
+<dt><code>(guix packages)</code></dt><dd>Defining packages and origins (see <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>).</dd>
+
+<dt>(no term)</dt><dd><code>(guix download)</code><br />
+<code>(guix git-download)</code> :: The <code>url-fetch</code> and <code>git-fetch</code> origin download methods (see <a href="docs/guix--origin-Reference.html"><code>origin</code> Reference</a>).</dd>
+
+<dt><code>(guix swh)</code></dt><dd>Fetching source code from the <a href="https://archive.softwareheritage.org">Software Heritage archive</a>.</dd>
+
+<dt><code>(guix search-paths)</code></dt><dd>Implementing search paths (see <a href="docs/guix--Search-Paths.html">Search Paths</a>).</dd>
+
+<dt><code>(guix build-system)</code></dt><dd>The build system interface (see <a href="docs/guix--Build-Systems.html">Build Systems</a>).</dd>
+
+<dt><code>(guix profiles)</code></dt><dd>Implementing profiles.</dd>
+</dl>
+
+<p>
+<a id="index-build-system_002c-directory-structure"></a>
+</p></dd>
+
+<dt><code>guix/build-system</code></dt><dd>This directory contains specific build system implementations (see <a href="docs/guix--Build-Systems.html">Build Systems</a>), such as:
+
+<dl class="org-dl">
+<dt><code>(guix build-system gnu)</code></dt><dd>the GNU build system;</dd>
+
+<dt><code>(guix build-system cmake)</code></dt><dd>the CMake build system;</dd>
+
+<dt><code>(guix build-system pyproject)</code></dt><dd>The Python “pyproject” build system.</dd>
+</dl></dd>
+
+<dt><code>guix/build</code></dt><dd><p>
+This contains code generally used on the “build side” (see <a href="docs/guix--G_002dExpressions.html">strata of code</a>). This includes code used to build packages or other operating system components, as well as utilities:
+</p>
+
+<dl class="org-dl">
+<dt><code>(guix build utils)</code></dt><dd>Utilities for package definitions and more (see <a href="docs/guix--Build-Utilities.html">Build Utilities</a>).</dd>
+
+<dt>(no term)</dt><dd><code>(guix build gnu-build-system)</code><br />
+<code>(guix build cmake-build-system)</code><br />
+<code>(guix build pyproject-build-system)</code> :: Implementation of build systems, and in particular definition of their build phases (see <a href="docs/guix--Build-Phases.html">Build Phases</a>).</dd>
+
+<dt><code>(guix build syscalls)</code></dt><dd>Interface to the C library and to Linux system calls.</dd>
+</dl>
+
+<p>
+<a id="index-command_002dline-tools_002c-as-Guile-modules"></a> <a id="index-command-modules"></a>
+</p></dd>
+
+<dt><code>guix/scripts</code></dt><dd><p>
+This contains modules corresponding to <code>guix</code> sub-commands. For example, the <code>(guix scripts shell)</code> module exports the <code>guix-shell</code> procedure, which directly corresponds to the <code>guix shell</code> command (see <a href="docs/guix--Invoking-guix-shell.html">Invoking <code>guix shell</code></a>).
+</p>
+
+<p>
+<a id="index-importer-modules"></a>
+</p></dd>
+
+<dt><code>guix/import</code></dt><dd>This contains supporting code for the importers and updaters (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>, and see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>). For example, <code>(guix import pypi)</code> defines the interface to PyPI, which is used by the <code>guix import pypi</code> command.</dd>
+</dl>
+
+<p>
+The directories we have seen so far all live under <code>guix/</code>. The other important place is the <code>gnu/</code> directory, which contains primarily package definitions as well as libraries and tools for Guix System (see <a href="docs/guix--System-Configuration.html">System Configuration</a>) and Guix Home (see <a href="docs/guix--Home-Configuration.html">Home Configuration</a>), all of which build upon functionality provided by <code>(guix …)</code> modules.
+</p>
+
+<p>
+<a id="index-package-modules"></a>
+<code>gnu/packages</code>
+This is by far the most crowded directory of the source tree: it contains <i>package modules</i> that export package definitions (see <a href="docs/guix--Package-Modules.html">Package Modules</a>). A few examples:
+</p>
+
+<dl class="org-dl">
+<dt><code>(gnu packages base)</code></dt><dd>Module providing “base” packages: <code>glibc</code>, <code>coreutils</code>, <code>grep</code>, etc.</dd>
+
+<dt><code>(gnu packages guile)</code></dt><dd>Guile and core Guile packages.</dd>
+
+<dt><code>(gnu packages linux)</code></dt><dd>The Linux-libre kernel and related packages.</dd>
+
+<dt><code>(gnu packages python)</code></dt><dd>Python and core Python packages.</dd>
+
+<dt><code>(gnu packages python-xyz)</code></dt><dd>Miscellaneous Python packages (we were not very creative).</dd>
+</dl>
+
+<p>
+In any case, you can jump to a package definition using <code>guix edit</code> (see <a href="docs/guix--Invoking-guix-edit.html">Invoking <code>guix edit</code></a>) and view its location with <code>guix show</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+<a id="index-search_002dpatches"></a>
+<code>gnu/packages/patches</code>
+This directory contains patches applied against packages and obtained using the <code>search-patches</code> procedure.
+</p>
+
+<p>
+<code>gnu/services</code>
+This contains service definitions, primarily for Guix System (see <a href="docs/guix--Services.html">Services</a>) but some of them are adapted and reused for Guix Home as we will see below. Examples:
+</p>
+
+<dl class="org-dl">
+<dt><code>(gnu services)</code></dt><dd>The service framework itself, which defines the service and service type data types (see <a href="docs/guix--Service-Composition.html">Service Composition</a>).</dd>
+
+<dt><code>(gnu services base)</code></dt><dd>“Base” services (see <a href="docs/guix--Base-Services.html">Base Services</a>).</dd>
+
+<dt><code>(gnu services desktop)</code></dt><dd>“Desktop” services (see <a href="docs/guix--Desktop-Services.html">Desktop Services</a>).</dd>
+
+<dt><code>(gnu services shepherd)</code></dt><dd>Support for Shepherd services (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>).</dd>
+</dl>
+
+<p>
+You can jump to a service definition using <code>guix system edit</code> and view its location with <code>guix system search</code> (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>).
+</p>
+
+<p>
+<code>gnu/system</code>
+These are core Guix System modules, such as:
+</p>
+
+<dl class="org-dl">
+<dt><code>(gnu system)</code></dt><dd>Defines <code>operating-system</code> (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>).</dd>
+
+<dt><code>(gnu system file-systems)</code></dt><dd>Defines <code>file-system</code> (see <a href="docs/guix--File-Systems.html">File Systems</a>).</dd>
+
+<dt><code>(gnu system mapped-devices)</code></dt><dd>Defines <code>mapped-device</code> (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>).</dd>
+</dl>
+
+<p>
+<code>gnu/build</code>
+These are modules that are either used on the “build side” when building operating systems or packages, or at run time by operating systems.
+</p>
+
+<dl class="org-dl">
+<dt><code>(gnu build accounts)</code></dt><dd>Creating <code>/etc/passwd</code>, <code>/etc/shadow</code>, etc. (see <a href="docs/guix--User-Accounts.html">User Accounts</a>).</dd>
+
+<dt><code>(gnu build activation)</code></dt><dd>Activating an operating system at boot time or reconfiguration time.</dd>
+
+<dt><code>(gnu build file-systems)</code></dt><dd>Searching, checking, and mounting file systems.</dd>
+
+<dt>(no term)</dt><dd><code>(gnu build linux-boot)</code><br />
+<code>(gnu build hurd-boot)</code> :: Booting GNU/Linux and GNU/Hurd operating systems.</dd>
+
+<dt><code>(gnu build linux-initrd)</code></dt><dd>Creating a Linux initial RAM disk (see <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>).</dd>
+</dl>
+
+<p>
+<code>gnu/home</code>
+This contains all things Guix Home (see <a href="docs/guix--Home-Configuration.html">Home Configuration</a>); examples:
+</p>
+
+<dl class="org-dl">
+<dt><code>(gnu home services)</code></dt><dd>Core services such as <code>home-files-service-type</code>.</dd>
+
+<dt><code>(gnu home services ssh)</code></dt><dd>SSH-related services (see <a href="docs/guix--Secure-Shell.html">Secure Shell</a>).</dd>
+</dl>
+
+<p>
+<code>gnu/installer</code>
+This contains the text-mode graphical system installer (see <a href="docs/guix--Guided-Graphical-Installation.html">Guided Graphical Installation</a>).
+</p>
+
+<p>
+<code>gnu/machine</code>
+These are the <i>machine abstractions</i> used by <code>guix deploy</code> (see <a href="docs/guix--Invoking-guix-deploy.html">Invoking <code>guix deploy</code></a>).
+</p>
+
+<p>
+<code>gnu/tests</code>
+This contains system tests&#x2014;tests that spawn virtual machines to check that system services work as expected (see <a href="docs/guix--Running-the-Test-Suite.html">Running the Test Suite</a>).
+</p>
+
+<p>
+Last, there's also a few directories that contain files that are <i>not</i> Guile modules:
+</p>
+
+<dl class="org-dl">
+<dt><code>nix</code></dt><dd>This is the C++ implementation of <code>guix-daemon</code>, inherited from Nix (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>).</dd>
+
+<dt><code>tests</code></dt><dd>These are unit tests, each file corresponding more or less to one module, in particular <code>(guix …)</code> modules (see <a href="docs/guix--Running-the-Test-Suite.html">Running the Test Suite</a>).</dd>
+
+<dt><code>doc</code></dt><dd>This is the documentation in the form of Texinfo files: this manual and the Cookbook. See <a href="https://www.gnu.org/software/texinfo/manual/texinfo/html_node/Writing-a-Texinfo-File.html#Writing-a-Texinfo-File">Writing a Texinfo File</a> in GNU Texinfo, for information on Texinfo markup language.</dd>
+
+<dt><code>po</code></dt><dd>This is the location of translations of Guix itself, of package synopses and descriptions, of the manual, and of the cookbook. Note that <code>.po</code> files that live here are pulled directly from Weblate (see <a href="docs/guix--Translating-Guix.html">Translating Guix</a>).</dd>
+
+<dt><code>etc</code></dt><dd>Miscellaneous files: shell completions, support for systemd and other init systems, Git hooks, etc.</dd>
+</dl>
+
+<p>
+With all this, a fair chunk of your operating system is at your fingertips! Beyond <code>grep</code> and <code>git grep</code>, see <a href="docs/guix--The-Perfect-Setup.html">The Perfect Setup</a> on how to navigate code from your editor, and see <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a> for information on how to use Scheme modules interactively. Enjoy!
+</p>
+
+<hr />
+</div>
+</div>
+</div>
