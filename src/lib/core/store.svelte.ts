@@ -242,6 +242,18 @@ export class DocneuralStore {
     try {
       this.data = await this.fetchGraph()
       this.ready = true
+      // The size-aware layout default needs the corpus size, so it lands
+      // here (the constructor ran before any fetch). A saved preference
+      // already won inside loadLayout; this only fills the first visit.
+      let savedLayout: string | null = null
+      try {
+        savedLayout = localStorage.getItem('docneural:layout')
+      } catch {
+        /* private mode */
+      }
+      if (!savedLayout) {
+        this.layout = loadLayout(this.data.nodes.length)
+      }
       // Home opens on the first manual's contents (the exporter scans
       // manuals in --doc order); a deep link below overrides via goto().
       if (!this.manual) this.manual = this.manuals[0] ?? ''
