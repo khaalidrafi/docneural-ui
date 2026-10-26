@@ -1,0 +1,133 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#image-reference">1.0.1. 16.1 <code>image</code> Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="image-Reference"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Instantiate-an-Image.html">Instantiate an Image</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="image-Reference-1"></a>
+</p>
+</div>
+<div id="outline-container-image-reference" class="outline-4">
+<h4 id="image-reference"><span class="section-number-4">1.0.1.</span> 16.1 <code>image</code> Reference</h4>
+<div class="outline-text-4" id="text-image-reference">
+<p>
+The <code>image</code> record, described right after, allows you to define a customized bootable system image.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: image </dt><dd>This is the data type representing a system image.
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <code>#false</code>)</dt><dd>The image name as a symbol, <code>'my-iso9660</code> for instance. The name is optional and it defaults to <code>#false</code>.</dd>
+
+<dt><code>format</code></dt><dd>The image format as a symbol. The following formats are supported:
+
+<ul class="org-ul">
+<li><code>disk-image</code>, a raw disk image composed of one or multiple partitions.</li>
+<li><code>compressed-qcow2</code>, a compressed qcow2 image composed of one or multiple partitions.</li>
+<li><code>docker</code>, a Docker image.</li>
+<li><code>iso9660</code>, an ISO-9660 image.</li>
+<li><code>tarball</code>, a tar.gz image archive.</li>
+<li><code>wsl2</code>, a WSL2 image.</li>
+</ul></dd>
+
+<dt><code>platform</code> (default: <code>#false</code>)</dt><dd>The <code>platform</code> record the image is targeting (see <a href="docs/guix--Platforms.html">Platforms</a>), <code>aarch64-linux</code> for instance. By default, this field is set to <code>#false</code> and the image will target the host platform.</dd>
+
+<dt><code>size</code> (default: <code>'guess</code>)</dt><dd>The image size in bytes or <code>'guess</code>. The <code>'guess</code> symbol, which is the default, means that the image size will be inferred based on the image content.</dd>
+
+<dt><code>operating-system</code></dt><dd>The image's <code>operating-system</code> record that is instantiated.</dd>
+
+<dt><code>partition-table-type</code> (default: <code>'mbr</code>)</dt><dd>The image partition table type as a symbol. Possible values are <code>'mbr</code> and <code>'gpt</code>. It default to <code>'mbr</code>.</dd>
+
+<dt><code>partitions</code> (default: <code>'()</code>)</dt><dd>The image partitions as a list of <code>partition</code> records (see <a href="docs/guix--partition-Reference.html"><code>partition</code> Reference</a>).</dd>
+
+<dt><code>compression?</code> (default: <code>#true</code>)</dt><dd>Whether the image content should be compressed, as a boolean. It defaults to <code>#true</code> and only applies to <code>'iso9660</code> image formats.</dd>
+
+<dt><code>volatile-root?</code> (default: <code>#true</code>)</dt><dd><p>
+Whether the image root partition should be made volatile, as a boolean.
+</p>
+
+<p>
+This is achieved by using a RAM backed file system (overlayfs) that is mounted on top of the root partition by the initrd. It defaults to <code>#true</code>. When set to <code>#false</code>, the image root partition is mounted as read-write partition by the initrd.
+</p></dd>
+
+<dt><code>shared-store?</code> (default: <code>#false</code>)</dt><dd>Whether the image's store should be shared with the host system, as a boolean. This can be useful when creating images dedicated to virtual machines. When set to <code>#false</code>, which is the default, the image's <code>operating-system</code> closure is copied to the image. Otherwise, when set to <code>#true</code>, it is assumed that the host store will be made available at boot, using a <code>9p</code> mount for instance.</dd>
+
+<dt><code>shared-network?</code> (default: <code>#false</code>)</dt><dd>Whether to use the host network interfaces within the image, as a boolean. This is only used for the <code>'docker</code> image format. It defaults to <code>#false</code>.</dd>
+
+<dt><code>substitutable?</code> (default: <code>#true</code>)</dt><dd>Whether the image derivation should be substitutable, as a boolean. It defaults to <code>true</code>.</dd>
+</dl></dd>
+
+<dt>(no term)</dt><dd><a href="docs/guix--partition-Reference.html"><code>partition</code> Reference</a></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Instantiate-an-Image.html">Instantiate an Image</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Org-Indent-Mode-1">1. 17.4.1 Org Indent Mode ¶</a>
+<ul>
+<li><a href="#section">1.1. (163)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Org-Indent-Mode"></a>
+Next: <a href="docs/org--Hard-indentation.html">Hard indentation</a>, Up: <a href="docs/org--Clean-View.html">A Cleaner Outline View</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Org-Indent-Mode-1" class="outline-2">
+<h2 id="Org-Indent-Mode-1"><span class="section-number-2">1.</span> 17.4.1 Org Indent Mode <a href="#Org-Indent-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Org-Indent-Mode-1">
+<p>
+To display the buffer in the indented view, activate Org Indent minor mode, using M-x org-indent-mode. Text lines that are not headlines are prefixed with virtual spaces to vertically align with the headline text.
+</p>
+
+<p>
+To make more horizontal space, the headlines are shifted by two characters. Configure <code>org-indent-indentation-per-level</code> variable for a different number.
+</p>
+
+<p>
+By default, Org Indent mode turns off <code>org-adapt-indentation</code> and does hide leading stars by locally setting <code>org-hide-leading-stars</code> to <code>t</code>: only one star on each headline is visible, the rest are masked with the same font color as the background. If you want to customize this default behavior, see <code>org-indent-mode-turns-on-hiding-stars</code> and <code>org-indent-mode-turns-off-org-adapt-indentation</code>.
+</p>
+
+<p>
+To globally turn on Org Indent mode for all files, customize the variable <code>org-startup-indented</code>. To control it for individual files, use ‘=STARTUP=' keyword as follows:
+</p>
+
+<pre class="example" id="org2121861">
+#+STARTUP: indent
+#+STARTUP: noindent
+</pre>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,56 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#File-Names-on-MS_002dWindows">1. I.3 File Names on MS-Windows ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--ls-in-Lisp.html">Emulation of ls on MS-Windows</a>   Previous: <a href="docs/emacs--Text-and-Binary.html">Text Files and Binary Files</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="Windows-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-File-Names-on-MS_002dWindows" class="outline-2">
+<h2 id="File-Names-on-MS_002dWindows"><span class="section-number-2">1.</span> I.3 File Names on MS-Windows <a href="#File-Names-on-MS_002dWindows">¶</a></h2>
+<div class="outline-text-2" id="text-File-Names-on-MS_002dWindows">
+<p>
+MS-Windows and MS-DOS normally use a backslash, ‘=\=', to separate name units within a file name, instead of the slash used on other systems. Emacs on MS-DOS/MS-Windows permits use of either slash or backslash, and also knows about drive letters in file names.
+</p>
+
+<p>
+On MS-DOS/MS-Windows, file names are case-insensitive, so Emacs by default ignores letter-case in file names during completion. To this end, the default value of <code>read-file-name-completion-ignore-case</code> is non-<code>nil</code> on MS-DOS/MS-Windows. See <a href="docs/emacs--Completion-Options.html">Completion Options</a>.
+</p>
+
+<p>
+The variable <code>w32-get-true-file-attributes</code> controls whether Emacs should issue additional system calls to determine more accurately file attributes in primitives like <code>file-attributes</code> and <code>directory-files-and-attributes</code>. These additional calls are needed to report correct file ownership, link counts and file types for special files such as pipes. Without these system calls, file ownership will be attributed to the current user, link counts will be always reported as 1, and special files will be reported as regular files.
+</p>
+
+<p>
+If the value of this variable is <code>local</code> (the default), Emacs will issue these additional system calls only for files on local fixed drives. Any other non-<code>nil</code> value means do this even for removable and remote volumes, where this could potentially slow down Dired and other related features. The value of <code>nil</code> means never issue those system calls. Non-<code>nil</code> values are more useful on NTFS volumes, which support hard links and file security, than on FAT, FAT32, and exFAT volumes.
+</p>
+
+<p>
+Unlike Unix, MS-Windows file systems restrict the set of characters that can be used in a file name. The following characters are not allowed:
+</p>
+
+<ul class="org-ul">
+<li>Shell redirection symbols ‘=&lt;=', ‘=&gt;=', and ‘=|='.</li>
+<li>Colon ‘=:=' (except after the drive letter).</li>
+<li>Forward slash ‘=/=' and backslash ‘=\=' (except as directory separators).</li>
+<li>Wildcard characters ‘=*=' and ‘=?='.</li>
+<li>Control characters whose codepoints are 1 through 31 decimal. In particular, newlines in file names are not allowed.</li>
+<li>The null character, whose codepoint is zero (this limitation exists on Unix filesystems as well).</li>
+</ul>
+
+<p>
+In addition, referencing any file whose name matches a DOS character device, such as <code>NUL</code> or <code>LPT1</code> or <code>PRN</code> or <code>CON</code>, with or without any file-name extension, will always resolve to those character devices, in any directory. Therefore, only use such file names when you want to use the corresponding character device.
+</p>
+
+<hr />
+</div>
+</div>

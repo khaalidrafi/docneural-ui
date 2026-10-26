@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Usage-on-MS_002dWindows">1. I.7 Mouse Usage on MS-Windows ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Windows-Processes.html">Subprocesses on Windows 9X/ME and Windows NT/2K/XP/Vista/7/8/10</a>   Previous: <a href="docs/emacs--Windows-Keyboard.html">Keyboard Usage on MS-Windows</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="Windows-Mouse"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Usage-on-MS_002dWindows" class="outline-2">
+<h2 id="Mouse-Usage-on-MS_002dWindows"><span class="section-number-2">1.</span> I.7 Mouse Usage on MS-Windows <a href="#Mouse-Usage-on-MS_002dWindows">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Usage-on-MS_002dWindows">
+<p>
+This section describes the Windows-specific variables related to the mouse.
+</p>
+
+<p>
+The variable <code>w32-mouse-button-tolerance</code> specifies the time interval, in milliseconds, for faking middle mouse button press on 2-button mice. If both mouse buttons are depressed within this time interval, Emacs generates a middle mouse button click event instead of a double click on one of the buttons.
+</p>
+
+<p>
+If the variable <code>w32-pass-extra-mouse-buttons-to-system</code> is non-<code>nil</code>, Emacs passes the fourth and fifth mouse buttons to Windows.
+</p>
+
+<p>
+The variable <code>w32-swap-mouse-buttons</code> controls which of the 3 mouse buttons generates the mouse-2 events. When it is <code>nil</code> (the default), the middle button generates mouse-2 and the right button generates mouse-3 events. If this variable is non-<code>nil</code>, the roles of these two buttons are reversed.
+</p>
+</div>
+</div>

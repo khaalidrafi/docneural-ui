@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Subscripts-and-Superscripts-1">1. 12.3 Subscripts and Superscripts ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (110)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Subscripts-and-Superscripts"></a>
+Next: <a href="docs/org--Special-Symbols.html">Special Symbols</a>, Previous: <a href="docs/org--Emphasis-and-Monospace.html">Emphasis and Monospace</a>, Up: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Subscripts-and-Superscripts-1" class="outline-2">
+<h2 id="Subscripts-and-Superscripts-1"><span class="section-number-2">1.</span> 12.3 Subscripts and Superscripts <a href="#Subscripts-and-Superscripts-1">¶</a></h2>
+<div class="outline-text-2" id="text-Subscripts-and-Superscripts-1">
+<p>
+‘=^=' and ‘=_=' are used to indicate super- and subscripts. To increase the readability of ASCII text, it is not necessary, but OK, to surround multi-character sub- and superscripts with curly braces. For example
+</p>
+
+<pre class="example" id="org690c855">
+The radius of the sun is R_sun = 6.96 x 10^8 m.  On the other hand,
+the radius of Alpha Centauri is R_{Alpha Centauri} = 1.28 x R_{sun}.
+</pre>
+
+<p>
+If you write a text where the underscore is often used in a different context, Org's convention to always interpret these as subscripts can get in your way. Configure the variable <code>org-use-sub-superscripts</code> and/or <code>org-export-with-sub-superscripts</code> to change this convention. For example, when setting these variables to <code>{}</code>, ‘=a<sub>b</sub>=' is not displayed/exported as a subscript, but ‘=a<sub>b</sub>=' is.
+</p>
+
+<p>
+You can set both <code>org-use-sub-superscripts</code> <code>org-export-with-sub-superscripts</code> in a file using the export option ‘=^:=' (see <a href="docs/org--Export-Settings.html">Export Settings</a>). For example, ‘=#+OPTIONS: ^:{}=' sets the two options to <code>{}</code> and limits super- and subscripts to the curly bracket notation.
+</p>
+
+<p>
+You can also toggle the visual display of super- and subscripts:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-_005c"></a>C-c C-x \ (<code>org-toggle-pretty-entities</code>) </dt><dd>This command formats sub- and superscripts in a WYSIWYM way.</dd>
+</dl>
+
+<p>
+Set both <code>org-pretty-entities</code> and <code>org-pretty-entities-include-sub-superscripts</code> to <code>t</code> to start with super- and subscripts <i>visually</i> interpreted as specified by the option <code>org-use-sub-superscripts</code>.
+</p>
+
+<hr />
+</div>
+</div>

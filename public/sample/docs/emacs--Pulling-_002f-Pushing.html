@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Pulling_002fPushing-Changes-into_002ffrom-a-Branch">1. 30.1.11.2 Pulling/Pushing Changes into/from a Branch ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Merging.html">Merging Branches</a>   Previous: <a href="docs/emacs--Switching-Branches.html">Switching between Branches</a>   Up: <a href="docs/emacs--Branches.html">Version Control Branches</a>
+</p>
+
+<p>
+<a id="Pulling-_002f-Pushing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Pulling_002fPushing-Changes-into_002ffrom-a-Branch" class="outline-2">
+<h2 id="Pulling_002fPushing-Changes-into_002ffrom-a-Branch"><span class="section-number-2">1.</span> 30.1.11.2 Pulling/Pushing Changes into/from a Branch <a href="#Pulling_002fPushing-Changes-into_002ffrom-a-Branch">¶</a></h2>
+<div class="outline-text-2" id="text-Pulling_002fPushing-Changes-into_002ffrom-a-Branch">
+<dl class="org-dl">
+<dt><a id="index-push-changes-to-upstream-_0028VC_0029"></a>C-x v P </dt><dd>With a decentralized version control system, update another repository with locally-committed changes from the current branch (a.k.a. <i>push</i> changes). This concept does not exist for centralized version control systems</dd>
+
+<dt><a id="index-pull-changes-from-upstream-_0028VC_0029"></a>C-x v + </dt><dd><p>
+With a decentralized version control system, update the current branch of the local repository by <i>pulling in</i> changes from another repository.
+</p>
+
+<p>
+With a centralized version control system, update the current VC fileset from the repository.
+</p></dd>
+</dl>
+
+<p>
+On a decentralized version control system, the command C-x v P (<code>vc-push</code>) updates another location, commonly known as the <i>upstream repository</i>, with locally-committed changes from the current branch. With a prefix argument, it prompts for the exact version control command to run, which lets you specify where to push changes; the default is bzr push with Bazaar, git push with Git, and hg push with Mercurial. The default commands always push to the repository in the default location determined by the version control system from your branch configuration.
+</p>
+
+<p>
+Prior to pushing, you can use C-x v O (<code>vc-log-outgoing</code>) to view a log buffer of the changes to be sent upstream. See <a href="docs/emacs--VC-Change-Log.html">VC Change Log</a>.
+</p>
+
+<p>
+This command is currently supported only by Bazaar, Git, and Mercurial. The concept of “pushing” does not exist for centralized version control systems, where this operation is a part of committing a changeset, so invoking this command on a centralized VCS signals an error. This command also signals an error when attempted in a Bazaar <i>bound branch</i>, where committing a changeset automatically pushes the changes to the remote repository to which the local branch is bound.
+</p>
+
+<p>
+With a decentralized version control system, the command C-x v + (<code>vc-pull</code>) updates the current branch of the local repository and it working tree with changes made in the upstream repository. It is typically used to update a copy (a.k.a. <i>clone</i>) of a remote branch. If you supply a prefix argument, the command prompts for the exact version control command to use, which lets you specify where to pull changes from. Otherwise, it pulls from the repository in the default location determined by the version control system from your branch configuration.
+</p>
+
+<p>
+Amongst decentralized version control systems, C-x v + is currently supported only by Bazaar, Git, and Mercurial. With Bazaar, it calls bzr pull for ordinary branches (to pull from a master branch into a mirroring branch), and bzr update for a bound branch (to pull from a central repository). With Git, it calls git pull to fetch changes from a remote repository and merge it into the current branch. With Mercurial, it calls hg pull -u to fetch changesets from the default remote repository and update the working directory.
+</p>
+
+<p>
+Prior to pulling, you can use C-x v I (<code>vc-log-incoming</code>) to view a log buffer of the changes to be applied. See <a href="docs/emacs--VC-Change-Log.html">VC Change Log</a>.
+</p>
+
+<p>
+With a centralized version control system like CVS, C-x v + updates the current VC fileset from the repository.
+</p>
+
+<hr />
+</div>
+</div>

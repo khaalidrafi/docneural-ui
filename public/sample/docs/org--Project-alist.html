@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-variable-org_002dpublish_002dproject_002dalist">1. 14.1.1 The variable <code>org-publish-project-alist</code> ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Project-alist"></a>
+Next: <a href="docs/org--Sources-and-destinations.html">Sources and destinations for files</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-variable-org_002dpublish_002dproject_002dalist" class="outline-2">
+<h2 id="The-variable-org_002dpublish_002dproject_002dalist"><span class="section-number-2">1.</span> 14.1.1 The variable <code>org-publish-project-alist</code> <a href="#The-variable-org_002dpublish_002dproject_002dalist">¶</a></h2>
+<div class="outline-text-2" id="text-The-variable-org_002dpublish_002dproject_002dalist">
+<p>
+Publishing is configured almost entirely through setting the value of one variable, called <code>org-publish-project-alist</code>. Each element of the list configures one project, and may be in one of the two following forms:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">("project-name" :property value :property value ...)
+</pre>
+</div>
+
+<p>
+i.e., a well-formed property list with alternating keys and values, or:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">("project-name" :components ("project-name" "project-name" ...))
+</pre>
+</div>
+
+<p>
+In both cases, projects are configured by specifying property values. A project defines the set of files that are to be published, as well as the publishing configuration to use when publishing those files. When a project takes the second form listed above, the individual members of the <code>:components</code> property are taken to be sub-projects, which group together files requiring different publishing options. When you publish such a “meta-project”, all the components are also published, in the sequence given.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Sources-and-destinations.html">Sources and destinations for files</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

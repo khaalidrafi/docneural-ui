@@ -1,0 +1,135 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#requirements">1.0.1. 22.1 Requirements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Requirements"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Building-from-Git.html">Building from Git</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Requirements-1"></a>
+</p>
+</div>
+<div id="outline-container-requirements" class="outline-4">
+<h4 id="requirements"><span class="section-number-4">1.0.1.</span> 22.1 Requirements</h4>
+<div class="outline-text-4" id="text-requirements">
+<p>
+You can easily hack on Guix itself using Guix and Git, which we use for version control (see <a href="docs/guix--Building-from-Git.html">Building from Git</a>).
+</p>
+
+<p>
+But when packaging Guix for foreign distros or when bootstrapping on systems without Guix, and if you decide to not just trust and install our readily made binary (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>), you can download a release version of our reproducible source tarball and read on.
+</p>
+
+<p>
+This section lists requirements when building Guix from source. The build procedure for Guix is the same as for other GNU software, and is not covered here. Please see the files <code>README</code> and <code>INSTALL</code> in the Guix source tree for additional details.
+</p>
+
+<p>
+<a id="index-official-website"></a>
+GNU Guix is available for download from its website at <a href="https://guix.gnu.org">https://guix.gnu.org</a>.
+</p>
+
+<p>
+GNU Guix depends on the following packages:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://gnu.org/software/guile/">GNU Guile</a>, version 3.0.x, version 3.0.3 or later;</li>
+<li><a href="https://notabug.org/cwebber/guile-gcrypt">Guile-Gcrypt</a>, version 0.1.0 or later;</li>
+<li><a href="https://gitlab.com/gnutls/guile/">Guile-GnuTLS</a> (see <a href="http://gnutls.org/manual/gnutls-guile/Guile-Preparations.html#Guile-Preparations">how to install the GnuTLS bindings for Guile</a> in GnuTLS-Guile);</li>
+<li><a href="https://notabug.org/guile-sqlite3/guile-sqlite3">Guile-SQLite3</a>, version 0.1.0 or later;</li>
+<li><a href="https://notabug.org/guile-zlib/guile-zlib">Guile-zlib</a>, version 0.1.0 or later;</li>
+<li><a href="https://notabug.org/guile-lzlib/guile-lzlib">Guile-lzlib</a>;</li>
+<li><a href="https://www.nongnu.org/guile-avahi/">Guile-Avahi</a>;</li>
+<li><a href="https://gitlab.com/guile-git/guile-git">Guile-Git</a>, version 0.10.0 or later;</li>
+<li><a href="https://git-scm.com">Git</a> (yes, both!);</li>
+<li><a href="https://github.com/aconchillo/guile-json">Guile-JSON</a> 4.3.0 or later;</li>
+<li><a href="https://www.gnu.org/software/make/">GNU Make</a>.</li>
+</ul>
+
+<p>
+The following dependencies are optional:
+</p>
+
+<ul class="org-ul">
+<li>Support for build offloading (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>) and <code>guix copy</code> (see <a href="docs/guix--Invoking-guix-copy.html">Invoking <code>guix copy</code></a>) depends on <a href="https://github.com/artyom-poptsov/guile-ssh">Guile-SSH</a>, version 0.13.0 or later.</li>
+<li><a href="https://notabug.org/guile-zstd/guile-zstd">Guile-zstd</a>, for zstd compression and decompression in <code>guix publish</code> and for substitutes (see <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>).</li>
+<li><a href="https://ngyro.com/software/guile-semver.html">Guile-Semver</a> for the <code>crate</code> importer (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>).</li>
+<li><a href="https://www.nongnu.org/guile-lib/doc/ref/htmlprag/">Guile-Lib</a> for the <code>go</code> importer (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>) and for some of the “updaters” (see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>).</li>
+<li>When <a href="http://www.bzip.org">libbz2</a> is available, <code>guix-daemon</code> can use it to compress build logs.</li>
+</ul>
+
+<p>
+Unless <code>--disable-daemon</code> was passed to <code>configure</code>, the following packages are also needed:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://gnupg.org/">GNU libgcrypt</a>;</li>
+<li><a href="https://sqlite.org">SQLite 3</a>;</li>
+<li><a href="https://gcc.gnu.org">GCC's g++</a>, with support for the C++11 standard.</li>
+</ul>
+
+<hr />
+</div>
+</div>
+</div>

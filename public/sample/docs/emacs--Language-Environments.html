@@ -1,0 +1,77 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Language-Environments-1">1. 24.2 Language Environments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Input-Methods.html">Input Methods</a>   Previous: <a href="docs/emacs--International-Chars.html">Introduction to International Character Sets</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Language-Environments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Language-Environments-1" class="outline-2">
+<h2 id="Language-Environments-1"><span class="section-number-2">1.</span> 24.2 Language Environments <a href="#Language-Environments-1">¶</a></h2>
+<div class="outline-text-2" id="text-Language-Environments-1">
+<p>
+All supported character sets are supported in Emacs buffers whenever multibyte characters are enabled; there is no need to select a particular language in order to display its characters. However, it is important to select a <i>language environment</i> in order to set various defaults. Roughly speaking, the language environment represents a choice of preferred script rather than a choice of language.
+</p>
+
+<p>
+The language environment controls which coding systems to recognize when reading text (see <a href="docs/emacs--Recognize-Coding.html">Recognizing Coding Systems</a>). This applies to files, incoming mail, and any other text you read into Emacs. It may also specify the default coding system to use when you create a file. Each language environment also specifies a default input method.
+</p>
+
+<p>
+To select a language environment, customize <code>current-language-environment</code> or use the command M-x set-language-environment. It makes no difference which buffer is current when you use this command, because the effects apply globally to the Emacs session. See the variable <code>language-info-alist</code> for the list of supported language environments, and use the command C-h L <code>lang-env</code> RET (<code>describe-language-environment</code>) for more information about the language environment <code>lang-env</code>. Supported language environments include:
+</p>
+
+<blockquote>
+<p>
+
+</p>
+
+<p>
+ASCII, Arabic, Belarusian, Bengali, Brazilian Portuguese, Bulgarian, Burmese, Cham, Chinese-BIG5, Chinese-CNS, Chinese-EUC-TW, Chinese-GB, Chinese-GB18030, Chinese-GBK, Croatian, Cyrillic-ALT, Cyrillic-ISO, Cyrillic-KOI8, Czech, Devanagari, Dutch, English, Esperanto, Ethiopic, French, Georgian, German, Greek, Gujarati, Hebrew, IPA, Italian, Japanese, Kannada, Khmer, Korean, Lao, Latin-1, Latin-2, Latin-3, Latin-4, Latin-5, Latin-6, Latin-7, Latin-8, Latin-9, Latvian, Lithuanian, Malayalam, Oriya, Persian, Polish, Punjabi, Romanian, Russian, Sinhala, Slovak, Slovenian, Spanish, Swedish, TaiViet, Tajik, Tamil, Telugu, Thai, Tibetan, Turkish, UTF-8, Ukrainian, Vietnamese, Welsh, and Windows-1255.
+</p>
+</blockquote>
+
+<p>
+To display the script(s) used by your language environment on a graphical display, you need to have suitable fonts. See <a href="docs/emacs--Fontsets.html">Fontsets</a>, for more details about setting up your fonts.
+</p>
+
+<p>
+Some operating systems let you specify the character-set locale you are using by setting the locale environment variables <code>LC_ALL</code>, <code>LC_CTYPE</code>, or <code>LANG</code>. (If more than one of these is set, the first one that is nonempty specifies your locale for this purpose.) During startup, Emacs looks up your character-set locale's name in the system locale alias table, matches its canonical name against entries in the value of the variables <code>locale-charset-language-names</code> and <code>locale-language-names</code> (the former overrides the latter), and selects the corresponding language environment if a match is found. It also adjusts the display table and terminal coding system, the locale coding system, the preferred coding system as needed for the locale, and&#x2014;last but not least&#x2014;the way Emacs decodes non-ASCII characters sent by your keyboard.
+</p>
+
+<p>
+If you modify the <code>LC_ALL</code>, <code>LC_CTYPE</code>, or <code>LANG</code> environment variables while running Emacs (by using M-x setenv), you may want to invoke the <code>set-locale-environment</code> command afterwards to readjust the language environment from the new locale.
+</p>
+
+<p>
+The <code>set-locale-environment</code> function normally uses the preferred coding system established by the language environment to decode system messages. But if your locale matches an entry in the variable <code>locale-preferred-coding-systems</code>, Emacs uses the corresponding coding system instead. For example, if the locale ‘=ja<sub>JP.PCK</sub>=' matches <code>japanese-shift-jis</code> in <code>locale-preferred-coding-systems</code>, Emacs uses that encoding even though it might normally use <code>utf-8</code>.
+</p>
+
+<p>
+You can override the language environment chosen at startup with explicit use of the command <code>set-language-environment</code>, or with customization of <code>current-language-environment</code> in your init file.
+</p>
+
+<p>
+To display information about the effects of a certain language environment <code>lang-env</code>, use the command C-h L <code>lang-env</code> RET (<code>describe-language-environment</code>). This tells you which languages this language environment is useful for, and lists the character sets, coding systems, and input methods that go with it. It also shows some sample text to illustrate scripts used in this language environment. If you give an empty input for <code>lang-env</code>, this command describes the chosen language environment.
+</p>
+
+<p>
+You can customize any language environment with the normal hook <code>set-language-environment-hook</code>. The command <code>set-language-environment</code> runs that hook after setting up the new language environment. The hook functions can test for a specific language environment by checking the variable <code>current-language-environment</code>. This hook is where you should put non-default settings for specific language environments, such as coding systems for keyboard input and terminal output, the default input method, etc.
+</p>
+
+<p>
+Before it starts to set up the new language environment, <code>set-language-environment</code> first runs the hook <code>exit-language-environment-hook</code>. This hook is useful for undoing customizations that were made with <code>set-language-environment-hook</code>. For instance, if you set up a special key binding in a specific language environment using <code>set-language-environment-hook</code>, you should set up <code>exit-language-environment-hook</code> to restore the normal binding for that key.
+</p>
+
+<hr />
+</div>
+</div>

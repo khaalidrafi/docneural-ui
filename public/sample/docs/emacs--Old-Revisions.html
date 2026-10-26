@@ -1,0 +1,109 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Examining-And-Comparing-Old-Revisions">1. 30.1.6 Examining And Comparing Old Revisions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--VC-Change-Log.html">VC Change Log</a>   Previous: <a href="docs/emacs--Registering.html">Registering a File for Version Control</a>   Up: <a href="docs/emacs--Version-Control.html">Version Control</a>
+</p>
+
+<p>
+<a id="Old-Revisions"></a>
+</p>
+
+<hr />
+<div id="outline-container-Examining-And-Comparing-Old-Revisions" class="outline-2">
+<h2 id="Examining-And-Comparing-Old-Revisions"><span class="section-number-2">1.</span> 30.1.6 Examining And Comparing Old Revisions <a href="#Examining-And-Comparing-Old-Revisions">¶</a></h2>
+<div class="outline-text-2" id="text-Examining-And-Comparing-Old-Revisions">
+<dl class="org-dl">
+<dt>C-x v =</dt><dd>Compare the work files in the current VC fileset with the versions you started from (<code>vc-diff</code>). With a prefix argument, prompt for two revisions of the current VC fileset and compare them. You can also call this command from a Dired buffer (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>).</dd>
+
+<dt>M-x vc-ediff</dt><dd>Like C-x v =, but using Ediff. See <a href="../ediff_html/index.html#Top">Ediff</a> in The Ediff Manual.</dd>
+
+<dt>C-x v D</dt><dd>Compare the entire working tree to the revision you started from (<code>vc-root-diff</code>). With a prefix argument, prompt for two revisions and compare their trees.</dd>
+
+<dt>C-x v ~</dt><dd>Prompt for a revision of the current file, and visit it in a separate buffer (<code>vc-revision-other-window</code>).</dd>
+
+<dt>C-x v g</dt><dd>Display an annotated version of the current file: for each line, show the latest revision in which it was modified (<code>vc-annotate</code>).</dd>
+</dl>
+
+<p>
+C-x v = (<code>vc-diff</code>) displays a <i>diff</i> which compares each work file in the current VC fileset to the version(s) from which you started editing. The diff is displayed in another window, in a Diff mode buffer (see <a href="docs/emacs--Diff-Mode.html">Diff Mode</a>) named <code>*vc-diff*</code>. The usual Diff mode commands are available in this buffer. In particular, the g (<code>revert-buffer</code>) command performs the file comparison again, generating a new diff.
+</p>
+
+<p>
+To compare two arbitrary revisions of the current VC fileset, call <code>vc-diff</code> with a prefix argument: C-u C-x v =. This prompts for two revision IDs (see <a href="docs/emacs--VCS-Concepts.html">Concepts of Version Control</a>), and displays a diff between those versions of the fileset. This will not work reliably for multi-file VC filesets, if the version control system is file-based rather than changeset-based (e.g., CVS), since then revision IDs for different files would not be related in any meaningful way.
+</p>
+
+<p>
+Instead of the revision ID, some version control systems let you specify revisions in other formats. For instance, under Bazaar you can enter ‘=date:yesterday=' for the argument to C-u C-x v = (and related commands) to specify the first revision committed after yesterday. See the documentation of the version control system for details.
+</p>
+
+<p>
+If you invoke C-x v = or C-u C-x v = from a Dired buffer (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>), the file listed on the current line is treated as the current VC fileset. The VC fileset can also include several marked files.
+</p>
+
+<p>
+M-x vc-ediff works like C-x v =, except that it uses an Ediff session. See <a href="../ediff_html/index.html#Top">Ediff</a> in The Ediff Manual.
+</p>
+
+<p>
+C-x v D (<code>vc-root-diff</code>) is similar to C-x v =, but it displays the changes in the entire current working tree (i.e., the working tree containing the current VC fileset). If you invoke this command from a Dired buffer, it applies to the working tree containing the directory.
+</p>
+
+<p>
+To compare two arbitrary revisions of the whole trees, call <code>vc-root-diff</code> with a prefix argument: C-u C-x v D. This prompts for two revision IDs (see <a href="docs/emacs--VCS-Concepts.html">Concepts of Version Control</a>), and displays a diff between those versions of the entire version-controlled directory trees (RCS, SCCS, CVS, and SRC do not support this feature).
+</p>
+
+<p>
+You can customize the <code>diff</code> options that C-x v = and C-x v D use for generating diffs. The options used are taken from the first non-<code>nil</code> value amongst the variables <code>vc-==backend=</code>-diff-switches=, <code>vc-diff-switches</code>, and <code>diff-switches</code> (see <a href="docs/emacs--Comparing-Files.html">Comparing Files</a>), in that order. Here, <code>backend</code> stands for the relevant version control system, e.g., <code>bzr</code> for Bazaar. Since <code>nil</code> means to check the next variable in the sequence, either of the first two may use the value <code>t</code> to mean no switches at all. Most of the <code>vc-==backend=</code>-diff-switches= variables default to <code>nil</code>, but some default to <code>t</code>; these are for version control systems whose <code>diff</code> implementations do not accept common diff options, such as Subversion.
+</p>
+
+<p>
+To directly examine an older version of a file, visit the work file and type C-x v ~ <code>revision</code> RET (<code>vc-revision-other-window</code>). This retrieves the file version corresponding to <code>revision</code>, saves it to <code>filename=</code>.~==revision==~=, and visits it in a separate window.
+</p>
+
+<p>
+Many version control systems allow you to view files <i>annotated</i> with per-line revision information, by typing C-x v g (<code>vc-annotate</code>). This creates a new “annotate” buffer displaying the file's text, with each line colored to show how old it is. Red text is new, blue is old, and intermediate colors indicate intermediate ages. By default, the color is scaled over the full range of ages, such that the oldest changes are blue, and the newest changes are red. If the variable <code>vc-annotate-background-mode</code> is non-<code>nil</code>, the colors expressing the age of each line are applied to the background color, leaving the foreground at its default color.
+</p>
+
+<p>
+You can customize the <code>annotate</code> options that C-x v g uses by customizing <code>vc-==backend=</code>-annotate-switches= and <code>vc-annotate-switches</code>. They function similarly to <code>vc-==backend=</code>-diff-switches= and <code>vc-diff-switches</code>, described above.
+</p>
+
+<p>
+When you give a prefix argument to C-x v g, Emacs reads two arguments using the minibuffer: the revision to display and annotate (instead of the current file contents), and the time span in days the color range should cover.
+</p>
+
+<p>
+From the “annotate” buffer, these and other color scaling options are available from the ‘=VC-Annotate=' menu. In this buffer, you can also use the following keys to browse the annotations of past revisions, view diffs, or view log entries:
+</p>
+
+<dl class="org-dl">
+<dt>p</dt><dd>Annotate the previous revision, i.e., the revision before the one currently annotated. A numeric prefix argument is a repeat count, so C-u 10 p would take you back 10 revisions.</dd>
+
+<dt>n</dt><dd>Annotate the next revision, i.e., the revision after the one currently annotated. A numeric prefix argument is a repeat count.</dd>
+
+<dt>j</dt><dd>Annotate the revision indicated by the current line.</dd>
+
+<dt>a</dt><dd>Annotate the revision before the one indicated by the current line. This is useful to see the state the file was in before the change on the current line was made.</dd>
+
+<dt>f</dt><dd>Show in a buffer the file revision indicated by the current line.</dd>
+
+<dt>d</dt><dd>Display the diff between the current line's revision and the previous revision. This is useful to see what the current line's revision actually changed in the file.</dd>
+
+<dt>D</dt><dd>Display the diff between the current line's revision and the previous revision for all files in the changeset (for VC systems that support changesets). This is useful to see what the current line's revision actually changed in the tree.</dd>
+
+<dt>l</dt><dd>Show the log of the current line's revision. This is useful to see the author's description of the changes in the revision on the current line.</dd>
+
+<dt>w</dt><dd>Annotate the working revision&#x2014;the one you are editing. If you used p and n to browse to other revisions, use this key to return to your working revision.</dd>
+
+<dt>v</dt><dd>Toggle the annotation visibility. This is useful for looking just at the file contents without distraction from the annotations.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

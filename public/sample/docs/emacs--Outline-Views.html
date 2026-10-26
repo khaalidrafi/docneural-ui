@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Viewing-One-Outline-in-Multiple-Views">1. 27.9.5 Viewing One Outline in Multiple Views ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Foldout.html">Folding Editing</a>   Previous: <a href="docs/emacs--Outline-Visibility.html">Outline Visibility Commands</a>   Up: <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>
+</p>
+
+<p>
+<a id="Outline-Views"></a>
+</p>
+
+<hr />
+<div id="outline-container-Viewing-One-Outline-in-Multiple-Views" class="outline-2">
+<h2 id="Viewing-One-Outline-in-Multiple-Views"><span class="section-number-2">1.</span> 27.9.5 Viewing One Outline in Multiple Views <a href="#Viewing-One-Outline-in-Multiple-Views">¶</a></h2>
+<div class="outline-text-2" id="text-Viewing-One-Outline-in-Multiple-Views">
+<p>
+You can display two views of a single outline at the same time, in different windows. To do this, you must create an indirect buffer using M-x make-indirect-buffer. The first argument of this command is the existing outline buffer name, and its second argument is the name to use for the new indirect buffer. See <a href="docs/emacs--Indirect-Buffers.html">Indirect Buffers</a>.
+</p>
+
+<p>
+Once the indirect buffer exists, you can display it in a window in the normal fashion, with C-x 4 b or other Emacs commands. The Outline mode commands to show and hide parts of the text operate on each buffer independently; as a result, each buffer can have its own view. If you want more than two views on the same outline, create additional indirect buffers.
+</p>
+</div>
+</div>

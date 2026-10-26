@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Summing-Time-Intervals">1. 33.12 Summing Time Intervals ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>   Previous: <a href="docs/emacs--Daylight-Saving.html">Daylight Saving Time</a>   Up: <a href="docs/emacs--Calendar_002fDiary.html">The Calendar and the Diary</a>
+</p>
+
+<p>
+<a id="Time-Intervals"></a>
+</p>
+
+<hr />
+<div id="outline-container-Summing-Time-Intervals" class="outline-2">
+<h2 id="Summing-Time-Intervals"><span class="section-number-2">1.</span> 33.12 Summing Time Intervals <a href="#Summing-Time-Intervals">¶</a></h2>
+<div class="outline-text-2" id="text-Summing-Time-Intervals">
+<p>
+The timeclock package adds up time intervals, so you can (for instance) keep track of how much time you spend working on particular projects. (A more advanced alternative is to use the Org Mode's facilities for clocking time, see <a href="../org_html/Clocking-Work-Time.html#Clocking-Work-Time">Clocking Work Time</a> in The Org Manual).
+</p>
+
+<p>
+Use the M-x timeclock-in command when you start working on a project, and M-x timeclock-out command when you're done. Each time you do this, it adds one time interval to the record of the project. You can change to working on a different project with M-x timeclock-change.
+</p>
+
+<p>
+Once you've collected data from a number of time intervals, you can use M-x timeclock-workday-remaining to see how much time is left to work today (assuming a typical average of 8 hours a day), and M-x timeclock-when-to-leave which will calculate when you're done.
+</p>
+
+<p>
+If you want Emacs to display the amount of time left of your workday in the mode line, either customize the <code>timeclock-mode-line-display</code> variable and set its value to <code>t</code>, or invoke the M-x timeclock-mode-line-display command.
+</p>
+
+<p>
+Terminating the current Emacs session might or might not mean that you have stopped working on the project and, by default, Emacs asks you. You can, however, customize the value of the variable <code>timeclock-ask-before-exiting</code> to <code>nil</code> to avoid the question; then, only an explicit M-x timeclock-out or M-x timeclock-change will tell Emacs that the current interval is over.
+</p>
+
+<p>
+The timeclock functions work by accumulating the data in a file called <code>~/.emacs.d/timelog</code>. You can specify a different name for this file by customizing the variable <code>timeclock-file</code>. If you edit the timeclock file manually, or if you change the value of any of timeclock's customizable variables, you should run the command M-x timeclock-reread-log to update the data in Emacs from the file.
+</p>
+
+<hr />
+</div>
+</div>

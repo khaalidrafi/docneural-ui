@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Operating-on-the-Region">1. 13.3 Operating on the Region ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>   Previous: <a href="docs/emacs--Marking-Objects.html">Commands to Mark Textual Objects</a>   Up: <a href="docs/emacs--Mark.html">The Mark and the Region</a>
+</p>
+
+<p>
+<a id="Using-Region"></a>
+</p>
+
+<hr />
+<div id="outline-container-Operating-on-the-Region" class="outline-2">
+<h2 id="Operating-on-the-Region"><span class="section-number-2">1.</span> 13.3 Operating on the Region <a href="#Operating-on-the-Region">¶</a></h2>
+<div class="outline-text-2" id="text-Operating-on-the-Region">
+<p>
+Once you have a region, here are some of the ways you can operate on it:
+</p>
+
+<ul class="org-ul">
+<li>Kill it with C-w (see <a href="docs/emacs--Killing.html">Killing and Moving Text</a>).</li>
+<li>Copy it to the kill ring with M-w (see <a href="docs/emacs--Yanking.html">Yanking</a>).</li>
+<li>Convert case with C-x C-l or C-x C-u (see <a href="docs/emacs--Case.html">Case Conversion Commands</a>).</li>
+<li>Undo changes within it using C-u C-/ (see <a href="docs/emacs--Undo.html">Undo</a>).</li>
+<li>Replace text within it using M-% (see <a href="docs/emacs--Query-Replace.html">Query Replace</a>).</li>
+<li>Indent it with C-x TAB or C-M-\ (see <a href="docs/emacs--Indentation.html">Indentation</a>).</li>
+<li>Fill it as text with M-x fill-region (see <a href="docs/emacs--Filling.html">Filling Text</a>).</li>
+<li>Check the spelling of words within it with M-$ (see <a href="docs/emacs--Spelling.html">Checking and Correcting Spelling</a>).</li>
+<li>Evaluate it as Lisp code with M-x eval-region (see <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>).</li>
+<li>Save it in a register with C-x r s (see <a href="docs/emacs--Registers.html">Registers</a>).</li>
+<li>Save it in a buffer or a file (see <a href="docs/emacs--Accumulating-Text.html">Accumulating Text</a>).</li>
+</ul>
+
+<p>
+Some commands have a default behavior when the mark is inactive, but operate on the region if the mark is active. For example, M-$ (<code>ispell-word</code>) normally checks the spelling of the word at point, but it checks the text in the region if the mark is active (see <a href="docs/emacs--Spelling.html">Checking and Correcting Spelling</a>). Normally, such commands use their default behavior if the region is empty (i.e., if mark and point are at the same position). If you want them to operate on the empty region, change the variable <code>use-empty-active-region</code> to <code>t</code>.
+</p>
+
+<p>
+As described in <a href="docs/emacs--Erasing.html">Erasing Text</a>, the DEL (<code>backward-delete-char</code>) and Delete (<code>delete-forward-char</code>) commands also act this way. If the mark is active, they delete the text in the region. (As an exception, if you supply a numeric argument <code>n</code>, where <code>n</code> is not one, these commands delete <code>n</code> characters regardless of whether the mark is active). If you change the variable <code>delete-active-region</code> to <code>nil</code>, then these commands don't act differently when the mark is active. If you change the value to <code>kill</code>, these commands <i>kill</i> the region instead of deleting it (see <a href="docs/emacs--Killing.html">Killing and Moving Text</a>).
+</p>
+
+<p>
+Other commands always operate on the region, and have no default behavior. Such commands usually have the word <code>region</code> in their names, like C-w (<code>kill-region</code>) and C-x C-u (<code>upcase-region</code>). If the mark is inactive, they operate on the <i>inactive region</i>&#x2014;that is, on the text between point and the position at which the mark was last set (see <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>). To disable this behavior, change the variable <code>mark-even-if-inactive</code> to <code>nil</code>. Then these commands will instead signal an error if the mark is inactive.
+</p>
+
+<p>
+By default, text insertion occurs normally even if the mark is active&#x2014;for example, typing a inserts the character ‘=a=', then deactivates the mark. Delete Selection mode, a minor mode, modifies this behavior: if you enable that mode, then inserting text while the mark is active causes the text in the region to be deleted first. However, you can tune this behavior by customizing the <code>delete-selection-temporary-region</code> option. Its default value is <code>nil</code>, but you can set it to <code>t</code>, in which case only temporarily-active regions will be replaced: those which are set by dragging the mouse (see <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>) or by shift-selection (see <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>), as well as by C-u C-x C-x when Transient Mark Mode is disabled. You can further tune the behavior by setting <code>delete-selection-temporary-region</code> to <code>selection</code>: then temporary regions by C-u C-x C-x won't be replaced, only the ones activated by dragging the mouse or shift-selection. To toggle Delete Selection mode on or off, type M-x delete-selection-mode.
+</p>
+
+<hr />
+</div>
+</div>

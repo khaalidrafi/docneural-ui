@@ -1,0 +1,134 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#features">1.0.1. 5.1 Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Features"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Features-1"></a>
+</p>
+</div>
+<div id="outline-container-features" class="outline-4">
+<h4 id="features"><span class="section-number-4">1.0.1.</span> 5.1 Features</h4>
+<div class="outline-text-4" id="text-features">
+<p>
+Here we assume you've already made your first steps with Guix (see <a href="docs/guix--Getting-Started.html">Getting Started</a>) and would like to get an overview about what's going on under the hood.
+</p>
+
+<p>
+When using Guix, each package ends up in the <i>package store</i>, in its own directory&#x2014;something that resembles <code>/gnu/store/xxx-package-1.2</code>, where <code>xxx</code> is a base32 string.
+</p>
+
+<p>
+Instead of referring to these directories, users have their own <i>profile</i>, which points to the packages that they actually want to use. These profiles are stored within each user's home directory, at <code>$HOME/.guix-profile</code>.
+</p>
+
+<p>
+For example, <code>alice</code> installs GCC 4.7.2. As a result, <code>/home/alice/.guix-profile/bin/gcc</code> points to <code>/gnu/store/…-gcc-4.7.2/bin/gcc</code>. Now, on the same machine, <code>bob</code> had already installed GCC 4.8.0. The profile of <code>bob</code> simply continues to point to <code>/gnu/store/…-gcc-4.8.0/bin/gcc</code>&#x2014;i.e., both versions of GCC coexist on the same system without any interference.
+</p>
+
+<p>
+The <code>guix package</code> command is the central tool to manage packages (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). It operates on the per-user profiles, and can be used <i>with normal user privileges</i>.
+</p>
+
+<p>
+<a id="index-transactions"></a>
+The command provides the obvious install, remove, and upgrade operations. Each invocation is actually a <i>transaction</i>: either the specified operation succeeds, or nothing happens. Thus, if the <code>guix package</code> process is terminated during the transaction, or if a power outage occurs during the transaction, then the user's profile remains in its previous state, and remains usable.
+</p>
+
+<p>
+In addition, any package transaction may be <i>rolled back</i>. So, if, for example, an upgrade installs a new version of a package that turns out to have a serious bug, users may roll back to the previous instance of their profile, which was known to work well. Similarly, the global system configuration on Guix is subject to transactional upgrades and roll-back (see <a href="docs/guix--Getting-Started-with-the-System.html">Getting Started</a>).
+</p>
+
+<p>
+All packages in the package store may be <i>garbage-collected</i>. Guix can determine which packages are still referenced by user profiles, and remove those that are provably no longer referenced (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>). Users may also explicitly remove old generations of their profile so that the packages they refer to can be collected.
+</p>
+
+<p>
+<a id="index-reproducibility"></a> <a id="index-reproducible-builds-1"></a>
+Guix takes a <i>purely functional</i> approach to package management, as described in the introduction (see <a href="docs/guix--Introduction.html">Introduction</a>). Each <code>/gnu/store</code> package directory name contains a hash of all the inputs that were used to build that package&#x2014;compiler, libraries, build scripts, etc. This direct correspondence allows users to make sure a given package installation matches the current state of their distribution. It also helps maximize <i>build reproducibility</i>: thanks to the isolated build environments that are used, a given build is likely to yield bit-identical files when performed on different machines (see <a href="docs/guix--Invoking-guix_002ddaemon.html">container</a>).
+</p>
+
+<p>
+<a id="index-substitutes-1"></a>
+This foundation allows Guix to support <i>transparent binary/source deployment</i>. When a pre-built binary for a <code>/gnu/store</code> item is available from an external source&#x2014;a <i>substitute</i>, Guix just downloads it and unpacks it; otherwise, it builds the package from source, locally (see <a href="docs/guix--Substitutes.html">Substitutes</a>). Because build results are usually bit-for-bit reproducible, users do not have to trust servers that provide substitutes: they can force a local build and <i>challenge</i> providers (see <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>).
+</p>
+
+<p>
+Control over the build environment is a feature that is also useful for developers. The <code>guix shell</code> command allows developers of a package to quickly set up the right development environment for their package, without having to manually install the dependencies of the package into their profile (see <a href="docs/guix--Invoking-guix-shell.html">Invoking <code>guix shell</code></a>).
+</p>
+
+<p>
+<a id="index-replication_002c-of-software-environments"></a> <a id="index-provenance-tracking_002c-of-software-artifacts"></a>
+All of Guix and its package definitions is version-controlled, and <code>guix pull</code> allows you to “travel in time” on the history of Guix itself (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>). This makes it possible to replicate a Guix instance on a different machine or at a later point in time, which in turn allows you to <i>replicate complete software environments</i>, while retaining precise <i>provenance tracking</i> of the software.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

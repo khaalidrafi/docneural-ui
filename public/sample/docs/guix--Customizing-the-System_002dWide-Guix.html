@@ -1,0 +1,130 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#customizing-the-system-wide-guix">1.0.1. 6.4 Customizing the System-Wide Guix</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Customizing-the-System_002dWide-Guix"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Channel-Authentication.html">Channel Authentication</a>, Previous: <a href="docs/guix--Replicating-Guix.html">Replicating Guix</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Customizing-the-System_002dWide-Guix-1"></a>
+</p>
+</div>
+<div id="outline-container-customizing-the-system-wide-guix" class="outline-4">
+<h4 id="customizing-the-system-wide-guix"><span class="section-number-4">1.0.1.</span> 6.4 Customizing the System-Wide Guix</h4>
+<div class="outline-text-4" id="text-customizing-the-system-wide-guix">
+<p>
+<a id="index-system_002dwide-Guix_002c-customization"></a> <a id="index-channels_002c-for-the-default-Guix"></a>
+If you're running Guix System or building system images with it, maybe you will want to customize the system-wide <code>guix</code> it provides&#x2014;specifically, <code>/run/current-system/profile/bin/guix</code>. For example, you might want to provide additional channels or to pin its revision.
+</p>
+
+<p>
+This can be done using the <code>guix-for-channels</code> procedure, which returns a package for the given channels, and using it as part of your operating system configuration, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages package-management)
+             (guix channels))
+
+(define my-channels
+  ;; Channels that should be available to
+  ;; /run/current-system/profile/bin/guix.
+  (append
+   (list (channel
+          (name 'guix-science)
+          (url "https://codeberg.org/guix-science/guix-science")
+          (branch "master")))
+   %default-channels))
+
+(operating-system
+  ;; …
+  (services
+    ;; Change the package used by 'guix-service-type'.
+    (modify-services %base-services
+      (guix-service-type
+       config =&gt; (guix-configuration
+                  (inherit config)
+                  (channels my-channels)
+                  (guix (guix-for-channels my-channels)))))))
+</pre>
+</div>
+
+<p>
+The resulting operating system will have both the <code>guix</code> and the <code>guix-science</code> channels visible by default. The <code>channels</code> field of <code>guix-configuration</code> above further ensures that <code>/etc/guix/channels.scm</code>, which is used by <code>guix pull</code>, specifies the same set of channels (see <a href="docs/guix--Base-Services.html#guix_002dconfiguration_002dchannels"><code>channels</code> field of <code>guix-configuration</code></a>).
+</p>
+
+<p>
+The <code>(gnu packages package-management)</code> module exports the <code>guix-for-channels</code> procedure, described below.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: guix-for-channels <code>channels</code></dt><dd><p>
+Return a package corresponding to <code>channels</code>.
+</p>
+
+<p>
+The result is a “regular” package, which can be used in <code>guix-configuration</code> as shown above or in any other place that expects a package.
+</p></dd>
+</dl>
+</div>
+</div>
+</div>

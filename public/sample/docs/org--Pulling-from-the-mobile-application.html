@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Pulling-from-the-mobile-application-1">1. 17.18.3 Pulling from the mobile application ¶</a>
+<ul>
+<li><a href="#section">1.1. (172)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Pulling-from-the-mobile-application"></a>
+Previous: <a href="docs/org--Pushing-to-the-mobile-application.html">Pushing to the mobile application</a>, Up: <a href="docs/org--Org-Mobile.html">Org Mobile</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Pulling-from-the-mobile-application-1" class="outline-2">
+<h2 id="Pulling-from-the-mobile-application-1"><span class="section-number-2">1.</span> 17.18.3 Pulling from the mobile application <a href="#Pulling-from-the-mobile-application-1">¶</a></h2>
+<div class="outline-text-2" id="text-Pulling-from-the-mobile-application-1">
+<p>
+The command <code>org-mobile-pull</code> synchronizes changes with the server. More specifically, it first pulls the Org files for viewing. It then appends captured entries and pointers to flagged or changed entries to the file ‘=mobileorg.org=' on the server. Org ultimately integrates its data in an inbox file format, through the following steps:
+</p>
+
+<ol class="org-ol">
+<li>Org moves all entries found in ‘=mobileorg.org=' and appends them to the file pointed to by the variable <code>org-mobile-inbox-for-pull</code>. It should reside neither in the staging area nor on the server. Each captured entry and each editing event is a top-level entry in the inbox file.</li>
+<li>After moving the entries, Org processes changes to the shared files. Some of them are applied directly and without user interaction. Examples include changes to tags, TODO state, headline and body text. Entries requiring further action are tagged as ‘=FLAGGED='. Org marks entries with problems with an error message in the inbox. They have to be resolved manually.</li>
+<li>Org generates an agenda view for flagged entries for user intervention to clean up. For notes stored in flagged entries, Org displays them in the echo area when point is on the corresponding agenda item.
+<dl class="org-dl">
+<dt>?</dt><dd>Pressing ? displays the entire flagged note in another window. Org also pushes it to the kill ring. To store flagged note as a normal note, use ? z C-y C-c C-c. Pressing ? twice does these things: first it removes the ‘=FLAGGED=' tag; second, it removes the flagged note from the property drawer; third, it signals that manual editing of the flagged entry is now finished.</dd>
+</dl></li>
+</ol>
+
+<p>
+From the agenda dispatcher, ? returns to the view to finish processing flagged entries. Note that these entries may not be the most recent since the mobile application searches files that were last pulled. To get an updated agenda view with changes since the last pull, pull again.
+</p>
+
+<hr />
+</div>
+</div>

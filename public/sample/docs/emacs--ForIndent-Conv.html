@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Syntactic-Conventions">1. 28.14.2.4 Syntactic Conventions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--ForIndent-Vars.html">Variables for Fortran Indentation</a>   Previous: <a href="docs/emacs--ForIndent-Num.html">Line Numbers</a>   Up: <a href="docs/emacs--Fortran-Indent.html">Fortran Indentation</a>
+</p>
+
+<p>
+<a id="ForIndent-Conv"></a>
+</p>
+
+<hr />
+<div id="outline-container-Syntactic-Conventions" class="outline-2">
+<h2 id="Syntactic-Conventions"><span class="section-number-2">1.</span> 28.14.2.4 Syntactic Conventions <a href="#Syntactic-Conventions">¶</a></h2>
+<div class="outline-text-2" id="text-Syntactic-Conventions">
+<p>
+Fortran mode assumes that you follow certain conventions that simplify the task of understanding a Fortran program well enough to indent it properly:
+</p>
+
+<ul class="org-ul">
+<li>Two nested ‘=do=' loops never share a ‘=continue=' statement.</li>
+
+<li><p>
+Fortran keywords such as ‘=if=', ‘=else=', ‘=then=', ‘=do=' and others are written without embedded whitespace or line breaks.
+</p>
+
+<p>
+Fortran compilers generally ignore whitespace outside of string constants, but Fortran mode does not recognize these keywords if they are not contiguous. Constructs such as ‘=else if=' or ‘=end do=' are acceptable, but the second word should be on the same line as the first and not on a continuation line.
+</p></li>
+</ul>
+
+<p>
+If you fail to follow these conventions, the indentation commands may indent some lines unaesthetically. However, a correct Fortran program retains its meaning when reindented even if the conventions are not followed.
+</p>
+</div>
+</div>

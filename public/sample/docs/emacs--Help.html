@@ -1,0 +1,76 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Help-2">1. 12 Help ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mark.html">The Mark and the Region</a>   Previous: <a href="docs/emacs--M_002dx.html">Running Commands by Name</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Help"></a>
+</p>
+
+<hr />
+<div id="outline-container-Help-2" class="outline-2">
+<h2 id="Help-2"><span class="section-number-2">1.</span> 12 Help <a href="#Help-2">¶</a></h2>
+<div class="outline-text-2" id="text-Help-2">
+<p>
+Emacs provides a wide variety of help commands, all accessible through the prefix key C-h (or, equivalently, the function key F1). These help commands are described in the following sections. You can also type C-h C-h to view a list of help commands (<code>help-for-help</code>). You can scroll the list with SPC and DEL, then type the help command you want. To cancel, type C-g.
+</p>
+
+<p>
+Many help commands display their information in a special <i>help buffer</i>. In this buffer, you can type SPC and DEL to scroll and type RET to follow hyperlinks. See <a href="docs/emacs--Help-Mode.html">Help Mode Commands</a>.
+</p>
+
+<p>
+By default, help commands display the help buffer in a separate window without selecting that window. The variable <code>help-window-select</code> controls this: its default value is <code>nil</code>; if it's customized to the value <code>t</code>, the help window is unconditionally selected by help commands, and if its value is <code>other</code>, the help window is selected only if there are more than two windows on the selected frame.
+</p>
+
+<p>
+Conversely, many commands in the ‘=*Help*=' buffer will pop up a new window to display the results. For instance, clicking on the link to show the source code, or using the i command to display the manual entry, will (by default) pop up a new window. If <code>help-window-keep-selected</code> is changed to non-<code>nil</code>, the window displaying the ‘=*Help*=' buffer will be reused instead.
+</p>
+
+<p>
+If you are looking for a certain feature, but don't know what it is called or where to look, we recommend three methods. First, try apropos commands, then try searching the manual index, then look in the FAQ and the package keywords, and finally try listing external packages.
+</p>
+
+<dl class="org-dl">
+<dt>C-h a <code>topics</code> RET</dt><dd>This searches for commands whose names match the argument <code>topics</code>. The argument can be a keyword, a list of keywords separated by whitespace, or a regular expression (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). See <a href="docs/emacs--Apropos.html">Apropos</a>.</dd>
+
+<dt>C-h d <code>topics</code> RET</dt><dd>Similar, but searches the <i>text</i> of the documentation strings rather than the names of commands and functions.</dd>
+
+<dt>C-h r i <code>topic</code> RET</dt><dd>This searches for <code>topic</code> in the indices of the Emacs Info manual, displaying the first match found. Press , to see subsequent matches. You can use a regular expression as <code>topic</code>.</dd>
+
+<dt>C-h r s <code>topic</code> RET</dt><dd>Similar, but searches the <i>text</i> of the manual rather than the indices.</dd>
+
+<dt>C-h C-f</dt><dd>This displays the Emacs FAQ, using Info.</dd>
+
+<dt>C-h p</dt><dd>This displays the available Emacs packages based on keywords. See <a href="docs/emacs--Package-Keywords.html">Keyword Search for Packages</a>.</dd>
+
+<dt>M-x list-packages</dt><dd>This displays a list of external packages. See <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>.</dd>
+</dl>
+
+<p>
+C-h or F1 mean “help” in various other contexts as well. For instance, you can type them after a prefix key to view a list of the keys that can follow the prefix key. (You can also use ? in this context. A few prefix keys don't support C-h or ? in this way, because they define other meanings for those inputs, but they all support F1.)
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Help-Summary.html">Help Summary</a></li>
+<li><a href="docs/emacs--Key-Help.html">Documentation for a Key</a></li>
+<li><a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a></li>
+<li><a href="docs/emacs--Apropos.html">Apropos</a></li>
+<li><a href="docs/emacs--Help-Mode.html">Help Mode Commands</a></li>
+<li><a href="docs/emacs--Package-Keywords.html">Keyword Search for Packages</a></li>
+<li><a href="docs/emacs--Language-Help.html">Help for International Language Support</a></li>
+<li><a href="docs/emacs--Misc-Help.html">Other Help Commands</a></li>
+<li><a href="docs/emacs--Help-Files.html">Help Files</a></li>
+<li><a href="docs/emacs--Help-Echo.html">Help on Active Text and Tooltips</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

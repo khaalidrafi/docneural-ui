@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Erasing-Text">1. 9.3 Erasing Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Basic-Undo.html">Undoing Changes</a>   Previous: <a href="docs/emacs--Moving-Point.html">Changing the Location of Point</a>   Up: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>
+</p>
+
+<p>
+<a id="Erasing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Erasing-Text" class="outline-2">
+<h2 id="Erasing-Text"><span class="section-number-2">1.</span> 9.3 Erasing Text <a href="#Erasing-Text">¶</a></h2>
+<div class="outline-text-2" id="text-Erasing-Text">
+<ul class="org-ul">
+<li>DEL<br />
+BACKSPACE :: Delete the character before point, or the region if it is active (<code>delete-backward-char</code>).</li>
+
+<li id="Delete">Delete the character or grapheme cluster after point, or the region if it is active (<code>delete-forward-char</code>).</li>
+
+<li id="C-d">Delete the character after point (<code>delete-char</code>).</li>
+
+<li id="C-k">Kill to the end of the line (<code>kill-line</code>).</li>
+
+<li id="M-d">Kill forward to the end of the next word (<code>kill-word</code>).</li>
+
+<li>M-DEL<br />
+M-BACKSPACE :: Kill back to the beginning of the previous word (<code>backward-kill-word</code>).</li>
+</ul>
+
+<p>
+The DEL (<code>delete-backward-char</code>) command removes the character before point, moving the cursor and the characters after it backwards. If point was at the beginning of a line, this deletes the preceding newline, joining this line to the previous one.
+</p>
+
+<p>
+If, however, the region is active, DEL instead deletes the text in the region. See <a href="docs/emacs--Mark.html">The Mark and the Region</a>, for a description of the region.
+</p>
+
+<p>
+On most keyboards, DEL is labeled BACKSPACE, but we refer to it as DEL in this manual. (Do not confuse DEL with the Delete key; we will discuss Delete momentarily.) On some text terminals, Emacs may not recognize the DEL key properly. See <a href="docs/emacs--DEL-Does-Not-Delete.html">If DEL Fails to Delete</a>, if you encounter this problem.
+</p>
+
+<p>
+The Delete (<code>delete-forward-char</code>) command deletes in the opposite direction: it deletes the character after point, i.e., the character under the cursor. If point was at the end of a line, this joins the following line onto this one. Like DEL, it deletes the text in the region if the region is active (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>). If the character after point is composed with following characters and displayed as a single display unit, a so-called <i>grapheme cluster</i> representing the entire sequence, Delete deletes the entire sequence in one go. This is in contrast to DEL which always deletes a single character, even if the character is composed.
+</p>
+
+<p>
+C-d (<code>delete-char</code>) deletes the character after point, similar to Delete, but regardless of whether the region is active.
+</p>
+
+<p>
+See <a href="docs/emacs--Deletion.html">Deletion</a>, for more detailed information about the above deletion commands.
+</p>
+
+<p>
+C-k (<code>kill-line</code>) erases (kills) a line at a time. If you type C-k at the beginning or middle of a line, it kills all the text up to the end of the line. If you type C-k at the end of a line, it joins that line with the following line.
+</p>
+
+<p>
+See <a href="docs/emacs--Killing.html">Killing and Moving Text</a>, for more information about C-k and related commands.
+</p>
+
+<hr />
+</div>
+</div>

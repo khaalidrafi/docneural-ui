@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keeping-Numbers-in-Registers">1. 15.5 Keeping Numbers in Registers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--File-and-Buffer-Registers.html">Keeping File and Buffer Names in Registers</a>   Previous: <a href="docs/emacs--Configuration-Registers.html">Saving Window and Frame Configurations in Registers</a>   Up: <a href="docs/emacs--Registers.html">Registers</a>
+</p>
+
+<p>
+<a id="Number-Registers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keeping-Numbers-in-Registers" class="outline-2">
+<h2 id="Keeping-Numbers-in-Registers"><span class="section-number-2">1.</span> 15.5 Keeping Numbers in Registers <a href="#Keeping-Numbers-in-Registers">¶</a></h2>
+<div class="outline-text-2" id="text-Keeping-Numbers-in-Registers">
+<p>
+There are commands to store a number in a register, to insert the number in the buffer in decimal, and to increment it. These commands can be useful in keyboard macros (see <a href="docs/emacs--Keyboard-Macros.html">Keyboard Macros</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-r-n"></a>C-u <code>number</code> C-x r n <code>r</code> </dt><dd>Store <code>number</code> into register <code>r</code> (<code>number-to-register</code>).</dd>
+
+<dt><a id="index-C_002dx-r-_002b"></a>C-u <code>number</code> C-x r + <code>r</code> </dt><dd>If <code>r</code> contains a number, increment the number in that register by <code>number</code>. Note that command C-x r + (<code>increment-register</code>) behaves differently if <code>r</code> contains text. See <a href="docs/emacs--Text-Registers.html">Saving Text in Registers</a>.</dd>
+
+<dt>C-x r i <code>r</code></dt><dd>Insert the number from register <code>r</code> into the buffer.</dd>
+</dl>
+
+<p>
+C-x r i is the same command used to insert any other sort of register contents into the buffer. C-x r + with no numeric argument increments the register value by 1; C-x r n with no numeric argument stores zero in the register.
+</p>
+</div>
+</div>

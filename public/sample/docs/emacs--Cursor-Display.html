@@ -1,0 +1,56 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Displaying-the-Cursor">1. 16.21 Displaying the Cursor ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Line-Truncation.html">Line Truncation</a>   Previous: <a href="docs/emacs--Text-Display.html">How Text Is Displayed</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Cursor-Display"></a>
+</p>
+
+<hr />
+<div id="outline-container-Displaying-the-Cursor" class="outline-2">
+<h2 id="Displaying-the-Cursor"><span class="section-number-2">1.</span> 16.21 Displaying the Cursor <a href="#Displaying-the-Cursor">¶</a></h2>
+<div class="outline-text-2" id="text-Displaying-the-Cursor">
+<p>
+On a text terminal, the cursor's appearance is controlled by the terminal, largely out of the control of Emacs. Some terminals offer two different cursors: a visible static cursor, and a very visible blinking cursor. By default, Emacs uses the very visible cursor, and switches to it when you start or resume Emacs. If the variable <code>visible-cursor</code> is <code>nil</code> when Emacs starts or resumes, it uses the normal cursor.
+</p>
+
+<p>
+On a graphical display, many more properties of the text cursor can be altered. To customize its color, change the <code>:background</code> attribute of the face named <code>cursor</code> (see <a href="docs/emacs--Face-Customization.html">Customizing Faces</a>). (The other attributes of this face have no effect; the text shown under the cursor is drawn using the frame's background color.) To change its shape, customize the buffer-local variable <code>cursor-type</code>; possible values are <code>box</code> (the default), <code>(box . ==size=</code>)= (box cursor becoming a hollow box under masked images larger than <code>size</code> pixels in either dimension), <code>hollow</code> (a hollow box), <code>bar</code> (a vertical bar), <code>(bar . ==n=</code>)= (a vertical bar <code>n</code> pixels wide), <code>hbar</code> (a horizontal bar), <code>(hbar . ==n=</code>)= (a horizontal bar <code>n</code> pixels tall), or <code>nil</code> (no cursor at all).
+</p>
+
+<p>
+By default, the cursor stops blinking after 10 blinks, if Emacs does not get any input during that time; any input event restarts the count. You can customize the variable <code>blink-cursor-blinks</code> to control that: its value says how many times to blink without input before stopping. Setting that variable to a zero or negative value will make the cursor blink forever. To disable cursor blinking altogether, change the variable <code>blink-cursor-mode</code> to <code>nil</code> (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>), or add the line
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(blink-cursor-mode 0)
+</pre>
+</div>
+
+<p>
+to your init file. Alternatively, you can change how the cursor looks when it blinks off by customizing the list variable <code>blink-cursor-alist</code>. Each element in the list should have the form <code>(==on-type=</code> . <code>=off-type=</code>)=; this means that if the cursor is displayed as <code>on-type</code> when it blinks on (where <code>on-type</code> is one of the cursor types described above), then it is displayed as <code>off-type</code> when it blinks off.
+</p>
+
+<p>
+Some characters, such as tab characters, are extra wide. When the cursor is positioned over such a character, it is normally drawn with the default character width. You can make the cursor stretch to cover wide characters, by changing the variable <code>x-stretch-cursor</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+The cursor normally appears in non-selected windows as a non-blinking hollow box. (For a bar cursor, it instead appears as a thinner bar.) To turn off cursors in non-selected windows, change the variable <code>cursor-in-non-selected-windows</code> to <code>nil</code>.
+</p>
+
+<p>
+To make the cursor even more visible, you can use HL Line mode, a minor mode that highlights the line containing point. Use M-x hl-line-mode to enable or disable it in the current buffer. M-x global-hl-line-mode enables or disables the same mode globally.
+</p>
+
+<hr />
+</div>
+</div>

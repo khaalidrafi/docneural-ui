@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Extending-ODT-export-1">1. 13.12.4 Extending ODT export ¶</a></li>
+<li><a href="#Automatically-exporting-to-other-formats-1">2. Automatically exporting to other formats ¶</a></li>
+<li><a href="#Converting-between-document-formats-1">3. Converting between document formats ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Extending-ODT-export"></a>
+Next: <a href="docs/org--Applying-custom-styles.html">Applying custom styles</a>, Previous: <a href="docs/org--ODT-specific-export-settings.html">ODT specific export settings</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Extending-ODT-export-1" class="outline-2">
+<h2 id="Extending-ODT-export-1"><span class="section-number-2">1.</span> 13.12.4 Extending ODT export <a href="#Extending-ODT-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Extending-ODT-export-1">
+<p>
+The ODT export backend can produce documents in other formats besides ODT using a specialized ODT converter process. Its common interface works with popular converters to produce formats such as ‘=doc=', or convert a document from one format, say ‘=csv=', to another format, say ‘=xls='.
+</p>
+
+<p>
+Customize <code>org-odt-convert-process</code> variable to point to ‘=unoconv=', which is the ODT's preferred converter. Working installations of LibreOffice would already have ‘=unoconv=' installed. Alternatively, other converters may be substituted here. See <a href="docs/org--Advanced-topics-in-ODT-export.html#Configuring-a-document-converter">Configuring a document converter</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-Automatically-exporting-to-other-formats-1" class="outline-2">
+<h2 id="Automatically-exporting-to-other-formats-1"><span class="section-number-2">2.</span> Automatically exporting to other formats <a href="#Automatically-exporting-to-other-formats-1">¶</a></h2>
+<div class="outline-text-2" id="text-Automatically-exporting-to-other-formats-1">
+<p>
+If ODT format is just an intermediate step to get to other formats, such as ‘=doc=', ‘=docx=', ‘=rtf=', or ‘=pdf=', etc., then extend the ODT export backend to directly produce that format. Specify the final format in the <code>org-odt-preferred-output-format</code> variable. This is one way to extend (see <a href="docs/org--ODT-export-commands.html">ODT export commands</a>).
+</p>
+</div>
+</div>
+<div id="outline-container-Converting-between-document-formats-1" class="outline-2">
+<h2 id="Converting-between-document-formats-1"><span class="section-number-2">3.</span> Converting between document formats <a href="#Converting-between-document-formats-1">¶</a></h2>
+<div class="outline-text-2" id="text-Converting-between-document-formats-1">
+<p>
+The Org export backend is made to be interoperable with a wide range of text document format converters. Newer generation converters, such as LibreOffice and Pandoc, can handle hundreds of formats at once. Org provides a consistent interaction with whatever converter is installed. Here are some generic commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dodt_002dconvert"></a>M-x org-odt-convert </dt><dd>Convert an existing document from one format to another. With a prefix argument, opens the newly produced file.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Applying-custom-styles.html">Applying custom styles</a>, Previous: <a href="docs/org--ODT-specific-export-settings.html">ODT specific export settings</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

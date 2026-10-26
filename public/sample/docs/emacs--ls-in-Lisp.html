@@ -1,0 +1,103 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emulation-of-ls-on-MS_002dWindows">1. I.4 Emulation of <code>ls</code> on MS-Windows ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Windows-HOME.html">HOME and Startup Directories on MS-Windows</a>   Previous: <a href="docs/emacs--Windows-Files.html">File Names on MS-Windows</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="ls-in-Lisp"></a>
+</p>
+
+<hr />
+<div id="outline-container-Emulation-of-ls-on-MS_002dWindows" class="outline-2">
+<h2 id="Emulation-of-ls-on-MS_002dWindows"><span class="section-number-2">1.</span> I.4 Emulation of <code>ls</code> on MS-Windows <a href="#Emulation-of-ls-on-MS_002dWindows">¶</a></h2>
+<div class="outline-text-2" id="text-Emulation-of-ls-on-MS_002dWindows">
+<p>
+Dired normally uses the external program <code>ls</code> to produce the directory listing displayed in Dired buffers (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>). However, MS-Windows and MS-DOS systems don't come with such a program, although several ports of GNU <code>ls</code> are available. Therefore, Emacs on those systems <i>emulates</i> <code>ls</code> in Lisp, by using the <code>ls-lisp.el</code> package. While <code>ls-lisp.el</code> provides a reasonably full emulation of <code>ls</code>, there are some options and features peculiar to that emulation; they are described in this section.
+</p>
+
+<p>
+The <code>ls</code> emulation supports many of the <code>ls</code> switches, but it doesn't support all of them. Here's the list of the switches it does support: <code>-A</code>, <code>-a</code>, <code>-B</code>, <code>-C</code>, <code>-c</code>, <code>-G</code>, <code>-g</code>, <code>-h</code>, <code>-i</code>, <code>-n</code>, <code>-R</code>, <code>-r</code>, <code>-S</code>, <code>-s</code>, <code>-t</code>, <code>-U</code>, <code>-u</code>, <code>-v</code>, and <code>-X</code>. The <code>-F</code> switch is partially supported (it appends the character that classifies the file, but does not prevent symlink following).
+</p>
+
+<p>
+On MS-Windows and MS-DOS, <code>ls-lisp.el</code> is preloaded when Emacs is built, so the Lisp emulation of <code>ls</code> is always used on those platforms. If you have a ported <code>ls</code>, setting <code>ls-lisp-use-insert-directory-program</code> to a non-<code>nil</code> value will revert to using an external program named by the variable <code>insert-directory-program</code>.
+</p>
+
+<p>
+The order in which <code>ls-lisp.el</code> sorts files depends on several customizable options described below.
+</p>
+
+<p>
+The default sorting order follows locale-specific rules derived from your system locale. You can make the order locale-independent by customizing <code>ls-lisp-use-string-collate</code> to a <code>nil</code> value.
+</p>
+
+<p>
+On GNU and Unix systems, when the locale's encoding is UTF-8, the collation order follows the Unicode Collation Algorithm (UCA). To have a similar effect on MS-Windows, the variable <code>ls-lisp-UCA-like-collation</code> should have a non-<code>nil</code> value (this is the default). The resulting sorting order ignores punctuation, symbol characters, and whitespace characters, so <code>.foobar</code>, <code>foobar</code> and <code>foo bar</code> will appear together rather than far apart.
+</p>
+
+<p>
+By default, <code>ls-lisp.el</code> uses a case-sensitive sort order for the directory listing it produces; this is so the listing looks the same as on other platforms. If you wish that the files be sorted in case-insensitive order, set the variable <code>ls-lisp-ignore-case</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+By default, files and subdirectories are sorted together, to emulate the behavior of <code>ls</code>. However, native MS-Windows/MS-DOS file managers list the directories before the files; if you want that behavior, customize the option <code>ls-lisp-dirs-first</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+The variable <code>ls-lisp-verbosity</code> controls the file attributes that <code>ls-lisp.el</code> displays. The value should be either <code>nil</code> or a list that contains one or more of the symbols <code>links</code>, <code>uid</code>, and <code>gid</code>. <code>links</code> means display the count of different file names that are associated with (a.k.a. <i>links to</i>) the file's data; this is only useful on NTFS volumes. <code>uid</code> means display the numerical identifier of the user who owns the file. <code>gid</code> means display the numerical identifier of the file owner's group. The default value is <code>(links uid gid)</code> i.e., all the 3 optional attributes are displayed. The value <code>nil</code> means not to display any of these attributes.
+</p>
+
+<p>
+The variable <code>ls-lisp-emulation</code> controls the flavor of the <code>ls</code> emulation by setting the defaults for the 3 options described above: <code>ls-lisp-ignore-case</code>, <code>ls-lisp-dirs-first</code>, and <code>ls-lisp-verbosity</code>. The value of this option can be one of the following symbols:
+</p>
+
+<ul class="org-ul">
+<li><code>GNU</code><br />
+<code>nil</code> :: Emulate GNU systems; this is the default. This sets <code>ls-lisp-ignore-case</code> and <code>ls-lisp-dirs-first</code> to <code>nil</code>, and <code>ls-lisp-verbosity</code> to <code>(links uid gid modes)</code>.</li>
+
+<li id="<code>UNIX</code>">Emulate Unix systems. Like <code>GNU</code>, but sets <code>ls-lisp-verbosity</code> to <code>(links uid modes)</code>.</li>
+
+<li id="<code>MacOS</code>">Emulate macOS. Sets <code>ls-lisp-ignore-case</code> to <code>t</code>, and <code>ls-lisp-dirs-first</code> and <code>ls-lisp-verbosity</code> to <code>nil</code>.</li>
+
+<li id="<code>MS-Windows</code>">Emulate MS-Windows. Sets <code>ls-lisp-ignore-case</code> and <code>ls-lisp-dirs-first</code> to <code>t</code>, and <code>ls-lisp-verbosity</code> to <code>nil</code> on Windows 9X and to <code>t</code> on modern versions of Windows. Note that the default emulation is <i>not</i> <code>MS-Windows</code>, even on Windows, since many users of Emacs on those platforms prefer the GNU defaults.</li>
+</ul>
+
+<p>
+Any other value of <code>ls-lisp-emulation</code> means the same as <code>GNU</code>. Customizing this option calls the function <code>ls-lisp-set-options</code> to update the 3 dependent options as needed. If you change the value of this variable without using customize after <code>ls-lisp.el</code> is loaded (note that it is preloaded on MS-Windows and MS-DOS), you can call that function manually for the same result.
+</p>
+
+<p>
+The variable <code>ls-lisp-support-shell-wildcards</code> controls how file-name patterns are supported: if it is non-<code>nil</code> (the default), they are treated as shell-style wildcards; otherwise they are treated as Emacs regular expressions.
+</p>
+
+<p>
+The variable <code>ls-lisp-format-time-list</code> defines how to format the date and time of files. <i>The value of this variable is ignored</i>, unless Emacs cannot determine the current locale. (However, if the value of <code>ls-lisp-use-localized-time-format</code> is non-<code>nil</code>, Emacs obeys <code>ls-lisp-format-time-list</code> even if the current locale is available; see below.)
+</p>
+
+<p>
+The value of <code>ls-lisp-format-time-list</code> is a list of 2 strings. The first string is used if the file was modified within the current year, while the second string is used for older files. In each of these two strings you can use ‘=%='-sequences to substitute parts of the time. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">("%b %e %H:%M" "%b %e  %Y")
+</pre>
+</div>
+
+<p>
+Note that the strings substituted for these ‘=%='-sequences depend on the current locale. See <a href="../elisp_html/Time-Parsing.html#Time-Parsing">Time Parsing</a> in The Emacs Lisp Reference Manual, for more about format time specs.
+</p>
+
+<p>
+Normally, Emacs formats the file time stamps in either traditional or ISO-style time format. However, if the value of the variable <code>ls-lisp-use-localized-time-format</code> is non-<code>nil</code>, Emacs formats file time stamps according to what <code>ls-lisp-format-time-list</code> specifies. The ‘=%='-sequences in <code>ls-lisp-format-time-list</code> produce locale-dependent month and day names, which might cause misalignment of columns in Dired display. The default value of <code>ls-lisp-use-localized-time-format</code> is <code>nil</code>.
+</p>
+
+<hr />
+</div>
+</div>

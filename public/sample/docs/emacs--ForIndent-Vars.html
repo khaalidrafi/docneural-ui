@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Variables-for-Fortran-Indentation">1. 28.14.2.5 Variables for Fortran Indentation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--ForIndent-Conv.html">Syntactic Conventions</a>   Up: <a href="docs/emacs--Fortran-Indent.html">Fortran Indentation</a>
+</p>
+
+<p>
+<a id="ForIndent-Vars"></a>
+</p>
+
+<hr />
+<div id="outline-container-Variables-for-Fortran-Indentation" class="outline-2">
+<h2 id="Variables-for-Fortran-Indentation"><span class="section-number-2">1.</span> 28.14.2.5 Variables for Fortran Indentation <a href="#Variables-for-Fortran-Indentation">¶</a></h2>
+<div class="outline-text-2" id="text-Variables-for-Fortran-Indentation">
+<p>
+Several additional variables control how Fortran indentation works:
+</p>
+
+<dl class="org-dl">
+<dt><code>fortran-do-indent</code></dt><dd>Extra indentation within each level of ‘=do=' statement (default 3).</dd>
+
+<dt><code>fortran-if-indent</code></dt><dd>Extra indentation within each level of ‘=if=', ‘=select case=', or ‘=where=' statements (default 3).</dd>
+
+<dt><code>fortran-structure-indent</code></dt><dd>Extra indentation within each level of ‘=structure=', ‘=union=', ‘=map=', or ‘=interface=' statements (default 3).</dd>
+
+<dt><code>fortran-continuation-indent</code></dt><dd>Extra indentation for bodies of continuation lines (default 5).</dd>
+
+<dt><code>fortran-check-all-num-for-matching-do</code></dt><dd>In Fortran 77, a numbered ‘=do=' statement is terminated by any statement with a matching line number. It is common (but not compulsory) to use a ‘=continue=' statement for this purpose. If this variable has a non-<code>nil</code> value, indenting any numbered statement must check for a ‘=do=' that ends there. If you always end ‘=do=' statements with a ‘=continue=' line (or if you use the more modern ‘=enddo='), then you can speed up indentation by setting this variable to <code>nil</code> (the default).</dd>
+
+<dt><code>fortran-blink-matching-if</code></dt><dd>If this is <code>t</code>, indenting an ‘=endif=' (or ‘=enddo=') statement moves the cursor momentarily to the matching ‘=if=' (or ‘=do=') statement to show where it is. The default is <code>nil</code>.</dd>
+
+<dt><code>fortran-minimum-statement-indent-fixed</code></dt><dd>Minimum indentation for Fortran statements when using fixed form continuation line style. Statement bodies are never indented by less than this. The default is 6.</dd>
+
+<dt><code>fortran-minimum-statement-indent-tab</code></dt><dd>Minimum indentation for Fortran statements for tab format continuation line style. Statement bodies are never indented by less than this. The default is 8.</dd>
+</dl>
+
+<p>
+The following section describes the variables controlling the indentation of comments.
+</p>
+
+<hr />
+</div>
+</div>

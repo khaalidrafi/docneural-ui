@@ -1,0 +1,313 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Running-Emacs-under-Android">1. H.5 Running Emacs under Android ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (30)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Android-Windowing.html">The Android Window System</a>   Previous: <a href="docs/emacs--Android-Document-Providers.html">Accessing Files from Other Programs on Android</a>   Up: <a href="docs/emacs--Android.html">Emacs and Android</a>
+</p>
+
+<p>
+<a id="Android-Environment"></a>
+</p>
+
+<hr />
+<div id="outline-container-Running-Emacs-under-Android" class="outline-2">
+<h2 id="Running-Emacs-under-Android"><span class="section-number-2">1.</span> H.5 Running Emacs under Android <a href="#Running-Emacs-under-Android">¶</a></h2>
+<div class="outline-text-2" id="text-Running-Emacs-under-Android">
+<p>
+From the perspective of users, Android is mostly a single user operating system; however, from the perspective of applications and Emacs, the system is host to an overwhelming number of users.
+</p>
+
+<p>
+Each application runs in its own user, with its home directory set to its app data directory (see <a href="docs/emacs--Android-File-System.html">What Files Emacs Can Access on Android</a>.)
+</p>
+
+<p>
+Each application is also prohibited from accessing many system directories and the app data directories of other applications.
+</p>
+
+<p>
+The Emacs distribution also incorporates several binaries. While being executable files, they are packaged as libraries in the library directory, because otherwise the system will not unpack them while Emacs is being installed. This means that instead of <code>ctags</code> or <code>emacsclient</code>, Lisp code must specify <code>libctags.so</code> or <code>libemacsclient.so</code> on the command line when starting either of those programs in a subprocess; to determine which names to use, consult the values of the variables <code>ctags-program-name</code>, <code>etags-program-name</code>, <code>hexl-program-name</code>, <code>emacsclient-program-name</code>, <code>movemail-program-name</code>, <code>ebrowse-program-name</code>, and <code>rcs2log-program-name</code>. See <a href="../elisp_html/Subprocess-Creation.html#Subprocess-Creation">Subprocess Creation</a> in the Emacs Lisp Reference Manual.
+</p>
+
+<p>
+The <code>/assets</code> directory containing Emacs start-up files is meant to be inaccessible to processes not directly created by <code>zygote</code>, the system service responsible for starting applications. Since required Lisp is found in the <code>/assets</code> directory, it would thus follow that it is not possible for Emacs to start itself as a subprocess. A special binary named <code>libandroid-emacs.so</code> is provided with Emacs, which is installed into the library directory, and which tries its best to start Emacs for the purpose of running Lisp in batch mode. The approach it takes was devised by reference to Android source code, and is not sanctioned by the Android compatibility definition documents, so your mileage may vary.
+</p>
+
+<p>
+Even when the location of the <code>libandroid-emacs.so</code> command is known in advance, special preparation is required to run Emacs from elsewhere than a subprocess of an existing Emacs session, as it must be made to understand the location of resources and shared libraries in or extracted from the installed application package. The OS command <code>pm path org.gnu.emacs</code> will print the location of the application package, though the said command must be invoked in a peculiar manner to satisfy system restrictions on communication between pseudoterminal devices created by user applications and system services such as the package manager, which is to say, with the standard IO streams redirected to a real file or a pipe. This value, once established, must be specified in the environment variables <code>EMACS_CLASS_PATH</code>, so that this sample shell script may be installed as <code>emacs</code> in any location that is accessible:
+</p>
+
+<pre class="example" id="orgb596d4f">
+#!/system/bin/sh
+
+package_name=`pm path org.gnu.emacs 2&gt;/dev/null &lt;/dev/null \
+               | sed 's/^package://'`
+emacs=
+EMACS_CLASS_PATH=$package_name
+
+for libdir in `dirname $package_name`/lib/*; do
+  ld_path=${ld_path:+${ld_path}:}$libdir
+  test -x "$libdir"/libandroid-emacs.so \
+    &amp;&amp; emacs="$libdir"/libandroid-emacs.so
+done
+
+export EMACS_CLASS_PATH
+test -x "$emacs" || exit 1
+exec $emacs "$@"
+</pre>
+
+<p>
+Android 10 and later also prohibit Emacs itself from running executables inside the app data directory, ostensibly out of security concerns. On these systems, Emacs normally applies a workaround; however, this workaround requires running all sub-processes through another subprocess which implements an executable loader and applies process tracing to all its children, which may prove problematic for a variety of reasons. In that case, the workaround can be disabled by changing the variable <code>android-use-exec-loader</code> to <code>nil</code>.
+</p>
+
+<p>
+When this workaround is in effect, process IDs retrieved through the <code>process-id</code> function will be that of the executable loader process; its child will belong to the same process group as the loader. Consequently, <code>interrupt-process</code>, and other related functions will work correctly, but using the process ID returned by <code>process-id</code> for other purposes will not.
+</p>
+
+<p>
+One ramification of the mechanism by which process tracing is carried out is that job control facilities inside inferior shells (see <a href="docs/emacs--Interactive-Shell.html">Interactive Subshell</a>) will not be able to stop processes, and <code>SIGSTOP</code> signals to subprocesses created by Emacs will not take effect.
+</p>
+
+<p>
+In addition, Android 12 also terminates subprocesses which are consuming CPU while Emacs itself is in the background. The system judges which processes are consuming too much CPU at intervals of five minutes, and terminates the process that has consumed the most CPU time.
+</p>
+
+<p>
+Android 12.1 and Android 13 provide an option to disable this behavior; to use it, enable “USB debugging” (see <a href="docs/emacs--Android-Startup.html">Starting Emacs on Android</a>) connect the Android system to another computer, and run:
+</p>
+
+<pre class="example" id="org20d2be0">
+$ adb shell "settings put global settings_enable_monitor_phantom_procs false"
+</pre>
+
+<p>
+The “Languages &amp; Input” preferences which apply to the operating system do not influence the C locale set for programs, but are taken into account by Emacs during startup: a locale name is generated from the selected language and regional variant and a language environment (see <a href="docs/emacs--Language-Environments.html">Language Environments</a>) is selected on that basis, which does not overwrite <code>LANG</code> or other locale-related environment variables. The coding system for language environments set in this fashion is <code>utf-8-unix</code> without exception.
+</p>
+
+<p>
+Instead, the <code>LANG</code> environment variable (see <a href="docs/emacs--General-Variables.html">General Variables</a>) is set to <code>en_US.utf8</code> when Emacs starts on Android 5.0 or newer, which induces subprocesses linked against the Android C library to print output sensibly. Earlier versions of Android do not implement locales at all, and on that account, the variable is set to <code>C</code>.
+</p>
+
+<p>
+Application processes are treated as disposable entities by the system. When all Emacs frames move to the background, Emacs might be terminated by the system at any time, for the purpose of saving system resources.
+</p>
+
+<p>
+On Android 7.1 and earlier, Emacs designates itself a “background service”, which impels the system to avoid killing Emacs unless it is stressed for memory.
+</p>
+
+<p>
+Android 8.0 removed the ability for background services to receive such special treatment. However, Emacs applies a workaround: the system considers applications that create a permanent notification to be performing active work, and will avoid killing such applications. Thus, on those systems, Emacs displays a permanent notification for as long as it is running.
+</p>
+
+<p>
+Before Android 13, Emacs does not require rights to display notifications. Under Android 13 or later, the notification is hidden until the user accords Emacs such rights. In spite of that, merely attempting to display the notification suffices to avert sudden death; whether the notification is displayed has no bearing on Emacs's capacity to execute in the background, and it may be disabled without any adverse consequences.
+</p>
+
+<p>
+However, it is not guaranteed that the system will not kill Emacs. Although the Open Handset Alliance's sample implementation of Android behaves correctly, many manufacturers institute additional restrictions on program execution in the background in their proprietary versions of Android. There is a list of such troublesome manufacturers and sometimes workarounds at <a href="https://dontkillmyapp.com/">https://dontkillmyapp.com/</a>.
+</p>
+
+<p>
+Android also defines a permissions system that determines what system services Emacs is allowed to access. Programs must specify what permissions they want; what then happens is then subject to the version of Android being used:
+</p>
+
+<ul class="org-ul">
+<li><p>
+Under more or less recent releases of Android, such as Android 6.0 and later, Emacs only receives the following permissions upon installation, subject to the presence or absence of individual permissions in the version of Android installed:
+</p>
+
+<ul class="org-ul">
+<li><code>android.permission.ACCESS_ADSERVICES_AD_ID</code></li>
+<li><code>android.permission.ACCESS_ADSERVICES_ATTRIBUTION</code></li>
+<li><code>android.permission.ACCESS_ADSERVICES_CUSTOM_AUDIENCE</code></li>
+<li><code>android.permission.ACCESS_ADSERVICES_TOPICS</code></li>
+<li><code>android.permission.ACCESS_LOCATION_EXTRA_COMMANDS</code></li>
+<li><code>android.permission.ACCESS_NETWORK_STATE</code></li>
+<li><code>android.permission.ACCESS_NOTIFICATION_POLICY</code></li>
+<li><code>android.permission.ACCESS_WIFI_STATE</code></li>
+<li><code>android.permission.AUTHENTICATE_ACCOUNTS</code></li>
+<li><code>android.permission.BLUETOOTH</code></li>
+<li><code>android.permission.BLUETOOTH_ADMIN</code></li>
+<li><code>android.permission.BROADCAST_STICKY</code></li>
+<li><code>android.permission.CALL_COMPANION_APP</code></li>
+<li><code>android.permission.CHANGE_NETWORK_STATE</code></li>
+<li><code>android.permission.CHANGE_WIFI_MULTICAST_STATE</code></li>
+<li><code>android.permission.CHANGE_WIFI_STATE</code></li>
+<li><code>android.permission.CREDENTIAL_MANAGER_QUERY_CANDIDATE_CREDENTIALS</code></li>
+<li><code>android.permission.CREDENTIAL_MANAGER_SET_ALLOWED_PROVIDERS</code></li>
+<li><code>android.permission.CREDENTIAL_MANAGER_SET_ORIGIN</code></li>
+<li><code>android.permission.DELIVER_COMPANION_MESSAGES</code></li>
+<li><code>android.permission.DETECT_SCREEN_CAPTURE</code></li>
+<li><code>android.permission.DISABLE_KEYGUARD</code></li>
+<li><code>android.permission.ENFORCE_UPDATE_OWNERSHIP</code></li>
+<li><code>android.permission.EXPAND_STATUS_BAR</code></li>
+<li><code>android.permission.FLASHLIGHT</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_CAMERA</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_DATA_SYNC</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_FILE_MANAGEMENT</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_HEALTH</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_LOCATION</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_MICROPHONE</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_PHONE_CALL</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_SPECIAL_USE</code></li>
+<li><code>android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED</code></li>
+<li><code>android.permission.GET_PACKAGE_SIZE</code></li>
+<li><code>android.permission.GET_TASKS</code></li>
+<li><code>android.permission.HIDE_OVERLAY_WINDOWS</code></li>
+<li><code>android.permission.HIGH_SAMPLING_RATE_SENSORS</code></li>
+<li><code>android.permission.INTERNET</code></li>
+<li><code>android.permission.KILL_BACKGROUND_PROCESSES</code></li>
+<li><code>android.permission.MANAGE_ACCOUNTS</code></li>
+<li><code>android.permission.MANAGE_OWN_CALLS</code></li>
+<li><code>android.permission.MODIFY_AUDIO_SETTINGS</code></li>
+<li><code>android.permission.NFC</code></li>
+<li><code>android.permission.NFC_PREFERRED_PAYMENT_INFO</code></li>
+<li><code>android.permission.NFC_TRANSACTION_EVENT</code></li>
+<li><code>android.permission.PERSISTENT_ACTIVITY</code></li>
+<li><code>android.permission.QUERY_ALL_PACKAGES</code></li>
+<li><code>android.permission.READ_BASIC_PHONE_STATE</code></li>
+<li><code>android.permission.READ_INSTALL_SESSIONS</code></li>
+<li><code>android.permission.READ_NEARBY_STREAMING_POLICY</code></li>
+<li><code>android.permission.READ_PROFILE</code></li>
+<li><code>android.permission.READ_SOCIAL_STREAM</code></li>
+<li><code>android.permission.READ_SYNC_SETTINGS</code></li>
+<li><code>android.permission.READ_SYNC_STATS</code></li>
+<li><code>android.permission.READ_USER_DICTIONARY</code></li>
+<li><code>android.permission.RECEIVE_BOOT_COMPLETED</code></li>
+<li><code>android.permission.REORDER_TASKS</code></li>
+<li><code>android.permission.REQUEST_COMPANION_PROFILE_GLASSES</code></li>
+<li><code>android.permission.REQUEST_COMPANION_PROFILE_WATCH</code></li>
+<li><code>android.permission.REQUEST_COMPANION_RUN_IN_BACKGROUND</code></li>
+<li><code>android.permission.REQUEST_COMPANION_START_FOREGROUND_SERVICES_FROM_BACKGROUND</code></li>
+<li><code>android.permission.REQUEST_COMPANION_USE_DATA_IN_BACKGROUND</code></li>
+<li><code>android.permission.REQUEST_DELETE_PACKAGES</code></li>
+<li><code>android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code></li>
+<li><code>android.permission.REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE</code></li>
+<li><code>android.permission.REQUEST_PASSWORD_COMPLEXITY</code></li>
+<li><code>android.permission.RESTART_PACKAGES</code></li>
+<li><code>android.permission.RUN_USER_INITIATED_JOBS</code></li>
+<li><code>android.permission.SET_WALLPAPER</code></li>
+<li><code>android.permission.SET_WALLPAPER_HINTS</code></li>
+<li><code>android.permission.SUBSCRIBED_FEEDS_READ</code></li>
+<li><code>android.permission.SUBSCRIBED_FEEDS_WRITE</code></li>
+<li><code>android.permission.TRANSMIT_IR</code></li>
+<li><code>android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION</code></li>
+<li><code>android.permission.USE_BIOMETRIC</code></li>
+<li><code>android.permission.USE_CREDENTIALS</code></li>
+<li><code>android.permission.USE_EXACT_ALARM</code></li>
+<li><code>android.permission.USE_FINGERPRINT</code></li>
+<li><code>android.permission.USE_FULL_SCREEN_INTENT</code></li>
+<li><code>android.permission.VIBRATE</code></li>
+<li><code>android.permission.WAKE_LOCK</code></li>
+<li><code>android.permission.WRITE_PROFILE</code></li>
+<li><code>android.permission.WRITE_SMS</code></li>
+<li><code>android.permission.WRITE_SOCIAL_STREAM</code></li>
+<li><code>android.permission.WRITE_SYNC_SETTINGS</code></li>
+<li><code>android.permission.WRITE_USER_DICTIONARY</code></li>
+</ul>
+
+<p>
+Other permissions must be granted by the user from the system settings application. Consult the manufacturer of your device for more details, as how to do this varies by device.
+</p></li>
+
+<li><p>
+On Android 5.1 and earlier, Emacs automatically receives the following permissions it has requested upon being installed:
+</p>
+
+<ul class="org-ul">
+<li><code>android.permission.ACCESS_COARSE_LOCATION</code></li>
+<li><code>android.permission.ACCESS_FINE_LOCATION</code></li>
+<li><code>android.permission.BODY_SENSORS</code></li>
+<li><code>android.permission.CALL_PHONE</code></li>
+<li><code>android.permission.CAMERA</code></li>
+<li><code>android.permission.CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD</code></li>
+<li><code>android.permission.GET_ACCOUNTS</code></li>
+<li><code>android.permission.POST_NOTIFICATIONS</code></li>
+<li><code>android.permission.PROCESS_OUTGOING_CALLS</code></li>
+<li><code>android.permission.READ_CALENDAR</code></li>
+<li><code>android.permission.READ_CALL_LOG</code></li>
+<li><code>android.permission.READ_CELL_BROADCASTS</code></li>
+<li><code>android.permission.READ_CONTACTS</code></li>
+<li><code>android.permission.READ_EXTERNAL_STORAGE</code></li>
+<li><code>android.permission.READ_PHONE_NUMBERS</code></li>
+<li><code>android.permission.READ_PHONE_STATE</code></li>
+<li><code>android.permission.READ_SMS</code></li>
+<li><code>android.permission.RECEIVE_MMS</code></li>
+<li><code>android.permission.RECEIVE_SMS</code></li>
+<li><code>android.permission.RECEIVE_WAP_PUSH</code></li>
+<li><code>android.permission.RECORD_AUDIO</code></li>
+<li><code>android.permission.REQUEST_INSTALL_PACKAGES</code></li>
+<li><code>android.permission.SEND_SMS</code></li>
+<li><code>android.permission.SMS_FINANCIAL_TRANSACTIONS</code></li>
+<li><code>android.permission.SYSTEM_ALERT_WINDOW</code></li>
+<li><code>android.permission.WRITE_CALENDAR</code></li>
+<li><code>android.permission.WRITE_CALL_LOG</code></li>
+<li><code>android.permission.WRITE_CONTACTS</code></li>
+<li><code>android.permission.WRITE_EXTERNAL_STORAGE</code></li>
+<li><code>android.permission.WRITE_SETTINGS</code></li>
+<li><code>android.permission.ACCESS_LOCATION_EXTRA_COMMANDS</code></li>
+<li><code>android.permission.ACCESS_NETWORK_STATE</code></li>
+<li><code>android.permission.ACCESS_WIFI_STATE</code></li>
+<li><code>android.permission.BLUETOOTH</code></li>
+<li><code>android.permission.BLUETOOTH_ADMIN</code></li>
+<li><code>android.permission.BROADCAST_STICKY</code></li>
+<li><code>android.permission.CHANGE_NETWORK_STATE</code></li>
+<li><code>android.permission.CHANGE_WIFI_MULTICAST_STATE</code></li>
+<li><code>android.permission.CHANGE_WIFI_STATE</code></li>
+<li><code>android.permission.DISABLE_KEYGUARD</code></li>
+<li><code>android.permission.EXPAND_STATUS_BAR</code></li>
+<li><code>android.permission.FLASHLIGHT</code></li>
+<li><code>android.permission.GET_PACKAGE_SIZE</code></li>
+<li><code>android.permission.GET_TASKS</code></li>
+<li><code>android.permission.INTERNET</code></li>
+<li><code>android.permission.KILL_BACKGROUND_PROCESSES</code></li>
+<li><code>android.permission.MODIFY_AUDIO_SETTINGS</code></li>
+<li><code>android.permission.NFC</code></li>
+<li><code>android.permission.PERSISTENT_ACTIVITY</code></li>
+<li><code>android.permission.QUERY_ALL_PACKAGES</code></li>
+<li><code>android.permission.READ_BASIC_PHONE_STATE</code></li>
+<li><code>android.permission.READ_SYNC_SETTINGS</code></li>
+<li><code>android.permission.READ_SYNC_STATS</code></li>
+<li><code>android.permission.READ_USER_DICTIONARY</code></li>
+<li><code>android.permission.RECEIVE_BOOT_COMPLETED</code></li>
+<li><code>android.permission.REORDER_TASKS</code></li>
+<li><code>android.permission.REQUEST_DELETE_PACKAGES</code></li>
+<li><code>android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code></li>
+<li><code>android.permission.REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE</code></li>
+<li><code>android.permission.RESTART_PACKAGES</code></li>
+<li><code>android.permission.SET_WALLPAPER</code></li>
+<li><code>android.permission.SET_WALLPAPER_HINTS</code></li>
+<li><code>android.permission.TRANSMIT_IR</code></li>
+<li><code>android.permission.VIBRATE</code></li>
+<li><code>android.permission.WAKE_LOCK</code></li>
+<li><code>android.permission.WRITE_SYNC_SETTINGS</code></li>
+<li><code>android.permission.WRITE_USER_DICTIONARY</code></li>
+</ul>
+
+<p>
+While most of these permissions are left unused by Emacs itself, they are declared by Emacs as they could be useful for other programs; for example, the permission to access contacts may be useful for EUDC.
+</p></li>
+</ul>
+
+<hr />
+</div>
+</div>

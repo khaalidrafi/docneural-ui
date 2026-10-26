@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Inserting-Version-Control-Headers">1. 30.1.12.4 Inserting Version Control Headers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Editing-VC-Commands.html">Editing VC Commands</a>   Previous: <a href="docs/emacs--Revision-Tags.html">Revision Tags</a>   Up: <a href="docs/emacs--Miscellaneous-VC.html">Miscellaneous Commands and Features of VC</a>
+</p>
+
+<p>
+<a id="Version-Headers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Inserting-Version-Control-Headers" class="outline-2">
+<h2 id="Inserting-Version-Control-Headers"><span class="section-number-2">1.</span> 30.1.12.4 Inserting Version Control Headers <a href="#Inserting-Version-Control-Headers">¶</a></h2>
+<div class="outline-text-2" id="text-Inserting-Version-Control-Headers">
+<p>
+On Subversion, CVS, RCS, and SCCS, you can put certain special strings called <i>version headers</i> into a work file. When the file is committed, the version control system automatically puts the revision number, the name of the user who made the commit, and other relevant information into the version header.
+</p>
+
+<p>
+VC does not normally use the information in the version headers. As an exception, when using RCS, Emacs uses the version header, if there is one, to determine the file version, since it is often more reliable than the RCS master file. To inhibit using the version header this way, change the variable <code>vc-consult-headers</code> to <code>nil</code>. VC then always uses the file permissions (if it is supposed to trust them), or else checks the master file.
+</p>
+
+<p>
+To insert a suitable header string into the current buffer, use the command M-x vc-insert-headers. This command works only on Subversion, CVS, RCS, and SCCS. The variable <code>vc-==backend=</code>-header= contains the list of keywords to insert into the version header; for instance, CVS uses <code>vc-cvs-header</code>, whose default value is <code>'("\$Id\$")</code>. (The extra backslashes prevent the string constant from being interpreted as a header, if the Emacs Lisp file defining it is maintained with version control.) The <code>vc-insert-headers</code> command inserts each keyword in the list on a new line at point, surrounded by tabs, and inside comment delimiters if necessary.
+</p>
+
+<p>
+The variable <code>vc-static-header-alist</code> specifies further strings to add based on the name of the buffer. Its value should be a list of elements of the form <code>(==regexp=</code> . <code>=format=</code>)=. Whenever <code>regexp</code> matches the buffer name, <code>format</code> is also inserted as part of the version header. A ‘=%s=' in <code>format</code> is replaced with the file's version control type.
+</p>
+
+<hr />
+</div>
+</div>

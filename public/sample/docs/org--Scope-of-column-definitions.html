@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Scope-of-column-definitions-1">0.0.1. 7.5.1.1 Scope of column definitions ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgf883bee">1. Top node for columns view</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Scope-of-column-definitions"></a>
+Next: <a href="docs/org--Column-attributes.html">Column attributes</a>, Up: <a href="docs/org--Defining-columns.html">Defining columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Scope-of-column-definitions-1" class="outline-4">
+<h4 id="Scope-of-column-definitions-1"><span class="section-number-4">0.0.1.</span> 7.5.1.1 Scope of column definitions <a href="#Scope-of-column-definitions-1">¶</a></h4>
+<div class="outline-text-4" id="text-Scope-of-column-definitions-1">
+<p>
+To specify a format that only applies to a specific tree, add a ‘=COLUMNS=' property to the top node of that tree, for example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-orgf883bee" class="outline-2">
+<h2 id="orgf883bee"><span class="section-number-2">1.</span> Top node for columns view</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+A ‘=COLUMNS=' property within a property drawer before first headline will apply to the entire file. As an addition to property drawers, keywords can also be defined for an entire file using a line like:
+</p>
+
+<pre class="example" id="orgc2ee665">
+#+COLUMNS: %25ITEM %TAGS %PRIORITY %TODO
+</pre>
+
+<p>
+If a ‘=COLUMNS=' property is present in an entry, it defines columns for the entry itself, and for the entire subtree below it. Since the column definition is part of the hierarchical structure of the document, you can define columns on level 1 that are general enough for all sublevels, and more specific columns further down, when you edit a deeper part of the tree.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Column-attributes.html">Column attributes</a>, Up: <a href="docs/org--Defining-columns.html">Defining columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

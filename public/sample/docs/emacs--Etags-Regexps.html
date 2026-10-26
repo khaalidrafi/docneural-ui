@@ -1,0 +1,146 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Etags-Regexps-1">1. 30.4.2.3 Etags Regexps ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Create-Tags-Table.html">Creating Tags Tables</a>   Up: <a href="docs/emacs--Tags-Tables.html">Tags Tables</a>
+</p>
+
+<p>
+<a id="Etags-Regexps"></a>
+</p>
+
+<hr />
+<div id="outline-container-Etags-Regexps-1" class="outline-2">
+<h2 id="Etags-Regexps-1"><span class="section-number-2">1.</span> 30.4.2.3 Etags Regexps <a href="#Etags-Regexps-1">¶</a></h2>
+<div class="outline-text-2" id="text-Etags-Regexps-1">
+<p>
+The ‘=&#x2013;regex=' option to <code>etags</code> allows tags to be recognized by regular expression matching. You can intermix this option with file names; each one applies to the source files that follow it. If you specify multiple ‘=&#x2013;regex=' options, all of them are used in parallel. The syntax is:
+</p>
+
+<pre class="example" id="org93cfb14">
+--regex=[{language}]/tagregexp/[nameregexp/]modifiers
+</pre>
+
+<p>
+The essential part of the option value is <code>tagregexp</code>, the regexp for matching tags. It is always used anchored, that is, it only matches at the beginning of a line. If you want to allow indented tags, use a regexp that matches initial whitespace; start it with ‘=[ \t]*='.
+</p>
+
+<p>
+In these regular expressions, ‘=\=' quotes the next character, and all the C character escape sequences are supported: ‘=\a=' for bell, ‘=\b=' for back space, ‘=\e=' for escape, ‘=\f=' for formfeed, ‘=\n=' for newline, ‘=\r=' for carriage return, ‘=\t=' for tab, and ‘=\v=' for vertical tab. In addition, ‘=\d=' stands for the <code>DEL</code> character. Otherwise, the regular expression syntax is the same as Emacs except that backslash escapes are the same as GNU grep (which means, for example, that shy groups are not supported), and ‘=[:ascii:]=', ‘=[:multibyte:]=', ‘=[:nonascii:]=', ‘=[:word:]=', and ‘=[:unibyte:]=' are not supported.
+</p>
+
+<p>
+Ideally, <code>tagregexp</code> should not match more characters than are needed to recognize what you want to tag. If the syntax requires you to write <code>tagregexp</code> so it matches more characters beyond the tag itself, you should add a <code>nameregexp</code>, to pick out just the tag. This will enable Emacs to find tags more accurately and to do completion on tag names more reliably. In <code>nameregexp</code>, it is frequently convenient to use “back references” (see <a href="docs/emacs--Regexp-Backslash.html">Backslash in Regular Expressions</a>) to parenthesized groupings ‘=\( … \)=' in <code>tagregexp</code>. For example, ‘=\1=' refers to the first such parenthesized grouping. You can find some examples of this below.
+</p>
+
+<p>
+The <code>modifiers</code> are a sequence of zero or more characters that modify the way <code>etags</code> does the matching. A regexp with no modifiers is applied sequentially to each line of the input file, in a case-sensitive way. The modifiers and their meanings are:
+</p>
+
+<dl class="org-dl">
+<dt>‘=i='</dt><dd>Ignore case when matching this regexp.</dd>
+
+<dt>‘=m='</dt><dd>Match this regular expression against the whole file, so that multi-line matches are possible.</dd>
+
+<dt>‘=s='</dt><dd>Match this regular expression against the whole file, and allow ‘=.=' in <code>tagregexp</code> to match newlines.</dd>
+</dl>
+
+<p>
+The ‘=-R=' option cancels all the regexps defined by preceding ‘=&#x2013;regex=' options. It too applies to the file names following it. Here's an example:
+</p>
+
+<pre class="example" id="org4a4c431">
+etags --regex=/reg1/i voo.doo --regex=/reg2/m \
+    bar.ber -R --lang=lisp los.er
+</pre>
+
+<p>
+Here <code>etags</code> chooses the parsing language for <code>voo.doo</code> and <code>bar.ber</code> according to their contents. <code>etags</code> also uses <code>reg1</code> to recognize additional tags in <code>voo.doo</code>, and both <code>reg1</code> and <code>reg2</code> to recognize additional tags in <code>bar.ber</code>. <code>reg1</code> is checked against each line of <code>voo.doo</code> and <code>bar.ber</code>, in a case-insensitive way, while <code>reg2</code> is checked against the whole <code>bar.ber</code> file, permitting multi-line matches, in a case-sensitive way. <code>etags</code> uses only the Lisp tags rules, with no user-specified regexp matching, to recognize tags in <code>los.er</code>.
+</p>
+
+<p>
+You can restrict a ‘=&#x2013;regex=' option to match only files of a given language by using the optional prefix <code>{language}</code>. (‘=etags &#x2013;help=' prints the list of languages recognized by <code>etags</code>.) This is particularly useful when storing many predefined regular expressions for <code>etags</code> in a file. The following example tags the <code>DEFVAR</code> macros in the Emacs source files, for the C language only:
+</p>
+
+<pre class="example" id="orgb50b66a">
+--regex='{c}/[ \t]*DEFVAR_[A-Z_ \t(]+"\([^"]+\)"/\1/'
+</pre>
+
+<p>
+When you have complex regular expressions, you can store the list of them in a file. The following option syntax instructs <code>etags</code> to read two files of regular expressions. The regular expressions contained in the second file are matched without regard to case.
+</p>
+
+<pre class="example" id="org909e23b">
+--regex=@case-sensitive-file --ignore-case-regex=@ignore-case-file
+</pre>
+
+<p>
+A regex file for <code>etags</code> contains one regular expression per line. Empty lines, and lines beginning with space or tab are ignored. When the first character in a line is ‘=@=', <code>etags</code> assumes that the rest of the line is the name of another file of regular expressions; thus, one such file can include another file. All the other lines are taken to be regular expressions. If the first non-whitespace text on the line is ‘=&#x2013;=', that line is a comment.
+</p>
+
+<p>
+For example, we can create a file called ‘=emacs.tags=' with the following contents:
+</p>
+
+<pre class="example" id="orgd776cd3">
+        -- This is for GNU Emacs C source files
+{c}/[ \t]*DEFVAR_[A-Z_ \t(]+"\([^"]+\)"/\1/
+</pre>
+
+<p>
+and then use it like this:
+</p>
+
+<pre class="example" id="orgf30549b">
+etags --regex=@emacs.tags *.[ch] */*.[ch]
+</pre>
+
+<p>
+Here are some more examples. The regexps are quoted to protect them from shell interpretation.
+</p>
+
+<ul class="org-ul">
+<li><p>
+Tag Octave files:
+</p>
+
+<pre class="example" id="org3e19392">
+etags --language=none \
+      --regex='/[ \t]*function.*=[ \t]*\([^ \t]*\)[ \t]*(/\1/' \
+      --regex='/###key \(.*\)/\1/' \
+      --regex='/[ \t]*global[ \t].*/' \
+      *.m
+</pre>
+
+<p>
+Note that tags are not generated for scripts, so that you have to add a line by yourself of the form ‘=###key <code>=scriptname</code>' if you want to jump to it.
+</p></li>
+
+<li><p>
+Tag Tcl files:
+</p>
+
+<pre class="example" id="org746f925">
+etags --language=none --regex='/proc[ \t]+\([^ \t]+\)/\1/' *.tcl
+</pre></li>
+
+<li><p>
+Tag VHDL files:
+</p>
+
+<pre class="example" id="org16ddf92">
+etags --language=none \
+  --regex='/[ \t]*\(ARCHITECTURE\|CONFIGURATION\) +[^ ]* +OF/' \
+  --regex='/[ \t]*\(ATTRIBUTE\|ENTITY\|FUNCTION\|PACKAGE\
+  \( BODY\)?\|PROCEDURE\|PROCESS\|TYPE\)[ \t]+\([^ \t(]+\)/\3/'
+</pre></li>
+</ul>
+
+<hr />
+</div>
+</div>

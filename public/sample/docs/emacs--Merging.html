@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Merging-Branches">1. 30.1.11.3 Merging Branches ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Creating-Branches.html">Creating New Branches</a>   Previous: <a href="docs/emacs--Pulling-_002f-Pushing.html">Pulling/Pushing Changes into/from a Branch</a>   Up: <a href="docs/emacs--Branches.html">Version Control Branches</a>
+</p>
+
+<p>
+<a id="Merging"></a>
+</p>
+
+<hr />
+<div id="outline-container-Merging-Branches" class="outline-2">
+<h2 id="Merging-Branches"><span class="section-number-2">1.</span> 30.1.11.3 Merging Branches <a href="#Merging-Branches">¶</a></h2>
+<div class="outline-text-2" id="text-Merging-Branches">
+<dl class="org-dl">
+<dt>C-x v m</dt><dd><p>
+With a decentralized version control system, merge changes from another branch into the current one.
+</p>
+
+<p>
+With a centralized version control system, merge changes from another branch into the current VC fileset.
+</p></dd>
+</dl>
+
+<p>
+While developing a branch, you may sometimes need to <i>merge</i> in changes that have already been made in another branch. This is not a trivial operation, as overlapping and conflicting changes may have been made to the two branches.
+</p>
+
+<p>
+With a decentralized version control system, you merge changes with the command C-x v m (<code>vc-merge</code>). With Bazaar, this prompts for the exact arguments to pass to the <code>bzr merge</code> command, offering a sensible default if possible. With Git, this prompts for the name of a branch to merge from, with completion (based on the branch names known to the current repository). With Mercurial, this prompts for argument to pass to <code>hg merge</code>. The output from running the merge command is shown in a separate buffer.
+</p>
+
+<p>
+With a centralized version control system like CVS, C-x v m prompts for a branch ID, or a pair of revision IDs (see <a href="docs/emacs--Switching-Branches.html">Switching between Branches</a>); then it finds the changes from that branch, or the changes between the two revisions you specified, and merges those changes into the current VC fileset. If you just type RET at the prompt, Emacs simply merges any changes that were made on the same branch since you checked the file out.
+</p>
+
+<p>
+Immediately after performing a merge, only the working tree is modified, and you can review the changes produced by the merge with C-x v D and related commands (see <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>). If the two branches contained overlapping changes, merging produces a <i>conflict</i>; a warning appears in the output of the merge command, and <i>conflict markers</i> are inserted into each affected work file, surrounding the two sets of conflicting changes. You must then resolve the conflict by editing the conflicted files; by default, Emacs will place buffers with VC conflicts in the special Smerge mode, which provides special commands for resolving the merge conflicts. Once you are done with resolving the conflicts and have saved the files with resolved conflicts, those files must be committed in the usual way for the merge to take effect (see <a href="docs/emacs--Basic-VC-Editing.html">Basic Editing under Version Control</a>).
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-the-Dired-Buffer">1. 32.18 Editing the Dired Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Image_002dDired.html">Viewing Image Thumbnails in Dired</a>   Previous: <a href="docs/emacs--Dired-and-Find.html">Dired and find</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Wdired"></a>
+</p>
+
+<hr />
+<div id="outline-container-Editing-the-Dired-Buffer" class="outline-2">
+<h2 id="Editing-the-Dired-Buffer"><span class="section-number-2">1.</span> 32.18 Editing the Dired Buffer <a href="#Editing-the-Dired-Buffer">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-the-Dired-Buffer">
+<p>
+Wdired is a special mode that allows you to perform file operations by editing the Dired buffer directly (the “W” in “Wdired” stands for “writable”). To enter Wdired mode, type C-x C-q (<code>dired-toggle-read-only</code>) while in a Dired buffer. Alternatively, use the ‘=Immediate / Edit File Names=' menu item.
+</p>
+
+<p>
+While in Wdired mode, you can rename files by editing the file names displayed in the Dired buffer. All the ordinary Emacs editing commands, including rectangle operations and <code>query-replace</code>, are available for this. Once you are done editing, type C-c C-c (<code>wdired-finish-edit</code>). This applies your changes and switches back to ordinary Dired mode.
+</p>
+
+<p>
+Apart from simply renaming files, you can move a file to another directory by typing in the new file name (either absolute or relative). To mark a file for deletion, delete the entire file name. To change the target of a symbolic link, edit the link target name which appears next to the link name.
+</p>
+
+<p>
+If you edit the file names to create a new subdirectory, Wdired will automatically create these new directories. To inhibit this behavior, set <code>wdired-create-parent-directories</code> to <code>nil</code>.
+</p>
+
+<p>
+The rest of the text in the buffer, such as the file sizes and modification dates, is marked read-only, so you can't edit it. However, if you set <code>wdired-allow-to-change-permissions</code> to <code>t</code>, you can edit the file permissions. For example, you can change ‘=-rw-r&#x2013;r--<code>' to ‘</code>-rw-rw-rw-=' to make a file world-writable. These changes also take effect when you type C-c C-c.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-Dynamic-Abbreviation">1. 31.8 Customizing Dynamic Abbreviation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Dynamic-Abbrevs.html">Dynamic Abbrev Expansion</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Dabbrev-Customization"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-Dynamic-Abbreviation" class="outline-2">
+<h2 id="Customizing-Dynamic-Abbreviation"><span class="section-number-2">1.</span> 31.8 Customizing Dynamic Abbreviation <a href="#Customizing-Dynamic-Abbreviation">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-Dynamic-Abbreviation">
+<p>
+Normally, dynamic abbrev expansion ignores case when searching for expansions. That is, the expansion need not agree in case with the word you are expanding.
+</p>
+
+<p>
+This feature is controlled by the variable <code>dabbrev-case-fold-search</code>. If it is <code>t</code>, case is ignored in this search; if it is <code>nil</code>, the word and the expansion must match in case. If the value is <code>case-fold-search</code> (the default), then the variable <code>case-fold-search</code> controls whether to ignore case while searching for expansions (see <a href="docs/emacs--Lax-Search.html">Lax Matching During Searching</a>).
+</p>
+
+<p>
+Normally, dynamic abbrev expansion preserves the case pattern <i>of the dynamic abbrev you are expanding</i>, by converting the expansion to that case pattern.
+</p>
+
+<p>
+The variable <code>dabbrev-case-replace</code> controls whether to preserve the case pattern of the dynamic abbrev. If it is <code>t</code>, the dynamic abbrev's case pattern is preserved in most cases; if it is <code>nil</code>, the expansion is always copied verbatim. If the value is <code>case-replace</code> (the default), then the variable <code>case-replace</code> controls whether to copy the expansion verbatim (see <a href="docs/emacs--Replacement-and-Lax-Matches.html">Replace Commands and Lax Matches</a>).
+</p>
+
+<p>
+However, if the expansion contains a complex mixed case pattern, and the dynamic abbrev matches this pattern as far as it goes, then the expansion is always copied verbatim, regardless of those variables. Thus, for example, if the buffer contains <code>variableWithSillyCasePattern</code>, and you type v a M-/, it copies the expansion verbatim including its case pattern.
+</p>
+
+<p>
+The variable <code>dabbrev-abbrev-char-regexp</code>, if non-<code>nil</code>, controls which characters are considered part of a word, for dynamic expansion purposes. The regular expression must match just one character, never two or more. The same regular expression also determines which characters are part of an expansion. The (default) value <code>nil</code> has a special meaning: dynamic abbrevs (i.e. the word at point) are made of word characters, but their expansions are looked for as sequences of word and symbol characters. This is generally appropriate for expanding symbols in a program source and also for human-readable text in many languages, but may not be what you want in a text buffer that includes unusual punctuation characters; in that case, the value <code>"\\sw"</code> might produce better results.
+</p>
+
+<p>
+In shell scripts and makefiles, a variable name is sometimes prefixed with ‘=$=' and sometimes not. Major modes for this kind of text can customize dynamic abbrev expansion to handle optional prefixes by setting the variable <code>dabbrev-abbrev-skip-leading-regexp</code>. Its value should be a regular expression that matches the optional prefix that dynamic abbrev expression should ignore. The default is <code>nil</code>, which means no characters should be skipped.
+</p>
+
+<hr />
+</div>
+</div>

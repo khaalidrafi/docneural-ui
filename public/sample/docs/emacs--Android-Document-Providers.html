@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Accessing-Files-from-Other-Programs-on-Android">1. H.4 Accessing Files from Other Programs on Android ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Android-Environment.html">Running Emacs under Android</a>   Previous: <a href="docs/emacs--Android-File-System.html">What Files Emacs Can Access on Android</a>   Up: <a href="docs/emacs--Android.html">Emacs and Android</a>
+</p>
+
+<p>
+<a id="Android-Document-Providers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Accessing-Files-from-Other-Programs-on-Android" class="outline-2">
+<h2 id="Accessing-Files-from-Other-Programs-on-Android"><span class="section-number-2">1.</span> H.4 Accessing Files from Other Programs on Android <a href="#Accessing-Files-from-Other-Programs-on-Android">¶</a></h2>
+<div class="outline-text-2" id="text-Accessing-Files-from-Other-Programs-on-Android">
+<p>
+Android 5.0 introduces a new sort of program, the “document provider”: these programs are small services that provide access to their own files independently of the asset manager and the Unix filesystem. Emacs supports accessing files and directories they provide, placing their files within the directory <code>/content/storage</code>.
+</p>
+
+<p>
+Before Emacs is granted access to one of these directories, it must first request the right to access it. This is done by running the command (see <a href="docs/emacs--M_002dx.html">Running Commands by Name</a>) <code>android-request-directory-access</code>, which displays a file selection dialog.
+</p>
+
+<p>
+If a directory is selected from this dialog, its contents are subsequently made available within a new directory named <code>/content/storage/==authority==/==id</code>, where <code>authority</code> is the name of the document provider, and <code>id</code> is a unique identifier assigned to the directory by the document provider.
+</p>
+
+<p>
+Such a directory can be deleted once no longer required by providing its name to the command <code>android-relinquish-directory-access</code>.
+</p>
+
+<p>
+The same limitations applied to the <code>/assets</code> directory (see <a href="docs/emacs--Android-File-System.html">What Files Emacs Can Access on Android</a>) are applied when creating sub-processes within those directories, because they do not exist within the Unix file-system. In addition, although Emacs can normally write and create files inside these directories, it cannot create symlinks or hard links.
+</p>
+
+<p>
+Since document providers are allowed to perform expensive network operations to obtain file contents, a file access operation within one of these directories has the potential to take a significant amount of time.
+</p>
+
+<hr />
+</div>
+</div>

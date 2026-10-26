@@ -1,0 +1,1373 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Virtualization-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Version-Control-Services.html">Version Control Services</a>, Previous: <a href="docs/guix--Audio-Services.html">Audio Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Virtualization-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="virtualization-services"></a>11.10.31 Virtualization Services<br />
+<div class="outline-text-5" id="text-virtualization-services">
+<p>
+The <code>(gnu services virtualization)</code> module provides services for the libvirt and virtlog daemons, as well as other virtualization-related services.
+</p>
+
+<p>
+<a id="Libvirt-daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="libvirt-daemon"></a>Libvirt daemon<br />
+<div class="outline-text-5" id="text-libvirt-daemon">
+<p>
+<code>libvirtd</code> is the server side daemon component of the libvirt virtualization management system. This daemon runs on host servers and performs required management tasks for virtualized guests. To connect to the libvirt daemon as an unprivileged user, it must be added to the ‘=libvirt=' group, as shown in the example below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: libvirt-service-type </dt><dd><p>
+This is the type of the <a href="https://libvirt.org">libvirt daemon</a>. Its value must be a <code>libvirt-configuration</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(users (cons (user-account
+              (name "user")
+              (group "users")
+              (supplementary-groups '("libvirt"
+                                      "audio" "video" "wheel")))
+             %base-user-accounts))
+(service libvirt-service-type
+         (libvirt-configuration
+          (tls-port "16555")))
+</pre>
+</div></dd>
+
+<dt>Data Type: libvirt-configuration </dt><dd>Available <code>libvirt-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>libvirt</code> (default: <code>libvirt</code>) (type: file-like)</dt><dd>Libvirt package.</dd>
+
+<dt><code>qemu</code> (default: <code>qemu</code>) (type: file-like)</dt><dd>The QEMU package to use.</dd>
+
+<dt><code>dmidecode</code> (default: <code>dmidecode</code>) (type: file-like)</dt><dd>The Dmidecode package to use.</dd>
+
+<dt><code>requirement</code> (default: <code>'()</code>) (type: list-of-symbols)</dt><dd>Shepherd services dependencies to the provisioned Shepherd service.</dd>
+
+<dt><code>firmwares</code> (default: <code>(ovmf-x86-64)</code>) (type: list-of-file-likes)</dt><dd>List of UEFI/BIOS firmware packages to make available. Each firmware package should contain a <code>share/qemu/firmware/==NAME=</code>.json= QEMU firmware metadata file.</dd>
+
+<dt><code>listen-tls?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Flag listening for secure TLS connections on the public TCP/IP port. must set <code>listen</code> for this to have any effect. It is necessary to setup a CA and issue server certificates before using this capability.</dd>
+
+<dt><code>listen-tcp?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Listen for unencrypted TCP connections on the public TCP/IP port. must set <code>listen</code> for this to have any effect. Using the TCP socket requires SASL authentication by default. Only SASL mechanisms which support data encryption are allowed. This is DIGEST<sub>MD5</sub> and GSSAPI (Kerberos5).</dd>
+
+<dt><code>tls-port</code> (default: <code>"16514"</code>) (type: string)</dt><dd>Port for accepting secure TLS connections This can be a port number, or service name.</dd>
+
+<dt><code>tcp-port</code> (default: <code>"16509"</code>) (type: string)</dt><dd>Port for accepting insecure TCP connections This can be a port number, or service name.</dd>
+
+<dt><code>listen-addr</code> (default: <code>"0.0.0.0"</code>) (type: string)</dt><dd>IP address or hostname used for client connections.</dd>
+
+<dt><code>mdns-adv?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Flag toggling mDNS advertisement of the libvirt service.</dd>
+
+<dt><code>mdns-name</code> (default: <code>"Virtualization Host terra"</code>) (type: string)</dt><dd>Default mDNS advertisement name. This must be unique on the immediate broadcast network.</dd>
+
+<dt><code>unix-sock-group</code> (default: <code>"libvirt"</code>) (type: string)</dt><dd>UNIX domain socket group ownership. This can be used to allow a trusted set of users access to management capabilities without becoming root.</dd>
+
+<dt><code>unix-sock-ro-perms</code> (default: <code>"0777"</code>) (type: string)</dt><dd>UNIX socket permissions for the R/O socket. This is used for monitoring VM status only.</dd>
+
+<dt><code>unix-sock-rw-perms</code> (default: <code>"0770"</code>) (type: string)</dt><dd>UNIX socket permissions for the R/W socket. Default allows only root. If PolicyKit is enabled on the socket, the default will change to allow everyone (e.g., <code>"0777"</code>).</dd>
+
+<dt><code>unix-sock-admin-perms</code> (default: <code>"0777"</code>) (type: string)</dt><dd>UNIX socket permissions for the admin socket. Default allows only owner (root), do not change it unless you are sure to whom you are exposing the access to.</dd>
+
+<dt><code>unix-sock-dir</code> (default: <code>"/var/run/libvirt"</code>) (type: string)</dt><dd>The directory in which sockets will be found/created.</dd>
+
+<dt><code>auth-unix-ro</code> (default: <code>"polkit"</code>) (type: string)</dt><dd>Authentication scheme for UNIX read-only sockets. By default socket permissions allow anyone to connect.</dd>
+
+<dt><code>auth-unix-rw</code> (default: <code>"polkit"</code>) (type: string)</dt><dd>Authentication scheme for UNIX read-write sockets. By default socket permissions only allow root. If PolicyKit support was compiled into libvirt, the default will be to use 'polkit' auth.</dd>
+
+<dt><code>auth-tcp</code> (default: <code>"sasl"</code>) (type: string)</dt><dd>Authentication scheme for TCP sockets. If you don't enable SASL, then all TCP traffic is cleartext. Don't do this outside of a development/test scenario.</dd>
+
+<dt><code>auth-tls</code> (default: <code>"none"</code>) (type: string)</dt><dd>Authentication scheme for TLS sockets. TLS sockets already have encryption provided by the TLS layer, and limited authentication is done by certificates. It is possible to make use of any SASL authentication mechanism as well, by using <code>"sasl"</code> for this option</dd>
+
+<dt><code>access-drivers</code> (default: <code>()</code>) (type: optional-list)</dt><dd>API access control scheme. By default an authenticated user is allowed access to all APIs. Access drivers can place restrictions on this.</dd>
+
+<dt><code>key-file</code> (default: <code>""</code>) (type: string)</dt><dd>Server key file path. If set to an empty string, then no private key is loaded.</dd>
+
+<dt><code>cert-file</code> (default: <code>""</code>) (type: string)</dt><dd>Server key file path. If set to an empty string, then no certificate is loaded.</dd>
+
+<dt><code>ca-file</code> (default: <code>""</code>) (type: string)</dt><dd>Server key file path. If set to an empty string, then no CA certificate is loaded.</dd>
+
+<dt><code>crl-file</code> (default: <code>""</code>) (type: string)</dt><dd>Certificate revocation list path. If set to an empty string, then no CRL is loaded.</dd>
+
+<dt><code>tls-no-sanity-cert</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Disable verification of our own server certificates. When <code>libvirtd</code> starts it performs some sanity checks against its own certificates.</dd>
+
+<dt><code>tls-no-verify-cert</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Disable verification of client certificates. Client certificate verification is the primary authentication mechanism. Any client which does not present a certificate signed by the CA will be rejected.</dd>
+
+<dt><code>tls-allowed-dn-list</code> (default: <code>()</code>) (type: optional-list)</dt><dd>Whitelist of allowed x509 Distinguished Name.</dd>
+
+<dt><code>sasl-allowed-usernames</code> (default: <code>()</code>) (type: optional-list)</dt><dd>Whitelist of allowed SASL usernames. The format for username depends on the SASL authentication mechanism.</dd>
+
+<dt><code>tls-priority</code> (default: <code>"NORMAL"</code>) (type: string)</dt><dd>Override the compile time default TLS priority string. The default is usually "NORMAL" unless overridden at build time. Only set this if it is desired for libvirt to deviate from the global default settings.</dd>
+
+<dt><code>max-clients</code> (default: <code>5000</code>) (type: integer)</dt><dd>Maximum number of concurrent client connections to allow over all sockets combined.</dd>
+
+<dt><code>max-queued-clients</code> (default: <code>1000</code>) (type: integer)</dt><dd>Maximum length of queue of connections waiting to be accepted by the daemon. Note, that some protocols supporting re-transmission may obey this so that a later reattempt at connection succeeds.</dd>
+
+<dt><code>max-anonymous-clients</code> (default: <code>20</code>) (type: integer)</dt><dd>Maximum length of queue of accepted but not yet authenticated clients. Set this to zero to turn this feature off.</dd>
+
+<dt><code>min-workers</code> (default: <code>5</code>) (type: integer)</dt><dd>Number of workers to start up initially.</dd>
+
+<dt><code>max-workers</code> (default: <code>20</code>) (type: integer)</dt><dd>Maximum number of worker threads. If the number of active clients exceeds <code>min-workers</code>, then more threads are spawned, up to <code>max_workers</code> limit. Typically you'd want <code>max_workers</code> to equal maximum number of clients allowed.</dd>
+
+<dt><code>prio-workers</code> (default: <code>5</code>) (type: integer)</dt><dd>Number of priority workers. If all workers from above pool are stuck, some calls marked as high priority (notably domainDestroy) can be executed in this pool.</dd>
+
+<dt><code>max-requests</code> (default: <code>20</code>) (type: integer)</dt><dd>Total global limit on concurrent RPC calls.</dd>
+
+<dt><code>max-client-requests</code> (default: <code>5</code>) (type: integer)</dt><dd>Limit on concurrent requests from a single client connection. To avoid one client monopolizing the server this should be a small fraction of the global max<sub>requests</sub> and max<sub>workers</sub> parameter.</dd>
+
+<dt><code>admin-min-workers</code> (default: <code>1</code>) (type: integer)</dt><dd>Same as <code>min-workers</code> but for the admin interface.</dd>
+
+<dt><code>admin-max-workers</code> (default: <code>5</code>) (type: integer)</dt><dd>Same as <code>max-workers</code> but for the admin interface.</dd>
+
+<dt><code>admin-max-clients</code> (default: <code>5</code>) (type: integer)</dt><dd>Same as <code>max-clients</code> but for the admin interface.</dd>
+
+<dt><code>admin-max-queued-clients</code> (default: <code>5</code>) (type: integer)</dt><dd>Same as <code>max-queued-clients</code> but for the admin interface.</dd>
+
+<dt><code>admin-max-client-requests</code> (default: <code>5</code>) (type: integer)</dt><dd>Same as <code>max-client-requests</code> but for the admin interface.</dd>
+
+<dt><code>log-level</code> (default: <code>3</code>) (type: integer)</dt><dd>Semi-deprecated option for the logging level: using the <code>log-filters</code> option instead is recommend, as it provides finer control. The log level can be set to <code>4</code> for errors, <code>3</code> for warnings, <code>2</code> for information or <code>1</code> for debug. Note that since <code>log-filters</code> and <code>log-outputs</code> take precedence over this option, you will need to also adjust their logging levels to avoid filtering out messages.</dd>
+
+<dt><code>log-filters</code> (default: <code>"3:remote 4:event"</code>) (type: string)</dt><dd>Logging filters. A filter allows selecting a different logging level for a given category of logs. The format for a filter is either ‘=x==:==name=' or ‘=x==:+==name=', where name is a string which is matched against the category given in the <code>VIR_LOG_INIT()</code> at the top of each libvirt source file, e.g., ‘="remote"<code>', ‘</code>"qemu"<code>', or ‘</code>"util.json"<code>'. =name</code> can be a substring of the full category name, in order to match multiple similar categories. The optional ‘=+=' prefix tells libvirt to log stack traces for each message matching <code>name</code>. <code>x</code> is the log level value used to filter the associated message category. <code>x</code> can be set to ‘=4=' for errors, ‘=3=' for warnings, ‘=2=' for information, or ‘=1=' for debug. Multiple filters can be defined in a single filters statement, as space-separated values. Since <code>log-outputs</code> also include a level filter, you may need to also adjust its value to see all the filtered messages.</dd>
+
+<dt><code>log-outputs</code> (default: <code>"3:syslog:libvirtd"</code>) (type: string)</dt><dd>Logging outputs. An output is one of the places to save logging information. The format for an output has the form <code>"==x=</code>:var{output}"<code>, where =output</code> can be ‘=stderr=', ‘=syslog:==name=', where <code>name</code> is the syslog <code>ident</code> value to use, or ‘=<a href="==file_name">==file_name</a>=', where <code>file_name</code> is the file name of the file to output to. <code>x</code> is the minimal level, which acts as a filter. <code>x</code> can be set to <code>x</code> can be set to ‘=4=' for errors, ‘=3=' for warnings, ‘=2=' for information, or ‘=1=' for debug. Multiple filters can be defined in a single filters statement, as space-separated values.</dd>
+
+<dt><code>audit-level</code> (default: <code>1</code>) (type: integer)</dt><dd>Modify the behavior of the auditing subsystem. ‘=0=' disables all auditing, samp{1} enables auditing only if enabled on thehost and ‘=2=' enables auditing but exits if it is disabled on the host.</dd>
+
+<dt><code>audit-logging</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Send audit messages via libvirt logging infrastructure.</dd>
+
+<dt><code>host-uuid</code> (default: <code>""</code>) (type: optional-string)</dt><dd>Host UUID. UUID must not have all digits be the same.</dd>
+
+<dt><code>host-uuid-source</code> (default: <code>"smbios"</code>) (type: string)</dt><dd>Source to read host UUID. Use <code>"smbios"</code> to fetch the UUID via <code>dmidecode -s system-uuid</code>, or <code>"machine-id"</code> to fetch the UUID from <code>/etc/machine-id</code>. If <code>dmidecode</code> does not provide a valid UUID a temporary UUID will be generated.</dd>
+
+<dt><code>keepalive-interval</code> (default: <code>5</code>) (type: integer)</dt><dd>A keepalive message is sent to a client after <code>keepalive_interval</code> seconds of inactivity to check if the client is still responding. If set to <code>-1</code>, libvirtd won't send keepalive requests; however clients can still send them and the daemon will send responses.</dd>
+
+<dt><code>keepalive-count</code> (default: <code>5</code>) (type: integer)</dt><dd>Maximum number of keepalive messages that are allowed to be sent to the client without getting any response before the connection is considered broken. In other words, the connection is automatically closed approximately after ‘=keepalive<sub>interval</sub> * (keepalive<sub>count</sub> + 1)=' seconds since the last message received from the client. When <code>keepalive-count</code> is set to <code>0</code>, connections will be automatically closed after <code>keepalive-interval</code> seconds of inactivity without sending any keepalive messages.</dd>
+
+<dt><code>admin-keepalive-interval</code> (default: <code>5</code>) (type: integer)</dt><dd>Same as above but for admin interface.</dd>
+
+<dt><code>admin-keepalive-count</code> (default: <code>5</code>) (type: integer)</dt><dd>Same as above but for admin interface.</dd>
+
+<dt><code>ovs-timeout</code> (default: <code>5</code>) (type: integer)</dt><dd>Timeout for Open vSwitch calls. The <code>ovs-vsctl</code> utility is used for the configuration and its timeout option is set by default to 5 seconds to avoid potential infinite waits blocking libvirt.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Virtlog-daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="virtlog-daemon"></a>Virtlog daemon<br />
+<div class="outline-text-5" id="text-virtlog-daemon">
+<p>
+The virtlogd service is a server side daemon component of libvirt that is used to manage logs from virtual machine consoles.
+</p>
+
+<p>
+This daemon is not used directly by libvirt client applications, rather it is called on their behalf by <code>libvirtd</code>. By maintaining the logs in a standalone daemon, the main <code>libvirtd</code> daemon can be restarted without risk of losing logs. The <code>virtlogd</code> daemon has the ability to re-exec() itself upon receiving <code>SIGUSR1</code>, to allow live upgrades without downtime.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: virtlog-service-type </dt><dd><p>
+This is the type of the virtlog daemon. Its value must be a <code>virtlog-configuration</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service virtlog-service-type
+         (virtlog-configuration
+          (max-clients 1000)))
+</pre>
+</div></dd>
+
+<dt><code>libvirt</code> parameter: <i>package</i> <b>libvirt</b> </dt><dd>Libvirt package.</dd>
+
+<dt><code>virtlog-configuration</code> parameter: <i>integer</i> <b>log-level</b> </dt><dd><p>
+Logging level. 4 errors, 3 warnings, 2 information, 1 debug.
+</p>
+
+<p>
+Defaults to ‘=3='.
+</p></dd>
+
+<dt><code>virtlog-configuration</code> parameter: <i>string</i> <b>log-filters</b> </dt><dd><p>
+Logging filters.
+</p>
+
+<p>
+A filter allows to select a different logging level for a given category of logs The format for a filter is one of:
+</p>
+
+<ul class="org-ul">
+<li>x:name</li>
+<li>x:+name</li>
+</ul>
+
+<p>
+where <code>name</code> is a string which is matched against the category given in the <code>VIR_LOG_INIT()</code> at the top of each libvirt source file, e.g., "remote", "qemu", or "util.json" (the name in the filter can be a substring of the full category name, in order to match multiple similar categories), the optional "+" prefix tells libvirt to log stack trace for each message matching name, and <code>x</code> is the minimal level where matching messages should be logged:
+</p>
+
+<ul class="org-ul">
+<li>1: DEBUG</li>
+<li>2: INFO</li>
+<li>3: WARNING</li>
+<li>4: ERROR</li>
+</ul>
+
+<p>
+Multiple filters can be defined in a single filters statement, they just need to be separated by spaces.
+</p>
+
+<p>
+Defaults to ‘="3:remote 4:event"='.
+</p></dd>
+
+<dt><code>virtlog-configuration</code> parameter: <i>string</i> <b>log-outputs</b> </dt><dd><p>
+Logging outputs.
+</p>
+
+<p>
+An output is one of the places to save logging information The format for an output can be:
+</p>
+
+<dl class="org-dl">
+<dt><code>x:stderr</code></dt><dd>output goes to stderr</dd>
+
+<dt><code>x:syslog:name</code></dt><dd>use syslog for the output and use the given name as the ident</dd>
+
+<dt><code>x:file:file_path</code></dt><dd>output to a file, with the given filepath</dd>
+
+<dt><code>x:journald</code></dt><dd>output to journald logging system</dd>
+</dl>
+
+<p>
+In all case the x prefix is the minimal level, acting as a filter
+</p>
+
+<ul class="org-ul">
+<li>1: DEBUG</li>
+<li>2: INFO</li>
+<li>3: WARNING</li>
+<li>4: ERROR</li>
+</ul>
+
+<p>
+Multiple outputs can be defined, they just need to be separated by spaces.
+</p>
+
+<p>
+Defaults to ‘="3:stderr"='.
+</p></dd>
+
+<dt><code>virtlog-configuration</code> parameter: <i>integer</i> <b>max-clients</b> </dt><dd><p>
+Maximum number of concurrent client connections to allow over all sockets combined.
+</p>
+
+<p>
+Defaults to ‘=1024='.
+</p></dd>
+
+<dt><code>virtlog-configuration</code> parameter: <i>integer</i> <b>max-size</b> </dt><dd><p>
+Maximum file size before rolling over.
+</p>
+
+<p>
+Defaults to ‘=2MB='
+</p></dd>
+
+<dt><code>virtlog-configuration</code> parameter: <i>integer</i> <b>max-backups</b> </dt><dd><p>
+Maximum number of backup files to keep.
+</p>
+
+<p>
+Defaults to ‘=3='
+</p></dd>
+</dl>
+
+<p>
+<a id="transparent_002demulation_002dqemu"></a><a id="Transparent-Emulation-with-QEMU"></a>
+</p>
+</div>
+</li>
+<li><a id="transparent-emulation-with-qemu"></a>Transparent Emulation with QEMU<br />
+<div class="outline-text-5" id="text-transparent-emulation-with-qemu">
+<p>
+<a id="index-emulation"></a> <a id="index-binfmt_005fmisc"></a>
+<code>qemu-binfmt-service-type</code> provides support for transparent emulation of program binaries built for different architectures&#x2014;e.g., it allows you to transparently execute an ARMv7 program on an x86<sub>64</sub> machine. It achieves this by combining the <a href="https://www.qemu.org">QEMU</a> emulator and the <code>binfmt_misc</code> feature of the kernel Linux. This feature only allows you to emulate GNU/Linux on a different architecture, but see below for GNU/Hurd support.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: qemu-binfmt-service-type </dt><dd><p>
+This is the type of the QEMU/binfmt service for transparent emulation. Its value must be a <code>qemu-binfmt-configuration</code> object, which specifies the QEMU package to use as well as the architecture we want to emulated:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service qemu-binfmt-service-type
+         (qemu-binfmt-configuration
+           (platforms (lookup-qemu-platforms "arm" "aarch64"))))
+</pre>
+</div>
+
+<p>
+In this example, we enable transparent emulation for the ARM and aarch64 platforms. Running <code>herd stop qemu-binfmt</code> turns it off, and running <code>herd start qemu-binfmt</code> turns it back on (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Invoking-herd.html#Invoking-herd">the <code>herd</code> command</a> in The GNU Shepherd Manual).
+</p></dd>
+
+<dt>Data Type: qemu-binfmt-configuration </dt><dd>This is the configuration for the <code>qemu-binfmt</code> service.
+
+<dl class="org-dl">
+<dt><code>platforms</code> (default: <code>'()</code>)</dt><dd><p>
+The list of emulated QEMU platforms. Each item must be a <i>platform object</i> as returned by <code>lookup-qemu-platforms</code> (see below).
+</p>
+
+<p>
+For example, let's suppose you're on an x86<sub>64</sub> machine and you have this service:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service qemu-binfmt-service-type
+         (qemu-binfmt-configuration
+           (platforms (lookup-qemu-platforms "arm"))))
+</pre>
+</div>
+
+<p>
+You can run:
+</p>
+
+<pre class="example" id="orgfa9364b">
+guix build -s armhf-linux inkscape
+</pre>
+
+<p>
+and it will build Inkscape for ARMv7 <i>as if it were a native build</i>, transparently using QEMU to emulate the ARMv7 CPU. Pretty handy if you'd like to test a package build for an architecture you don't have access to!
+</p></dd>
+
+<dt><code>qemu</code> (default: <code>qemu</code>)</dt><dd>The QEMU package to use.</dd>
+</dl></dd>
+
+<dt>Procedure: lookup-qemu-platforms platforms&#x2026;</dt><dd>Return the list of QEMU platform objects corresponding to <code>platforms</code>&#x2026;. <code>platforms</code> must be a list of strings corresponding to platform names, such as <code>"arm"</code>, <code>"sparc"</code>, <code>"mips64el"</code>, and so on.</dd>
+
+<dt>Procedure: qemu-platform? obj</dt><dd>Return true if <code>obj</code> is a platform object.</dd>
+
+<dt>Procedure: qemu-platform-name platform</dt><dd>Return the name of <code>platform</code>&#x2014;a string such as <code>"arm"</code>.</dd>
+</dl>
+
+<p>
+<a id="QEMU-Guest-Agent"></a>
+</p>
+</div>
+</li>
+<li><a id="qemu-guest-agent"></a>QEMU Guest Agent<br />
+<div class="outline-text-5" id="text-qemu-guest-agent">
+<p>
+<a id="index-emulation-1"></a>
+The QEMU guest agent provides control over the emulated system to the host. The <code>qemu-guest-agent</code> service runs the agent on Guix guests. To control the agent from the host, open a socket by invoking QEMU with the following arguments:
+</p>
+
+<pre class="example" id="orgb4255a9">
+qemu-system-x86_64 \
+    -chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 \
+    -device virtio-serial \
+    -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 \
+    ...
+</pre>
+
+<p>
+This creates a socket at <code>/tmp/qga.sock</code> on the host. Once the guest agent is running, you can issue commands with <code>socat</code>:
+</p>
+
+<pre class="example" id="orgf3fe104">
+$ guix shell socat -- socat unix-connect:/tmp/qga.sock stdio
+{"execute": "guest-get-host-name"}
+{"return": {"host-name": "guix"}}
+</pre>
+
+<p>
+See <a href="https://wiki.qemu.org/Features/GuestAgent">QEMU guest agent documentation</a> for more options and commands.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: qemu-guest-agent-service-type </dt><dd>Service type for the QEMU guest agent service.</dd>
+
+<dt>Data Type: qemu-guest-agent-configuration </dt><dd>Configuration for the <code>qemu-guest-agent</code> service.
+
+<dl class="org-dl">
+<dt><code>qemu</code> (default: <code>qemu-minimal</code>)</dt><dd>The QEMU package to use.</dd>
+
+<dt><code>device</code> (default: <code>""</code>)</dt><dd>File name of the device or socket the agent uses to communicate with the host. If empty, QEMU uses a default file name.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Xen-Guest-Agent"></a>
+</p>
+</div>
+</li>
+<li><a id="xen-guest-agent"></a>Xen Guest Agent<br />
+<div class="outline-text-5" id="text-xen-guest-agent">
+<p>
+<a id="index-Xen"></a> <a id="index-Xen-guest-agent"></a>
+The Xen guest agent allows a Xen host to control the emulated system. The <code>xe-guest-utilities</code> service runs the agent on Guix guests.
+</p>
+
+<p>
+<a href="https://github.com/xenserver/xe-guest-utilities">xe-guest-utilities</a> collects information about the running virtualized guest. This includes:
+</p>
+
+<ul class="org-ul">
+<li>static information
+<ul class="org-ul">
+<li>The operating system running</li>
+<li>The Linux kernel version</li>
+</ul></li>
+<li>dynamic information
+<ul class="org-ul">
+<li>Network interfaces (devices) being added/removed</li>
+<li>Network connections being unplugged/plugged-in</li>
+<li>CPUs being added or removed</li>
+<li>The guest migrating, being paused/resumed, etc.</li>
+</ul></li>
+<li>ephemeral information
+<ul class="org-ul">
+<li>The amount of memory currently in-use and free</li>
+<li>The amount of disk-space used</li>
+</ul></li>
+</ul>
+
+<blockquote>
+<p>
+<b>Note:</b> The default Linux-libre kernel that Guix ships already enables the necessary paravirtualization features for a guest. There is nothing you need to do for the guest to support Xen's paravirtualization features.
+</p>
+
+<p>
+The guest utilities are used to have the guest report information <i>back</i> to the virtualizing host and support tasks that require cooperation between host and guest, like CPU hotplugging.
+</p>
+</blockquote>
+
+<dl class="org-dl">
+<dt>Variable: xe-guest-utilities-service-type </dt><dd>Service type for the Xen guest utilities service.</dd>
+
+<dt>Data Type: xe-guest-utilities-configuration </dt><dd>Configuration for the <code>xe-guest-utilities</code> service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>xe-guest-utilities</code>)</dt><dd>The Xen guest utilities package to use.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/xe-daemon.pid"</code>)</dt><dd>Name of the file holding the PID of <code>xe-deamon</code>.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/xe-guest-utilities.log"</code>)</dt><dd>Name of the <code>xe-guest-utilities</code> log file.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<code>xe-guest-utilities</code> is the standard guest utilities used for Xen guests. More recently the Xen Project has been working to develop <code>xen-guest-agent</code>, a modern drop-in replacement for <code>xe-guest-utilities</code>. While they nearly have feature-parity, <code>xen-guest-agent</code> currently lacks some of the features of its predecessor, namely disk metrics and “PV drivers version”.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: xen-guest-agent-service-type </dt><dd>Service type for the Xen guest agent service.</dd>
+
+<dt>Data Type: xen-guest-agent-configuration </dt><dd>Configuration for the <code>xen-guest-agent</code> service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>xen-guest-agent</code>)</dt><dd>The Xen guest agent package to use.</dd>
+</dl></dd>
+</dl>
+
+<blockquote>
+<p>
+<b>Warning:</b> <code>xe-guest-utilities</code> and <code>xen-guest-agent</code> are mutually exclusive.
+</p>
+</blockquote>
+
+<p>
+<a id="build_002dvm"></a><a id="Virtual-Build-Machines"></a>
+</p>
+</div>
+</li>
+<li><a id="virtual-build-machines"></a>Virtual Build Machines<br />
+<div class="outline-text-5" id="text-virtual-build-machines">
+<p>
+<a id="index-virtual-build-machines"></a> <a id="index-build-VMs"></a> <a id="index-VMs_002c-for-offloading"></a>
+<i>Virtual build machines</i> or “build VMs” let you offload builds to a fully controlled environment. “How can it be more controlled than regular builds? And why would it be useful?”, you ask. Good questions.
+</p>
+
+<p>
+Builds spawned by <code>guix-daemon</code> indeed run in a controlled environment; specifically the daemon spawns build processes in separate namespaces and in a chroot, such as that build processes only see their declared dependencies and a well-defined subset of the file system tree (see <a href="docs/guix--Build-Environment-Setup.html">Build Environment Setup</a>, for details). A few aspects of the environments are not controlled though: the operating system kernel, the CPU model, and the date. Most of the time, these aspects have no impact on the build process: the level of isolation <code>guix-daemon</code> provides is “good enough”.
+</p>
+
+<p>
+<a id="index-time-traps"></a>
+However, there are occasionally cases where those aspects <i>do</i> influence the build process. A typical example is <i>time traps</i>: build processes that stop working after a certain date. Another one is software that optimizes for the CPU microarchitecture it is built on or, worse, bugs that manifest only on specific CPUs.
+</p>
+
+<p>
+To address that, <code>virtual-build-machine-service-type</code> lets you add a virtual build machine on your system, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu services virtualization))
+
+(operating-system
+  ;; …
+  (services (append (list (service virtual-build-machine-service-type))
+                    %base-services)))
+</pre>
+</div>
+
+<p>
+By default, you have to explicitly start the build machine when you need it, at which point builds may be offloaded to it (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>):
+</p>
+
+<pre class="example" id="org472e8e0">
+herd start build-vm
+</pre>
+
+<p>
+With the default setting shown above, the build VM runs with its clock set to a date several years in the past, and on a CPU model that corresponds to that date&#x2014;a model possibly older than that of your machine. This lets you rebuild today software from the past that would otherwise fail to build due to a time trap or other issues in its build process. You can view the VM's config like this:
+</p>
+
+<pre class="example" id="org3b60b46">
+herd configuration build-vm
+</pre>
+
+<p>
+You can configure the build VM, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service virtual-build-machine-service-type
+         (virtual-build-machine
+          (cpu "Westmere")
+          (cpu-count 8)
+          (memory-size (* 1 1024))
+          (auto-start? #t)))
+</pre>
+</div>
+
+<p>
+The available options are shown below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: virtual-build-machine-service-type </dt><dd>This is the service type to run <i>virtual build machines</i>. Virtual build machines are configured so that builds are offloaded to them when they are running.</dd>
+
+<dt>Data Type: virtual-build-machine </dt><dd>This is the data type specifying the configuration of a build machine. It contains the fields below:
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <code>'build-vm</code>)</dt><dd>The name of this build VM. It is used to construct the name of its Shepherd service.</dd>
+
+<dt><code>image</code></dt><dd>The image of the virtual machine (see <a href="docs/guix--System-Images.html">Creating System Images</a>). This notably specifies the virtual disk size and the operating system running into it (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>). The default value is a minimal operating system image.</dd>
+
+<dt><code>qemu</code> (default: <code>qemu-minimal</code>)</dt><dd>The QEMU package to run the image.</dd>
+
+<dt><code>cpu</code></dt><dd><p>
+The CPU model being emulated as a string denoting a model known to QEMU.
+</p>
+
+<p>
+The default value is a model that matches <code>date</code> (see below). To see what CPU models are available, run, for example:
+</p>
+
+<pre class="example" id="orgc5fe8e4">
+qemu-system-x86_64 -cpu help
+</pre></dd>
+
+<dt><code>cpu-count</code> (default: <code>4</code>)</dt><dd>The number of CPUs emulated by the virtual machine.</dd>
+
+<dt><code>memory-size</code> (default: <code>2048</code>)</dt><dd>Size in mebibytes (MiB) of the virtual machine's main memory (RAM).</dd>
+
+<dt><code>date</code> (default: a few years ago)</dt><dd>Date inside the virtual machine when it starts; this must be a SRFI-19 date object (see <a href="https://www.gnu.org/software/guile/manual/html_node/SRFI_002d19-Date.html#SRFI_002d19-Date">SRFI-19 Date</a> in GNU Guile Reference Manual).</dd>
+
+<dt><code>port-forwardings</code> (default: 11022 and 11004)</dt><dd>TCP ports of the virtual machine forwarded to the host. By default, the SSH and secrets ports are forwarded into the host.</dd>
+
+<dt><code>systems</code> (default: <code>(list (%current-system))</code>)</dt><dd>List of system types supported by the build VM&#x2014;e.g., <code>"x86_64-linux"</code>.</dd>
+
+<dt><code>auto-start?</code> (default: <code>#f</code>)</dt><dd>Whether to start the virtual machine when the system boots.</dd>
+</dl></dd>
+</dl>
+
+<p>
+In the next section, you'll find a variant on this theme: GNU/Hurd virtual machines!
+</p>
+
+<p>
+<a id="hurd_002dvm"></a><a id="The-Hurd-in-a-Virtual-Machine"></a>
+</p>
+</div>
+</li>
+<li><a id="the-hurd-in-a-virtual-machine"></a>The Hurd in a Virtual Machine<br />
+<div class="outline-text-5" id="text-the-hurd-in-a-virtual-machine">
+<p>
+<a id="index-hurd-1"></a> <a id="index-the-Hurd"></a> <a id="index-childhurd"></a>
+Service <code>hurd-vm</code> provides support for running GNU/Hurd in a virtual machine (VM), a so-called <i>childhurd</i>. This service is meant to be used on GNU/Linux and the given GNU/Hurd operating system configuration is cross-compiled. The virtual machine is a Shepherd service that can be referred to by the names <code>hurd-vm</code> and <code>childhurd</code> and be controlled with commands such as:
+</p>
+
+<pre class="example" id="org2aa2373">
+herd start hurd-vm
+herd stop childhurd
+</pre>
+
+<p>
+When the service is running, you can view its console by connecting to it with a VNC client, for example with:
+</p>
+
+<pre class="example" id="org8147332">
+guix shell tigervnc-client -- vncviewer localhost:5900
+</pre>
+
+<p>
+The default configuration (see <code>hurd-vm-configuration</code> below) spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU (the virtual machine emulator) redirects to port 10022 on the host. By default, the service enables <i>offloading</i> such that the host <code>guix-daemon</code> automatically offloads GNU/Hurd builds to the childhurd (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>). This is what happens when running a command like the following one, where <code>i586-gnu</code> is the system type of 32-bit GNU/Hurd:
+</p>
+
+<pre class="example" id="orgbc95d12">
+guix build emacs-minimal -s i586-gnu
+</pre>
+
+<p>
+The childhurd is volatile and stateless: it starts with a fresh root file system every time you restart it. By default though, all the files under <code>/etc/childhurd</code> on the host are copied as is to the root file system of the childhurd when it boots. This allows you to initialize “secrets” inside the VM: SSH host keys, authorized substitute keys, and so on&#x2014;see the explanation of <code>secret-root</code> below.
+</p>
+
+<p>
+You will probably find it useful to create an account for you in the GNU/Hurd virtual machine and to authorize logins with your SSH key. To do that, you can define the GNU/Hurd system in the usual way (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>), and then pass that operating system as the <code>os</code> field of <code>hurd-vm-configuration</code>, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define childhurd-os
+  ;; Definition of my GNU/Hurd system, derived from the default one.
+  (operating-system
+    (inherit %hurd-vm-operating-system)
+
+    ;; Add a user account.
+    (users (cons (user-account
+                  (name "charlie")
+                  (comment "This is me!")
+                  (group "users")
+                  (supplementary-groups '("wheel"))) ;for 'sudo'
+                 %base-user-accounts))
+
+    (services
+     ;; Modify the SSH configuration to allow login as "root"
+     ;; and as "charlie" using public key authentication.
+     (modify-services (operating-system-user-services
+                       %hurd-vm-operating-system)
+       (openssh-service-type
+        config =&gt; (openssh-configuration
+                   (inherit config)
+                   (authorized-keys
+                    `(("root"
+                       ,(local-file
+                         "/home/charlie/.ssh/id_rsa.pub"))
+                      ("charlie"
+                       ,(local-file
+                         "/home/charlie/.ssh/id_rsa.pub"))))))))))
+
+(operating-system
+  ;; …
+  (services
+    ;; Add the 'hurd-vm' service, configured to use the
+    ;; operating system configuration above.
+    (append (list (service hurd-vm-service-type
+                           (hurd-vm-configuration
+                             (os %childhurd-os))))
+            %base-services)))
+</pre>
+</div>
+
+<p>
+That's it! The remainder of this section provides the reference of the service configuration.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: hurd-vm-service-type </dt><dd><p>
+This is the type of the Hurd in a Virtual Machine service. Its value must be a <code>hurd-vm-configuration</code> object, which specifies the operating system (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>) and the disk size for the Hurd Virtual Machine, the QEMU package to use as well as the options for running it.
+</p>
+
+<p>
+For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service hurd-vm-service-type
+         (hurd-vm-configuration
+          (disk-size (* 5000 (expt 2 20))) ;5G
+          (memory-size 1024)))             ;1024MiB
+</pre>
+</div>
+
+<p>
+would create a disk image big enough to build GNU Hello, with some extra memory.
+</p></dd>
+
+<dt>Data Type: hurd-vm-configuration </dt><dd>The data type representing the configuration for <code>hurd-vm-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>os</code> (default: <code>%hurd-vm-operating-system</code>)</dt><dd>The operating system to instantiate. This default is bare-bones with a permissive OpenSSH secure shell daemon listening on port 2222 (see <a href="docs/guix--Networking-Services.html"><code>openssh-service-type</code></a>).</dd>
+
+<dt><code>qemu</code> (default: <code>qemu-minimal</code>)</dt><dd>The QEMU package to use.</dd>
+
+<dt><code>type</code> (default: <code>'hurd-qcow2</code>)</dt><dd>The image type name. Use <code>'hurd-qcow2</code> for a 32-bit image or <code>'hurd64-qcow2</code> for a 64-bit image.</dd>
+
+<dt><code>image</code> (default: <code>hurd-vm-disk-image</code>)</dt><dd><p>
+The image object representing the disk image of this virtual machine (see <a href="docs/guix--System-Images.html">Creating System Images</a>).
+</p>
+
+<p>
+Alternatively, this can be the file name (a string) of an image, which is useful if you want the image to persist across service restarts&#x2014;see example below.
+</p></dd>
+
+<dt><code>disk-size</code> (default: <code>'guess</code>)</dt><dd>The size of the disk image.</dd>
+
+<dt><code>memory-size</code> (default: <code>512</code>)</dt><dd>The memory size of the Virtual Machine in mebibytes.</dd>
+
+<dt><code>options</code> (default: <code>'("--snapshot")</code>)</dt><dd>The extra options for running QEMU.</dd>
+
+<dt><code>id</code> (default: <code>#f</code>)</dt><dd>If set, a non-zero positive integer used to parameterize Childhurd instances. It is appended to the service's name, e.g. <code>childhurd1</code>.</dd>
+
+<dt><code>net-options</code> (default: <code>hurd-vm-net-options</code>)</dt><dd><p>
+The procedure used to produce the list of QEMU networking options.
+</p>
+
+<p>
+By default, it produces
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'("--device" "rtl8139,netdev=net0"
+  "--netdev" (string-append
+              "user,id=net0,"
+              "hostfwd=tcp:127.0.0.1:secrets-port-:1004,"
+              "hostfwd=tcp:127.0.0.1:ssh-port-:2222,"
+              "hostfwd=tcp:127.0.0.1:vnc-port-:5900"))
+</pre>
+</div>
+
+<p>
+with forwarded ports:
+</p>
+
+<pre class="example" id="org2376e97">
+secrets-port: (+ 11004 (* 1000 ID))
+ssh-port: (+ 10022 (* 1000 ID))
+vnc-port: (+ 15900 (* 1000 ID))
+</pre>
+
+<p>
+<a id="index-childhurd_002c-offloading"></a> <a id="index-Hurd_002c-offloading"></a>
+</p></dd>
+
+<dt><code>offloading?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to automatically set up offloading of builds to the childhurd.
+</p>
+
+<p>
+When enabled, this lets you run GNU/Hurd builds on the host and have them transparently offloaded to the VM, for instance when running a command like this:
+</p>
+
+<pre class="example" id="orgf1ca12e">
+guix build coreutils -s i586-gnu
+</pre>
+
+<p>
+This option automatically sets up offloading like so:
+</p>
+
+<ol class="org-ol">
+<li>Authorizing the childhurd's key on the host so that the host accepts build results coming from the childhurd, which can be done like so (see <a href="docs/guix--Invoking-guix-archive.html"><code>guix archive --authorize</code></a>, for more on that).</li>
+<li>Creating a user account called <code>offloading</code> dedicated to offloading in the childhurd.</li>
+<li>Creating an SSH key pair on the host and making it an authorized key of the <code>offloading</code> account in the childhurd.</li>
+<li>Adding the childhurd to <code>/etc/guix/machines.scm</code> (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>).</li>
+</ol></dd>
+
+<dt><code>secret-root</code> (default: <code>/etc/childhurd</code>)</dt><dd><p>
+The root directory with out-of-band secrets to be installed into the childhurd once it runs. Childhurds are volatile which means that on every startup, secrets such as the SSH host keys and Guix signing key are recreated.
+</p>
+
+<p>
+If the <code>/etc/childhurd</code> directory does not exist, the <code>secret-service</code> running in the Childhurd will be sent an empty list of secrets.
+</p>
+
+<p>
+By default, the service automatically populates <code>/etc/childhurd</code> with the following non-volatile secrets, unless they already exist:
+</p>
+
+<pre class="example" id="orgc772c95">
+/etc/childhurd/etc/guix/acl
+/etc/childhurd/etc/guix/signing-key.pub
+/etc/childhurd/etc/guix/signing-key.sec
+/etc/childhurd/etc/ssh/authorized_keys.d/offloading
+/etc/childhurd/etc/ssh/ssh_host_ed25519_key
+/etc/childhurd/etc/ssh/ssh_host_ecdsa_key
+/etc/childhurd/etc/ssh/ssh_host_ed25519_key.pub
+/etc/childhurd/etc/ssh/ssh_host_ecdsa_key.pub
+</pre></dd>
+</dl></dd>
+</dl>
+
+<p>
+Note that by default the VM image is volatile&#x2014;i.e., once the service is stopped, the contents are lost. If you want a persistent image instead, override the configuration's <code>image</code> and <code>options</code> without the <code>--snapshot</code> flag using something along these lines:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service hurd-vm-service-type
+         (hurd-vm-configuration
+          ;; Specify an out-of-store, persistent image.
+          (image "/out/of/store/writable/hurd.img")
+          (options '())))
+</pre>
+</div>
+
+<p>
+<a id="Ganeti"></a>
+</p>
+</div>
+</li>
+<li><a id="ganeti"></a>Ganeti<br />
+<div class="outline-text-5" id="text-ganeti">
+<p>
+<a id="index-ganeti"></a>
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This service is considered experimental. Configuration options may be changed in a backwards-incompatible manner, and not all features have been thorougly tested. Users of this service are encouraged to share their experience at <a href="mailto:guix-devel@gnu.org">guix-devel@gnu.org</a>.
+</p>
+</blockquote>
+
+<p>
+Ganeti is a virtual machine management system. It is designed to keep virtual machines running on a cluster of servers even in the event of hardware failures, and to make maintenance and recovery tasks easy. It consists of multiple services which are described later in this section. In addition to the Ganeti service, you will need the OpenSSH service (see <a href="docs/guix--Networking-Services.html"><code>openssh-service-type</code></a>), and update the <code>/etc/hosts</code> file (see <a href="docs/guix--Service-Reference.html"><code>hosts-service-type</code></a>) with the cluster name and address (or use a DNS server).
+</p>
+
+<p>
+All nodes participating in a Ganeti cluster should have the same Ganeti and <code>/etc/hosts</code> configuration. Here is an example configuration for a Ganeti cluster node that supports multiple storage backends, and installs the <code>debootstrap</code> and <code>guix</code> <i>OS providers</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-package-modules virtualization)
+(use-service-modules base ganeti networking ssh)
+(operating-system
+  ;; …
+  (host-name "node1")
+
+  ;; Install QEMU so we can use KVM-based instances, and LVM, DRBD and Ceph
+  ;; in order to use the "plain", "drbd" and "rbd" storage backends.
+  (packages (append (map specification-&gt;package
+                         '("qemu" "lvm2" "drbd-utils" "ceph"
+                           ;; Add the debootstrap and guix OS providers.
+                           "ganeti-instance-guix" "ganeti-instance-debootstrap"))
+                    %base-packages))
+  (services
+   (append (list (service static-networking-service-type
+                          (list (static-networking
+                                 (addresses
+                                  (list (network-address
+                                         (device "eth0")
+                                         (value "192.168.1.201/24"))))
+                                 (routes
+                                  (list (network-route
+                                         (destination "default")
+                                         (gateway "192.168.1.254"))))
+                                 (name-servers '("192.168.1.252"
+                                                 "192.168.1.253")))))
+
+                 ;; Ganeti uses SSH to communicate between nodes.
+                 (service openssh-service-type
+                          (openssh-configuration
+                           (permit-root-login 'prohibit-password)))
+
+                 (simple-service 'ganeti-hosts-entries hosts-service-type
+                                 (list
+                                   (host "192.168.1.200" "ganeti.example.com")
+                                   (host "192.168.1.201" "node1.example.com"
+                                         '("node1"))
+                                   (host "192.168.1.202" "node2.example.com"
+                                         '("node2"))))
+
+                 (service ganeti-service-type
+                          (ganeti-configuration
+                           ;; This list specifies allowed file system paths
+                           ;; for storing virtual machine images.
+                           (file-storage-paths '("/srv/ganeti/file-storage"))
+                           ;; This variable configures a single "variant" for
+                           ;; both Debootstrap and Guix that works with KVM.
+                           (os %default-ganeti-os))))
+           %base-services)))
+</pre>
+</div>
+
+<p>
+Users are advised to read the <a href="https://docs.ganeti.org/docs/ganeti/3.0/html/admin.html">Ganeti administrators guide</a> to learn about the various cluster options and day-to-day operations. There is also a <a href="https://guix.gnu.org/blog/2020/running-a-ganeti-cluster-on-guix/">blog post</a> describing how to configure and initialize a small cluster.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: ganeti-service-type </dt><dd><p>
+This is a service type that includes all the various services that Ganeti nodes should run.
+</p>
+
+<p>
+Its value is a <code>ganeti-configuration</code> object that defines the package to use for CLI operations, as well as configuration for the various daemons. Allowed file storage paths and available guest operating systems are also configured through this data type.
+</p></dd>
+
+<dt>Data Type: ganeti-configuration </dt><dd><p>
+The <code>ganeti</code> service takes the following configuration options:
+</p>
+
+<dl class="org-dl">
+<dt><code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use. It will be installed to the system profile and make <code>gnt-cluster</code>, <code>gnt-instance</code>, etc available. Note that the value specified here does not affect the other services as each refer to a specific <code>ganeti</code> package (see below).</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>noded-configuration</code> (default: <code>(ganeti-noded-configuration)</code>)<br />
+<code>confd-configuration</code> (default: <code>(ganeti-confd-configuration)</code>)<br />
+<code>wconfd-configuration</code> (default: <code>(ganeti-wconfd-configuration)</code>)<br />
+<code>luxid-configuration</code> (default: <code>(ganeti-luxid-configuration)</code>)<br />
+<code>rapi-configuration</code> (default: <code>(ganeti-rapi-configuration)</code>)<br />
+<code>kvmd-configuration</code> (default: <code>(ganeti-kvmd-configuration)</code>)<br />
+<code>mond-configuration</code> (default: <code>(ganeti-mond-configuration)</code>)<br />
+<code>metad-configuration</code> (default: <code>(ganeti-metad-configuration)</code>)<br />
+<code>watcher-configuration</code> (default: <code>(ganeti-watcher-configuration)</code>)<br />
+<code>cleaner-configuration</code> (default: <code>(ganeti-cleaner-configuration)</code>) :: These options control the various daemons and cron jobs that are distributed with Ganeti. The possible values for these are described in detail below. To override a setting, you must use the configuration type for that service:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service ganeti-service-type
+         (ganeti-configuration
+          (rapi-configuration
+           (ganeti-rapi-configuration
+            (interface "eth1"))))
+          (watcher-configuration
+           (ganeti-watcher-configuration
+            (rapi-ip "10.0.0.1"))))
+</pre>
+</div></dd>
+
+<dt><code>file-storage-paths</code> (default: <code>'()</code>)</dt><dd>List of allowed directories for file storage backend.</dd>
+
+<dt><code>hooks</code> (default: <code>#f</code>)</dt><dd>When set, this should be a file-like object containing a directory with <a href="https://docs.ganeti.org/docs/ganeti/3.0/html/hooks.html">cluster execution hooks</a>.</dd>
+
+<dt><code>os</code> (default: <code>%default-ganeti-os</code>)</dt><dd>List of <code>&lt;ganeti-os&gt;</code> records.</dd>
+</dl>
+
+<p>
+In essence <code>ganeti-service-type</code> is shorthand for declaring each service individually:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service ganeti-noded-service-type)
+(service ganeti-confd-service-type)
+(service ganeti-wconfd-service-type)
+(service ganeti-luxid-service-type)
+(service ganeti-kvmd-service-type)
+(service ganeti-mond-service-type)
+(service ganeti-metad-service-type)
+(service ganeti-watcher-service-type)
+(service ganeti-cleaner-service-type)
+</pre>
+</div>
+
+<p>
+Plus a service extension for <code>etc-service-type</code> that configures the file storage backend and OS variants.
+</p></dd>
+
+<dt>Data Type: ganeti-os </dt><dd>This data type is suitable for passing to the <code>os</code> parameter of <code>ganeti-configuration</code>. It takes the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The name for this OS provider. It is only used to specify where the configuration ends up. Setting it to “debootstrap” will create <code>/etc/ganeti/instance-debootstrap</code>.</dd>
+
+<dt><code>extension</code> (default: <code>#f</code>)</dt><dd>The file extension for variants of this OS type. For example <code>.conf</code> or <code>.scm</code>. It will be appended to the variant file name if set.</dd>
+
+<dt><code>variants</code> (default: <code>'()</code>)</dt><dd><p>
+This must be either a list of <code>ganeti-os-variant</code> objects for this OS, or a “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>) representing the variants directory.
+</p>
+
+<p>
+To use the Guix OS provider with variant definitions residing in a local directory instead of declaring individual variants (see <code>guix-variants</code> below), you can do:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(ganeti-os
+ (name "guix")
+ (variants (local-file "ganeti-guix-variants"
+                       #:recursive? #true)))
+</pre>
+</div>
+
+<p>
+Note that you will need to maintain the <code>variants.list</code> file (see <a href="https://docs.ganeti.org/docs/ganeti/3.0/man/ganeti-os-interface.html"><code>ganeti-os-interface(7)</code></a>) manually in this case.
+</p></dd>
+</dl></dd>
+
+<dt>Data Type: ganeti-os-variant </dt><dd>This is the data type for a Ganeti OS variant. It takes the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The name of this variant.</dd>
+
+<dt><code>configuration</code></dt><dd>A configuration file for this variant.</dd>
+</dl></dd>
+
+<dt>Variable: %default-debootstrap-hooks </dt><dd>This variable contains hooks to configure networking and the GRUB bootloader.</dd>
+
+<dt>Variable: %default-debootstrap-extra-pkgs </dt><dd>This variable contains a list of packages suitable for a fully-virtualized guest.</dd>
+
+<dt>Data Type: debootstrap-configuration </dt><dd>This data type creates configuration files suitable for the debootstrap OS provider.
+
+<dl class="org-dl">
+<dt><code>hooks</code> (default: <code>%default-debootstrap-hooks</code>)</dt><dd><p>
+When not <code>#f</code>, this must be a G-expression that specifies a directory with scripts that will run when the OS is installed. It can also be a list of <code>(name . file-like)</code> pairs. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`((99-hello-world . ,(plain-file "#!/bin/sh\necho Hello, World")))
+</pre>
+</div>
+
+<p>
+That will create a directory with one executable named <code>99-hello-world</code> and run it every time this variant is installed. If set to <code>#f</code>, hooks in <code>/etc/ganeti/instance-debootstrap/hooks</code> will be used, if any.
+</p></dd>
+
+<dt><code>proxy</code> (default: <code>#f</code>)</dt><dd>Optional HTTP proxy to use.</dd>
+
+<dt><code>mirror</code> (default: <code>#f</code>)</dt><dd>The Debian mirror. Typically something like <code>http://ftp.no.debian.org/debian</code>. The default varies depending on the distribution.</dd>
+
+<dt><code>arch</code> (default: <code>#f</code>)</dt><dd>The dpkg architecture. Set to <code>armhf</code> to debootstrap an ARMv7 instance on an AArch64 host. Default is to use the current system architecture.</dd>
+
+<dt><code>suite</code> (default: <code>"stable"</code>)</dt><dd>When set, this must be a Debian distribution “suite” such as <code>buster</code> or <code>focal</code>. If set to <code>#f</code>, the default for the OS provider is used.</dd>
+
+<dt><code>extra-pkgs</code> (default: <code>%default-debootstrap-extra-pkgs</code>)</dt><dd>List of extra packages that will get installed by dpkg in addition to the minimal system.</dd>
+
+<dt><code>components</code> (default: <code>#f</code>)</dt><dd>When set, must be a list of Debian repository “components”. For example <code>'("main" "contrib")</code>.</dd>
+
+<dt><code>generate-cache?</code> (default: <code>#t</code>)</dt><dd>Whether to automatically cache the generated debootstrap archive.</dd>
+
+<dt><code>clean-cache</code> (default: <code>14</code>)</dt><dd>Discard the cache after this amount of days. Use <code>#f</code> to never clear the cache.</dd>
+
+<dt><code>partition-style</code> (default: <code>'msdos</code>)</dt><dd>The type of partition to create. When set, it must be one of <code>'msdos</code>, <code>'none</code> or a string.</dd>
+
+<dt><code>partition-alignment</code> (default: <code>2048</code>)</dt><dd>Alignment of the partition in sectors.</dd>
+</dl></dd>
+
+<dt>Procedure: debootstrap-variant name configuration</dt><dd>This is a helper procedure that creates a <code>ganeti-os-variant</code> record. It takes two parameters: a name and a <code>debootstrap-configuration</code> object.</dd>
+
+<dt>Procedure: debootstrap-os variants&#x2026;</dt><dd>This is a helper procedure that creates a <code>ganeti-os</code> record. It takes a list of variants created with <code>debootstrap-variant</code>.</dd>
+
+<dt>Procedure: guix-variant name configuration</dt><dd>This is a helper procedure that creates a <code>ganeti-os-variant</code> record for use with the Guix OS provider. It takes a name and a G-expression that returns a “file-like” (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>) object containing a Guix System configuration.</dd>
+
+<dt>Procedure: guix-os variants&#x2026;</dt><dd>This is a helper procedure that creates a <code>ganeti-os</code> record. It takes a list of variants produced by <code>guix-variant</code>.</dd>
+
+<dt>Variable: %default-debootstrap-variants </dt><dd><p>
+This is a convenience variable to make the debootstrap provider work “out of the box” without users having to declare variants manually. It contains a single debootstrap variant with the default configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(list (debootstrap-variant
+       "default"
+       (debootstrap-configuration)))
+</pre>
+</div></dd>
+
+<dt>Variable: %default-guix-variants </dt><dd><p>
+This is a convenience variable to make the Guix OS provider work without additional configuration. It creates a virtual machine that has an SSH server, a serial console, and authorizes the Ganeti hosts SSH keys.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(list (guix-variant
+       "default"
+       (file-append ganeti-instance-guix
+                    "/share/doc/ganeti-instance-guix/examples/dynamic.scm")))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+Users can implement support for OS providers unbeknownst to Guix by extending the <code>ganeti-os</code> and <code>ganeti-os-variant</code> records appropriately. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(ganeti-os
+ (name "custom")
+ (extension ".conf")
+ (variants
+  (list (ganeti-os-variant
+         (name "foo")
+         (configuration (plain-file "bar" "this is fine"))))))
+</pre>
+</div>
+
+<p>
+That creates <code>/etc/ganeti/instance-custom/variants/foo.conf</code> which points to a file in the store with contents <code>this is fine</code>. It also creates <code>/etc/ganeti/instance-custom/variants/variants.list</code> with contents <code>foo</code>.
+</p>
+
+<p>
+Obviously this may not work for all OS providers out there. If you find the interface limiting, please reach out to <a href="mailto:guix-devel@gnu.org">guix-devel@gnu.org</a>.
+</p>
+
+<p>
+The rest of this section documents the various services that are included by <code>ganeti-service-type</code>.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: ganeti-noded-service-type </dt><dd><code>ganeti-noded</code> is the daemon responsible for node-specific functions within the Ganeti system. The value of this service must be a <code>ganeti-noded-configuration</code> object.</dd>
+
+<dt>Data Type: ganeti-noded-configuration </dt><dd>This is the configuration for the <code>ganeti-noded</code> service.
+
+<dl class="org-dl">
+<dt><code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.</dd>
+
+<dt><code>port</code> (default: <code>1811</code>)</dt><dd>The TCP port on which the node daemon listens for network requests.</dd>
+
+<dt><code>address</code> (default: <code>"0.0.0.0"</code>)</dt><dd>The network address that the daemon will bind to. The default address means bind to all available addresses.</dd>
+
+<dt><code>interface</code> (default: <code>#f</code>)</dt><dd>When this is set, it must be a specific network interface (e.g. <code>eth0</code>) that the daemon will bind to.</dd>
+
+<dt><code>max-clients</code> (default: <code>20</code>)</dt><dd>This sets a limit on the maximum number of simultaneous client connections that the daemon will handle. Connections above this count are accepted, but no responses will be sent until enough connections have closed.</dd>
+
+<dt><code>ssl?</code> (default: <code>#t</code>)</dt><dd>Whether to use SSL/TLS to encrypt network communications. The certificate is automatically provisioned by the cluster and can be rotated with <code>gnt-cluster renew-crypto</code>.</dd>
+
+<dt><code>ssl-key</code> (default: <code>"/var/lib/ganeti/server.pem"</code>)</dt><dd>This can be used to provide a specific encryption key for TLS communications.</dd>
+
+<dt><code>ssl-cert</code> (default: <code>"/var/lib/ganeti/server.pem"</code>)</dt><dd>This can be used to provide a specific certificate for TLS communications.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes. Note that this will leak encryption details to the log files, use with caution.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-confd-service-type </dt><dd><code>ganeti-confd</code> answers queries related to the configuration of a Ganeti cluster. The purpose of this daemon is to have a highly available and fast way to query cluster configuration values. It is automatically active on all <i>master candidates</i>. The value of this service must be a <code>ganeti-confd-configuration</code> object.</dd>
+
+<dt>Data Type: ganeti-confd-configuration </dt><dd>This is the configuration for the <code>ganeti-confd</code> service.
+
+<dl class="org-dl">
+<dt><code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.</dd>
+
+<dt><code>port</code> (default: <code>1814</code>)</dt><dd>The UDP port on which to listen for network requests.</dd>
+
+<dt><code>address</code> (default: <code>"0.0.0.0"</code>)</dt><dd>Network address that the daemon will bind to.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-wconfd-service-type </dt><dd><p>
+<code>ganeti-wconfd</code> is the daemon that has authoritative knowledge about the cluster configuration and is the only entity that can accept changes to it. All jobs that need to modify the configuration will do so by sending appropriate requests to this daemon. It only runs on the <i>master node</i> and will automatically disable itself on other nodes.
+</p>
+
+<p>
+The value of this service must be a <code>ganeti-wconfd-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-wconfd-configuration </dt><dd>This is the configuration for the <code>ganeti-wconfd</code> service.
+
+<dl class="org-dl">
+<dt><code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.</dd>
+
+<dt><code>no-voting?</code> (default: <code>#f</code>)</dt><dd>The daemon will refuse to start if the majority of cluster nodes does not agree that it is running on the master node. Set to <code>#t</code> to start even if a quorum can not be reached (dangerous, use with caution).</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-luxid-service-type </dt><dd><p>
+<code>ganeti-luxid</code> is a daemon used to answer queries related to the configuration and the current live state of a Ganeti cluster. Additionally, it is the authoritative daemon for the Ganeti job queue. Jobs can be submitted via this daemon and it schedules and starts them.
+</p>
+
+<p>
+It takes a <code>ganeti-luxid-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-luxid-configuration </dt><dd>This is the configuration for the <code>ganeti-luxid</code> service.
+
+<dl class="org-dl">
+<dt><code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.</dd>
+
+<dt><code>no-voting?</code> (default: <code>#f</code>)</dt><dd>The daemon will refuse to start if it cannot verify that the majority of cluster nodes believes that it is running on the master node. Set to <code>#t</code> to ignore such checks and start anyway (this can be dangerous).</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-rapi-service-type </dt><dd><p>
+<code>ganeti-rapi</code> provides a remote API for Ganeti clusters. It runs on the master node and can be used to perform cluster actions programmatically via a JSON-based RPC protocol.
+</p>
+
+<p>
+Most query operations are allowed without authentication (unless <code>require-authentication?</code> is set), whereas write operations require explicit authorization via the <code>/var/lib/ganeti/rapi/users</code> file. See the <a href="https://docs.ganeti.org/docs/ganeti/3.0/html/rapi.html">Ganeti Remote API documentation</a> for more information.
+</p>
+
+<p>
+The value of this service must be a <code>ganeti-rapi-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-rapi-configuration </dt><dd>This is the configuration for the <code>ganeti-rapi</code> service.
+
+<dl class="org-dl">
+<dt><code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.</dd>
+
+<dt><code>require-authentication?</code> (default: <code>#f</code>)</dt><dd>Whether to require authentication even for read-only operations.</dd>
+
+<dt><code>port</code> (default: <code>5080</code>)</dt><dd>The TCP port on which to listen to API requests.</dd>
+
+<dt><code>address</code> (default: <code>"0.0.0.0"</code>)</dt><dd>The network address that the service will bind to. By default it listens on all configured addresses.</dd>
+
+<dt><code>interface</code> (default: <code>#f</code>)</dt><dd>When set, it must specify a specific network interface such as <code>eth0</code> that the daemon will bind to.</dd>
+
+<dt><code>max-clients</code> (default: <code>20</code>)</dt><dd>The maximum number of simultaneous client requests to handle. Further connections are allowed, but no responses are sent until enough connections have closed.</dd>
+
+<dt><code>ssl?</code> (default: <code>#t</code>)</dt><dd>Whether to use SSL/TLS encryption on the RAPI port.</dd>
+
+<dt><code>ssl-key</code> (default: <code>"/var/lib/ganeti/server.pem"</code>)</dt><dd>This can be used to provide a specific encryption key for TLS communications.</dd>
+
+<dt><code>ssl-cert</code> (default: <code>"/var/lib/ganeti/server.pem"</code>)</dt><dd>This can be used to provide a specific certificate for TLS communications.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes. Note that this will leak encryption details to the log files, use with caution.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-kvmd-service-type </dt><dd><p>
+<code>ganeti-kvmd</code> is responsible for determining whether a given KVM instance was shut down by an administrator or a user. Normally Ganeti will restart an instance that was not stopped through Ganeti itself. If the cluster option <code>user_shutdown</code> is true, this daemon monitors the <code>QMP</code> socket provided by QEMU and listens for shutdown events, and marks the instance as <i>USER<sub>down</sub></i> instead of <i>ERROR<sub>down</sub></i> when it shuts down gracefully by itself.
+</p>
+
+<p>
+It takes a <code>ganeti-kvmd-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-kvmd-configuration  :: - <code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.
+
+<dl class="org-dl">
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-mond-service-type </dt><dd><p>
+<code>ganeti-mond</code> is an optional daemon that provides Ganeti monitoring functionality. It is responsible for running data collectors and publish the collected information through a HTTP interface.
+</p>
+
+<p>
+It takes a <code>ganeti-mond-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-mond-configuration  :: - <code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.
+
+<dl class="org-dl">
+<dt><code>port</code> (default: <code>1815</code>)</dt><dd>The port on which the daemon will listen.</dd>
+
+<dt><code>address</code> (default: <code>"0.0.0.0"</code>)</dt><dd>The network address that the daemon will bind to. By default it binds to all available interfaces.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-metad-service-type </dt><dd><p>
+<code>ganeti-metad</code> is an optional daemon that can be used to provide information about the cluster to instances or OS install scripts.
+</p>
+
+<p>
+It takes a <code>ganeti-metad-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-metad-configuration  :: - <code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.
+
+<dl class="org-dl">
+<dt><code>port</code> (default: <code>80</code>)</dt><dd>The port on which the daemon will listen.</dd>
+
+<dt><code>address</code> (default: <code>#f</code>)</dt><dd>If set, the daemon will bind to this address only. If left unset, the behavior depends on the cluster configuration.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When true, the daemon performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-watcher-service-type </dt><dd><p>
+<code>ganeti-watcher</code> is a script designed to run periodically and ensure the health of a cluster. It will automatically restart instances that have stopped without Ganeti's consent, and repairs DRBD links in case a node has rebooted. It also archives old cluster jobs and restarts Ganeti daemons that are not running. If the cluster parameter <code>ensure_node_health</code> is set, the watcher will also shutdown instances and DRBD devices if the node it is running on is declared offline by known master candidates.
+</p>
+
+<p>
+It can be paused on all nodes with <code>gnt-cluster watcher pause</code>.
+</p>
+
+<p>
+The service takes a <code>ganeti-watcher-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-watcher-configuration  :: - <code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for this service.
+
+<dl class="org-dl">
+<dt><code>schedule</code> (default: <code>"*/5 * * * *"</code>)</dt><dd>When to run the script, expressed either as a string in traditional cron syntax or as a gexp representing a Shepherd calendar event (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Timers.html#Timers">Timers</a> in The GNU Shepherd Manual). The default is every five minutes.</dd>
+
+<dt><code>rapi-ip</code> (default: <code>#f</code>)</dt><dd>This option needs to be specified only if the RAPI daemon is configured to use a particular interface or address. By default the cluster address is used.</dd>
+
+<dt><code>job-age</code> (default: <code>(* 6 3600)</code>)</dt><dd>Archive cluster jobs older than this age, specified in seconds. The default is 6 hours. This keeps <code>gnt-job list</code> manageable.</dd>
+
+<dt><code>verify-disks?</code> (default: <code>#t</code>)</dt><dd>If this is <code>#f</code>, the watcher will not try to repair broken DRBD links automatically. Administrators will need to use <code>gnt-cluster verify-disks</code> manually instead.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd>When <code>#t</code>, the script performs additional logging for debugging purposes.</dd>
+</dl></dd>
+
+<dt>Variable: ganeti-cleaner-service-type </dt><dd><p>
+<code>ganeti-cleaner</code> is a script designed to run periodically and remove old files from the cluster. This service type controls two <i>cron jobs</i>: one intended for the master node that permanently purges old cluster jobs, and one intended for every node that removes expired X509 certificates, keys, and outdated <code>ganeti-watcher</code> information. Like all Ganeti services, it is safe to include even on non-master nodes as it will disable itself as necessary.
+</p>
+
+<p>
+It takes a <code>ganeti-cleaner-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: ganeti-cleaner-configuration  :: - <code>ganeti</code> (default: <code>ganeti</code>)</dt><dd>The <code>ganeti</code> package to use for the <code>gnt-cleaner</code> command.
+
+<dl class="org-dl">
+<dt><code>master-schedule</code> (default: <code>"45 1 * * *"</code>)</dt><dd>How often to run the master cleaning job. The default is once per day, at 01:45:00.</dd>
+
+<dt><code>node-schedule</code> (default: <code>"45 2 * * *"</code>)</dt><dd>How often to run the node cleaning job. The default is once per day, at 02:45:00.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+</div>
+</li>
+</div>

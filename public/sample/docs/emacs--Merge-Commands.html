@@ -1,0 +1,91 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Merge-Commands-1">1. 30.6.4 Merge Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Exiting-Emerge.html">Exiting Emerge</a>   Previous: <a href="docs/emacs--State-of-Difference.html">State of a Difference</a>   Up: <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>
+</p>
+
+<p>
+<a id="Merge-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Merge-Commands-1" class="outline-2">
+<h2 id="Merge-Commands-1"><span class="section-number-2">1.</span> 30.6.4 Merge Commands <a href="#Merge-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-Merge-Commands-1">
+<p>
+Here are the Merge commands for Fast mode; in Edit mode, precede them with C-c C-c:
+</p>
+
+<dl class="org-dl">
+<dt>p</dt><dd>Select the previous difference.</dd>
+
+<dt>n</dt><dd>Select the next difference.</dd>
+
+<dt>a</dt><dd>Choose the A version of this difference.</dd>
+
+<dt>b</dt><dd>Choose the B version of this difference.</dd>
+
+<dt>C-u <code>n</code> j</dt><dd>Select difference number <code>n</code>.</dd>
+
+<dt>.</dt><dd>Select the difference containing point.</dd>
+
+<dt>q</dt><dd>Quit&#x2014;finish the merge.</dd>
+
+<dt>C-]</dt><dd>Abort&#x2014;exit merging and do not save the output.</dd>
+
+<dt>f</dt><dd>Go into Fast mode. (In Edit mode, this is actually C-c C-c f.)</dd>
+
+<dt>e</dt><dd>Go into Edit mode.</dd>
+
+<dt>l</dt><dd>Recenter (like C-l) all three windows. With an argument, reestablish the default three-window display.</dd>
+
+<dt>-</dt><dd>Specify part of a prefix numeric argument.</dd>
+
+<dt><code>digit</code></dt><dd>Also specify part of a prefix numeric argument.</dd>
+
+<dt>d a</dt><dd>Choose the A version as the default from here down in the merge buffer.</dd>
+
+<dt>d b</dt><dd>Choose the B version as the default from here down in the merge buffer.</dd>
+
+<dt>c a</dt><dd>Copy the A version of this difference into the kill ring.</dd>
+
+<dt>c b</dt><dd>Copy the B version of this difference into the kill ring.</dd>
+
+<dt>i a</dt><dd>Insert the A version of this difference at point.</dd>
+
+<dt>i b</dt><dd>Insert the B version of this difference at point.</dd>
+
+<dt>m</dt><dd>Put point and mark around the difference.</dd>
+
+<dt>^</dt><dd>Scroll all three windows down (like M-v).</dd>
+
+<dt>v</dt><dd>Scroll all three windows up (like C-v).</dd>
+
+<dt>&lt;</dt><dd>Scroll all three windows left (like C-x &lt;).</dd>
+
+<dt>&gt;</dt><dd>Scroll all three windows right (like C-x &gt;).</dd>
+
+<dt>|</dt><dd>Reset horizontal scroll on all three windows.</dd>
+
+<dt>x 1</dt><dd>Shrink the merge window to one line. (Use C-u l to restore it to full size.)</dd>
+
+<dt>x c</dt><dd>Combine the two versions of this difference (see <a href="docs/emacs--Combining-in-Emerge.html">Combining the Two Versions</a>).</dd>
+
+<dt>x f</dt><dd>Show the names of the files/buffers Emerge is operating on, in a Help window. (Use C-u l to restore windows.)</dd>
+
+<dt>x j</dt><dd>Join this difference with the following one. (C-u x j joins this difference with the previous one.)</dd>
+
+<dt>x s</dt><dd>Split this difference into two differences. Before you use this command, position point in each of the three buffers at the place where you want to split the difference.</dd>
+
+<dt>x t</dt><dd>Trim identical lines off the top and bottom of the difference. Such lines occur when the A and B versions are identical but differ from the ancestor version.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Beginning-or-End-of-Week_002c-Month-or-Year">1. 33.1.2 Beginning or End of Week, Month or Year ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Specified-Dates.html">Specified Dates</a>   Previous: <a href="docs/emacs--Calendar-Unit-Motion.html">Motion by Standard Lengths of Time</a>   Up: <a href="docs/emacs--Calendar-Motion.html">Movement in the Calendar</a>
+</p>
+
+<p>
+<a id="Move-to-Beginning-or-End"></a>
+</p>
+
+<hr />
+<div id="outline-container-Beginning-or-End-of-Week_002c-Month-or-Year" class="outline-2">
+<h2 id="Beginning-or-End-of-Week_002c-Month-or-Year"><span class="section-number-2">1.</span> 33.1.2 Beginning or End of Week, Month or Year <a href="#Beginning-or-End-of-Week_002c-Month-or-Year">¶</a></h2>
+<div class="outline-text-2" id="text-Beginning-or-End-of-Week_002c-Month-or-Year">
+<p>
+A week (or month, or year) is not just a quantity of days; we think of weeks (months, years) as starting on particular dates. So Calendar mode provides commands to move to the start or end of a week, month or year:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002da-_0028Calendar-mode_0029"></a>C-a </dt><dd>Move point to start of week (<code>calendar-beginning-of-week</code>).</dd>
+
+<dt>C-e</dt><dd>Move point to end of week (<code>calendar-end-of-week</code>).</dd>
+
+<dt>M-a</dt><dd>Move point to start of month (<code>calendar-beginning-of-month</code>).</dd>
+
+<dt>M-e</dt><dd>Move point to end of month (<code>calendar-end-of-month</code>).</dd>
+
+<dt>M-&lt;</dt><dd>Move point to start of year (<code>calendar-beginning-of-year</code>).</dd>
+
+<dt>M-&gt;</dt><dd>Move point to end of year (<code>calendar-end-of-year</code>).</dd>
+</dl>
+
+<p>
+These commands also take numeric arguments as repeat counts, with the repeat count indicating how many weeks, months, or years to move backward or forward.
+</p>
+
+<p>
+By default, weeks begin on Sunday. To make them begin on Monday instead, set the variable <code>calendar-week-start-day</code> to 1. To change which day headers are highlighted as weekend days, set the variable <code>calendar-weekend-days</code>.
+</p>
+</div>
+</div>

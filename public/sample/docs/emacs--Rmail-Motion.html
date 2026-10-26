@@ -1,0 +1,79 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Moving-Among-Messages">1. 35.3 Moving Among Messages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Deletion.html">Deleting Messages</a>   Previous: <a href="docs/emacs--Rmail-Scrolling.html">Scrolling Within a Message</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Motion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Moving-Among-Messages" class="outline-2">
+<h2 id="Moving-Among-Messages"><span class="section-number-2">1.</span> 35.3 Moving Among Messages <a href="#Moving-Among-Messages">¶</a></h2>
+<div class="outline-text-2" id="text-Moving-Among-Messages">
+<p>
+The most basic thing to do with a message is to read it. The way to do this in Rmail is to make the message current. The usual practice is to move sequentially through the file, since this is the order of receipt of messages. When you enter Rmail, you are positioned at the first message that you have not yet made current (that is, the first one that has the ‘=unseen=' attribute; see <a href="docs/emacs--Rmail-Attributes.html">Rmail Attributes</a>). Move forward to see the other new messages; move backward to re-examine old messages.
+</p>
+
+<dl class="org-dl">
+<dt>n</dt><dd>Move to the next nondeleted message, skipping any intervening deleted messages (<code>rmail-next-undeleted-message</code>).</dd>
+
+<dt>p</dt><dd>Move to the previous nondeleted message (<code>rmail-previous-undeleted-message</code>).</dd>
+
+<dt>M-n</dt><dd>Move to the next message, including deleted messages (<code>rmail-next-message</code>).</dd>
+
+<dt>M-p</dt><dd>Move to the previous message, including deleted messages (<code>rmail-previous-message</code>).</dd>
+
+<dt>C-c C-n</dt><dd>Move to the next message with the same subject as the current one (<code>rmail-next-same-subject</code>).</dd>
+
+<dt>C-c C-p</dt><dd>Move to the previous message with the same subject as the current one (<code>rmail-previous-same-subject</code>).</dd>
+
+<dt>j</dt><dd>Move to the first message. With argument <code>n</code>, move to message number <code>n</code> (<code>rmail-show-message</code>).</dd>
+
+<dt>&gt;</dt><dd>Move to the last message (<code>rmail-last-message</code>).</dd>
+
+<dt>&lt;</dt><dd>Move to the first message (<code>rmail-first-message</code>).</dd>
+
+<dt>M-s <code>regexp</code> RET</dt><dd>Move to the next message containing a match for <code>regexp</code> (<code>rmail-search</code>).</dd>
+
+<dt>- M-s <code>regexp</code> RET</dt><dd>Move to the previous message containing a match for <code>regexp</code>. (This is M-s with a negative argument.)</dd>
+</dl>
+
+<p>
+n and p are the usual way of moving among messages in Rmail. They move through the messages sequentially, but skip over deleted messages, which is usually what you want to do. Their command definitions are named <code>rmail-next-undeleted-message</code> and <code>rmail-previous-undeleted-message</code>. If you do not want to skip deleted messages&#x2014;for example, if you want to move to a message to undelete it&#x2014;use the variants M-n and M-p (<code>rmail-next-message</code> and <code>rmail-previous-message</code>). A numeric argument to any of these commands serves as a repeat count.
+</p>
+
+<p>
+In Rmail, you can specify a numeric argument by typing just the digits. You don't need to type C-u first. You can also specify a negative argument by typing just -.
+</p>
+
+<p>
+The M-s (<code>rmail-search</code>) command is Rmail's version of search. The usual incremental search command C-s works in Rmail, but it searches only within the current message. The purpose of M-s is to search for another message. It reads a regular expression (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>) nonincrementally, then searches starting at the beginning of the following message for a match. It then selects that message. If <code>regexp</code> is empty, M-s reuses the regexp used the previous time.
+</p>
+
+<p>
+To search backward in the file for another message, give M-s a negative argument. In Rmail you can do this with - M-s. This begins searching from the end of the previous message.
+</p>
+
+<p>
+It is also possible to search for a message based on labels. See <a href="docs/emacs--Rmail-Labels.html">Labels</a>.
+</p>
+
+<p>
+The C-c C-n (<code>rmail-next-same-subject</code>) command moves to the next message with the same subject as the current one. A prefix argument serves as a repeat count. With a negative argument, this command moves backward, acting like C-c C-p (<code>rmail-previous-same-subject</code>). When comparing subjects, these commands ignore the prefixes typically added to the subjects of replies. These commands are useful for reading all of the messages pertaining to the same subject, a.k.a. <i>thread</i>.
+</p>
+
+<p>
+To move to a message specified by absolute message number, use j (<code>rmail-show-message</code>) with the message number as argument. With no argument, j selects the first message. &lt; (<code>rmail-first-message</code>) also selects the first message. &gt; (<code>rmail-last-message</code>) selects the last message.
+</p>
+
+<hr />
+</div>
+</div>

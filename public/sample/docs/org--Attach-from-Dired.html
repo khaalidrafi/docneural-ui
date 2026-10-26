@@ -1,0 +1,60 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Attach-from-Dired-1">1. 10.2.5 Attach from Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Attach-from-Dired"></a>
+Previous: <a href="docs/org--Automatic-version_002dcontrol-with-Git.html">Automatic version-control with Git</a>, Up: <a href="docs/org--Attachments.html">Attachments</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Attach-from-Dired-1" class="outline-2">
+<h2 id="Attach-from-Dired-1"><span class="section-number-2">1.</span> 10.2.5 Attach from Dired <a href="#Attach-from-Dired-1">¶</a></h2>
+<div class="outline-text-2" id="text-Attach-from-Dired-1">
+<p>
+It is possible to attach files to a subtree from a Dired buffer. To use this feature, have one window in Dired mode containing the file(s) to be attached and another window with point in the subtree that shall get the attachments. In the Dired window, with point on a file, M-x org-attach-dired-to-subtree attaches the file to the subtree using the attachment method set by variable <code>org-attach-method</code>. When files are marked in the Dired window then all marked files get attached.
+</p>
+
+<p>
+Add the following lines to the Emacs init file to have C-c C-x a attach files in Dired buffers.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(add-hook 'dired-mode-hook
+          (lambda ()
+            (define-key dired-mode-map
+              (kbd "C-c C-x a")
+              #'org-attach-dired-to-subtree)))
+</pre>
+</div>
+
+<p>
+The following code shows how to bind the previous command with a specific attachment method.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(add-hook 'dired-mode-hook
+          (lambda ()
+            (define-key dired-mode-map (kbd "C-c C-x c")
+              (lambda ()
+                (interactive)
+                (let ((org-attach-method 'cp))
+                  (call-interactively #'org-attach-dired-to-subtree))))))
+</pre>
+</div>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Automatic-version_002dcontrol-with-Git.html">Automatic version-control with Git</a>, Up: <a href="docs/org--Attachments.html">Attachments</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

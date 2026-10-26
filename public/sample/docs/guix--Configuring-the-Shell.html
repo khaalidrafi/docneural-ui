@@ -1,0 +1,118 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#configuring-the-shell">1.0.1. 13.2 Configuring the Shell</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Configuring-the-Shell"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Home-Services.html">Home Services</a>, Previous: <a href="docs/guix--Declaring-the-Home-Environment.html">Declaring the Home Environment</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Configuring-the-Shell-1"></a>
+</p>
+</div>
+<div id="outline-container-configuring-the-shell" class="outline-4">
+<h4 id="configuring-the-shell"><span class="section-number-4">1.0.1.</span> 13.2 Configuring the Shell</h4>
+<div class="outline-text-4" id="text-configuring-the-shell">
+<p>
+This section is safe to skip if your shell or shells are managed by Guix Home. Otherwise, read it carefully.
+</p>
+
+<p>
+There are a few scripts that must be evaluated by a login shell to activate the home environment. The shell startup files only read by login shells often have <code>profile</code> suffix. For more information about login shells see <a href="https://www.gnu.org/software/bash/manual/html_node/Invoking-Bash.html#Invoking-Bash">Invoking Bash</a> in The GNU Bash Reference Manual and see <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash Startup Files</a> in The GNU Bash Reference Manual.
+</p>
+
+<p>
+The first script that needs to be sourced is <code>setup-environment</code>, which sets all the necessary environment variables (including variables declared by the user) and the second one is <code>on-first-login</code>, which starts Shepherd for the current user and performs actions declared by other home services that extends <code>home-run-on-first-login-service-type</code>.
+</p>
+
+<p>
+Guix Home will always create <code>~/.profile</code>, which contains the following lines:
+</p>
+
+<pre class="example" id="org5099fc0">
+HOME_ENVIRONMENT=$HOME/.guix-home
+. $HOME_ENVIRONMENT/setup-environment
+$HOME_ENVIRONMENT/on-first-login
+</pre>
+
+<p>
+This makes POSIX compliant login shells activate the home environment. However, in most cases this file won't be read by most modern shells, because they are run in non POSIX mode by default and have their own <code>*profile</code> startup files. For example Bash will prefer <code>~/.bash_profile</code> in case it exists and only if it doesn't will it fallback to <code>~/.profile</code>. Zsh (if no additional options are specified) will ignore <code>~/.profile</code>, even if <code>~/.zprofile</code> doesn't exist.
+</p>
+
+<p>
+To make your shell respect <code>~/.profile</code>, add <code>. ~/.profile</code> or <code>source ~/.profile</code> to the startup file for the login shell. In case of Bash, it is <code>~/.bash_profile</code>, and in case of Zsh, it is <code>~/.zprofile</code>.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This step is only required if your shell is <i>not</i> managed by Guix Home. Otherwise, everything will be done automatically.
+</p>
+</blockquote>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Home-Services.html">Home Services</a>, Previous: <a href="docs/guix--Declaring-the-Home-Environment.html">Declaring the Home Environment</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

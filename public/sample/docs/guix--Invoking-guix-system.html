@@ -1,0 +1,667 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-system">1.0.1. 11.16 Invoking <code>guix system</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-system"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-deploy.html">Invoking <code>guix deploy</code></a>, Previous: <a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-system-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-system" class="outline-4">
+<h4 id="invoking-guix-system"><span class="section-number-4">1.0.1.</span> 11.16 Invoking <code>guix system</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-system">
+<p>
+<a id="index-guix-system"></a>
+Once you have written an operating system declaration as seen in the previous section, it can be <i>instantiated</i> using the <code>guix system</code> command. The synopsis is:
+</p>
+
+<pre class="example" id="orgefb3799">
+guix system options… action file
+</pre>
+
+<p>
+<code>file</code> must be the name of a file containing an <code>operating-system</code> declaration. <code>action</code> specifies how the operating system is instantiated. Currently the following values are supported:
+</p>
+
+<dl class="org-dl">
+<dt><code>search</code></dt><dd><p>
+Display available service type definitions that match the given regular expressions, sorted by relevance:
+</p>
+
+<p>
+<a id="index-HDPI-1"></a> <a id="index-HiDPI-1"></a> <a id="index-resolution-1"></a>
+</p>
+
+<pre class="example" id="org3658fda">
+$ guix system search console
+name: console-fonts
+location: gnu/services/base.scm:806:2
+extends: shepherd-root
+description: Install the given fonts on the specified ttys (fonts are per
++ virtual console on GNU/Linux).  The value of this service is a list of
++ tty/font pairs.  The font can be the name of a font provided by the `kbd'
++ package or any valid argument to `setfont', as in this example:
++
++      '(("tty1" . "LatGrkCyr-8x16")
++        ("tty2" . (file-append
++                      font-tamzen
++                      "/share/kbd/consolefonts/TamzenForPowerline10x20.psf"))
++        ("tty3" . (file-append
++                      font-terminus
++                      "/share/consolefonts/ter-132n"))) ; for HDPI
+relevance: 9
+
+name: mingetty
+location: gnu/services/base.scm:1190:2
+extends: shepherd-root
+description: Provide console login using the `mingetty' program.
+relevance: 2
+
+name: login
+location: gnu/services/base.scm:860:2
+extends: pam
+description: Provide a console log-in service as specified by its
++ configuration value, a `login-configuration' object.
+relevance: 2
+
+…
+</pre>
+
+<p>
+As for <code>guix package --search</code>, the result is written in <code>recutils</code> format, which makes it easy to filter the output (see <a href="https://www.gnu.org/software/recutils/manual/html_node/index.html#Top">GNU recutils databases</a> in GNU recutils manual).
+</p>
+
+<p>
+<a id="index-service-type-definition_002c-editing"></a> <a id="index-editing_002c-service-type-definition"></a>
+</p></dd>
+
+<dt><code>edit</code></dt><dd><p>
+Edit or view the definition of the given service types.
+</p>
+
+<p>
+For example, the command below opens your editor, as specified by the <code>EDITOR</code> environment variable, on the definition of the <code>openssh</code> service type:
+</p>
+
+<pre class="example" id="org84eb5ad">
+guix system edit openssh
+</pre></dd>
+
+<dt><code>reconfigure</code></dt><dd><p>
+Build the operating system described in <code>file</code>, activate it, and switch to it.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> It is highly recommended to run <code>guix pull</code> once before you run <code>guix system reconfigure</code> for the first time (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>). Failing to do that you would see an older version of Guix once <code>reconfigure</code> has completed.
+</p>
+</blockquote>
+
+<p>
+This effects all the configuration specified in <code>file</code>: user accounts, system services, global package list, privileged programs, etc. The command starts system services specified in <code>file</code> that are not currently running; if a service is currently running this command will arrange for it to be upgraded the next time it is stopped (e.g. by <code>herd stop X</code> or <code>herd restart X</code>).
+</p>
+
+<p>
+This command creates a new generation whose number is one greater than the current generation (as reported by <code>guix system list-generations</code>). If that generation already exists, it will be overwritten. This behavior mirrors that of <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+It adds a bootloader menu entry for the new OS configuration, &#x2014;unless <code>--no-bootloader</code> is passed. For GRUB, it moves entries for older configurations to a submenu, allowing you to choose an older system generation at boot time should you need it.
+</p>
+
+<p>
+<a id="index-kexec_002c-for-fast-reboots"></a> <a id="index-rebooting-via-Linux-kexec"></a>
+</p>
+
+<p>
+On Linux, <code>guix system reconfigure</code> also loads the new system for fast reboot <i>via</i> kexec: running <code>reboot --kexec</code> will boot the new system by directly executing its kernel, thus bypassing the BIOS initialization phase and bootloader (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Invoking-reboot.html#Invoking-reboot">Invoking reboot</a> in The GNU Shepherd Manual). You can avoid this behavior by passing the <code>--no-kexec</code> option.
+</p>
+
+<p>
+<a id="index-provenance-tracking_002c-of-the-operating-system"></a>
+</p>
+
+<p>
+Upon completion, the new system is deployed under <code>/run/current-system</code>. This directory contains <i>provenance meta-data</i>: the list of channels in use (see <a href="docs/guix--Channels.html">Channels</a>) and <code>file</code> itself, when available. You can view it by running:
+</p>
+
+<pre class="example" id="org190cbf6">
+guix system describe
+</pre>
+
+<p>
+This information is useful should you later want to inspect how this particular generation was built. In fact, assuming <code>file</code> is self-contained, you can later rebuild generation <code>n</code> of your operating system with:
+</p>
+
+<pre class="example" id="org0f54aa4">
+guix time-machine \
+  -C /var/guix/profiles/system-n-link/channels.scm -- \
+  system reconfigure \
+  /var/guix/profiles/system-n-link/configuration.scm
+</pre>
+
+<p>
+You can think of it as some sort of built-in version control! Your system is not just a binary artifact: <i>it carries its own source</i>. See <a href="docs/guix--Service-Reference.html"><code>provenance-service-type</code></a>, for more information on provenance tracking.
+</p>
+
+<p>
+By default, <code>reconfigure</code> <i>prevents you from downgrading your system</i>, which could (re)introduce security vulnerabilities and also cause problems with “stateful” services such as database management systems. You can override that behavior by passing <code>--allow-downgrades</code>.
+</p></dd>
+
+<dt><code>switch-generation</code> </dt><dd><p>
+Switch to an existing system generation. This action atomically switches the system profile to the specified system generation. It also rearranges the system's existing bootloader menu entries. It makes the menu entry for the specified system generation the default, and it moves the entries for the other generations to a submenu, if supported by the bootloader being used. The next time the system boots, it will use the specified system generation.
+</p>
+
+<p>
+The bootloader itself is not being reinstalled when using this command. Thus, the installed bootloader is used with an updated configuration file.
+</p>
+
+<p>
+The target generation can be specified explicitly by its generation number. For example, the following invocation would switch to system generation 7:
+</p>
+
+<pre class="example" id="org0171052">
+guix system switch-generation 7
+</pre>
+
+<p>
+The target generation can also be specified relative to the current generation with the form <code>+N</code> or <code>-N</code>, where <code>+3</code> means “3 generations ahead of the current generation,” and <code>-1</code> means “1 generation prior to the current generation.” When specifying a negative value such as <code>-1</code>, you must precede it with <code>--</code> to prevent it from being parsed as an option. For example:
+</p>
+
+<pre class="example" id="orgf7dfc5b">
+guix system switch-generation -- -1
+</pre>
+
+<p>
+Currently, the effect of invoking this action is <i>only</i> to switch the system profile to an existing generation and rearrange the bootloader menu entries. To actually start using the target system generation, you must reboot after running this action. In the future, it will be updated to do the same things as <code>reconfigure</code>, like activating and deactivating services.
+</p>
+
+<p>
+This action will fail if the specified generation does not exist.
+</p></dd>
+
+<dt><code>roll-back</code> </dt><dd><p>
+Switch to the preceding system generation. The next time the system boots, it will use the preceding system generation. This is the inverse of <code>reconfigure</code>, and it is exactly the same as invoking <code>switch-generation</code> with an argument of <code>-1</code>.
+</p>
+
+<p>
+Currently, as with <code>switch-generation</code>, you must reboot after running this action to actually start using the preceding system generation.
+</p></dd>
+
+<dt><code>delete-generations</code> </dt><dd><p>
+<a id="index-saving-space"></a>
+</p>
+
+<p>
+Delete system generations, making them candidates for garbage collection (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, for information on how to run the “garbage collector”).
+</p>
+
+<p>
+This works in the same way as ‘=guix package &#x2013;delete-generations=' (see <a href="docs/guix--Invoking-guix-package.html"><code>--delete-generations</code></a>). With no arguments, all system generations but the current one are deleted:
+</p>
+
+<pre class="example" id="orga5a0720">
+guix system delete-generations
+</pre>
+
+<p>
+You can also select the generations you want to delete. The example below deletes all the system generations that are more than two months old:
+</p>
+
+<pre class="example" id="org1d35c75">
+guix system delete-generations 2m
+</pre>
+
+<p>
+Running this command automatically reinstalls the bootloader with an updated list of menu entries&#x2014;e.g., the “old generations” sub-menu in GRUB no longer lists the generations that have been deleted.
+</p></dd>
+
+<dt><code>build</code></dt><dd>Build the derivation of the operating system, which includes all the configuration files and programs needed to boot and run the system. This action does not actually install anything.</dd>
+
+<dt><code>init</code></dt><dd><p>
+Populate the given directory with all the files necessary to run the operating system specified in <code>file</code>. This is useful for first-time installations of Guix System. For instance:
+</p>
+
+<pre class="example" id="org263a5cf">
+guix system init my-os-config.scm /mnt
+</pre>
+
+<p>
+copies to <code>/mnt</code> all the store items required by the configuration specified in <code>my-os-config.scm</code>. This includes configuration files, packages, and so on. It also creates other essential files needed for the system to operate correctly&#x2014;e.g., the <code>/etc</code>, <code>/var</code>, and <code>/run</code> directories, and the <code>/bin/sh</code> file.
+</p>
+
+<p>
+This command also installs bootloader on the targets specified in <code>my-os-config</code>, unless the <code>--no-bootloader</code> option was passed.
+</p></dd>
+
+<dt><code>installer</code></dt><dd><p>
+Run the installer. Usually the installer is built as an <code>iso</code> image, copied to a USB Stick or DVD, and booted from (<a href="docs/guix--USB-Stick-and-DVD-Installation.html">USB Stick and DVD Installation</a>). If your machine already runs Guix and you still want to run the installer, e.g., for testing purposes, you can skip the step of creating an <code>iso</code> and run for instance:
+</p>
+
+<pre class="example" id="org90102a3">
+guix system installer --dry-run
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> If you do not use <code>--dry-run</code> then you need to run as root. Be <i>very careful</i> when running the installer as root, it can cause data loss or render your system unbootable!
+</p>
+</blockquote></dd>
+
+<dt><code>vm</code> </dt><dd><p>
+<a id="index-VM"></a> <a id="guix-system-vm"></a>
+</p>
+
+<p>
+Build a virtual machine (VM) that contains the operating system declared in <code>file</code>, and return a script to run that VM.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>vm</code> action and others below can use KVM support in the Linux-libre kernel. Specifically, if the machine has hardware virtualization support, the corresponding KVM kernel module should be loaded, and the <code>/dev/kvm</code> device node must exist and be readable and writable by the user and by the build users of the daemon (see <a href="docs/guix--Build-Environment-Setup.html">Build Environment Setup</a>).
+</p>
+</blockquote>
+
+<p>
+Arguments given to the script are passed to QEMU as in the example below, which enables networking and requests 1 GiB of RAM for the emulated machine:
+</p>
+
+<pre class="example" id="org6122707">
+$ /gnu/store/…-run-vm.sh -m 1024 -smp 2 -nic user,model=virtio-net-pci
+</pre>
+
+<p>
+It's possible to combine the two steps into one:
+</p>
+
+<pre class="example" id="org723f98c">
+$ $(guix system vm my-config.scm) -m 1024 -smp 2 -nic user,model=virtio-net-pci
+</pre>
+
+<p>
+The VM shares its store with the host system.
+</p>
+
+<p>
+By default, the root file system of the VM is mounted volatile; the <code>--persistent</code> option can be provided to make it persistent instead. In that case, the VM disk-image file will be copied from the store to the <code>TMPDIR</code> directory to make it writable.
+</p>
+
+<p>
+Additional file systems can be shared between the host and the VM using the <code>--share</code> and <code>--expose</code> command-line options: the former specifies a directory to be shared with write access, while the latter provides read-only access to the shared directory.
+</p>
+
+<p>
+The example below creates a VM in which the user's home directory is accessible read-only, and where the <code>/exchange</code> directory is a read-write mapping of <code>$HOME/tmp</code> on the host:
+</p>
+
+<pre class="example" id="orgded42a4">
+guix system vm my-config.scm \
+   --expose=$HOME --share=$HOME/tmp=/exchange
+</pre>
+
+<p>
+On GNU/Linux, the default is to boot directly to the kernel; this has the advantage of requiring only a very tiny root disk image since the store of the host can then be mounted.
+</p>
+
+<p>
+The <code>--full-boot</code> option forces a complete boot sequence, starting with the bootloader. This requires more disk space since a root image containing at least the kernel, initrd, and bootloader data files must be created.
+</p>
+
+<p>
+The <code>--image-size</code> option can be used to specify the size of the image.
+</p>
+
+<p>
+The <code>--no-graphic</code> option will instruct <code>guix system</code> to spawn a headless VM that will use the invoking tty for IO. Among other things, this enables copy-pasting, and scrollback. Use the ctrl-a prefix to issue QEMU commands; e.g. ctrl-a h prints a help, ctrl-a x quits the VM, and ctrl-a c switches between the QEMU monitor and the VM.
+</p>
+
+<p>
+<a id="index-System-images_002c-creation-in-various-formats"></a> <a id="index-Creating-system-images-in-various-formats"></a>
+</p></dd>
+
+<dt><code>image</code> </dt><dd><p>
+The <code>image</code> command can produce various image types. The image type can be selected using the <code>--image-type</code> option. It defaults to <code>mbr-hybrid-raw</code>. When its value is <code>iso9660</code>, the <code>--label</code> option can be used to specify a volume ID with <code>image</code>. By default, the root file system of a disk image is mounted non-volatile; the <code>--volatile</code> option can be provided to make it volatile instead. When using <code>image</code>, the bootloader installed on the generated image is taken from the provided <code>operating-system</code> definition. The following example demonstrates how to generate an image that uses the <code>grub-efi-bootloader</code> bootloader and boot it with QEMU:
+</p>
+
+<pre class="example" id="orgf272f83">
+image=$(guix system image --image-type=qcow2 \
+        gnu/system/examples/lightweight-desktop.tmpl)
+cp $image /tmp/my-image.qcow2
+chmod +w /tmp/my-image.qcow2
+qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
+                   -bios $(guix build ovmf-x86-64)/share/firmware/ovmf_x64.bin
+</pre>
+
+<p>
+When using the <code>mbr-hybrid-raw</code> image type, a raw disk image is produced; it can be copied as is to a USB stick, for instance. Assuming <code>/dev/sdc</code> is the device corresponding to a USB stick, one can copy the image to it using the following command:
+</p>
+
+<pre class="example" id="org4d3d7ec">
+# dd if=$(guix system image my-os.scm) of=/dev/sdc status=progress
+</pre>
+
+<p>
+The <code>--list-image-types</code> command lists all the available image types.
+</p>
+
+<p>
+<a id="index-creating-virtual-machine-images"></a>
+</p>
+
+<p>
+When using the <code>qcow2</code> image type, the returned image is in qcow2 format, which the QEMU emulator can efficiently use. See <a href="docs/guix--Running-Guix-in-a-VM.html">Running Guix in a Virtual Machine</a>, for more information on how to run the image in a virtual machine. The <code>grub-bootloader</code> bootloader is always used independently of what is declared in the <code>operating-system</code> file passed as argument. This is to make it easier to work with QEMU, which uses the SeaBIOS BIOS by default, expecting a bootloader to be installed in the Master Boot Record (MBR). In case the virtual machine is going to be AArch64, you might want to take a look at <code>qcow2-gpt</code> image type that installs bootloader only in EFI.
+</p>
+
+<p>
+<a id="index-docker_002dimage_002c-creating-docker-images"></a>
+</p>
+
+<p>
+When using the <code>docker</code> image type, a Docker image is produced. Guix builds the image from scratch, not from a pre-existing Docker base image. As a result, it contains <i>exactly</i> what you define in the operating system configuration file. You can then load the image and launch a Docker container using commands like the following:
+</p>
+
+<pre class="example" id="orgcd0e999">
+image_id="$(docker load &lt; guix-system-docker-image.tar.gz)"
+container_id="$(docker create $image_id)"
+docker start $container_id
+</pre>
+
+<p>
+This command starts a new Docker container from the specified image. It will boot the Guix system in the usual manner, which means it will start any services you have defined in the operating system configuration. You can get an interactive shell running in the container using <code>docker exec</code>:
+</p>
+
+<pre class="example" id="orga6eddc2">
+docker exec -ti $container_id /run/current-system/profile/bin/bash --login
+</pre>
+
+<p>
+Depending on what you run in the Docker container, it may be necessary to give the container additional permissions. For example, if you intend to build software using Guix inside of the Docker container, you may need to pass the <code>--privileged</code> option to <code>docker create</code>.
+</p>
+
+<p>
+Last, the <code>--network</code> option applies to <code>guix system docker-image</code>: it produces an image where network is supposedly shared with the host, and thus without services like nscd or NetworkManager.
+</p></dd>
+
+<dt><code>container</code></dt><dd><p>
+Return a script to run the operating system declared in <code>file</code> within a container. Containers are a set of lightweight isolation mechanisms provided by the kernel Linux-libre. Containers are substantially less resource-demanding than full virtual machines since the kernel, shared objects, and other resources can be shared with the host system; this also means they provide thinner isolation.
+</p>
+
+<p>
+Currently, the script must be run as root in order to support more than a single user and group. The container shares its store with the host system.
+</p>
+
+<p>
+As with the <code>vm</code> action (see ), additional file systems to be shared between the host and container can be specified using the <code>--share</code> and <code>--expose</code> options:
+</p>
+
+<pre class="example" id="org1547c86">
+guix system container my-config.scm \
+   --expose=$HOME --share=$HOME/tmp=/exchange
+</pre>
+
+<p>
+The <code>--share</code> and <code>--expose</code> options can also be passed to the generated script to bind-mount additional directories into the container.
+</p>
+
+<p>
+The generated script also supports the <code>--pid-file</code> option to write the container process ID to a file. This can be used, along with <code>guix container exec</code> to execute scripts within the container (see <a href="docs/guix--Invoking-guix-container.html">Invoking <code>guix container</code></a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>container</code> action requires Linux-libre 3.19 or newer.
+</p>
+</blockquote></dd>
+</dl>
+
+<p>
+<code>options</code> can contain any of the common build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>). In addition, <code>options</code> can contain one of the following:
+</p>
+
+<ul class="org-ul">
+<li><code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Consider the operating-system <code>expr</code> evaluates to. This is an alternative to specifying a file which evaluates to an operating system. This is used to generate the Guix system installer see <a href="docs/guix--Building-the-Installation-Image.html">Building the Installation Image</a>).</li>
+
+<li><code>--system===system</code><br />
+<code>-s ==system</code> :: Attempt to build for <code>system</code> instead of the host system type. This works as per <code>guix build</code> (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>).</li>
+
+<li id="<code>--target===triplet</code>">Cross-build for <code>triplet</code>, which must be a valid GNU triplet, such as <code>"aarch64-linux-gnu"</code> (see <a href="https://www.gnu.org/software/autoconf/manual/html_node/Specifying-target-triplets.html#Specifying-target-triplets">GNU configuration triplets</a> in Autoconf).</li>
+
+<li><p>
+<code>--derivation</code><br />
+<code>-d</code> :: Return the derivation file name of the given operating system without building anything.
+</p>
+
+<p>
+<a id="index-provenance-tracking_002c-of-the-operating-system-1"></a>
+</p></li>
+
+<li id="<code>--save-provenance</code>"><p>
+As discussed above, <code>guix system init</code> and <code>guix system reconfigure</code> always save provenance information <i>via</i> a dedicated service (see <a href="docs/guix--Service-Reference.html"><code>provenance-service-type</code></a>). However, other commands don't do that by default. If you wish to, say, create a virtual machine image that contains provenance information, you can run:
+</p>
+
+<pre class="example" id="org89247b5">
+guix system image -t qcow2 --save-provenance config.scm
+</pre>
+
+<p>
+That way, the resulting image will effectively “embed its own source” in the form of meta-data in <code>/run/current-system</code>. With that information, one can rebuild the image to make sure it really contains what it pretends to contain; or they could use that to derive a variant of the image.
+</p></li>
+
+<li><p>
+<code>--image-type===type</code><br />
+<code>-t ==type</code> :: For the <code>image</code> action, create an image with given <code>type</code>.
+</p>
+
+<p>
+When this option is omitted, <code>guix system</code> uses the <code>mbr-hybrid-raw</code> image type.
+</p>
+
+<p>
+<a id="index-ISO_002d9660-format"></a> <a id="index-CD-image-format"></a> <a id="index-DVD-image-format"></a>
+</p>
+
+<p>
+<code>--image-type=iso9660</code> produces an ISO-9660 image, suitable for burning on CDs and DVDs.
+</p></li>
+
+<li id="<code>--image-size===size</code>"><p>
+For the <code>image</code> action, create an image of the given <code>size</code>. <code>size</code> may be a number of bytes, or it may include a unit as a suffix (see <a href="https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html#Block-size">size specifications</a> in GNU Coreutils).
+</p>
+
+<p>
+When this option is omitted, <code>guix system</code> computes an estimate of the image size as a function of the size of the system declared in <code>file</code>.
+</p></li>
+
+<li><code>--network</code><br />
+<code>-N</code> :: For the <code>container</code> action, allow containers to access the host network, that is, do not create a network namespace.</li>
+
+<li><code>--root===file</code><br />
+<code>-r ==file</code> :: Make <code>file</code> a symlink to the result, and register it as a garbage collector root.</li>
+
+<li id="<code>--skip-checks</code>"><p>
+Skip pre-installation safety checks.
+</p>
+
+<p>
+By default, <code>guix system init</code> and <code>guix system reconfigure</code> perform safety checks: they make sure the file systems that appear in the <code>operating-system</code> declaration actually exist (see <a href="docs/guix--File-Systems.html">File Systems</a>), and that any Linux kernel modules that may be needed at boot time are listed in <code>initrd-modules</code> (see <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>). Passing this option skips these tests altogether.
+</p></li>
+
+<li id="<code>--allow-downgrades</code>"><p>
+Instruct <code>guix system reconfigure</code> to allow system downgrades.
+</p>
+
+<p>
+By default, <code>reconfigure</code> prevents you from downgrading your system. It achieves that by comparing the provenance info of your system (shown by <code>guix system describe</code>) with that of your <code>guix</code> command (shown by <code>guix describe</code>). If the commits for <code>guix</code> are not descendants of those used for your system, <code>guix system reconfigure</code> errors out. Passing <code>--allow-downgrades</code> allows you to bypass these checks.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Make sure you understand its security implications before using <code>--allow-downgrades</code>.
+</p>
+</blockquote>
+
+<p>
+<a id="index-on_002derror"></a> <a id="index-on_002derror-strategy"></a> <a id="index-error-strategy"></a>
+</p></li>
+
+<li id="<code>--on-error===strategy</code>">Apply <code>strategy</code> when an error occurs when reading <code>file</code>. <code>strategy</code> may be one of the following:
+
+<dl class="org-dl">
+<dt><code>nothing-special</code></dt><dd>Report the error concisely and exit. This is the default strategy.</dd>
+
+<dt><code>backtrace</code></dt><dd>Likewise, but also display a backtrace.</dd>
+
+<dt><code>debug</code></dt><dd>Report the error and enter Guile's debugger. From there, you can run commands such as <code>,bt</code> to get a backtrace, <code>,locals</code> to display local variable values, and more generally inspect the state of the program. See <a href="https://www.gnu.org/software/guile/manual/html_node/Debug-Commands.html#Debug-Commands">Debug Commands</a> in GNU Guile Reference Manual, for a list of available debugging commands.</dd>
+</dl></li>
+</ul>
+
+<p>
+Once you have built, configured, re-configured, and re-re-configured your Guix installation, you may find it useful to list the operating system generations available on disk&#x2014;and that you can choose from the bootloader boot menu:
+</p>
+
+<dl class="org-dl">
+<dt><code>describe</code></dt><dd><p>
+Describe the running system generation: its file name, the kernel and bootloader used, etc., as well as provenance information when available.
+</p>
+
+<p>
+The <code>--list-installed</code> flag is available, with the same syntax that is used in <code>guix package --list-installed</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). When the flag is used, the description will include a list of packages that are currently installed in the system profile, with optional filtering based on a regular expression.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <i>running</i> system generation&#x2014;referred to by <code>/run/current-system</code>&#x2014;is not necessarily the <i>current</i> system generation&#x2014;referred to by <code>/var/guix/profiles/system</code>: it differs when, for instance, you chose from the bootloader menu to boot an older generation.
+</p>
+
+<p>
+It can also differ from the <i>booted</i> system generation&#x2014;referred to by <code>/run/booted-system</code>&#x2014;for instance because you reconfigured the system in the meantime.
+</p>
+</blockquote></dd>
+
+<dt><code>list-generations</code></dt><dd><p>
+List a summary of each generation of the operating system available on disk, in a human-readable way. This is similar to the <code>--list-generations</code> option of <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+Optionally, one can specify a pattern, with the same syntax that is used in <code>guix package --list-generations</code>, to restrict the list of generations displayed. For instance, the following command displays generations that are up to 10 days old:
+</p>
+
+<pre class="example" id="orgcc65dd7">
+$ guix system list-generations 10d
+</pre>
+
+<p>
+The <code>--list-installed</code> flag may also be specified, with the same syntax that is used in <code>guix package --list-installed</code>. This may be helpful if trying to determine when a package was added to the system.
+</p></dd>
+</dl>
+
+<p>
+The <code>guix system</code> command has even more to offer! The following sub-commands allow you to visualize how your system services relate to each other:
+</p>
+
+<p>
+<a id="system_002dextension_002dgraph"></a>
+</p>
+<dl class="org-dl">
+<dt><code>extension-graph</code></dt><dd><p>
+Emit to standard output the <i>service extension graph</i> of the operating system defined in <code>file</code> (see <a href="docs/guix--Service-Composition.html">Service Composition</a>, for more information on service extensions). By default the output is in Dot/Graphviz format, but you can choose a different format with <code>--graph-backend</code>, as with <code>guix graph</code> (see <a href="docs/guix--Invoking-guix-graph.html"><code>--backend</code></a>):
+</p>
+
+<p>
+The command:
+</p>
+
+<pre class="example" id="org4749816">
+$ guix system extension-graph file | xdot -
+</pre>
+
+<p>
+shows the extension relations among services.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>dot</code> program is provided by the <code>graphviz</code> package.
+</p>
+</blockquote>
+
+<p>
+<a id="system_002dshepherd_002dgraph"></a>
+</p></dd>
+
+<dt><code>shepherd-graph</code></dt><dd><p>
+Emit to standard output the <i>dependency graph</i> of shepherd services of the operating system defined in <code>file</code>. See <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>, for more information and for an example graph.
+</p>
+
+<p>
+Again, the default output format is Dot/Graphviz, but you can pass <code>--graph-backend</code> to select a different one.
+</p></dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

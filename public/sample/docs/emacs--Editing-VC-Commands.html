@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-VC-Commands-1">1. 30.1.12.5 Editing VC Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Preparing-Patches.html">Preparing Patches</a>   Previous: <a href="docs/emacs--Version-Headers.html">Inserting Version Control Headers</a>   Up: <a href="docs/emacs--Miscellaneous-VC.html">Miscellaneous Commands and Features of VC</a>
+</p>
+
+<p>
+<a id="Editing-VC-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Editing-VC-Commands-1" class="outline-2">
+<h2 id="Editing-VC-Commands-1"><span class="section-number-2">1.</span> 30.1.12.5 Editing VC Commands <a href="#Editing-VC-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-VC-Commands-1">
+<p>
+You can use the C-x v ! (<code>vc-edit-next-command</code>) prefix command to edit the shell command line that VC is about to run. This is primarily intended to make it possible to add optional command-line arguments to VCS commands without unnecessary complications of the VC command set and its interfaces with the backend.
+</p>
+
+<p>
+For example, Git can produce logs of more than one branch, but C-x v b l (<code>vc-print-branch-log</code>) prompts for the name of just one branch. To obtain a log of more than one branch, you can type C-x v ! C-x v b l and then append the names of additional branches to the end of the ‘=git log=' command that VC is about to run.
+</p>
+</div>
+</div>

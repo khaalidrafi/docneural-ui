@@ -1,0 +1,971 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Power-Management-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Audio-Services.html">Audio Services</a>, Previous: <a href="docs/guix--Continuous-Integration.html">Continuous Integration</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Power-Management-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="power-management-services"></a>11.10.29 Power Management Services<br />
+<div class="outline-text-5" id="text-power-management-services">
+<p>
+<a id="index-power_002dprofiles_002ddaemon"></a> <a id="Power-Profiles-Daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="power-profiles-daemon"></a>Power Profiles Daemon<br />
+<div class="outline-text-5" id="text-power-profiles-daemon">
+<p>
+The <code>(gnu services pm)</code> module provides a Guix service definition for the Linux Power Profiles Daemon, which makes power profiles handling available over D-Bus.
+</p>
+
+<p>
+The available profiles consist of the default ‘=balanced=' mode, a ‘=power-saver=' mode and on supported systems a ‘=performance=' mode.
+</p>
+
+<blockquote>
+<p>
+<b>Important:</b> The <code>power-profiles-daemon</code> conflicts with other power management tools like <code>tlp</code>. Using both together is not recommended.
+</p>
+</blockquote>
+
+<dl class="org-dl">
+<dt>Variable: power-profiles-daemon-service-type </dt><dd><p>
+This is the service type for the <a href="https://gitlab.freedesktop.org/upower/power-profiles-daemon/">Power Profiles Daemon</a>. The value for this service is a <code>power-profiles-daemon-configuration</code>.
+</p>
+
+<p>
+To enable the Power Profiles Daemon with default configuration add this line to your services:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service power-profiles-daemon-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: power-profiles-daemon-configuration </dt><dd>Data type representing the configuration of <code>power-profiles-daemon-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>power-profiles-daemon</code> (default: <code>power-profiles-daemon</code>) (type: file-like)</dt><dd>Package object of power-profiles-daemon.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-tlp"></a> <a id="index-power-management-with-TLP"></a> <a id="TLP-daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="tlp-daemon"></a>TLP daemon<br />
+<div class="outline-text-5" id="text-tlp-daemon">
+<p>
+The <code>(gnu services pm)</code> module provides a Guix service definition for the Linux power management tool TLP.
+</p>
+
+<p>
+TLP enables various powersaving modes in userspace and kernel. Contrary to <code>upower-service</code>, it is not a passive, monitoring tool, as it will apply custom settings each time a new power source is detected. More information can be found at <a href="https://linrunner.de/en/tlp/tlp.html">TLP home page</a>.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: tlp-service-type </dt><dd><p>
+The service type for the TLP tool. The default settings are optimised for battery life on most systems, but you can tweak them to your heart's content by adding a valid <code>tlp-configuration</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service tlp-service-type
+         (tlp-configuration
+          (cpu-scaling-governor-on-ac (list "performance"))
+          (sched-powersave-on-bat? #t)))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+Each parameter definition is preceded by its type; for example, ‘=boolean foo=' indicates that the <code>foo</code> parameter should be specified as a boolean. Types starting with <code>maybe-</code> denote parameters that won't show up in TLP config file when their value is left unset, or is explicitly set to the <code>%unset-value</code> value.
+</p>
+
+<p>
+Available <code>tlp-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>tlp-configuration</code> parameter: <i>package</i> <b>tlp</b> </dt><dd>The TLP package.</dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>tlp-enable?</b> </dt><dd><p>
+Set to true if you wish to enable TLP.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>tlp-default-mode</b> </dt><dd><p>
+Default mode when no power supply can be detected. Alternatives are AC and BAT.
+</p>
+
+<p>
+Defaults to ‘="AC"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>disk-idle-secs-on-ac</b> </dt><dd><p>
+Number of seconds Linux kernel has to wait after the disk goes idle, before syncing on AC.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>disk-idle-secs-on-bat</b> </dt><dd><p>
+Same as <code>disk-idle-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=2='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>max-lost-work-secs-on-ac</b> </dt><dd><p>
+Dirty pages flushing periodicity, expressed in seconds.
+</p>
+
+<p>
+Defaults to ‘=15='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>max-lost-work-secs-on-bat</b> </dt><dd><p>
+Same as <code>max-lost-work-secs-on-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=60='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-space-separated-string-list</i> <b>cpu-scaling-governor-on-ac</b> </dt><dd><p>
+CPU frequency scaling governor on AC mode. With intel<sub>pstate</sub> driver, alternatives are powersave and performance. With acpi-cpufreq driver, alternatives are ondemand, powersave, performance and conservative.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-space-separated-string-list</i> <b>cpu-scaling-governor-on-bat</b> </dt><dd><p>
+Same as <code>cpu-scaling-governor-on-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-scaling-min-freq-on-ac</b> </dt><dd><p>
+Set the min available frequency for the scaling governor on AC.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-scaling-max-freq-on-ac</b> </dt><dd><p>
+Set the max available frequency for the scaling governor on AC.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-scaling-min-freq-on-bat</b> </dt><dd><p>
+Set the min available frequency for the scaling governor on BAT.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-scaling-max-freq-on-bat</b> </dt><dd><p>
+Set the max available frequency for the scaling governor on BAT.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-min-perf-on-ac</b> </dt><dd><p>
+Limit the min P-state to control the power dissipation of the CPU, in AC mode. Values are stated as a percentage of the available performance.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-max-perf-on-ac</b> </dt><dd><p>
+Limit the max P-state to control the power dissipation of the CPU, in AC mode. Values are stated as a percentage of the available performance.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-min-perf-on-bat</b> </dt><dd><p>
+Same as <code>cpu-min-perf-on-ac</code> on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>cpu-max-perf-on-bat</b> </dt><dd><p>
+Same as <code>cpu-max-perf-on-ac</code> on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-boolean</i> <b>cpu-boost-on-ac?</b> </dt><dd><p>
+Enable CPU turbo boost feature on AC mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-boolean</i> <b>cpu-boost-on-bat?</b> </dt><dd><p>
+Same as <code>cpu-boost-on-ac?</code> on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>sched-powersave-on-ac?</b> </dt><dd><p>
+Allow Linux kernel to minimize the number of CPU cores/hyper-threads used under light load conditions.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>sched-powersave-on-bat?</b> </dt><dd><p>
+Same as <code>sched-powersave-on-ac?</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>nmi-watchdog?</b> </dt><dd><p>
+Enable Linux kernel NMI watchdog.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-string</i> <b>phc-controls</b> </dt><dd><p>
+For Linux kernels with PHC patch applied, change CPU voltages. An example value would be ‘="F:V F:V F:V F:V"='.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>energy-perf-policy-on-ac</b> </dt><dd><p>
+Set CPU performance versus energy saving policy on AC. Alternatives are performance, normal, powersave.
+</p>
+
+<p>
+Defaults to ‘="performance"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>energy-perf-policy-on-bat</b> </dt><dd><p>
+Same as <code>energy-perf-policy-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="powersave"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>space-separated-string-list</i> <b>disks-devices</b> </dt><dd>Hard disk devices.</dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>space-separated-string-list</i> <b>disk-apm-level-on-ac</b> </dt><dd>Hard disk advanced power management level.</dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>space-separated-string-list</i> <b>disk-apm-level-on-bat</b> </dt><dd>Same as <code>disk-apm-bat</code> but on BAT mode.</dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-space-separated-string-list</i> <b>disk-spindown-timeout-on-ac</b> </dt><dd><p>
+Hard disk spin down timeout. One value has to be specified for each declared hard disk.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-space-separated-string-list</i> <b>disk-spindown-timeout-on-bat</b> </dt><dd><p>
+Same as <code>disk-spindown-timeout-on-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-space-separated-string-list</i> <b>disk-iosched</b> </dt><dd><p>
+Select IO scheduler for disk devices. One value has to be specified for each declared hard disk. Example alternatives are cfq, deadline and noop.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>sata-linkpwr-on-ac</b> </dt><dd><p>
+SATA aggressive link power management (ALPM) level. Alternatives are min<sub>power</sub>, medium<sub>power</sub>, max<sub>performance</sub>.
+</p>
+
+<p>
+Defaults to ‘="max<sub>performance</sub>"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>sata-linkpwr-on-bat</b> </dt><dd><p>
+Same as <code>sata-linkpwr-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="min<sub>power</sub>"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-string</i> <b>sata-linkpwr-blacklist</b> </dt><dd><p>
+Exclude specified SATA host devices for link power management.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-on-off-boolean</i> <b>ahci-runtime-pm-on-ac?</b> </dt><dd><p>
+Enable Runtime Power Management for AHCI controller and disks on AC mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-on-off-boolean</i> <b>ahci-runtime-pm-on-bat?</b> </dt><dd><p>
+Same as <code>ahci-runtime-pm-on-ac</code> on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>ahci-runtime-pm-timeout</b> </dt><dd><p>
+Seconds of inactivity before disk is suspended.
+</p>
+
+<p>
+Defaults to ‘=15='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>pcie-aspm-on-ac</b> </dt><dd><p>
+PCI Express Active State Power Management level. Alternatives are default, performance, powersave.
+</p>
+
+<p>
+Defaults to ‘="performance"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>pcie-aspm-on-bat</b> </dt><dd><p>
+Same as <code>pcie-aspm-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="powersave"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>start-charge-thresh-bat0</b> </dt><dd><p>
+Percentage when battery 0 should begin charging. Only supported on some laptops.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>stop-charge-thresh-bat0</b> </dt><dd><p>
+Percentage when battery 0 should stop charging. Only supported on some laptops.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>start-charge-thresh-bat1</b> </dt><dd><p>
+Percentage when battery 1 should begin charging. Only supported on some laptops.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>stop-charge-thresh-bat1</b> </dt><dd><p>
+Percentage when battery 1 should stop charging. Only supported on some laptops.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>radeon-power-profile-on-ac</b> </dt><dd><p>
+Radeon graphics clock speed level. Alternatives are low, mid, high, auto, default.
+</p>
+
+<p>
+Defaults to ‘="high"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>radeon-power-profile-on-bat</b> </dt><dd><p>
+Same as <code>radeon-power-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="low"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>radeon-dpm-state-on-ac</b> </dt><dd><p>
+Radeon dynamic power management method (DPM). Alternatives are battery, performance.
+</p>
+
+<p>
+Defaults to ‘="performance"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>radeon-dpm-state-on-bat</b> </dt><dd><p>
+Same as <code>radeon-dpm-state-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="battery"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>radeon-dpm-perf-level-on-ac</b> </dt><dd><p>
+Radeon DPM performance level. Alternatives are auto, low, high.
+</p>
+
+<p>
+Defaults to ‘="auto"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>radeon-dpm-perf-level-on-bat</b> </dt><dd><p>
+Same as <code>radeon-dpm-perf-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="auto"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>on-off-boolean</i> <b>wifi-pwr-on-ac?</b> </dt><dd><p>
+Wifi power saving mode.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>on-off-boolean</i> <b>wifi-pwr-on-bat?</b> </dt><dd><p>
+Same as <code>wifi-power-ac?</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>y-n-boolean</i> <b>wol-disable?</b> </dt><dd><p>
+Disable wake on LAN.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>sound-power-save-on-ac</b> </dt><dd><p>
+Timeout duration in seconds before activating audio power saving on Intel HDA and AC97 devices. A value of 0 disables power saving.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>non-negative-integer</i> <b>sound-power-save-on-bat</b> </dt><dd><p>
+Same as <code>sound-powersave-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘=1='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>y-n-boolean</i> <b>sound-power-save-controller?</b> </dt><dd><p>
+Disable controller in powersaving mode on Intel HDA devices.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>bay-poweroff-on-bat?</b> </dt><dd><p>
+Enable optical drive in UltraBay/MediaBay on BAT mode. Drive can be powered on again by releasing (and reinserting) the eject lever or by pressing the disc eject button on newer models.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>bay-device</b> </dt><dd><p>
+Name of the optical drive device to power off.
+</p>
+
+<p>
+Defaults to ‘="sr0"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>runtime-pm-on-ac</b> </dt><dd><p>
+Runtime Power Management for PCI(e) bus devices. Alternatives are on and auto.
+</p>
+
+<p>
+Defaults to ‘="on"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>runtime-pm-on-bat</b> </dt><dd><p>
+Same as <code>runtime-pm-ac</code> but on BAT mode.
+</p>
+
+<p>
+Defaults to ‘="auto"='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>runtime-pm-all?</b> </dt><dd><p>
+Runtime Power Management for all PCI(e) bus devices, except blacklisted ones.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-space-separated-string-list</i> <b>runtime-pm-blacklist</b> </dt><dd><p>
+Exclude specified PCI(e) device addresses from Runtime Power Management.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>space-separated-string-list</i> <b>runtime-pm-driver-blacklist</b> </dt><dd>Exclude PCI(e) devices assigned to the specified drivers from Runtime Power Management.</dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>usb-autosuspend?</b> </dt><dd><p>
+Enable USB autosuspend feature.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-string</i> <b>usb-blacklist</b> </dt><dd><p>
+Exclude specified devices from USB autosuspend.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>usb-blacklist-wwan?</b> </dt><dd><p>
+Exclude WWAN devices from USB autosuspend.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-string</i> <b>usb-whitelist</b> </dt><dd><p>
+Include specified devices into USB autosuspend, even if they are already excluded by the driver or via <code>usb-blacklist-wwan?</code>.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>maybe-boolean</i> <b>usb-autosuspend-disable-on-shutdown?</b> </dt><dd><p>
+Enable USB autosuspend before shutdown.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>boolean</i> <b>restore-device-state-on-startup?</b> </dt><dd><p>
+Restore radio device state (bluetooth, wifi, wwan) from previous shutdown on system startup.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>cpu-energy-perf-policy-on-ac</b> </dt><dd>Set CPU energy/performance policy when on AC mode. Possible values, in order of increasing power saving, are performance, balance<sub>performance</sub>, default, balance<sub>power</sub> and power.</dd>
+
+<dt><code>tlp-configuration</code> parameter: <i>string</i> <b>cpu-energy-perf-policy-on-bat</b> </dt><dd>Set CPU energy/performance policy when on BAT mode. Possible values, in order of increasing power saving, are performance, balance<sub>performance</sub>, default, balance<sub>power</sub> and power.</dd>
+</dl>
+
+<p>
+<a id="index-thermald"></a> <a id="index-CPU-frequency-scaling-with-thermald"></a> <a id="Thermald-daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="thermald-daemon"></a>Thermald daemon<br />
+<div class="outline-text-5" id="text-thermald-daemon">
+<p>
+The <code>(gnu services pm)</code> module provides an interface to thermald, a CPU frequency scaling service which helps prevent overheating.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: thermald-service-type </dt><dd>This is the service type for <a href="https://01.org/linux-thermal-daemon/">thermald</a>, the Linux Thermal Daemon, which is responsible for controlling the thermal state of processors and preventing overheating.</dd>
+
+<dt>Data Type: thermald-configuration </dt><dd>Data type representing the configuration of <code>thermald-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>adaptive?</code> (default: <code>#f</code>)</dt><dd>Use DPTF (Dynamic Power and Thermal Framework) adaptive tables when present.</dd>
+
+<dt><code>ignore-cpuid-check?</code> (default: <code>#f</code>)</dt><dd>Ignore cpuid check for supported CPU models.</dd>
+
+<dt><code>thermald</code> (default: <code>thermald</code>)</dt><dd><p>
+Package object of thermald.
+</p>
+
+<p>
+<a id="index-PowerTOP"></a> <a id="index-power-consumption-tuning-with-PowerTOP"></a> <a id="PowerTOP"></a>
+</p>
+
+<p>
+<b>**</b> PowerTOP
+</p>
+<p>
+:CUSTOM<sub>ID</sub>: powertop
+:CLASS: subsubheading
+</p>
+<p>
+The <code>(gnu services pm)</code> module also provides a service definition for <a href="https://01.org/powertop/">PowerTOP</a>, a power consumption analysis and tuning tool. When started, it tunes Linux kernel settings to reduce power consumption.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: powertop-service-type </dt><dd><p>
+The service type for PowerTOP. No configuration is necessary. When the service starts, it executes <code>powertop --auto-tune</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service powertop-service-type)
+</pre>
+</div></dd>
+</dl>
+
+<p>
+Available <code>powertop-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>powertop-configuration</code> parameter: <i>package</i> <b>powertop</b> </dt><dd>The PowerTOP package. Defaults to <code>powertop</code> in the <code>(gnu packages linux)</code> module</dd>
+</dl></dd>
+</dl></dd>
+</dl>
+
+<p>
+The <code>(gnu services power)</code> module provides a service definition for <a href="http://www.apcupsd.org/">apcupsd</a>, a utility to interact with APC (APC by Schneider Electric or formerly American Power Conversion Corporation) UPS (Uninterruptible Power Supply) devices. Apcupsd also works with some OEM (Original Equipment Manufacturer)-branded products manufactured by APC.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: apcupsd-service-type </dt><dd><p>
+The service type for apcupsd. For USB UPSes no configuration is necessary, however tweaking some fields to better suit your needs might be desirable. The defaults are taken from the upstream configuration and they are not very conservative (for example, the default <code>battery-level</code> of 5% may be considered too low by some).
+</p>
+
+<p>
+The default event handlers do send emails, read more in .
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service apcupsd-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: apcupsd-configuration </dt><dd>Available <code>apcupsd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>apcupsd</code> (default: <code>apcupsd</code>) (type: package)</dt><dd>The <code>apcupsd</code> package to use.</dd>
+
+<dt><code>shepherd-service-name</code> (default: <code>apcupsd</code>) (type: symbol)</dt><dd>The name of the shepherd service. You can add the service multiple times with different names to manage multiple UPSes.</dd>
+
+<dt><code>auto-start?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Should the shepherd service auto-start?</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/apcupsd.pid"</code>) (type: string)</dt><dd>The file name of the pid file.</dd>
+
+<dt><code>debug-level</code> (default: <code>0</code>) (type: integer)</dt><dd>The logging verbosity. Bigger number means more logs. The source code uses up to <code>300</code> as debug level value, so a value of <code>999</code> seems reasonable to enable all the logs.</dd>
+
+<dt><code>run-dir</code> (default: <code>"/var/run/apcupsd"</code>) (type: string)</dt><dd>The directory containing runtime information. You need to change this if you desire to run multiple instances of the daemon.</dd>
+
+<dt><code>name</code> (type: maybe-string)</dt><dd>Use this to give your UPS a name in log files and such. This is particularly useful if you have multiple UPSes. This does not set the EEPROM. It should be 8 characters or less.</dd>
+
+<dt><code>cable</code> (default: <code>usb</code>) (type: enum-cable)</dt><dd><p>
+The type of a cable connecting the UPS to your computer. Possible generic choices are <code>'simple</code>, <code>'smart</code>, <code>'ether</code> and <code>'usb</code>.
+</p>
+
+<p>
+Alternatively, a specific cable model number may be used: <code>'940-0119A</code>, <code>'940-0127A</code>, <code>'940-0128A</code>, <code>'940-0020B</code>, <code>'940-0020C</code>, <code>'940-0023A</code>, <code>'940-0024B</code>, <code>'940-0024C</code>, <code>'940-1524C</code>, <code>'940-0024G</code>, <code>'940-0095A</code>, <code>'940-0095B</code>, <code>'940-0095C</code>, <code>'940-0625A</code>, <code>'M-04-02-2000</code>.
+</p></dd>
+
+<dt><code>type</code> (default: <code>usb</code>) (type: enum-type)</dt><dd>The type of the UPS you have.
+
+<dl class="org-dl">
+<dt><code>apcsmart</code></dt><dd>Newer serial character device, appropriate for SmartUPS models using a serial cable (not an USB).</dd>
+
+<dt><code>usb</code></dt><dd>Most new UPSes are an USB.</dd>
+
+<dt><code>net</code></dt><dd>Network link to a master apcupsd through apcupsd's Network Information Server. This is used if the UPS powering your computer is connected to a different computer for monitoring.</dd>
+
+<dt><code>snmp</code></dt><dd>SNMP network link to an SNMP-enabled UPS device.</dd>
+
+<dt><code>netsnmp</code></dt><dd>Same as the SNMP above but requires use of the net-snmp library. Unless you have a specific need for this old driver, you should use the <code>'snmp</code> instead.</dd>
+
+<dt><code>dumb</code></dt><dd>An old serial character device for use with simple-signaling UPSes.</dd>
+
+<dt><code>pcnet</code></dt><dd>A PowerChute Network Shutdown protocol which can be used as an alternative to an SNMP with the AP9617 family of smart slot cards.</dd>
+
+<dt><code>modbus</code></dt><dd>A serial device for use with newest SmartUPS models supporting the MODBUS protocol.</dd>
+</dl></dd>
+
+<dt><code>device</code> (default: <code>""</code>) (type: string)</dt><dd>For USB UPSes, usually you want to set this to an empty string (the default). For other UPS types, you must specify an appropriate port or address.
+
+<dl class="org-dl">
+<dt><code>apcsmart</code></dt><dd>Set to the appropriate <code>/dev/tty**</code> device.</dd>
+
+<dt><code>usb</code></dt><dd>A null string setting enables auto-detection, which is the best choice for most installations.</dd>
+
+<dt><code>net</code></dt><dd>Set to <code>hostname=</code>:==port=.</dd>
+
+<dt><code>snmp</code></dt><dd>Set to <code>hostname=</code>:==port==:==vendor==:==community=. The <code>hostname</code> is the ip address or hostname of the UPS on the network. The <code>vendor</code> can be can be "APC" or "APC<sub>NOTRAP</sub>". "APC<sub>NOTRAP</sub>" will disable SNMP trap catching; you usually want "APC". The <code>port</code> is usually 161. The <code>community</code> is usually "private".</dd>
+
+<dt><code>netsnmp</code></dt><dd>Same as the <code>'snmp</code>.</dd>
+
+<dt><code>dumb</code></dt><dd>Set to the appropriate <code>/dev/tty**</code> device.</dd>
+
+<dt><code>pcnet</code></dt><dd>Set to <code>ipaddr=</code>:==username==:==passphrase==:==port=. The <code>ipaddr</code> is the IP address of the UPS management card. The <code>username</code> and the <code>passphrase</code> are the credentials for which the card has been configured. The <code>port</code> is the port number on which to listen for messages from the UPS, normally 3052. If this parameter is empty or missing, the default of 3052 will be used.</dd>
+
+<dt><code>modbus</code></dt><dd>Set to the appropriate <code>/dev/tty**</code> device. You can also leave it empty for MODBUS over USB or set to the serial number of the UPS.</dd>
+</dl></dd>
+
+<dt><code>poll-time</code> (default: <code>60</code>) (type: integer)</dt><dd>The interval (in seconds) at which apcupsd polls the UPS for status. This setting applies both to directly-attached UPSes (apcsmart, usb, dumb) and networked UPSes (net, snmp). Lowering this setting will improve the apcupsd's responsiveness to certain events at the cost of higher CPU utilization.</dd>
+
+<dt><code>on-batery-delay</code> (default: <code>6</code>) (type: integer)</dt><dd>The time in seconds from when a power failure is detected until we react to it with an onbattery event. The <code>'powerout</code> event will be triggered immediately when a power failure is detected. However, the <code>'onbattery</code> event will be trigger only after this delay.</dd>
+
+<dt><code>battery-level</code> (default: <code>5</code>) (type: integer)</dt><dd><p>
+If during a power failure, the remaining battery percentage (as reported by the UPS) is below or equal to this value, the apcupsd will initiate a system shutdown.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> <code>battery-level</code>, <code>remaining-minutes</code>, and <code>timeout</code> work in a conjunction, so the first that occurs will cause the initiation of a shutdown.
+</p>
+</blockquote></dd>
+
+<dt><code>remaining-minutes</code> (default: <code>3</code>) (type: integer)</dt><dd><p>
+If during a power failure, the remaining runtime in minutes (as calculated internally by the UPS) is below or equal to this value, apcupsd will initiate a system shutdown.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> <code>battery-level</code>, <code>remaining-minutes</code>, and <code>timeout</code> work in a conjunction, so the first that occurs will cause the initiation of a shutdown.
+</p>
+</blockquote></dd>
+
+<dt><code>timeout</code> (default: <code>0</code>) (type: integer)</dt><dd><p>
+If during a power failure, the UPS has run on batteries for this many seconds or longer, apcupsd will initiate a system shutdown. The value of 0 disables this timer.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> <code>battery-level</code>, <code>remaining-minutes</code>, and <code>timeout</code> work in a conjunction, so the first that occurs will cause the initiation of a shutdown.
+</p>
+</blockquote></dd>
+
+<dt><code>annoy-interval</code> (default: <code>300</code>) (type: integer)</dt><dd>The time in seconds between annoying users (via the <code>'annoyme</code> event) to sign off prior to system shutdown. 0 disables.</dd>
+
+<dt><code>annoy-delay</code> (default: <code>60</code>) (type: integer)</dt><dd>The initial delay in seconds after a power failure before warning users to get off the system.</dd>
+
+<dt><code>no-logon</code> (default: <code>disable</code>) (type: enum-no-logon)</dt><dd>The condition which determines when users are prevented from logging in during a power failure.</dd>
+
+<dt><code>kill-delay</code> (default: <code>0</code>) (type: integer)</dt><dd>If this is non-zero, the apcupsd will continue running after a shutdown has been requested, and after the specified time in seconds attempt to kill the power. This is for use on systems where apcupsd cannot regain control after a shutdown.</dd>
+
+<dt><code>net-server</code> (default: <code>#f</code>) (type: boolean)</dt><dd>If enabled, a network information server process will be started.</dd>
+
+<dt><code>net-server-ip</code> (default: <code>"127.0.0.1"</code>) (type: string)</dt><dd>An IP address on which the NIS server will listen for incoming connections.</dd>
+
+<dt><code>net-server-port</code> (default: <code>3551</code>) (type: integer)</dt><dd>An IP port on which the NIS server will listen for incoming connections.</dd>
+
+<dt><code>net-server-events-file</code> (type: maybe-string)</dt><dd>If you want the last few EVENTS to be available over the network by the network information server, you must set this to a file name.</dd>
+
+<dt><code>net-server-events-file-max-size</code> (default: <code>10</code>) (type: integer)</dt><dd>The maximum size of the events file in kilobytes.</dd>
+
+<dt><code>class</code> (default: <code>standalone</code>) (type: enum-class)</dt><dd>Normally standalone unless you share an UPS using an APC ShareUPS card.</dd>
+
+<dt><code>mode</code> (default: <code>disable</code>) (type: enum-mode)</dt><dd>Normally disable unless you share an UPS using an APC ShareUPS card.</dd>
+
+<dt><code>stat-time</code> (default: <code>0</code>) (type: integer)</dt><dd>The time interval in seconds between writing the status file, 0 disables.</dd>
+
+<dt><code>log-stats</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Also write the stats as a logs. This generates a lot of output.</dd>
+
+<dt><code>data-time</code> (default: <code>0</code>) (type: integer)</dt><dd>The time interval in seconds between writing the data records to the log file, 0 disables.</dd>
+
+<dt><code>facility</code> (type: maybe-string)</dt><dd>The logging facility for the syslog.</dd>
+
+<dt><code>event-handlers</code> (type: apcupsd-event-handlers)</dt><dd>Handlers for events produced by apcupsd.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="apcupsd_002devent_002dhandlers"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: apcupsd-event-handlers </dt><dd><p>
+For a description of the events please refer to ‘=man 8 apccontrol='.
+</p>
+
+<p>
+Each handler shall be a gexp. It is spliced into the control script for the daemon. In addition to the standard Guile programming environment, the following procedures and variables are also available:
+</p>
+
+<dl class="org-dl">
+<dt><code>conf</code></dt><dd>Variable containing the file name of the configuration file.</dd>
+
+<dt><code>powerfail-file</code></dt><dd>Variable containing the file name of the powerfail file.</dd>
+
+<dt><code>cmd</code></dt><dd>The event currently being handled.</dd>
+
+<dt><code>name</code></dt><dd>The name of the UPS as specified in the configuration file.</dd>
+
+<dt><code>connected?</code></dt><dd>Is <code>#t</code> if <code>apcupsd</code> is connected to the UPS via a serial port (or a USB port). In most configurations, this will be the case. In the case of a Slave machine where apcupsd is not directly connected to the UPS, this value will be <code>#f</code>.</dd>
+
+<dt><code>powered?</code></dt><dd>Is <code>#t</code> if the computer on which <code>apcupsd</code> is running is powered by the UPS and <code>#f</code> if not. At the moment, this value is unimplemented and always <code>#f</code>.</dd>
+
+<dt><code>(err ==fmt=</code> <code>=args...=</code>)=</dt><dd>Wrapper around <code>format</code> outputting to <code>(current-error-port)</code>.</dd>
+
+<dt><code>(wall ==fmt=</code> <code>=args...=</code>)=</dt><dd>Wrapper around <code>format</code> outputting via <code>wall</code>.</dd>
+
+<dt><code>(apcupsd ==args...=</code>)=</dt><dd>Call <code>apcupsd</code> while passing the correct configuration file and all the arguments.</dd>
+
+<dt><code>(mail-to-root ==subject=</code> <code>=body=</code>)=</dt><dd>Send an email to the local administrator. This procedure assumes the <code>sendmail</code> is located at <code>/run/privileged/bin/sendmail</code> (as would be the case with <code>opensmtpd-service-type</code>).</dd>
+</dl>
+
+<p>
+Available <code>apcupsd-event-handlers</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>modules</code> (type: gexp)</dt><dd>Additional modules to import into the generated handler script.</dd>
+
+<dt><code>killpower</code> (type: gexp)</dt><dd>The handler for the killpower event.</dd>
+
+<dt><code>commfailure</code> (type: gexp)</dt><dd>The handler for the commfailure event.</dd>
+
+<dt><code>commok</code> (type: gexp)</dt><dd>The handler for the commfailure event.</dd>
+
+<dt><code>powerout</code> (type: gexp)</dt><dd>The handler for the powerout event.</dd>
+
+<dt><code>onbattery</code> (type: gexp)</dt><dd>The handler for the onbattery event.</dd>
+
+<dt><code>offbattery</code> (type: gexp)</dt><dd>The handler for the offbattery event.</dd>
+
+<dt><code>mainsback</code> (type: gexp)</dt><dd>The handler for the mainsback event.</dd>
+
+<dt><code>failing</code> (type: gexp)</dt><dd>The handler for the failing event.</dd>
+
+<dt><code>timeout</code> (type: gexp)</dt><dd>The handler for the timeout event.</dd>
+
+<dt><code>loadlimit</code> (type: gexp)</dt><dd>The handler for the loadlimit event.</dd>
+
+<dt><code>runlimit</code> (type: gexp)</dt><dd>The handler for the runlimit event.</dd>
+
+<dt><code>doreboot</code> (type: gexp)</dt><dd>The handler for the doreboot event.</dd>
+
+<dt><code>doshutdown</code> (type: gexp)</dt><dd>The handler for the doshutdown event.</dd>
+
+<dt><code>annoyme</code> (type: gexp)</dt><dd>The handler for the annoyme event.</dd>
+
+<dt><code>emergency</code> (type: gexp)</dt><dd>The handler for the emergency event.</dd>
+
+<dt><code>changeme</code> (type: gexp)</dt><dd>The handler for the changeme event.</dd>
+
+<dt><code>remotedown</code> (type: gexp)</dt><dd>The handler for the remotedown event.</dd>
+
+<dt><code>startselftest</code> (type: gexp)</dt><dd>The handler for the startselftest event.</dd>
+
+<dt><code>endselftest</code> (type: gexp)</dt><dd>The handler for the endselftest event.</dd>
+
+<dt><code>battdetach</code> (type: gexp)</dt><dd>The handler for the battdetach event.</dd>
+
+<dt><code>battattach</code> (type: gexp)</dt><dd>The handler for the battattach event.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Audio-Services.html">Audio Services</a>, Previous: <a href="docs/guix--Continuous-Integration.html">Continuous Integration</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

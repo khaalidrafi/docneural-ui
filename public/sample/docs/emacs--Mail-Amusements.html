@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mail-Amusements-1">1. 34.6 Mail Amusements ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (19)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mail-Methods.html">Mail-Composition Methods</a>   Previous: <a href="docs/emacs--Mail-Signature.html">Mail Signature</a>   Up: <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>
+</p>
+
+<p>
+<a id="Mail-Amusements"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mail-Amusements-1" class="outline-2">
+<h2 id="Mail-Amusements-1"><span class="section-number-2">1.</span> 34.6 Mail Amusements <a href="#Mail-Amusements-1">¶</a></h2>
+<div class="outline-text-2" id="text-Mail-Amusements-1">
+<p>
+M-x spook adds a line of randomly chosen keywords to an outgoing mail message. The keywords are chosen from a list of words that suggest you are discussing something subversive.
+</p>
+
+<p>
+The idea behind this feature is the suspicion that the NSA and other intelligence agencies snoop on all electronic mail messages that contain keywords suggesting they might find them interesting. (The agencies say that they don't, but that's what they <i>would</i> say.) The idea is that if lots of people add suspicious words to their messages, the agencies will get so busy with spurious input that they will have to give up reading it all. Whether or not this is true, it at least amuses some people.
+</p>
+
+<p>
+You can use the <code>fortune</code> program to put a fortune cookie message into outgoing mail. To do this, add <code>fortune-to-signature</code> to <code>mail-setup-hook</code>:
+</p>
+
+<pre class="example" id="org7c42bec">
+(add-hook 'mail-setup-hook 'fortune-to-signature)
+</pre>
+
+<p>
+You will probably need to set the variable <code>fortune-file</code> before using this.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Source-Buffers-1">1. 29.6.5.2 Source Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Breakpoints-Buffer.html">Breakpoints Buffer</a>   Previous: <a href="docs/emacs--GDB-User-Interface-Layout.html">GDB User Interface Layout</a>   Up: <a href="docs/emacs--GDB-Graphical-Interface.html">GDB Graphical Interface</a>
+</p>
+
+<p>
+<a id="Source-Buffers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Source-Buffers-1" class="outline-2">
+<h2 id="Source-Buffers-1"><span class="section-number-2">1.</span> 29.6.5.2 Source Buffers <a href="#Source-Buffers-1">¶</a></h2>
+<div class="outline-text-2" id="text-Source-Buffers-1">
+<dl class="org-dl">
+<dt>mouse-1 (in fringe)</dt><dd>Set or clear a breakpoint on that line (<code>gdb-mouse-set-clear-breakpoint</code>).</dd>
+
+<dt>C-mouse-1 (in fringe)</dt><dd>Enable or disable a breakpoint on that line (<code>gdb-mouse-toggle-breakpoint-margin</code>).</dd>
+
+<dt>mouse-3 (in fringe)</dt><dd>Continue execution to that line (<code>gdb-mouse-until</code>).</dd>
+
+<dt>C-mouse-3 (in fringe)</dt><dd>Jump to that line (<code>gdb-mouse-jump</code>).</dd>
+</dl>
+
+<p>
+On a graphical display, you can click mouse-1 in the fringe of a source buffer, to set a breakpoint on that line (see <a href="docs/emacs--Fringes.html">Window Fringes</a>). A red dot appears in the fringe, where you clicked. If a breakpoint already exists there, the click removes it. A C-mouse-1 click enables or disables an existing breakpoint; a breakpoint that is disabled, but not unset, is indicated by a gray dot.
+</p>
+
+<p>
+On a text terminal, or when fringes are disabled, enabled breakpoints are indicated with a ‘=B=' character in the left margin of the window. Disabled breakpoints are indicated with ‘=b='. (The margin is only displayed if a breakpoint is present.)
+</p>
+
+<p>
+A solid arrow in the left fringe of a source buffer indicates the line of the innermost frame where the debugged program has stopped. A hollow arrow indicates the current execution line of a higher-level frame. If you drag the arrow in the fringe with mouse-1, that causes execution to advance to the line where you release the button. Alternatively, you can click mouse-3 in the fringe to advance to that line. You can click C-mouse-3 in the fringe to jump to that line without executing the intermediate lines. This command allows you to go backwards, which can be useful for running through code that has already executed, in order to examine its execution in more detail.
+</p>
+
+<p>
+By default, source file names and non-ASCII strings in the program being debugged are decoded using the default coding-system. If you prefer a different decoding, perhaps because the program being debugged uses a different character encoding, set the variable <code>gdb-mi-decode-strings</code> to the appropriate coding-system, or to <code>nil</code> to leave non-ASCII characters as undecoded octal escapes.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,135 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#the-full-source-bootstrap">1.0.1. 20.1 The Full-Source Bootstrap</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Full_002dSource-Bootstrap"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html">Preparing to Use the Bootstrap Binaries</a>, Up: <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="The-Full_002dSource-Bootstrap"></a>
+</p>
+</div>
+<div id="outline-container-the-full-source-bootstrap" class="outline-4">
+<h4 id="the-full-source-bootstrap"><span class="section-number-4">1.0.1.</span> 20.1 The Full-Source Bootstrap</h4>
+<div class="outline-text-4" id="text-the-full-source-bootstrap">
+<p>
+Guix&#x2014;like other GNU/Linux distributions&#x2014;is traditionally bootstrapped from a set of bootstrap binaries: Bourne shell, command-line tools provided by GNU Coreutils, Awk, Findutils, ‘sed', and ‘grep' and Guile, GCC, Binutils, and the GNU C Library (see <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>). Usually, these bootstrap binaries are “taken for granted.”
+</p>
+
+<p>
+Taking the bootstrap binaries for granted means that we consider them to be a correct and trustworthy “seed” for building the complete system. Therein lies a problem: the combined size of these bootstrap binaries is about 250MB (see <a href="https://www.gnu.org/software/mes/manual/html_node/Bootstrappable-Builds.html#Bootstrappable-Builds">Bootstrappable Builds</a> in GNU Mes). Auditing or even inspecting these is next to impossible.
+</p>
+
+<p>
+For <code>i686-linux</code> and <code>x86_64-linux</code>, Guix now features a <i>full-source bootstrap</i>. This bootstrap is rooted in <code>hex0-seed</code> from the <a href="https://savannah.gnu.org/projects/stage0">Stage0</a> package. The hex0 program is minimalist assembler: it reads space-separated hexadecimal digits (nibbles) from a file, possibly including comments, and emits on standard output the bytes corresponding to those hexadecimal numbers. The source code of this initial hex0 program is a file called <a href="https://github.com/oriansj/bootstrap-seeds/blob/master/POSIX/x86/hex0_x86.hex0"><code>hex0_x86.hex0</code></a> and is written in the <code>hex0</code> language.
+</p>
+
+<p>
+Hex0 is self-hosting, which means that it can build itself:
+</p>
+
+<pre class="example" id="org1ada231">
+./hex0-seed hex0_x86.hex0 hex0
+</pre>
+
+<p>
+Hex0 it is the ASCII-equivalent of the binary program and can be produced by doing something much like:
+</p>
+
+<pre class="example" id="org9d42a46">
+sed 's/[;#].*$//g' hex0_x86.hex0 | xxd -r -p &gt; hex0
+chmod +x hex0
+</pre>
+
+<p>
+It is because of this ASCII-binary equivalence that we can bless this initial 357-byte binary as source, and hence ‘full-source bootstrap”.
+</p>
+
+<p>
+The bootstrap then continues: <code>hex0</code> builds <code>hex1</code> and then on to <code>M0</code>, <code>hex2</code>, <code>M1</code>, <code>mescc-tools</code> and finally <code>M2-Planet</code>. Then, using <code>mescc-tools</code>, <code>M2-Planet</code> we build Mes (see <a href="https://www.gnu.org/software/mes/manual/html_node/index.html#Top">GNU Mes Reference Manual</a> in GNU Mes, a Scheme interpreter and C compiler in Scheme). From here on starts the more traditional <code>C</code>-based bootstrap of the GNU System.
+</p>
+
+<p>
+Another step that Guix has taken is to replace the shell and all its utilities with implementations in Guile Scheme, the <i>Scheme-only bootstrap</i>. Gash (see <a href="../gash/Gash.html#Gash">Gash</a> in The Gash manual) is a POSIX-compatible shell that replaces Bash, and it comes with Gash Utils which has minimalist replacements for Awk, the GNU Core Utilities, Grep, Gzip, Sed, and Tar.
+</p>
+
+<p>
+Building the GNU System from source is currently only possible by adding some historical GNU packages as intermediate steps. As Gash and Gash Utils mature, and GNU packages become more bootstrappable again (e.g., new releases of GNU Sed will also ship as gzipped tarballs again, as alternative to the hard to bootstrap <code>xz</code>-compression), this set of added packages can hopefully be reduced again.
+</p>
+
+<p>
+The graph below shows the resulting dependency graph for <code>gcc-core-mesboot0</code>, the bootstrap compiler used for the traditional bootstrap of the rest of the Guix System.
+</p>
+
+<p>
+Work is ongoing to bring these bootstraps to the <code>arm-linux</code> and <code>aarch64-linux</code> architectures and to the Hurd.
+</p>
+
+<p>
+If you are interested, join us on ‘=#bootstrappable=' on the Libera.Chat IRC network or discuss on <a href="mailto:bug-mes@gnu.org">bug-mes@gnu.org</a> or <a href="mailto:gash-devel@nongnu.org">gash-devel@nongnu.org</a>.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

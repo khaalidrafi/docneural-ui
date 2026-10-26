@@ -1,0 +1,73 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Words-1">1. 27.1 Words ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Sentences.html">Sentences</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Words"></a>
+</p>
+
+<hr />
+<div id="outline-container-Words-1" class="outline-2">
+<h2 id="Words-1"><span class="section-number-2">1.</span> 27.1 Words <a href="#Words-1">¶</a></h2>
+<div class="outline-text-2" id="text-Words-1">
+<p>
+Emacs defines several commands for moving over or operating on words:
+</p>
+
+<dl class="org-dl">
+<dt>M-f</dt><dd>Move forward over a word (<code>forward-word</code>).</dd>
+
+<dt>M-b</dt><dd>Move backward over a word (<code>backward-word</code>).</dd>
+
+<dt>M-d</dt><dd>Kill up to the end of a word (<code>kill-word</code>).</dd>
+
+<dt>M-DEL</dt><dd>Kill back to the beginning of a word (<code>backward-kill-word</code>).</dd>
+
+<dt>M-@</dt><dd>Set mark at the end of the next word (<code>mark-word</code>).</dd>
+
+<dt>M-t</dt><dd>Transpose two words or drag a word across others (<code>transpose-words</code>).</dd>
+</dl>
+
+<p>
+Notice how these keys form a series that parallels the character-based C-f, C-b, C-d, DEL and C-t. M-@ is cognate to C-@, which is an alias for C-SPC.
+</p>
+
+<p>
+The commands M-f (<code>forward-word</code>) and M-b (<code>backward-word</code>) move forward and backward over words. These Meta-based key sequences are analogous to the key sequences C-f and C-b, which move over single characters. The analogy extends to numeric arguments, which serve as repeat counts. M-f with a negative argument moves backward, and M-b with a negative argument moves forward. Forward motion stops right after the last letter of the word, while backward motion stops right before the first letter.
+</p>
+
+<p>
+M-d (<code>kill-word</code>) kills the word after point. To be precise, it kills everything from point to the place M-f would move to. Thus, if point is in the middle of a word, M-d kills just the part after point. If some punctuation comes between point and the next word, it is killed along with the word. (If you wish to kill only the next word but not the punctuation before it, simply do M-f to get the end, and kill the word backwards with M-DEL.) M-d takes arguments just like M-f.
+</p>
+
+<p>
+M-DEL (<code>backward-kill-word</code>) kills the word before point. It kills everything from point back to where M-b would move to. For instance, if point is after the space in ‘=FOO, BAR=', it kills ‘=FOO, <code>'. If you wish to kill just ‘=FOO</code>', and not the comma and the space, use M-b M-d instead of M-DEL.
+</p>
+
+<p>
+M-t (<code>transpose-words</code>) exchanges the word before or containing point with the following word. The delimiter characters between the words do not move. For example, ‘=FOO, BAR=' transposes into ‘=BAR, FOO=' rather than ‘=BAR FOO,='. See <a href="docs/emacs--Transpose.html">Transposing Text</a>, for more on transposition.
+</p>
+
+<p>
+To operate on words with an operation which acts on the region, use the command M-@ (<code>mark-word</code>). This command sets the mark where M-f would move to. See <a href="docs/emacs--Marking-Objects.html">Commands to Mark Textual Objects</a>, for more information about this command.
+</p>
+
+<p>
+The word commands' understanding of word boundaries is controlled by the syntax table. Any character can, for example, be declared to be a word delimiter. See <a href="../elisp_html/Syntax-Tables.html#Syntax-Tables">Syntax Tables</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+In addition, see <a href="docs/emacs--Position-Info.html">Cursor Position Information</a> for the M-= (<code>count-words-region</code>) and M-x count-words commands, which count and report the number of words in the region or buffer.
+</p>
+
+<hr />
+</div>
+</div>

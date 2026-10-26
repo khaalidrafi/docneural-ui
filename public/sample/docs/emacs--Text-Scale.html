@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Text-Scale-1">1. 16.12 Text Scale ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>   Previous: <a href="docs/emacs--Icons.html">Icons</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Text-Scale"></a>
+</p>
+
+<hr />
+<div id="outline-container-Text-Scale-1" class="outline-2">
+<h2 id="Text-Scale-1"><span class="section-number-2">1.</span> 16.12 Text Scale <a href="#Text-Scale-1">¶</a></h2>
+<div class="outline-text-2" id="text-Text-Scale-1">
+<p>
+To increase the font size of the <code>default</code> face in the current buffer, type C-x C-+ or C-x C-<code>. To decrease it, type C-x C--. To restore the default (global) font size, type C-x C-0. These keys are all bound to the same command, =text-scale-adjust</code>, which looks at the last key typed to determine which action to take and adjusts the font size accordingly by changing the height of the default face.
+</p>
+
+<p>
+Most faces don't have an explicit setting of the <code>:height</code> attribute, and thus inherit the height from the <code>default</code> face. Those faces are also scaled by the above commands.
+</p>
+
+<p>
+Faces other than <code>default</code> that have an explicit setting of the <code>:height</code> attribute are not affected by these font size changes. The <code>header-line</code> face is an exception: it will be scaled even if it has an explicit setting of the <code>:height</code> attribute.
+</p>
+
+<p>
+Similarly, scrolling the mouse wheel with the Ctrl modifier pressed, when the mouse pointer is above buffer text, will increase or decrease the font size of the affected faces, depending on the direction of the scrolling.
+</p>
+
+<p>
+The final key of these commands may be repeated without the leading C-x and without the modifiers. For instance, C-x C-= C-= C-= and C-x C-= = = increase the face height by three steps. Each step scales the text height by a factor of 1.2; to change this factor, customize the variable <code>text-scale-mode-step</code>. A numeric argument of 0 to the <code>text-scale-adjust</code> command restores the default height, the same as typing C-x C-0.
+</p>
+
+<p>
+Similarly, to change the sizes of the fonts globally, type C-x C-M-+, C-x C-M-<code>, C-x C-M-- or C-x C-M-0, or scroll the mouse wheel with both the Ctrl and Meta modifiers pressed. To enable frame resizing when the font size is changed globally, customize the variable =global-text-scale-adjust-resizes-frames</code> (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>).
+</p>
+
+<p>
+The commands <code>text-scale-increase</code> and <code>text-scale-decrease</code> increase or decrease the size of the font in the current buffer, just like C-x C-+ and C-x C&#x2013; respectively. You may find it convenient to bind to these commands, rather than <code>text-scale-adjust</code>.
+</p>
+
+<p>
+The command <code>text-scale-set</code> scales the size of the font in the current buffer to an absolute level specified by its prefix argument.
+</p>
+
+<p>
+The above commands automatically enable the minor mode <code>text-scale-mode</code> if the current font scaling is other than 1, and disable it otherwise.
+</p>
+
+<p>
+The command <code>text-scale-pinch</code> increases or decreases the text scale based on the distance between fingers on a touchpad when a pinch gesture is performed by placing two fingers on a touchpad and moving them towards or apart from each other. This is only available on some systems with supported hardware.
+</p>
+
+<p>
+The command <code>mouse-wheel-text-scale</code> also changes the text scale. Normally, it is run when you press Ctrl while moving the mouse wheel. The text scale is increased when the wheel is moved downwards, and it is decreased when the wheel is moved upwards.
+</p>
+
+<hr />
+</div>
+</div>

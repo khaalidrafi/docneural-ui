@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#DocView-Searching-1">1. 39.2 DocView Searching ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--DocView-Slicing.html">DocView Slicing</a>   Previous: <a href="docs/emacs--DocView-Navigation.html">DocView Navigation</a>   Up: <a href="docs/emacs--Document-View.html">Document Viewing</a>
+</p>
+
+<p>
+<a id="DocView-Searching"></a>
+</p>
+
+<hr />
+<div id="outline-container-DocView-Searching-1" class="outline-2">
+<h2 id="DocView-Searching-1"><span class="section-number-2">1.</span> 39.2 DocView Searching <a href="#DocView-Searching-1">¶</a></h2>
+<div class="outline-text-2" id="text-DocView-Searching-1">
+<p>
+In DocView mode, you can search the file's text for a regular expression (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). The interface for searching is inspired by <code>isearch</code> (see <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>).
+</p>
+
+<p>
+To begin a search, type C-s (<code>doc-view-search</code>) or C-r (<code>doc-view-search-backward</code>). This reads a regular expression using a minibuffer, then echoes the number of matches found within the document. You can move forward and back among the matches by typing C-s and C-r. DocView mode has no way to show the match inside the page image; instead, it displays a tooltip (at the mouse position) listing all matching lines in the current page. To force display of this tooltip, type C-t (<code>doc-view-show-tooltip</code>).
+</p>
+
+<p>
+To start a new search, use the search command with a prefix argument; i.e., C-u C-s for a forward search or C-u C-r for a backward search.
+</p>
+</div>
+</div>

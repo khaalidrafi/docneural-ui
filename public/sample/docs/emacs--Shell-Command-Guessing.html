@@ -1,0 +1,84 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Shell-Command-Guessing-1">1. 32.9 Shell Command Guessing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Transforming-File-Names.html">Transforming File Names in Dired</a>   Previous: <a href="docs/emacs--Shell-Commands-in-Dired.html">Shell Commands in Dired</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Shell-Command-Guessing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Shell-Command-Guessing-1" class="outline-2">
+<h2 id="Shell-Command-Guessing-1"><span class="section-number-2">1.</span> 32.9 Shell Command Guessing <a href="#Shell-Command-Guessing-1">¶</a></h2>
+<div class="outline-text-2" id="text-Shell-Command-Guessing-1">
+<p>
+Based upon the name of a file, Dired tries to guess what shell command you might want to apply to it. For example, if you have point on a file named <code>foo.tar</code> and you press !, Dired will guess that you want to run ‘=tar xvf=', and suggest that as the default shell command.
+</p>
+
+<p>
+You can type M-n to get the default into the minibuffer for editing. If there are several commands for a given file, type M-n several times to see each matching command in order.
+</p>
+
+<p>
+Dired only tries to guess a command for a single file, never for a list of marked files.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: <b>dired-guess-shell-alist-default</b> </dt><dd>This variable specifies the predefined rules for guessing shell commands suitable for certain files. Set this to <code>nil</code> to turn guessing off. The elements of <code>dired-guess-shell-alist-user</code> (defined by the user) will override these rules.</dd>
+
+<dt>Variable: <b>dired-guess-shell-alist-optional</b> </dt><dd>This variable is like <code>dired-guess-shell-alist-default</code> but contains external viewers and players for various media formats. Setting this to <code>nil</code> turns guessing off. The variables <code>dired-guess-shell-alist-user</code> and <code>dired-guess-shell-alist-default</code> will override these rules.</dd>
+
+<dt>Variable: <b>dired-guess-shell-alist-user</b> </dt><dd><p>
+If non-<code>nil</code>, this variable specifies the user-defined alist of file regexps and their suggested commands. These rules take precedence over the predefined rules in the variables <code>dired-guess-shell-alist-default</code> and <code>dired-guess-shell-alist-optional</code> when <code>dired-do-shell-command</code> is run). The default is <code>nil</code>.
+</p>
+
+<p>
+Each element of the alist looks like
+</p>
+
+<pre class="example" id="org9701b3d">
+(regexp command...)
+</pre>
+
+<p>
+where each <code>command</code> can either be a string or a Lisp expression that evaluates to a string. If several commands are given, all of them will temporarily be pushed onto the history.
+</p>
+
+<p>
+A ‘=*=' in the shell command stands for the file name that matched <code>regexp</code>. When Emacs invokes the <code>command</code>, it replaces each instance of ‘=*=' with the matched file name.
+</p>
+
+<p>
+To add rules for ‘=.foo=' and ‘=.bar=' file extensions, add this to your Init file:
+</p>
+
+<pre class="example" id="org89ab7a1">
+(setq dired-guess-shell-alist-user
+      (list
+       (list "\\.foo$" "foo-command")  ; fixed rule
+       ;; possibly more rules...
+       (list "\\.bar$"  ; rule with condition test
+             '(if condition
+                  "bar-command-1"
+                "bar-command-2"))))
+</pre>
+
+<p>
+This will override any predefined rules for the same extensions.
+</p></dd>
+</dl>
+
+<p>
+You can find more user options with M-x customize-group RET dired-guess RET.
+</p>
+
+<hr />
+</div>
+</div>

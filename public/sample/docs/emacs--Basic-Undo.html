@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Undoing-Changes">1. 9.4 Undoing Changes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Basic-Files.html">Files</a>   Previous: <a href="docs/emacs--Erasing.html">Erasing Text</a>   Up: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>
+</p>
+
+<p>
+<a id="Basic-Undo"></a>
+</p>
+
+<hr />
+<div id="outline-container-Undoing-Changes" class="outline-2">
+<h2 id="Undoing-Changes"><span class="section-number-2">1.</span> 9.4 Undoing Changes <a href="#Undoing-Changes">¶</a></h2>
+<div class="outline-text-2" id="text-Undoing-Changes">
+<ul class="org-ul">
+<li>C-/<br />
+C-x u<br />
+C-_ :: Undo one entry of the undo records&#x2014;usually, one command worth (<code>undo</code>). (The first key might be unavailable on text-mode displays.)</li>
+</ul>
+
+<p>
+Emacs records a list of changes made in the buffer text, so you can undo recent changes. This is done using the <code>undo</code> command, which is bound to C-/ (as well as C-x u and C-_). Normally, this command undoes the last change, moving point back to where it was before the change. The undo command applies only to changes in the buffer; you can't use it to undo cursor motion.
+</p>
+
+<p>
+On a terminal that supports the Control modifier on all other keys, the easiest way to invoke <code>undo</code> is with C-<i>, since that doesn't need the Shift modifier. On terminals which allow only the ASCII control characters, C-</i> does not exist, but for many of them C-/ still works because it actually sends C-_ to Emacs, while many others allow you to omit the Shift modifier when you type C-_ (in effect pressing C&#x2013;), making that the most convenient way to invoke <code>undo</code>.
+</p>
+
+<p>
+Although each editing command usually makes a separate entry in the undo records, very simple commands may be grouped together. Sometimes, an entry may cover just part of a complex command.
+</p>
+
+<p>
+If you repeat C-/ (or its aliases), each repetition undoes another, earlier change, back to the limit of the undo information available. If all recorded changes have already been undone, the undo command displays an error message and does nothing.
+</p>
+
+<p>
+To learn more about the <code>undo</code> command, see <a href="docs/emacs--Undo.html">Undo</a>.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,102 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Other-Search_002dand_002dLoop-Commands">1. 17.11 Other Search-and-Loop Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Search-Customizations.html">Tailoring Search to Your Needs</a>   Previous: <a href="docs/emacs--Replace.html">Replacement Commands</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Other-Repeating-Search"></a>
+</p>
+
+<hr />
+<div id="outline-container-Other-Search_002dand_002dLoop-Commands" class="outline-2">
+<h2 id="Other-Search_002dand_002dLoop-Commands"><span class="section-number-2">1.</span> 17.11 Other Search-and-Loop Commands <a href="#Other-Search_002dand_002dLoop-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Other-Search_002dand_002dLoop-Commands">
+<p>
+Here are some other commands that find matches for regular expressions. They all ignore case in matching, if the pattern contains no upper-case letters and <code>case-fold-search</code> is non-<code>nil</code>. Aside from <code>multi-occur</code> and <code>multi-occur-in-matching-buffers</code>, which always search the whole buffer, all of the commands operate on the text from point to the end of the buffer, or on the region if it is active.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-multi_002disearch_002dbuffers"></a>M-x multi-isearch-buffers </dt><dd>Prompt for one or more buffer names, ending with RET; then, begin a multi-buffer incremental search in those buffers. (If the search fails in one buffer, the next C-s tries searching the next specified buffer, and so forth.) With a prefix argument, prompt for a regexp and begin a multi-buffer incremental search in buffers matching that regexp.</dd>
+
+<dt><a id="index-multi_002disearch_002dbuffers_002dregexp"></a>M-x multi-isearch-buffers-regexp </dt><dd>This command is just like <code>multi-isearch-buffers</code>, except it performs an incremental regexp search.</dd>
+
+<dt><a id="index-multi_002disearch_002dfiles"></a>M-x multi-isearch-files </dt><dd>Prompt for one or more file names, ending with RET; then, begin a multi-file incremental search in those files. (If the search fails in one file, the next C-s tries searching the next specified file, and so forth.) With a prefix argument, prompt for a regexp and begin a multi-file incremental search in files matching that regexp.</dd>
+
+<dt><a id="index-multi_002disearch_002dfiles_002dregexp"></a>M-x multi-isearch-files-regexp </dt><dd><p>
+This command is just like <code>multi-isearch-files</code>, except it performs an incremental regexp search.
+</p>
+
+<p>
+In some modes that set the buffer-local variable <code>multi-isearch-next-buffer-function</code> (e.g., in Change Log mode) a multi-file incremental search is activated automatically.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<a id="index-M_002ds-o"></a>M-x occur <br />
+M-s o :: Prompt for a regexp, and display a list showing each line in the buffer that contains a match for it. If you type M-n at the prompt, you can reuse search strings from previous incremental searches. The text that matched is highlighted using the <code>match</code> face. A numeric argument <code>n</code> specifies that <code>n</code> lines of context are to be displayed before and after each matching line.
+</p>
+
+<p>
+The default number of context lines is specified by the variable <code>list-matching-lines-default-context-lines</code>. When <code>list-matching-lines-jump-to-current-line</code> is non-<code>nil</code> the current line is shown highlighted with face <code>list-matching-lines-current-line-face</code> and the point is set at the first match after such line.
+</p>
+
+<p>
+You can also run M-s o when an incremental search is active; this uses the current search string.
+</p>
+
+<p>
+Note that matches for the regexp you type are extended to include complete lines, and a match that starts before the previous match ends is not considered a match.
+</p>
+
+<p>
+The <code>*Occur*</code> buffer uses the Occur mode as its major mode. You can use the n and p keys to move to the next or previous match; with prefix numeric argument, these commands move that many matches. Digit keys are bound to <code>digit-argument</code>, so 5 n moves to the fifth next match (you don't have to type C-u). SPC and DEL scroll the <code>*Occur*</code> buffer up and down. Clicking on a match or moving point there and typing RET visits the corresponding position in the original buffer that was searched. o and C-o display the match in another window; C-o does not select that window. Alternatively, you can use the M-g M-n (<code>next-error</code>) command to visit the occurrences one by one (see <a href="docs/emacs--Compilation-Mode.html">Compilation Mode</a>). Finally, q quits the window showing the <code>*Occur*</code> buffer and buries the buffer.
+</p>
+
+<p>
+Typing e in the <code>*Occur*</code> buffer makes the buffer writable and enters the Occur Edit mode, in which you can edit the matching lines and have those edits reflected in the text in the originating buffer. Type C-c C-c to leave the Occur Edit mode and return to the Occur mode.
+</p>
+
+<p>
+The command M-x list-matching-lines is a synonym for M-x occur.
+</p></dd>
+
+<dt><a id="index-multi_002doccur"></a>M-x multi-occur </dt><dd>This command is just like <code>occur</code>, except it is able to search through multiple buffers. It asks you to specify the buffer names one by one.</dd>
+
+<dt><a id="index-multi_002doccur_002din_002dmatching_002dbuffers"></a>M-x multi-occur-in-matching-buffers </dt><dd>This command is similar to <code>multi-occur</code>, except the buffers to search are specified by a regular expression that matches visited file names. With a prefix argument, it uses the regular expression to match buffer names instead.</dd>
+
+<dt><a id="index-how_002dmany"></a>M-x how-many </dt><dd>Prompt for a regexp, and print the number of matches for it in the buffer after point. If the region is active, this operates on the region instead.</dd>
+
+<dt><a id="index-flush_002dlines"></a>M-x flush-lines </dt><dd><p>
+Prompt for a regexp, and delete each line that contains a match for it, operating on the text after point. When the command finishes, it prints the number of deleted matching lines.
+</p>
+
+<p>
+This command deletes the current line if it contains a match starting after point. If the region is active, it operates on the region instead; if a line partially contained in the region contains a match entirely contained in the region, it is deleted.
+</p>
+
+<p>
+If a match is split across lines, <code>flush-lines</code> deletes all those lines. It deletes the lines before starting to look for the next match; hence, it ignores a match starting on the same line at which another match ended.
+</p></dd>
+
+<dt><a id="index-keep_002dlines"></a>M-x keep-lines </dt><dd><p>
+Prompt for a regexp, and delete each line that <i>does not</i> contain a match for it, operating on the text after point. If point is not at the beginning of a line, this command always keeps the current line. If the region is active, the command operates on the region instead; it never deletes lines that are only partially contained in the region (a newline that ends a line counts as part of that line).
+</p>
+
+<p>
+If a match is split across lines, this command keeps all those lines.
+</p></dd>
+
+<dt><a id="index-kill_002dmatching_002dlines"></a>M-x kill-matching-lines </dt><dd>Like <code>flush-lines</code>, but also add the matching lines to the kill ring. The command adds the matching lines to the kill ring as a single string, including the newlines that separated the lines.</dd>
+
+<dt><a id="index-copy_002dmatching_002dlines"></a>M-x copy-matching-lines </dt><dd>Like <code>kill-matching-lines</code>, but the matching lines are not removed from the buffer.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

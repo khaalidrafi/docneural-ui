@@ -1,0 +1,106 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#using-a-custom-guix-channel">1.0.1. 6.2 Using a Custom Guix Channel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Using-a-Custom-Guix-Channel"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Replicating-Guix.html">Replicating Guix</a>, Previous: <a href="docs/guix--Specifying-Additional-Channels.html">Specifying Additional Channels</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Using-a-Custom-Guix-Channel-1"></a>
+</p>
+</div>
+<div id="outline-container-using-a-custom-guix-channel" class="outline-4">
+<h4 id="using-a-custom-guix-channel"><span class="section-number-4">1.0.1.</span> 6.2 Using a Custom Guix Channel</h4>
+<div class="outline-text-4" id="text-using-a-custom-guix-channel">
+<p>
+The channel called <code>guix</code> specifies where Guix itself&#x2014;its command-line tools as well as its package collection&#x2014;should be downloaded. For instance, suppose you want to update from another copy of the Guix repository at <code>example.org</code>, and specifically the <code>super-hacks</code> branch, you can write in <code>~/.config/guix/channels.scm</code> this specification:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Tell 'guix pull' to use another repo.
+(list (channel
+        (name 'guix)
+        (url "https://example.org/another-guix.git")
+        (branch "super-hacks")))
+</pre>
+</div>
+
+<p>
+From there on, <code>guix pull</code> will fetch code from the <code>super-hacks</code> branch of the repository at <code>example.org</code>. The authentication concern is addressed below (see <a href="docs/guix--Channel-Authentication.html">Channel Authentication</a>).
+</p>
+
+<p>
+Note that you can specify a local directory on the <code>url</code> field above if the channel that you intend to use resides on a local file system. However, in this case <code>guix</code> checks said directory for ownership before any further processing. This means that if the user is not the directory owner, but wants to use it as their default, they will then need to set it as a safe directory in their global git configuration file. Otherwise, <code>guix</code> will refuse to even read it. Supposing your system-wide local directory is at <code>/src/guix.git</code>, you would then create a git configuration file at <code>~/.gitconfig</code> with the following contents:
+</p>
+
+<pre class="example" id="orgc861ddf">
+[safe]
+        directory = /src/guix.git
+</pre>
+
+<p>
+This also applies to the root user unless when called with <code>sudo</code> by the directory owner.
+</p>
+</div>
+</div>
+</div>

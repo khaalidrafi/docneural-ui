@@ -1,0 +1,72 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Saving-Customizations-1">1. 51.1.4 Saving Customizations ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Face-Customization.html">Customizing Faces</a>   Previous: <a href="docs/emacs--Changing-a-Variable.html">Changing a Variable</a>   Up: <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>
+</p>
+
+<p>
+<a id="Saving-Customizations"></a>
+</p>
+
+<hr />
+<div id="outline-container-Saving-Customizations-1" class="outline-2">
+<h2 id="Saving-Customizations-1"><span class="section-number-2">1.</span> 51.1.4 Saving Customizations <a href="#Saving-Customizations-1">¶</a></h2>
+<div class="outline-text-2" id="text-Saving-Customizations-1">
+<p>
+In the customization buffer, you can <i>save</i> a customization setting by choosing the ‘=Save for Future Sessions=' choice from its ‘=[State]=' button. The C-x C-s (<code>Custom-save</code>) command, or the ‘=[Apply and Save]=' button at the top of the customization buffer, saves all applicable settings in the buffer.
+</p>
+
+<p>
+Saving works by writing code to a file, usually your initialization file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>). Future Emacs sessions automatically read this file at startup, which sets up the customizations again.
+</p>
+
+<p>
+You can choose to save customizations somewhere other than your initialization file. To make this work, you must add a couple of lines of code to your initialization file, to set the variable <code>custom-file</code> to the name of the desired file, and to load that file. For example:
+</p>
+
+<pre class="example" id="org5d4da9a">
+(setq custom-file "~/.config/emacs-custom.el")
+(load custom-file)
+</pre>
+
+<p>
+You can even specify different customization files for different Emacs versions, like this:
+</p>
+
+<pre class="example" id="org2157832">
+(cond ((&lt; emacs-major-version 28)
+       ;; Emacs 27 customization.
+       (setq custom-file "~/.config/custom-27.el"))
+      ((and (= emacs-major-version 26)
+            (&lt; emacs-minor-version 3))
+       ;; Emacs 26 customization, before version 26.3.
+       (setq custom-file "~/.config/custom-26.el"))
+      (t
+       ;; Emacs version 28.1 or later.
+       (setq custom-file "~/.config/emacs-custom.el")))
+
+(load custom-file)
+</pre>
+
+<p>
+If Emacs was invoked with the <code>-q</code> or <code>--no-init-file</code> options (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>), it will not let you save your customizations in your initialization file. This is because saving customizations from such a session would wipe out all the other customizations you might have on your initialization file.
+</p>
+
+<p>
+Please note that any customizations you have not chosen to save for future sessions will be lost when you terminate Emacs. If you'd like to be prompted about unsaved customizations at termination time, add the following to your initialization file:
+</p>
+
+<pre class="example" id="org4299b5a">
+(add-hook 'kill-emacs-query-functions
+          'custom-prompt-customize-unsaved-options)
+</pre>
+
+<hr />
+</div>
+</div>

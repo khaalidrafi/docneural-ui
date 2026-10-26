@@ -1,0 +1,1408 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Version-Control-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Game-Services.html">Game Services</a>, Previous: <a href="docs/guix--Virtualization-Services.html">Virtualization Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Version-Control-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="version-control-services"></a>11.10.32 Version Control Services<br />
+<div class="outline-text-5" id="text-version-control-services">
+<p>
+The <code>(gnu services version-control)</code> module provides a service to allow remote access to local Git repositories. There are three options: the <code>git-daemon-service-type</code>, which provides access to repositories via the <code>git://</code> unsecured TCP-based protocol, extending the <code>nginx</code> web server to proxy some requests to <code>git-http-backend</code>, or providing a web interface with <code>cgit-service-type</code>.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: git-daemon-service-type </dt><dd><p>
+Type for a service that runs <code>git daemon</code>, a simple TCP server to expose repositories over the Git protocol for anonymous access.
+</p>
+
+<p>
+The value for this service type is a <code>&lt;git-daemon-configuration&gt;</code> record, by default it allows read-only access to exported repositories under <code>/srv/git</code>.
+</p></dd>
+
+<dt>Data Type: git-daemon-configuration </dt><dd>Data type representing the configuration for <code>git-daemon-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>git</code>)</dt><dd>Package object of the Git distributed version control system.</dd>
+
+<dt><code>export-all?</code> (default: <code>#f</code>)</dt><dd>Whether to allow access for all Git repositories, even if they do not have the <code>git-daemon-export-ok</code> file.</dd>
+
+<dt><code>base-path</code> (default: <code>/srv/git</code>)</dt><dd>Whether to remap all the path requests as relative to the given path. If you run <code>git daemon</code> with <code>(base-path "/srv/git")</code> on ‘=example.com=', then if you later try to pull ‘=git://example.com/hello.git=', git daemon will interpret the path as <code>/srv/git/hello.git</code>.</dd>
+
+<dt><code>user-path</code> (default: <code>#f</code>)</dt><dd>Whether to allow <code>~user</code> notation to be used in requests. When specified with empty string, requests to ‘=git://host/~alice/foo=' is taken as a request to access <code>foo</code> repository in the home directory of user <code>alice</code>. If <code>(user-path "==path=</code>")= is specified, the same request is taken as a request to access <code>path==/foo</code> repository in the home directory of user <code>alice</code>.</dd>
+
+<dt><code>listen</code> (default: <code>'()</code>)</dt><dd>Whether to listen on specific IP addresses or hostnames, defaults to all.</dd>
+
+<dt><code>port</code> (default: <code>#f</code>)</dt><dd>Whether to listen on an alternative port, which defaults to 9418.</dd>
+
+<dt><code>whitelist</code> (default: <code>'()</code>)</dt><dd>If not empty, only allow access to this list of directories.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options that will be passed to <code>git daemon</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+The <code>git://</code> protocol lacks authentication. When you pull from a repository fetched via <code>git://</code>, you don't know whether the data you receive was modified or is even coming from the specified host, and your connection is subject to eavesdropping. It's better to use an authenticated and encrypted transport, such as <code>https</code>. Although Git allows you to serve repositories using unsophisticated file-based web servers, there is a faster protocol implemented by the <code>git-http-backend</code> program. This program is the back-end of a proper Git web service. It is designed to sit behind a FastCGI proxy. See <a href="docs/guix--Web-Services.html">Web Services</a>, for more on running the necessary <code>fcgiwrap</code> daemon.
+</p>
+
+<p>
+Guix has a separate configuration data type for serving Git repositories over HTTP.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: git-http-configuration </dt><dd>Data type representing the configuration for a future <code>git-http-service-type</code>; can currently be used to configure Nginx through <code>git-http-nginx-location-configuration</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>git</code>)</dt><dd>Package object of the Git distributed version control system.</dd>
+
+<dt><code>git-root</code> (default: <code>/srv/git</code>)</dt><dd>Directory containing the Git repositories to expose to the world.</dd>
+
+<dt><code>export-all?</code> (default: <code>#f</code>)</dt><dd>Whether to expose access for all Git repositories in <code>git-root</code>, even if they do not have the <code>git-daemon-export-ok</code> file.</dd>
+
+<dt><code>uri-path</code> (default: ‘=/git/=')</dt><dd>Path prefix for Git access. With the default ‘=/git/=' prefix, this will map ‘=<a href="http://==server==/git/==repo==.git">http://==server==/git/==repo==.git</a>=' to <code>/srv/git/==repo=</code>.git=. Requests whose URI paths do not begin with this prefix are not passed on to this Git instance.</dd>
+
+<dt><code>fcgiwrap-socket</code> (default: <code>127.0.0.1:9000</code>)</dt><dd>The socket on which the <code>fcgiwrap</code> daemon is listening. See <a href="docs/guix--Web-Services.html">Web Services</a>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+There is no <code>git-http-service-type</code>, currently; instead you can create an <code>nginx-location-configuration</code> from a <code>git-http-configuration</code> and then add that location to a web server.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: git-http-nginx-location-configuration [config=(git-http-configuration)]</dt><dd><p>
+Compute an <code>nginx-location-configuration</code> that corresponds to the given Git http configuration. An example nginx service definition to serve the default <code>/srv/git</code> over HTTPS might be:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service nginx-service-type
+         (nginx-configuration
+          (server-blocks
+           (list
+            (nginx-server-configuration
+             (listen '("443 ssl"))
+             (server-name "git.my-host.org")
+             (ssl-certificate
+              "/etc/certs/git.my-host.org/fullchain.pem")
+             (ssl-certificate-key
+              "/etc/certs/git.my-host.org/privkey.pem")
+             (locations
+              (list
+               (git-http-nginx-location-configuration
+                (git-http-configuration (uri-path "/"))))))))))
+</pre>
+</div>
+
+<p>
+This example assumes that you are using Let's Encrypt to get your TLS certificate. See <a href="docs/guix--Certificate-Services.html">Certificate Services</a>. The default <code>certbot</code> service will redirect all HTTP traffic on <code>git.my-host.org</code> to HTTPS. You will also need to add an <code>fcgiwrap</code> proxy to your system services. See <a href="docs/guix--Web-Services.html">Web Services</a>.
+</p></dd>
+</dl>
+
+<p>
+<a id="Cgit-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="cgit-service"></a>Cgit Service<br />
+<div class="outline-text-5" id="text-cgit-service">
+<p>
+<a id="index-Cgit-service"></a> <a id="index-Git_002c-web-interface"></a>
+<a href="https://git.zx2c4.com/cgit/">Cgit</a> is a web frontend for Git repositories written in C.
+</p>
+
+<p>
+The following example will configure the service with default values. By default, Cgit can be accessed on port 80 (<code>http://localhost:80</code>).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service cgit-service-type)
+</pre>
+</div>
+
+<p>
+The <code>file-object</code> type designates either a file-like object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>) or a string.
+</p>
+
+<p>
+Available <code>cgit-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>cgit-configuration</code> parameter: <i>package</i> <b>package</b> </dt><dd>The CGIT package.</dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>nginx-server-configuration-list</i> <b>nginx</b> </dt><dd>NGINX configuration.</dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>about-filter</b> </dt><dd><p>
+Specifies a command which will be invoked to format the content of about pages (both top-level and for each repository).
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>agefile</b> </dt><dd><p>
+Specifies a path, relative to each repository path, which can be used to specify the date and time of the youngest commit in the repository.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>auth-filter</b> </dt><dd><p>
+Specifies a command that will be invoked for authenticating repository access.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>branch-sort</b> </dt><dd><p>
+Flag which, when set to ‘=age=', enables date ordering in the branch ref list, and when set ‘=name=' enables ordering by branch name.
+</p>
+
+<p>
+Defaults to ‘="name"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>cache-root</b> </dt><dd><p>
+Path used to store the cgit cache entries.
+</p>
+
+<p>
+Defaults to ‘="/var/cache/cgit"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-static-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the cached version of repository pages accessed with a fixed SHA1.
+</p>
+
+<p>
+Defaults to ‘=-1='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-dynamic-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the cached version of repository pages accessed without a fixed SHA1.
+</p>
+
+<p>
+Defaults to ‘=5='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-repo-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the cached version of the repository summary page.
+</p>
+
+<p>
+Defaults to ‘=5='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-root-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the cached version of the repository index page.
+</p>
+
+<p>
+Defaults to ‘=5='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-scanrc-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the result of scanning a path for Git repositories.
+</p>
+
+<p>
+Defaults to ‘=15='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-about-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the cached version of the repository about page.
+</p>
+
+<p>
+Defaults to ‘=15='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-snapshot-ttl</b> </dt><dd><p>
+Number which specifies the time-to-live, in minutes, for the cached version of snapshots.
+</p>
+
+<p>
+Defaults to ‘=5='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>cache-size</b> </dt><dd><p>
+The maximum number of entries in the cgit cache. When set to ‘=0=', caching is disabled.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>case-sensitive-sort?</b> </dt><dd><p>
+Sort items in the repo list case sensitively.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>list</i> <b>clone-prefix</b> </dt><dd><p>
+List of common prefixes which, when combined with a repository URL, generates valid clone URLs for the repository.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>list</i> <b>clone-url</b> </dt><dd><p>
+List of <code>clone-url</code> templates.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>commit-filter</b> </dt><dd><p>
+Command which will be invoked to format commit messages.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>commit-sort</b> </dt><dd><p>
+Flag which, when set to ‘=date=', enables strict date ordering in the commit log, and when set to ‘=topo=' enables strict topological ordering.
+</p>
+
+<p>
+Defaults to ‘="git log"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>css</b> </dt><dd><p>
+URL which specifies the css document to include in all cgit pages.
+</p>
+
+<p>
+Defaults to ‘="/share/cgit/cgit.css"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>email-filter</b> </dt><dd><p>
+Specifies a command which will be invoked to format names and email address of committers, authors, and taggers, as represented in various places throughout the cgit interface.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>embedded?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit generate a HTML fragment suitable for embedding in other HTML pages.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-commit-graph?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit print an ASCII-art commit history graph to the left of the commit messages in the repository log page.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-filter-overrides?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', allows all filter settings to be overridden in repository-specific cgitrc files.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-follow-links?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', allows users to follow a file in the log view.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-http-clone?</b> </dt><dd><p>
+If set to ‘=#t=', cgit will act as an dumb HTTP endpoint for Git clones.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-index-links?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit generate extra links "summary", "commit", "tree" for each repo in the repository index.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-index-owner?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit display the owner of each repo in the repository index.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-log-filecount?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit print the number of modified files for each commit on the repository log page.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-log-linecount?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit print the number of added and removed lines for each commit on the repository log page.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-remote-branches?</b> </dt><dd><p>
+Flag which, when set to <code>#t</code>, will make cgit display remote branches in the summary and refs views.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-subject-links?</b> </dt><dd><p>
+Flag which, when set to <code>1</code>, will make cgit use the subject of the parent commit as link text when generating links to parent commits in commit view.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-html-serving?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit use the subject of the parent commit as link text when generating links to parent commits in commit view.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-tree-linenumbers?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit generate linenumber links for plaintext blobs printed in the tree view.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>enable-git-config?</b> </dt><dd><p>
+Flag which, when set to ‘=#f=', will allow cgit to use Git config to set any repo specific settings.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>favicon</b> </dt><dd><p>
+URL used as link to a shortcut icon for cgit.
+</p>
+
+<p>
+Defaults to ‘="/favicon.ico"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>footer</b> </dt><dd><p>
+The content of the file specified with this option will be included verbatim at the bottom of all pages (i.e. it replaces the standard "generated by&#x2026;" message).
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>head-include</b> </dt><dd><p>
+The content of the file specified with this option will be included verbatim in the HTML HEAD section on all pages.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>header</b> </dt><dd><p>
+The content of the file specified with this option will be included verbatim at the top of all pages.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>include</b> </dt><dd><p>
+Name of a configfile to include before the rest of the current config- file is parsed.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>index-header</b> </dt><dd><p>
+The content of the file specified with this option will be included verbatim above the repository index.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>index-info</b> </dt><dd><p>
+The content of the file specified with this option will be included verbatim below the heading on the repository index page.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>local-time?</b> </dt><dd><p>
+Flag which, if set to ‘=#t=', makes cgit print commit and tag times in the servers timezone.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>logo</b> </dt><dd><p>
+URL which specifies the source of an image which will be used as a logo on all cgit pages.
+</p>
+
+<p>
+Defaults to ‘="/share/cgit/cgit.png"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>logo-link</b> </dt><dd><p>
+URL loaded when clicking on the cgit logo image.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>owner-filter</b> </dt><dd><p>
+Command which will be invoked to format the Owner column of the main page.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>max-atom-items</b> </dt><dd><p>
+Number of items to display in atom feeds view.
+</p>
+
+<p>
+Defaults to ‘=10='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>max-commit-count</b> </dt><dd><p>
+Number of entries to list per page in "log" view.
+</p>
+
+<p>
+Defaults to ‘=50='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>max-message-length</b> </dt><dd><p>
+Number of commit message characters to display in "log" view.
+</p>
+
+<p>
+Defaults to ‘=80='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>max-repo-count</b> </dt><dd><p>
+Specifies the number of entries to list per page on the repository index page.
+</p>
+
+<p>
+Defaults to ‘=50='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>max-repodesc-length</b> </dt><dd><p>
+Specifies the maximum number of repo description characters to display on the repository index page.
+</p>
+
+<p>
+Defaults to ‘=80='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>max-blob-size</b> </dt><dd><p>
+Specifies the maximum size of a blob to display HTML for in KBytes.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>max-stats</b> </dt><dd><p>
+Maximum statistics period. Valid values are ‘=week=',‘=month=', ‘=quarter=' and ‘=year='.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>mimetype-alist</i> <b>mimetype</b> </dt><dd><p>
+Mimetype for the specified filename extension.
+</p>
+
+<p>
+Defaults to ‘='((gif "image/gif") (html "text/html") (jpg "image/jpeg") (jpeg "image/jpeg") (pdf "application/pdf") (png "image/png") (svg "image/svg+xml"))='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>mimetype-file</b> </dt><dd><p>
+Specifies the file to use for automatic mimetype lookup.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>module-link</b> </dt><dd><p>
+Text which will be used as the formatstring for a hyperlink when a submodule is printed in a directory listing.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>nocache?</b> </dt><dd><p>
+If set to the value ‘=#t=' caching will be disabled.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>noplainemail?</b> </dt><dd><p>
+If set to ‘=#t=' showing full author email addresses will be disabled.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>noheader?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', will make cgit omit the standard header on all pages.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>project-list</i> <b>project-list</b> </dt><dd><p>
+A list of subdirectories inside of <code>repository-directory</code>, relative to it, that should loaded as Git repositories. An empty list means that all subdirectories will be loaded.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>readme</b> </dt><dd><p>
+Text which will be used as default <code>repository-cgit-configuration</code> <code>readme</code>.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>remove-suffix?</b> </dt><dd><p>
+If set to <code>#t</code> and <code>repository-directory</code> is enabled, if any repositories are found with a suffix of <code>.git</code>, this suffix will be removed for the URL and name.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>renamelimit</b> </dt><dd><p>
+Maximum number of files to consider when detecting renames.
+</p>
+
+<p>
+Defaults to ‘=-1='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>repository-sort</b> </dt><dd><p>
+The way in which repositories in each section are sorted.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>robots-list</i> <b>robots</b> </dt><dd><p>
+Text used as content for the <code>robots</code> meta-tag.
+</p>
+
+<p>
+Defaults to ‘='("noindex" "nofollow")='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>root-desc</b> </dt><dd><p>
+Text printed below the heading on the repository index page.
+</p>
+
+<p>
+Defaults to ‘="a fast webinterface for the git dscm"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>root-readme</b> </dt><dd><p>
+The content of the file specified with this option will be included verbatim below the “about” link on the repository index page.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>root-title</b> </dt><dd><p>
+Text printed as heading on the repository index page.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>scan-hidden-path</b> </dt><dd><p>
+If set to ‘=#t=' and repository-directory is enabled, repository-directory will recurse into directories whose name starts with a period. Otherwise, repository-directory will stay away from such directories, considered as “hidden”. Note that this does not apply to the <code>.git</code> directory in non-bare repos.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>list</i> <b>snapshots</b> </dt><dd><p>
+Text which specifies the default set of snapshot formats that cgit generates links for.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>repository-directory</i> <b>repository-directory</b> </dt><dd><p>
+Name of the directory to scan for repositories (represents <code>scan-path</code>).
+</p>
+
+<p>
+Defaults to ‘="/srv/git"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>section</b> </dt><dd><p>
+The name of the current repository section - all repositories defined after this option will inherit the current section name.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>section-sort</b> </dt><dd><p>
+Flag which, when set to ‘=1=', will sort the sections on the repository listing by name.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>section-from-path</b> </dt><dd><p>
+A number which, if defined prior to repository-directory, specifies how many path elements from each repo path to use as a default section name.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>boolean</i> <b>side-by-side-diffs?</b> </dt><dd><p>
+If set to ‘=#t=' shows side-by-side diffs instead of unidiffs per default.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>file-object</i> <b>source-filter</b> </dt><dd><p>
+Specifies a command which will be invoked to format plaintext blobs in the tree view.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>summary-branches</b> </dt><dd><p>
+Specifies the number of branches to display in the repository “summary” view.
+</p>
+
+<p>
+Defaults to ‘=10='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>summary-log</b> </dt><dd><p>
+Specifies the number of log entries to display in the repository “summary” view.
+</p>
+
+<p>
+Defaults to ‘=10='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>integer</i> <b>summary-tags</b> </dt><dd><p>
+Specifies the number of tags to display in the repository “summary” view.
+</p>
+
+<p>
+Defaults to ‘=10='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>strict-export</b> </dt><dd><p>
+Filename which, if specified, needs to be present within the repository for cgit to allow access to that repository.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>string</i> <b>virtual-root</b> </dt><dd><p>
+URL which, if specified, will be used as root for all cgit links.
+</p>
+
+<p>
+Defaults to ‘="/"='.
+</p></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>repository-cgit-configuration-list</i> <b>repositories</b> </dt><dd><p>
+A list of <code>repository-cgit-configuration</code> records.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p>
+
+<p>
+Available <code>repository-cgit-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-list</i> <b>snapshots</b> </dt><dd><p>
+A mask of snapshot formats for this repo that cgit generates links for, restricted by the global <code>snapshots</code> setting.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-file-object</i> <b>source-filter</b> </dt><dd><p>
+Override the default <code>source-filter</code>.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>url</b> </dt><dd><p>
+The relative URL used to access the repository.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-file-object</i> <b>about-filter</b> </dt><dd><p>
+Override the default <code>about-filter</code>.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>branch-sort</b> </dt><dd><p>
+Flag which, when set to ‘=age=', enables date ordering in the branch ref list, and when set to ‘=name=' enables ordering by branch name.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-list</i> <b>clone-url</b> </dt><dd><p>
+A list of URLs which can be used to clone repo.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-file-object</i> <b>commit-filter</b> </dt><dd><p>
+Override the default <code>commit-filter</code>.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>commit-sort</b> </dt><dd><p>
+Flag which, when set to ‘=date=', enables strict date ordering in the commit log, and when set to ‘=topo=' enables strict topological ordering.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>defbranch</b> </dt><dd><p>
+The name of the default branch for this repository. If no such branch exists in the repository, the first branch name (when sorted) is used as default instead. By default branch pointed to by HEAD, or “master” if there is no suitable HEAD.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>desc</b> </dt><dd><p>
+The value to show as repository description.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>homepage</b> </dt><dd><p>
+The value to show as repository homepage.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-file-object</i> <b>email-filter</b> </dt><dd><p>
+Override the default <code>email-filter</code>.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>maybe-repo-boolean</i> <b>enable-commit-graph?</b> </dt><dd><p>
+A flag which can be used to disable the global setting <code>enable-commit-graph?</code>.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>maybe-repo-boolean</i> <b>enable-log-filecount?</b> </dt><dd><p>
+A flag which can be used to disable the global setting <code>enable-log-filecount?</code>.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>maybe-repo-boolean</i> <b>enable-log-linecount?</b> </dt><dd><p>
+A flag which can be used to disable the global setting <code>enable-log-linecount?</code>.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>maybe-repo-boolean</i> <b>enable-remote-branches?</b> </dt><dd><p>
+Flag which, when set to <code>#t</code>, will make cgit display remote branches in the summary and refs views.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>maybe-repo-boolean</i> <b>enable-subject-links?</b> </dt><dd><p>
+A flag which can be used to override the global setting <code>enable-subject-links?</code>.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>maybe-repo-boolean</i> <b>enable-html-serving?</b> </dt><dd><p>
+A flag which can be used to override the global setting <code>enable-html-serving?</code>.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-boolean</i> <b>hide?</b> </dt><dd><p>
+Flag which, when set to <code>#t</code>, hides the repository from the repository index.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-boolean</i> <b>ignore?</b> </dt><dd><p>
+Flag which, when set to ‘=#t=', ignores the repository.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-file-object</i> <b>logo</b> </dt><dd><p>
+URL which specifies the source of an image which will be used as a logo on this repo's pages.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>logo-link</b> </dt><dd><p>
+URL loaded when clicking on the cgit logo image.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-file-object</i> <b>owner-filter</b> </dt><dd><p>
+Override the default <code>owner-filter</code>.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>module-link</b> </dt><dd><p>
+Text which will be used as the formatstring for a hyperlink when a submodule is printed in a directory listing. The arguments for the formatstring are the path and SHA1 of the submodule commit.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>module-link-path</i> <b>module-link-path</b> </dt><dd><p>
+Text which will be used as the formatstring for a hyperlink when a submodule with the specified subdirectory path is printed in a directory listing.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>max-stats</b> </dt><dd><p>
+Override the default maximum statistics period.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>name</b> </dt><dd><p>
+The value to show as repository name.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>owner</b> </dt><dd><p>
+A value used to identify the owner of the repository.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>path</b> </dt><dd><p>
+An absolute path to the repository directory.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>readme</b> </dt><dd><p>
+A path (relative to repo) which specifies a file to include verbatim as the “About” page for this repo.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-string</i> <b>section</b> </dt><dd><p>
+The name of the current repository section - all repositories defined after this option will inherit the current section name.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>repository-cgit-configuration</code> parameter: <i>repo-list</i> <b>extra-options</b> </dt><dd><p>
+Extra options will be appended to cgitrc file.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl></dd>
+
+<dt><code>cgit-configuration</code> parameter: <i>list</i> <b>extra-options</b> </dt><dd><p>
+Extra options will be appended to cgitrc file.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl>
+
+<p>
+However, it could be that you just want to get a <code>cgitrc</code> up and running. In that case, you can pass an <code>opaque-cgit-configuration</code> as a record to <code>cgit-service-type</code>. As its name indicates, an opaque configuration does not have easy reflective capabilities.
+</p>
+
+<p>
+Available <code>opaque-cgit-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>opaque-cgit-configuration</code> parameter: <i>package</i> <b>cgit</b> </dt><dd>The cgit package.</dd>
+
+<dt><code>opaque-cgit-configuration</code> parameter: <i>string</i> <b>string</b> </dt><dd>The contents of the <code>cgitrc</code>, as a string.</dd>
+</dl>
+
+<p>
+For example, if your <code>cgitrc</code> is just the empty string, you could instantiate a cgit service like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service cgit-service-type
+         (opaque-cgit-configuration
+          (cgitrc "")))
+</pre>
+</div>
+
+<p>
+<a id="Gitolite-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="gitolite-service"></a>Gitolite Service<br />
+<div class="outline-text-5" id="text-gitolite-service">
+<p>
+<a id="index-Gitolite-service"></a> <a id="index-Git_002c-hosting"></a>
+<a href="https://gitolite.com/gitolite/">Gitolite</a> is a tool for hosting Git repositories on a central server.
+</p>
+
+<p>
+Gitolite can handle multiple repositories and users, and supports flexible configuration of the permissions for the users on the repositories.
+</p>
+
+<p>
+The following example will configure Gitolite using the default <code>git</code> user, and the provided SSH public key.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service gitolite-service-type
+         (gitolite-configuration
+           (admin-pubkey (plain-file
+                           "yourname.pub"
+                           "ssh-rsa AAAA... guix@example.com"))))
+</pre>
+</div>
+
+<p>
+Gitolite is configured through a special admin repository which you can clone, for example, if you setup Gitolite on <code>example.com</code>, you would run the following command to clone the admin repository.
+</p>
+
+<pre class="example" id="org4935af6">
+git clone git@example.com:gitolite-admin
+</pre>
+
+<p>
+When the Gitolite service is activated, the provided <code>admin-pubkey</code> will be inserted in to the <code>keydir</code> directory in the gitolite-admin repository. If this results in a change in the repository, it will be committed using the message “gitolite setup by GNU Guix”.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: gitolite-configuration </dt><dd>Data type representing the configuration for <code>gitolite-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>gitolite</code>)</dt><dd><p>
+Gitolite package to use. There are optional Gitolite dependencies that are not included in the default package, such as Redis and git-annex. These features can be made available by using the <code>make-gitolite</code> procedure in the <code>(gnu packages version-control</code>) module to produce a variant of Gitolite with the desired additional dependencies.
+</p>
+
+<p>
+The following code returns a package in which the Redis and git-annex programs can be invoked by Gitolite's scripts:
+</p>
+
+<pre class="example" id="org6dae33e">
+(use-modules (gnu packages databases)
+             (gnu packages haskell-apps)
+             (gnu packages version-control))
+(make-gitolite (list redis git-annex))
+</pre></dd>
+
+<dt><code>user</code> (default: <code>"git"</code>)</dt><dd>User to use for Gitolite. This will be user that you use when accessing Gitolite over SSH.</dd>
+
+<dt><code>group</code> (default: <code>"git"</code>)</dt><dd>Group to use for Gitolite.</dd>
+
+<dt><code>home-directory</code> (default: <code>"/var/lib/gitolite"</code>)</dt><dd>Directory in which to store the Gitolite configuration and repositories.</dd>
+
+<dt><code>rc-file</code> (default: <code>(gitolite-rc-file)</code>)</dt><dd>A “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>), representing the configuration for Gitolite.</dd>
+
+<dt><code>git-config</code> (default: <code>(gitolite-git-configuration)</code>)</dt><dd>A “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>), representing the git configuration for Gitolite.</dd>
+
+<dt><code>admin-pubkey</code></dt><dd><p>
+A “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>) used to setup Gitolite. This will be inserted in to the <code>keydir</code> directory within the gitolite-admin repository.
+</p>
+
+<p>
+To specify the SSH key as a string, use the <code>plain-file</code> function.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(plain-file "yourname.pub" "ssh-rsa AAAA... guix@example.com")
+</pre>
+</div>
+
+<p>
+The file has to have <code>.pub</code> extension.
+</p></dd>
+
+<dt><code>admin-name</code> (default: <code>#f</code>)</dt><dd>Usually the key name is derived by taking a base name of the <code>admin-pubkey</code>. The resulting file name is the name of the gitolite user. You can use this field to override the automatic name.</dd>
+</dl></dd>
+
+<dt>Data Type: gitolite-rc-file </dt><dd>Data type representing the Gitolite RC file.
+
+<dl class="org-dl">
+<dt><code>umask</code> (default: <code>#o0077</code>)</dt><dd><p>
+This controls the permissions Gitolite sets on the repositories and their contents.
+</p>
+
+<p>
+A value like <code>#o0027</code> will give read access to the group used by Gitolite (by default: <code>git</code>). This is necessary when using Gitolite with software like cgit or gitweb.
+</p></dd>
+
+<dt><code>local-code</code> (default: <code>"$rc{GL_ADMIN_BASE}/local"</code>)</dt><dd><p>
+Allows you to add your own non-core programs, or even override the shipped ones with your own.
+</p>
+
+<p>
+Please supply the FULL path to this variable. By default, directory called "local" in your gitolite clone is used, providing the benefits of versioning them as well as making changes to them without having to log on to the server.
+</p></dd>
+
+<dt><code>unsafe-pattern</code> (default: <code>#f</code>)</dt><dd><p>
+An optional Perl regular expression for catching unsafe configurations in the configuration file. See <a href="https://gitolite.com/gitolite/git-config.html#compensating-for-unsafe_patt">Gitolite's documentation</a> for more information.
+</p>
+
+<p>
+When the value is not <code>#f</code>, it should be a string containing a Perl regular expression, such as ‘="[`~#\$\&amp;()|;&lt;&gt;]"=', which is the default value used by gitolite. It rejects any special character in configuration that might be interpreted by a shell, which is useful when sharing the administration burden with other people that do not otherwise have shell access on the server.
+</p></dd>
+
+<dt><code>git-config-keys</code> (default: <code>""</code>)</dt><dd>Gitolite allows you to set git config values using the ‘=config=' keyword. This setting allows control over the config keys to accept.</dd>
+
+<dt><code>log-extra</code> (default: <code>#f</code>)</dt><dd><p>
+Whether gitolite should log extra details.
+</p>
+
+<p>
+For historical reasons, this field defaults to <code>#f</code>. The default value from gitolite however is <code>1</code> (written as <code>#t</code> in this configuration).
+</p></dd>
+
+<dt><code>host-name</code> (default: <code>#f</code>)</dt><dd>The host name of this gitolite instance. It is used by the mirroring feature.</dd>
+
+<dt><code>roles</code> (default: <code>'(("READERS" . 1) ("WRITERS" . ))</code>)</dt><dd>Set the role names allowed to be used by users running the perms command.</dd>
+
+<dt><code>enable</code> (default: <code>'("help" "desc" "info" "perms" "writable" "ssh-authkeys" "git-config" "daemon" "gitweb")</code>)</dt><dd>This setting controls the commands and features to enable within Gitolite.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>)</dt><dd>Extra content to add verbatim into the <code>%RC</code> hash.</dd>
+</dl></dd>
+
+<dt>Data Type: gitolite-git-configuration </dt><dd>Data type representing the git configuration file for gitolite.
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <code>"GNU GNU"</code>)</dt><dd>User name used for commits (e.g. during setting up the admin repository).</dd>
+
+<dt><code>email</code> (default: <code>"guix@localhost"</code>)</dt><dd>Email used for commits (e.g. during setting up the admin repository).</dd>
+
+<dt><code>default-branch</code> (default: <code>#f</code>)</dt><dd>If true, set the <code>init.defaultBranch</code> option to that value. Common values are <code>"master"</code> and <code>"main"</code>.</dd>
+
+<dt><code>receive-fsck-objects</code> (default: <code>#f</code>)</dt><dd>If it is set to true, git-receive-pack will check all received objects.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>)</dt><dd>Extra content to add verbatim into the git configuration file.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Gitile-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="gitile-service"></a>Gitile Service<br />
+<div class="outline-text-5" id="text-gitile-service">
+<p>
+<a id="index-Gitile-service"></a> <a id="index-Git_002c-forge"></a>
+<a href="https://git.lepiller.eu/gitile">Gitile</a> is a Git forge for viewing public git repository contents from a web browser.
+</p>
+
+<p>
+Gitile works best in collaboration with Gitolite, and will serve the public repositories from Gitolite by default. The service should listen only on a local port, and a webserver should be configured to serve static resources. The gitile service provides an easy way to extend the Nginx service for that purpose (see <a href="docs/guix--Web-Services.html#NGINX">NGINX</a>).
+</p>
+
+<p>
+The following example will configure Gitile to serve repositories from a custom location, with some default messages for the home page and the footers.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service gitile-service-type
+         (gitile-configuration
+           (repositories "/srv/git")
+           (base-git-url "https://myweb.site/git")
+           (index-title "My git repositories")
+           (intro '((p "This is all my public work!")))
+           (footer '((p "This is the end")))
+           (nginx
+             (nginx-server-configuration
+               (ssl-certificate
+                 "/etc/certs/myweb.site/fullchain.pem")
+               (ssl-certificate-key
+                 "/etc/certs/myweb.site/privkey.pem")
+               (listen '("443 ssl http2" "[::]:443 ssl http2"))
+               (locations
+                 (list
+                   ;; Allow for https anonymous fetch on /git/ urls.
+                   (git-http-nginx-location-configuration
+                     (git-http-configuration
+                       (uri-path "/git/")
+                       (git-root "/var/lib/gitolite/repositories")))))))))
+</pre>
+</div>
+
+<p>
+In addition to the configuration record, you should configure your git repositories to contain some optional information. First, your public repositories need to contain the <code>git-daemon-export-ok</code> magic file that allows Git to export the repository. Gitile uses the presence of this file to detect public repositories it should make accessible. To do so with Gitolite for instance, modify your <code>conf/gitolite.conf</code> to include this in the repositories you want to make public:
+</p>
+
+<pre class="example" id="orgb310b9f">
+repo foo
+    R = daemon
+</pre>
+
+<p>
+In addition, Gitile can read the repository configuration to display more information on the repository. Gitile uses the gitweb namespace for its configuration. As an example, you can use the following in your <code>conf/gitolite.conf</code>:
+</p>
+
+<pre class="example" id="org607f835">
+repo foo
+    R = daemon
+    desc = A long description, optionally with &lt;i&gt;HTML&lt;/i&gt;, shown on the index page
+    config gitweb.name = The Foo Project
+    config gitweb.synopsis = A short description, shown on the main page of the project
+</pre>
+
+<p>
+Do not forget to commit and push these changes once you are satisfied. You may need to change your gitolite configuration to allow the previous configuration options to be set. One way to do that is to add the following service definition:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service gitolite-service-type
+          (gitolite-configuration
+            (admin-pubkey (local-file "key.pub"))
+            (rc-file
+              (gitolite-rc-file
+                (umask #o0027)
+                ;; Allow to set any configuration key
+                (git-config-keys ".*")
+                ;; Allow any text as a valid configuration value
+                (unsafe-patt "^$")))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Data Type: gitile-configuration </dt><dd>Data type representing the configuration for <code>gitile-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>gitile</code>)</dt><dd>Gitile package to use.</dd>
+
+<dt><code>host</code> (default: <code>"localhost"</code>)</dt><dd>The host on which gitile is listening.</dd>
+
+<dt><code>port</code> (default: <code>8080</code>)</dt><dd>The port on which gitile is listening.</dd>
+
+<dt><code>database</code> (default: <code>"/var/lib/gitile/gitile-db.sql"</code>)</dt><dd>The location of the database.</dd>
+
+<dt><code>repositories</code> (default: <code>"/var/lib/gitolite/repositories"</code>)</dt><dd>The location of the repositories. Note that only public repositories will be shown by Gitile. To make a repository public, add an empty <code>git-daemon-export-ok</code> file at the root of that repository.</dd>
+
+<dt><code>git-owner-validation?</code> (default: <code>#t</code>)</dt><dd>Whether to check for the service user's ownership of repositories. By default, Git will refuse to process a repository owned by another user.</dd>
+
+<dt><code>base-git-url</code></dt><dd>The base git url that will be used to show clone commands.</dd>
+
+<dt><code>index-title</code> (default: <code>"Index"</code>)</dt><dd>The page title for the index page that lists all the available repositories.</dd>
+
+<dt><code>intro</code> (default: <code>'()</code>)</dt><dd>The intro content, as a list of sxml expressions. This is shown above the list of repositories, on the index page.</dd>
+
+<dt><code>footer</code> (default: <code>'()</code>)</dt><dd>The footer content, as a list of sxml expressions. This is shown on every page served by Gitile.</dd>
+
+<dt><code>nginx</code></dt><dd><p>
+An nginx server block that will be extended and used as a reverse proxy by Gitile to serve its pages, and as a normal web server to serve its assets.
+</p>
+
+<p>
+You can use this block to add more custom URLs to your domain, such as a <code>/git/</code> URL for anonymous clones, or serving any other files you would like to serve.
+</p></dd>
+</dl></dd>
+</dl>
+
+<hr />
+</div>
+</li>
+</div>

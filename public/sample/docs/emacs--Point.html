@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Point-1">1. 1.1 Point ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (2)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Echo-Area.html">The Echo Area</a>   Up: <a href="docs/emacs--Screen.html">The Organization of the Screen</a>
+</p>
+
+<p>
+<a id="Point"></a>
+</p>
+
+<hr />
+<div id="outline-container-Point-1" class="outline-2">
+<h2 id="Point-1"><span class="section-number-2">1.</span> 1.1 Point <a href="#Point-1">¶</a></h2>
+<div class="outline-text-2" id="text-Point-1">
+<p>
+The cursor in the selected window shows the location where most editing commands take effect, which is called <i>point</i>. Many Emacs commands move point to different places in the buffer; for example, you can place point by clicking mouse button 1 (normally the left button) at the desired location.
+</p>
+
+<p>
+By default, the cursor in the selected window is drawn as a solid block and appears to be <i>on</i> a character, but you should think of point as <i>between</i> two characters; it is situated <i>before</i> the character under the cursor. For example, if your text looks like ‘=frob=' with the cursor over the ‘=b=', then point is between the ‘=o=' and the ‘=b='. If you insert the character ‘=!=' at that position, the result is ‘=fro!b=', with point between the ‘=!=' and the ‘=b='. Thus, the cursor remains over the ‘=b=', as before.
+</p>
+
+<p>
+If you are editing several files in Emacs, each in its own buffer, each buffer has its own value of point. A buffer that is not currently displayed remembers its value of point if you later display it again. Furthermore, if a buffer is displayed in multiple windows, each of those windows has its own value of point.
+</p>
+
+<p>
+See <a href="docs/emacs--Cursor-Display.html">Displaying the Cursor</a>, for options that control how Emacs displays the cursor.
+</p>
+
+<hr />
+</div>
+</div>

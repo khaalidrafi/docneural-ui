@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Lisp-Interaction-Buffers">1. 29.10 Lisp Interaction Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--External-Lisp.html">Running an External Lisp</a>   Previous: <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>   Up: <a href="docs/emacs--Building.html">Compiling and Testing Programs</a>
+</p>
+
+<p>
+<a id="Lisp-Interaction"></a>
+</p>
+
+<hr />
+<div id="outline-container-Lisp-Interaction-Buffers" class="outline-2">
+<h2 id="Lisp-Interaction-Buffers"><span class="section-number-2">1.</span> 29.10 Lisp Interaction Buffers <a href="#Lisp-Interaction-Buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Lisp-Interaction-Buffers">
+<p>
+When Emacs starts up, it contains a buffer named <code>*scratch*</code>, which is provided for evaluating Emacs Lisp expressions interactively. Its major mode is Lisp Interaction mode. You can also enable Lisp Interaction mode by typing M-x lisp-interaction-mode.
+</p>
+
+<p>
+If you kill the <code>*scratch*</code> buffer, you can recreate it with the M-x scratch-buffer command.
+</p>
+
+<p>
+In the <code>*scratch*</code> buffer, and other Lisp Interaction mode buffers, C-j (<code>eval-print-last-sexp</code>) evaluates the Lisp expression before point, and inserts the value at point. Thus, as you type expressions into the buffer followed by C-j after each expression, the buffer records a transcript of the evaluated expressions and their values. All other commands in Lisp Interaction mode are the same as in Emacs Lisp mode.
+</p>
+
+<p>
+At startup, the <code>*scratch*</code> buffer contains a short message, in the form of a Lisp comment, that explains what it is for. This message is controlled by the variable <code>initial-scratch-message</code>, which should be either a documentation string, or <code>nil</code> (which means to suppress the message).
+</p>
+
+<p>
+An alternative way of evaluating Emacs Lisp expressions interactively is to use Inferior Emacs Lisp mode, which provides an interface rather like Shell mode (see <a href="docs/emacs--Shell-Mode.html">Shell Mode</a>) for evaluating Emacs Lisp expressions. Type M-x ielm to create an <code>*ielm*</code> buffer which uses this mode. For more information, see that command's documentation.
+</p>
+
+<hr />
+</div>
+</div>

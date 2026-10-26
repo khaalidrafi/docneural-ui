@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Undoing-Version-Control-Actions">1. 30.1.8 Undoing Version Control Actions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--VC-Ignore.html">Ignore Version Control Files</a>   Previous: <a href="docs/emacs--VC-Change-Log.html">VC Change Log</a>   Up: <a href="docs/emacs--Version-Control.html">Version Control</a>
+</p>
+
+<p>
+<a id="VC-Undo"></a>
+</p>
+
+<hr />
+<div id="outline-container-Undoing-Version-Control-Actions" class="outline-2">
+<h2 id="Undoing-Version-Control-Actions"><span class="section-number-2">1.</span> 30.1.8 Undoing Version Control Actions <a href="#Undoing-Version-Control-Actions">¶</a></h2>
+<div class="outline-text-2" id="text-Undoing-Version-Control-Actions">
+<dl class="org-dl">
+<dt>C-x v u</dt><dd>Revert the work file(s) in the current VC fileset to the last revision (<code>vc-revert</code>).</dd>
+</dl>
+
+<p>
+If you want to discard all the changes you have made to the current VC fileset, type C-x v u (<code>vc-revert</code>). This will ask you for confirmation before discarding the changes. If you agree, the fileset is reverted.
+</p>
+
+<p>
+If <code>vc-revert-show-diff</code> is non-<code>nil</code>, this command will show you a diff between the work file(s) and the revision from which you started editing. Afterwards, the diff buffer will either be killed (if this variable is <code>kill</code>), or the buffer will be buried (any other non-<code>nil</code> value). If you don't want C-x v u to show a diff, set this variable to <code>nil</code> (you can still view the diff directly with C-x v =; see <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>).
+</p>
+
+<p>
+On locking-based version control systems, C-x v u leaves files unlocked; you must lock again to resume editing. You can also use C-x v u to unlock a file if you lock it and then decide not to change it.
+</p>
+</div>
+</div>

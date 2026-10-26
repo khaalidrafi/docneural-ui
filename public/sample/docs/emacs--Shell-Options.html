@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Shell-Mode-Options">1. 40.7 Shell Mode Options ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Terminal-emulator.html">Emacs Terminal Emulator</a>   Previous: <a href="docs/emacs--Directory-Tracking.html">Directory Tracking</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Shell-Options"></a>
+</p>
+
+<hr />
+<div id="outline-container-Shell-Mode-Options" class="outline-2">
+<h2 id="Shell-Mode-Options"><span class="section-number-2">1.</span> 40.7 Shell Mode Options <a href="#Shell-Mode-Options">¶</a></h2>
+<div class="outline-text-2" id="text-Shell-Mode-Options">
+<p>
+If the variable <code>comint-scroll-to-bottom-on-input</code> is non-<code>nil</code>, insertion and yank commands scroll the selected window to the bottom before inserting. The default is <code>nil</code>.
+</p>
+
+<p>
+If <code>comint-scroll-show-maximum-output</code> is non-<code>nil</code>, then arrival of output when point is at the end tries to scroll the last line of text to the bottom line of the window, showing as much useful text as possible. (This mimics the scrolling behavior of most terminals.) The default is <code>t</code>.
+</p>
+
+<p>
+By setting <code>comint-move-point-for-output</code>, you can opt for having point jump to the end of the buffer whenever output arrives&#x2014;no matter where in the buffer point was before. If the value is <code>this</code>, point jumps in the selected window. If the value is <code>all</code>, point jumps in each window that shows the Comint buffer. If the value is <code>other</code>, point jumps in all nonselected windows that show the current buffer. The default value is <code>nil</code>, which means point does not jump to the end.
+</p>
+
+<p>
+If you set <code>comint-prompt-read-only</code>, the prompts in the Comint buffer are read-only.
+</p>
+
+<p>
+The variable <code>comint-input-ignoredups</code> controls whether successive identical inputs are stored in the input history. A non-<code>nil</code> value means to omit an input that is the same as the previous input. The default is <code>nil</code>, which means to store each input even if it is equal to the previous input.
+</p>
+
+<p>
+Three variables customize file name completion. The variable <code>comint-completion-addsuffix</code> controls whether completion inserts a space or a slash to indicate a fully completed file or directory name (non-<code>nil</code> means do insert a space or slash). <code>comint-completion-recexact</code>, if non-<code>nil</code>, directs TAB to choose the shortest possible completion if the usual Emacs completion algorithm cannot add even a single character. <code>comint-completion-autolist</code>, if non-<code>nil</code>, says to list all the possible completions whenever completion is not exact.
+</p>
+
+<p>
+Command completion normally considers only executable files. If you set <code>shell-completion-execonly</code> to <code>nil</code>, it considers nonexecutable files as well.
+</p>
+
+<p>
+The variable <code>shell-completion-fignore</code> specifies a list of file name extensions to ignore in Shell mode completion. The default setting is <code>nil</code>, but some users prefer <code>("~" "#" "%")</code> to ignore file names ending in ‘=~=', ‘=#=' or ‘=%='. Other related Comint modes use the variable <code>comint-completion-fignore</code> instead.
+</p>
+
+<p>
+Some implementation details of the shell command completion may also be found in the lisp documentation of the <code>shell-dynamic-complete-command</code> function.
+</p>
+
+<p>
+You can configure the behavior of ‘=pushd='. Variables control whether ‘=pushd=' behaves like ‘=cd=' if no argument is given (<code>shell-pushd-tohome</code>), pop rather than rotate with a numeric argument (<code>shell-pushd-dextract</code>), and only add directories to the directory stack if they are not already on it (<code>shell-pushd-dunique</code>). The values you choose should match the underlying shell, of course.
+</p>
+
+<p>
+Comint mode sets the <code>TERM</code> environment variable to a safe default value, but this value disables some useful features. For example, color is disabled in applications that use <code>TERM</code> to determine if color is supported. Therefore, Emacs provides an option <code>comint-terminfo-terminal</code> to let you choose a terminal with more advanced features, as defined in your system's terminfo database. Emacs will use this option as the value for <code>TERM</code> so long as <code>system-uses-terminfo</code> is non-<code>nil</code>.
+</p>
+
+<p>
+Both <code>comint-terminfo-terminal</code> and <code>system-uses-terminfo</code> can be declared as connection-local variables to adjust these options to match what a remote system expects (see <a href="docs/emacs--Connection-Variables.html">Per-Connection Local Variables</a>).
+</p>
+
+<hr />
+</div>
+</div>

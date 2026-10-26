@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fontsets-1">1. 24.14 Fontsets ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (10)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Defining-Fontsets.html">Defining Fontsets</a>   Previous: <a href="docs/emacs--Terminal-Coding.html">Coding Systems for Terminal I/O</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Fontsets"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fontsets-1" class="outline-2">
+<h2 id="Fontsets-1"><span class="section-number-2">1.</span> 24.14 Fontsets <a href="#Fontsets-1">¶</a></h2>
+<div class="outline-text-2" id="text-Fontsets-1">
+<p>
+A font typically defines shapes for a single alphabet or script. Therefore, displaying the entire range of scripts that Emacs supports requires a collection of many fonts. In Emacs, such a collection is called a <i>fontset</i>. A fontset is defined by a list of font specifications, each assigned to handle a range of character codes, and may fall back on another fontset for characters that are not covered by the fonts it specifies.
+</p>
+
+<p>
+Each fontset has a name, like a font. However, while fonts are stored in the system and the available font names are defined by the system, fontsets are defined within Emacs itself. Once you have defined a fontset, you can use it within Emacs by specifying its name, anywhere that you could use a single font. Of course, Emacs fontsets can use only the fonts that your system supports. If some characters appear on the screen as empty boxes or hex codes, this means that the fontset in use for them has no font for those characters. In this case, or if the characters are shown, but not as well as you would like, you may need to install extra fonts or modify the fontset to use specific fonts already installed on your system (see below). Your operating system may have optional fonts that you can install; or you can install the GNU Intlfonts package, which includes fonts for most supported scripts.
+</p>
+
+<p>
+Emacs creates three fontsets automatically: the <i>standard fontset</i>, the <i>startup fontset</i> and the <i>default fontset</i>. The default fontset is most likely to have fonts for a wide variety of non-ASCII characters, and is the default fallback for the other two fontsets, and if you set a default font rather than fontset. However, it does not specify font family names, so results can be somewhat random if you use it directly. You can specify a particular fontset by starting Emacs with the ‘=-fn=' option. For example,
+</p>
+
+<pre class="example" id="orgf1000ba">
+emacs -fn fontset-standard
+</pre>
+
+<p>
+You can also specify a fontset with the ‘=Font=' resource (see <a href="docs/emacs--X-Resources.html">X Options and Resources</a>).
+</p>
+
+<p>
+If no fontset is specified for use, then Emacs uses an ASCII font, with ‘=fontset-default=' as a fallback for characters the font does not cover. The standard fontset is only used if explicitly requested, despite its name.
+</p>
+
+<p>
+To show the information about a specific fontset, use the M-x describe-fontset command. It prompts for a fontset name, defaulting to the one used by the current frame, and then displays all the subranges of characters and the fonts assigned to them in that fontset. To see which fonts Emacs is using in a session started without a specific fontset (which is what happens normally), type fontset-default RET at the prompt, or just RET to describe the fontset used by the current frame.
+</p>
+
+<p>
+A fontset does not necessarily specify a font for every character code. If a fontset specifies no font for a certain character, or if it specifies a font that does not exist on your system, then it cannot display that character properly. It will display that character as a hex code or thin space or an empty box instead. (See <a href="docs/emacs--Text-Display.html">glyphless characters</a>, for details.) Or a fontset might specify a font for some range of characters, but you may not like their visual appearance. If this happens, you may wish to modify your fontset; see <a href="docs/emacs--Modifying-Fontsets.html">Modifying Fontsets</a>, for how to do that.
+</p>
+
+<hr />
+</div>
+</div>

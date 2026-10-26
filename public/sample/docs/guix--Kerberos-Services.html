@@ -1,0 +1,177 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Kerberos-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--LDAP-Services.html">LDAP Services</a>, Previous: <a href="docs/guix--Monitoring-Services.html">Monitoring Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Kerberos-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="kerberos-services"></a>11.10.18 Kerberos Services<br />
+<div class="outline-text-5" id="text-kerberos-services">
+<p>
+<a id="index-Kerberos"></a>
+The <code>(gnu services kerberos)</code> module provides services relating to the authentication protocol <i>Kerberos</i>.
+</p>
+
+<p>
+<a id="Krb5-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="krb5-service"></a>Krb5 Service<br />
+<div class="outline-text-5" id="text-krb5-service">
+<p>
+Programs using a Kerberos client library normally expect a configuration file in <code>/etc/krb5.conf</code>. This service generates such a file from a definition provided in the operating system declaration. It does not cause any daemon to be started.
+</p>
+
+<p>
+No “keytab” files are provided by this service&#x2014;you must explicitly create them. This service is known to work with the MIT client library, <code>mit-krb5</code>. Other implementations have not been tested.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: krb5-service-type </dt><dd>A service type for Kerberos 5 clients.</dd>
+</dl>
+
+<p>
+Here is an example of its use:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service krb5-service-type
+         (krb5-configuration
+          (default-realm "EXAMPLE.COM")
+          (allow-weak-crypto? #t)
+          (realms (list
+                   (krb5-realm
+                    (name "EXAMPLE.COM")
+                    (admin-server "groucho.example.com")
+                    (kdc "karl.example.com"))
+                   (krb5-realm
+                    (name "ARGRX.EDU")
+                    (admin-server "kerb-admin.argrx.edu")
+                    (kdc "keys.argrx.edu"))))))
+</pre>
+</div>
+
+<p>
+This example provides a Kerberos 5 client configuration which:
+</p>
+
+<ul class="org-ul">
+<li>Recognizes two realms, <i>viz:</i> “EXAMPLE.COM” and “ARGRX.EDU”, both of which have distinct administration servers and key distribution centers;</li>
+<li>Will default to the realm “EXAMPLE.COM” if the realm is not explicitly specified by clients;</li>
+<li>Accepts services which only support encryption types known to be weak.</li>
+</ul>
+
+<p>
+The <code>krb5-realm</code> and <code>krb5-configuration</code> types have many fields. Only the most commonly used ones are described here. For a full list, and more detailed explanation of each, see the MIT <a href="https://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html">krb5.conf</a> documentation.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: krb5-realm </dt><dd><a id="index-realm_002c-kerberos"></a>
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>This field is a string identifying the name of the realm. A common convention is to use the fully qualified DNS name of your organization, converted to upper case.</dd>
+
+<dt><code>admin-server</code></dt><dd>This field is a string identifying the host where the administration server is running.</dd>
+
+<dt><code>kdc</code></dt><dd>This field is a string identifying the key distribution center for the realm.</dd>
+</dl></dd>
+
+<dt>Data Type: krb5-configuration  :: - <code>allow-weak-crypto?</code> (default: <code>#f</code>)</dt><dd>If this flag is <code>#t</code> then services which only offer encryption algorithms known to be weak will be accepted.
+
+<dl class="org-dl">
+<dt><code>default-realm</code> (default: <code>#f</code>)</dt><dd>This field should be a string identifying the default Kerberos realm for the client. You should set this field to the name of your Kerberos realm. If this value is <code>#f</code> then a realm must be specified with every Kerberos principal when invoking programs such as <code>kinit</code>.</dd>
+
+<dt><code>realms</code></dt><dd>This should be a non-empty list of <code>krb5-realm</code> objects, which clients may access. Normally, one of them will have a <code>name</code> field matching the <code>default-realm</code> field.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="PAM-krb5-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="pam-krb5-service"></a>PAM krb5 Service<br />
+<div class="outline-text-5" id="text-pam-krb5-service">
+<p>
+<a id="index-pam_002dkrb5"></a>
+The <code>pam-krb5</code> service allows for login authentication and password management via Kerberos. You will need this service if you want PAM enabled applications to authenticate users using Kerberos.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: pam-krb5-service-type </dt><dd>A service type for the Kerberos 5 PAM module.</dd>
+
+<dt>Data Type: pam-krb5-configuration </dt><dd>Data type representing the configuration of the Kerberos 5 PAM module. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>pam-krb5</code> (default: <code>pam-krb5</code>)</dt><dd>The pam-krb5 package to use.</dd>
+
+<dt><code>minimum-uid</code> (default: <code>1000</code>)</dt><dd>The smallest user ID for which Kerberos authentications should be attempted. Local accounts with lower values will silently fail to authenticate.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--LDAP-Services.html">LDAP Services</a>, Previous: <a href="docs/guix--Monitoring-Services.html">Monitoring Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

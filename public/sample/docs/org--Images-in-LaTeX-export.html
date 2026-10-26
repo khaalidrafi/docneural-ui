@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Images-in-LaTeX-export-1">1. 13.10.6 Images in LaTeX export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Images-in-LaTeX-export"></a>
+Next: <a href="docs/org--Plain-lists-in-LaTeX-export.html">Plain lists in LaTeX export</a>, Previous: <a href="docs/org--Tables-in-LaTeX-export.html">Tables in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Images-in-LaTeX-export-1" class="outline-2">
+<h2 id="Images-in-LaTeX-export-1"><span class="section-number-2">1.</span> 13.10.6 Images in LaTeX export <a href="#Images-in-LaTeX-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Images-in-LaTeX-export-1">
+<p>
+The LaTeX export backend processes image links in Org files that do not have descriptions, such as these links ‘=<img src="img.jpg" alt="img.jpg" />=' or ‘=<img src="./img.jpg" alt="img.jpg" />=', as direct image insertions in the final PDF output. In the PDF, they are no longer links, but actual images embedded on the page. The LaTeX export backend uses ‘=\includegraphics=' macro to insert the image. But for TikZ (<a href="https://sourceforge.net/projects/pgf/">https://sourceforge.net/projects/pgf/</a>) images, the backend uses an <code>\input</code> macro wrapped within a <code>tikzpicture</code> environment.
+</p>
+
+<p>
+For specifying image ‘=:width=', ‘=:height=', ‘=:scale=' and other ‘=:options=', use this syntax:
+</p>
+
+<pre class="example" id="org1fbad2f">
+#+ATTR_LATEX: :width 5cm :options angle=90
+[[./img/sed-hr4049.pdf]]
+</pre>
+
+<p>
+A ‘=:scale=' attribute overrides both ‘=:width=' and ‘=:height=' attributes.
+</p>
+
+<p>
+For custom commands for captions, use the ‘=:caption=' attribute. It overrides the default ‘=#+CAPTION=' value:
+</p>
+
+<pre class="example" id="org5b7a64b">
+#+ATTR_LATEX: :caption \bicaption{HeadingA}{HeadingB}
+[[./img/sed-hr4049.pdf]]
+</pre>
+
+<p>
+When captions follow the method as described in <a href="docs/org--Captions.html">Captions</a>, the LaTeX export backend wraps the picture in a floating ‘=figure=' environment. To float an image without specifying a caption, set the ‘=:float=' attribute to one of the following:
+</p>
+
+<dl class="org-dl">
+<dt>‘=t='</dt><dd>For a default ‘=figure=' environment.</dd>
+
+<dt>‘=multicolumn='</dt><dd>To span the image across multiple columns of a page; the backend wraps the image in a ‘=figure*=' environment.</dd>
+
+<dt>‘=wrap='</dt><dd>For text to flow around the image on the right; the figure occupies the left half of the page.</dd>
+
+<dt>‘=sideways='</dt><dd>For a new page with the image sideways, rotated ninety degrees, in a ‘=sidewaysfigure=' environment; overrides ‘=:placement=' setting.</dd>
+
+<dt>‘=nil='</dt><dd>To avoid a ‘=:float=' even if using a caption.</dd>
+
+<dt>Any arbitrary value</dt><dd>For example, a user-defined float type with the ‘=float=' LaTeX package.</dd>
+</dl>
+
+<p>
+Use the ‘=placement=' attribute to modify a floating environment's placement.
+</p>
+
+<pre class="example" id="orga65e047">
+#+ATTR_LATEX: :float wrap :width 0.38\textwidth :placement {r}{0.4\textwidth}
+[[./img/hst.png]]
+</pre>
+
+<p>
+The LaTeX export backend centers all images by default. Setting ‘=:center=' to ‘=nil=' disables centering. To disable centering globally, set <code>org-latex-images-centered</code> to ‘=nil='.
+</p>
+
+<p>
+Set the ‘=:comment-include=' attribute to non-<code>nil</code> value for the LaTeX export backend to comment out the ‘=\includegraphics=' macro.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Plain-lists-in-LaTeX-export.html">Plain lists in LaTeX export</a>, Previous: <a href="docs/org--Tables-in-LaTeX-export.html">Tables in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

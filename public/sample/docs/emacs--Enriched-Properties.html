@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Setting-Other-Text-Properties">1. 27.14.7 Setting Other Text Properties ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Enriched-Justification.html">Justification in Enriched Text</a>   Up: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>
+</p>
+
+<p>
+<a id="Enriched-Properties"></a>
+</p>
+
+<hr />
+<div id="outline-container-Setting-Other-Text-Properties" class="outline-2">
+<h2 id="Setting-Other-Text-Properties"><span class="section-number-2">1.</span> 27.14.7 Setting Other Text Properties <a href="#Setting-Other-Text-Properties">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-Other-Text-Properties">
+<p>
+The Special Properties submenu of Text Properties has entries for adding or removing four other text properties: <code>read-only</code>, (which disallows alteration of the text), <code>invisible</code> (which hides text), <code>intangible</code> (which disallows moving point within the text), and <code>charset</code> (which is important for selecting a proper font to display a character). The ‘=Remove Special=' menu item removes all of these special properties from the text in the region.
+</p>
+
+<p>
+The <code>invisible</code> and <code>intangible</code> properties are not saved.
+</p>
+
+<p>
+Enriched mode also supports saving and restoring <code>display</code> properties (see <a href="../elisp_html/Display-Property.html#Display-Property">Display Property</a> in the Emacs Lisp Reference Manual), which affect how text is displayed on the screen, and also allow displaying images and strings that come from sources other than buffer text. The <code>display</code> properties also support execution of arbitrary Lisp forms as part of processing the property for display, thus providing a means to dynamically tailor the display to some conditions that can only be known at display time. Since execution of arbitrary Lisp opens Emacs to potential attacks, especially when the source of enriched text is outside of Emacs or even outside of your system (e.g., if it was received in an email message), such execution is by default disabled in Enriched mode. You can enable it by customizing the variable <code>enriched-allow-eval-in-display-props</code> to a non-<code>nil</code> value.
+</p>
+</div>
+</div>

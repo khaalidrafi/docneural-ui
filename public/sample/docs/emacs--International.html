@@ -1,0 +1,74 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#International-Character-Set-Support">1. 24 International Character Set Support ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Modes.html">Major and Minor Modes</a>   Previous: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="International"></a>
+</p>
+
+<hr />
+<div id="outline-container-International-Character-Set-Support" class="outline-2">
+<h2 id="International-Character-Set-Support"><span class="section-number-2">1.</span> 24 International Character Set Support <a href="#International-Character-Set-Support">¶</a></h2>
+<div class="outline-text-2" id="text-International-Character-Set-Support">
+<p>
+Emacs supports a wide variety of international character sets, including European and Vietnamese variants of the Latin alphabet, as well as Arabic scripts, Brahmic scripts (for languages such as Bengali, Hindi, and Thai), Cyrillic, Ethiopic, Georgian, Greek, Han (for Chinese and Japanese), Hangul (for Korean), Hebrew and IPA. Emacs also supports various encodings of these characters that are used by other internationalized software, such as word processors and mailers.
+</p>
+
+<p>
+Emacs allows editing text with international characters by supporting all the related activities:
+</p>
+
+<ul class="org-ul">
+<li>You can visit files with non-ASCII characters, save non-ASCII text, and pass non-ASCII text between Emacs and programs it invokes (such as compilers, spell-checkers, and mailers). Setting your language environment (see <a href="docs/emacs--Language-Environments.html">Language Environments</a>) takes care of setting up the coding systems and other options for a specific language or culture. Alternatively, you can specify how Emacs should encode or decode text for each command; see <a href="docs/emacs--Text-Coding.html">Specifying a Coding System for File Text</a>.</li>
+
+<li>You can display non-ASCII characters encoded by the various scripts. This works by using appropriate fonts on graphics displays (see <a href="docs/emacs--Defining-Fontsets.html">Defining Fontsets</a>), and by sending special codes to text displays (see <a href="docs/emacs--Terminal-Coding.html">Coding Systems for Terminal I/O</a>). If some characters are displayed incorrectly, refer to <a href="docs/emacs--Undisplayable-Characters.html">Undisplayable Characters</a>, which describes possible problems and explains how to solve them.</li>
+
+<li>Characters from scripts whose natural ordering of text is from right to left are reordered for display (see <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>). These scripts include Arabic, Hebrew, Syriac, Thaana, and a few others.</li>
+
+<li><p>
+You can insert non-ASCII characters or search for them. To do that, you can specify an Emacs input method (see <a href="docs/emacs--Select-Input-Method.html">Selecting an Input Method</a>) suitable for your language, or use the default input method set up when you choose your language environment. If your keyboard can produce non-ASCII characters, you can select an appropriate keyboard coding system (see <a href="docs/emacs--Terminal-Coding.html">Coding Systems for Terminal I/O</a>), and Emacs will accept those characters. On graphical displays, modern systems typically provide their native input methods, and Latin-1 characters can also be input by using the C-x 8 prefix, see <a href="docs/emacs--Unibyte-Mode.html">Unibyte Editing Mode</a>.
+</p>
+
+<p>
+With the X Window System, your locale should be set to an appropriate value to make sure Emacs interprets keyboard input correctly; see <a href="docs/emacs--Language-Environments.html">locales</a>, and <a href="docs/emacs--X-Coding.html">Coding Systems for X Keyboard Input</a>.
+</p></li>
+</ul>
+
+<p>
+The rest of this chapter describes these issues in detail.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--International-Chars.html">Introduction to International Character Sets</a></li>
+<li><a href="docs/emacs--Language-Environments.html">Language Environments</a></li>
+<li><a href="docs/emacs--Input-Methods.html">Input Methods</a></li>
+<li><a href="docs/emacs--Select-Input-Method.html">Selecting an Input Method</a></li>
+<li><a href="docs/emacs--Coding-Systems.html">Coding Systems</a></li>
+<li><a href="docs/emacs--Recognize-Coding.html">Recognizing Coding Systems</a></li>
+<li><a href="docs/emacs--Specify-Coding.html">Specifying a File's Coding System</a></li>
+<li><a href="docs/emacs--Output-Coding.html">Choosing Coding Systems for Output</a></li>
+<li><a href="docs/emacs--Text-Coding.html">Specifying a Coding System for File Text</a></li>
+<li><a href="docs/emacs--Communication-Coding.html">Coding Systems for Interprocess Communication</a></li>
+<li><a href="docs/emacs--File-Name-Coding.html">Coding Systems for File Names</a></li>
+<li><a href="docs/emacs--X-Coding.html">Coding Systems for X Keyboard Input</a></li>
+<li><a href="docs/emacs--Terminal-Coding.html">Coding Systems for Terminal I/O</a></li>
+<li><a href="docs/emacs--Fontsets.html">Fontsets</a></li>
+<li><a href="docs/emacs--Defining-Fontsets.html">Defining Fontsets</a></li>
+<li><a href="docs/emacs--Modifying-Fontsets.html">Modifying Fontsets</a></li>
+<li><a href="docs/emacs--Undisplayable-Characters.html">Undisplayable Characters</a></li>
+<li><a href="docs/emacs--Unibyte-Mode.html">Unibyte Editing Mode</a></li>
+<li><a href="docs/emacs--Charsets.html">Charsets</a></li>
+<li><a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Invoking-emacsclient-1">1. 41.2 Invoking <code>emacsclient</code> ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--emacsclient-Options.html">emacsclient Options</a>   Previous: <a href="docs/emacs--TCP-Emacs-server.html">TCP Emacs server</a>   Up: <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>
+</p>
+
+<p>
+<a id="Invoking-emacsclient"></a>
+</p>
+
+<hr />
+<div id="outline-container-Invoking-emacsclient-1" class="outline-2">
+<h2 id="Invoking-emacsclient-1"><span class="section-number-2">1.</span> 41.2 Invoking <code>emacsclient</code> <a href="#Invoking-emacsclient-1">¶</a></h2>
+<div class="outline-text-2" id="text-Invoking-emacsclient-1">
+<p>
+The simplest way to use the <code>emacsclient</code> program is to run the shell command ‘=emacsclient <code>=file</code>', where <code>file</code> is a file name. This connects to an Emacs server, and tells that Emacs process to visit <code>file</code> in one of its existing frames&#x2014;either a graphical frame, or one in a text terminal (see <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>). You can then select that frame to begin editing.
+</p>
+
+<p>
+If there is no Emacs server, the <code>emacsclient</code> program halts with an error message (you can prevent this from happening by using the ‘=&#x2013;alternate-editor=""<code>' option to =emacsclient</code>, see <a href="docs/emacs--emacsclient-Options.html"><code>emacsclient</code> Options</a>). If the Emacs process has no existing frame&#x2014;which can happen if it was started as a daemon (see <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>)&#x2014;then Emacs opens a frame on the terminal in which you called <code>emacsclient</code>.
+</p>
+
+<p>
+You can also force <code>emacsclient</code> to open a new frame on a graphical display using the ‘=-c=' option, or on a text terminal using the ‘=-t=' option. See <a href="docs/emacs--emacsclient-Options.html"><code>emacsclient</code> Options</a>.
+</p>
+
+<p>
+If you are running on a single text terminal, you can switch between <code>emacsclient</code>'s shell and the Emacs server using one of two methods: (i) run the Emacs server and <code>emacsclient</code> on different virtual terminals, and switch to the Emacs server's virtual terminal after calling <code>emacsclient</code>; or (ii) call <code>emacsclient</code> from within the Emacs server itself, using Shell mode (see <a href="docs/emacs--Interactive-Shell.html">Interactive Subshell</a>) or Term mode (see <a href="docs/emacs--Term-Mode.html">Term Mode</a>); <code>emacsclient</code> blocks only the subshell under Emacs, and you can still use Emacs to edit the file.
+</p>
+
+<p>
+When you finish editing <code>file</code> in the Emacs server, type C-x # (<code>server-edit</code>) in its buffer. This saves the file and sends a message back to the <code>emacsclient</code> program, telling it to exit. Programs that use <code>EDITOR</code> usually wait for the editor&#x2014;in this case <code>emacsclient</code>&#x2014;to exit before doing something else.
+</p>
+
+<p>
+If you want to abandon the edit instead, use the M-x server-edit-abort command. This sends a message back to the <code>emacsclient</code> program, telling it to exit with abnormal exit status, and doesn't save any buffers.
+</p>
+
+<p>
+You can also call <code>emacsclient</code> with multiple file name arguments: ‘=emacsclient <code>=file1=</code> <code>=file2=</code> &#x2026;=' tells the Emacs server to visit <code>file1</code>, <code>file2</code>, and so forth. Emacs selects the buffer visiting <code>file1</code>, and buries the other buffers at the bottom of the buffer list (see <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>). The <code>emacsclient</code> program exits once all the specified files are finished (i.e., once you have typed C-x # in each server buffer).
+</p>
+
+<p>
+Finishing with a server buffer also kills the buffer, unless it already existed in the Emacs session before the server was asked to create it. However, if you set <code>server-kill-new-buffers</code> to <code>nil</code>, then a different criterion is used: finishing with a server buffer kills it if the file name matches the regular expression <code>server-temp-file-regexp</code>. This is set up to distinguish certain temporary files.
+</p>
+
+<p>
+Each C-x # checks for other pending external requests to edit various files, and selects the next such file. You can switch to a server buffer manually if you wish; you don't have to arrive at it with C-x #. But C-x # is the way to tell <code>emacsclient</code> that you are finished.
+</p>
+
+<p>
+If you set the value of the variable <code>server-window</code> to a window or a frame, C-x # always displays the next server buffer in that window or in that frame.
+</p>
+
+<p>
+When <code>emacsclient</code> connects, the server will normally output a message that says how to exit the client frame. If <code>server-client-instructions</code> is set to <code>nil</code>, this message is inhibited.
+</p>
+
+<hr />
+</div>
+</div>

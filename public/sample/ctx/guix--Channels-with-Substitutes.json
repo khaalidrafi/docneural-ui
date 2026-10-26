@@ -1,0 +1,1 @@
+{"guix--Channels-with-Substitutes>guix--Substitutes":"When running guix pull, Guix will first compile the definitions of every available package. This is an expensive operation for which substitutes (see","guix--Channels>guix--Channels-with-Substitutes":"- Channels with Substitutes","guix--index>guix--Channels-with-Substitutes":"- 6.6 Channels with Substitutes"}

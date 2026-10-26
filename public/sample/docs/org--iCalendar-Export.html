@@ -1,0 +1,120 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#iCalendar-Export-1">0.0.1. 13.15 iCalendar Export ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org537da50">1. Meeting at location with multi-line address</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="iCalendar-Export"></a>
+Next: <a href="docs/org--Other-Built_002din-Backends.html">Other Built-in Backends</a>, Previous: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-iCalendar-Export-1" class="outline-4">
+<h4 id="iCalendar-Export-1"><span class="section-number-4">0.0.1.</span> 13.15 iCalendar Export <a href="#iCalendar-Export-1">¶</a></h4>
+<div class="outline-text-4" id="text-iCalendar-Export-1">
+<p>
+A large part of Org mode's interoperability success is its ability to easily export to or import from external applications. The iCalendar export backend takes calendar data from Org files and exports to the standard iCalendar format.
+</p>
+
+<p>
+By default, iCalendar export only includes headings that contain active timestamps or diary sexps.
+</p>
+
+<p>
+If a timestamp contains a time, but doesn't have an explicit end time (i.e. time range), then by default the exported event will have a duration of 2 hours, but this can be overridden with <code>org-agenda-default-appointment-duration</code>.
+</p>
+
+<p>
+The iCalendar export backend can also incorporate TODO entries based on the configuration of the <code>org-icalendar-include-todo</code> variable. The backend exports plain timestamps as ‘=VEVENT=', TODO items as ‘=VTODO=', and also create events from deadlines that are in non-TODO items.
+</p>
+
+<p>
+The backend uses the deadlines and scheduling dates in Org TODO items for setting the start and due dates for the iCalendar TODO entry. Consult the <code>org-icalendar-use-deadline</code>, <code>org-icalendar-use-scheduled</code>, and <code>org-icalendar-todo-unscheduled-start</code> variables for more details.
+</p>
+
+<p>
+For tags on the headline, the iCalendar export backend makes them into iCalendar categories. To tweak the inheritance of tags and TODO states, configure the variable <code>org-icalendar-categories</code>. To assign clock alarms based on time, configure the <code>org-icalendar-alarm-time</code> variable.
+</p>
+
+<p>
+The iCalendar format standard requires globally unique identifier&#x2014;or UID&#x2014;for each entry. The iCalendar export backend creates UIDs during export. To save a copy of the UID in the Org file set the variable <code>org-icalendar-store-UID</code>. The backend looks for the ‘=ID=' property of the entry for reusing the same UID for subsequent exports.
+</p>
+
+<p>
+Since a single Org entry can result in multiple iCalendar entries&#x2014;timestamp, deadline, scheduled item, or TODO item&#x2014;Org adds prefixes to the UID, depending on which part of the Org entry triggered the creation of the iCalendar entry. Prefixing ensures UIDs remains unique, yet enable synchronization programs trace the connections.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002de-c-f"></a>C-c C-e c f (<code>org-icalendar-export-to-ics</code>) </dt><dd>Create iCalendar entries from the current Org buffer and store them in the same directory, using a file extension ‘=.ics='.</dd>
+
+<dt><a id="index-C_002dc-C_002de-c-a"></a>C-c C-e c a (<code>org-icalendar-export-agenda-files</code>) </dt><dd>Create iCalendar entries from Org files in <code>org-agenda-files</code> and store in a separate iCalendar file for each Org file.</dd>
+
+<dt><a id="index-C_002dc-C_002de-c-c"></a>C-c C-e c c (<code>org-icalendar-combine-agenda-files</code>) </dt><dd>Create a combined iCalendar file from Org files in <code>org-agenda-files</code> and write it to <code>org-icalendar-combined-agenda-file</code> file name.</dd>
+</dl>
+
+<p>
+The iCalendar export backend includes ‘=SUMMARY=', ‘=DESCRIPTION=', ‘=LOCATION=', ‘=TIMEZONE=' and ‘=CLASS=' properties from the Org entries when exporting. To force the backend to inherit the ‘=LOCATION=', ‘=TIMEZONE=' and ‘=CLASS=' properties, configure the <code>org-use-property-inheritance</code> variable.
+</p>
+
+<p>
+‘=SUMMARY=', ‘=LOCATION=', and ‘=DESCRIPTION=' properties can define multi-line summary, location, or description using ‘=&lt;PROPERTY&gt;+=' syntax (see <a href="docs/org--Property-Syntax.html">Property Syntax</a>):
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org537da50" class="outline-2">
+<h2 id="org537da50"><span class="section-number-2">1.</span> Meeting at location with multi-line address</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<span class="timestamp-wrapper"><span class="timestamp">&lt;2024-01-08 Mon 14:20-15:00&gt;</span></span>
+#+end<sub>src</sub>
+</p>
+
+<p>
+When Org entries do not have ‘=SUMMARY=', ‘=DESCRIPTION=', ‘=LOCATION=' and ‘=CLASS=' properties, the iCalendar export backend derives the summary from the headline, and derives the description from the body of the Org item. The <code>org-icalendar-include-body</code> variable limits the maximum number of characters of the content are turned into its description.
+</p>
+
+<p>
+The ‘=TIMEZONE=' property can be used to specify a per-entry time zone, and is applied to any entry with timestamp information. Time zones should be specified as per the IANA time zone database format, e.g., ‘=Asia/Almaty='. Alternately, the property value can be ‘=UTC=', to force UTC time for this entry only.
+</p>
+
+<p>
+The ‘=CLASS=' property can be used to specify a per-entry visibility class or access restrictions, and is applied to any entry with class information. The iCalendar standard defines three visibility classes:
+</p>
+
+<dl class="org-dl">
+<dt>‘=PUBLIC='</dt><dd>The entry is publicly visible (this is the default).</dd>
+
+<dt>‘=CONFIDENTIAL='</dt><dd>Only a limited group of clients gets access to the event.</dd>
+
+<dt>‘=PRIVATE='</dt><dd>The entry can be retrieved only by its owner.</dd>
+</dl>
+
+<p>
+The server should treat unknown class properties the same as ‘=PRIVATE='.
+</p>
+
+<p>
+The exported iCalendar file can advise clients how often to check for updates. This duration can be set globally with the <code>org-icalendar-ttl</code> variable, or on a per-document basis with the ‘=ICAL-TTL=' keyword. This option should be set using the iCalendar notation for time durations; consult the docstring of <code>org-icalendar-ttl</code> for more details.
+</p>
+
+<p>
+Exporting to iCalendar format depends in large part on the capabilities of the destination application. Some are more lenient than others. Consult the Org mode FAQ for advice on specific applications.
+</p>
+
+<hr />
+</div>
+</div>

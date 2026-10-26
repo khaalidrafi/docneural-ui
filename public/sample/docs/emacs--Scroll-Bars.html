@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Scroll-Bars-1">1. 23.12 Scroll Bars ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Window-Dividers.html">Window Dividers</a>   Previous: <a href="docs/emacs--Frame-Parameters.html">Frame Parameters</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Scroll-Bars"></a>
+</p>
+
+<hr />
+<div id="outline-container-Scroll-Bars-1" class="outline-2">
+<h2 id="Scroll-Bars-1"><span class="section-number-2">1.</span> 23.12 Scroll Bars <a href="#Scroll-Bars-1">¶</a></h2>
+<div class="outline-text-2" id="text-Scroll-Bars-1">
+<p>
+On graphical displays, there is a <i>vertical scroll bar</i> on the side of each Emacs window. Clicking mouse-1 on the scroll bar's up and down buttons scrolls the window by one line at a time (but some toolkits allow you to customize the scroll bars to not have those buttons). Clicking mouse-1 above or below the scroll bar's inner box scrolls the window by nearly the entire height of the window, like M-v and C-v respectively (see <a href="docs/emacs--Moving-Point.html">Changing the Location of Point</a>). (This, too, can behave differently with some toolkits.) Dragging the inner box scrolls continuously.
+</p>
+
+<p>
+If Emacs is compiled on the X Window System without X toolkit support, the scroll bar behaves differently. Clicking mouse-1 anywhere on the scroll bar scrolls forward like C-v, while mouse-3 scrolls backward like M-v. Clicking mouse-2 in the scroll bar lets you drag the inner box up and down.
+</p>
+
+<p>
+To toggle the use of vertical scroll bars, type M-x scroll-bar-mode. This command applies to all frames, including frames yet to be created. To toggle vertical scroll bars for just the selected frame, use the command M-x toggle-scroll-bar.
+</p>
+
+<p>
+To control the use of vertical scroll bars at startup, customize the variable <code>scroll-bar-mode</code> (see <a href="docs/emacs--Customization.html">Customization</a>). Its value should be either <code>right</code> (put scroll bars on the right side of windows), <code>left</code> (put them on the left), or <code>nil</code> (disable vertical scroll bars). By default, Emacs puts scroll bars on the right if it was compiled with GTK+ support on the X Window System, and on MS-Windows or macOS; Emacs puts scroll bars on the left if compiled on the X Window System without GTK+ support (following the old convention for X applications).
+</p>
+
+<p>
+You can also use the X resource ‘=verticalScrollBars=' to enable or disable the scroll bars (see <a href="docs/emacs--Resources.html">X Resources</a>). To control the scroll bar width, change the <code>scroll-bar-width</code> frame parameter (see <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in The Emacs Lisp Reference Manual).
+</p>
+
+<p>
+If you're using Emacs on X (with GTK+ or Motif), you can customize the variable <code>scroll-bar-adjust-thumb-portion</code> to control <i>overscrolling</i> of the scroll bar, i.e., dragging the thumb down even when the end of the buffer is visible. If its value is non-<code>nil</code>, the scroll bar can be dragged downwards even if the end of the buffer is shown; if <code>nil</code>, the thumb will be at the bottom when the end of the buffer is shown. You cannot over-scroll when the entire buffer is visible.
+</p>
+
+<p>
+The visual appearance of the scroll bars is controlled by the <code>scroll-bar</code> face. (Some toolkits, such as GTK+ and MS-Windows, ignore this face; the scroll-bar appearance there can only be customized system-wide, for GTK+ see <a href="docs/emacs--GTK-resources.html">GTK+ resources</a>).
+</p>
+
+<p>
+On graphical frames, vertical scroll bars implicitly serve to separate side-by-side windows visually. When vertical scroll bars are disabled, Emacs by default separates such windows with the help of a one-pixel wide <i>vertical border</i>. That border occupies the first pixel column of the window on the right and may thus overdraw the leftmost pixels of any glyph displayed there. If these pixels convey important information, you can make them visible by enabling window dividers, see <a href="docs/emacs--Window-Dividers.html">Window Dividers</a>. To replicate the look of vertical borders, set the <code>right-divider-width</code> parameter of frames to one and have the <code>window-divider</code> face inherit from that of <code>vertical-border</code>, <a href="../elisp_html/Window-Dividers.html#Window-Dividers">Window Dividers</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+On graphical displays with toolkit support, Emacs may also supply a <i>horizontal scroll bar</i> on the bottom of each window. Clicking mouse-1 on that scroll bar's left and right buttons scrolls the window horizontally by one column at a time. (Note that some toolkits allow customizations of the scroll bar that cause these buttons not to be shown.) Clicking mouse-1 on the left or right of the scroll bar's inner box scrolls the window by four columns. Dragging the inner box scrolls the window continuously.
+</p>
+
+<p>
+Note that such horizontal scrolling can make the window's position of point disappear on the left or the right. Typing a character to insert text or moving point with a keyboard command will usually bring it back into view.
+</p>
+
+<p>
+To toggle the use of horizontal scroll bars, type M-x horizontal-scroll-bar-mode. This command applies to all frames, including frames yet to be created. To toggle horizontal scroll bars for just the selected frame, use the command M-x toggle-horizontal-scroll-bar.
+</p>
+
+<p>
+To control the use of horizontal scroll bars at startup, customize the variable <code>horizontal-scroll-bar-mode</code>.
+</p>
+
+<p>
+You can also use the X resource ‘=horizontalScrollBars=' to enable or disable horizontal scroll bars (see <a href="docs/emacs--Resources.html">X Resources</a>). To control the scroll bar height, change the <code>scroll-bar-height</code> frame parameter (see <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in The Emacs Lisp Reference Manual).
+</p>
+
+<hr />
+</div>
+</div>

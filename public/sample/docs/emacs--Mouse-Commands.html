@@ -1,0 +1,106 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Commands-for-Editing">1. 23.1 Mouse Commands for Editing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Word-and-Line-Mouse.html">Mouse Commands for Words and Lines</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Mouse-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Commands-for-Editing" class="outline-2">
+<h2 id="Mouse-Commands-for-Editing"><span class="section-number-2">1.</span> 23.1 Mouse Commands for Editing <a href="#Mouse-Commands-for-Editing">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Commands-for-Editing">
+<dl class="org-dl">
+<dt>mouse-1</dt><dd>Move point to where you click (<code>mouse-set-point</code>).</dd>
+
+<dt>Drag-mouse-1</dt><dd>Activate the region around the text selected by dragging, and put the text in the primary selection (<code>mouse-set-region</code>).</dd>
+
+<dt>mouse-2</dt><dd>Move point to where you click, and insert the contents of the primary selection there (<code>mouse-yank-primary</code>).</dd>
+
+<dt>mouse-3</dt><dd>If the region is active, move the nearer end of the region to the click position; otherwise, set mark at the current value of point and point at the click position. Save the resulting region in the kill ring; on a second click, kill it (<code>mouse-save-then-kill</code>).</dd>
+
+<dt>C-M-mouse-1</dt><dd>Activate a rectangular region around the text selected by dragging. See <a href="docs/emacs--Rectangles.html">Rectangles</a>.</dd>
+</dl>
+
+<p>
+The most basic mouse command is <code>mouse-set-point</code>, which is invoked by clicking with the left mouse button, mouse-1, in the text area of a window. This moves point to the position where you clicked. If that window was not the selected window, it becomes the selected window. You can also activate a region by double-clicking mouse-1 (see <a href="docs/emacs--Word-and-Line-Mouse.html">Mouse Commands for Words and Lines</a>).
+</p>
+
+<p>
+Normally, if the frame you clicked in was not the selected frame, it is made the selected frame, in addition to selecting the window and setting the cursor. On the X Window System, you can change this by setting the variable <code>x-mouse-click-focus-ignore-position</code> to <code>t</code>. In that case, the initial click on an unselected frame just selects the frame, without doing anything else; clicking again selects the window and sets the cursor position.
+</p>
+
+<p>
+Holding down mouse-1 and dragging the mouse over a stretch of text activates the region around that text (<code>mouse-set-region</code>), placing the mark where you started holding down the mouse button, and point where you release it (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>). In addition, the text in the region becomes the primary selection (see <a href="docs/emacs--Primary-Selection.html">Cut and Paste with Other Window Applications</a>).
+</p>
+
+<p>
+If you change the variable <code>mouse-drag-copy-region</code> to a non-<code>nil</code> value, dragging the mouse over a stretch of text also adds the text to the kill ring. The default is <code>nil</code>.
+</p>
+
+<p>
+If this variable is <code>non-empty</code>, only copy to the kill ring if the region is non-empty. For instance, if you mouse drag an area that is less than a half a character, you'd normally get the empty string in your kill ring, but with <code>non-empty</code>, this short mouse drag won't affect the kill ring.
+</p>
+
+<p>
+If you move the mouse off the top or bottom of the window while dragging, the window scrolls at a steady rate until you move the mouse back into the window. This way, you can select regions that don't fit entirely on the screen. The number of lines scrolled per step depends on how far away from the window edge the mouse has gone; the variable <code>mouse-scroll-min-lines</code> specifies a minimum step size.
+</p>
+
+<p>
+If you enable the option <code>mouse-drag-mode-line-buffer</code> and dragging files is supported by the window system, then dragging the mouse on the buffer name portion of the mode line will drag that buffer's file to another program or frame.
+</p>
+
+<p>
+Clicking with the middle mouse button, mouse-2, moves point to the position where you clicked and inserts the contents of the primary selection (<code>mouse-yank-primary</code>). See <a href="docs/emacs--Primary-Selection.html">Cut and Paste with Other Window Applications</a>. This behavior is consistent with other X applications. Alternatively, you can rebind mouse-2 to <code>mouse-yank-at-click</code>, which performs a yank at the position you click.
+</p>
+
+<p>
+If you change the variable <code>mouse-yank-at-point</code> to a non-<code>nil</code> value, mouse-2 does not move point; it inserts the text at point, regardless of where you clicked or even which of the frame's windows you clicked on. This variable affects both <code>mouse-yank-primary</code> and <code>mouse-yank-at-click</code>.
+</p>
+
+<p>
+Clicking with the right mouse button, mouse-3, runs the command <code>mouse-save-then-kill</code>. This performs several actions depending on where you click and the status of the region:
+</p>
+
+<ul class="org-ul">
+<li>If no region is active, clicking mouse-3 activates the region, placing the mark where point was and point at the clicked position.</li>
+<li>If a region is active, clicking mouse-3 adjusts the nearer end of the region by moving it to the clicked position. The adjusted region's text is copied to the kill ring; if the text in the original region was already on the kill ring, it replaces it there.</li>
+<li>If you originally specified the region using a double or triple mouse-1, so that the region is defined to consist of entire words or lines (see <a href="docs/emacs--Word-and-Line-Mouse.html">Mouse Commands for Words and Lines</a>), then adjusting the region with mouse-3 also proceeds by entire words or lines.</li>
+<li>If you use mouse-3 a second time consecutively, at the same place, that kills the region already selected. Thus, the simplest way to kill text with the mouse is to click mouse-1 at one end, then click mouse-3 twice at the other end. To copy the text into the kill ring without deleting it from the buffer, press mouse-3 just once&#x2014;or just drag across the text with mouse-1. Then you can copy it elsewhere by yanking it.</li>
+</ul>
+
+<p>
+The <code>mouse-save-then-kill</code> command also obeys the variable <code>mouse-drag-copy-region</code> (described above). If the value is non-<code>nil</code>, then whenever the command sets or adjusts the active region, the text in the region is also added to the kill ring. If the latest kill ring entry had been added the same way, that entry is replaced rather than making a new entry.
+</p>
+
+<p>
+Whenever you set the region using any of the mouse commands described above, the mark will be deactivated by any subsequent unshifted cursor motion command, in addition to the usual ways of deactivating the mark. See <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>.
+</p>
+
+<p>
+Some mice have a “wheel” which can be used for scrolling. Emacs supports scrolling windows with the mouse wheel, by default, on most graphical displays. To toggle this feature, use M-x mouse-wheel-mode. The variables <code>mouse-wheel-follow-mouse</code> and <code>mouse-wheel-scroll-amount</code> determine where and by how much buffers are scrolled. The variable <code>mouse-wheel-progressive-speed</code> determines whether the scroll speed is linked to how fast you move the wheel. This mode also supports increasing or decreasing the font size, by default bound to scrolling with the Ctrl modifier. When this mode is enabled, mouse wheel produces special events like <code>wheel-up</code> and <code>wheel-down</code>. (Some older systems report them as <code>mouse-4</code> and <code>mouse-5</code>.) If the mouse has a horizontal scroll wheel, it produces <code>wheel-left</code> and <code>wheel-right</code> events as well.
+</p>
+
+<p>
+Emacs also supports horizontal scrolling with the Shift modifier. Typing a numeric prefix arg (e.g., M-5) before starting horizontal scrolling changes its step value defined by the user option <code>mouse-wheel-scroll-amount-horizontal</code>.
+</p>
+
+<p>
+If your mouse's wheel can be tilted, or if your touchpad supports it, then you can also enable horizontal scrolling by customizing the variable <code>mouse-wheel-tilt-scroll</code> to a non-<code>nil</code> value. By default, tilting the mouse wheel scrolls the window's view horizontally in the direction of the tilt: e.g., tilting to the right scrolls the window to the right, so that the text displayed in the window moves horizontally to the left. If you'd like to reverse the direction of horizontal scrolling, customize the variable <code>mouse-wheel-flip-direction</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+When the mouse pointer is over an image in Image mode, see <a href="docs/emacs--Image-Mode.html">Viewing Image Files</a>, scrolling the mouse wheel with the Ctrl modifier scales the image under the mouse pointer, and scrolling the mouse wheel with the Shift modifier scrolls the image horizontally.
+</p>
+
+<hr />
+</div>
+</div>

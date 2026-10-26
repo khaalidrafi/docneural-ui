@@ -1,0 +1,68 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Two_002dColumn-Editing">1. 27.16 Two-Column Editing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Text-Based-Tables.html">Editing Text-based Tables</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Two_002dColumn"></a>
+</p>
+
+<hr />
+<div id="outline-container-Two_002dColumn-Editing" class="outline-2">
+<h2 id="Two_002dColumn-Editing"><span class="section-number-2">1.</span> 27.16 Two-Column Editing <a href="#Two_002dColumn-Editing">¶</a></h2>
+<div class="outline-text-2" id="text-Two_002dColumn-Editing">
+<p>
+Two-column mode lets you conveniently edit two side-by-side columns of text. It uses two side-by-side windows, each showing its own buffer. There are three ways to enter two-column mode:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-F2-2"></a>F2 2 or C-x 6 2 </dt><dd><p>
+Enter two-column mode with the current buffer on the left, and on the right, a buffer whose name is based on the current buffer's name (<code>2C-two-columns</code>). If the right-hand buffer doesn't already exist, it starts out empty; the current buffer's contents are not changed.
+</p>
+
+<p>
+This command is appropriate when the current buffer is empty or contains just one column and you want to add another column.
+</p></dd>
+
+<dt><a id="index-F2-s"></a>F2 s or C-x 6 s </dt><dd><p>
+Split the current buffer, which contains two-column text, into two buffers, and display them side by side (<code>2C-split</code>). The current buffer becomes the left-hand buffer, but the text in the right-hand column is moved into the right-hand buffer. The current column specifies the split point. Splitting starts with the current line and continues to the end of the buffer.
+</p>
+
+<p>
+This command is appropriate when you have a buffer that already contains two-column text, and you wish to separate the columns temporarily.
+</p></dd>
+
+<dt>(no term)</dt><dd><a id="index-F2-b"></a>F2 b <code>buffer</code> RET <br />
+C-x 6 b <code>buffer</code> RET :: Enter two-column mode using the current buffer as the left-hand buffer, and using buffer <code>buffer</code> as the right-hand buffer (<code>2C-associate-buffer</code>).</dd>
+</dl>
+
+<p>
+F2 s or C-x 6 s looks for a column separator, which is a string that appears on each line between the two columns. You can specify the width of the separator with a numeric argument to F2 s; that many characters, before point, constitute the separator string. By default, the width is 1, so the column separator is the character before point.
+</p>
+
+<p>
+When a line has the separator at the proper place, F2 s puts the text after the separator into the right-hand buffer, and deletes the separator. Lines that don't have the column separator at the proper place remain unsplit; they stay in the left-hand buffer, and the right-hand buffer gets an empty line to correspond. (This is the way to write a line that spans both columns while in two-column mode: write it in the left-hand buffer, and put an empty line in the right-hand buffer.)
+</p>
+
+<p>
+The command F2 RET or C-x 6 RET (<code>2C-newline</code>) inserts a newline in each of the two buffers at corresponding positions. This is the easiest way to add a new line to the two-column text while editing it in split buffers.
+</p>
+
+<p>
+When you have edited both buffers as you wish, merge them with F2 1 or C-x 6 1 (<code>2C-merge</code>). This copies the text from the right-hand buffer as a second column in the other buffer. To go back to two-column editing, use F2 s.
+</p>
+
+<p>
+Use F2 d or C-x 6 d to dissociate the two buffers, leaving each as it stands (<code>2C-dissociate</code>). If the other buffer, the one not current when you type F2 d, is empty, F2 d kills it.
+</p>
+
+<hr />
+</div>
+</div>

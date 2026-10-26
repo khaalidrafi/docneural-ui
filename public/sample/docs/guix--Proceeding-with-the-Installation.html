@@ -1,0 +1,127 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Proceeding-with-the-Installation"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html">Keyboard Layout, Networking, and Partitioning</a>, Up: <a href="docs/guix--Manual-Installation.html">Manual Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Proceeding-with-the-Installation-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="proceeding-with-the-installation"></a>3.6.2 Proceeding with the Installation<br />
+<div class="outline-text-5" id="text-proceeding-with-the-installation">
+<p>
+With the target partitions ready and the target root mounted on <code>/mnt</code>, we're ready to go. First, run:
+</p>
+
+<pre class="example" id="orgbd89ea8">
+herd start cow-store /mnt
+</pre>
+
+<p>
+This makes <code>/gnu/store</code> copy-on-write, such that packages added to it during the installation phase are written to the target disk on <code>/mnt</code> rather than kept in memory. This is necessary because the first phase of the <code>guix system init</code> command (see below) entails downloads or builds to <code>/gnu/store</code> which, initially, is an in-memory file system.
+</p>
+
+<p>
+Next, you have to edit a file and provide the declaration of the operating system to be installed. To that end, the installation system comes with three text editors. We recommend GNU nano (see <a href="https://www.nano-editor.org/dist/latest/nano.html#Top">GNU nano Manual</a>), which supports syntax highlighting and parentheses matching; other editors include mg (an Emacs clone), and nvi (a clone of the original BSD <code>vi</code> editor). We strongly recommend storing that file on the target root file system, say, as <code>/mnt/etc/config.scm</code>. Failing to do that, you will have lost your configuration file once you have rebooted into the newly-installed system.
+</p>
+
+<p>
+See <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>, for an overview of the configuration file. The example configurations discussed in that section are available under <code>/etc/configuration</code> in the installation image. Thus, to get started with a system configuration providing a graphical display server (a “desktop” system), you can run something along these lines:
+</p>
+
+<pre class="example" id="orgdd7b5b8">
+# mkdir /mnt/etc
+# cp /etc/configuration/desktop.scm /mnt/etc/config.scm
+# nano /mnt/etc/config.scm
+</pre>
+
+<p>
+You should pay attention to what your configuration file contains, and in particular:
+</p>
+
+<ul class="org-ul">
+<li>Make sure the <code>bootloader-configuration</code> form refers to the targets you want to install GRUB on. It should mention <code>grub-bootloader</code> if you are installing GRUB in the legacy way, or <code>grub-efi-bootloader</code> for newer UEFI systems. For legacy systems, the <code>targets</code> field contain the names of the devices, like <code>(list "/dev/sda")</code>; for UEFI systems it names the paths to mounted EFI partitions, like <code>(list "/boot/efi")</code>; do make sure the paths are currently mounted and a <code>file-system</code> entry is specified in your configuration.</li>
+<li>Be sure that your file system labels match the value of their respective <code>device</code> fields in your <code>file-system</code> configuration, assuming your <code>file-system</code> configuration uses the <code>file-system-label</code> procedure in its <code>device</code> field.</li>
+<li>If there are encrypted or RAID partitions, make sure to add a <code>mapped-devices</code> field to describe them (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>).</li>
+</ul>
+
+<p>
+Once you are done preparing the configuration file, the new system must be initialized (remember that the target root file system is mounted under <code>/mnt</code>):
+</p>
+
+<pre class="example" id="org48ba086">
+guix system init /mnt/etc/config.scm /mnt
+</pre>
+
+<p>
+This copies all the necessary files and installs GRUB on <code>/dev/sdX</code>, unless you pass the <code>--no-bootloader</code> option. For more information, see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>. This command may trigger downloads or builds of missing packages, which can take some time.
+</p>
+
+<p>
+Once that command has completed&#x2014;and hopefully succeeded!&#x2014;you can run <code>reboot</code> and boot into the new system. The <code>root</code> password in the new system is initially empty; other users' passwords need to be initialized by running the <code>passwd</code> command as <code>root</code>, unless your configuration specifies otherwise (see <a href="docs/guix--User-Accounts.html#user_002daccount_002dpassword">user account passwords</a>). See <a href="docs/guix--After-System-Installation.html">After System Installation</a>, for what's next!
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html">Keyboard Layout, Networking, and Partitioning</a>, Up: <a href="docs/guix--Manual-Installation.html">Manual Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

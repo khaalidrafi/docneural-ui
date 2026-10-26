@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Window-Fringes">1. 16.15 Window Fringes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Displaying-Boundaries.html">Displaying Boundaries</a>   Previous: <a href="docs/emacs--Highlight-Interactively.html">Interactive Highlighting</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Fringes"></a>
+</p>
+
+<hr />
+<div id="outline-container-Window-Fringes" class="outline-2">
+<h2 id="Window-Fringes"><span class="section-number-2">1.</span> 16.15 Window Fringes <a href="#Window-Fringes">¶</a></h2>
+<div class="outline-text-2" id="text-Window-Fringes">
+<p>
+On graphical displays, each Emacs window normally has narrow <i>fringes</i> on the left and right edges. The fringes are used to display symbols that provide information about the text in the window. You can type M-x fringe-mode to toggle display of the fringes or to modify their width. This command affects fringes in all frames; to modify fringes on the selected frame only, use M-x set-fringe-style. You can make your changes to the fringes permanent by customizing the variable <code>fringe-mode</code>.
+</p>
+
+<p>
+The most common use of the fringes is to indicate a continuation line (see <a href="docs/emacs--Continuation-Lines.html">Continuation Lines</a>). When one line of text is split into multiple screen lines, the left fringe shows a curving arrow for each screen line except the first, indicating that this is not the real beginning. The right fringe shows a curving arrow for each screen line except the last, indicating that this is not the real end. If the line's direction is right-to-left (see <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>), the meanings of the curving arrows in the fringes are swapped.
+</p>
+
+<p>
+The fringes indicate line truncation (see <a href="docs/emacs--Line-Truncation.html">Line Truncation</a>) with short horizontal arrows meaning there's more text on this line which is scrolled horizontally out of view. Clicking the mouse on one of the arrows scrolls the display horizontally in the direction of the arrow.
+</p>
+
+<p>
+The fringes can also indicate other things, such as buffer boundaries (see <a href="docs/emacs--Displaying-Boundaries.html">Displaying Boundaries</a>), unused lines near the end of the window (see <a href="docs/emacs--Useless-Whitespace.html#indicate_002dempty_002dlines">indicate-empty-lines</a>), and where a program you are debugging is executing (see <a href="docs/emacs--Debuggers.html">Running Debuggers Under Emacs</a>).
+</p>
+
+<p>
+The fringe is also used for drawing the cursor, if the current line is exactly as wide as the window and point is at the end of the line. To disable this, change the variable <code>overflow-newline-into-fringe</code> to <code>nil</code>; this causes Emacs to continue or truncate lines that are exactly as wide as the window.
+</p>
+
+<p>
+If you customize <code>fringe-mode</code> to remove the fringes on one or both sides of the window display, the features that display on the fringe are not available. Indicators of line continuation and truncation are an exception: when fringes are not available, Emacs uses the leftmost and rightmost character cells to indicate continuation and truncation with special ASCII characters, see <a href="docs/emacs--Continuation-Lines.html">Continuation Lines</a>, and <a href="docs/emacs--Line-Truncation.html">Line Truncation</a>. This reduces the width available for displaying text on each line, because the character cells used for truncation and continuation indicators are reserved for that purpose. Since buffer text can include bidirectional text, and thus both left-to-right and right-to-left paragraphs (see <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>), removing only one of the fringes still reserves two character cells, one on each side of the window, for truncation and continuation indicators, because these indicators are displayed on opposite sides of the window in right-to-left paragraphs.
+</p>
+
+<hr />
+</div>
+</div>

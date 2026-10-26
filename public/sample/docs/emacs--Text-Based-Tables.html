@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-Text_002dbased-Tables">1. 27.15 Editing Text-based Tables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Two_002dColumn.html">Two-Column Editing</a>   Previous: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Text-Based-Tables"></a>
+</p>
+
+<hr />
+<div id="outline-container-Editing-Text_002dbased-Tables" class="outline-2">
+<h2 id="Editing-Text_002dbased-Tables"><span class="section-number-2">1.</span> 27.15 Editing Text-based Tables <a href="#Editing-Text_002dbased-Tables">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-Text_002dbased-Tables">
+<p>
+The <code>table</code> package provides commands to easily edit text-based tables. Here is an example of what such a table looks like:
+</p>
+
+<pre class="example" id="org877a828">
++-----------------+--------------------------------+-----------------+
+|     Command     |          Description           |   Key Binding   |
++-----------------+--------------------------------+-----------------+
+|  forward-char   |Move point right N characters   |       C-f       |
+|                 |(left if N is negative).        |                 |
+|                 |                                |                 |
++-----------------+--------------------------------+-----------------+
+|  backward-char  |Move point left N characters    |       C-b       |
+|                 |(right if N is negative).       |                 |
+|                 |                                |                 |
++-----------------+--------------------------------+-----------------+
+</pre>
+
+<p>
+When Emacs recognizes such a stretch of text as a table (see <a href="docs/emacs--Table-Recognition.html">Table Recognition</a>), editing the contents of each table cell will automatically resize the table, whenever the contents become too large to fit in the cell. You can use the commands defined in the following sections for navigating and editing the table layout.
+</p>
+
+<p>
+Type M-x table-fixed-width-mode to toggle the automatic table resizing feature.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Table-Definition.html">What is a Text-based Table?</a></li>
+<li><a href="docs/emacs--Table-Creation.html">Creating a Table</a></li>
+<li><a href="docs/emacs--Table-Recognition.html">Table Recognition</a></li>
+<li><a href="docs/emacs--Cell-Commands.html">Commands for Table Cells</a></li>
+<li><a href="docs/emacs--Cell-Justification.html">Cell Justification</a></li>
+<li><a href="docs/emacs--Table-Rows-and-Columns.html">Table Rows and Columns</a></li>
+<li><a href="docs/emacs--Table-Conversion.html">Converting Between Plain Text and Tables</a></li>
+<li><a href="docs/emacs--Table-Misc.html">Table Miscellany</a></li>
+</ul>
+</div>
+</div>

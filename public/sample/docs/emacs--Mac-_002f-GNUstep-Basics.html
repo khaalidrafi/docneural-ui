@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Basic-Emacs-usage-under-macOS-and-GNUstep">1. F.1 Basic Emacs usage under macOS and GNUstep ¶</a>
+<ul>
+<li><a href="#f.1.1-grabbing-environment-variables">1.1. F.1.1 Grabbing environment variables ¶</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mac-_002f-GNUstep-Customization.html">Mac / GNUstep Customization</a>   Up: <a href="docs/emacs--Mac-OS-_002f-GNUstep.html">Emacs and macOS / GNUstep</a>
+</p>
+
+<p>
+<a id="Mac-_002f-GNUstep-Basics"></a>
+</p>
+
+<hr />
+<div id="outline-container-Basic-Emacs-usage-under-macOS-and-GNUstep" class="outline-2">
+<h2 id="Basic-Emacs-usage-under-macOS-and-GNUstep"><span class="section-number-2">1.</span> F.1 Basic Emacs usage under macOS and GNUstep <a href="#Basic-Emacs-usage-under-macOS-and-GNUstep">¶</a></h2>
+<div class="outline-text-2" id="text-Basic-Emacs-usage-under-macOS-and-GNUstep">
+<p>
+By default, the Alt and Option keys are the same as Meta. The Mac Cmd key is the same as Super, and Emacs provides a set of key bindings using this modifier key that mimic other Mac / GNUstep applications (see <a href="docs/emacs--Mac-_002f-GNUstep-Events.html">Windowing System Events under macOS / GNUstep</a>). You can change these bindings in the usual way (see <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>). The modifiers themselves can be customized; see <a href="docs/emacs--Mac-_002f-GNUstep-Customization.html">Mac / GNUstep Customization</a>.
+</p>
+
+<p>
+S-mouse-1 adjusts the region to the click position, just like mouse-3 (<code>mouse-save-then-kill</code>); it does not pop up a menu for changing the default face, as S-mouse-1 normally does (see <a href="docs/emacs--Text-Scale.html">Text Scale</a>). This change makes Emacs behave more like other Mac / GNUstep applications.
+</p>
+
+<p>
+When you open or save files using the menus, or using the Cmd-o and Cmd-S bindings, Emacs uses graphical file dialogs to read file names. However, if you use the regular Emacs key sequences, such as C-x C-f, Emacs uses the minibuffer to read file names.
+</p>
+
+<p>
+On GNUstep, in an X-windows environment you need to use Cmd-c instead of one of the C-w or M-w commands to transfer text to the X primary selection; otherwise, Emacs will use the clipboard selection. Likewise, Cmd-y (instead of C-y) yanks from the X primary selection instead of the kill-ring or clipboard.
+</p>
+
+<ul class="org-ul">
+<li></li>
+</ul>
+
+<p>
+<a id="Grabbing-environment-variables"></a>
+</p>
+</div>
+<div id="outline-container-f.1.1-grabbing-environment-variables" class="outline-3">
+<h3 id="f.1.1-grabbing-environment-variables"><span class="section-number-3">1.1.</span> F.1.1 Grabbing environment variables </h3>
+<div class="outline-text-3" id="text-f.1.1-grabbing-environment-variables">
+<p>
+Many programs which may run under Emacs, like latex or man, depend on the settings of environment variables. If Emacs is launched from the shell, it will automatically inherit these environment variables and its subprocesses will inherit them from it. But if Emacs is launched from the Finder it is not a descendant of any shell, so its environment variables haven't been set, which often causes the subprocesses it launches to behave differently than they would when launched from the shell.
+</p>
+
+<p>
+For the PATH and MANPATH variables, a system-wide method of setting PATH is recommended on macOS, using the <code>/etc/paths</code> files and the <code>/etc/paths.d</code> directory.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

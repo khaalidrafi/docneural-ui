@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Cut-and-Paste-with-Other-Window-Applications">1. 14.3.2 Cut and Paste with Other Window Applications ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Secondary-Selection.html">Secondary Selection</a>   Previous: <a href="docs/emacs--Clipboard.html">Using the Clipboard</a>   Up: <a href="docs/emacs--Cut-and-Paste.html">&amp;ldquo;Cut and Paste&amp;rdquo; Operations on Graphical Displays</a>
+</p>
+
+<p>
+<a id="Primary-Selection"></a>
+</p>
+
+<hr />
+<div id="outline-container-Cut-and-Paste-with-Other-Window-Applications" class="outline-2">
+<h2 id="Cut-and-Paste-with-Other-Window-Applications"><span class="section-number-2">1.</span> 14.3.2 Cut and Paste with Other Window Applications <a href="#Cut-and-Paste-with-Other-Window-Applications">¶</a></h2>
+<div class="outline-text-2" id="text-Cut-and-Paste-with-Other-Window-Applications">
+<p>
+Under the X Window System, PGTK and Haiku, there exists a <i>primary selection</i> containing the last stretch of text selected in an X application (usually by dragging the mouse). Typically, this text can be inserted into other X applications by mouse-2 clicks. The primary selection is separate from the clipboard. Its contents are more fragile; they are overwritten each time you select text with the mouse, whereas the clipboard is only overwritten by explicit cut or copy commands.
+</p>
+
+<p>
+Under X, whenever the region is active (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>), the text in the region is saved in the primary selection. This applies regardless of whether the region was made by dragging or clicking the mouse (see <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>), or by keyboard commands (e.g., by typing C-SPC and moving point; see <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>).
+</p>
+
+<p>
+If you change the variable <code>select-active-regions</code> to <code>only</code>, Emacs saves only temporarily active regions to the primary selection, i.e., those made with the mouse or with shift selection (see <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>). If you change <code>select-active-regions</code> to <code>nil</code>, Emacs avoids saving active regions to the primary selection entirely.
+</p>
+
+<p>
+To insert the primary selection into an Emacs buffer, click mouse-2 (<code>mouse-yank-primary</code>) where you want to insert it. See <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>. You can also use the normal Emacs yank command (C-y) to insert this text if <code>select-enable-primary</code> is set (see <a href="docs/emacs--Clipboard.html">Using the Clipboard</a>).
+</p>
+
+<p>
+By default, Emacs keeps the region active even after text is selected in another program; this is contrary to typical X behavior. To make Emacs deactivate the region after another program places data in the primary selection, enable the global minor mode <code>lost-selection-mode</code>.
+</p>
+
+<p>
+MS-Windows provides no primary selection, but Emacs emulates it within a single Emacs session by storing the selected text internally. Therefore, all the features and commands related to the primary selection work on Windows as they do on X, for cutting and pasting within the same session, but not across Emacs sessions or with other applications.
+</p>
+
+<hr />
+</div>
+</div>

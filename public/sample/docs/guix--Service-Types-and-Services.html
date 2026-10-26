@@ -1,0 +1,198 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Service-Types-and-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Service-Reference.html">Service Reference</a>, Previous: <a href="docs/guix--Service-Composition.html">Service Composition</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Service-Types-and-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="service-types-and-services"></a>11.19.2 Service Types and Services<br />
+<div class="outline-text-5" id="text-service-types-and-services">
+<p>
+A <i>service type</i> is a node in the DAG described above. Let us start with a simple example, the service type for the Guix build daemon (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define guix-service-type
+  (service-type
+   (name 'guix)
+   (extensions
+    (list (service-extension shepherd-root-service-type guix-shepherd-service)
+          (service-extension account-service-type guix-accounts)
+          (service-extension activation-service-type guix-activation)))
+   (default-value (guix-configuration))))
+</pre>
+</div>
+
+<p>
+It defines three things:
+</p>
+
+<ol class="org-ol">
+<li>A name, whose sole purpose is to make inspection and debugging easier.</li>
+
+<li><p>
+A list of <i>service extensions</i>, where each extension designates the target service type and a procedure that, given the parameters of the service, returns a list of objects to extend the service of that type.
+</p>
+
+<p>
+Every service type has at least one service extension. The only exception is the <i>boot service type</i>, which is the ultimate service.
+</p></li>
+
+<li>Optionally, a default value for instances of this type.</li>
+</ol>
+
+<p>
+In this example, <code>guix-service-type</code> extends three services:
+</p>
+
+<dl class="org-dl">
+<dt><code>shepherd-root-service-type</code></dt><dd>The <code>guix-shepherd-service</code> procedure defines how the Shepherd service is extended. Namely, it returns a <code>&lt;shepherd-service&gt;</code> object that defines how <code>guix-daemon</code> is started and stopped (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>).</dd>
+
+<dt><code>account-service-type</code></dt><dd>This extension for this service is computed by <code>guix-accounts</code>, which returns a list of <code>user-group</code> and <code>user-account</code> objects representing the build user accounts (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>).</dd>
+
+<dt><code>activation-service-type</code></dt><dd>Here <code>guix-activation</code> is a procedure that returns a gexp, which is a code snippet to run at “activation time”&#x2014;e.g., when the service is booted.</dd>
+</dl>
+
+<p>
+A service of this type is instantiated like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service guix-service-type
+         (guix-configuration
+           (build-accounts 5)
+           (extra-options '("--gc-keep-derivations"))))
+</pre>
+</div>
+
+<p>
+The second argument to the <code>service</code> form is a value representing the parameters of this specific service instance. See <a href="docs/guix--Base-Services.html#guix_002dconfiguration_002dtype"><code>guix-configuration</code></a>, for information about the <code>guix-configuration</code> data type. When the value is omitted, the default value specified by <code>guix-service-type</code> is used:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service guix-service-type)
+</pre>
+</div>
+
+<p>
+<code>guix-service-type</code> is quite simple because it extends other services but is not extensible itself.
+</p>
+
+<p>
+The service type for an <i>extensible</i> service looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define udev-service-type
+  (service-type (name 'udev)
+                (extensions
+                 (list (service-extension shepherd-root-service-type
+                                          udev-shepherd-service)))
+
+                (compose concatenate)       ;concatenate the list of rules
+                (extend (lambda (config rules)
+                          (udev-configuration
+                           (inherit config)
+                           (rules (append (udev-configuration-rules config)
+                                          rules)))))))
+</pre>
+</div>
+
+<p>
+This is the service type for the <a href="https://github.com/eudev-project/eudev">eudev device management daemon</a>. Compared to the previous example, in addition to an extension of <code>shepherd-root-service-type</code>, we see two new fields:
+</p>
+
+<dl class="org-dl">
+<dt><code>compose</code></dt><dd><p>
+This is the procedure to <i>compose</i> the list of extensions to services of this type.
+</p>
+
+<p>
+Services can extend the udev service by passing it lists of rules; we compose those extensions simply by concatenating them.
+</p></dd>
+
+<dt><code>extend</code></dt><dd><p>
+This procedure defines how the value of the service is <i>extended</i> with the composition of the extensions.
+</p>
+
+<p>
+Udev extensions are composed into a list of rules, but the udev service value is itself a <code>&lt;udev-configuration&gt;</code> record. So here, we extend that record by appending the list of rules it contains to the list of contributed rules.
+</p></dd>
+
+<dt><code>description</code></dt><dd>This is a string giving an overview of the service type. The string can contain Texinfo markup (see <a href="https://www.gnu.org/software/texinfo/manual/texinfo/html_node/Overview.html#Overview">Overview</a> in GNU Texinfo). The <code>guix system search</code> command searches these strings and displays them (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>).</dd>
+</dl>
+
+<p>
+There can be only one instance of an extensible service type such as <code>udev-service-type</code>. If there were more, the <code>service-extension</code> specifications would be ambiguous.
+</p>
+
+<p>
+Still here? The next section provides a reference of the programming interface for services.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Service-Reference.html">Service Reference</a>, Previous: <a href="docs/guix--Service-Composition.html">Service Composition</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

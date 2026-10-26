@@ -1,0 +1,109 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Window-Color-Options">1. C.7 Window Color Options ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (29)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Window-Size-X.html">Options for Window Size and Position</a>   Previous: <a href="docs/emacs--Font-X.html">Font Specification Options</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Colors-X"></a>
+</p>
+
+<hr />
+<div id="outline-container-Window-Color-Options" class="outline-2">
+<h2 id="Window-Color-Options"><span class="section-number-2">1.</span> C.7 Window Color Options <a href="#Window-Color-Options">¶</a></h2>
+<div class="outline-text-2" id="text-Window-Color-Options">
+<p>
+You can use the following command-line options to specify the colors to use for various parts of the Emacs display. Colors may be specified using either color names or RGB triplets (see <a href="docs/emacs--Colors.html">Colors for Faces</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-_002d_002dforeground_002dcolor"></a>‘=-fg <code>=color</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;foreground-color===color='</dt><dd>Specify the foreground color, overriding the color specified by the <code>default</code> face (see <a href="docs/emacs--Faces.html">Text Faces</a>).</dd>
+
+<dt><a id="index-_002d_002dbackground_002dcolor"></a>‘=-bg <code>=color</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;background-color===color='</dt><dd>Specify the background color, overriding the color specified by the <code>default</code> face.</dd>
+
+<dt><a id="index-_002d_002dborder_002dcolor"></a>‘=-bd <code>=color</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;border-color===color='</dt><dd>Specify the color of the border of the X window. This has no effect if Emacs is compiled with GTK+ support.</dd>
+
+<dt><a id="index-_002d_002dcursor_002dcolor"></a>‘=-cr <code>=color</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;cursor-color===color='</dt><dd>Specify the color of the Emacs cursor which indicates where point is.</dd>
+
+<dt><a id="index-_002d_002dmouse_002dcolor"></a>‘=-ms <code>=color</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;mouse-color===color='</dt><dd>Specify the color for the mouse cursor when the mouse is in the Emacs window.</dd>
+
+<dt><a id="index-_002d_002dreverse_002dvideo"></a>‘=-r=' </dt><dd></dd>
+
+<dt>‘=-rv='</dt><dd></dd>
+
+<dt>‘=&#x2013;reverse-video='</dt><dd>Reverse video: swap the foreground and background colors.</dd>
+
+<dt><a id="index-_002d_002dcolor"></a>‘=&#x2013;color===mode=' </dt><dd><p>
+Set the <i>color support mode</i> when Emacs is run on a text terminal. This option overrides the number of supported colors that the character terminal advertises in its <code>termcap</code> or <code>terminfo</code> database. The parameter <code>mode</code> can be one of the following:
+</p>
+
+<ul class="org-ul">
+<li>‘=never='<br />
+‘=no=' :: Don't use colors even if the terminal's capabilities specify color support.</li>
+
+<li>‘=default='<br />
+‘=auto=' :: Same as when <code>--color</code> is not used at all: Emacs detects at startup whether the terminal supports colors, and if it does, turns on colored display.</li>
+
+<li>‘=always='<br />
+‘=yes='<br />
+‘=ansi8=' :: Turn on the color support unconditionally, and use color commands specified by the ANSI escape sequences for the 8 standard colors.</li>
+
+<li id="‘=num='">Use color mode for <code>num</code> colors. If <code>num</code> is −1, turn off color support (equivalent to ‘=never='); if it is 0, use the default color support for this terminal (equivalent to ‘=auto='); otherwise use an appropriate standard mode for <code>num</code> colors. Depending on your terminal's capabilities, Emacs might be able to turn on a color mode for 8, 16, 88, or 256 as the value of <code>num</code>. If there is no mode that supports <code>num</code> colors, Emacs acts as if <code>num</code> were 0, i.e., it uses the terminal's default color support mode.</li>
+</ul>
+
+<p>
+This option has no effect on MS-Windows and MS-DOS.
+</p>
+
+<p>
+If <code>mode</code> is omitted, it defaults to <code>ansi8</code>.
+</p>
+
+<p>
+The color mode can be changed dynamically during a running Emacs session: the current mode is available via the <code>tty-color-mode</code> frame parameter, and it can be changed by modifying that frame parameter. This means you can also specify the initial value via <code>default-frame-alist</code> instead of the command-line option.
+</p></dd>
+</dl>
+
+<p>
+For example, to use a coral mouse cursor and a slate blue text cursor, enter:
+</p>
+
+<pre class="example" id="org414825d">
+emacs -ms coral -cr 'slate blue' &amp;
+</pre>
+
+<p>
+You can reverse the foreground and background colors through the ‘=-rv=' option or with the X resource ‘=reverseVideo='.
+</p>
+
+<p>
+The ‘=-fg=', ‘=-bg=', and ‘=-rv=' options function on text terminals as well as on graphical displays.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Printing-and-MS_002dDOS">1. I.12.5 Printing and MS-DOS ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--MS_002dDOS-and-MULE.html">International Support on MS-DOS</a>   Previous: <a href="docs/emacs--MS_002dDOS-File-Names.html">File Names on MS-DOS</a>   Up: <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>
+</p>
+
+<p>
+<a id="MS_002dDOS-Printing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Printing-and-MS_002dDOS" class="outline-2">
+<h2 id="Printing-and-MS_002dDOS"><span class="section-number-2">1.</span> I.12.5 Printing and MS-DOS <a href="#Printing-and-MS_002dDOS">¶</a></h2>
+<div class="outline-text-2" id="text-Printing-and-MS_002dDOS">
+<p>
+Printing commands, such as <code>lpr-buffer</code> (see <a href="docs/emacs--Printing.html">Printing Hard Copies</a>) and <code>ps-print-buffer</code> (see <a href="docs/emacs--PostScript.html">PostScript Hardcopy</a>) can work on MS-DOS by sending the output to one of the printer ports, if a POSIX-style <code>lpr</code> program is unavailable. The same Emacs variables control printing on all systems, but in some cases they have different default values on MS-DOS.
+</p>
+
+<p>
+See <a href="docs/emacs--Windows-Printing.html">Printing and MS-Windows</a>, for details about setting up printing to a networked printer.
+</p>
+
+<p>
+Some printers expect DOS codepage encoding of non-ASCII text, even though they are connected to a Windows machine that uses a different encoding for the same locale. For example, in the Latin-1 locale, DOS uses codepage 850 whereas Windows uses codepage 1252. See <a href="docs/emacs--MS_002dDOS-and-MULE.html">International Support on MS-DOS</a>. When you print to such printers from Windows, you can use the C-x RET c (<code>universal-coding-system-argument</code>) command before M-x lpr-buffer; Emacs will then convert the text to the DOS codepage that you specify. For example, C-x RET c cp850-dos RET M-x lpr-region RET will print the region while converting it to the codepage 850 encoding.
+</p>
+
+<p>
+For backwards compatibility, the value of <code>dos-printer</code> (<code>dos-ps-printer</code>), if it has a value, overrides the value of <code>printer-name</code> (<code>ps-printer-name</code>), on MS-DOS.
+</p>
+</div>
+</div>

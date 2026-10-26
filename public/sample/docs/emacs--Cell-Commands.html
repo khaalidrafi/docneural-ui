@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Commands-for-Table-Cells">1. 27.15.4 Commands for Table Cells ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Cell-Justification.html">Cell Justification</a>   Previous: <a href="docs/emacs--Table-Recognition.html">Table Recognition</a>   Up: <a href="docs/emacs--Text-Based-Tables.html">Editing Text-based Tables</a>
+</p>
+
+<p>
+<a id="Cell-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Commands-for-Table-Cells" class="outline-2">
+<h2 id="Commands-for-Table-Cells"><span class="section-number-2">1.</span> 27.15.4 Commands for Table Cells <a href="#Commands-for-Table-Cells">¶</a></h2>
+<div class="outline-text-2" id="text-Commands-for-Table-Cells">
+<p>
+The commands M-x table-forward-cell and M-x table-backward-cell move point from the current cell to an adjacent cell. The order is cyclic: when point is in the last cell of a table, M-x table-forward-cell moves to the first cell. Likewise, when point is on the first cell, M-x table-backward-cell moves to the last cell.
+</p>
+
+<p>
+M-x table-span-cell prompts for a direction&#x2014;right, left, above, or below&#x2014;and merges the current cell with the adjacent cell in that direction. This command signals an error if the merge would result in an illegitimate cell layout.
+</p>
+
+<p>
+M-x table-split-cell splits the current cell vertically or horizontally, prompting for the direction with the minibuffer. To split in a specific direction, use M-x table-split-cell-vertically and M-x table-split-cell-horizontally. When splitting vertically, the old cell contents are automatically split between the two new cells. When splitting horizontally, you are prompted for how to divide the cell contents, if the cell is non-empty; the options are ‘=split=' (divide the contents at point), ‘=left=' (put all the contents in the left cell), and ‘=right=' (put all the contents in the right cell).
+</p>
+
+<p>
+The following commands enlarge or shrink a cell. By default, they resize by one row or column; if a numeric argument is supplied, that specifies the number of rows or columns to resize by.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-table_002dheighten_002dcell"></a>M-x table-heighten-cell </dt><dd>Enlarge the current cell vertically.</dd>
+
+<dt><a id="index-table_002dshorten_002dcell"></a>M-x table-shorten-cell </dt><dd>Shrink the current cell vertically.</dd>
+
+<dt><a id="index-table_002dwiden_002dcell"></a>M-x table-widen-cell </dt><dd>Enlarge the current cell horizontally.</dd>
+
+<dt><a id="index-table_002dnarrow_002dcell"></a>M-x table-narrow-cell </dt><dd>Shrink the current cell horizontally.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

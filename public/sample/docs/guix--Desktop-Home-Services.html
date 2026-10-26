@@ -1,0 +1,280 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Desktop-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Guix-Home-Services.html">Guix Home Services</a>, Previous: <a href="docs/guix--GNU-Privacy-Guard.html">GNU Privacy Guard</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Desktop-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="desktop-home-services"></a>13.3.8 Desktop Home Services<br />
+<div class="outline-text-5" id="text-desktop-home-services">
+<p>
+The <code>(gnu home services desktop)</code> module provides services that you may find useful on “desktop” systems running a graphical user environment such as Xorg.
+</p>
+
+<p>
+<a id="index-X-Window_002c-for-Guix-Home-services"></a> <a id="index-X11_002c-in-Guix-Home"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: home-x11-service-type </dt><dd><p>
+This is the service type representing the X Window graphical display server (also referred to as “X11”).
+</p>
+
+<p>
+X Window is necessarily started by a system service; on Guix System, starting it is the responsibility of <code>gdm-service-type</code> and similar services (see <a href="docs/guix--X-Window.html">X Window</a>). At the level of Guix Home, as an unprivileged user, we cannot start X Window; all we can do is check whether it is running. This is what this service does.
+</p>
+
+<p>
+As a user, you probably don't need to worry or explicitly instantiate <code>home-x11-service-type</code>. Services that require an X Window graphical display, such as <code>home-redshift-service-type</code> below, instantiate it and depend on its corresponding <code>x11-display</code> Shepherd service (see <a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a>).
+</p>
+
+<p>
+When X Window is running, the <code>x11-display</code> Shepherd service starts and sets the <code>DISPLAY</code> environment variable of the <code>shepherd</code> process, using its original value if it was already set; otherwise, it fails to start.
+</p>
+
+<p>
+The service can also be forced to use a given value for <code>DISPLAY</code>, like so:
+</p>
+
+<pre class="example" id="orgfde7bc4">
+herd start x11-display :3
+</pre>
+
+<p>
+In the example above, <code>x11-display</code> is instructed to set <code>DISPLAY</code> to <code>:3</code>.
+</p></dd>
+
+<dt>Variable: home-redshift-service-type </dt><dd><p>
+This is the service type for <a href="https://github.com/jonls/redshift">Redshift</a>, a program that adjusts the display color temperature according to the time of day. Its associated value must be a <code>home-redshift-configuration</code> record, as shown below.
+</p>
+
+<p>
+A typical configuration, where we manually specify the latitude and longitude, might look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-redshift-service-type
+         (home-redshift-configuration
+          (location-provider 'manual)
+          (latitude 35.81)    ;northern hemisphere
+          (longitude -0.80))) ;west of Greenwich
+</pre>
+</div></dd>
+
+<dt>Data Type: home-redshift-configuration </dt><dd>Available <code>home-redshift-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>redshift</code> (default: <code>redshift</code>) (type: file-like)</dt><dd>Redshift package to use.</dd>
+
+<dt><code>location-provider</code> (default: <code>geoclue2</code>) (type: symbol)</dt><dd>Geolocation provider---<code>'manual</code> or <code>'geoclue2</code>. In the former case, you must also specify the <code>latitude</code> and <code>longitude</code> fields so Redshift can determine daytime at your place. In the latter case, the Geoclue system service must be running; it will be queried for location information.</dd>
+
+<dt><code>adjustment-method</code> (default: <code>randr</code>) (type: symbol)</dt><dd>Color adjustment method.</dd>
+
+<dt><code>daytime-temperature</code> (default: <code>6500</code>) (type: integer)</dt><dd>Daytime color temperature (kelvins).</dd>
+
+<dt><code>nighttime-temperature</code> (default: <code>4500</code>) (type: integer)</dt><dd>Nighttime color temperature (kelvins).</dd>
+
+<dt><code>daytime-brightness</code> (type: maybe-inexact-number)</dt><dd>Daytime screen brightness, between 0.1 and 1.0, or left unspecified.</dd>
+
+<dt><code>nighttime-brightness</code> (type: maybe-inexact-number)</dt><dd>Nighttime screen brightness, between 0.1 and 1.0, or left unspecified.</dd>
+
+<dt><code>latitude</code> (type: maybe-inexact-number)</dt><dd>Latitude, when <code>location-provider</code> is <code>'manual</code>.</dd>
+
+<dt><code>longitude</code> (type: maybe-inexact-number)</dt><dd>Longitude, when <code>location-provider</code> is <code>'manual</code>.</dd>
+
+<dt><code>dawn-time</code> (type: maybe-string)</dt><dd>Custom time for the transition from night to day in the morning---<code>"HH:MM"</code> format. When specified, solar elevation is not used to determine the daytime/nighttime period.</dd>
+
+<dt><code>dusk-time</code> (type: maybe-string)</dt><dd>Likewise, custom time for the transition from day to night in the evening.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: raw-configuration-string)</dt><dd>Extra content appended as-is to the Redshift configuration file. Run <code>man redshift</code> for more information about the configuration file format.</dd>
+</dl></dd>
+
+<dt>Variable: home-dbus-service-type </dt><dd>This is the service type for running a session-specific D-Bus, for unprivileged applications that require D-Bus to be running.</dd>
+
+<dt>Data Type: home-dbus-configuration </dt><dd>The configuration record for <code>home-dbus-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>dbus</code> (default: <code>dbus</code>)</dt><dd>The package providing the <code>/bin/dbus-daemon</code> command.</dd>
+</dl></dd>
+
+<dt>Variable: home-unclutter-service-type </dt><dd><p>
+This is the service type for Unclutter, a program that runs on the background of an X11 session and detects when the X pointer hasn't moved for a specified idle timeout, after which it hides the cursor so that you can focus on the text underneath. Its associated value must be a <code>home-unclutter-configuration</code> record, as shown below.
+</p>
+
+<p>
+A typical configuration, where we manually specify the idle timeout (in seconds), might look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-unclutter-service-type
+         (home-unclutter-configuration
+          (idle-timeout 2)))
+</pre>
+</div></dd>
+
+<dt>Data Type: home-unclutter-configuration </dt><dd>The configuration record for <code>home-unclutter-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>unclutter</code> (default: <code>unclutter</code>) (type: file-like)</dt><dd>Unclutter package to use.</dd>
+
+<dt><code>idle-timeout</code> (default: <code>5</code>) (type: integer)</dt><dd>A timeout in seconds after which to hide cursor.</dd>
+</dl></dd>
+
+<dt>Variable: home-xmodmap-service-type </dt><dd><p>
+This is the service type for the <a href="https://gitlab.freedesktop.org/xorg/app/xmodmap">xmodmap</a> utility to modify keymaps and pointer button mappings under the Xorg display server. Its associated value must be a <code>home-xmodmap-configuration</code> record, as shown below.
+</p>
+
+<p>
+The <code>key-map</code> field takes a list of objects, each of which is either a <i>statement</i> (a string) or an <i>assignment</i> (a pair of strings). As an example, the snippet below swaps around the Caps<sub>Lock</sub> and the Control<sub>L</sub> keys, by first removing the keysyms (on the right-hand side) from the corresponding modifier maps (on the left-hand side), re-assigning them by swapping each other out, and finally adding back the keysyms to the modifier maps.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-xmodmap-service-type
+         (home-xmodmap-configuration
+          (key-map '(("remove Lock" . "Caps_Lock")
+                     ("remove Control" . "Control_L")
+                     ("keysym Control_L" . "Caps_Lock")
+                     ("keysym Caps_Lock" . "Control_L")
+                     ("add Lock" . "Caps_Lock")
+                     ("add Control" . "Control_L")))))
+</pre>
+</div></dd>
+
+<dt>Data Type: home-xmodmap-configuration </dt><dd>The configuration record for <code>home-xmodmap-service-type</code>. Its available fields are:
+
+<dl class="org-dl">
+<dt><code>xmodmap</code> (default: <code>xmodmap</code>) (type: file-like)</dt><dd>The <code>xmodmap</code> package to use.</dd>
+
+<dt><code>key-map</code> (default: <code>'()</code>) (type: list)</dt><dd>The list of expressions to be read by <code>xmodmap</code> on service startup.</dd>
+</dl></dd>
+
+<dt>Variable: home-startx-command-service-type </dt><dd><p>
+Add <code>startx</code> to the home profile putting it onto <code>PATH</code>.
+</p>
+
+<p>
+The value for this service is a <code>&lt;xorg-configuration&gt;</code> object which is passed to the <code>xorg-start-command-xinit</code> procedure producing the <code>startx</code> used. Default value is <code>(xorg-configuration)</code>.
+</p></dd>
+
+<dt>Variable: home-darkman-service-type </dt><dd>This is the service type for the <a href="https://gitlab.com/WhyNotHugo/darkman">Darkman</a>, a program for dark-mode and light-mode transitions on Unix-like desktops. It invokes scripts in <code>$XDG_DATA_DIRS/dark-mode.d</code> at sundown, and invokes scripts in <code>$XDG_DATA_DIRS/light-mode.d</code> at sunrise. Darkman tries to determine the user's current location from:
+
+<ul class="org-ul">
+<li>The config file.</li>
+<li>The cache file from last time it ran.</li>
+<li>Using the system geoclue.</li>
+</ul></dd>
+
+<dt>Data Type: home-darkman-configuration </dt><dd>The configuration record for <code>home-darkman-service-type</code>. Its available fields are:
+
+<dl class="org-dl">
+<dt><code>darkman</code> (default: <code>darkman</code>) (type: file-like)</dt><dd>The <code>darkman</code> package to use.</dd>
+
+<dt><code>latitude</code> (type: maybe-number)</dt><dd>Latitude, used at startup or when <code>use-geoclue</code> is <code>#f</code>. More than one decimal point is generally not needed.</dd>
+
+<dt><code>longitude</code> (type: maybe-number)</dt><dd>Longitude, used at startup or when <code>use-geoclue</code> is <code>#f</code>. More than one decimal point is generally not needed.</dd>
+
+<dt><code>use-geoclue</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to use a local geoclue instance to determine the current location. Setting this to false without explicitly setting latitude and longtitude disables automatic transitions entirely.</dd>
+
+<dt><code>dbus-server</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Whether to expose the current mode via darkman's own D-Bus API.</dd>
+
+<dt><code>portal</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Whether to expose the current mode via the XDG settings portal D-Bus API.</dd>
+</dl></dd>
+
+<dt>Variable: home-gcr-ssh-agent-service-type </dt><dd><p>
+GNOME Keyring used to be able to act as a wrapper over <code>ssh-agent</code>. It would display a graphical password entry dialog, including a checkbox to remember the password, which, if selected, would allow fully passwordless use of that key.
+</p>
+
+<p>
+The SSH functionality is disabled by default in <code>gnome-keyring-daemon</code> builds since version <a href="https://gitlab.gnome.org/GNOME/gnome-keyring/-/commit25c5a1982467802fa12c6852b03c57924553ba73">1.46</a>. It has been <a href="https://gitlab.gnome.org/GNOME/gcr/-/merge_requests/67">moved</a> into <code>gcr-ssh-agent</code>, which is part of the <code>gcr</code> package.
+</p>
+
+<p>
+To enable the SSH agent functionality it is sufficient to add the following to your Home configuration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu home services gnome) ;for 'home-gcr-ssh-agent-service-type'
+             …)
+
+(home-environment
+  (services
+    (list
+      …
+      (service home-gcr-ssh-agent-service-type))))
+</pre>
+</div></dd>
+
+<dt>Data Type: gcr-ssh-agent-configuration </dt><dd>The configuration record for <code>home-gcr-ssh-agent-service-type</code>. Its available fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>gcr</code>) (type: package)</dt><dd>The <code>gcr</code> package to use.</dd>
+
+<dt><code>log-file</code> (type: maybe-string)</dt><dd>Where the service will write its logs. If unset, it defaults to <code>$HOME/.local/state/shepherd/gcr-ssh-agent.log</code>.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Guix-Home-Services.html">Guix Home Services</a>, Previous: <a href="docs/guix--GNU-Privacy-Guard.html">GNU Privacy Guard</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

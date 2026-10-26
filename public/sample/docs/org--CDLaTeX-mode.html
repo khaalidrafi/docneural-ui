@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-CDLaTeX-to-enter-math">1. 12.5.3 Using CDLaTeX to enter math ¶</a>
+<ul>
+<li><a href="#section">1.1. (116)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="CDLaTeX-mode"></a>
+Previous: <a href="docs/org--Previewing-LaTeX-fragments.html">Previewing LaTeX fragments</a>, Up: <a href="docs/org--Embedded-LaTeX.html">Embedded LaTeX</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Using-CDLaTeX-to-enter-math" class="outline-2">
+<h2 id="Using-CDLaTeX-to-enter-math"><span class="section-number-2">1.</span> 12.5.3 Using CDLaTeX to enter math <a href="#Using-CDLaTeX-to-enter-math">¶</a></h2>
+<div class="outline-text-2" id="text-Using-CDLaTeX-to-enter-math">
+<p>
+CDLaTeX mode is a minor mode that is normally used in combination with a major LaTeX mode like AUCTeX in order to speed-up insertion of environments and math templates. Inside Org mode, you can make use of some of the features of CDLaTeX mode. You need to install ‘=cdlatex.el=' and ‘=texmathp.el=' (the latter comes also with AUCTeX). The ‘=cdlatex=' package can be installed from <a href="https://elpa.nongnu.org/nongnu/cdlatex.html">NonGNU ELPA</a> with the <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html">Emacs packaging system</a>. Do not use CDLaTeX mode itself under Org mode, but use the special version Org CDLaTeX minor mode that comes as part of Org. Turn it on for the current buffer with M-x org-cdlatex-mode, or for all Org files with
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+</pre>
+</div>
+
+<p>
+When this mode is enabled, the following features are present (for more details see the documentation of CDLaTeX mode):
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_007b-1"></a>C-c { </dt><dd>Insert an environment template.</dd>
+
+<dt><a id="index-TAB-7"></a>TAB </dt><dd><p>
+The TAB key expands the template if point is inside a LaTeX fragment. For example, TAB expands ‘=fr=' to ‘=\frac{}{}=' and position point correctly inside the first brace. Another TAB gets you into the second brace.
+</p>
+
+<p>
+Even outside fragments, TAB expands environment abbreviations at the beginning of a line. For example, if you write ‘=equ=' at the beginning of a line and press TAB, this abbreviation is expanded to an ‘=equation=' environment. To get a list of all abbreviations, type M-x cdlatex-command-help.
+</p></dd>
+
+<dt><a id="index-_005f"></a>^, _ </dt><dd>Pressing _ and ^ inside a LaTeX fragment inserts these characters together with a pair of braces. If you use TAB to move out of the braces, and if the braces surround only a single character or macro, they are removed again (depending on the variable <code>cdlatex-simplify-sub-super-scripts</code>).</dd>
+
+<dt><a id="index-_0060"></a>` </dt><dd>Pressing the backquote followed by a character inserts math macros, also outside LaTeX fragments. If you wait more than 1.5 seconds after the backquote, a help window pops up.</dd>
+
+<dt><a id="index-_0027"></a>' </dt><dd>Pressing the single-quote followed by another character modifies the LaTeX symbol before point with an accent or a font. If you wait more than 1.5 seconds after the single-quote, a help window pops up. Character modification works only inside LaTeX fragments; outside the quote is normal.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

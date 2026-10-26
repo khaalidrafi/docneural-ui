@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-a-Table">1. 27.15.2 Creating a Table ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Table-Recognition.html">Table Recognition</a>   Previous: <a href="docs/emacs--Table-Definition.html">What is a Text-based Table?</a>   Up: <a href="docs/emacs--Text-Based-Tables.html">Editing Text-based Tables</a>
+</p>
+
+<p>
+<a id="Table-Creation"></a>
+</p>
+
+<hr />
+<div id="outline-container-Creating-a-Table" class="outline-2">
+<h2 id="Creating-a-Table"><span class="section-number-2">1.</span> 27.15.2 Creating a Table <a href="#Creating-a-Table">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-a-Table">
+<p>
+To create a text-based table from scratch, type M-x table-insert. This command prompts for the number of table columns, the number of table rows, cell width and cell height. The cell width and cell height do not include the cell borders; each can be specified as a single integer (which means each cell is given the same width/height), or as a sequence of integers separated by spaces or commas (which specify the width/height of the individual table columns/rows, counting from left to right for table columns and from top to bottom for table rows). The specified table is then inserted at point.
+</p>
+
+<p>
+The table inserted by M-x table-insert contains special text properties, which tell Emacs to treat it specially as a text-based table. If you save the buffer to a file and visit it again later, those properties are lost, and the table appears to Emacs as an ordinary piece of text. See the next section, for how to convert it back into a table.
+</p>
+</div>
+</div>

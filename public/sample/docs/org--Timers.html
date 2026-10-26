@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Taking-Notes-with-a-Relative-Timer">1. 8.6 Taking Notes with a Relative Timer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Timers"></a>
+Previous: <a href="docs/org--Effort-Estimates.html">Effort Estimates</a>, Up: <a href="docs/org--Dates-and-Times.html">Dates and Times</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Taking-Notes-with-a-Relative-Timer" class="outline-2">
+<h2 id="Taking-Notes-with-a-Relative-Timer"><span class="section-number-2">1.</span> 8.6 Taking Notes with a Relative Timer <a href="#Taking-Notes-with-a-Relative-Timer">¶</a></h2>
+<div class="outline-text-2" id="text-Taking-Notes-with-a-Relative-Timer">
+<p>
+Org provides two types of timers. There is a relative timer that counts up, which can be useful when taking notes during, for example, a meeting or a video viewing. There is also a countdown timer.
+</p>
+
+<p>
+The relative and countdown are started with separate commands.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-0"></a>C-c C-x 0 (<code>org-timer-start</code>) </dt><dd>Start or reset the relative timer. By default, the timer is set to 0. When called with a C-u prefix, prompt the user for a starting offset. The prompt will default to a timer string at point (if any), providing a convenient way to restart taking notes after a break in the process. When called with a double prefix argument C-u C-u, change all timer strings in the active region by a certain amount. This can be used to fix timer strings if the timer was not started at exactly the right moment.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-_003b"></a>C-c C-x ; (<code>org-timer-set-timer</code>) </dt><dd>Start a countdown timer. The user is prompted for a duration. <code>org-timer-default-timer</code> sets the default countdown value. Giving a numeric prefix argument overrides this default value. This command is available as ; in agenda buffers.</dd>
+</dl>
+
+<p>
+Once started, relative and countdown timers are controlled with the same commands.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-_002e"></a>C-c C-x . (<code>org-timer</code>) </dt><dd>Insert a relative time into the buffer. The first time you use this, the timer starts. Using a prefix argument restarts it.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-_002d"></a>C-c C-x - (<code>org-timer-item</code>) </dt><dd>Insert a description list item with the current relative time. With a prefix argument, first reset the timer to 0.</dd>
+
+<dt><a id="index-M_002dRET-3"></a>M-RET (<code>org-insert-heading</code>) </dt><dd>Once the timer list is started, you can also use M-RET to insert new timer items.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-_002c"></a>C-c C-x , (<code>org-timer-pause-or-continue</code>) </dt><dd>Pause the timer, or continue it if it is already paused.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-_005f"></a>C-c C-x _ (<code>org-timer-stop</code>) </dt><dd>Stop the timer. After this, you can only start a new timer, not continue the old one. This command also removes the timer from the mode line.</dd>
+</dl>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Effort-Estimates.html">Effort Estimates</a>, Up: <a href="docs/org--Dates-and-Times.html">Dates and Times</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

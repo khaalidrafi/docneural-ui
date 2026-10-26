@@ -1,0 +1,210 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#keyboard-layout">1.0.1. 11.8 Keyboard Layout</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Keyboard-Layout"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Locales.html">Locales</a>, Previous: <a href="docs/guix--User-Accounts.html">User Accounts</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Keyboard-Layout-2"></a>
+</p>
+</div>
+<div id="outline-container-keyboard-layout" class="outline-4">
+<h4 id="keyboard-layout"><span class="section-number-4">1.0.1.</span> 11.8 Keyboard Layout</h4>
+<div class="outline-text-4" id="text-keyboard-layout">
+<p>
+<a id="index-keyboard-layout-1"></a> <a id="index-keymap"></a>
+To specify what each key of your keyboard does, you need to tell the operating system what <i>keyboard layout</i> you want to use. The default, when nothing is specified, is the US English QWERTY layout for 105-key PC keyboards. However, German speakers will usually prefer the German QWERTZ layout, French speakers will want the AZERTY layout, and so on; hackers might prefer Dvorak or bépo, and they might even want to further customize the effect of some of the keys. This section explains how to get that done.
+</p>
+
+<p>
+<a id="index-keyboard-layout_002c-definition"></a>
+There are three components that will want to know about your keyboard layout:
+</p>
+
+<ul class="org-ul">
+<li>The <i>bootloader</i> may want to know what keyboard layout you want to use (see <a href="docs/guix--Bootloader-Configuration.html"><code>keyboard-layout</code></a>). This is useful if you want, for instance, to make sure that you can type the passphrase of your encrypted root partition using the right layout.</li>
+<li>The <i>operating system kernel</i>, Linux, will need that so that the console is properly configured (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>keyboard-layout</code></a>).</li>
+<li>The <i>graphical display server</i>, usually Xorg, also has its own idea of the keyboard layout (see <a href="docs/guix--X-Window.html"><code>keyboard-layout</code></a>).</li>
+</ul>
+
+<p>
+Guix allows you to configure all three separately but, fortunately, it allows you to share the same keyboard layout for all three components.
+</p>
+
+<p>
+<a id="index-XKB_002c-keyboard-layouts"></a>
+Keyboard layouts are represented by records created by the <code>keyboard-layout</code> procedure of <code>(gnu system keyboard)</code>. Following the X Keyboard extension (XKB), each layout has four attributes: a name (often a language code such as “fi” for Finnish or “jp” for Japanese), an optional variant name, an optional keyboard model name, and a possibly empty list of additional options. In most cases the layout name is all you care about.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: keyboard-layout name [variant] [#:model] [#:options '()]</dt><dd><p>
+Return a new keyboard layout with the given <code>name</code> and <code>variant</code>.
+</p>
+
+<p>
+<code>name</code> must be a string such as <code>"fr"</code>; <code>variant</code> must be a string such as <code>"bepo"</code> or <code>"nodeadkeys"</code>. See the <code>xkeyboard-config</code> package for valid options.
+</p></dd>
+</dl>
+
+<p>
+Here are a few examples:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; The German QWERTZ layout.  Here we assume a standard
+;; "pc105" keyboard model.
+(keyboard-layout "de")
+
+;; The bépo variant of the French layout.
+(keyboard-layout "fr" "bepo")
+
+;; The Catalan layout.
+(keyboard-layout "es" "cat")
+
+;; Arabic layout with "Alt-Shift" to switch to US layout.
+(keyboard-layout "ar,us" #:options '("grp:alt_shift_toggle"))
+
+;; The Latin American Spanish layout.  In addition, the
+;; "Caps Lock" key is used as an additional "Ctrl" key,
+;; and the "Menu" key is used as a "Compose" key to enter
+;; accented letters.
+(keyboard-layout "latam"
+                 #:options '("ctrl:nocaps" "compose:menu"))
+
+;; The Russian layout for a ThinkPad keyboard.
+(keyboard-layout "ru" #:model "thinkpad")
+
+;; The "US international" layout, which is the US layout plus
+;; dead keys to enter accented characters.  This is for an
+;; Apple MacBook keyboard.
+(keyboard-layout "us" "intl" #:model "macbook78")
+</pre>
+</div>
+
+<p>
+See the <code>share/X11/xkb</code> directory of the <code>xkeyboard-config</code> package for a complete list of supported layouts, variants, and models.
+</p>
+
+<p>
+<a id="index-keyboard-layout_002c-configuration"></a>
+Let's say you want your system to use the Turkish keyboard layout throughout your system&#x2014;bootloader, console, and Xorg. Here's what your system configuration would look like:
+</p>
+
+<p>
+<a id="index-set_002dxorg_002dconfiguration"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Using the Turkish layout for the bootloader, the console,
+;; and for Xorg.
+
+(operating-system
+  ;; ...
+  (keyboard-layout (keyboard-layout "tr"))  ;for the console
+  (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (targets '("/boot/efi"))
+                (keyboard-layout keyboard-layout))) ;for GRUB
+  (services (cons (set-xorg-configuration
+                    (xorg-configuration             ;for Xorg
+                      (keyboard-layout keyboard-layout)))
+                  %desktop-services)))
+</pre>
+</div>
+
+<p>
+In the example above, for GRUB and for Xorg, we just refer to the <code>keyboard-layout</code> field defined above, but we could just as well refer to a different layout. The <code>set-xorg-configuration</code> procedure communicates the desired Xorg configuration to the graphical log-in manager, by default GDM.
+</p>
+
+<p>
+We've discussed how to specify the <i>default</i> keyboard layout of your system when it starts, but you can also adjust it at run time:
+</p>
+
+<ul class="org-ul">
+<li>If you're using GNOME, its settings panel has a “Region &amp; Language” entry where you can select one or more keyboard layouts.</li>
+<li><p>
+Under Xorg, the <code>setxkbmap</code> command (from the same-named package) allows you to change the current layout. For example, this is how you would change the layout to US Dvorak:
+</p>
+
+<pre class="example" id="orgf8bd004">
+setxkbmap us dvorak
+</pre></li>
+
+<li><p>
+The <code>loadkeys</code> command changes the keyboard layout in effect in the Linux console. However, note that <code>loadkeys</code> does <i>not</i> use the XKB keyboard layout categorization described above. The command below loads the French bépo layout:
+</p>
+
+<pre class="example" id="orgdaeefe2">
+loadkeys fr-bepo
+</pre></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Locales.html">Locales</a>, Previous: <a href="docs/guix--User-Accounts.html">User Accounts</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,178 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#creating-a-channel">1.0.1. 6.7 Creating a Channel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Creating-a-Channel"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Package-Modules-in-a-Sub_002ddirectory.html">Package Modules in a Sub-directory</a>, Previous: <a href="docs/guix--Channels-with-Substitutes.html">Channels with Substitutes</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Creating-a-Channel-1"></a>
+</p>
+</div>
+<div id="outline-container-creating-a-channel" class="outline-4">
+<h4 id="creating-a-channel"><span class="section-number-4">1.0.1.</span> 6.7 Creating a Channel</h4>
+<div class="outline-text-4" id="text-creating-a-channel">
+<p>
+<a id="index-personal-packages-_0028channels_0029"></a> <a id="index-channels_002c-for-personal-packages"></a>
+Let's say you have a bunch of custom package variants or personal packages that you think would make little sense to contribute to the Guix project, but would like to have these packages transparently available to you at the command line. By creating a <i>channel</i>, you can use and publish such a package collection. This involves the following steps:
+</p>
+
+<ol class="org-ol">
+<li><p>
+A channel lives in a Git repository so the first step, when creating a channel, is to create its repository:
+</p>
+
+<pre class="example" id="orgef2b1f6">
+mkdir my-channel
+cd my-channel
+git init
+</pre></li>
+
+<li><p>
+The next step is to create files containing package modules (see <a href="docs/guix--Package-Modules.html">Package Modules</a>), each of which will contain one or more package definitions (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>). A channel can provide things other than packages, such as build systems or services; we're using packages as it's the most common use case.
+</p>
+
+<p>
+For example, Alice might want to provide a module called <code>(alice packages greetings)</code> that will provide her favorite “hello world” implementations. To do that Alice will create a directory corresponding to that module name.
+</p>
+
+<pre class="example" id="org5969d6c">
+mkdir -p alice/packages
+$EDITOR alice/packages/greetings.scm
+git add alice/packages/greetings.scm
+</pre>
+
+<p>
+You can name your package modules however you like; the main constraint to keep in mind is to avoid name clashes with other package collections, which is why our hypothetical Alice wisely chose the <code>(alice packages …)</code> name space.
+</p>
+
+<p>
+Note that you can also place modules in a sub-directory of the repository; see <a href="docs/guix--Package-Modules-in-a-Sub_002ddirectory.html">Package Modules in a Sub-directory</a>, for more info on that.
+</p></li>
+
+<li><p>
+With this first module in place, the next step is to test the packages it provides. This can be done with <code>guix build</code>, which needs to be told to look for modules in the Git checkout. For example, assuming <code>(alice packages greetings)</code> provides a package called <code>hi-from-alice</code>, Alice will run this command from the Git checkout:
+</p>
+
+<pre class="example" id="orgace26f4">
+guix build -L. hi-from-alice
+</pre>
+
+<p>
+&#x2026; where <code>-L.</code> adds the current directory to Guile's load path (see <a href="https://www.gnu.org/software/guile/manual/html_node/Load-Paths.html#Load-Paths">Load Paths</a> in GNU Guile Reference Manual).
+</p></li>
+
+<li><p>
+It might take Alice a few iterations to obtain satisfying package definitions. Eventually Alice will commit this file:
+</p>
+
+<pre class="example" id="org912dfac">
+git commit
+</pre>
+
+<p>
+As a channel author, consider bundling authentication material with your channel so that users can authenticate it. See <a href="docs/guix--Channel-Authentication.html">Channel Authentication</a>, and <a href="docs/guix--Specifying-Channel-Authorizations.html">Specifying Channel Authorizations</a>, for info on how to do it.
+</p></li>
+
+<li><p>
+To use Alice's channel, anyone can now add it to their channel file (see <a href="docs/guix--Specifying-Additional-Channels.html">Specifying Additional Channels</a>) and run <code>guix pull</code> (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>):
+</p>
+
+<pre class="example" id="orgf56db22">
+$EDITOR ~/.config/guix/channels.scm
+guix pull
+</pre>
+
+<p>
+Guix will now behave as if the root directory of that channel's Git repository had been permanently added to the Guile load path. In this example, <code>(alice packages greetings)</code> will automatically be found by the <code>guix</code> command.
+</p></li>
+</ol>
+
+<p>
+Voilà!
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> Before you publish your channel, we would like to share a few words of caution:
+</p>
+
+<ul class="org-ul">
+<li>Before publishing a channel, please consider contributing your package definitions to Guix proper (see <a href="docs/guix--Contributing.html">Contributing</a>). Guix as a project is open to free software of all sorts, and packages in Guix proper are readily available to all Guix users and benefit from the project's quality assurance process.</li>
+<li>Package modules and package definitions are Scheme code that uses various programming interfaces (APIs). Those may occasionally change, in accordance with our deprecation policy (see <a href="docs/guix--Deprecation-Policy.html">Deprecation Policy</a>), and it is your responsibility as a channel author to adjust your code accordingly.</li>
+<li>Corollary: if you're using an external channel and that channel breaks, please <i>report the issue to the channel authors</i>, not to the Guix project.</li>
+</ul>
+
+<p>
+You've been warned! Having said this, we believe external channels are a practical way to exert your freedom to augment Guix' package collection and to share your improvements, which are basic tenets of <a href="https://www.gnu.org/philosophy/free-sw.html">free software</a>. Please email us at <a href="mailto:guix-devel@gnu.org">guix-devel@gnu.org</a> if you'd like to discuss this.
+</p>
+</blockquote>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Package-Modules-in-a-Sub_002ddirectory.html">Package Modules in a Sub-directory</a>, Previous: <a href="docs/guix--Channels-with-Substitutes.html">Channels with Substitutes</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

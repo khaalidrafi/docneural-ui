@@ -1,0 +1,242 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#user-accounts">1.0.1. 11.7 User Accounts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="User-Accounts"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a>, Previous: <a href="docs/guix--Swap-Space.html">Swap Space</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="User-Accounts-1"></a>
+</p>
+</div>
+<div id="outline-container-user-accounts" class="outline-4">
+<h4 id="user-accounts"><span class="section-number-4">1.0.1.</span> 11.7 User Accounts</h4>
+<div class="outline-text-4" id="text-user-accounts">
+<p>
+<a id="index-users"></a> <a id="index-accounts"></a> <a id="index-user-accounts"></a>
+User accounts and groups are entirely managed through the <code>operating-system</code> declaration. They are specified with the <code>user-account</code> and <code>user-group</code> forms:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(user-account
+  (name "alice")
+  (group "users")
+  (supplementary-groups '("wheel"   ;allow use of sudo, etc.
+                          "audio"   ;sound card
+                          "video"   ;video devices such as webcams
+                          "cdrom")) ;the good ol' CD-ROM
+  (comment "Bob's sister"))
+</pre>
+</div>
+
+<p>
+Here's a user account that uses a different shell and a custom home directory (the default would be <code>"/home/bob"</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(user-account
+  (name "bob")
+  (group "users")
+  (comment "Alice's bro")
+  (shell (file-append zsh "/bin/zsh"))
+  (home-directory "/home/robert"))
+</pre>
+</div>
+
+<p>
+When booting or upon completion of <code>guix system reconfigure</code>, the system ensures that only the user accounts and groups specified in the <code>operating-system</code> declaration exist, and with the specified properties. Thus, account or group creations or modifications made by directly invoking commands such as <code>useradd</code> are lost upon reconfiguration or reboot. This ensures that the system remains exactly as declared.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: user-account </dt><dd>Objects of this type represent user accounts. The following members may be specified:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The name of the user account.</dd>
+
+<dt><code>group</code> </dt><dd>This is the name (a string) or identifier (a number) of the user group this account belongs to.</dd>
+
+<dt><code>supplementary-groups</code> (default: <code>'()</code>)</dt><dd>Optionally, this can be defined as a list of group names that this account belongs to.</dd>
+
+<dt><code>uid</code> (default: <code>#f</code>)</dt><dd>This is the user ID for this account (a number), or <code>#f</code>. In the latter case, a number is automatically chosen by the system when the account is created.</dd>
+
+<dt><code>comment</code> (default: <code>""</code>)</dt><dd><p>
+A comment about the account, such as the account owner's full name.
+</p>
+
+<p>
+Note that, for non-system accounts, users are free to change their real name as it appears in <code>/etc/passwd</code> using the <code>chfn</code> command. When they do, their choice prevails over the system administrator's choice; reconfiguring does <i>not</i> change their name.
+</p></dd>
+
+<dt><code>home-directory</code></dt><dd>This is the name of the home directory for the account.</dd>
+
+<dt><code>create-home-directory?</code> (default: <code>#t</code>)</dt><dd>Indicates whether the home directory of this account should be created if it does not exist yet.</dd>
+
+<dt><code>shell</code> (default: Bash)</dt><dd><p>
+This is a G-expression denoting the file name of a program to be used as the shell (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>). For example, you would refer to the Bash executable like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-append bash "/bin/bash")
+</pre>
+</div>
+
+<p>
+&#x2026; and to the Zsh executable like that:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-append zsh "/bin/zsh")
+</pre>
+</div></dd>
+
+<dt><code>system?</code> (default: <code>#f</code>)</dt><dd><p>
+This Boolean value indicates whether the account is a “system” account. System accounts are sometimes treated specially; for instance, graphical login managers do not list them.
+</p>
+
+<p>
+<a id="user_002daccount_002dpassword"></a><a id="index-password_002c-for-user-accounts"></a>
+</p></dd>
+
+<dt><code>password</code> (default: <code>#f</code>)</dt><dd><p>
+You would normally leave this field to <code>#f</code>, initialize user passwords as <code>root</code> with the <code>passwd</code> command, and then let users change it with <code>passwd</code>. Passwords set with <code>passwd</code> are of course preserved across reboot and reconfiguration.
+</p>
+
+<p>
+If you <i>do</i> want to set an initial password for an account, then this field must contain the encrypted password, as a string. You can use the <code>crypt</code> procedure for this purpose:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(user-account
+  (name "charlie")
+  (group "users")
+
+  ;; Specify a SHA-512-hashed initial password.
+  (password (crypt "InitialPassword!" "$6$abc")))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Note:</b> The hash of this initial password will be available in a file in <code>/gnu/store</code>, readable by all the users, so this method must be used with care.
+</p>
+</blockquote>
+
+<p>
+See <a href="https://www.gnu.org/software/libc/manual/html_node/Passphrase-Storage.html#Passphrase-Storage">Passphrase Storage</a> in The GNU C Library Reference Manual, for more information on password encryption, and <a href="https://www.gnu.org/software/guile/manual/html_node/Encryption.html#Encryption">Encryption</a> in GNU Guile Reference Manual, for information on Guile's <code>crypt</code> procedure.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-groups-1"></a>
+User group declarations are even simpler:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(user-group (name "students"))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Data Type: user-group </dt><dd>This type is for, well, user groups. There are just a few fields:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The name of the group.</dd>
+
+<dt><code>id</code> (default: <code>#f</code>)</dt><dd>The group identifier (a number). If <code>#f</code>, a new number is automatically allocated when the group is created.</dd>
+
+<dt><code>system?</code> (default: <code>#f</code>)</dt><dd>This Boolean value indicates whether the group is a “system” group. System groups have low numerical IDs.</dd>
+
+<dt><code>password</code> (default: <code>#f</code>)</dt><dd>What, user groups can have a password? Well, apparently yes. Unless <code>#f</code>, this field specifies the password of the group.</dd>
+</dl></dd>
+</dl>
+
+<p>
+For convenience, a variable lists all the basic user groups one may expect:
+</p>
+
+<dl class="org-dl">
+<dt>Variable: %base-groups </dt><dd>This is the list of basic user groups that users and/or packages expect to be present on the system. This includes groups such as “root”, “wheel”, and “users”, as well as groups used to control access to specific devices such as “audio”, “disk”, and “cdrom”.</dd>
+
+<dt>Variable: %base-user-accounts </dt><dd><p>
+This is the list of basic system accounts that programs may expect to find on a GNU/Linux system, such as the “nobody” account.
+</p>
+
+<p>
+Note that the “root” account is not included here. It is a special-case and is automatically added whether or not it is specified.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-containers_002c-subordinate-IDs"></a>
+The Linux kernel also implements <i>subordinate user and group IDs</i>, or “subids”, which are used to map the ID of a user and group to several IDs inside separate name spaces&#x2014;inside “containers”. See <a href="docs/guix--Miscellaneous-Services.html#subordinate_002duser_002dgroup_002dids">the subordinate user and group ID service</a>, for information on how to configure it.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a>, Previous: <a href="docs/guix--Swap-Space.html">Swap Space</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

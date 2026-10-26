@@ -1,0 +1,93 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Bookmarks-1">1. 15.8 Bookmarks ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Keyboard-Macro-Registers.html">Keyboard Macro Registers</a>   Up: <a href="docs/emacs--Registers.html">Registers</a>
+</p>
+
+<p>
+<a id="Bookmarks"></a>
+</p>
+
+<hr />
+<div id="outline-container-Bookmarks-1" class="outline-2">
+<h2 id="Bookmarks-1"><span class="section-number-2">1.</span> 15.8 Bookmarks <a href="#Bookmarks-1">¶</a></h2>
+<div class="outline-text-2" id="text-Bookmarks-1">
+<p>
+<i>Bookmarks</i> are somewhat like registers in that they record positions you can jump to. Unlike registers, they have long names, and they persist automatically from one Emacs session to the next. The prototypical use of bookmarks is to record where you were reading in various files.
+</p>
+
+<dl class="org-dl">
+<dt>C-x r m RET</dt><dd>Set the bookmark for the visited file, at point.</dd>
+
+<dt>C-x r m <code>bookmark</code> RET</dt><dd>Set the bookmark named <code>bookmark</code> at point (<code>bookmark-set</code>).</dd>
+
+<dt>C-x r M <code>bookmark</code> RET</dt><dd>Like C-x r m, but don't overwrite an existing bookmark.</dd>
+
+<dt>C-x r b <code>bookmark</code> RET</dt><dd>Jump to the bookmark named <code>bookmark</code> (<code>bookmark-jump</code>).</dd>
+
+<dt>C-x r l</dt><dd>List all bookmarks (<code>list-bookmarks</code>).</dd>
+
+<dt>M-x bookmark-save</dt><dd>Save all the current bookmark values in the default bookmark file.</dd>
+</dl>
+
+<p>
+To record the current position in the visited file, use the command C-x r m, which sets a bookmark using the visited file name as the default for the bookmark name. If you name each bookmark after the file it points to, then you can conveniently revisit any of those files with C-x r b (<code>bookmark-jump</code>), and move to the position of the bookmark at the same time.
+</p>
+
+<p>
+In addition to recording the current position, on graphical displays C-x r m places a special image on the left fringe (see <a href="docs/emacs--Fringes.html">Window Fringes</a>) of the screen line corresponding to the recorded position, to indicate that there's a bookmark there. This can be controlled by the user option <code>bookmark-fringe-mark</code>: customize it to <code>nil</code> to disable the fringe mark. The default value is <code>bookmark-mark</code>, which is the bitmap used for this purpose. When you later use C-x r b to jump back to the bookmark, the fringe mark will be again shown on the fringe.
+</p>
+
+<p>
+The command C-x r M (<code>bookmark-set-no-overwrite</code>) works like C-x r m, but it signals an error if the specified bookmark already exists, instead of overwriting it.
+</p>
+
+<p>
+To display a list of all your bookmarks in a separate buffer, type C-x r l (<code>list-bookmarks</code>). If you switch to that buffer, you can use it to edit your bookmark definitions or annotate the bookmarks. Type C-h m in the bookmark buffer for more information about its special editing commands.
+</p>
+
+<p>
+When you kill Emacs, Emacs saves your bookmarks, if you have changed any bookmark values. You can also save the bookmarks at any time with the M-x bookmark-save command. Bookmarks are saved to the file <code>~/.emacs.d/bookmarks</code> (for compatibility with older versions of Emacs, if you have a file named <code>~/.emacs.bmk</code>, that is used instead). The bookmark commands load your default bookmark file automatically. This saving and loading is how bookmarks persist from one Emacs session to the next.
+</p>
+
+<p>
+If you set the variable <code>bookmark-save-flag</code> to 1, each command that sets a bookmark will also save your bookmarks; this way, you don't lose any bookmark values even if Emacs crashes. The value, if a number, says how many bookmark modifications should go by between saving. If you set this variable to <code>nil</code>, Emacs only saves bookmarks if you explicitly use M-x bookmark-save.
+</p>
+
+<p>
+The variable <code>bookmark-default-file</code> specifies the file in which to save bookmarks by default.
+</p>
+
+<p>
+If you set the variable <code>bookmark-use-annotations</code> to <code>t</code>, setting a bookmark will query for an annotation. If a bookmark has an annotation, it is automatically shown in a separate window when you jump to the bookmark.
+</p>
+
+<p>
+Bookmark position values are saved with surrounding context, so that <code>bookmark-jump</code> can find the proper position even if the file is modified slightly. The variable <code>bookmark-search-size</code> says how many characters of context to record on each side of the bookmark's position. (In buffers that are visiting encrypted files, no context is saved in the bookmarks file no matter the value of this variable.)
+</p>
+
+<p>
+Here are some additional commands for working with bookmarks:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-bookmark_002dload"></a>M-x bookmark-load RET <code>filename</code> RET </dt><dd>Load a file named <code>filename</code> that contains a list of bookmark values. You can use this command, as well as <code>bookmark-write</code>, to work with other files of bookmark values in addition to your default bookmark file.</dd>
+
+<dt><a id="index-bookmark_002dwrite"></a>M-x bookmark-write RET <code>filename</code> RET </dt><dd>Save all the current bookmark values in the file <code>filename</code>.</dd>
+
+<dt><a id="index-bookmark_002ddelete"></a>M-x bookmark-delete RET <code>bookmark</code> RET </dt><dd>Delete the bookmark named <code>bookmark</code>.</dd>
+
+<dt><a id="index-bookmark_002dinsert_002dlocation"></a>M-x bookmark-insert-location RET <code>bookmark</code> RET </dt><dd>Insert in the buffer the name of the file that bookmark <code>bookmark</code> points to.</dd>
+
+<dt><a id="index-bookmark_002dinsert"></a>M-x bookmark-insert RET <code>bookmark</code> RET </dt><dd>Insert in the buffer the <i>contents</i> of the file that bookmark <code>bookmark</code> points to.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

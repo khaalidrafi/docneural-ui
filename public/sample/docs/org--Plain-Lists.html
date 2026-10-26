@@ -1,0 +1,137 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Plain-Lists-1">0.0.1. 2.6 Plain Lists ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org0e33ab2">1. Lord of the Rings</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Plain-Lists"></a>
+Next: <a href="docs/org--Drawers.html">Drawers</a>, Previous: <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>, Up: <a href="docs/org--Document-Structure.html">Document Structure</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Plain-Lists-1" class="outline-4">
+<h4 id="Plain-Lists-1"><span class="section-number-4">0.0.1.</span> 2.6 Plain Lists <a href="#Plain-Lists-1">¶</a></h4>
+<div class="outline-text-4" id="text-Plain-Lists-1">
+<p>
+Within an entry of the outline tree, hand-formatted lists can provide additional structure. They also provide a way to create lists of checkboxes (see <a href="docs/org--Checkboxes.html">Checkboxes</a>). Org supports editing such lists, and every exporter (see <a href="docs/org--Exporting.html">Exporting</a>) can parse and format them.
+</p>
+
+<p>
+Org knows ordered lists, unordered lists, and description lists.
+</p>
+
+<ul class="org-ul">
+<li><i>Unordered</i> list items start with ‘=-<code>', ‘=+</code>', or ‘=*=' as bullets.</li>
+<li><i>Ordered</i> list items start with a numeral followed by either a period or a right parenthesis, such as ‘=1.=' or ‘=1)=' If you want a list to start with a different value&#x2014;e.g., 20&#x2014;start the text of the item with ‘=[@20]='. Those constructs can be used in any item of the list in order to enforce a particular numbering.</li>
+<li><i>Description</i> list items are unordered list items, and contain the separator ‘=::=' to distinguish the description <i>term</i> from the description text.</li>
+</ul>
+
+<p>
+Items belonging to the same list must have the same indentation on the first line. In particular, if an ordered list reaches number ‘=10.=', then the 2-digit numbers must be written left-aligned with the other numbers in the list. An item ends before the next line that has an indentation less than or equal to its bullet/number.
+</p>
+
+<p>
+A list ends whenever every item has ended, which means before any line with an indentation less than or equal to that of the top-level items. It also ends before two blank lines. In that case, all items are closed. Here is an example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org0e33ab2" class="outline-2">
+<h2 id="org0e33ab2"><span class="section-number-2">1.</span> Lord of the Rings</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+My favorite scenes are (in this order)
+</p>
+<ol class="org-ol">
+<li>The attack of the Rohirrim</li>
+<li>Eowyn's fight with the witch king
+<ul class="org-ul">
+<li>this was already my favorite scene in the book</li>
+<li>I really like Miranda Otto.</li>
+</ul></li>
+<li><p>
+Peter Jackson being shot by Legolas
+</p>
+<ul class="org-ul">
+<li>on DVD only</li>
+</ul>
+<p>
+He makes a really funny face when it happens.
+</p></li>
+<li value="8">&lt;favorite scenes 4 to 8 are skipped for brevity&gt;</li>
+</ol>
+<p>
+But in the end, no individual scenes matter but the film as a whole.
+Important actors in this film are:
+</p>
+<dl class="org-dl">
+<dt>Elijah Wood</dt><dd>He plays Frodo</dd>
+<dt>Sean Astin</dt><dd>He plays Sam, Frodo's friend.  I still remember him
+very well from his role as Mikey Walsh in <i>The Goonies</i>.</dd>
+</dl>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+Org supports these lists by tuning filling and wrapping commands to deal with them correctly, and by exporting them properly (see <a href="docs/org--Exporting.html">Exporting</a>). Since indentation is what governs the structure of these lists, many structural constructs like ‘=#+BEGIN_=' blocks can be indented to signal that they belong to a particular item.
+</p>
+
+<p>
+If you find that using a different bullet for a sub-list&#x2014;than that used for the current list-level&#x2014;improves readability, customize the variable <code>org-list-demote-modify-bullet</code>. To get a greater difference of indentation between items and their sub-items, customize <code>org-list-indent-offset</code>.
+</p>
+
+<p>
+The following commands act on items when point is in the first line of an item&#x2014;the line with the bullet or number. Some of them imply the application of automatic rules to keep list structure intact. If some of these actions get in your way, configure <code>org-list-automatic-rules</code> to disable them individually.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-cycling_002c-in-plain-lists"></a>TAB (<code>org-cycle</code>) </dt><dd>Items can be folded just like headline levels. Normally this works only if point is on a plain list item. For more details, see the variable <code>org-cycle-include-plain-lists</code>. If this variable is set to <code>integrate</code>, plain list items are treated like low-level headlines. The level of an item is then given by the indentation of the bullet/number. Items are always subordinate to real headlines, however; the hierarchies remain completely separated. In a new item with no text yet, the first TAB demotes the item to become a child of the previous one. Subsequent TABs move the item to meaningful levels in the list and eventually get it back to its initial position.</dd>
+
+<dt><a id="index-M_002dRET-1"></a>M-RET (<code>org-insert-item</code>) </dt><dd>Insert new item at current level. With a prefix argument, force a new heading (see <a href="docs/org--Structure-Editing.html">Structure Editing</a>). If this command is used in the middle of an item, that item is <i>split</i> in two, and the second part becomes the new item. If this command is executed <i>before the item's body</i>, the new item is created <i>before</i> the current one.</dd>
+
+<dt><a id="index-M_002dS_002dRET-1"></a>M-S-RET </dt><dd>Insert a new item with a checkbox (see <a href="docs/org--Checkboxes.html">Checkboxes</a>).</dd>
+
+<dt><a id="index-S_002dUP"></a>S-UP, S-DOWN </dt><dd>Jump to the previous/next item in the current list, but only if <code>org-support-shift-select</code> is off. If not, you can still use paragraph jumping commands like C-UP and C-DOWN to quite similar effect.</dd>
+
+<dt><a id="index-M_002dUP-1"></a>M-UP, M-DOWN </dt><dd>Move the item including sub-items up/down, i.e., swap with previous/next item of same indentation. If the list is ordered, renumbering is automatic.</dd>
+
+<dt><a id="index-M_002dLEFT-1"></a>M-LEFT, M-RIGHT </dt><dd>Decrease/increase the indentation of an item, leaving children alone.</dd>
+
+<dt><a id="index-M_002dS_002dLEFT-1"></a>M-S-LEFT, M-S-RIGHT </dt><dd><p>
+Decrease/increase the indentation of the item, including sub-items. Initially, the item tree is selected based on current indentation. When these commands are executed several times in direct succession, the initially selected region is used, even if the new indentation would imply a different hierarchy. To use the new hierarchy, break the command chain by moving point.
+</p>
+
+<p>
+As a special case, using this command on the very first item of a list moves the whole list. This behavior can be disabled by configuring <code>org-list-automatic-rules</code>. The global indentation of a list has no influence on the text <i>after</i> the list.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002dc"></a>C-c C-c </dt><dd>If there is a checkbox (see <a href="docs/org--Checkboxes.html">Checkboxes</a>) in the item line, toggle the state of the checkbox. In any case, verify bullets and indentation consistency in the whole list.</dd>
+
+<dt><a id="index-C_002dc-_002d"></a>C-c - </dt><dd>Cycle the entire list level through the different itemize/enumerate bullets (‘=-<code>', ‘=+</code>', ‘=*=', ‘=1.=', ‘=1)=') or a subset of them, depending on <code>org-plain-list-ordered-item-terminator</code>, the type of list, and its indentation. With a numeric prefix argument N, select the Nth bullet from this list. If there is an active region when calling this, all lines are converted to list items. With a prefix argument, the selected text is changed into a single item. If the first line already was a list item, any item marker is removed from the list. Finally, even without an active region, a normal line is converted into a list item.</dd>
+
+<dt><a id="index-C_002dc-_002a-1"></a>C-c * </dt><dd>Turn a plain list item into a headline&#x2014;so that it becomes a subheading at its location. See <a href="docs/org--Structure-Editing.html">Structure Editing</a> for a detailed explanation.</dd>
+
+<dt><a id="index-C_002dc-C_002d_002a"></a>C-c C-* </dt><dd>Turn the whole plain list into a subtree of the current heading. Checkboxes (see <a href="docs/org--Checkboxes.html">Checkboxes</a>) become ‘=TODO=' or ‘=DONE=' keywords when unchecked or checked, respectively.</dd>
+
+<dt><a id="index-org_002dsupport_002dshift_002dselect-1"></a>S-LEFT, S-RIGHT </dt><dd>This command also cycles bullet styles when point is on the bullet or anywhere in an item line, with details depending on <code>org-support-shift-select</code>.</dd>
+
+<dt><a id="index-C_002dc-_005e-1"></a>C-c ^ </dt><dd>Sort the plain list. Prompt for the sorting method: numerically, alphabetically, by time, or by custom function.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

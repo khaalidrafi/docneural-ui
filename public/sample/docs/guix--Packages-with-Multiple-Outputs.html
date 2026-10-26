@@ -1,0 +1,128 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#packages-with-multiple-outputs">1.0.1. 5.4 Packages with Multiple Outputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Packages-with-Multiple-Outputs"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-locate.html">Invoking <code>guix locate</code></a>, Previous: <a href="docs/guix--Substitutes.html">Substitutes</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Packages-with-Multiple-Outputs-1"></a>
+</p>
+</div>
+<div id="outline-container-packages-with-multiple-outputs" class="outline-4">
+<h4 id="packages-with-multiple-outputs"><span class="section-number-4">1.0.1.</span> 5.4 Packages with Multiple Outputs</h4>
+<div class="outline-text-4" id="text-packages-with-multiple-outputs">
+<p>
+<a id="index-multiple_002doutput-packages"></a> <a id="index-package-outputs"></a> <a id="index-outputs"></a>
+Often, packages defined in Guix have a single <i>output</i>&#x2014;i.e., the source package leads to exactly one directory in the store. When running <code>guix install glibc</code>, one installs the default output of the GNU libc package; the default output is called <code>out</code>, but its name can be omitted as shown in this command. In this particular case, the default output of <code>glibc</code> contains all the C header files, shared libraries, static libraries, Info documentation, and other supporting files.
+</p>
+
+<p>
+Sometimes it is more appropriate to separate the various types of files produced from a single source package into separate outputs. For instance, the GLib C library (used by GTK+ and related packages) installs more than 20 MiB of reference documentation as HTML pages. To save space for users who do not need it, the documentation goes to a separate output, called <code>doc</code>. To install the main GLib output, which contains everything but the documentation, one would run:
+</p>
+
+<pre class="example" id="org4da107b">
+guix install glib
+</pre>
+
+<p>
+<a id="index-documentation"></a>
+The command to install its documentation is:
+</p>
+
+<pre class="example" id="org8057b55">
+guix install glib:doc
+</pre>
+
+<p>
+While the colon syntax works for command-line specification of package outputs, it will not work when using a package <i>variable</i> in Scheme code. For example, to add the documentation of <code>glib</code> to the globally installed packages of an <code>operating-system</code> (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>), a list of two items, the first one being the package <i>variable</i> and the second one the name of the output to select (a string), must be used instead:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages glib))
+;; glib-with-documentation is the Guile symbol for the glib package
+(operating-system
+ ...
+ (packages
+  (append
+   (list (list glib-with-documentation "doc"))
+         %base-packages)))
+</pre>
+</div>
+
+<p>
+Some packages install programs with different “dependency footprints”. For instance, the WordNet package installs both command-line tools and graphical user interfaces (GUIs). The former depend solely on the C library, whereas the latter depend on Tcl/Tk and the underlying X libraries. In this case, we leave the command-line tools in the default output, whereas the GUIs are in a separate output. This allows users who do not need the GUIs to save space. The <code>guix size</code> command can help find out about such situations (see <a href="docs/guix--Invoking-guix-size.html">Invoking <code>guix size</code></a>). <code>guix graph</code> can also be helpful (see <a href="docs/guix--Invoking-guix-graph.html">Invoking <code>guix graph</code></a>).
+</p>
+
+<p>
+There are several such multiple-output packages in the GNU distribution. Other conventional output names include <code>lib</code> for libraries and possibly header files, <code>bin</code> for stand-alone programs, and <code>debug</code> for debugging information (see <a href="docs/guix--Installing-Debugging-Files.html">Installing Debugging Files</a>). The outputs of a package are listed in the third column of the output of <code>guix package --list-available</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-locate.html">Invoking <code>guix locate</code></a>, Previous: <a href="docs/guix--Substitutes.html">Substitutes</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

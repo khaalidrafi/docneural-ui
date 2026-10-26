@@ -1,0 +1,1232 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Base-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Base-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="base-services"></a>11.10.1 Base Services<br />
+<div class="outline-text-5" id="text-base-services">
+<p>
+The <code>(gnu services base)</code> module provides definitions for the basic services that one expects from the system. The services exported by this module are listed below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: %base-services </dt><dd><p>
+This variable contains a list of basic services (see <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, for more information on service objects) one would expect from the system: a login service (mingetty) on each tty, syslogd, the libc name service cache daemon (nscd), the udev device manager, and more.
+</p>
+
+<p>
+This is the default value of the <code>services</code> field of <code>operating-system</code> declarations. Usually, when customizing a system, you will want to append services to <code>%base-services</code>, like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(append (list (service avahi-service-type)
+              (service openssh-service-type))
+        %base-services)
+</pre>
+</div></dd>
+
+<dt>Variable: special-files-service-type </dt><dd><p>
+This is the service that sets up “special files” such as <code>/bin/sh</code>; an instance of it is part of <code>%base-services</code>.
+</p>
+
+<p>
+The value associated with <code>special-files-service-type</code> services must be a list of two-element lists where the first element is the “special file” and the second element is its target. By default it is:
+</p>
+
+<p>
+<a id="index-_002fbin_002fsh"></a> <a id="index-sh_002c-in-_002fbin"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`(("/bin/sh" ,(file-append bash "/bin/sh"))
+  ("/usr/bin/env" ,(file-append coreutils "/bin/env")))
+</pre>
+</div>
+
+<p>
+<a id="index-_002fusr_002fbin_002fenv"></a> <a id="index-env_002c-in-_002fusr_002fbin"></a>
+</p>
+
+<p>
+If you want to add, say, <code>/bin/bash</code> to your system, you can change it to:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`(("/bin/sh" ,(file-append bash "/bin/sh"))
+  ("/usr/bin/env" ,(file-append coreutils "/bin/env"))
+  ("/bin/bash" ,(file-append bash "/bin/bash")))
+</pre>
+</div>
+
+<p>
+Since this is part of <code>%base-services</code>, you can use <code>modify-services</code> to customize the set of special files (see <a href="docs/guix--Service-Reference.html"><code>modify-services</code></a>). But the simple way to add a special file is <i>via</i> the <code>extra-special-file</code> procedure (see below).
+</p></dd>
+
+<dt>Procedure: extra-special-file file target</dt><dd><p>
+Use <code>target</code> as the “special file” <code>file</code>.
+</p>
+
+<p>
+For example, adding the following lines to the <code>services</code> field of your operating system declaration leads to a <code>/usr/bin/env</code> symlink:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(extra-special-file "/usr/bin/env"
+                    (file-append coreutils "/bin/env"))
+</pre>
+</div>
+
+<p>
+This procedure is meant for <code>/bin/sh</code>, <code>/usr/bin/env</code> and similar targets. In particular, use for targets under <code>/etc</code> might not work as expected if the target is managed by Guix in other ways.
+</p>
+
+<p>
+The special files persist on your system even after the <code>extra-special-file</code> call has been removed from your system config and the system has been reconfigured. The special files need to be removed manually.
+</p></dd>
+
+<dt>Variable: host-name-service-type </dt><dd>Type of the service that sets the system host name, whose value is a string. This service is included in <code>operating-system</code> by default (see <a href="docs/guix--operating_002dsystem-Reference.html#operating_002dsystem_002dessential_002dservices"><code>essential-services</code></a>).</dd>
+
+<dt>Variable: console-font-service-type </dt><dd><p>
+Install the given fonts on the specified ttys (fonts are per virtual console on the kernel Linux). The value of this service is a list of tty/font pairs. The font can be the name of a font provided by the <code>kbd</code> package or any valid argument to <code>setfont</code>, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`(("tty1" . "LatGrkCyr-8x16")
+  ("tty2" . ,(file-append
+                font-tamzen
+                "/share/kbd/consolefonts/TamzenForPowerline10x20.psf"))
+  ("tty3" . ,(file-append
+                font-terminus
+                "/share/consolefonts/ter-132n"))) ; for HDPI
+</pre>
+</div></dd>
+
+<dt>Variable: hosts-service-type </dt><dd><p>
+Type of the service that populates the entries for (<code>/etc/hosts</code>). This service type can be <i>extended</i> by passing it a list of <code>host</code> records.
+</p>
+
+<p>
+The example below shows how to add two entries to <code>/etc/hosts</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'add-extra-hosts
+                hosts-service-type
+                (list (host "192.0.2.1" "example.com"
+                            '("example.net" "example.org"))
+                      (host "2001:db8::1" "example.com"
+                            '("example.net" "example.org"))))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<a id="index-_002fetc_002fhosts-default-entries"></a>
+</p>
+
+<p>
+<b>Note:</b> By default <code>/etc/hosts</code> comes with the following entries:
+</p>
+
+<pre class="example" id="org1bf7805">
+127.0.0.1 localhost host-name
+::1       localhost host-name
+</pre>
+
+<p>
+For most setups this is what you want though if you find yourself in the situation where you want to change the default entries, you can do so in <code>operating-system</code> via <code>modify-services</code> (see <a href="docs/guix--Service-Reference.html"><code>modify-services</code></a>).
+</p>
+
+<p>
+The following example shows how to unset <code>host-name</code> from being an alias of <code>localhost</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; …
+
+  (essential-services
+   (modify-services
+     (operating-system-default-essential-services this-operating-system)
+     (hosts-service-type config =&gt; (list
+                                     (host "127.0.0.1" "localhost")
+                                     (host "::1"       "localhost"))))))
+</pre>
+</div>
+</blockquote></dd>
+
+<dt>Procedure: host <code>address</code> <code>canonical-name</code> [=aliases=]</dt><dd><p>
+Return a new record for the host at <code>address</code> with the given <code>canonical-name</code> and possibly <code>aliases</code>.
+</p>
+
+<p>
+<code>address</code> must be a string denoting a valid IPv4 or IPv6 address, and <code>canonical-name</code> and the strings listed in <code>aliases</code> must be valid host names.
+</p></dd>
+
+<dt>Variable: login-service-type </dt><dd>Type of the service that provides a console login service, whose value is a <code>&lt;login-configuration&gt;</code> object.</dd>
+
+<dt>Data Type: login-configuration </dt><dd>Data type representing the configuration of login, which specifies the MOTD (message of the day), among other things.
+
+<dl class="org-dl">
+<dt><code>motd</code> </dt><dd>A file-like object containing the “message of the day”.</dd>
+
+<dt><code>allow-empty-passwords?</code> (default: <code>#t</code>)</dt><dd>Allow empty passwords by default so that first-time users can log in when the 'root' account has just been created.</dd>
+</dl></dd>
+
+<dt>Variable: mingetty-service-type </dt><dd>Type of the service that runs Mingetty, an implementation of the virtual console log-in. The value for this service is a <code>&lt;mingetty-configuration&gt;</code> object.</dd>
+
+<dt>Data Type: mingetty-configuration </dt><dd>Data type representing the configuration of Mingetty, which specifies the tty to run, among other things.
+
+<dl class="org-dl">
+<dt><code>tty</code></dt><dd>The name of the console this Mingetty runs on&#x2014;e.g., <code>"tty1"</code>.</dd>
+
+<dt><code>auto-login</code> (default: <code>#f</code>)</dt><dd>When true, this field must be a string denoting the user name under which the system automatically logs in. When it is <code>#f</code>, a user name and password must be entered to log in.</dd>
+
+<dt><code>login-program</code> (default: <code>#f</code>)</dt><dd>This must be either <code>#f</code>, in which case the default log-in program is used (<code>login</code> from the Shadow tool suite), or a gexp denoting the name of the log-in program.</dd>
+
+<dt><code>login-pause?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code> in conjunction with <code>auto-login</code>, the user will have to press a key before the log-in shell is launched.</dd>
+
+<dt><code>clear-on-logout?</code> (default: <code>#t</code>)</dt><dd>When set to <code>#t</code>, the screen will be cleared before showing the login prompt. The field name is bit unfortunate, since it controls clearing also before the initial login, not just after a logout.</dd>
+
+<dt><code>delay</code> (default: <code>#f</code>)</dt><dd>When set to a number, sleep that many seconds after startup.</dd>
+
+<dt><code>print-issue</code> (default: <code>#t</code>)</dt><dd>When set to <code>#t</code>, write out a new line and the content of <code>/etc/issue</code>. Value of <code>'no-nl</code> can be used to suppress the new line.</dd>
+
+<dt><code>print-hostname</code> (default: <code>#t</code>)</dt><dd>When set to <code>#t</code>, print the host name before the login prompt. The host name is printed up to the first dot. Can be set to <code>'long</code> to print the full host name.</dd>
+
+<dt><code>nice</code> (default: <code>#f</code>)</dt><dd>When set to a number, change the process priority using <code>nice</code>.</dd>
+
+<dt><code>working-directory</code> (default: <code>#f</code>)</dt><dd>When set to a string, change into that directory before calling the login program.</dd>
+
+<dt><code>root-directory</code> (default: <code>#f</code>)</dt><dd>When set to a string, use this directory at the process's root directory.</dd>
+
+<dt><code>shepherd-requirement</code></dt><dd><p>
+List of shepherd requirements. Unless you know what you are doing, it is recommended to extend the default list instead of overriding it.
+</p>
+
+<p>
+As an example, when using auto-login on a system with elogind, it is necessary to wait on the <code>'dbus-system</code> service:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(modify-services %base-services
+  (mingetty-service-type config =&gt;
+                         (mingetty-configuration
+                          (inherit config)
+                          ;; Automatically log in as "guest".
+                          (auto-login "guest")
+                          (shepherd-requirement
+                           (cons 'dbus-system
+                                 (mingetty-configuration-shepherd-requirement
+                                  config))))))
+</pre>
+</div></dd>
+
+<dt><code>mingetty</code> (default: <code>mingetty</code>)</dt><dd>The Mingetty package to use.</dd>
+</dl></dd>
+
+<dt>Variable: agetty-service-type </dt><dd>Type of the service that runs agetty, which implements virtual and serial console log-in. The value for this service is a <code>&lt;agetty-configuration&gt;</code> object.</dd>
+
+<dt>Data Type: agetty-configuration </dt><dd>Data type representing the configuration of agetty, which specifies the tty to run, among other things.
+
+<dl class="org-dl">
+<dt><code>tty</code></dt><dd><p>
+The name of the console this agetty runs on, as a string&#x2014;e.g., <code>"ttyS0"</code>. This argument is optional, it will default to a reasonable default serial port used by the kernel Linux.
+</p>
+
+<p>
+For this, if there is a value for an option <code>agetty.tty</code> in the kernel command line, agetty will extract the device name of the serial port from it and use that.
+</p>
+
+<p>
+If not and if there is a value for an option <code>console</code> with a tty in the Linux command line, agetty will extract the device name of the serial port from it and use that.
+</p>
+
+<p>
+In both cases, agetty will leave the other serial device settings (baud rate etc.) alone&#x2014;in the hope that Linux pinned them to the correct values.
+</p></dd>
+
+<dt><code>baud-rate</code> (default: <code>#f</code>)</dt><dd>A string containing a comma-separated list of one or more baud rates, in descending order.</dd>
+
+<dt><code>term</code> (default: <code>#f</code>)</dt><dd>A string containing the value used for the <code>TERM</code> environment variable.</dd>
+
+<dt><code>eight-bits?</code> (default: <code>#f</code>)</dt><dd>When <code>#t</code>, the tty is assumed to be 8-bit clean, and parity detection is disabled.</dd>
+
+<dt><code>auto-login</code> (default: <code>#f</code>)</dt><dd>When passed a login name, as a string, the specified user will be logged in automatically without prompting for their login name or password.</dd>
+
+<dt><code>no-reset?</code> (default: <code>#f</code>)</dt><dd>When <code>#t</code>, don't reset terminal cflags (control modes).</dd>
+
+<dt><code>host</code> (default: <code>#f</code>)</dt><dd>This accepts a string containing the “login<sub>host</sub>”, which will be written into the <code>/var/run/utmpx</code> file.</dd>
+
+<dt><code>remote?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code> in conjunction with <code>host</code>, this will add an <code>-r</code> fakehost option to the command line of the login program specified in <code>login-program</code>.</dd>
+
+<dt><code>flow-control?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, enable hardware (RTS/CTS) flow control.</dd>
+
+<dt><code>no-issue?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, the contents of the <code>/etc/issue</code> file will not be displayed before presenting the login prompt.</dd>
+
+<dt><code>init-string</code> (default: <code>#f</code>)</dt><dd>This accepts a string that will be sent to the tty or modem before sending anything else. It can be used to initialize a modem.</dd>
+
+<dt><code>no-clear?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, agetty will not clear the screen before showing the login prompt.</dd>
+
+<dt><code>login-program</code> (default: (file-append shadow "/bin/login"))</dt><dd>This must be either a gexp denoting the name of a log-in program, or unset, in which case the default value is the <code>login</code> from the Shadow tool suite.</dd>
+
+<dt><code>local-line</code> (default: <code>#f</code>)</dt><dd>Control the CLOCAL line flag. This accepts one of three symbols as arguments, <code>'auto</code>, <code>'always</code>, or <code>'never</code>. If <code>#f</code>, the default value chosen by agetty is <code>'auto</code>.</dd>
+
+<dt><code>extract-baud?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, instruct agetty to try to extract the baud rate from the status messages produced by certain types of modems.</dd>
+
+<dt><code>skip-login?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, do not prompt the user for a login name. This can be used with <code>login-program</code> field to use non-standard login systems.</dd>
+
+<dt><code>no-newline?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, do not print a newline before printing the <code>/etc/issue</code> file.</dd>
+
+<dt><code>login-options</code> (default: <code>#f</code>)</dt><dd>This option accepts a string containing options that are passed to the login program. When used with the <code>login-program</code>, be aware that a malicious user could try to enter a login name containing embedded options that could be parsed by the login program.</dd>
+
+<dt><code>login-pause</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, wait for any key before showing the login prompt. This can be used in conjunction with <code>auto-login</code> to save memory by lazily spawning shells.</dd>
+
+<dt><code>chroot</code> (default: <code>#f</code>)</dt><dd>Change root to the specified directory. This option accepts a directory path as a string.</dd>
+
+<dt><code>hangup?</code> (default: <code>#f</code>)</dt><dd>Use the Linux system call <code>vhangup</code> to do a virtual hangup of the specified terminal.</dd>
+
+<dt><code>keep-baud?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, try to keep the existing baud rate. The baud rates from <code>baud-rate</code> are used when agetty receives a <code>BREAK</code> character.</dd>
+
+<dt><code>timeout</code> (default: <code>#f</code>)</dt><dd>When set to an integer value, terminate if no user name could be read within <code>timeout</code> seconds.</dd>
+
+<dt><code>detect-case?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, turn on support for detecting an uppercase-only terminal. This setting will detect a login name containing only uppercase letters as indicating an uppercase-only terminal and turn on some upper-to-lower case conversions. Note that this will not support Unicode characters.</dd>
+
+<dt><code>wait-cr?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, wait for the user or modem to send a carriage-return or linefeed character before displaying <code>/etc/issue</code> or login prompt. This is typically used with the <code>init-string</code> option.</dd>
+
+<dt><code>no-hints?</code> (default: <code>#f</code>)</dt><dd>When set to <code>#t</code>, do not print hints about Num, Caps, and Scroll locks.</dd>
+
+<dt><code>no-hostname?</code> (default: <code>#f</code>)</dt><dd>By default, the hostname is printed. When this option is set to <code>#t</code>, no hostname will be shown at all.</dd>
+
+<dt><code>long-hostname?</code> (default: <code>#f</code>)</dt><dd>By default, the hostname is only printed until the first dot. When this option is set to <code>#t</code>, the fully qualified hostname by <code>gethostname</code> or <code>getaddrinfo</code> is shown.</dd>
+
+<dt><code>erase-characters</code> (default: <code>#f</code>)</dt><dd>This option accepts a string of additional characters that should be interpreted as backspace when the user types their login name.</dd>
+
+<dt><code>kill-characters</code> (default: <code>#f</code>)</dt><dd>This option accepts a string that should be interpreted to mean “ignore all previous characters” (also called a “kill” character) when the user types their login name.</dd>
+
+<dt><code>chdir</code> (default: <code>#f</code>)</dt><dd>This option accepts, as a string, a directory path that will be changed to before login.</dd>
+
+<dt><code>delay</code> (default: <code>#f</code>)</dt><dd>This options accepts, as an integer, the number of seconds to sleep before opening the tty and displaying the login prompt.</dd>
+
+<dt><code>nice</code> (default: <code>#f</code>)</dt><dd>This option accepts, as an integer, the nice value with which to run the <code>login</code> program.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>This option provides an “escape hatch” for the user to provide arbitrary command-line arguments to <code>agetty</code> as a list of strings.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>)</dt><dd>The option can be used to provides extra shepherd requirements (for example <code>'syslogd</code>) to the respective ='term-=* shepherd service.</dd>
+</dl></dd>
+
+<dt>Variable: kmscon-service-type </dt><dd>Type of the service that runs <a href="https://www.freedesktop.org/wiki/Software/kmscon">kmscon</a>, which implements virtual console log-in. The value for this service is a <code>&lt;kmscon-configuration&gt;</code> object.</dd>
+
+<dt>Data Type: kmscon-configuration </dt><dd>Data type representing the configuration of Kmscon, which specifies the tty to run, among other things.
+
+<dl class="org-dl">
+<dt><code>virtual-terminal</code></dt><dd>The name of the console this Kmscon runs on&#x2014;e.g., <code>"tty1"</code>.</dd>
+
+<dt><code>login-program</code> (default: <code>#~(string-append #$shadow "/bin/login")</code>)</dt><dd>A gexp denoting the name of the log-in program. The default log-in program is <code>login</code> from the Shadow tool suite.</dd>
+
+<dt><code>login-arguments</code> (default: <code>'("-p")</code>)</dt><dd>A list of arguments to pass to <code>login</code>.</dd>
+
+<dt><code>auto-login</code> (default: <code>#f</code>)</dt><dd>When passed a login name, as a string, the specified user will be logged in automatically without prompting for their login name or password.</dd>
+
+<dt><code>hardware-acceleration?</code> (default: #f)</dt><dd>Whether to use hardware acceleration.</dd>
+
+<dt><code>font-engine</code> (default: <code>"pango"</code>)</dt><dd>Font engine used in Kmscon.</dd>
+
+<dt><code>font-size</code> (default: <code>12</code>)</dt><dd>Font size used in Kmscon.</dd>
+
+<dt><code>keyboard-layout</code> (default: <code>#f</code>)</dt><dd><p>
+If this is <code>#f</code>, Kmscon uses the default keyboard layout&#x2014;usually US English (“qwerty”) for a 105-key PC keyboard.
+</p>
+
+<p>
+Otherwise this must be a <code>keyboard-layout</code> object specifying the keyboard layout. See <a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a>, for more information on how to specify the keyboard layout.
+</p></dd>
+
+<dt><code>kmscon</code> (default: <code>kmscon</code>)</dt><dd>The Kmscon package to use.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-nscd-1"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: nscd-service-type </dt><dd><p>
+Type of the service that runs the libc nscd (name service cache daemon), whose value is an <code>&lt;nscd-configuration&gt;</code> object.
+</p>
+
+<p>
+For convenience, the Shepherd service for nscd provides the following actions:
+</p>
+
+<dl class="org-dl">
+<dt><code>invalidate</code> </dt><dd><p>
+<a id="index-cache-invalidation_002c-nscd"></a>
+</p>
+
+<p>
+This invalidate the given cache. For instance, running:
+</p>
+
+<pre class="example" id="orgedfb66d">
+herd invalidate nscd hosts
+</pre>
+
+<p>
+invalidates the host name lookup cache of nscd.
+</p></dd>
+
+<dt><code>statistics</code></dt><dd>Running <code>herd statistics nscd</code> displays information about nscd usage and caches.</dd>
+</dl></dd>
+
+<dt>Data Type: nscd-configuration </dt><dd>Data type representing the nscd (name service cache daemon) configuration.
+
+<dl class="org-dl">
+<dt><code>name-services</code> (default: <code>'()</code>)</dt><dd>List of packages denoting <i>name services</i> that must be visible to the nscd&#x2014;e.g., <code>(list ==nss-mdns=</code>)=.</dd>
+
+<dt><code>glibc</code> (default: <code>glibc</code>)</dt><dd>Package object denoting the GNU C Library providing the <code>nscd</code> command.</dd>
+
+<dt><code>log-file</code> (default: <code>#f</code>)</dt><dd>Name of the nscd log file. Debugging output goes to that file when <code>debug-level</code> is strictly positive, or to standard error if it is <code>#f</code>. Regular messages are written to syslog when <code>debug-level</code> is zero, regardless of the value of <code>log-file</code>.</dd>
+
+<dt><code>debug-level</code> (default: <code>0</code>)</dt><dd>Integer denoting the debugging levels. Higher numbers mean that more debugging output is logged.</dd>
+
+<dt><code>caches</code> (default: <code>%nscd-default-caches</code>)</dt><dd>List of <code>&lt;nscd-cache&gt;</code> objects denoting things to be cached; see below.</dd>
+</dl></dd>
+
+<dt>Data Type: nscd-cache </dt><dd>Data type representing a cache database of nscd and its parameters.
+
+<dl class="org-dl">
+<dt><code>database</code></dt><dd>This is a symbol representing the name of the database to be cached. Valid values are <code>passwd</code>, <code>group</code>, <code>hosts</code>, and <code>services</code>, which designate the corresponding NSS database (see <a href="https://www.gnu.org/software/libc/manual/html_node/NSS-Basics.html#NSS-Basics">NSS Basics</a> in The GNU C Library Reference Manual).</dd>
+
+<dt>(no term)</dt><dd><code>positive-time-to-live</code><br />
+<code>negative-time-to-live</code> (default: <code>20</code>) :: A number representing the number of seconds during which a positive or negative lookup result remains in cache.</dd>
+
+<dt><code>check-files?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to check for updates of the files corresponding to <code>database</code>.
+</p>
+
+<p>
+For instance, when <code>database</code> is <code>hosts</code>, setting this flag instructs nscd to check for updates in <code>/etc/hosts</code> and to take them into account.
+</p></dd>
+
+<dt><code>persistent?</code> (default: <code>#t</code>)</dt><dd>Whether the cache should be stored persistently on disk.</dd>
+
+<dt><code>shared?</code> (default: <code>#t</code>)</dt><dd>Whether the cache should be shared among users.</dd>
+
+<dt><code>max-database-size</code> (default: 32 MiB)</dt><dd>Maximum size in bytes of the database cache.</dd>
+</dl></dd>
+
+<dt>Variable: %nscd-default-caches </dt><dd><p>
+List of <code>&lt;nscd-cache&gt;</code> objects used by default by <code>nscd-configuration</code> (see above).
+</p>
+
+<p>
+It enables persistent and aggressive caching of service and host name lookups. The latter provides better host name lookup performance, resilience in the face of unreliable name servers, and also better privacy&#x2014;often the result of host name lookups is in local cache, so external name servers do not even need to be queried.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-syslog_002c-with-external-syslogd"></a> <a id="index-logging_002c-syslog"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: syslog-service-type </dt><dd><p>
+Type of the service that runs the syslog daemon (<code>syslogd</code>), whose value is a <code>&lt;syslog-configuration&gt;</code> object (see below).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This service is redundant with and for the most part superseded by <code>shepherd-system-log-service-type</code> (see <a href="docs/guix--Shepherd-Services.html#shepherd_002dsystem_002dlog">the Shepherd system log</a>).
+</p>
+</blockquote></dd>
+</dl>
+
+<p>
+To have a modified <code>syslog-configuration</code> come into effect after reconfiguring your system, the ‘=reload=' action should be preferred to restarting the service, as many services such as the login manager depend on it and would be restarted as well:
+</p>
+
+<pre class="example" id="org2560eab">
+# herd reload syslog
+</pre>
+
+<p>
+which will cause the running <code>syslogd</code> process to reload its configuration.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: syslog-configuration </dt><dd>Data type representing the configuration of the syslog daemon.
+
+<dl class="org-dl">
+<dt><code>syslogd</code> (default: <code>#~(string-append #$inetutils "/libexec/syslogd")</code>)</dt><dd>The syslog daemon to use.</dd>
+
+<dt><code>config-file</code> (default: <code>%default-syslog.conf</code>)</dt><dd>The syslog configuration file to use. See <a href="https://www.gnu.org/software/inetutils/manual/html_node/syslogd-invocation.html#syslogd-invocation">syslogd invocation</a> in GNU Inetutils, for more information on the configuration file syntax.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>List of extra command-line options for <code>syslog</code>.</dd>
+</dl></dd>
+
+<dt>Variable: guix-service-type </dt><dd>This is the type of the service that runs the build daemon, <code>guix-daemon</code> (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>). Its value must be a <code>guix-configuration</code> record as described below.</dd>
+</dl>
+
+<p>
+<a id="guix_002dconfiguration_002dtype"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: guix-configuration </dt><dd>This data type represents the configuration of the Guix build daemon. See <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>, for more information.
+
+<dl class="org-dl">
+<dt><code>guix</code> (default: <code>guix</code>)</dt><dd><p>
+The Guix package to use. See <a href="docs/guix--Customizing-the-System_002dWide-Guix.html">Customizing the System-Wide Guix</a> to learn how to provide a package with a pre-configured set of channels.
+</p>
+
+<p>
+<a id="index-unprivileged-guix_002ddaemon"></a> <a id="index-rootless-guix_002ddaemon"></a>
+</p></dd>
+
+<dt><code>privileged?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to run <code>guix-daemon</code> as root.
+</p>
+
+<p>
+When true, <code>guix-daemon</code> runs with root privileges and build processes run under unprivileged user accounts as specified by <code>build-group</code> and <code>build-accounts</code> (see below); when false, <code>guix-daemon</code> run as the <code>guix-daemon</code> user, which is unprivileged, and so do build processes. The unprivileged or “rootless” mode can reduce the impact of some classes of vulnerabilities that could affect the daemon.
+</p>
+
+<p>
+The default is currently <code>#t</code> (<code>guix-daemon</code> runs with root privileges) but may eventually be changed to <code>#f</code>.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> When changing this option, <code>/gnu/store</code>, <code>/var/guix</code>, and <code>/etc/guix</code> have their ownership automatically changed by the <code>guix-ownership</code> service to either the <code>guix-daemon</code> user or the <code>root</code> user (see <a href="docs/guix--Build-Environment-Setup.html#unprivileged_002ddaemon_002dmigration">unprivileged-daemon-migration</a>).
+</p>
+
+<p>
+This can take a while, especially if <code>/gnu/store</code> is big; it cannot be interrupted and <code>guix-daemon</code> cannot be used until it has completed.
+</p>
+</blockquote>
+
+<p>
+See <a href="docs/guix--Build-Environment-Setup.html">Build Environment Setup</a>, for more information on the two ways to run <code>guix-daemon</code>.
+</p></dd>
+
+<dt><code>build-group</code> (default: <code>"guixbuild"</code>)</dt><dd>Name of the group for build user accounts.</dd>
+
+<dt><code>build-accounts</code> (default: <code>10</code>)</dt><dd>Number of build user accounts to create.</dd>
+
+<dt><code>chroot?</code> (default: <code>'default</code>)</dt><dd>The value should be one of <code>#t</code> or <code>#f</code>, in which case chroot is enabled or disabled, respectively; or it should be <code>'default</code>, which amounts to <code>#f</code> in Docker containers (so that they can be run in non-privileged mode) or <code>#t</code> otherwise.</dd>
+
+<dt><code>authorize-key?</code> (default: <code>#t</code>) </dt><dd><p>
+Whether to authorize the substitute keys listed in <code>authorized-keys</code>&#x2014;by default that of <code>bordeaux.guix.gnu.org</code> and <code>ci.guix.gnu.org</code> (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<p>
+When <code>authorize-key?</code> is true, <code>/etc/guix/acl</code> cannot be changed by invoking <code>guix archive --authorize</code>. You must instead adjust <code>guix-configuration</code> as you wish and reconfigure the system. This ensures that your operating system configuration file is self-contained.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> When booting or reconfiguring to a system where <code>authorize-key?</code> is true, the existing <code>/etc/guix/acl</code> file is backed up as <code>/etc/guix/acl.bak</code> if it was determined to be a manually modified file. This is to facilitate migration from earlier versions, which allowed for in-place modifications to <code>/etc/guix/acl</code>.
+</p>
+</blockquote>
+
+<p>
+<a id="index-_0025default_002dauthorized_002dguix_002dkeys"></a>
+</p></dd>
+
+<dt><code>authorized-keys</code> (default: <code>%default-authorized-guix-keys</code>)</dt><dd>The list of authorized key files for archive imports, as a list of string-valued gexps (see <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>). By default, it contains that of <code>bordeaux.guix.gnu.org</code> and <code>ci.guix.gnu.org</code> (see <a href="docs/guix--Substitutes.html">Substitutes</a>). See <code>substitute-urls</code> below for an example on how to change it.</dd>
+
+<dt><code>use-substitutes?</code> (default: <code>#t</code>)</dt><dd>Whether to use substitutes.</dd>
+
+<dt><code>substitute-urls</code> (default: <code>%default-substitute-urls</code>)</dt><dd><p>
+The list of URLs where to look for substitutes by default.
+</p>
+
+<p>
+Suppose you would like to fetch substitutes from <code>guix.example.org</code> in addition to <code>bordeaux.guix.gnu.org</code>. You will need to do two things: (1) add <code>guix.example.org</code> to <code>substitute-urls</code>, and (2) authorize its signing key, having done appropriate checks (see <a href="docs/guix--Substitute-Server-Authorization.html">Substitute Server Authorization</a>). The configuration below does exactly that:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(guix-configuration
+  (substitute-urls
+   (append (list "https://guix.example.org")
+           %default-substitute-urls))
+  (authorized-keys
+   (append (list (local-file "./guix.example.org-key.pub"))
+           %default-authorized-guix-keys)))
+</pre>
+</div>
+
+<p>
+This example assumes that the file <code>./guix.example.org-key.pub</code> contains the public key that <code>guix.example.org</code> uses to sign substitutes.
+</p></dd>
+
+<dt><code>generate-substitute-key?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to generate a <i>substitute key pair</i> under <code>/etc/guix/signing-key.pub</code> and <code>/etc/guix/signing-key.sec</code> if there is not already one.
+</p>
+
+<p>
+This key pair is used when exporting store items, for instance with <code>guix publish</code> (see <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>) or <code>guix archive</code> (see <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>). Generating a key pair takes a few seconds when enough entropy is available and is only done once; you might want to turn it off for instance in a virtual machine that does not need it and where the extra boot time is a problem.
+</p>
+
+<p>
+<a id="guix_002dconfiguration_002dchannels"></a>
+</p></dd>
+
+<dt><code>channels</code> (default: <code>#f</code>)</dt><dd><p>
+List of channels to be specified in <code>/etc/guix/channels.scm</code>, which is what <code>guix pull</code> uses by default (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> When reconfiguring a system, the existing <code>/etc/guix/channels.scm</code> file is backed up as <code>/etc/guix/channels.scm.bak</code> if it was determined to be a manually modified file. This is to facilitate migration from earlier versions, which allowed for in-place modifications to <code>/etc/guix/channels.scm</code>.
+</p>
+</blockquote></dd>
+
+<dt>(no term)</dt><dd><code>max-silent-time</code> (default: <code>3600</code>)<br />
+<code>timeout</code> (default: <code>(* 3600 24)</code>) :: The number of seconds of silence and the number of seconds of activity, respectively, after which a build process times out. A value of zero disables the timeout.</dd>
+
+<dt><code>log-compression</code> (default: <code>'gzip</code>)</dt><dd>The type of compression used for build logs&#x2014;one of <code>gzip</code>, <code>bzip2</code>, or <code>none</code>.</dd>
+
+<dt><code>discover?</code> (default: <code>#f</code>)</dt><dd><p>
+Whether to discover substitute servers on the local network using mDNS and DNS-SD.
+</p>
+
+<p>
+<a id="guix_002dconfiguration_002dbuild_002dmachines"></a>
+</p></dd>
+
+<dt><code>build-machines</code> (default: <code>#f</code>)</dt><dd><p>
+This field must be either <code>#f</code> or a list of gexps evaluating to a <code>build-machine</code> record or to a list of <code>build-machine</code> records (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>).
+</p>
+
+<p>
+When it is <code>#f</code>, the <code>/etc/guix/machines.scm</code> file is left untouched. Otherwise, the list of of gexps is written to <code>/etc/guix/machines.scm</code>; if a previously-existing file is found, it is backed up as <code>/etc/guix/machines.scm.bak</code>. This allows you to declare build machines for offloading directly in the operating system declaration, like so:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(guix-configuration
+  (build-machines
+    (list #~(build-machine (name "foo.example.org") …)
+          #~(build-machine (name "bar.example.org") …))))
+</pre>
+</div>
+
+<p>
+Additional build machines may be added <i>via</i> the <code>guix-extension</code> mechanism (see below).
+</p></dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>List of extra command-line options for <code>guix-daemon</code>.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/guix-daemon.log"</code>)</dt><dd><p>
+File where <code>guix-daemon</code>'s standard output and standard error are written.
+</p>
+
+<p>
+<a id="index-HTTP-proxy_002c-for-guix_002ddaemon"></a> <a id="index-proxy_002c-for-guix_002ddaemon-HTTP-access"></a>
+</p></dd>
+
+<dt><code>http-proxy</code> (default: <code>#f</code>)</dt><dd><p>
+The URL of the HTTP and HTTPS proxy used for downloading fixed-output derivations and substitutes.
+</p>
+
+<p>
+It is also possible to change the daemon's proxy at run time through the <code>set-http-proxy</code> action, which restarts it:
+</p>
+
+<pre class="example" id="orgd8268bc">
+herd set-http-proxy guix-daemon http://localhost:8118
+</pre>
+
+<p>
+To clear the proxy settings, run:
+</p>
+
+<pre class="example" id="org4ed4d9a">
+herd set-http-proxy guix-daemon
+</pre></dd>
+
+<dt><code>tmpdir</code> (default: <code>#f</code>)</dt><dd>A directory path where the <code>guix-daemon</code> will perform builds.</dd>
+
+<dt><code>environment</code> (default: <code>'()</code>)</dt><dd>Environment variables to be set before starting the daemon, as a list of <code>key=value</code> strings.</dd>
+
+<dt><code>socket-directory-permissions</code> (default: <code>#o755</code>)</dt><dd>Permissions to set for the directory <code>/var/guix/daemon-socket</code>. This, together with <code>socket-directory-group</code> and <code>socket-directory-user</code>, determines who can connect to the build daemon via its Unix socket. TCP socket operation is unaffected by these.</dd>
+
+<dt>(no term)</dt><dd><code>socket-directory-user</code> (default: <code>#f</code>)<br />
+<code>socket-directory-group</code> (default: <code>#f</code>) :: User and group owning the <code>/var/guix/daemon-socket</code> directory or <code>#f</code> to keep the user or group as root.</dd>
+</dl></dd>
+
+<dt>Data Type: guix-extension </dt><dd>This data type represents the parameters of the Guix build daemon that are extendable. This is the type of the object that must be used within a guix service extension. See <a href="docs/guix--Service-Composition.html">Service Composition</a>, for more information.
+
+<dl class="org-dl">
+<dt><code>authorized-keys</code> (default: <code>'()</code>)</dt><dd>A list of file-like objects where each element contains a public key.</dd>
+
+<dt><code>substitute-urls</code> (default: <code>'()</code>)</dt><dd>A list of strings where each element is a substitute URL.</dd>
+
+<dt><code>build-machines</code> (default: <code>'()</code>)</dt><dd><p>
+A list of gexps that evaluate to <code>build-machine</code> records or to a list of <code>build-machine</code> records. (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>).
+</p>
+
+<p>
+Using this field, a service may add new build machines to receive builds offloaded by the daemon. This is useful for a service such as <code>hurd-vm-service-type</code>, which can make a GNU/Hurd virtual machine directly usable for offloading (see <a href="docs/guix--Virtualization-Services.html#hurd_002dvm"><code>hurd-vm-service-type</code></a>).
+</p></dd>
+
+<dt><code>chroot-directories</code> (default: <code>'()</code>)</dt><dd>A list of file-like objects or strings pointing to additional directories the build daemon can use.</dd>
+</dl></dd>
+
+<dt>Variable: udev-service-type </dt><dd><p>
+Type of the service that runs udev, a service which populates the <code>/dev</code> directory dynamically, whose value is a <code>&lt;udev-configuration&gt;</code> object.
+</p>
+
+<p>
+Since the file names for udev rules and hardware description files matter, the configuration items for rules and hardware cannot simply be plain file-like objects with the rules content, because the name would be ignored. Instead, they are directory file-like objects that contain optional rules in <code>lib/udev/rules.d</code> and optional hardware files in <code>lib/udev/hwdb.d</code>. This way, the service can be configured with whole packages from which to take rules and hwdb files.
+</p>
+
+<p>
+The <code>udev-service-type</code> can be <i>extended</i> with file-like directories that respect this hierarchy. For convenience, the <code>udev-rule</code> and <code>file-&gt;udev-rule</code> can be used to construct udev rules, while <code>udev-hardware</code> and <code>file-&gt;udev-hardware</code> can be used to construct hardware description files.
+</p>
+
+<p>
+In an <code>operating-system</code> declaration, this service type can be <i>extended</i> using procedures <code>udev-rules-service</code> and <code>udev-hardware-service</code>.
+</p></dd>
+
+<dt>Data Type: udev-configuration </dt><dd>Data type representing the configuration of udev.
+
+<dl class="org-dl">
+<dt><code>udev (default: ==eudev=</code>) (type: file-like)=</dt><dd>Package object of the udev service. This package is used at run-time, when compiled for the target system. In order to generate the <code>hwdb.bin</code> hardware index, it is also used when generating the system definition, compiled for the current system.</dd>
+
+<dt><code>debug? (default: ==#f=</code>) (type: boolean)=</dt><dd>Whether to enable debug output. The debug output is written to the system log, <code>/var/log/messages</code>.</dd>
+
+<dt><code>rules (default: =</code>'()==) (type: list-of-file-like)=</dt><dd>List of file-like objects denoting udev rule files under a sub-directory.</dd>
+
+<dt><code>hardware (default: =</code>'()==) (type: list-of-file-like)=</dt><dd>List of file-like objects denoting udev hardware description files under a sub-directory.</dd>
+</dl></dd>
+
+<dt>Procedure: udev-rule <code>file-name</code> <code>contents</code></dt><dd><p>
+Return a udev-rule file named <code>file-name</code> containing the rules defined by the <code>contents</code> literal.
+</p>
+
+<p>
+In the following example, a rule for a USB device is defined to be stored in the file <code>90-usb-thing.rules</code>. The rule runs a script upon detecting a USB device with a given product identifier.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define %example-udev-rule
+  (udev-rule
+    "90-usb-thing.rules"
+    (string-append "ACTION==\"add\", SUBSYSTEM==\"usb\", "
+                   "ATTR{product}==\"Example\", "
+                   "RUN+=\"/path/to/script\"")))
+</pre>
+</div></dd>
+
+<dt>Procedure: udev-hardware <code>file-name</code> <code>contents</code></dt><dd>Return a udev hardware description file named <code>file-name</code> containing the hardware information <code>contents</code>.</dd>
+
+<dt>Procedure: udev-rules-service <code>name</code> <code>rules</code> [#:groups '()]</dt><dd><p>
+Return a service that extends <code>udev-service-type</code> with <code>rules</code> and <code>account-service-type</code> with <code>groups</code> as system groups. This works by creating a singleton service type <code>name=</code>-udev-rules=, of which the returned service is an instance.
+</p>
+
+<p>
+Here we show how it can be used to extend <code>udev-service-type</code> with the previously defined rule <code>%example-udev-rule</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+ ;; …
+ (services
+   (cons (udev-rules-service 'usb-thing %example-udev-rule)
+         %desktop-services)))
+</pre>
+</div></dd>
+
+<dt>Procedure: udev-hardware-service <code>name</code> <code>hardware</code></dt><dd>Return a service that extends <code>udev-service-type</code> with <code>hardware</code>. The service name is <code>name=</code>-udev-hardware=.</dd>
+
+<dt>Procedure: file-&gt;udev-rule <code>file-name</code> <code>file</code></dt><dd><p>
+Return a udev-rule file named <code>file-name</code> containing the rules defined within <code>file</code>, a file-like object.
+</p>
+
+<p>
+The following example showcases how we can use an existing rule file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix download)     ;for url-fetch
+             (guix packages)     ;for origin
+             …)
+
+(define %android-udev-rules
+  (file-&gt;udev-rule
+    "51-android-udev.rules"
+    (let ((version "20170910"))
+      (origin
+       (method url-fetch)
+       (uri (string-append "https://raw.githubusercontent.com/M0Rf30/"
+                           "android-udev-rules/" version "/51-android.rules"))
+       (sha256
+        (base32 "0lmmagpyb6xsq6zcr2w1cyx9qmjqmajkvrdbhjx32gqf1d9is003"))))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+Since guix package definitions can be included in <code>rules</code> in order to use all their rules under the <code>lib/udev/rules.d</code> sub-directory, then in lieu of the previous <code>file-&gt;udev-rule</code> example, we could have used the <code>android-udev-rules</code> package which exists in Guix in the <code>(gnu packages android)</code> module.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: file-&gt;udev-hardware <code>file-name</code> <code>file</code></dt><dd>Return a udev hardware description file named <code>file-name</code> containing the rules defined within <code>file</code>, a file-like object.</dd>
+</dl>
+
+<p>
+The following example shows how to use the <code>android-udev-rules</code> package so that the Android tool <code>adb</code> can detect devices without root privileges. It also details how to create the <code>adbusers</code> group, which is required for the proper functioning of the rules defined within the <code>android-udev-rules</code> package. To create such a group, we must define it both as part of the <code>supplementary-groups</code> of our <code>user-account</code> declaration, as well as in the <code>groups</code> of the <code>udev-rules-service</code> procedure.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages android)  ;for android-udev-rules
+             (gnu system shadow)     ;for user-group
+             …)
+
+(operating-system
+  ;; …
+  (users (cons (user-account
+                ;; …
+                (supplementary-groups
+                 '("adbusers"   ;for adb
+                   "wheel" "netdev" "audio" "video")))))
+  ;; …
+  (services
+    (cons (udev-rules-service 'android android-udev-rules
+                              #:groups '("adbusers"))
+          %desktop-services)))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: urandom-seed-service-type </dt><dd>Save some entropy in <code>%random-seed-file</code> to seed <code>/dev/urandom</code> when rebooting. It also tries to seed <code>/dev/urandom</code> from <code>/dev/hwrng</code> while booting, if <code>/dev/hwrng</code> exists and is readable.</dd>
+
+<dt>Variable: %random-seed-file </dt><dd>This is the name of the file where some random bytes are saved by <code>urandom-seed-service</code> to seed <code>/dev/urandom</code> when rebooting. It defaults to <code>/var/lib/random-seed</code>.</dd>
+</dl>
+
+<p>
+<a id="index-mouse"></a> <a id="index-gpm"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: gpm-service-type </dt><dd><p>
+This is the type of the service that runs GPM, the <i>general-purpose mouse daemon</i>, which provides mouse support to the Linux console. GPM allows users to use the mouse in the console, notably to select, copy, and paste text.
+</p>
+
+<p>
+The value for services of this type must be a <code>gpm-configuration</code> (see below). This service is not part of <code>%base-services</code>.
+</p></dd>
+
+<dt>Data Type: gpm-configuration </dt><dd>Data type representing the configuration of GPM.
+
+<dl class="org-dl">
+<dt><code>options</code> (default: <code>%default-gpm-options</code>)</dt><dd>Command-line options passed to <code>gpm</code>. The default set of options instruct <code>gpm</code> to listen to mouse events on <code>/dev/input/mice</code>. See <a href="../gpm/Command-Line.html#Command-Line">Command Line</a> in gpm manual, for more information.</dd>
+
+<dt><code>gpm</code> (default: <code>gpm</code>)</dt><dd>The GPM package to use.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="guix_002dpublish_002dservice_002dtype"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: guix-publish-service-type </dt><dd><p>
+This is the service type for <code>guix publish</code> (see <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>). Its value must be a <code>guix-publish-configuration</code> object, as described below.
+</p>
+
+<p>
+This assumes that <code>/etc/guix</code> already contains a signing key pair as created by <code>guix archive --generate-key</code> (see <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>). If that is not the case, the service will fail to start.
+</p></dd>
+
+<dt>Data Type: guix-publish-configuration </dt><dd>Data type representing the configuration of the <code>guix publish</code> service.
+
+<dl class="org-dl">
+<dt><code>guix</code> (default: <code>guix</code>)</dt><dd>The Guix package to use.</dd>
+
+<dt><code>port</code> (default: <code>80</code>)</dt><dd>The TCP port to listen for connections.</dd>
+
+<dt><code>host</code> (default: <code>"localhost"</code>)</dt><dd>The host (and thus, network interface) to listen to. Use <code>"0.0.0.0"</code> to listen on all the network interfaces.</dd>
+
+<dt><code>advertise?</code> (default: <code>#f</code>)</dt><dd><p>
+When true, advertise the service on the local network <i>via</i> the DNS-SD protocol, using Avahi.
+</p>
+
+<p>
+This allows neighboring Guix devices with discovery on (see <code>guix-configuration</code> above) to discover this <code>guix publish</code> instance and to automatically download substitutes from it.
+</p></dd>
+
+<dt><code>compression</code> (default: <code>'(("gzip" 3) ("zstd" 3))</code>)</dt><dd><p>
+This is a list of compression method/level tuple used when compressing substitutes. For example, to compress all substitutes with <i>both</i> lzip at level 7 and gzip at level 9, write:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'(("lzip" 7) ("gzip" 9))
+</pre>
+</div>
+
+<p>
+Level 9 achieves the best compression ratio at the expense of increased CPU usage, whereas level 1 achieves fast compression. See <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>, for more information on the available compression methods and the tradeoffs involved.
+</p>
+
+<p>
+An empty list disables compression altogether.
+</p></dd>
+
+<dt><code>nar-path</code> (default: <code>"nar"</code>)</dt><dd>The URL path at which “nars” can be fetched. See <a href="docs/guix--Invoking-guix-publish.html"><code>--nar-path</code></a>, for details.</dd>
+
+<dt><code>cache</code> (default: <code>#f</code>)</dt><dd>When it is <code>#f</code>, disable caching and instead generate archives on demand. Otherwise, this should be the name of a directory&#x2014;e.g., <code>"/var/cache/guix/publish"</code>&#x2014;where <code>guix publish</code> caches archives and meta-data ready to be sent. See <a href="docs/guix--Invoking-guix-publish.html"><code>--cache</code></a>, for more information on the tradeoffs involved.</dd>
+
+<dt><code>workers</code> (default: <code>#f</code>)</dt><dd>When it is an integer, this is the number of worker threads used for caching; when <code>#f</code>, the number of processors is used. See <a href="docs/guix--Invoking-guix-publish.html"><code>--workers</code></a>, for more information.</dd>
+
+<dt><code>cache-bypass-threshold</code> (default: 10 MiB)</dt><dd>When <code>cache</code> is true, this is the maximum size in bytes of a store item for which <code>guix publish</code> may bypass its cache in case of a cache miss. See <a href="docs/guix--Invoking-guix-publish.html"><code>--cache-bypass-threshold</code></a>, for more information.</dd>
+
+<dt><code>ttl</code> (default: <code>#f</code>)</dt><dd>When it is an integer, this denotes the <i>time-to-live</i> in seconds of the published archives. See <a href="docs/guix--Invoking-guix-publish.html"><code>--ttl</code></a>, for more information.</dd>
+
+<dt><code>negative-ttl</code> (default: <code>#f</code>)</dt><dd>When it is an integer, this denotes the <i>time-to-live</i> in seconds for the negative lookups. See <a href="docs/guix--Invoking-guix-publish.html"><code>--negative-ttl</code></a>, for more information.</dd>
+</dl></dd>
+
+<dt>Variable: rngd-service-type </dt><dd>Type of the service that runs rng-tools rngd, whose value is an <code>&lt;rngd-configuration&gt;</code> object.</dd>
+
+<dt>Data Type: rngd-configuration </dt><dd>Data type representing the configuration of rngd.
+
+<dl class="org-dl">
+<dt><code>rng-tools</code> (default: <code>rng-tools</code>) (type: file-like)</dt><dd>Package object of the rng-tools rngd.</dd>
+
+<dt><code>device</code> (default: <code>"/dev/hwrng"</code>) (type: string)</dt><dd>Path of the device to add to the kernel's entropy pool. The service will fail if <code>device</code> does not exist.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-session-limits"></a> <a id="index-ulimit"></a> <a id="index-priority"></a> <a id="index-realtime"></a> <a id="index-jackd"></a> <a id="index-nofile"></a> <a id="index-open-file-descriptors"></a> <a id="pam_002dlimits_002dservice_002dtype"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: pam-limits-service-type </dt><dd><p>
+Type of the service that installs a configuration file for the <a href="http://linux-pam.org/Linux-PAM-html/sag-pam_limits.html"><code>pam_limits</code> module</a>. The value for this service type is a list of <code>pam-limits-entry</code> values, which can be used to specify <code>ulimit</code> limits and <code>nice</code> priority limits to user sessions. By default, the value is the empty list.
+</p>
+
+<p>
+The following limits definition sets two hard and soft limits for all login sessions of users in the <code>realtime</code> group:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service pam-limits-service-type
+         (list
+          (pam-limits-entry "@realtime" 'both 'rtprio 99)
+          (pam-limits-entry "@realtime" 'both 'memlock 'unlimited)))
+</pre>
+</div>
+
+<p>
+The first entry increases the maximum realtime priority for non-privileged processes; the second entry lifts any restriction of the maximum address space that can be locked in memory. These settings are commonly used for real-time audio systems.
+</p>
+
+<p>
+Another useful example is raising the maximum number of open file descriptors that can be used:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service pam-limits-service-type
+         (list
+          (pam-limits-entry "*" 'both 'nofile 100000)))
+</pre>
+</div>
+
+<p>
+In the above example, the asterisk means the limit should apply to any user. It is important to ensure the chosen value doesn't exceed the maximum system value visible in the <code>/proc/sys/fs/file-max</code> file, else the users would be prevented from login in. For more information about the Pluggable Authentication Module (PAM) limits, refer to the ‘=pam<sub>limits</sub>=' man page from the <code>linux-pam</code> package.
+</p></dd>
+
+<dt>Variable: greetd-service-type </dt><dd><p>
+<a href="https://git.sr.ht/~kennylevinsen/greetd"><code>greetd</code></a> is a minimal and flexible login manager daemon, that makes no assumptions about what you want to launch.
+</p>
+
+<p>
+If you can run it from your shell in a TTY, greetd can start it. If it can be taught to speak a simple JSON-based IPC protocol, then it can be a geeter.
+</p>
+
+<p>
+<code>greetd-service-type</code> provides necessary infrastructure for logging in users, including:
+</p>
+
+<ul class="org-ul">
+<li><code>greetd</code> PAM service</li>
+<li>Special variation of <code>pam-mount</code> to mount <code>XDG_RUNTIME_DIR</code></li>
+</ul>
+
+<p>
+Here is an example of switching from <code>mingetty-service-type</code> to <code>greetd-service-type</code>, and how different terminals could be:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(append
+ (modify-services %base-services
+   ;; greetd-service-type provides "greetd" PAM service
+   (delete login-service-type)
+   ;; and can be used in place of mingetty-service-type
+   (delete mingetty-service-type))
+ (list
+  (service greetd-service-type
+           (greetd-configuration
+            (terminals
+             (list
+              ;; we can make any terminal active by default
+              (greetd-terminal-configuration (terminal-vt "1") (terminal-switch #t))
+              ;; we can make environment without XDG_RUNTIME_DIR set
+              ;; even provide our own environment variables
+              (greetd-terminal-configuration
+               (terminal-vt "2")
+               (default-session-command
+                 (greetd-agreety-session
+                  (command
+                   (greetd-user-session
+                    (extra-env '(("MY_VAR" . "1")))
+                    (xdg-env? #f))))))
+              ;; we can use different shell instead of default bash
+              (greetd-terminal-configuration
+               (terminal-vt "3")
+               (default-session-command
+                 (greetd-agreety-session
+                  (command
+                   (greetd-user-session
+                    (command (file-append zsh "/bin/zsh"))
+                    (command-args '("-l"))
+                    (extra-env '(("MY_VAR" . "1")))
+                    (xdg-env? #f))))))
+              ;; we can use any other executable command as greeter
+              (greetd-terminal-configuration
+               (terminal-vt "4")
+               (default-session-command (program-file "my-noop-greeter" #~(exit))))
+              (greetd-terminal-configuration (terminal-vt "5"))
+              (greetd-terminal-configuration (terminal-vt "6"))))))
+  ;; mingetty-service-type can be used in parallel
+  ;; if needed to do so, do not (delete login-service-type)
+  ;; as illustrated above
+  #| (service mingetty-service-type (mingetty-configuration (tty "tty8"))) |#))
+</pre>
+</div></dd>
+
+<dt>Data Type: greetd-configuration </dt><dd>Configuration record for the <code>greetd-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>motd</code></dt><dd>A file-like object containing the “message of the day”.</dd>
+
+<dt><code>allow-empty-passwords?</code> (default: <code>#t</code>)</dt><dd>Allow empty passwords by default so that first-time users can log in when the 'root' account has just been created.</dd>
+
+<dt><code>terminals</code> (default: <code>'()</code>)</dt><dd>List of <code>greetd-terminal-configuration</code> per terminal for which <code>greetd</code> should be started.</dd>
+
+<dt><code>greeter-supplementary-groups</code> (default: <code>'()</code>)</dt><dd><p>
+List of groups which should be added to <code>greeter</code> user. For instance:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(greeter-supplementary-groups '("seat" "video"))
+</pre>
+</div>
+
+<p>
+Note that this example will fail if <code>seat</code> group does not exist.
+</p></dd>
+</dl></dd>
+
+<dt>Data Type: greetd-terminal-configuration </dt><dd>Configuration record for per terminal greetd daemon service.
+
+<dl class="org-dl">
+<dt><code>greetd</code> (default: <code>greetd</code>)</dt><dd>The greetd package to use.</dd>
+
+<dt><code>extra-shepherd-requirement</code> (default: <code>'()</code>)</dt><dd>This option can be used to provide a list of <i>additional</i> symbols naming Shepherd services that this service will depend on, such as <code>'seatd</code> or <code>'elogind</code> when the terminal session is a graphical greeter.</dd>
+
+<dt><code>config-file-name</code></dt><dd>Configuration file name to use for greetd daemon. Generally, autogenerated derivation based on <code>terminal-vt</code> value.</dd>
+
+<dt><code>log-file-name</code></dt><dd>Log file name to use for greetd daemon. Generally, autogenerated name based on <code>terminal-vt</code> value.</dd>
+
+<dt><code>terminal-vt</code> (default: ‘="7"=')</dt><dd>The VT to run on. Use of a specific VT with appropriate conflict avoidance is recommended.</dd>
+
+<dt><code>terminal-switch</code> (default: <code>#f</code>)</dt><dd>Make this terminal active on start of <code>greetd</code>.</dd>
+
+<dt><code>source-profile?</code> (default: <code>#t</code>)</dt><dd>Whether to source <code>/etc/profile</code> and <code>~/.profile</code>, when they exist.</dd>
+
+<dt><code>initial-session-user</code> (default: ‘=#f=')</dt><dd>The user to use for running the initial session, if any.</dd>
+
+<dt><code>initial-session-command</code> (default: <code>#f</code>)</dt><dd>The command to run the first time the greeter starts up, to auto-login. For that to be useful, you should also set <code>initial-session-user</code>. Then, greetd will automatically log in with that user and execute that command. When you eventually log out again, the regular greeter will appear.</dd>
+
+<dt><code>default-session-user</code> (default: ‘="greeter"=')</dt><dd>The user to use for running the greeter.</dd>
+
+<dt><code>default-session-command</code> (default: <code>(greetd-agreety-session)</code>)</dt><dd>Can be either <code>greetd-agreety-session</code>, <code>greetd-wlgreet-sway-session</code>, <code>greetd-gtkgreet-sway-session</code> or a file-like object to use as greeter.</dd>
+</dl></dd>
+
+<dt>Data Type: greetd-user-session </dt><dd>Configuration record for the user session command. Greeters require the user command to be specified in some or another way. <code>greetd-user-session</code> provides a common command for that. Users should prefer POSIX shell commands like <code>bash</code>, which can start an actual user terminal shell, window manager or desktop environment with their own mechanism, for example via <code>~/.bashrc</code> in the case of Bash.
+
+<dl class="org-dl">
+<dt><code>command</code> (default: <code>(file-append bash "/bin/bash")</code>)</dt><dd>Command to be started by <code>agreety</code> on successful login.</dd>
+
+<dt><code>command-args</code> (default: <code>'("-l")</code>)</dt><dd>Command arguments to pass to command.</dd>
+
+<dt><code>extra-env</code> (default: <code>'()</code>)</dt><dd>Extra environment variables to set on login.</dd>
+
+<dt><code>xdg-session-type</code> (default: <code>"tty"</code>)</dt><dd>Specify the value of <code>XDG_SESSION_TYPE</code>. The user environment may adapt depending on its value (normally by using <code>.bashrc</code> or similar).</dd>
+
+<dt><code>xdg-env?</code> (default: <code>#t</code>)</dt><dd>If true <code>XDG_RUNTIME_DIR</code> and <code>XDG_SESSION_TYPE</code> will be set before starting command. One should note that, <code>extra-env</code> variables are set right after mentioned variables, so that they can be overridden.</dd>
+</dl></dd>
+
+<dt>Data Type: greetd-agreety-session </dt><dd>Configuration record for the agreety greetd greeter.
+
+<dl class="org-dl">
+<dt><code>agreety</code> (default: <code>greetd</code>)</dt><dd>The package providing the <code>agreety</code> command.</dd>
+
+<dt><code>command</code> (default: <code>(greetd-user-session)</code>)</dt><dd>Command to be started by <code>agreety</code> on successful login, an instance of <code>greetd-user-session</code>.</dd>
+</dl></dd>
+
+<dt>Data Type: greetd-wlgreet-configuration </dt><dd>Generic configuration record for the wlgreet greetd greeter.
+
+<dl class="org-dl">
+<dt><code>output-mode</code> (default: <code>"all"</code>)</dt><dd>Option to use for <code>outputMode</code> in the TOML configuration file.</dd>
+
+<dt><code>scale</code> (default: <code>1</code>)</dt><dd>Option to use for <code>scale</code> in the TOML configuration file.</dd>
+
+<dt><code>background</code> (default: <code>'(0 0 0 0.9)</code>)</dt><dd>RGBA list to use as the background colour of the login prompt.</dd>
+
+<dt><code>headline</code> (default: <code>'(1 1 1 1)</code>)</dt><dd>RGBA list to use as the headline colour of the UI popup.</dd>
+
+<dt><code>prompt</code> (default: <code>'(1 1 1 1)</code>)</dt><dd>RGBA list to use as the prompt colour of the UI popup.</dd>
+
+<dt><code>prompt-error</code> (default: <code>'(1 1 1 1)</code>)</dt><dd>RGBA list to use as the error colour of the UI popup.</dd>
+
+<dt><code>border</code> (default: <code>'(1 1 1 1)</code>)</dt><dd>RGBA list to use as the border colour of the UI popup.</dd>
+</dl></dd>
+
+<dt>Data Type: greetd-wlgreet-sway-session </dt><dd><p>
+Sway-specific configuration record for the wlgreet greetd greeter.
+</p>
+
+<dl class="org-dl">
+<dt><code>wlgreet-session</code> (default: <code>(greetd-wlgreet-session)</code>)</dt><dd>A <code>greetd-wlgreet-session</code> record for generic wlgreet configuration, on top of the Sway-specific <code>greetd-wlgreet-sway-session</code>.</dd>
+
+<dt><code>sway</code> (default: <code>sway</code>)</dt><dd>The package providing the <code>sway</code> command.</dd>
+
+<dt><code>sway-configuration</code> (default: #f)</dt><dd>File-like object providing an additional Sway configuration file to be prepended to the mandatory part of the configuration.</dd>
+
+<dt><code>wlgreet</code> (default: <code>wlgreet</code>)</dt><dd>The package providing the <code>wlgreet</code> command.</dd>
+
+<dt><code>wlgreet-configuration</code> (default: <code>(greetd-wlgreet-configuration)</code>)</dt><dd>Configuration of <code>wlgreet</code> represented by <code>greetd-wlgreet-configuration</code>.</dd>
+
+<dt><code>command</code> (default: <code>(greetd-user-session)</code>)</dt><dd>Command to be started by <code>wlgreet</code> on successful login, an instance of <code>greetd-user-session</code>.</dd>
+</dl>
+
+<p>
+Here is an example of a greetd configuration that uses wlgreet and Sway:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(greetd-configuration
+ ;; The graphical greeter requires additional group membership.
+ (greeter-supplementary-groups (list "video" "input" "seat"))
+ (terminals
+  (list (greetd-terminal-configuration
+         ;; Sway requires seatd service.
+         (extra-shepherd-requirement '(seatd))
+         (terminal-vt "1")
+         (terminal-switch #t)
+         (default-session-command
+          (greetd-wlgreet-sway-session
+           (sway-configuration
+            ;; Optional extra sway configuration.
+            (local-file "sway-greetd.conf"))))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: greetd-gtkgreet-sway-session </dt><dd><p>
+Configuration record for the gtkgreet greetd greeter. It can be used as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(greetd-configuration
+ ;; The graphical greeter requires additional groups membership.
+ (greeter-supplementary-groups (list "video" "input" "seat"))
+ (terminals
+  (list (greetd-terminal-configuration
+         ;; Sway requires the seatd service.
+         (extra-shepherd-requirement '(seatd))
+         (terminal-vt "1")
+         (terminal-switch #t)
+         (default-session-command
+          (greetd-gtkgreet-sway-session
+           (command
+            (greetd-user-session
+             ;; Optionally signal to .bashrc that we want the Wayland
+             ;; compositor.
+             (xdg-session-type "wayland")))))))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>sway</code> (default: <code>sway</code>)</dt><dd>The package providing the <code>sway</code> and <code>swaymsg</code> commands.</dd>
+
+<dt><code>sway-configuration</code> (default: <code>#f</code>)</dt><dd>Extra file-like configuration for sway to be included before executing the greeter.</dd>
+
+<dt><code>gtkgreet</code> (default: <code>gtkgreet</code>)</dt><dd>The package providing the <code>gtkgreet</code> command.</dd>
+
+<dt><code>gtkgreet-style</code> (default: <code>#f</code>)</dt><dd>Extra file-like CSS stylesheet to customize the GTK look.</dd>
+
+<dt><code>command</code> (default: <code>(greetd-user-session)</code>)</dt><dd>The command to be started by <code>gtkgreet</code> on successful login, an instance of <code>greetd-user-session</code>.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+</div>
+</li>
+</div>

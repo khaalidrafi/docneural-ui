@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Traditional-Font-Lock-1">1. 16.13.1 Traditional Font Lock ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Parser_002dbased-Font-Lock.html">Parser-based Font Lock</a>   Up: <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>
+</p>
+
+<p>
+<a id="Traditional-Font-Lock"></a>
+</p>
+
+<hr />
+<div id="outline-container-Traditional-Font-Lock-1" class="outline-2">
+<h2 id="Traditional-Font-Lock-1"><span class="section-number-2">1.</span> 16.13.1 Traditional Font Lock <a href="#Traditional-Font-Lock-1">¶</a></h2>
+<div class="outline-text-2" id="text-Traditional-Font-Lock-1">
+<p>
+“Traditional” methods of providing font-lock information are based on regular-expression search and on syntactic analysis using syntax tables built into Emacs. This subsection describes the use and customization of font-lock for major modes which use these traditional methods.
+</p>
+
+<p>
+You can control the amount of fontification applied by Font Lock mode by customizing the variable <code>font-lock-maximum-decoration</code>, for major modes that support this feature. The value of this variable should be a number (with 1 representing a minimal amount of fontification; some modes support levels as high as 3); or <code>t</code>, meaning “as high as possible” (the default). To be effective for a given file buffer, the customization of <code>font-lock-maximum-decoration</code> should be done <i>before</i> the file is visited; if you already have the file visited in a buffer when you customize this variable, kill the buffer and visit the file again after the customization.
+</p>
+
+<p>
+You can also specify different numbers for particular major modes; for example, to use level 1 for C/C++ modes, and the default level otherwise, use the value
+</p>
+
+<pre class="example" id="org8405f59">
+'((c-mode . 1) (c++-mode . 1)))
+</pre>
+
+<p>
+Comment and string fontification (or “syntactic” fontification) relies on analysis of the syntactic structure of the buffer text. For the sake of speed, some modes, including Lisp mode, rely on a special convention: an open-parenthesis or open-brace in the leftmost column always defines the beginning of a defun, and is thus always outside any string or comment. Therefore, you should avoid placing an open-parenthesis or open-brace in the leftmost column, if it is inside a string or comment. See <a href="docs/emacs--Left-Margin-Paren.html">Left Margin Convention</a>, for details.
+</p>
+
+<p>
+Font Lock highlighting patterns already exist for most modes, but you may want to fontify additional patterns. You can use the function <code>font-lock-add-keywords</code>, to add your own highlighting patterns for a particular mode. For example, to highlight ‘=FIXME:=' words in C comments, use this:
+</p>
+
+<pre class="example" id="orge2f6d9a">
+(add-hook 'c-mode-hook
+          (lambda ()
+           (font-lock-add-keywords nil
+            '(("\\&lt;\\(FIXME\\):" 1
+               font-lock-warning-face t)))))
+</pre>
+
+<p>
+To remove keywords from the font-lock highlighting patterns, use the function <code>font-lock-remove-keywords</code>. See <a href="../elisp_html/Search_002dbased-Fontification.html#Search_002dbased-Fontification">Search-based Fontification</a> in The Emacs Lisp Reference Manual. Alternatively, you can selectively disable highlighting due to some keywords by customizing the <code>font-lock-ignore</code> option, see <a href="../elisp_html/Customizing-Keywords.html#Customizing-Keywords">Customizing Keywords</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<hr />
+</div>
+</div>

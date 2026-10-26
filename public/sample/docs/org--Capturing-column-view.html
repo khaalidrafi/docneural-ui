@@ -1,0 +1,108 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org73f82be">1. The column view</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Capturing-column-view"></a>
+Previous: <a href="docs/org--Using-column-view.html">Using column view</a>, Up: <a href="docs/org--Column-View.html">Column View</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Capturing-column-view-1"></a>7.5.3 Capturing column view <a href="#Capturing-column-view-1">¶</a><br />
+<div class="outline-text-5" id="text-Capturing-column-view-1">
+<p>
+Since column view is just an overlay over a buffer, it cannot be exported or printed directly. If you want to capture a column view, use a ‘=columnview=' dynamic block (see <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>). The frame of this block looks like this:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-org73f82be" class="outline-2">
+<h2 id="org73f82be"><span class="section-number-2">1.</span> The column view</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+
+</p>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+This dynamic block has the following parameters:
+</p>
+
+<dl class="org-dl">
+<dt>‘=:id='</dt><dd>This is the most important parameter. Column view is a feature that is often localized to a certain (sub)tree, and the capture block might be at a different location in the file. To identify the tree whose view to capture, you can use four values:
+
+<dl class="org-dl">
+<dt>‘=local='</dt><dd>Use the tree in which the capture block is located.</dd>
+
+<dt>‘=global='</dt><dd>Make a global view, including all headings in the file.</dd>
+
+<dt>‘=<a href="FILENAME">FILENAME</a>='</dt><dd>Run column view at the top of the <code>FILENAME</code> file.</dd>
+
+<dt><a id="index-ID_002c-property-1"></a>‘=LABEL=' </dt><dd>Call column view in the tree that has an ‘=ID=' property with the value <code>LABEL</code>. You can use M-x org-id-copy to create a globally unique ID for the current entry and copy it to the kill-ring.</dd>
+</dl></dd>
+
+<dt>‘=:match='</dt><dd>When set to a string, use this as a tags/property match filter to select only a subset of the headlines in the scope set by the <code>:id</code> parameter.</dd>
+
+<dt>‘=:hlines='</dt><dd>When <code>t</code>, insert an hline after every line. When a number N, insert an hline before each headline with level <code>&lt;</code> N=.</dd>
+
+<dt>‘=:vlines='</dt><dd>When non-<code>nil</code>, force column groups to get vertical lines.</dd>
+
+<dt>‘=:maxlevel='</dt><dd>When set to a number, do not capture entries below this level.</dd>
+
+<dt>‘=:skip-empty-rows='</dt><dd>When non-<code>nil</code>, skip rows where the only non-empty specifier of the column view is ‘=ITEM='.</dd>
+
+<dt>‘=:exclude-tags='</dt><dd>List of tags to exclude from column view table: entries with these tags will be excluded from the column view.</dd>
+
+<dt>‘=:indent='</dt><dd>When non-<code>nil</code>, indent each ‘=ITEM=' field according to its level.</dd>
+
+<dt>‘=:link='</dt><dd>When non-<code>nil</code>, link the ‘=ITEM=' headlines in the table to their origins.</dd>
+
+<dt>‘=:format='</dt><dd>Specify a column attribute (see <a href="docs/org--Column-attributes.html">Column attributes</a>) for the dynamic block.</dd>
+
+<dt><a id="index-formatter_002c-dynamic-block-parameter"></a>‘=:formatter=' </dt><dd>A function to format column view data and insert it into the buffer. See the option <code>org-columns-dblock-formatter</code>.</dd>
+</dl>
+
+<p>
+The following commands insert or update the dynamic block:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-x"></a>=org-columns-insert-dblock= </dt><dd><p>
+Insert a dynamic block capturing a column view. Prompt for the scope or ID of the view.
+</p>
+
+<p>
+This command can be invoked by calling <code>org-dynamic-block-insert-dblock</code> (C-c C-x x) and selecting “columnview” (see <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>).
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002dc-12"></a>C-c C-c C-c C-x C-u (<code>org-dblock-update</code>) </dt><dd>Update dynamic block at point. Point needs to be on the ‘=#+BEGIN=' line of the dynamic block.</dd>
+
+<dt><a id="index-C_002du-C_002dc-C_002dx-C_002du"></a>C-u C-c C-x C-u (<code>org-update-all-dblocks</code>) </dt><dd>Update all dynamic blocks (see <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>). This is useful if you have several clock table blocks, column-capturing blocks or other dynamic blocks in a buffer.</dd>
+</dl>
+
+<p>
+You can add formulas to the column view table, and you may add plotting instructions in front of the table&#x2014;these survive an update of the block. If there is a ‘=TBLFM=' keyword after the table, the table is recalculated automatically after an update.
+</p>
+
+<p>
+An alternative way to capture and process property values into a table is provided by Eric Schulte's ‘=org-collector.el=', which is a package in ‘=org-contrib='. It provides a general API to collect properties from entries in a certain scope, and arbitrary Lisp expressions to process these values before inserting them into a table or a dynamic block.
+</p>
+
+<hr />
+</div>
+</div>

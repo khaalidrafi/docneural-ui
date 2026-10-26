@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Setting-up-the-staging-area-1">1. 17.18.1 Setting up the staging area ¶</a>
+<ul>
+<li><a href="#section">1.1. (167)</a></li>
+<li><a href="#section-1">1.2. (168)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Setting-up-the-staging-area"></a>
+Next: <a href="docs/org--Pushing-to-the-mobile-application.html">Pushing to the mobile application</a>, Up: <a href="docs/org--Org-Mobile.html">Org Mobile</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Setting-up-the-staging-area-1" class="outline-2">
+<h2 id="Setting-up-the-staging-area-1"><span class="section-number-2">1.</span> 17.18.1 Setting up the staging area <a href="#Setting-up-the-staging-area-1">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-up-the-staging-area-1">
+<p>
+The mobile application needs access to a file directory on a server to interact with Emacs. Pass its location through the <code>org-mobile-directory</code> variable. If you can mount that directory locally just set the variable to point to that directory:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-mobile-directory "~/orgmobile/")
+</pre>
+</div>
+
+<p>
+Alternatively, by using TRAMP (see <a href="https://www.gnu.org/software/emacs/manual/html_node/tramp/index.html#Top">TRAMP User Manual</a>), <code>org-mobile-directory</code> may point to a remote directory accessible through, for example, SSH, SCP, or DAVS:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-mobile-directory "/davs:user@remote.host:/org/webdav/")
+</pre>
+</div>
+
+<p>
+With a public server, consider encrypting the files. Org also requires OpenSSL installed on the local computer. To turn on encryption, set the same password in the mobile application and in Emacs. Set the password in the variable <code>org-mobile-use-encryption</code>. Note that even after the mobile application encrypts the file contents, the file name remains visible on the file systems of the local computer, the server, and the mobile device.
+</p>
+
+<hr />
+</div>
+</div>

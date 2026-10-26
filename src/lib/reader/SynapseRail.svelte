@@ -257,7 +257,7 @@
   .graph-box {
     position: relative;
     height: 210px;
-    border: 1px solid var(--dn-border-strong);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 34%, var(--dn-border-strong));
     /* notched corner: the mini-map is an instrument window, not a card */
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--dn-notch)), calc(100% - var(--dn-notch)) 100%, 0 100%);
     overflow: hidden;

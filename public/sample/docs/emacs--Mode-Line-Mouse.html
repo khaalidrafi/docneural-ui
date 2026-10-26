@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mode-Line-Mouse-Commands">1. 23.5 Mode Line Mouse Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Creating-Frames.html">Creating Frames</a>   Previous: <a href="docs/emacs--Menu-Mouse-Clicks.html">Mouse Clicks for Menus</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Mode-Line-Mouse"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mode-Line-Mouse-Commands" class="outline-2">
+<h2 id="Mode-Line-Mouse-Commands"><span class="section-number-2">1.</span> 23.5 Mode Line Mouse Commands <a href="#Mode-Line-Mouse-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Mode-Line-Mouse-Commands">
+<p>
+You can use mouse clicks on window mode lines to select and manipulate windows.
+</p>
+
+<p>
+Some areas of the mode line, such as the buffer name, and major and minor mode names, have their own special mouse bindings. These areas are highlighted when you hold the mouse over them, and information about the special bindings will be displayed (see <a href="docs/emacs--Tooltips.html">Tooltips</a>). This section's commands do not apply in those areas.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-mouse_002d1-_0028mode-line_0029"></a>mouse-1 </dt><dd>mouse-1 on a mode line selects the window it belongs to. By dragging mouse-1 on the mode line, you can move it, thus changing the height of the windows above and below. Changing heights with the mouse in this way never deletes windows, it just refuses to make any window smaller than the minimum height.</dd>
+
+<dt><a id="index-mouse_002d2-_0028mode-line_0029"></a>mouse-2 </dt><dd>mouse-2 on a mode line expands that window to fill its frame.</dd>
+
+<dt><a id="index-mouse_002d3-_0028mode-line_0029"></a>mouse-3 </dt><dd>mouse-3 on a mode line deletes the window it belongs to. If the frame has only one window, it does nothing.</dd>
+
+<dt>C-mouse-2</dt><dd>C-mouse-2 on a mode line splits that window, producing two side-by-side windows with the boundary running through the click position (see <a href="docs/emacs--Split-Window.html">Splitting Windows</a>).</dd>
+</dl>
+
+<p>
+Furthermore, by clicking and dragging mouse-1 on the divider between two side-by-side mode lines, you can move the vertical boundary to the left or right.
+</p>
+
+<p>
+Note that resizing windows is affected by the value of <code>window-resize-pixelwise</code>, see <a href="docs/emacs--Split-Window.html">Splitting Windows</a>.
+</p>
+
+<hr />
+</div>
+</div>

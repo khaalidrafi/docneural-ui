@@ -1,0 +1,81 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-Faces">1. 51.1.5 Customizing Faces ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Specific-Customization.html">Customizing Specific Items</a>   Previous: <a href="docs/emacs--Saving-Customizations.html">Saving Customizations</a>   Up: <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>
+</p>
+
+<p>
+<a id="Face-Customization"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-Faces" class="outline-2">
+<h2 id="Customizing-Faces"><span class="section-number-2">1.</span> 51.1.5 Customizing Faces <a href="#Customizing-Faces">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-Faces">
+<p>
+You can customize faces (see <a href="docs/emacs--Faces.html">Text Faces</a>), which determine how Emacs displays different types of text. Customization groups can contain both variables and faces.
+</p>
+
+<p>
+For example, in programming language modes, source code comments are shown with <code>font-lock-comment-face</code> (see <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>). In a customization buffer, that face appears like this, after you click on the ‘=[Show All Attributes]=' link:
+</p>
+
+<pre class="example" id="org5a900bd">
+[Hide] Font Lock Comment Face:[sample]
+   [State] : STANDARD.
+   Font Lock mode face used to highlight comments.
+   [ ] Font Family: --
+   [ ] Font Foundry: --
+   [ ] Width: --
+   [ ] Height: --
+   [ ] Weight: --
+   [ ] Slant: --
+   [ ] Underline: --
+   [ ] Overline: --
+   [ ] Strike-through: --
+   [ ] Box around text: --
+   [ ] Inverse-video: --
+   [X] Foreground: Firebrick     [Choose]  (sample)
+   [ ] Background: --
+   [ ] Stipple: --
+   [ ] Inherit: --
+   [Hide Unused Attributes]
+</pre>
+
+<p>
+The first three lines show the name, ‘=[State]=' button, and documentation for the face. Below that is a list of <i>face attributes</i>. In front of each attribute is a checkbox. A filled checkbox, ‘=[X]=', means that the face specifies a value for this attribute; an empty checkbox, ‘=[ ]=', means that the face does not specify any special value for the attribute. You can activate a checkbox to specify or unspecify its attribute.
+</p>
+
+<p>
+A face does not have to specify every single attribute; in fact, most faces only specify a few attributes. In the above example, <code>font-lock-comment-face</code> only specifies the foreground color. Any unspecified attribute is taken from the special face named <code>default</code>, whose attributes are all specified. The <code>default</code> face is the face used to display any text that does not have an explicitly-assigned face; furthermore, its background color attribute serves as the background color of the frame.
+</p>
+
+<p>
+The ‘=[Hide Unused Attributes]=' button, at the end of the attribute list, hides the unspecified attributes of the face. When attributes are being hidden, the button changes to ‘=[Show All Attributes]=', which reveals the entire attribute list. The customization buffer may start out with unspecified attributes hidden, to avoid cluttering the interface.
+</p>
+
+<p>
+When an attribute is specified, you can change its value in the usual ways.
+</p>
+
+<p>
+Foreground and background colors can be specified using either color names or RGB triplets (see <a href="docs/emacs--Colors.html">Colors for Faces</a>). You can also use the ‘=[Choose]=' button to switch to a list of color names; select a color with RET in that buffer to put the color name in the value field.
+</p>
+
+<p>
+Setting, saving and resetting a face work like the same operations for variables (see <a href="docs/emacs--Changing-a-Variable.html">Changing a Variable</a>).
+</p>
+
+<p>
+A face can specify different appearances for different types of displays. For example, a face can make text red on a color display, but use a bold font on a monochrome display. To specify multiple appearances for a face, select ‘=For All Kinds of Displays=' in the menu you get from invoking ‘=[State]='.
+</p>
+
+<hr />
+</div>
+</div>

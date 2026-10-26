@@ -1,0 +1,48 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#VC-Directory-Mode-1">1. 30.1.10 VC Directory Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Branches.html">Version Control Branches</a>   Previous: <a href="docs/emacs--VC-Ignore.html">Ignore Version Control Files</a>   Up: <a href="docs/emacs--Version-Control.html">Version Control</a>
+</p>
+
+<p>
+<a id="VC-Directory-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-VC-Directory-Mode-1" class="outline-2">
+<h2 id="VC-Directory-Mode-1"><span class="section-number-2">1.</span> 30.1.10 VC Directory Mode <a href="#VC-Directory-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-VC-Directory-Mode-1">
+<p>
+The <i>VC Directory buffer</i> is a specialized buffer for viewing the version control statuses of the files in a directory tree, and performing version control operations on those files. In particular, it is used to specify multi-file VC filesets for commands like C-x v v to act on (see <a href="docs/emacs--VC-Directory-Commands.html">VC Directory Commands</a>).
+</p>
+
+<p>
+To use the VC Directory buffer, type C-x v d (<code>vc-dir</code>). This reads a directory's name using the minibuffer, and switches to a VC Directory buffer for that directory. By default, the buffer is named <code>*vc-dir*</code>. Its contents are described in <a href="docs/emacs--VC-Directory-Buffer.html">The VC Directory Buffer</a>.
+</p>
+
+<p>
+The <code>vc-dir</code> command automatically detects the version control system to be used in the specified directory. In the event that more than one system is being used in the directory, you should invoke the command with a prefix argument, C-u C-x v d; this prompts for the version control system which the VC Directory buffer should use.
+</p>
+
+<p>
+In addition to the VC Directory buffer, Emacs has a similar facility called PCL-CVS which is specialized for CVS. See <a href="../pcl-cvs_html/index.html#Top">About PCL-CVS</a> in PCL-CVS&#x2014;The Emacs Front-End to CVS.
+</p>
+
+<p>
+You can also invoke VC commands from Dired buffers (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>). In that case, any VC command you invoke considers the marked files as the current fileset (see <a href="docs/emacs--Basic-VC-Editing.html">Basic Editing under Version Control</a>), defaulting to the file on the current line if no files are marked.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--VC-Directory-Buffer.html">The VC Directory Buffer</a></li>
+<li><a href="docs/emacs--VC-Directory-Commands.html">VC Directory Commands</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

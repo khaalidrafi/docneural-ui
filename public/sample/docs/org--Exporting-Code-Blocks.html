@@ -1,0 +1,97 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Exporting-Code-Blocks-1">1. 16.7 Exporting Code Blocks ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Exporting-Code-Blocks"></a>
+Next: <a href="docs/org--Extracting-Source-Code.html">Extracting Source Code</a>, Previous: <a href="docs/org--Results-of-Evaluation.html">Results of Evaluation</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Exporting-Code-Blocks-1" class="outline-2">
+<h2 id="Exporting-Code-Blocks-1"><span class="section-number-2">1.</span> 16.7 Exporting Code Blocks <a href="#Exporting-Code-Blocks-1">¶</a></h2>
+<div class="outline-text-2" id="text-Exporting-Code-Blocks-1">
+<p>
+It is possible to export the <i>code</i> of code blocks, the <i>results</i> of code block evaluation, <i>both</i> the code and the results of code block evaluation, or <i>none</i>. Org defaults to exporting <i>code</i> for most languages and <i>results</i> for inline code blocks. For some languages, such as ditaa, Org defaults to <i>results</i> both in ordinary source blocks and in inline source blocks. To export just the body of code blocks, see <a href="docs/org--Literal-Examples.html">Literal Examples</a>. To selectively export subtrees of an Org document, see <a href="docs/org--Exporting.html">Exporting</a>.
+</p>
+
+<p>
+The ‘=exports=' header argument specifies whether that part of the Org file is exported to, say, HTML or LaTeX formats.
+</p>
+
+<dl class="org-dl">
+<dt>‘=code='</dt><dd>The default. The body of code is included into the exported file. Example: ‘=:exports code='.</dd>
+
+<dt>‘=results='</dt><dd>The results of evaluation of the code are included in the exported file. Example: ‘=:exports results='.</dd>
+
+<dt>‘=both='</dt><dd>Both the code and results of evaluation are included in the exported file. Example: ‘=:exports both='.</dd>
+
+<dt>‘=none='</dt><dd>Neither the code nor the results of evaluation are included in the exported file. Whether the code is evaluated at all depends on other options. Example: ‘=:exports none='.</dd>
+</dl>
+
+<p>
+If a source block is named using the ‘=NAME=' keyword, the same name will be assigned to the results of evaluation. This way, fuzzy links pointing to the named source blocks exported using ‘=:exports results=' will remain valid and point to the results of evaluation.
+</p>
+
+<p>
+Results of evaluation of a named block can also be explicitly named using a separate ‘=NAME=' keyword. The name value set via the ‘=NAME=' keyword will be preferred over the parent source block.
+</p>
+
+<pre class="example" id="org325ae8f">
+#+NAME: code name
+#+BEGIN_SRC emacs-lisp :exports both value
+(+ 1 2)
+#+END_SRC
+
+#+NAME: results name
+#+RESULTS: code name
+3
+
+This [[code name][link]] will point to the code block.
+Another [[results name][link]] will point to the results.
+</pre>
+
+<p>
+Explicit setting of the result name may be necessary when a named code block is exported using ‘=:exports both='. Links to such a block may point arbitrarily either to the code block or to its results when the results do not have a distinct name.
+</p>
+
+<p>
+Note that all the links pointing to a source block exported using ‘=:exports none=' will be broken. This will cause the export process to fail, unless broken links are allowed during export (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<p>
+You can prevent Org from evaluating code blocks for speed or security reasons:
+</p>
+
+<ul class="org-ul">
+<li>To speed up export, use the header argument ‘=:eval never-export=' (see <a href="docs/org--Evaluating-Code-Blocks.html">Evaluating Code Blocks</a>).</li>
+<li>For greater security, set the <code>org-export-use-babel</code> variable to <code>nil</code>, but understand that header arguments will have no effect in this case.</li>
+</ul>
+
+<p>
+If results of evaluation are not marked for export (‘=:exports code=' or ‘=:exports none='), Org will not evaluate them, even for ‘=:eval yes='. The only exception is when a code block uses ‘=:session=' - such blocks are evaluated according to their ‘=:eval=' header argument.
+</p>
+
+<p>
+Turning off evaluation comes in handy when batch processing. For example, markup languages for wikis have a high risk of untrusted code. Stopping code block evaluation also stops evaluation of all header arguments of the code block. This may not be desirable in some circumstances. So during export, to allow evaluation of just the header arguments but not any code evaluation in the source block, set ‘=:eval never-export=' (see <a href="docs/org--Evaluating-Code-Blocks.html">Evaluating Code Blocks</a>).
+</p>
+
+<p>
+Org never evaluates code blocks in commented subtrees when exporting (see <a href="docs/org--Comment-Lines.html">Comment Lines</a>). On the other hand, Org does evaluate code blocks in subtrees excluded from export (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Extracting-Source-Code.html">Extracting Source Code</a>, Previous: <a href="docs/org--Results-of-Evaluation.html">Results of Evaluation</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

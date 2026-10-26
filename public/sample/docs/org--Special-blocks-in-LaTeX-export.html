@@ -1,0 +1,76 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Special-blocks-in-LaTeX-export-1">1. 13.10.10 Special blocks in LaTeX export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Special-blocks-in-LaTeX-export"></a>
+Next: <a href="docs/org--Horizontal-rules-in-LaTeX-export.html">Horizontal rules in LaTeX export</a>, Previous: <a href="docs/org--Example-blocks-in-LaTeX-export.html">Example blocks in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Special-blocks-in-LaTeX-export-1" class="outline-2">
+<h2 id="Special-blocks-in-LaTeX-export-1"><span class="section-number-2">1.</span> 13.10.10 Special blocks in LaTeX export <a href="#Special-blocks-in-LaTeX-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Special-blocks-in-LaTeX-export-1">
+<p>
+For other special blocks in the Org file, the LaTeX export backend makes a special environment of the same name. The backend also takes ‘=:options=', if any, and appends as-is to that environment's opening string. For example:
+</p>
+
+<pre class="example" id="orgbaaf058">
+#+BEGIN_abstract
+  We demonstrate how to solve the Syracuse problem.
+</pre>
+
+<div class="proof" id="orgad79dbf">
+<p>
+&#x2026;
+Therefore, any even number greater than 2 is the sum of two primes.
+</p>
+
+</div>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+exports to
+</p>
+
+<pre class="example" id="orgc2c07dd">
+\begin{abstract}
+  We demonstrate how to solve the Syracuse problem.
+\end{abstract}
+
+\begin{proof}[Proof of important theorem]
+  ...
+  Therefore, any even number greater than 2 is the sum of two primes.
+\end{proof}
+</pre>
+
+<p>
+If you need to insert a specific caption command, use ‘=:caption=' attribute. It overrides standard ‘=CAPTION=' value, if any. For example:
+</p>
+
+<pre class="example" id="orge42bbab">
+#+ATTR_LATEX: :caption \MyCaption{HeadingA}
+#+BEGIN_proof
+  ...
+</pre>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Horizontal-rules-in-LaTeX-export.html">Horizontal rules in LaTeX export</a>, Previous: <a href="docs/org--Example-blocks-in-LaTeX-export.html">Example blocks in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

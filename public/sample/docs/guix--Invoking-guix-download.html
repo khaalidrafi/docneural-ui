@@ -1,0 +1,148 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-download">1.0.1. 9.3 Invoking <code>guix download</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-download"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>, Previous: <a href="docs/guix--Invoking-guix-edit.html">Invoking <code>guix edit</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-download-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-download" class="outline-4">
+<h4 id="invoking-guix-download"><span class="section-number-4">1.0.1.</span> 9.3 Invoking <code>guix download</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-download">
+<p>
+<a id="index-guix-download"></a> <a id="index-downloading-package-sources"></a>
+When writing a package definition, developers typically need to download a source tarball, compute its SHA256 hash, and write that hash in the package definition (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>). The <code>guix download</code> tool helps with this task: it downloads a file from the given URI, adds it to the store, and prints both its file name in the store and its SHA256 hash.
+</p>
+
+<p>
+The fact that the downloaded file is added to the store saves bandwidth: when the developer eventually tries to build the newly defined package with <code>guix build</code>, the source tarball will not have to be downloaded again because it is already in the store. It is also a convenient way to temporarily stash files, which may be deleted eventually (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>).
+</p>
+
+<p>
+The <code>guix download</code> command supports the same URIs as used in package definitions. In particular, it supports <code>mirror://</code> URIs. <code>https</code> URIs (HTTP over TLS) are supported <i>provided</i> the Guile bindings for GnuTLS are available in the user's environment; when they are not available, an error is raised. See <a href="http://gnutls.org/manual/gnutls-guile/Guile-Preparations.html#Guile-Preparations">how to install the GnuTLS bindings for Guile</a> in GnuTLS-Guile, for more information.
+</p>
+
+<p>
+<code>guix download</code> verifies HTTPS server certificates by loading the certificates of X.509 authorities from the directory pointed to by the <code>SSL_CERT_DIR</code> environment variable (see <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>), unless <code>--no-check-certificate</code> is used.
+</p>
+
+<p>
+Alternatively, <code>guix download</code> can also retrieve a Git repository, possibly a specific commit, tag, or branch.
+</p>
+
+<p>
+The following options are available:
+</p>
+
+<ul class="org-ul">
+<li><code>--hash===algorithm</code><br />
+<code>-H ==algorithm</code> :: Compute a hash using the specified <code>algorithm</code>. See <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>, for more information.</li>
+
+<li><code>--format===fmt</code><br />
+<code>-f ==fmt</code> :: Write the hash in the format specified by <code>fmt</code>. For more information on the valid values for <code>fmt</code>, see <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>.</li>
+
+<li id="<code>--no-check-certificate</code>"><p>
+Do not validate the X.509 certificates of HTTPS servers.
+</p>
+
+<p>
+When using this option, you have <i>absolutely no guarantee</i> that you are communicating with the authentic server responsible for the given URL, which makes you vulnerable to “man-in-the-middle” attacks.
+</p></li>
+
+<li><code>--output===file</code><br />
+<code>-o ==file</code> :: Save the downloaded file to <code>file</code> instead of adding it to the store.</li>
+
+<li><code>--git</code><br />
+<code>-g</code> :: Checkout the Git repository at the latest commit on the default branch.</li>
+
+<li id="<code>--commit===commit-or-tag</code>"><p>
+Checkout the Git repository at <code>commit-or-tag</code>.
+</p>
+
+<p>
+<code>commit-or-tag</code> can be either a tag or a commit defined in the Git repository.
+</p></li>
+
+<li id="<code>--branch===branch</code>"><p>
+Checkout the Git repository at <code>branch</code>.
+</p>
+
+<p>
+The repository will be checked out at the latest commit of <code>branch</code>, which must be a valid branch of the Git repository.
+</p></li>
+
+<li><code>--recursive</code><br />
+<code>-r</code> :: Recursively clone the Git repository.</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>, Previous: <a href="docs/guix--Invoking-guix-edit.html">Invoking <code>guix edit</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

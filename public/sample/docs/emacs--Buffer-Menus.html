@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-Buffer-Menus">1. 21.7.3 Customizing Buffer Menus ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Icomplete.html">Fast minibuffer selection</a>   Up: <a href="docs/emacs--Buffer-Convenience.html">Convenience Features and Customization of Buffer Handling</a>
+</p>
+
+<p>
+<a id="Buffer-Menus"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-Buffer-Menus" class="outline-2">
+<h2 id="Customizing-Buffer-Menus"><span class="section-number-2">1.</span> 21.7.3 Customizing Buffer Menus <a href="#Customizing-Buffer-Menus">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-Buffer-Menus">
+<dl class="org-dl">
+<dt>M-x bs-show</dt><dd>Make a list of buffers similarly to M-x list-buffers but customizable.</dd>
+
+<dt>M-x ibuffer</dt><dd>Make a list of buffers and operate on them in Dired-like fashion.</dd>
+</dl>
+
+<p>
+M-x bs-show pops up a buffer list similar to the one normally displayed by C-x C-b, but whose display you can customize in a more flexible fashion. For example, you can specify the list of buffer attributes to show, the minimum and maximum width of buffer name column, a regexp for names of buffers that will never be shown and those which will always be shown, etc. If you prefer this to the usual buffer list, you can bind this command to C-x C-b. To customize this buffer list, use the <code>bs</code> Custom group (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>), or invoke bs-customize.
+</p>
+
+<p>
+MSB global minor mode (“MSB” stands for “mouse select buffer”) provides a different and customizable mouse buffer menu which you may prefer. It replaces the <code>mouse-buffer-menu</code> commands, normally bound to C-Down-mouse-1 and C-F10, with its own commands, and also modifies the menu-bar buffer menu. You can customize the menu in the <code>msb</code> Custom group.
+</p>
+
+<p>
+IBuffer is a major mode for viewing a list of buffers and operating on them in a way analogous to that of Dired (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>), including filtering, marking, sorting in various ways, and acting on buffers.
+</p>
+
+<hr />
+</div>
+</div>

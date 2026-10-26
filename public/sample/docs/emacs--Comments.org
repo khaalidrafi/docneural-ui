@@ -1,0 +1,33 @@
+:PROPERTIES:
+:ID: emacs--Comments
+:END:
+#+filetags: :emacs:
+#+title: Comments
+
+Next: [[id:emacs--Documentation][Documentation Lookup]]   Previous: [[id:emacs--Parentheses][Commands for Editing with Parentheses]]   Up: [[id:emacs--Programs][Editing Programs]]
+
+<<Comments>>
+
+--------------
+
+*** 28.5 Manipulating Comments [[#Manipulating-Comments][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Manipulating-Comments
+:CLASS: section
+:END:
+Because comments are such an important part of programming, Emacs provides special commands for editing and inserting comments. It can also do spell checking on comments with Flyspell Prog mode (see [[id:emacs--Spelling][Checking and Correcting Spelling]]).
+
+Some major modes have special rules for indenting different kinds of comments. For example, in Lisp code, comments starting with two semicolons are indented as if they were lines of code, while those starting with three semicolons are supposed to be aligned to the left margin and are often used for sectioning purposes. Emacs understands these conventions; for instance, typing TAB on a comment line will indent the comment to the appropriate position.
+
+#+begin_example
+;; This function is just an example.
+;;; Here either two or three semicolons are appropriate.
+(defun foo (x)
+;;;  And now, the first part of the function:
+  ;; The following line adds one.
+  (1+ x))           ; This line adds one.
+#+end_example
+
+- [[id:emacs--Comment-Commands][Comment Commands]]
+- [[id:emacs--Multi_002dLine-Comments][Multiple Lines of Comments]]
+- [[id:emacs--Options-for-Comments][Options Controlling Comments]]

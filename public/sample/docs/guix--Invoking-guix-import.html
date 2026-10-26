@@ -1,0 +1,706 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-import">1.0.1. 9.5 Invoking <code>guix import</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-import"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>, Previous: <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-import-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-import" class="outline-4">
+<h4 id="invoking-guix-import"><span class="section-number-4">1.0.1.</span> 9.5 Invoking <code>guix import</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-import">
+<p>
+<a id="index-importing-packages"></a> <a id="index-package-import"></a> <a id="index-package-conversion"></a> <a id="index-Invoking-guix-import"></a>
+The <code>guix import</code> command is useful for people who would like to add a package to the distribution with as little work as possible&#x2014;a legitimate demand. The command knows of a few repositories from which it can “import” package metadata. The result is a package definition, or a template thereof, in the format we know (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>).
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org4b75773">
+guix import [global-options…] importer package [options…]
+</pre>
+
+<p>
+<code>importer</code> specifies the source from which to import package metadata, and <code>options</code> specifies a package identifier and other options specific to <code>importer</code>. <code>guix import</code> itself has the following <code>global-options</code>:
+</p>
+
+<ul class="org-ul">
+<li><code>--insert===file</code><br />
+<code>-i ==file</code> :: Insert the package definition(s) that the <code>importer</code> generated into the specified <code>file</code>, either in alphabetical order among existing package definitions, or at the end of the file otherwise.</li>
+</ul>
+
+<p>
+Some of the importers rely on the ability to run the <code>gpgv</code> command. For these, GnuPG must be installed and in <code>$PATH</code>; run <code>guix install gnupg</code> if needed.
+</p>
+
+<p>
+Currently, the available “importers” are:
+</p>
+
+<dl class="org-dl">
+<dt><code>gnu</code></dt><dd><p>
+Import metadata for the given GNU package. This provides a template for the latest version of that GNU package, including the hash of its source tarball, and its canonical synopsis and description.
+</p>
+
+<p>
+Additional information such as the package dependencies and its license needs to be figured out manually.
+</p>
+
+<p>
+For example, the following command returns a package definition for GNU Hello:
+</p>
+
+<pre class="example" id="org6a5010d">
+guix import gnu hello
+</pre>
+
+<p>
+Specific command-line options are:
+</p>
+
+<dl class="org-dl">
+<dt><code>--key-download===policy</code></dt><dd>As for <code>guix refresh</code>, specify the policy to handle missing OpenPGP keys when verifying the package signature. See <a href="docs/guix--Invoking-guix-refresh.html"><code>--key-download</code></a>.</dd>
+</dl></dd>
+
+<dt><code>pypi</code> </dt><dd><p>
+Import metadata from the <a href="https://pypi.python.org/">Python Package Index</a>. Information is taken from the JSON-formatted description available at <code>pypi.python.org</code> and usually includes all the relevant information, including package dependencies. For maximum efficiency, it is recommended to install the <code>unzip</code> utility, so that the importer can unzip Python wheels and gather data from them.
+</p>
+
+<p>
+The command below imports metadata for the latest version of the <code>itsdangerous</code> Python package:
+</p>
+
+<pre class="example" id="org789b6ce">
+guix import pypi itsdangerous
+</pre>
+
+<p>
+You can also ask for a specific version:
+</p>
+
+<pre class="example" id="org89cdd35">
+guix import pypi itsdangerous@1.1.0
+</pre>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>gem</code> </dt><dd><p>
+Import metadata from <a href="https://rubygems.org/">RubyGems</a>. Information is taken from the JSON-formatted description available at <code>rubygems.org</code> and includes most relevant information, including runtime dependencies. There are some caveats, however. The metadata doesn't distinguish between synopses and descriptions, so the same string is used for both fields. Additionally, the details of non-Ruby dependencies required to build native extensions is unavailable and left as an exercise to the packager.
+</p>
+
+<p>
+The command below imports metadata for the <code>rails</code> Ruby package:
+</p>
+
+<pre class="example" id="orgb11407d">
+guix import gem rails
+</pre>
+
+<p>
+You can also ask for a specific version:
+</p>
+
+<pre class="example" id="org5279714">
+guix import gem rails@7.0.4
+</pre>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>minetest</code> </dt><dd><p>
+<a id="index-ContentDB"></a>
+</p>
+
+<p>
+Import metadata from <a href="https://content.minetest.net">ContentDB</a>. Information is taken from the JSON-formatted metadata provided through <a href="https://content.minetest.net/help/api/">ContentDB's API</a> and includes most relevant information, including dependencies. There are some caveats, however. The license information is often incomplete. The commit hash is sometimes missing. The descriptions are in the Markdown format, but Guix uses Texinfo instead. Texture packs and subgames are unsupported.
+</p>
+
+<p>
+The command below imports metadata for the Mesecons mod by Jeija:
+</p>
+
+<pre class="example" id="orgf9c05b7">
+guix import minetest Jeija/mesecons
+</pre>
+
+<p>
+The author name can also be left out:
+</p>
+
+<pre class="example" id="org812f890">
+guix import minetest mesecons
+</pre>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>cpan</code> </dt><dd><p>
+Import metadata from <a href="https://www.metacpan.org/">MetaCPAN</a>. Information is taken from the JSON-formatted metadata provided through <a href="https://fastapi.metacpan.org/">MetaCPAN's API</a> and includes most relevant information, such as module dependencies. License information should be checked closely. If Perl is available in the store, then the <code>corelist</code> utility will be used to filter core modules out of the list of dependencies.
+</p>
+
+<p>
+The command below imports metadata for the Acme::Boolean Perl module:
+</p>
+
+<pre class="example" id="orge257987">
+guix import cpan Acme::Boolean
+</pre>
+
+<p>
+Like many other importers, the <code>cpan</code> importer supports recursive imports:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>cran</code> </dt><dd><p>
+<a id="index-Bioconductor"></a>
+</p>
+
+<p>
+Import metadata from <a href="https://cran.r-project.org/">CRAN</a>, the central repository for the <a href="https://r-project.org">GNU R statistical and graphical environment</a>.
+</p>
+
+<p>
+Information is extracted from the <code>DESCRIPTION</code> file of the package.
+</p>
+
+<p>
+The command below imports metadata for the Cairo R package:
+</p>
+
+<pre class="example" id="orga3f2299">
+guix import cran Cairo
+</pre>
+
+<p>
+You can also ask for a specific version:
+</p>
+
+<pre class="example" id="org4bc5e34">
+guix import cran rasterVis@0.50.3
+</pre>
+
+<p>
+When <code>--recursive</code> is added, the importer will traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.
+</p>
+
+<p>
+When <code>--style=specification</code> is added, the importer will generate package definitions whose inputs are package specifications instead of references to package variables. This is useful when generated package definitions are to be appended to existing user modules, as the list of used package modules need not be changed. The default is <code>--style=variable</code>.
+</p>
+
+<p>
+When <code>--prefix=license:</code> is added, the importer will prefix license atoms with <code>license:</code>, allowing a prefixed import of <code>(guix licenses)</code>.
+</p>
+
+<p>
+When <code>--archive=bioconductor</code> is added, metadata is imported from <a href="https://www.bioconductor.org/">Bioconductor</a>, a repository of R packages for the analysis and comprehension of high-throughput genomic data in bioinformatics.
+</p>
+
+<p>
+Information is extracted from the <code>DESCRIPTION</code> file contained in the package archive.
+</p>
+
+<p>
+The command below imports metadata for the GenomicRanges R package:
+</p>
+
+<pre class="example" id="orga0ea672">
+guix import cran --archive=bioconductor GenomicRanges
+</pre>
+
+<p>
+Finally, you can also import R packages that have not yet been published on CRAN or Bioconductor as long as they are in a git repository. Use <code>--archive=git</code> followed by the URL of the git repository:
+</p>
+
+<pre class="example" id="orgc5685bb">
+guix import cran --archive=git https://github.com/immunogenomics/harmony
+</pre></dd>
+
+<dt><code>texlive</code> </dt><dd><p>
+<a id="index-CTAN"></a>
+</p>
+
+<p>
+Import TeX package information from the TeX Live package database for TeX packages that are part of the <a href="https://www.tug.org/texlive/">TeX Live distribution</a>.
+</p>
+
+<p>
+Information about the package is obtained from the TeX Live package database, a plain text file that is included in the <code>texlive-scripts</code> package. The source code is downloaded from possibly multiple locations in the SVN repository of the Tex Live project. Note that therefore SVN must be installed and in <code>$PATH</code>; run <code>guix install subversion</code> if needed.
+</p>
+
+<p>
+The command below imports metadata for the <code>fontspec</code> TeX package:
+</p>
+
+<pre class="example" id="org33653c6">
+guix import texlive fontspec
+</pre>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>json</code> </dt><dd><p>
+Import package metadata from a local JSON file. Consider the following example package definition in JSON format:
+</p>
+
+<pre class="example" id="org91b04ae">
+{
+  "name": "hello",
+  "version": "2.10",
+  "source": "mirror://gnu/hello/hello-2.10.tar.gz",
+  "build-system": "gnu",
+  "home-page": "https://www.gnu.org/software/hello/",
+  "synopsis": "Hello, GNU world: An example GNU package",
+  "description": "GNU Hello prints a greeting.",
+  "license": "GPL-3.0+",
+  "native-inputs": ["gettext"]
+}
+</pre>
+
+<p>
+The field names are the same as for the <code>&lt;package&gt;</code> record (See <a href="docs/guix--Defining-Packages.html">Defining Packages</a>). References to other packages are provided as JSON lists of quoted package specification strings such as <code>guile</code> or <code>guile@2.0</code>.
+</p>
+
+<p>
+The importer also supports a more explicit source definition using the common fields for <code>&lt;origin&gt;</code> records:
+</p>
+
+<pre class="example" id="org48af998">
+{
+  …
+  "source": {
+    "method": "url-fetch",
+    "uri": "mirror://gnu/hello/hello-2.10.tar.gz",
+    "sha256": {
+      "base32": "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"
+    }
+  }
+  …
+}
+</pre>
+
+<p>
+The command below reads metadata from the JSON file <code>hello.json</code> and outputs a package expression:
+</p>
+
+<pre class="example" id="org63db472">
+guix import json hello.json
+</pre></dd>
+
+<dt><code>hackage</code> </dt><dd><p>
+Import metadata from the Haskell community's central package archive <a href="https://hackage.haskell.org/">Hackage</a>. Information is taken from Cabal files and includes all the relevant information, including package dependencies.
+</p>
+
+<p>
+Specific command-line options are:
+</p>
+
+<ul class="org-ul">
+<li><code>--stdin</code><br />
+<code>-s</code> :: Read a Cabal file from standard input.</li>
+
+<li><code>--no-test-dependencies</code><br />
+<code>-t</code> :: Do not include dependencies required only by the test suites.</li>
+
+<li><code>--cabal-environment===alist</code><br />
+<code>-e ==alist</code> :: <code>alist</code> is a Scheme alist defining the environment in which the Cabal conditionals are evaluated. The accepted keys are: <code>os</code>, <code>arch</code>, <code>impl</code> and a string representing the name of a flag. The value associated with a flag has to be either the symbol <code>true</code> or <code>false</code>. The value associated with other keys has to conform to the Cabal file format definition. The default value associated with the keys <code>os</code>, <code>arch</code> and <code>impl</code> is ‘=linux=', ‘=x86<sub>64</sub>=' and ‘=ghc=', respectively.</li>
+
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul>
+
+<p>
+The command below imports metadata for the latest version of the HTTP Haskell package without including test dependencies and specifying the value of the flag ‘=network-uri=' as <code>false</code>:
+</p>
+
+<pre class="example" id="orge88f603">
+guix import hackage -t -e "'((\"network-uri\" . false))" HTTP
+</pre>
+
+<p>
+A specific package version may optionally be specified by following the package name by an at-sign and a version number as in the following example:
+</p>
+
+<pre class="example" id="orgfd52e0f">
+guix import hackage mtl@2.1.3.1
+</pre></dd>
+
+<dt><code>stackage</code> </dt><dd><p>
+The <code>stackage</code> importer is a wrapper around the <code>hackage</code> one. It takes a package name, looks up the package version included in a long-term support (LTS) <a href="https://www.stackage.org">Stackage</a> release and uses the <code>hackage</code> importer to retrieve its metadata. Note that it is up to you to select an LTS release compatible with the GHC compiler used by Guix.
+</p>
+
+<p>
+Specific command-line options are:
+</p>
+
+<ul class="org-ul">
+<li><code>--no-test-dependencies</code><br />
+<code>-t</code> :: Do not include dependencies required only by the test suites.</li>
+
+<li><code>--lts-version===version</code><br />
+<code>-l ==version</code> :: <code>version</code> is the desired LTS release version. If omitted the latest release is used.</li>
+
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul>
+
+<p>
+The command below imports metadata for the HTTP Haskell package included in the LTS Stackage release version 7.18:
+</p>
+
+<pre class="example" id="orgdf33357">
+guix import stackage --lts-version=7.18 HTTP
+</pre></dd>
+
+<dt><code>elpa</code> </dt><dd><p>
+Import metadata from an Emacs Lisp Package Archive (ELPA) package repository (see <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages">Packages</a> in The GNU Emacs Manual).
+</p>
+
+<p>
+Specific command-line options are:
+</p>
+
+<ul class="org-ul">
+<li><code>--archive===repo</code><br />
+<code>-a ==repo</code> :: <code>repo</code> identifies the archive repository from which to retrieve the information. Currently the supported repositories and their identifiers are:
+
+<ul class="org-ul">
+<li><p>
+- <a href="https://elpa.gnu.org/packages">GNU</a>, selected by the <code>gnu</code> identifier. This is the default.
+</p>
+
+<p>
+Packages from <code>elpa.gnu.org</code> are signed with one of the keys contained in the GnuPG keyring at <code>share/emacs/25.1/etc/package-keyring.gpg</code> (or similar) in the <code>emacs</code> package (see <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html#Package-Installation">ELPA package signatures</a> in The GNU Emacs Manual).
+</p></li>
+
+<li>- <a href="https://elpa.nongnu.org/nongnu/">NonGNU</a>, selected by the <code>nongnu</code> identifier.</li>
+
+<li>- <a href="https://stable.melpa.org/packages">MELPA-Stable</a>, selected by the <code>melpa-stable</code> identifier.</li>
+
+<li>- <a href="https://melpa.org/packages">MELPA</a>, selected by the <code>melpa</code> identifier.</li>
+</ul></li>
+
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>crate</code> </dt><dd><p>
+Import metadata from the crates.io Rust package repository <a href="https://crates.io">crates.io</a>, as in this example:
+</p>
+
+<pre class="example" id="org4b7a966">
+guix import crate blake2-rfc
+</pre>
+
+<p>
+The crate importer also allows you to specify a version string:
+</p>
+
+<pre class="example" id="orgbc63f98">
+guix import crate constant-time-eq@0.1.0
+</pre>
+
+<p>
+Additional options include:
+</p>
+
+<dl class="org-dl">
+<dt><code>--allow-yanked</code></dt><dd>If no non-yanked version of a crate is available, use the latest yanked version instead instead of aborting.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--lockfile===file</code><br />
+<code>-f ==file</code> :: When <code>--lockfile</code> is specified, the importer will ignore other options and won't output package expressions, instead importing source expressions from <code>file</code>, a <code>Cargo.lock</code> file.
+</p>
+
+<p>
+See <a href="https://guix.gnu.org/cookbook/en/html_node/Packaging-Rust-Crates.html#Packaging-Rust-Crates">Packaging Rust Crates</a> in GNU Guix Cookbook, for packaging workflow utilizing it.
+</p></dd>
+</dl></dd>
+
+<dt><code>elm</code> </dt><dd><p>
+Import metadata from the Elm package repository <a href="https://package.elm-lang.org">package.elm-lang.org</a>, as in this example:
+</p>
+
+<pre class="example" id="org6bd1aa7">
+guix import elm elm-explorations/webgl
+</pre>
+
+<p>
+The Elm importer also allows you to specify a version string:
+</p>
+
+<pre class="example" id="org6ea73bc">
+guix import elm elm-explorations/webgl@1.1.3
+</pre>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>npm-binary</code> </dt><dd><p>
+<a id="index-Node_002ejs"></a>
+</p>
+
+<p>
+Import metadata from the <a href="https://registry.npmjs.org">npm Registry</a>, as in this example:
+</p>
+
+<pre class="example" id="org1185c5d">
+guix import npm-binary buffer-crc32
+</pre>
+
+<p>
+The npm-binary importer also allows you to specify a version string:
+</p>
+
+<pre class="example" id="org03d2ff3">
+guix import npm-binary buffer-crc32@1.0.0
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> Generated package expressions skip the build step of the <code>node-build-system</code>. As such, generated package expressions often refer to transpiled or generated files, instead of being built from source.
+</p>
+</blockquote>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>opam</code> </dt><dd><p>
+<a id="index-OCaml"></a>
+</p>
+
+<p>
+Import metadata from the <a href="https://opam.ocaml.org/">OPAM</a> package repository used by the OCaml community.
+</p>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>composer</code> </dt><dd><p>
+<a id="index-PHP"></a>
+</p>
+
+<p>
+Import metadata from the <a href="https://getcomposer.org/">Composer</a> package archive used by the PHP community, as in this example:
+</p>
+
+<pre class="example" id="org8711661">
+guix import composer phpunit/phpunit
+</pre>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+
+<li id="<code>--repo</code>"><p>
+By default, packages are searched in the official OPAM repository. This option, which can be used more than once, lets you add other repositories which will be searched for packages. It accepts as valid arguments:
+</p>
+
+<ul class="org-ul">
+<li>the name of a known repository - can be one of <code>opam</code>, <code>coq</code> (equivalent to <code>coq-released</code>), <code>coq-core-dev</code>, <code>coq-extra-dev</code> or <code>grew</code>.</li>
+<li>the URL of a repository as expected by the <code>opam repository add</code> command (for instance, the URL equivalent of the above <code>opam</code> name would be <a href="https://opam.ocaml.org">https://opam.ocaml.org</a>).</li>
+<li>the path to a local copy of a repository (a directory containing a <code>packages/</code> sub-directory).</li>
+</ul>
+
+<p>
+Repositories are assumed to be passed to this option by order of preference. The additional repositories will not replace the default <code>opam</code> repository, which is always kept as a fallback.
+</p>
+
+<p>
+Also, please note that versions are not compared across repositories. The first repository (from left to right) that has at least one version of a given package will prevail over any others, and the version imported will be the latest one found <i>in this repository only</i>.
+</p></li>
+</ul></dd>
+
+<dt><code>go</code> </dt><dd><p>
+Import metadata for a Go module using <a href="https://proxy.golang.org">proxy.golang.org</a>.
+</p>
+
+<pre class="example" id="org3ee1f2a">
+guix import go gopkg.in/yaml.v2
+</pre>
+
+<p>
+It is possible to use a package specification with a <code>@VERSION</code> suffix to import a specific version.
+</p>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+
+<li id="<code>--pin-versions</code>">When using this option, the importer preserves the exact versions of the Go modules dependencies instead of using their latest available versions. This can be useful when attempting to import packages that recursively depend on former versions of themselves to build. When using this mode, the symbol of the package is made by appending the version to its name, so that multiple versions of the same package can coexist.</li>
+</ul></dd>
+
+<dt><code>egg</code> </dt><dd><p>
+Import metadata for <a href="https://wiki.call-cc.org/eggs">CHICKEN eggs</a>. The information is taken from <code>PACKAGE.egg</code> files found in the Git repository. However, it does not provide all the information that we need, there is no “description” field, and the licenses used are not always precise (BSD is often used instead of BSD-N).
+</p>
+
+<pre class="example" id="orgdeb9b70">
+guix import egg sourcehut
+</pre>
+
+<p>
+You can also ask for a specific version:
+</p>
+
+<pre class="example" id="org9c249dd">
+guix import egg arrays@1.0
+</pre>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+
+<dt><code>hexpm</code> </dt><dd><p>
+Import metadata from the hex.pm Erlang and Elixir package repository <a href="https://hex.pm">hex.pm</a>, as in this example:
+</p>
+
+<pre class="example" id="org7fbf730">
+guix import hexpm stun
+</pre>
+
+<p>
+The importer tries to determine the build system used by the package.
+</p>
+
+<p>
+The hexpm importer also allows you to specify a version string:
+</p>
+
+<pre class="example" id="orgfdfc6f9">
+guix import hexpm cf@0.3.0
+</pre>
+
+<p>
+Additional options include:
+</p>
+
+<ul class="org-ul">
+<li><code>--recursive</code><br />
+<code>-r</code> :: Traverse the dependency graph of the given upstream package recursively and generate package expressions for all those packages that are not yet in Guix.</li>
+</ul></dd>
+</dl>
+
+<p>
+The structure of the <code>guix import</code> code is modular. It would be useful to have more importers for other package formats, and your help is welcome here (see <a href="docs/guix--Contributing.html">Contributing</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>, Previous: <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Accumulating-Text-1">1. 14.4 Accumulating Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rectangles.html">Rectangles</a>   Previous: <a href="docs/emacs--Cut-and-Paste.html">&amp;ldquo;Cut and Paste&amp;rdquo; Operations on Graphical Displays</a>   Up: <a href="docs/emacs--Killing.html">Killing and Moving Text</a>
+</p>
+
+<p>
+<a id="Accumulating-Text"></a>
+</p>
+
+<hr />
+<div id="outline-container-Accumulating-Text-1" class="outline-2">
+<h2 id="Accumulating-Text-1"><span class="section-number-2">1.</span> 14.4 Accumulating Text <a href="#Accumulating-Text-1">¶</a></h2>
+<div class="outline-text-2" id="text-Accumulating-Text-1">
+<p>
+Usually we copy or move text by killing it and yanking it, but there are other convenient methods for copying one block of text in many places, or for copying many scattered blocks of text into one place. Here we describe the commands to accumulate scattered pieces of text into a buffer or into a file.
+</p>
+
+<dl class="org-dl">
+<dt>M-x append-to-buffer</dt><dd>Append region to the contents of a specified buffer.</dd>
+
+<dt>M-x prepend-to-buffer</dt><dd>Prepend region to the contents of a specified buffer.</dd>
+
+<dt>M-x copy-to-buffer</dt><dd>Copy region into a specified buffer, deleting that buffer's old contents.</dd>
+
+<dt>M-x insert-buffer</dt><dd>Insert the contents of a specified buffer into current buffer at point.</dd>
+
+<dt>M-x append-to-file</dt><dd>Append region to the contents of a specified file, at the end.</dd>
+</dl>
+
+<p>
+To accumulate text into a buffer, use M-x append-to-buffer. This reads a buffer name, then inserts a copy of the region into the buffer specified. If you specify a nonexistent buffer, <code>append-to-buffer</code> creates the buffer. The text is inserted wherever point is in that buffer. If you have been using the buffer for editing, the copied text goes into the middle of the text of the buffer, starting from wherever point happens to be at that moment.
+</p>
+
+<p>
+Point in that buffer is left at the end of the copied text, so successive uses of <code>append-to-buffer</code> accumulate the text in the specified buffer in the same order as they were copied. Strictly speaking, <code>append-to-buffer</code> does not always append to the text already in the buffer&#x2014;it appends only if point in that buffer is at the end. However, if <code>append-to-buffer</code> is the only command you use to alter a buffer, then point is always at the end.
+</p>
+
+<p>
+M-x prepend-to-buffer is just like <code>append-to-buffer</code> except that point in the other buffer is left before the copied text, so successive uses of this command add text in reverse order. M-x copy-to-buffer is similar, except that any existing text in the other buffer is deleted, so the buffer is left containing just the text newly copied into it.
+</p>
+
+<p>
+The command C-x x i (<code>insert-buffer</code>) can be used to retrieve the accumulated text from another buffer. This prompts for the name of a buffer, and inserts a copy of all the text in that buffer into the current buffer at point, leaving point at the beginning of the inserted text. It also adds the position of the end of the inserted text to the mark ring, without activating the mark. See <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>, for background information on buffers.
+</p>
+
+<p>
+Instead of accumulating text in a buffer, you can append text directly into a file with M-x append-to-file. This prompts for a filename, and adds the text of the region to the end of the specified file. The file is changed immediately on disk.
+</p>
+
+<p>
+You should use <code>append-to-file</code> only with files that are <i>not</i> being visited in Emacs. Using it on a file that you are editing in Emacs would change the file behind Emacs's back, which can lead to losing some of your editing.
+</p>
+
+<p>
+Another way to move text around is to store it in a register. See <a href="docs/emacs--Registers.html">Registers</a>.
+</p>
+
+<hr />
+</div>
+</div>

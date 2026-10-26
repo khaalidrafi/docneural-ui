@@ -1,0 +1,360 @@
+:PROPERTIES:
+:ID: guix--Linux-Services
+:END:
+#+filetags: :guix:
+#+title: Linux Services
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Linux-Services>>
+
+Next: [[id:guix--Hurd-Services][Hurd Services]], Previous: [[id:guix--Guix-Services][Guix Services]], Up: [[id:guix--Services][Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Linux-Services-1>>
+**** 11.10.36 Linux Services
+:PROPERTIES:
+:CUSTOM_ID: linux-services
+:CLASS: subsection
+:END:
+<<VFS-Mapping-Service>>
+**** VFS Mapping Service
+:PROPERTIES:
+:CUSTOM_ID: vfs-mapping-service
+:CLASS: subsubheading
+:END:
+<<index-VFS-mapping>> <<index-Virtual-File-System-mapping>> <<index-bind-mounts_002c-service>> <<index-overlay-mounts_002c-service>>
+The VFS (Virtual File System) Mapping service allows you to bind a file name under a different name in the global namespace. For example, this is used by the Shared Cache Service (see [[id:guix--Guix-Services][Guix Services]]) to bind the ‘=root=' user's cache over another user's cache. Another use case may be to expose game data from the store over your home directory, and apply modifications there.
+
+The service has three /policies/ to choose from with respect to access rights on the bound over path:
+
+- ='bind= :: Use a bind mount; the ownership and file permissions of the destination are the same as the source.
+
+- ='translate= :: Use bindfs to make the destination appear as owned by the target user and group. Writes will be propagated back to the source as if made by the original owner.
+
+- ='overlay= :: Use an overlay to make the destination appear as owned by the target user and group. Writes will not appear in the source, but will be stored in a target-user-owned ‘=-overlay=' suffixed directory near the destination.
+
+Here is an example configuration that exposes the default data directory of =tuxpaint= under the home directory of =alice=. Any modification made by Alice to the brushes or stamps will not propagate back to the store (which is read-only anyway).
+
+#+begin_src lisp
+(operating-system
+  ;; …
+  (services
+   (cons*
+    (service vfs-mapping-service-type
+             (vfs-mapping-configuration
+              (bindings (list (vfs-mapping
+                               (source      #~(string-append #$tuxpaint
+                                                             "/share/tuxpaint"))
+                               (destination "/home/alice/.tuxpaint")
+                               (user        "alice")
+                               (policy      'overlay)
+                               (name        "alice-tuxpaint-overlay"))))))
+    %desktop-services)))
+#+end_src
+
+The service can also be extended by providing a list of =vfs-mapping=, allowing for easier splitting of configuration.
+
+#+begin_src lisp
+(operating-system
+  ;; …
+  (services
+   (cons*
+    (simple-service 'bob-too-wants-to-hack-on-tuxpaint
+                    vfs-mapping-service-type
+                    (list (vfs-mapping
+                           (source      #~(string-append #$tuxpaint "/share/tuxpaint"))
+                           (destination "/home/bob/.tuxpaint")
+                           (user        "bob")
+                           (policy      'overlay)
+                           (name        "bob-tuxpaint-overlay"))))
+    %desktop-services)))
+#+end_src
+
+The =source= file name must exist for the service to start. The =destination= directory will be created if it does not exist.
+
+- Variable: vfs-mapping-service-type  :: Service type for binding a directory in multiple places on the file system.
+
+  The access rights are either the same in source and destination (='bind=), or writes are translated back to the source as if made by the source's owner (='translate=), or kept in an overlay directory near the destination (='overlay=). The service's value must be a =vfs-mapping-configuration= object.
+
+- Data Type: vfs-mapping-configuration  :: Data type representing the configuration of the vfs-mapping service.
+
+  - =bindfs= (default: =#~(string-append #$bindfs "/bin/bindfs")=) :: The =bindfs= command to use for mounting.
+
+  - =fusermount= (default: =#~(string-append #$fuse-2 "/bin/fusermount")=) :: The =fusermount= command to use.
+
+  - =umount= (default: =#~(string-append #$util-linux+udev "/bin/umount")=) :: The =umount= command to use.
+
+  - =bindings= (default: ='()=) :: A list of =vfs-mapping= records.
+
+- Data Type: vfs-mapping  :: Data type representing the configuration for a single shared directory.
+
+  - =source= :: The source file name to be shared.
+
+  - =destination= :: The destination at which the contents of =source= will be exposed.
+
+  - =policy= (default: ='translate=) :: Either ='bind= (same ownership and access rights for =source= and =destination=), ='translate= (read-write, with writes translated as if made by =source='s owner), or ='overlay= (read-only with =user=-owned writable overlay).
+
+  - =user= (default: =#f=) :: The user that will own the =destination= directory, and appear to own its content. It must be kept at its default =#f= value when using the ='bind= policy.
+
+  - =group= (default: ="users"=) :: The group that will own the =destination= directory, and appear to own its content.
+
+  - =name= (default: ="<src>-[<policy>]-><dst>"=) :: The name of the shepherd service to mount and unmount the binding.
+
+  - =requirement= (default: ='(file-systems user-homes)=) :: The list of services that Shepherd ought to provision before trying to mount.
+
+<<index-oom>> <<index-out-of-memory-killer>> <<index-earlyoom>> <<index-early-out-of-memory-daemon>> <<Early-OOM-Service>>
+**** Early OOM Service
+:PROPERTIES:
+:CUSTOM_ID: early-oom-service
+:CLASS: subsubheading
+:END:
+[[https://github.com/rfjakob/earlyoom][Early OOM]], also known as Earlyoom, is a minimalist out of memory (OOM) daemon that runs in user space and provides a more responsive and configurable alternative to the in-kernel OOM killer. It is useful to prevent the system from becoming unresponsive when it runs out of memory.
+
+- Variable: earlyoom-service-type  :: The service type for running =earlyoom=, the Early OOM daemon. Its value must be a =earlyoom-configuration= object, described below. The service can be instantiated in its default configuration with:
+
+  #+begin_src lisp
+  (service earlyoom-service-type)
+  #+end_src
+
+- Data Type: earlyoom-configuration  :: This is the configuration record for the =earlyoom-service-type=.
+
+  - =earlyoom= (default: =earlyoom=) :: The Earlyoom package to use.
+
+  - =minimum-available-memory= (default: =10=) :: The threshold for the minimum /available/ memory, in percentages.
+
+  - =minimum-free-swap= (default: =10=) :: The threshold for the minimum free swap memory, in percentages.
+
+  - =prefer-regexp= (default: =#f=) :: A regular expression (as a string) to match the names of the processes that should be preferably killed.
+
+  - =avoid-regexp= (default: =#f=) :: A regular expression (as a string) to match the names of the processes that should /not/ be killed.
+
+  - =memory-report-interval= (default: =0=) :: The interval in seconds at which a memory report is printed. It is disabled by default.
+
+  - =ignore-positive-oom-score-adj?= (default: =#f=) :: A boolean indicating whether the positive adjustments set in =/proc/*/oom_score_adj= should be ignored.
+
+  - =show-debug-messages?= (default: =#f=) :: A boolean indicating whether debug messages should be printed. The logs are saved at =/var/log/earlyoom.log=.
+
+  - =send-notification-command= (default: =#f=) :: This can be used to provide a custom command used for sending notifications.
+
+<<fstrim-Service>>
+**** fstrim Service
+:PROPERTIES:
+:CUSTOM_ID: fstrim-service
+:CLASS: subsubheading
+:END:
+<<index-fstrim-service>> <<index-solid-state-drives_002c-periodic-trim>> <<index-solid-state-drives_002c-trim>>
+The command =fstrim= can be used to discard (or /trim/) unused blocks on a mounted file system.
+
+#+begin_quote
+*Warning:* Running =fstrim= frequently, or even using =mount -o discard=, might negatively affect the lifetime of poor-quality SSD devices. For most desktop and server systems a sufficient trimming frequency is once a week. Note that not all devices support a queued trim, so each trim command incurs a performance penalty on whatever else might be trying to use the disk at the time.
+
+#+end_quote
+
+- Variable: fstrim-service-type  :: Type for a service that periodically runs =fstrim=, whose value must be an =<fstrim-configuration>= object. The service can be instantiated in its default configuration with:
+
+  #+begin_src lisp
+  (service fstrim-service-type)
+  #+end_src
+
+- Data Type: fstrim-configuration  :: Available =fstrim-configuration= fields are:
+
+  - =package= (default: =util-linux=) (type: file-like) :: The package providing the =fstrim= command.
+
+  - =schedule= (default: ="0 0 * * 0"=) (type: Shepherd calendar event) :: Schedule for launching =fstrim=, expressed as a string in traditional cron syntax or as a gexp evaluating to a Shepherd calendar event (see [[https://www.gnu.org/software/shepherd/manual/html_node/Timers.html#Timers][Timers]] in The GNU Shepherd Manual). By default this is set to run weekly on Sunday at 00:00.
+
+  - =listed-in= (default: ='("/etc/fstab" "/proc/self/mountinfo")=) (type: maybe-list-of-strings) :: List of files in fstab or kernel mountinfo format. All missing or empty files are silently ignored. The evaluation of the list /stops/ after the first non-empty file. File systems with =X-fstrim.notrim= mount option in fstab are skipped.
+
+  - =verbose?= (default: =#t=) (type: boolean) :: Verbose execution.
+
+  - =quiet-unsupported?= (default: =#t=) (type: boolean) :: Suppress error messages if trim operation (ioctl) is unsupported.
+
+  - =extra-arguments= (type: maybe-list-of-strings) :: Extra options to append to =fstrim= (run ‘=man fstrim=' for more information).
+
+<<index-modprobe>> <<index-kernel-module-loader>> <<Kernel-Module-Loader-Service>>
+**** Kernel Module Loader Service
+:PROPERTIES:
+:CUSTOM_ID: kernel-module-loader-service
+:CLASS: subsubheading
+:END:
+The kernel module loader service allows one to load loadable kernel modules at boot. This is especially useful for modules that don't autoload and need to be manually loaded, as is the case with =ddcci=.
+
+- Variable: kernel-module-loader-service-type  :: The service type for loading loadable kernel modules at boot with =modprobe=. Its value must be a list of strings representing module names. For example loading the drivers provided by =ddcci-driver-linux=, in debugging mode by passing some module parameters, can be done as follow:
+
+  #+begin_src lisp
+  (use-modules (gnu) (gnu services))
+  (use-package-modules linux)
+  (use-service-modules linux)
+
+  (define ddcci-config
+    (plain-file "ddcci.conf"
+                "options ddcci dyndbg delay=120"))
+
+  (operating-system
+    ...
+    (services (cons* (service kernel-module-loader-service-type
+                              '("ddcci" "ddcci_backlight"))
+                     (simple-service 'ddcci-config etc-service-type
+                                     (list `("modprobe.d/ddcci.conf"
+                                             ,ddcci-config)))
+                     %base-services))
+    (kernel-loadable-modules (list ddcci-driver-linux)))
+  #+end_src
+
+<<Cachefilesd-Service>>
+**** Cachefilesd Service
+:PROPERTIES:
+:CUSTOM_ID: cachefilesd-service
+:CLASS: subsubheading
+:END:
+<<index-cachefilesd>> <<index-fscache_002c-file-system-caching-_0028Linux_0029>>
+The Cachefilesd service starts a daemon that caches network file system data locally. It is especially useful for NFS and AFS shares, where it reduces latencies for repeated access when reading files.
+
+The daemon can be configured as follows:
+
+#+begin_src lisp
+(service cachefilesd-service-type
+         (cachefilesd-configuration
+           (cache-directory "/var/cache/fscache")))
+#+end_src
+
+- Variable: cachefilesd-service-type  :: The service type for starting =cachefilesd=. The value for this service type is a =cachefilesd-configuration=, whose only required field is =cache-directory=.
+
+- Data Type: cachefilesd-configuration  :: Available =cachefilesd-configuration= fields are:
+
+  - =cachefilesd= (default: =cachefilesd=) (type: file-like) :: The cachefilesd package to use.
+
+  - =debug-output?= (default: =#f=) (type: boolean) :: Print debugging output to stderr.
+
+  - =use-syslog?= (default: =#t=) (type: boolean) :: Log to syslog facility instead of stdout.
+
+  - =scan?= (default: =#t=) (type: boolean) :: Scan for cacheable objects.
+
+  - =cache-directory= (type: maybe-string) :: Location of the cache directory.
+
+  - =cache-name= (default: ="CacheFiles"=) (type: maybe-string) :: Name of cache (keep unique).
+
+  - =security-context= (type: maybe-string) :: SELinux security context.
+
+  - =pause-culling-for-block-percentage= (default: =7=) (type: maybe-non-negative-integer) :: Pause culling when available blocks exceed this percentage.
+
+  - =pause-culling-for-file-percentage= (default: =7=) (type: maybe-non-negative-integer) :: Pause culling when available files exceed this percentage.
+
+  - =resume-culling-for-block-percentage= (default: =5=) (type: maybe-non-negative-integer) :: Start culling when available blocks drop below this percentage.
+
+  - =resume-culling-for-file-percentage= (default: =5=) (type: maybe-non-negative-integer) :: Start culling when available files drop below this percentage.
+
+  - =pause-caching-for-block-percentage= (default: =1=) (type: maybe-non-negative-integer) :: Pause further allocations when available blocks drop below this percentage.
+
+  - =pause-caching-for-file-percentage= (default: =1=) (type: maybe-non-negative-integer) :: Pause further allocations when available files drop below this percentage.
+
+  - =log2-table-size= (default: =12=) (type: maybe-non-negative-integer) :: Size of tables holding cullable objects in logarithm of base 2.
+
+  - =cull?= (default: =#t=) (type: boolean) :: Create free space by culling (consumes system load).
+
+  - =trace-function-entry-in-kernel-module?= (default: =#f=) (type: boolean) :: Trace function entry in the kernel module (for debugging).
+
+  - =trace-function-exit-in-kernel-module?= (default: =#f=) (type: boolean) :: Trace function exit in the kernel module (for debugging).
+
+  - =trace-internal-checkpoints-in-kernel-module?= (default: =#f=) (type: boolean) :: Trace internal checkpoints in the kernel module (for debugging).
+
+<<index-rasdaemon>> <<index-Platform-Reliability_002c-Availability-and-Serviceability-daemon>> <<Rasdaemon-Service>>
+**** Rasdaemon Service
+:PROPERTIES:
+:CUSTOM_ID: rasdaemon-service
+:CLASS: subsubheading
+:END:
+The Rasdaemon service provides a daemon which monitors platform RAS (Reliability, Availability, and Serviceability) reports from Linux kernel trace events, logging them to syslogd.
+
+Reliability, Availability and Serviceability is a concept used on servers meant to measure their robustness.
+
+*Relability* is the probability that a system will produce correct outputs:
+
+- Generally measured as Mean Time Between Failures (MTBF), and
+- Enhanced by features that help to avoid, detect and repair hardware faults
+
+*Availability* is the probability that a system is operational at a given time:
+
+- Generally measured as a percentage of downtime per a period of time, and
+- Often uses mechanisms to detect and correct hardware faults in runtime.
+
+*Serviceability* is the simplicity and speed with which a system can be repaired or maintained:
+
+- Generally measured on Mean Time Between Repair (MTBR).
+
+Among the monitoring measures, the most usual ones include:
+
+- CPU -- detect errors at instruction execution and at L1/L2/L3 caches;
+- Memory -- add error correction logic (ECC) to detect and correct errors;
+- I/O -- add CRC checksums for transferred data;
+- Storage -- RAID, journal file systems, checksums, Self-Monitoring, Analysis and Reporting Technology (SMART).
+
+By monitoring the number of occurrences of error detections, it is possible to identify if the probability of hardware errors is increasing, and, on such case, do a preventive maintenance to replace a degraded component while those errors are correctable.
+
+For detailed information about the types of error events gathered and how to make sense of them, see the kernel administrator's guide at [[https://www.kernel.org/doc/html/latest/admin-guide/ras.html]].
+
+- Variable: rasdaemon-service-type  :: Service type for the =rasdaemon= service. It accepts a =rasdaemon-configuration= object. Instantiating like
+
+  #+begin_src lisp
+  (service rasdaemon-service-type)
+  #+end_src
+
+  will load with a default configuration, which monitors all events and logs to syslogd.
+
+- Data Type: rasdaemon-configuration  :: The data type representing the configuration of =rasdaemon=.
+
+  - =record?= (default: =#f=) :: A boolean indicating whether to record the events in an SQLite database. This provides a more structured access to the information contained in the log file. The database location is hard-coded to =/var/lib/rasdaemon/ras-mc_event.db=.
+
+<<index-zram>> <<index-compressed-swap>> <<index-Compressed-RAM_002dbased-block-devices>> <<Zram-Device-Service>>
+**** Zram Device Service
+:PROPERTIES:
+:CUSTOM_ID: zram-device-service
+:CLASS: subsubheading
+:END:
+The Zram device service provides a compressed swap device in system memory. The Linux Kernel documentation has more information about [[https://www.kernel.org/doc/html/latest/admin-guide/blockdev/zram.html][zram]] devices.
+
+- Variable: zram-device-service-type  :: This service creates the zram block device, formats it as swap and enables it as a swap device. The service's value is a =zram-device-configuration= record.
+
+  - Data Type: zram-device-configuration  :: This is the data type representing the configuration for the zram-device service.
+
+    - =size= (default ="1G"=) :: This is the amount of space you wish to provide for the zram device. It accepts a string and can be a number of bytes or use a suffix, eg.: ="512M"= or =1024000=.
+
+    - =compression-algorithm= (default ='lzo=) :: This is the compression algorithm you wish to use. It is difficult to list all the possible compression options, but common ones supported by Guix's Linux Libre Kernel include ='lzo=, ='lz4= and ='zstd=.
+
+    - =memory-limit= (default =0=) :: This is the maximum amount of memory which the zram device can use. Setting it to '0' disables the limit. While it is generally expected that compression will be 2:1, it is possible that uncompressable data can be written to swap and this is a method to limit how much memory can be used. It accepts a string and can be a number of bytes or use a suffix, eg.: ="2G"=.
+
+    - =priority= (default =#f=) :: This is the priority of the swap device created from the zram device. See [[id:guix--Swap-Space][Swap Space]] for a description of swap priorities. You might want to set a specific priority for the zram device, otherwise it could end up not being used much for the reasons described there.
+
+--------------
+
+Next: [[id:guix--Hurd-Services][Hurd Services]], Previous: [[id:guix--Guix-Services][Guix Services]], Up: [[id:guix--Services][Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]

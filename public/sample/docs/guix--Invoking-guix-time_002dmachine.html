@@ -1,0 +1,166 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-time-machine">1.0.1. 5.8 Invoking <code>guix time-machine</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-time_002dmachine"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Inferiors.html">Inferiors</a>, Previous: <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-time_002dmachine-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-time-machine" class="outline-4">
+<h4 id="invoking-guix-time-machine"><span class="section-number-4">1.0.1.</span> 5.8 Invoking <code>guix time-machine</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-time-machine">
+<p>
+<a id="index-guix-time_002dmachine"></a> <a id="index-pinning_002c-channels"></a> <a id="index-replicating-Guix"></a> <a id="index-reproducibility_002c-of-Guix"></a>
+The <code>guix time-machine</code> command provides access to other revisions of Guix, for example to install older versions of packages, or to reproduce a computation in an identical environment. The revision of Guix to be used is defined by a commit or by a channel description file created by <code>guix describe</code> (see <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>).
+</p>
+
+<p>
+Let's assume that you want to travel to those days of November 2020 when version 1.2.0 of Guix was released and, once you're there, run the <code>guile</code> of that time:
+</p>
+
+<pre class="example" id="orgb172a99">
+guix time-machine --commit=v1.2.0 -- \
+  environment -C --ad-hoc guile -- guile
+</pre>
+
+<p>
+The command above fetches Guix 1.2.0 (and possibly other channels specified by your <code>channels.scm</code> configuration files&#x2014;see below) and runs its <code>guix environment</code> command to spawn an environment in a container running <code>guile</code> (<code>guix environment</code> has since been subsumed by <code>guix shell</code>; see <a href="docs/guix--Invoking-guix-shell.html">Invoking <code>guix shell</code></a>). It's like driving a DeLorean! The first <code>guix time-machine</code> invocation can be expensive: it may have to download or even build a large number of packages; the result is cached though and subsequent commands targeting the same commit are almost instantaneous.
+</p>
+
+<p>
+As for <code>guix pull</code>, in the absence of any options, <code>time-machine</code> fetches the latest commits of the channels specified in <code>~/.config/guix/channels.scm</code>, <code>/etc/guix/channels.scm</code>, or the default channels; the <code>-q</code> option lets you ignore these configuration files. The command:
+</p>
+
+<pre class="example" id="org74e9f58">
+guix time-machine -q -- build hello
+</pre>
+
+<p>
+will thus build the package <code>hello</code> as defined in the main branch of Guix, without any additional channel, which is in general a newer revision of Guix than you have installed. Time travel works in both directions!
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The history of Guix is immutable and <code>guix time-machine</code> provides the exact same software as they are in a specific Guix revision. Naturally, no security fixes are provided for old versions of Guix or its channels. A careless use of <code>guix time-machine</code> opens the door to security vulnerabilities. See <a href="docs/guix--Invoking-guix-pull.html"><code>--allow-downgrades</code></a>.
+</p>
+</blockquote>
+
+<p>
+<code>guix time-machine</code> raises an error when attempting to travel to commits older than “v0.16.0” (commit ‘=4a0b87f0='), dated Dec. 2018. This is one of the oldest commits supporting the channel mechanism that makes “time travel” possible.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Although it should technically be possible to travel to such an old commit, the ease to do so will largely depend on the availability of binary substitutes. When traveling to a distant past, some packages may not easily build from source anymore. One such example are old versions of OpenSSL whose tests would fail after a certain date. This particular problem can be worked around by running a <i>virtual build machine</i> with its clock set to the right time (see <a href="docs/guix--Virtualization-Services.html#build_002dvm">Virtual Build Machines</a>).
+</p>
+</blockquote>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org0c01d36">
+guix time-machine options… -- command arg…
+</pre>
+
+<p>
+where <code>command</code> and <code>arg</code>&#x2026; are passed unmodified to the <code>guix</code> command of the specified revision. The <code>options</code> that define this revision are the same as for <code>guix pull</code> (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>):
+</p>
+
+<ul class="org-ul">
+<li><code>--url===url</code><br />
+<code>--commit===commit</code><br />
+<code>--branch===branch</code> :: Use the <code>guix</code> channel from the specified <code>url</code>, at the given <code>commit</code> (a valid Git commit ID represented as a hexadecimal string or the name of a tag), or <code>branch</code>.</li>
+
+<li><code>--channels===file</code><br />
+<code>-C ==file</code> :: Read the list of channels from <code>file</code>. <code>file</code> must contain Scheme code that evaluates to a list of channel objects. See <a href="docs/guix--Channels.html">Channels</a> for more information.</li>
+
+<li><p>
+<code>--no-channel-files</code><br />
+<code>-q</code> :: Inhibit loading of the user and system channel files, <code>~/.config/guix/channels.scm</code> and <code>/etc/guix/channels.scm</code>.
+</p>
+
+<p>
+Thus, <code>guix time-machine -q</code> is equivalent to the following Bash command, using the “process substitution” syntax (see <a href="https://www.gnu.org/software/bash/manual/html_node/Process-Substitution.html#Process-Substitution">Process Substitution</a> in The GNU Bash Reference Manual):
+</p>
+
+<pre class="example" id="orgae7c69f">
+guix time-machine -C &lt;(echo %default-channels) …
+</pre></li>
+</ul>
+
+<p>
+Note that <code>guix time-machine</code> can trigger builds of channels and their dependencies, and these are controlled by the standard build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>).
+</p>
+
+<p>
+If <code>guix time-machine</code> is executed without any command, it prints the file name of the profile that would be used to execute the command. This is sometimes useful if you need to get store file name of the profile&#x2014;e.g., when you want to <code>guix copy</code> it.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

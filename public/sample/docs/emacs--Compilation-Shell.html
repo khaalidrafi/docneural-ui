@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Subshells-for-Compilation">1. 29.3 Subshells for Compilation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Grep-Searching.html">Searching with Grep under Emacs</a>   Previous: <a href="docs/emacs--Compilation-Mode.html">Compilation Mode</a>   Up: <a href="docs/emacs--Building.html">Compiling and Testing Programs</a>
+</p>
+
+<p>
+<a id="Compilation-Shell"></a>
+</p>
+
+<hr />
+<div id="outline-container-Subshells-for-Compilation" class="outline-2">
+<h2 id="Subshells-for-Compilation"><span class="section-number-2">1.</span> 29.3 Subshells for Compilation <a href="#Subshells-for-Compilation">¶</a></h2>
+<div class="outline-text-2" id="text-Subshells-for-Compilation">
+<p>
+This section includes various techniques and advice for using a shell and its features in compilation buffers. This material is specific to local compilations, and will most probably not work in (or be irrelevant to) compilation buffers whose default directory is on remote hosts.
+</p>
+
+<p>
+The M-x compile command uses a shell to run the compilation command, but specifies the option for a noninteractive shell. This means, in particular, that the shell should start with no prompt. If you find your usual shell prompt making an unsightly appearance in the <code>*compilation*</code> buffer, it means you have made a mistake in your shell's init file by setting the prompt unconditionally. (This init file may be named <code>.bashrc</code>, <code>.profile</code>, <code>.cshrc</code>, <code>.shrc</code>, etc., depending on what shell you use.) The shell init file should set the prompt only if there already is a prompt. Here's how to do it in bash:
+</p>
+
+<pre class="example" id="org51f4501">
+if [ "${PS1+set}" = set ]
+then PS1=...
+fi
+</pre>
+
+<p>
+And here's how to do it in csh:
+</p>
+
+<pre class="example" id="org81c587d">
+if ($?prompt) set prompt = ...
+</pre>
+
+<p>
+If you want to customize the value of the <code>TERM</code> environment variable passed to the compilation subshell, customize the variable <code>comint-terminfo-terminal</code> (see <a href="docs/emacs--Shell-Options.html">Shell Mode Options</a>).
+</p>
+
+<p>
+Emacs does not expect a compiler process to launch asynchronous subprocesses; if it does, and they keep running after the main compiler process has terminated, Emacs may kill them or their output may not arrive in Emacs. To avoid this problem, make the main compilation process wait for its subprocesses to finish. In a shell script, you can do this using ‘=$!=' and ‘=wait=', like this:
+</p>
+
+<pre class="example" id="org8402572">
+(sleep 10; echo 2nd)&amp; pid=$!  # Record pid of subprocess
+echo first message
+wait $pid                     # Wait for subprocess
+</pre>
+
+<p>
+If the background process does not output to the compilation buffer, so you only need to prevent it from being killed when the main compilation process terminates, this is sufficient:
+</p>
+
+<pre class="example" id="org0dabbf0">
+nohup command; sleep 1
+</pre>
+
+<p>
+On MS-DOS, asynchronous subprocesses are not supported, so M-x compile runs the compilation command synchronously (i.e., you must wait until the command finishes before you can do anything else in Emacs). See <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>.
+</p>
+
+<hr />
+</div>
+</div>

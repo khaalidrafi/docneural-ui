@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Enriched-Mode-1">1. 27.14.1 Enriched Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Hard-and-Soft-Newlines.html">Hard and Soft Newlines</a>   Up: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>
+</p>
+
+<p>
+<a id="Enriched-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Enriched-Mode-1" class="outline-2">
+<h2 id="Enriched-Mode-1"><span class="section-number-2">1.</span> 27.14.1 Enriched Mode <a href="#Enriched-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Enriched-Mode-1">
+<p>
+Enriched mode is a buffer-local minor mode (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>). When you visit a file that has been saved in the ‘=text/enriched=' format, Emacs automatically enables Enriched mode, and applies the formatting information in the file to the buffer text. When you save a buffer with Enriched mode enabled, it is saved using the ‘=text/enriched=' format, including the formatting information.
+</p>
+
+<p>
+To create a new file of formatted text, visit the nonexistent file and type M-x enriched-mode. This command actually toggles Enriched mode. With a prefix argument, it enables Enriched mode if the argument is positive, and disables Enriched mode otherwise. If you disable Enriched mode, Emacs no longer saves the buffer using the ‘=text/enriched=' format; any formatting properties that have been added to the buffer remain in the buffer, but they are not saved to disk.
+</p>
+
+<p>
+Enriched mode does not save all Emacs text properties, only those specified in the variable <code>enriched-translations</code>. These include properties for fonts, colors, indentation, and justification.
+</p>
+
+<p>
+If you visit a file and Emacs fails to recognize that it is in the ‘=text/enriched=' format, type M-x format-decode-buffer. This command prompts for a file format, and re-reads the file in that format. Specifying the ‘=text/enriched=' format automatically enables Enriched mode.
+</p>
+
+<p>
+To view a ‘=text/enriched=' file in raw form (as plain text with markup tags rather than formatted text), use M-x find-file-literally (see <a href="docs/emacs--Visiting.html">Visiting Files</a>).
+</p>
+
+<p>
+See <a href="../elisp_html/Format-Conversion.html#Format-Conversion">Format Conversion</a> in the Emacs Lisp Reference Manual, for details of how Emacs recognizes and converts file formats like ‘=text/enriched='. See <a href="../elisp_html/Text-Properties.html#Text-Properties">Text Properties</a> in the Emacs Lisp Reference Manual, for more information about text properties.
+</p>
+
+<hr />
+</div>
+</div>

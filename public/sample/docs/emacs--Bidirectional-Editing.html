@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Bidirectional-Editing-1">1. 24.20 Bidirectional Editing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Charsets.html">Charsets</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Bidirectional-Editing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Bidirectional-Editing-1" class="outline-2">
+<h2 id="Bidirectional-Editing-1"><span class="section-number-2">1.</span> 24.20 Bidirectional Editing <a href="#Bidirectional-Editing-1">¶</a></h2>
+<div class="outline-text-2" id="text-Bidirectional-Editing-1">
+<p>
+Emacs supports editing text written in scripts, such as Arabic, Farsi, and Hebrew, whose natural ordering of horizontal text for display is from right to left. However, digits and Latin text embedded in these scripts are still displayed left to right. It is also not uncommon to have small portions of text in Arabic or Hebrew embedded in an otherwise Latin document; e.g., as comments and strings in a program source file. For these reasons, text that uses these scripts is actually <i>bidirectional</i>: a mixture of runs of left-to-right and right-to-left characters.
+</p>
+
+<p>
+This section describes the facilities and options provided by Emacs for editing bidirectional text.
+</p>
+
+<p>
+Emacs stores right-to-left and bidirectional text in the so-called <i>logical</i> (or <i>reading</i>) order: the buffer or string position of the first character you read precedes that of the next character. Reordering of bidirectional text into the <i>visual</i> order happens at display time. As a result, character positions no longer increase monotonically with their positions on display. Emacs implements the Unicode Bidirectional Algorithm (UBA) described in the <a href="https://unicode.org/reports/tr9/">Unicode Standard Annex #9</a>, for reordering of bidirectional text for display. It deviates from the UBA only in how continuation lines are displayed when text direction is opposite to the base paragraph direction, e.g., when a long line of English text appears in a right-to-left paragraph.
+</p>
+
+<p>
+The buffer-local variable <code>bidi-display-reordering</code> controls whether text in the buffer is reordered for display. If its value is non-<code>nil</code>, Emacs reorders characters that have right-to-left directionality when they are displayed. The default value is <code>t</code>.
+</p>
+
+<p>
+Each paragraph of bidirectional text can have its own <i>base direction</i>, either right-to-left or left-to-right. Text in left-to-right paragraphs begins on the screen at the left margin of the window and is truncated or continued when it reaches the right margin. By contrast, text in right-to-left paragraphs is displayed starting at the right margin and is continued or truncated at the left margin. By default, paragraph boundaries are empty lines, i.e., lines consisting entirely of whitespace characters. To change that, you can customize the two variables <code>bidi-paragraph-start-re</code> and <code>bidi-paragraph-separate-re</code>, whose values should be regular expressions (strings); e.g., to have a single newline start a new paragraph, set both of these variables to <code>"^"</code>. These two variables are buffer-local (see <a href="docs/emacs--Locals.html">Local Variables</a>).
+</p>
+
+<p>
+Emacs determines the base direction of each paragraph dynamically, based on the text at the beginning of the paragraph. However, sometimes a buffer may need to force a certain base direction for its paragraphs. The variable <code>bidi-paragraph-direction</code>, if non-<code>nil</code>, disables the dynamic determination of the base direction, and instead forces all paragraphs in the buffer to have the direction specified by its buffer-local value. The value can be either <code>right-to-left</code> or <code>left-to-right</code>. Any other value is interpreted as <code>nil</code>.
+</p>
+
+<p>
+Alternatively, you can control the base direction of a paragraph by inserting special formatting characters in front of the paragraph. The special character <code>RIGHT-TO-LEFT MARK</code>, or RLM, forces the right-to-left direction on the following paragraph, while <code>LEFT-TO-RIGHT MARK</code>, or LRM forces the left-to-right direction. (You can use C-x 8 RET to insert these characters.) In a GUI session, the LRM and RLM characters display as very thin blank characters; on text terminals they display as blanks.
+</p>
+
+<p>
+Because characters are reordered for display, Emacs commands that operate in the logical order or on stretches of buffer positions may produce unusual effects. For example, the commands C-f and C-b move point in the logical order, so the cursor will sometimes jump when point traverses reordered bidirectional text. Similarly, a highlighted region covering a contiguous range of character positions may look discontinuous if the region spans reordered text. This is normal and similar to the behavior of other programs that support bidirectional text.
+</p>
+
+<p>
+Cursor motion commands bound to arrow keys, such as LEFT and C-RIGHT, are sensitive to the base direction of the current paragraph. In a left-to-right paragraph, commands bound to RIGHT with or without modifiers move <i>forward</i> through buffer text, but in a right-to-left paragraph they move <i>backward</i> instead. This reflects the fact that in a right-to-left paragraph buffer positions predominantly increase when moving to the left on display.
+</p>
+
+<p>
+When you move out of a paragraph, the meaning of the arrow keys might change if the base direction of the preceding or the following paragraph is different from the paragraph out of which you moved. When that happens, you need to adjust the arrow key you press to the new base direction.
+</p>
+
+<p>
+By default, LEFT and RIGHT move in the logical order, but if <code>visual-order-cursor-movement</code> is non-<code>nil</code>, these commands move to the character that is, correspondingly, to the left or right of the current screen position, moving to the next or previous screen line as appropriate. Note that this might potentially move point many buffer positions away, depending on the surrounding bidirectional context.
+</p>
+
+<p>
+Bidirectional text sometimes uses special formatting characters to affect the reordering of text for display. The LRM and RLM characters, mentioned above, are two such characters, but there are more of them. They are by default displayed as thin space glyphs on GUI frames, and as simple spaces on text-mode frames. If you want to be aware of these special control characters, so that their effect on display does not come as a surprise, you can turn on the <code>glyphless-display-mode</code> (see <a href="docs/emacs--Text-Display.html">How Text Is Displayed</a>). This minor mode will cause these formatting characters to be displayed as acronyms inside a small box, so that they stand out on display, and make their effect easier to understand.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,127 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#documentation">1.1. 14 Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Documentation"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Platforms.html">Platforms</a>, Previous: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Documentation-1"></a>
+</p>
+</div>
+<div id="outline-container-documentation" class="outline-3">
+<h3 id="documentation"><span class="section-number-3">1.1.</span> 14 Documentation</h3>
+<div class="outline-text-3" id="text-documentation">
+<p>
+<a id="index-documentation_002c-searching-for"></a> <a id="index-searching-for-documentation"></a> <a id="index-Info_002c-documentation-format"></a> <a id="index-man-pages"></a> <a id="index-manual-pages"></a>
+In most cases packages installed with Guix come with documentation. There are two main documentation formats: “Info”, a browsable hypertext format used for GNU software, and “manual pages” (or “man pages”), the linear documentation format traditionally found on Unix. Info manuals are accessed with the <code>info</code> command or with Emacs, and man pages are accessed using <code>man</code>.
+</p>
+
+<p>
+You can look for documentation of software installed on your system by keyword. For example, the following command searches for information about “TLS” in Info manuals:
+</p>
+
+<pre class="example" id="orgaed2ae7">
+$ info -k TLS
+"(emacs)Network Security" -- STARTTLS
+"(emacs)Network Security" -- TLS
+"(gnutls)Core TLS API" -- gnutls_certificate_set_verify_flags
+"(gnutls)Core TLS API" -- gnutls_certificate_set_verify_function
+…
+</pre>
+
+<p>
+The command below searches for the same keyword in man pages:
+</p>
+
+<pre class="example" id="org139e629">
+$ man -k TLS
+SSL (7)              - OpenSSL SSL/TLS library
+certtool (1)         - GnuTLS certificate tool
+…
+</pre>
+
+<p>
+These searches are purely local to your computer so you have the guarantee that documentation you find corresponds to what you have actually installed, you can access it off-line, and your privacy is respected.
+</p>
+
+<p>
+Once you have these results, you can view the relevant documentation by running, say:
+</p>
+
+<pre class="example" id="org57769f3">
+$ info "(gnutls)Core TLS API"
+</pre>
+
+<p>
+or:
+</p>
+
+<pre class="example" id="orga5b0907">
+$ man certtool
+</pre>
+
+<p>
+Info manuals contain sections and indices as well as hyperlinks like those found in Web pages. The <code>info</code> reader (see <a href="https://www.gnu.org/software/texinfo/manual/info-stnd/html_node/index.html#Top">Info reader</a> in Stand-alone GNU Info) and its Emacs counterpart (see <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Misc-Help.html#Misc-Help">Misc Help</a> in The GNU Emacs Manual) provide intuitive key bindings to navigate manuals. See <a href="https://www.gnu.org/software/emacs/manual/html_node/info/Getting-Started.html#Getting-Started">Getting Started</a> in Info: An Introduction, for an introduction to Info navigation.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

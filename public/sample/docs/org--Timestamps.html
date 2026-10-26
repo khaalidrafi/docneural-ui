@@ -1,0 +1,100 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Timestamps-1">1. 8.1 Timestamps ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (60)</a></li>
+<li><a href="#section-1">1.0.2. (61)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Timestamps"></a>
+Next: <a href="docs/org--Creating-Timestamps.html">Creating Timestamps</a>, Up: <a href="docs/org--Dates-and-Times.html">Dates and Times</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Timestamps-1" class="outline-2">
+<h2 id="Timestamps-1"><span class="section-number-2">1.</span> 8.1 Timestamps <a href="#Timestamps-1">¶</a></h2>
+<div class="outline-text-2" id="text-Timestamps-1">
+<p>
+A timestamp is a specification of a date&#x2014;possibly with a time or time range&#x2014;in a special format, either ‘=<span class="timestamp-wrapper"><span class="timestamp">&lt;2003-09-16 Tue&gt;</span></span>=' or ‘=<span class="timestamp-wrapper"><span class="timestamp">&lt;2003-09-16 Tue 09:39&gt;</span></span>=' or ‘=<span class="timestamp-wrapper"><span class="timestamp">&lt;2003-09-16 Tue 12:00-12:30&gt;</span></span>='. A timestamp can appear anywhere in the headline or body of an Org tree entry. Its presence causes entries to be shown on specific dates in the agenda (see <a href="docs/org--Weekly_002fdaily-agenda.html">Weekly/daily agenda</a>). We distinguish:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-timestamp-1"></a>Plain timestamp; Event; Appointment </dt><dd><p>
+A simple timestamp just assigns a date/time to an item. This is just like writing down an appointment or event in a paper agenda. In the agenda display, the headline of an entry associated with a plain timestamp is shown exactly on that date. There can be multiple timestamps in an item.
+</p>
+
+<pre class="example" id="org35ff4b7">
+* Meet Peter at the movies
+  &lt;2006-11-01 Wed 19:15&gt;
+* Discussion on climate change
+  &lt;2006-11-02 Thu 10:00-12:00&gt;
+* My days off
+  &lt;2006-11-03 Fri&gt;
+  &lt;2006-11-06 Mon&gt;
+</pre></dd>
+
+<dt><a id="index-timestamp_002c-with-repeater-interval"></a>Timestamp with repeater interval </dt><dd><p>
+A timestamp may contain a <i>repeater interval</i>, indicating that it applies not only on the given date, but again and again after a certain interval of N hours (h), days (d), weeks (w), months (m), or years (y). The following shows up in the agenda every Wednesday:
+</p>
+
+<pre class="example" id="org5b6ecc9">
+* Pick up Sam at school
+  &lt;2007-05-16 Wed 12:30 +1w&gt;
+</pre></dd>
+
+<dt><a id="index-diary-style-timestamps"></a>Diary-style expression entries </dt><dd><p>
+For more complex date specifications, Org mode supports using the special expression diary entries implemented in the <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Special-Diary-Entries.html#Special-Diary-Entries">Emacs Calendar package</a>. For example, with optional time:
+</p>
+
+<pre class="example" id="orga9aa2dc">
+* 22:00-23:00 The nerd meeting on every 2nd Thursday of the month
+  &lt;%%(diary-float t 4 2) 22:00-23:00&gt;
+</pre></dd>
+
+<dt><a id="index-time-range"></a>Time range </dt><dd><p>
+Time range is a timestamp having two time units connected by ‘=-='
+</p>
+
+<pre class="example" id="orgcdbfc20">
+* Discussion on climate change
+   &lt;2006-11-02 Thu 10:00-12:00&gt;
+</pre></dd>
+
+<dt><a id="index-time-range-1"></a>Time/Date range </dt><dd><p>
+Two timestamps connected by ‘=&#x2013;=' denote a range. In the agenda, the headline is shown on the first and last day of the range, and on any dates that are displayed and fall in the range. The first example specifies just the dates of the range while the second example specifies a time range for each date.
+</p>
+
+<pre class="example" id="org41a646e">
+** Meeting in Amsterdam
+   &lt;2004-08-23 Mon&gt;--&lt;2004-08-26 Thu&gt;
+** This weeks committee meetings
+   &lt;2004-08-23 Mon 10:00-11:00&gt;--&lt;2004-08-26 Thu 10:00-11:00&gt;
+</pre></dd>
+
+<dt><a id="index-timestamp_002c-inactive"></a>Inactive timestamp </dt><dd><p>
+Just like a plain timestamp, but with square brackets instead of angular ones. These timestamps are inactive in the sense that they do <i>not</i> trigger an entry to show up in the agenda.
+</p>
+
+<pre class="example" id="org8b21483">
+* Gillian comes late for the fifth time
+  [2006-11-01 Wed]
+</pre></dd>
+</dl>
+
+<hr />
+</div>
+</div>

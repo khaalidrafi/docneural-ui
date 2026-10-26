@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tables-in-HTML-export-1">1. 13.9.9 Tables in HTML export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tables-in-HTML-export"></a>
+Next: <a href="docs/org--Images-in-HTML-export.html">Images in HTML export</a>, Previous: <a href="docs/org--Links-in-HTML-export.html">Links in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tables-in-HTML-export-1" class="outline-2">
+<h2 id="Tables-in-HTML-export-1"><span class="section-number-2">1.</span> 13.9.9 Tables in HTML export <a href="#Tables-in-HTML-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tables-in-HTML-export-1">
+<p>
+The HTML export backend uses <code>org-html-table-default-attributes</code> when exporting Org tables to HTML. By default, the exporter does not draw frames and cell borders. To change for this for a table, use the following lines before the table in the Org file:
+</p>
+
+<pre class="example" id="org341d409">
+#+CAPTION: This is a table with lines around and between cells
+#+ATTR_HTML: :border 2 :rules all :frame border
+</pre>
+
+<p>
+Note that table attributes are deprecated in HTML5 in favor of CSS. When the doctype is set to HTML5 (see <a href="docs/org--HTML-doctypes.html">HTML doctypes</a>), Org ignores <code>org-html-table-default-attributes</code>. ‘=#+ATTR<sub>HTML</sub>:=' is still respected, but not recommended.
+</p>
+
+<p>
+The HTML export backend preserves column groupings in Org tables (see <a href="docs/org--Column-Groups.html">Column Groups</a>) when exporting to HTML.
+</p>
+
+<p>
+Additional options for customizing tables for HTML export.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dhtml_002dtable_002dalign_002dindividual_002dfields"></a>=org-html-table-align-individual-fields= </dt><dd>Non-<code>nil</code> attaches style attributes for alignment to each table field.</dd>
+
+<dt><a id="index-org_002dhtml_002dtable_002dcaption_002dabove"></a>=org-html-table-caption-above= </dt><dd>Non-<code>nil</code> places caption string at the beginning of the table.</dd>
+
+<dt><a id="index-org_002dhtml_002dtable_002ddata_002dtags"></a>=org-html-table-data-tags= </dt><dd>Opening and ending tags for table data fields.</dd>
+
+<dt><a id="index-org_002dhtml_002dtable_002ddefault_002dattributes"></a>=org-html-table-default-attributes= </dt><dd>Default attributes and values for table tags.</dd>
+
+<dt><a id="index-org_002dhtml_002dtable_002dheader_002dtags"></a>=org-html-table-header-tags= </dt><dd>Opening and ending tags for table's header fields.</dd>
+
+<dt><a id="index-org_002dhtml_002dtable_002drow_002dtags"></a>=org-html-table-row-tags= </dt><dd>Opening and ending tags for table rows.</dd>
+
+<dt><a id="index-org_002dhtml_002dtable_002duse_002dheader_002dtags_002dfor_002dfirst_002dcolumn"></a>=org-html-table-use-header-tags-for-first-column= </dt><dd>Non-<code>nil</code> formats column one in tables with header tags.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Images-in-HTML-export.html">Images in HTML export</a>, Previous: <a href="docs/org--Links-in-HTML-export.html">Links in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

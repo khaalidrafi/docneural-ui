@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Convenience-Features-for-Indentation">1. 26.4 Convenience Features for Indentation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Code-Alignment.html">Code Alignment</a>   Previous: <a href="docs/emacs--Just-Spaces.html">Tabs vs. Spaces</a>   Up: <a href="docs/emacs--Indentation.html">Indentation</a>
+</p>
+
+<p>
+<a id="Indent-Convenience"></a>
+</p>
+
+<hr />
+<div id="outline-container-Convenience-Features-for-Indentation" class="outline-2">
+<h2 id="Convenience-Features-for-Indentation"><span class="section-number-2">1.</span> 26.4 Convenience Features for Indentation <a href="#Convenience-Features-for-Indentation">¶</a></h2>
+<div class="outline-text-2" id="text-Convenience-Features-for-Indentation">
+<p>
+The variable <code>tab-always-indent</code> tweaks the behavior of the TAB (<code>indent-for-tab-command</code>) command. The default value, <code>t</code>, gives the behavior described in <a href="docs/emacs--Indentation.html">Indentation</a>. If you change the value to the symbol <code>complete</code>, then TAB first tries to indent the current line, and if the line was already indented, it tries to complete the text at point (see <a href="docs/emacs--Symbol-Completion.html">Completion for Symbol Names</a>). If the value is <code>nil</code>, then TAB indents the current line only if point is at the left margin or in the line's indentation; otherwise, it inserts a tab character.
+</p>
+
+<p>
+If <code>tab-always-indent</code> is <code>complete</code>, whether to expand or indent can be further customized via the <code>tab-first-completion</code> variable. For instance, if that variable is <code>eol</code>, only complete if point is at the end of a line. See <a href="../elisp_html/Mode_002dSpecific-Indent.html#Mode_002dSpecific-Indent">Mode-Specific Indent</a> in The Emacs Lisp Reference Manual, for further details.
+</p>
+
+<p>
+Electric Indent mode is a global minor mode that automatically indents the line after every RET you type. This mode is enabled by default. To toggle this minor mode, type M-x electric-indent-mode. To toggle the mode in a single buffer, use M-x electric-indent-local-mode.
+</p>
+</div>
+</div>

@@ -1,0 +1,74 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Disabling-Commands">1. 51.3.11 Disabling Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Mouse-Buttons.html">Rebinding Mouse Buttons</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Disabling"></a>
+</p>
+
+<hr />
+<div id="outline-container-Disabling-Commands" class="outline-2">
+<h2 id="Disabling-Commands"><span class="section-number-2">1.</span> 51.3.11 Disabling Commands <a href="#Disabling-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Disabling-Commands">
+<p>
+Disabling a command means that invoking it interactively asks for confirmation from the user. The purpose of disabling a command is to prevent users from executing it by accident; we do this for commands that might be confusing to the uninitiated.
+</p>
+
+<p>
+Attempting to invoke a disabled command interactively in Emacs displays a window containing the command's name, its documentation, and some instructions on what to do immediately; then Emacs asks for input saying whether to execute the command as requested, enable it and execute it, or cancel. If you decide to enable the command, you must then answer another question&#x2014;whether to do this permanently, or just for the current session. (Enabling permanently works by automatically editing your initialization file.) You can also type ! to enable <i>all</i> commands, for the current session only.
+</p>
+
+<p>
+The direct mechanism for disabling a command is to put a non-<code>nil</code> <code>disabled</code> property on the Lisp symbol for the command. Here is the Lisp program to do this:
+</p>
+
+<pre class="example" id="org3dae11b">
+(put 'delete-region 'disabled t)
+</pre>
+
+<p>
+If the value of the <code>disabled</code> property is a string, that string is included in the message displayed when the command is used:
+</p>
+
+<pre class="example" id="orga8775ba">
+(put 'delete-region 'disabled
+     "It's better to use `kill-region' instead.\n")
+</pre>
+
+<p>
+As a less heavy-handed alternative to disabling commands, you may want to be queried before executing a command. For instance, to be queried before executing the M-&gt; (<code>end-of-buffer</code>) command, you could put something like the following in your init file:
+</p>
+
+<pre class="example" id="orgc5072ad">
+(command-query
+ 'end-of-buffer
+ "Do you really want to go to the end of the buffer?")
+</pre>
+
+<p>
+By default, you'll be queried with a y/n question, but if you give a non-<code>nil</code> value to the third, optional argument, you'll be queried with yes/no instead.
+</p>
+
+<p>
+You can make a command disabled either by editing the initialization file directly, or with the command M-x disable-command, which edits the initialization file for you. Likewise, M-x enable-command edits the initialization file to enable a command permanently. See <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>.
+</p>
+
+<p>
+If Emacs was invoked with the <code>-q</code> or <code>--no-init-file</code> options (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>), it will not edit your initialization file. Doing so could lose information because Emacs has not read your initialization file.
+</p>
+
+<p>
+Whether a command is disabled is independent of what key is used to invoke it; disabling also applies if the command is invoked using M-x. However, disabling a command has no effect on calling it as a function from Lisp programs.
+</p>
+
+<hr />
+</div>
+</div>

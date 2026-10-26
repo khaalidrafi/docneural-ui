@@ -1,0 +1,101 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Priorities-1">1. 5.4 Priorities ¶</a></li>
+<li><a href="#org85fb1c6">2. <span class="todo TODO">TODO</span> Write letter to Sam Fortune</a></li>
+<li><a href="#org6974c9f">3. <span class="todo TODO">TODO</span> Write letter to Sam Fortune</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">3.0.1. (47)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Priorities"></a>
+Next: <a href="docs/org--Breaking-Down-Tasks.html">Breaking Down Tasks into Subtasks</a>, Previous: <a href="docs/org--Progress-Logging.html">Progress Logging</a>, Up: <a href="docs/org--TODO-Items.html">TODO Items</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Priorities-1" class="outline-2">
+<h2 id="Priorities-1"><span class="section-number-2">1.</span> 5.4 Priorities <a href="#Priorities-1">¶</a></h2>
+<div class="outline-text-2" id="text-Priorities-1">
+<p>
+If you use Org mode extensively, you may end up with enough TODO items that it starts to make sense to prioritize them. Prioritizing can be done by placing a <i>priority cookie</i> into the headline of a TODO item right after the TODO keyword, like this:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org85fb1c6" class="outline-2">
+<h2 id="org85fb1c6"><span class="section-number-2">2.</span> <span class="todo TODO">TODO</span> Write letter to Sam Fortune</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+By default, Org mode supports three priorities: ‘=A=', ‘=B=', and ‘=C='. ‘=A=' is the highest priority. An entry without a cookie is treated as if it had priority ‘=B='. Priorities make a difference only for sorting in the agenda (see <a href="docs/org--Weekly_002fdaily-agenda.html">Weekly/daily agenda</a>). Outside the agenda, they have no inherent meaning to Org mode. The cookies are displayed with the face defined by the variable <code>org-priority-faces</code>, which can be customized.
+</p>
+
+<p>
+You can also use numeric values for priorities, such as
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org6974c9f" class="outline-2">
+<h2 id="org6974c9f"><span class="section-number-2">3.</span> <span class="todo TODO">TODO</span> Write letter to Sam Fortune</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+When using numeric priorities, you need to set <code>org-priority-highest</code>, <code>org-priority-lowest</code> and <code>org-priority-default</code> to integers, which must all be a non-negative integer between 0 and 64, inclusive.
+</p>
+
+<p>
+Priorities can be attached to any heading; they do not need to be TODO items.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_002c"></a>C-c , (<code>org-priority</code>) </dt><dd>Set the priority of the current headline. The command prompts for a priority character ‘=A=', ‘=B=' or ‘=C='. When you press SPC instead, the priority cookie, if one is set, is removed from the headline. The priorities can also be changed “remotely” from the agenda buffer with the , command (see <a href="docs/org--Agenda-Commands.html">Commands in the Agenda Buffer</a>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-S_002dUP-3"></a>S-UP (<code>org-priority-up</code>) <br />
+S-DOWN (<code>org-priority-down</code>) :: Increase/decrease the priority of the current headline. Note that these keys are also used to modify timestamps (see <a href="docs/org--Creating-Timestamps.html">Creating Timestamps</a>). See also <a href="docs/org--Conflicts.html">Packages that conflict with Org mode</a> for a discussion of the interaction with shift-selection.</dd>
+</dl>
+
+<p>
+You can change the range of allowed priorities by setting the variables <code>org-priority-highest</code>, <code>org-priority-lowest</code>, and <code>org-priority-default</code>. Valid priority values are single uppercase Latin alphabetical characters A-Z, and non-negative integers in between 0 and 64, inclusive. For an individual buffer, you may set these values (highest, lowest, default) like this (please make sure that the highest priority is earlier in the alphabet than the lowest priority):
+</p>
+
+<pre class="example" id="orgf7c7b4d">
+#+PRIORITIES: A C B
+</pre>
+
+<p>
+Or, using numeric values:
+</p>
+
+<pre class="example" id="org40d38d8">
+#+PRIORITIES: 1 10 5
+</pre>
+
+<hr />
+</div>
+</div>

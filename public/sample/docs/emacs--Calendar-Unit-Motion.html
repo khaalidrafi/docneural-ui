@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Motion-by-Standard-Lengths-of-Time">1. 33.1.1 Motion by Standard Lengths of Time ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Move-to-Beginning-or-End.html">Beginning or End of Week, Month or Year</a>   Up: <a href="docs/emacs--Calendar-Motion.html">Movement in the Calendar</a>
+</p>
+
+<p>
+<a id="Calendar-Unit-Motion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Motion-by-Standard-Lengths-of-Time" class="outline-2">
+<h2 id="Motion-by-Standard-Lengths-of-Time"><span class="section-number-2">1.</span> 33.1.1 Motion by Standard Lengths of Time <a href="#Motion-by-Standard-Lengths-of-Time">¶</a></h2>
+<div class="outline-text-2" id="text-Motion-by-Standard-Lengths-of-Time">
+<p>
+The commands for movement in the calendar buffer parallel the commands for movement in text. You can move forward and backward by days, weeks, months, and years.
+</p>
+
+<dl class="org-dl">
+<dt>C-f</dt><dd>Move point one day forward (<code>calendar-forward-day</code>).</dd>
+
+<dt>C-b</dt><dd>Move point one day backward (<code>calendar-backward-day</code>).</dd>
+
+<dt>C-n</dt><dd>Move point one week forward (<code>calendar-forward-week</code>).</dd>
+
+<dt>C-p</dt><dd>Move point one week backward (<code>calendar-backward-week</code>).</dd>
+
+<dt>M-}</dt><dd>Move point one month forward (<code>calendar-forward-month</code>).</dd>
+
+<dt>M-{</dt><dd>Move point one month backward (<code>calendar-backward-month</code>).</dd>
+
+<dt>C-x ]</dt><dd>Move point one year forward (<code>calendar-forward-year</code>).</dd>
+
+<dt>C-x [</dt><dd>Move point one year backward (<code>calendar-backward-year</code>).</dd>
+</dl>
+
+<p>
+The day and week commands are natural analogues of the usual Emacs commands for moving by characters and by lines. Just as C-n usually moves to the same column in the following line, in Calendar mode it is bound to <code>calendar-forward-week</code>, which moves to the same day in the following week. And C-p (<code>calendar-backward-week</code>) moves to the same day in the previous week. C-f (<code>calendar-forward-day</code>) and C-b (<code>calendar-backward-day</code>) move forward and back by days.
+</p>
+
+<p>
+The arrow keys are equivalent to C-f, C-b, C-n and C-p, just as they normally are in other modes.
+</p>
+
+<p>
+The commands for motion by months and years work like those for weeks, but move a larger distance. The month commands M-} (<code>calendar-forward-month</code>) and M-{ (<code>calendar-backward-month</code>) move forward or backward by an entire month. The year commands C-x ] (<code>calendar-forward-year</code>) and C-x [ (<code>calendar-backward-year</code>) move forward or backward a whole year.
+</p>
+
+<p>
+The easiest way to remember these commands is to consider months and years analogous to paragraphs and pages of text, respectively. But the calendar movement commands themselves do not quite parallel those for movement through text: the ordinary Emacs paragraph commands move to the beginning or end of a paragraph, whereas these month and year commands move by an entire month or an entire year, keeping the same date within the month or year.
+</p>
+
+<p>
+All these commands accept a numeric argument as a repeat count. For convenience, the digit keys and the minus sign specify numeric arguments in Calendar mode even without the Meta modifier. For example, 100 C-f moves point 100 days forward from its present location.
+</p>
+
+<hr />
+</div>
+</div>

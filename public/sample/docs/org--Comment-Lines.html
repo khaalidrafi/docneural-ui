@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Comment-Lines-1">1. 13.6 Comment Lines ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (135)</a></li>
+<li><a href="#section-1">1.0.2. (136)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Comment-Lines"></a>
+Next: <a href="docs/org--ASCII_002fLatin_002d1_002fUTF_002d8-export.html">ASCII/Latin-1/UTF-8 export</a>, Previous: <a href="docs/org--Macro-Replacement.html">Macro Replacement</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Comment-Lines-1" class="outline-2">
+<h2 id="Comment-Lines-1"><span class="section-number-2">1.</span> 13.6 Comment Lines <a href="#Comment-Lines-1">¶</a></h2>
+<div class="outline-text-2" id="text-Comment-Lines-1">
+<p>
+Lines starting with zero or more whitespace characters followed by one ‘=#=' and a whitespace are treated as comments and, as such, are not exported.
+</p>
+
+<p>
+Likewise, comment blocks ‘=#+BEGIN<sub>COMMENT</sub>=' &#x2026; ‘=#+END<sub>COMMENT</sub>=' are not exported. 
+</p>
+
+<p>
+Finally, a ‘=COMMENT=' keyword at the beginning of an entry, but after any other keyword or priority cookie, comments out the entire subtree. In this case, the subtree is not exported and no code block within it is executed or tangled. The command below helps to change the comment status of a headline.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_003b"></a>C-c ; (<code>org-toggle-comment</code>) </dt><dd>Toggle the ‘=COMMENT=' keyword at the beginning of an entry.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

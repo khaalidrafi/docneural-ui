@@ -1,0 +1,1 @@
+{"guix--Concept-Index>guix--Perl-Modules":"| | perl:","guix--Package-Naming>guix--Perl-Modules":"We do not add lib prefixes for library packages, unless these are already part of the official project name. But see Python Modules","guix--Packaging-Guidelines>guix--Perl-Modules":"- Perl Modules","guix--index>guix--Perl-Modules":"- 22.8.10 Perl Modules"}

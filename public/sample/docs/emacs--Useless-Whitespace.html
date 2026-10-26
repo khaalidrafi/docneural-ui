@@ -1,0 +1,77 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Useless-Whitespace-1">1. 16.17 Useless Whitespace ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Selective-Display.html">Selective Display</a>   Previous: <a href="docs/emacs--Displaying-Boundaries.html">Displaying Boundaries</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Useless-Whitespace"></a>
+</p>
+
+<hr />
+<div id="outline-container-Useless-Whitespace-1" class="outline-2">
+<h2 id="Useless-Whitespace-1"><span class="section-number-2">1.</span> 16.17 Useless Whitespace <a href="#Useless-Whitespace-1">¶</a></h2>
+<div class="outline-text-2" id="text-Useless-Whitespace-1">
+<p>
+It is easy to leave unnecessary spaces at the end of a line, or empty lines at the end of a buffer, without realizing it. In most cases, this <i>trailing whitespace</i> has no effect, but sometimes it can be a nuisance.
+</p>
+
+<p>
+You can make trailing whitespace at the end of a line visible by setting the buffer-local variable <code>show-trailing-whitespace</code> to <code>t</code>. Then Emacs displays trailing whitespace, using the face <code>trailing-whitespace</code>.
+</p>
+
+<p>
+This feature does not apply when point is at the end of the line containing the whitespace. Strictly speaking, that is trailing whitespace nonetheless, but displaying it specially in that case looks ugly while you are typing in new text. In this special case, the location of point is enough to show you that the spaces are present.
+</p>
+
+<p>
+Type M-x delete-trailing-whitespace to delete all trailing whitespace. This command deletes all extra spaces at the end of each line in the buffer, and all empty lines at the end of the buffer; to ignore the latter, change the variable <code>delete-trailing-lines</code> to <code>nil</code>. If the region is active, the command instead deletes extra spaces at the end of each line in the region.
+</p>
+
+<p>
+On graphical displays, Emacs can indicate unused lines at the end of the window with a small image in the left fringe (see <a href="docs/emacs--Fringes.html">Window Fringes</a>). The image appears for screen lines that do not correspond to any buffer text, so blank lines at the end of the buffer stand out because they lack this image. To enable this feature, set the buffer-local variable <code>indicate-empty-lines</code> to a non-<code>nil</code> value. You can enable or disable this feature for all new buffers by setting the default value of this variable, e.g., <code>(setq-default indicate-empty-lines t)</code>.
+</p>
+
+<p>
+Whitespace mode is a buffer-local minor mode that lets you visualize many kinds of whitespace in the buffer, by either drawing the whitespace characters with a special face or displaying them as special glyphs. To toggle this mode, type M-x whitespace-mode. The kinds of whitespace visualized are determined by the list variable <code>whitespace-style</code>. Individual elements in that list can be toggled on or off in the current buffer by typing M-x whitespace-toggle-options. Here is a partial list of possible elements (see the variable's documentation for the full list):
+</p>
+
+<dl class="org-dl">
+<dt><code>face</code></dt><dd>Enable all visualizations which use special faces. This element has a special meaning: if it is absent from the list, none of the other visualizations take effect except <code>space-mark</code>, <code>tab-mark</code>, and <code>newline-mark</code>.</dd>
+
+<dt><code>trailing</code></dt><dd>Highlight trailing whitespace.</dd>
+
+<dt><code>tabs</code></dt><dd>Highlight tab characters.</dd>
+
+<dt><code>spaces</code></dt><dd>Highlight space and non-breaking space characters.</dd>
+
+<dt><a id="index-whitespace_002dline_002dcolumn"></a>=lines= </dt><dd>Highlight lines longer than 80 columns. To change the column limit, customize the variable <code>whitespace-line-column</code>.</dd>
+
+<dt><code>newline</code></dt><dd>Highlight newlines.</dd>
+
+<dt><code>missing-newline-at-eof</code></dt><dd>Highlight the final character if the buffer doesn't end with a newline character.</dd>
+
+<dt><code>empty</code></dt><dd>Highlight empty lines at the beginning and/or end of the buffer.</dd>
+
+<dt><a id="index-whitespace_002dbig_002dindent_002dregexp"></a>=big-indent= </dt><dd>Highlight too-deep indentation. By default any sequence of at least 4 consecutive tab characters or 32 consecutive space characters is highlighted. To change that, customize the regular expression <code>whitespace-big-indent-regexp</code>.</dd>
+
+<dt><code>space-mark</code></dt><dd>Draw space and non-breaking characters with a special glyph.</dd>
+
+<dt><code>tab-mark</code></dt><dd>Draw tab characters with a special glyph.</dd>
+
+<dt><code>newline-mark</code></dt><dd>Draw newline characters with a special glyph.</dd>
+</dl>
+
+<p>
+Global Whitespace mode is a global minor mode that lets you visualize whitespace in all buffers. To toggle individual features, use M-x global-whitespace-toggle-options.
+</p>
+
+<hr />
+</div>
+</div>

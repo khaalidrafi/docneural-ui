@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keymaps-1">1. 51.3.1 Keymaps ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Prefix-Keymaps.html">Prefix Keymaps</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Keymaps"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keymaps-1" class="outline-2">
+<h2 id="Keymaps-1"><span class="section-number-2">1.</span> 51.3.1 Keymaps <a href="#Keymaps-1">¶</a></h2>
+<div class="outline-text-2" id="text-Keymaps-1">
+<p>
+As described in <a href="docs/emacs--Commands.html">Keys and Commands</a>, each Emacs command is a Lisp function whose definition provides for interactive use. Like every Lisp function, a command has a function name, which usually consists of lower-case letters and hyphens.
+</p>
+
+<p>
+A <i>key sequence</i> (<i>key</i>, for short) is a sequence of <i>input events</i> that have a meaning as a unit. Input events include characters, function keys, and mouse buttons&#x2014;all the inputs that you can send to the computer. A key sequence gets its meaning from its <i>binding</i>, which says what command it runs.
+</p>
+
+<p>
+The bindings between key sequences and command functions are recorded in data structures called <i>keymaps</i>. Emacs has many of these, each used on particular occasions.
+</p>
+
+<p>
+The <i>global</i> keymap is the most important keymap because it is always in effect. The global keymap defines keys for Fundamental mode (see <a href="docs/emacs--Major-Modes.html">Major Modes</a>); most of these definitions are common to most or all major modes. Each major or minor mode can have its own keymap which overrides the global definitions of some keys.
+</p>
+
+<p>
+For example, a self-inserting character such as g is self-inserting because the global keymap binds it to the command <code>self-insert-command</code>. The standard Emacs editing characters such as C-a also get their standard meanings from the global keymap. Commands to rebind keys, such as M-x keymap-global-set, work by storing the new binding in the proper place in the global map (see <a href="docs/emacs--Rebinding.html">Changing Key Bindings Interactively</a>). To view the current key bindings, use the C-h b command.
+</p>
+
+<p>
+Most modern keyboards have function keys as well as character keys. Function keys send input events just as character keys do, and keymaps can have bindings for them. Key sequences can mix function keys and characters. For example, if your keyboard has a Home function key, Emacs can recognize key sequences like C-x Home. You can even mix mouse events with keyboard events, such as S-down-mouse-1.
+</p>
+
+<p>
+On text terminals, typing a function key actually sends the computer a sequence of characters; the precise details of the sequence depend on the function key and on the terminal type. (Often the sequence starts with ESC [.) If Emacs understands your terminal type properly, it automatically handles such sequences as single input events.
+</p>
+
+<p>
+Key sequences that consist of C-c followed by a letter (upper or lower case; ASCII or non-ASCII) are reserved for users. Emacs itself will never bind those key sequences, and Emacs extensions should avoid binding them. In other words, users can bind key sequences like C-c a or C-c ç and rely on these never being shadowed by other Emacs bindings.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,120 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Cyclic-Module-Dependencies"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Bulk-Updates.html">Bulk Updates</a>, Previous: <a href="docs/guix--Snippets-versus-Phases.html">Snippets versus Phases</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Cyclic-Module-Dependencies-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="cyclic-module-dependencies"></a>22.8.6 Cyclic Module Dependencies<br />
+<div class="outline-text-5" id="text-cyclic-module-dependencies">
+<p>
+While there cannot be circular dependencies between packages, Guile's lax module loading mechanism allows circular dependencies between Guile modules, which doesn't cause problems as long as the following conditions are followed for two modules part of a dependency cycle:
+</p>
+
+<p>
+<a id="index-rules-to-cope-with-circular-module-dependencies"></a>
+</p>
+<ol class="org-ol">
+<li>Macros are not shared between the co-dependent modules</li>
+<li>Top-level variables are only referenced in delayed (<i>thunked</i>) package fields: <code>arguments</code>, <code>native-inputs</code>, <code>inputs</code>, <code>propagated-inputs</code> or <code>replacement</code></li>
+<li>Procedures referencing top-level variables from another module are not called at the top level of a module themselves.</li>
+</ol>
+
+<p>
+Straying away from the above rules may work while there are no dependency cycles between modules, but given such cycles are confusing and difficult to troubleshoot, it is best to follow the rules to avoid introducing problems down the line.
+</p>
+
+<p>
+Here is a common trap to avoid:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-public avr-binutils
+  (package
+    (inherit (cross-binutils "avr"))
+    (name "avr-binutils")))
+</pre>
+</div>
+
+<p>
+In the above example, the <code>avr-binutils</code> package was defined in the module <code>(gnu packages avr)</code>, and the <code>cross-binutils</code> procedure in <code>(gnu packages cross-base)</code>. Because the <code>inherit</code> field is not delayed (thunked), it is evaluated at the top level at load time, which is problematic in the presence of module dependency cycles. This could be resolved by turning the package into a procedure instead, like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (make-avr-binutils)
+  (package
+    (inherit (cross-binutils "avr"))
+    (name "avr-binutils")))
+</pre>
+</div>
+
+<p>
+Care would need to be taken to ensure the above procedure is only ever used in a package delayed fields or within another procedure also not called at the top level.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Bulk-Updates.html">Bulk Updates</a>, Previous: <a href="docs/guix--Snippets-versus-Phases.html">Snippets versus Phases</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Completion-for-Symbol-Names">1. 28.8 Completion for Symbol Names ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (16)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--MixedCase-Words.html">MixedCase Words</a>   Previous: <a href="docs/emacs--Hideshow.html">Hideshow minor mode</a>   Up: <a href="docs/emacs--Programs.html">Editing Programs</a>
+</p>
+
+<p>
+<a id="Symbol-Completion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Completion-for-Symbol-Names" class="outline-2">
+<h2 id="Completion-for-Symbol-Names"><span class="section-number-2">1.</span> 28.8 Completion for Symbol Names <a href="#Completion-for-Symbol-Names">¶</a></h2>
+<div class="outline-text-2" id="text-Completion-for-Symbol-Names">
+<p>
+Completion is normally done in the minibuffer (see <a href="docs/emacs--Completion.html">Completion</a>), but you can also complete symbol names in ordinary Emacs buffers.
+</p>
+
+<p>
+In most programming language modes, C-M-i (or M-TAB) invokes the command <code>completion-at-point</code>, which generates the list of possible completions for the symbol at point. This command uses the available support facilities to come up with the completion candidates:
+</p>
+
+<ul class="org-ul">
+<li>If Eglot is activated for the current buffer's project (see <a href="docs/emacs--Projects.html">Working with Projects</a>) and the current buffer's major mode, the command tries to use the corresponding language server for producing the list of completion candidates. See <a href="../eglot_html/Eglot-Features.html#Eglot-Features">Eglot Features</a> in Eglot: The Emacs LSP Client.</li>
+<li>If Semantic mode is enabled (see <a href="docs/emacs--Semantic.html">Semantic</a>), the command tries to use the Semantic parser data for completion.</li>
+<li>If Semantic mode is not enabled or fails at performing completion, the command tries to complete using the selected tags table (see <a href="docs/emacs--Tags-Tables.html">Tags Tables</a>); you need to visit the tags table with M-x visit-tags-table for that to work.</li>
+<li>In Emacs Lisp mode, the command performs completion using the function, variable, or property names defined in the current Emacs session.</li>
+</ul>
+
+<p>
+In all other respects, in-buffer symbol completion behaves like minibuffer completion. For instance, if Emacs cannot complete to a unique symbol, it displays a list of completion alternatives in another window. Then you can use the keys M-DOWN and M-UP to navigate through the completions displayed in the completions buffer without leaving the original buffer, and the key M-RET to insert the currently highlighted completion to the buffer. See <a href="docs/emacs--Completion.html">Completion</a>.
+</p>
+
+<p>
+In Text mode and related modes, M-TAB completes words based on the spell-checker's dictionary. See <a href="docs/emacs--Spelling.html">Checking and Correcting Spelling</a>.
+</p>
+
+<p>
+Completion Preview mode is a minor mode that shows completion suggestions as you type. You can enable it for the current buffer with M-x completion-preview-mode, or globally with M-x global-completion-preview-mode. When Completion Preview mode is on, Emacs automatically displays the suggested completion for text around point as an in-line preview right after point; type TAB to accept the suggestion.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Publishing-links-1">1. 14.1.6 Publishing links ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Publishing-links"></a>
+Next: <a href="docs/org--Site-map.html">Generating a sitemap</a>, Previous: <a href="docs/org--Publishing-options.html">Options for the exporters</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Publishing-links-1" class="outline-2">
+<h2 id="Publishing-links-1"><span class="section-number-2">1.</span> 14.1.6 Publishing links <a href="#Publishing-links-1">¶</a></h2>
+<div class="outline-text-2" id="text-Publishing-links-1">
+<p>
+To create a link from one Org file to another, you would use something like ‘=<a href="foo.html">The foo</a>=' or simply ‘=<a href="foo.html">foo.html</a>=' (see <a href="docs/org--External-Links.html">External Links</a>). When published, this link becomes a link to ‘=foo.html='. You can thus interlink the pages of your “Org web” project and the links will work as expected when you publish them to HTML. If you also publish the Org source file and want to link to it, use an ‘=http=' link instead of a ‘=file:=' link, because ‘=file=' links are converted to link to the corresponding ‘=.html=' file.
+</p>
+
+<p>
+Links to encrypted Org files, like ‘=<a href="foo.html">foo.html</a>=' are also supported.
+</p>
+
+<p>
+You may also link to related files, such as images. Provided you are careful with relative file names, and provided you have also configured Org to upload the related files, these links will work too. See <a href="docs/org--Complex-example.html">Example: complex publishing configuration</a>, for an example of this usage.
+</p>
+
+<p>
+Links between published documents can contain some search options (see <a href="docs/org--Search-Options.html">Search Options in File Links</a>), which will be resolved to the appropriate location in the linked file. For example, once published to HTML, the following links all point to a dedicated anchor in ‘=foo.html='.
+</p>
+
+<pre class="example" id="orga080e93">
+[[file:foo.org::*heading]]
+[[file:foo.org::#custom-id]]
+[[file:foo.org::target]]
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Site-map.html">Generating a sitemap</a>, Previous: <a href="docs/org--Publishing-options.html">Options for the exporters</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

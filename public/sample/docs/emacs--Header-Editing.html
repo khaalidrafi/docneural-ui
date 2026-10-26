@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mail-Header-Editing">1. 34.4.2 Mail Header Editing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Citing-Mail.html">Citing Mail</a>   Previous: <a href="docs/emacs--Mail-Sending.html">Mail Sending</a>   Up: <a href="docs/emacs--Mail-Commands.html">Mail Commands</a>
+</p>
+
+<p>
+<a id="Header-Editing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mail-Header-Editing" class="outline-2">
+<h2 id="Mail-Header-Editing"><span class="section-number-2">1.</span> 34.4.2 Mail Header Editing <a href="#Mail-Header-Editing">¶</a></h2>
+<div class="outline-text-2" id="text-Mail-Header-Editing">
+<p>
+Message mode provides the following special commands to move to particular header fields and to complete addresses in headers.
+</p>
+
+<dl class="org-dl">
+<dt>C-c C-f C-t</dt><dd>Move to the ‘=To=' header (<code>message-goto-to</code>).</dd>
+
+<dt>C-c C-f C-s</dt><dd>Move to the ‘=Subject=' header (<code>message-goto-subject</code>).</dd>
+
+<dt>C-c C-f C-c</dt><dd>Move to the ‘=CC=' header (<code>message-goto-cc</code>).</dd>
+
+<dt>C-c C-f C-b</dt><dd>Move to the ‘=BCC=' header (<code>message-goto-bcc</code>).</dd>
+
+<dt>C-c C-f C-r</dt><dd>Move to the ‘=Reply-To=' header (<code>message-goto-reply-to</code>).</dd>
+
+<dt>C-c C-f C-f</dt><dd>Move to the ‘=Mail-Followup-To=' header field (<code>message-goto-followup-to</code>).</dd>
+
+<dt>C-c C-f C-w</dt><dd>Add a new ‘=FCC=' header field, with file-name completion (<code>message-goto-fcc</code>).</dd>
+
+<dt>C-c C-b</dt><dd>Move to the start of the message body (<code>message-goto-body</code>).</dd>
+
+<dt>TAB</dt><dd>Complete a mailing address (<code>message-tab</code>).</dd>
+</dl>
+
+<p>
+The commands to move point to particular header fields are all based on the prefix C-c C-f (‘=C-f=' is for “field”). If the field in question does not exist, the command creates one (the exception is <code>mail-fcc</code>, which creates a new field each time).
+</p>
+
+<p>
+The command C-c C-b (<code>message-goto-body</code>) moves point to just after the header separator line&#x2014;that is, to the beginning of the body.
+</p>
+
+<p>
+While editing a header field that contains addresses, such as ‘=To:=', ‘=CC:=' and ‘=BCC:=', you can complete an address by typing TAB (<code>message-tab</code>). This attempts to insert the full name corresponding to the address based on a couple of methods, including EUDC, a library that recognizes a number of directory server protocols (see <a href="../eudc_html/index.html#Top">EUDC</a> in The Emacs Unified Directory Client). Failing that, it attempts to expand the address as a mail alias (see <a href="docs/emacs--Mail-Aliases.html">Mail Aliases</a>). If point is on a header field that does not take addresses, or if it is in the message body, then TAB just inserts a tab character.
+</p>
+
+<hr />
+</div>
+</div>

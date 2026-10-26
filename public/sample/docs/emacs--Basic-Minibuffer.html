@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-the-Minibuffer">1. 10.1 Using the Minibuffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Minibuffer-File.html">Minibuffers for File Names</a>   Up: <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>
+</p>
+
+<p>
+<a id="Basic-Minibuffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Using-the-Minibuffer" class="outline-2">
+<h2 id="Using-the-Minibuffer"><span class="section-number-2">1.</span> 10.1 Using the Minibuffer <a href="#Using-the-Minibuffer">¶</a></h2>
+<div class="outline-text-2" id="text-Using-the-Minibuffer">
+<p>
+When the minibuffer is in use, it appears in the echo area, with a cursor. The minibuffer starts with a <i>prompt</i>, usually ending with a colon. The prompt states what kind of input is expected, and how it will be used. The prompt is highlighted using the <code>minibuffer-prompt</code> face (see <a href="docs/emacs--Faces.html">Text Faces</a>).
+</p>
+
+<p>
+The simplest way to enter a minibuffer argument is to type the text, then RET to submit the argument and exit the minibuffer. Alternatively, you can type C-g to exit the minibuffer by canceling the command asking for the argument (see <a href="docs/emacs--Quitting.html">Quitting and Aborting</a>).
+</p>
+
+<p>
+Sometimes, the prompt shows a <i>default argument</i>, inside parentheses before the colon. This default will be used as the argument if you just type RET. For example, commands that read buffer names usually show a buffer name as the default; you can type RET to operate on that default buffer. You can customize how the default argument is shown with the user option <code>minibuffer-default-prompt-format</code>.
+</p>
+
+<p>
+If you enable Minibuffer Electric Default mode, a global minor mode, Emacs hides the default argument as soon as you modify the contents of the minibuffer (since typing RET would no longer submit that default). If you ever bring back the original minibuffer text, the prompt again shows the default. To enable this minor mode, type M-x minibuffer-electric-default-mode.
+</p>
+
+<p>
+Since the minibuffer appears in the echo area, it can conflict with other uses of the echo area. If an error message or an informative message is emitted while the minibuffer is active, the message is displayed in brackets after the minibuffer text for a few seconds, or until you type something; then the message disappears. While the minibuffer is in use, Emacs does not echo keystrokes.
+</p>
+
+<p>
+While using the minibuffer, you can switch to a different frame, perhaps to note text you need to enter (see <a href="docs/emacs--Frame-Commands.html">Frame Commands</a>). By default, the active minibuffer moves to this new frame. If you set the user option <code>minibuffer-follows-selected-frame</code> to <code>nil</code>, then the minibuffer stays in the frame where you opened it, and you must switch back to that frame in order to complete (or abort) the current command. If you set that option to a value which is neither <code>nil</code> nor <code>t</code>, the minibuffer moves frame only after a recursive minibuffer has been opened in the current command (see <a href="../elisp_html/Recursive-Mini.html#Recursive-Mini">(elisp)Recursive Mini</a>). This option is mainly to retain (approximately) the behavior prior to Emacs 28.1. Note that the effect of the command, when you finally finish using the minibuffer, always takes place in the frame where you first opened it. The sole exception is that when that frame no longer exists, the action takes place in the currently selected frame.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Moving-in-the-Parenthesis-Structure">1. 28.4.2 Moving in the Parenthesis Structure ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Matching.html">Matching Parentheses</a>   Previous: <a href="docs/emacs--Expressions.html">Expressions with Balanced Parentheses</a>   Up: <a href="docs/emacs--Parentheses.html">Commands for Editing with Parentheses</a>
+</p>
+
+<p>
+<a id="Moving-by-Parens"></a>
+</p>
+
+<hr />
+<div id="outline-container-Moving-in-the-Parenthesis-Structure" class="outline-2">
+<h2 id="Moving-in-the-Parenthesis-Structure"><span class="section-number-2">1.</span> 28.4.2 Moving in the Parenthesis Structure <a href="#Moving-in-the-Parenthesis-Structure">¶</a></h2>
+<div class="outline-text-2" id="text-Moving-in-the-Parenthesis-Structure">
+<p>
+The following commands move over groupings delimited by parentheses (or whatever else serves as delimiters in the language you are working with). They ignore strings and comments, including any parentheses within them, and also ignore parentheses that are quoted with an escape character. These commands are mainly intended for editing programs, but can be useful for editing any text containing parentheses. They are referred to internally as “list commands” because in Lisp these groupings are lists.
+</p>
+
+<p>
+These commands assume that the starting point is not inside a string or a comment. If you invoke them from inside a string or comment, the results are unreliable.
+</p>
+
+<dl class="org-dl">
+<dt>C-M-n</dt><dd>Move forward over a parenthetical group (<code>forward-list</code>).</dd>
+
+<dt>C-M-p</dt><dd>Move backward over a parenthetical group (<code>backward-list</code>).</dd>
+
+<dt>C-M-u</dt><dd>Move up in parenthesis structure (<code>backward-up-list</code>).</dd>
+
+<dt>C-M-d</dt><dd>Move down in parenthesis structure (<code>down-list</code>).</dd>
+</dl>
+
+<p>
+The list commands C-M-n (<code>forward-list</code>) and C-M-p (<code>backward-list</code>) move forward or backward over one (or <code>n</code>) parenthetical groupings.
+</p>
+
+<p>
+C-M-n and C-M-p try to stay at the same level in the parenthesis structure. To move <i>up</i> one (or <code>n</code>) levels, use C-M-u (<code>backward-up-list</code>). C-M-u moves backward up past one unmatched opening delimiter. A positive argument serves as a repeat count; a negative argument reverses the direction of motion, so that the command moves forward and up one or more levels.
+</p>
+
+<p>
+To move <i>down</i> in the parenthesis structure, use C-M-d (<code>down-list</code>). In Lisp mode, where ‘=(<code>' is the only opening delimiter, this is nearly the same as searching for a ‘=(</code>'. An argument specifies the number of levels to go down.
+</p>
+
+<hr />
+</div>
+</div>

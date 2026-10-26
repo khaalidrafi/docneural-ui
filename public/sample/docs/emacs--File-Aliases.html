@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#File-Name-Aliases">1. 20.7 File Name Aliases ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Directories.html">File Directories</a>   Previous: <a href="docs/emacs--Auto-Save.html">Auto-Saving: Protection Against Disasters</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="File-Aliases"></a>
+</p>
+
+<hr />
+<div id="outline-container-File-Name-Aliases" class="outline-2">
+<h2 id="File-Name-Aliases"><span class="section-number-2">1.</span> 20.7 File Name Aliases <a href="#File-Name-Aliases">¶</a></h2>
+<div class="outline-text-2" id="text-File-Name-Aliases">
+<p>
+Symbolic links and hard links both make it possible for several file names to refer to the same file. Hard links are alternate names that refer directly to the file; all the names are equally valid, and no one of them is preferred. By contrast, a symbolic link is a kind of defined alias: when <code>foo</code> is a symbolic link to <code>bar</code>, you can use either name to refer to the file, but <code>bar</code> is the real name, while <code>foo</code> is just an alias. More complex cases occur when symbolic links point to directories.
+</p>
+
+<p>
+Normally, if you visit a file which Emacs is already visiting under a different name, Emacs displays a message in the echo area and uses the existing buffer visiting that file. This can happen on systems that support hard or symbolic links, or if you use a long file name on a system that truncates long file names, or on a case-insensitive file system. You can suppress the message by setting the variable <code>find-file-suppress-same-file-warnings</code> to a non-<code>nil</code> value. You can disable this feature entirely by setting the variable <code>find-file-existing-other-name</code> to <code>nil</code>: then if you visit the same file under two different names, you get a separate buffer for each file name.
+</p>
+
+<p>
+If the variable <code>find-file-visit-truename</code> is non-<code>nil</code>, then the file name recorded for a buffer is the file's <i>truename</i> (made by replacing all symbolic links with their target names), rather than the name you specify. Setting <code>find-file-visit-truename</code> also implies the effect of <code>find-file-existing-other-name</code>.
+</p>
+
+<p>
+Sometimes, a directory is ordinarily accessed through a symbolic link, and you may want Emacs to preferentially show its linked name. To do this, customize <code>directory-abbrev-alist</code>. Each element in this list should have the form <code>(==from=</code> . <code>=to=</code>)=, which means to replace <code>from</code> with <code>to</code> whenever <code>from</code> appears in a directory name. The <code>from</code> string is a regular expression (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). It is matched against directory names anchored at the first character, and should start with ‘=\`=' (to support directory names with embedded newlines, which would defeat ‘=^='). The <code>to</code> string should be an ordinary absolute directory name pointing to the same directory. Do not use ‘=~=' to stand for a home directory in the <code>to</code> string; Emacs performs these substitutions separately. Here's an example, from a system on which <code>/home/fsf</code> is normally accessed through a symbolic link named <code>/fsf</code>:
+</p>
+
+<pre class="example" id="org0a1e1d3">
+(("\\`/home/fsf" . "/fsf"))
+</pre>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,306 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="origin-Reference"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>, Up: <a href="docs/guix--Defining-Packages.html">Defining Packages</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="origin-Reference-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="origin-reference"></a>8.2.2 <code>origin</code> Reference<br />
+<div class="outline-text-5" id="text-origin-reference">
+<p>
+This section documents <i>origins</i>. An <code>origin</code> declaration specifies data that must be “produced”&#x2014;downloaded, usually&#x2014;and whose content hash is known in advance. Origins are primarily used to represent the source code of packages (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>). For that reason, the <code>origin</code> form allows you to declare patches to apply to the original source code as well as code snippets to modify it.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: origin </dt><dd>This is the data type representing a source code origin.
+
+<dl class="org-dl">
+<dt><code>uri</code></dt><dd><p>
+An object containing the URI of the source. The object type depends on the <code>method</code> (see below). For example, when using the <code>url-fetch</code> method of <code>(guix download)</code>, the valid <code>uri</code> values are: a URL represented as a string, or a list thereof.
+</p>
+
+<p>
+<a id="index-fixed_002doutput-derivations_002c-for-download"></a>
+</p></dd>
+
+<dt><code>method</code></dt><dd><p>
+A monadic procedure that handles the given URI. The procedure must accept at least three arguments: the value of the <code>uri</code> field and the hash algorithm and hash value specified by the <code>hash</code> field. It must return a store item or a derivation in the store monad (see <a href="docs/guix--The-Store-Monad.html">The Store Monad</a>); most methods return a fixed-output derivation (see <a href="docs/guix--Derivations.html">Derivations</a>).
+</p>
+
+<p>
+Commonly used methods include <code>url-fetch</code>, which fetches data from a URL, and <code>git-fetch</code>, which fetches data from a Git repository (see below).
+</p></dd>
+
+<dt><code>sha256</code></dt><dd>A bytevector containing the SHA-256 hash of the source. This is equivalent to providing a <code>content-hash</code> SHA256 object in the <code>hash</code> field described below.</dd>
+
+<dt><code>hash</code></dt><dd><p>
+The <code>content-hash</code> object of the source&#x2014;see below for how to use <code>content-hash</code>.
+</p>
+
+<p>
+You can obtain this information using <code>guix download</code> (see <a href="docs/guix--Invoking-guix-download.html">Invoking <code>guix download</code></a>) or <code>guix hash</code> (see <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>).
+</p></dd>
+
+<dt><code>file-name</code> (default: <code>#f</code>)</dt><dd>The file name under which the source code should be saved. When this is <code>#f</code>, a sensible default value will be used in most cases. In case the source is fetched from a URL, the file name from the URL will be used. For version control checkouts, it is recommended to provide the file name explicitly because the default is not very descriptive.</dd>
+
+<dt><code>patches</code> (default: <code>'()</code>)</dt><dd><p>
+A list of file names, origins, or file-like objects (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>) pointing to patches to be applied to the source.
+</p>
+
+<p>
+This list of patches must be unconditional. In particular, it cannot depend on the value of <code>%current-system</code> or <code>%current-target-system</code>.
+</p></dd>
+
+<dt><code>snippet</code> (default: <code>#f</code>)</dt><dd>A G-expression (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>) or S-expression that will be run in the source directory. This is a convenient way to modify the source, sometimes more convenient than a patch.</dd>
+
+<dt><code>patch-flags</code> (default: <code>'("-p1")</code>)</dt><dd>A list of command-line flags that should be passed to the <code>patch</code> command.</dd>
+
+<dt><code>patch-inputs</code> (default: <code>#f</code>)</dt><dd>Input packages or derivations to the patching process. When this is <code>#f</code>, the usual set of inputs necessary for patching are provided, such as GNU Patch.</dd>
+
+<dt><code>modules</code> (default: <code>'()</code>)</dt><dd>A list of Guile modules that should be loaded during the patching process and while running the code in the <code>snippet</code> field.</dd>
+
+<dt><code>patch-guile</code> (default: <code>#f</code>)</dt><dd>The Guile package that should be used in the patching process. When this is <code>#f</code>, a sensible default is used.</dd>
+</dl></dd>
+
+<dt>Data Type: content-hash <code>value</code> [=algorithm=]</dt><dd><p>
+Construct a content hash object for the given <code>algorithm</code>, and with <code>value</code> as its hash value. When <code>algorithm</code> is omitted, assume it is <code>sha256</code>.
+</p>
+
+<p>
+<code>value</code> can be a literal string, in which case it is base32-decoded, or it can be a bytevector.
+</p>
+
+<p>
+The following forms are all equivalent:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(content-hash "05zxkyz9bv3j9h0xyid1rhvh3klhsmrpkf3bcs6frvlgyr2gwilj")
+(content-hash "05zxkyz9bv3j9h0xyid1rhvh3klhsmrpkf3bcs6frvlgyr2gwilj"
+              sha256)
+(content-hash (base32
+               "05zxkyz9bv3j9h0xyid1rhvh3klhsmrpkf3bcs6frvlgyr2gwilj"))
+(content-hash (base64 "kkb+RPaP7uyMZmu4eXPVkM4BN8yhRd8BTHLslb6f/Rc=")
+              sha256)
+</pre>
+</div>
+
+<p>
+Technically, <code>content-hash</code> is currently implemented as a macro. It performs sanity checks at macro-expansion time, when possible, such as ensuring that <code>value</code> has the right size for <code>algorithm</code>.
+</p></dd>
+</dl>
+
+<p>
+As we have seen above, how exactly the data an origin refers to is retrieved is determined by its <code>method</code> field. The <code>(guix download)</code> module provides the most common method, <code>url-fetch</code>, described below.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: url-fetch url hash-algo hash [name] [#:executable? #f]</dt><dd><p>
+Return a fixed-output derivation that fetches data from <code>url</code> (a string, or a list of strings denoting alternate URLs), which is expected to have hash <code>hash</code> of type <code>hash-algo</code> (a symbol). By default, the file name is the base name of URL; optionally, <code>name</code> can specify a different file name. When <code>executable?</code> is true, make the downloaded file executable.
+</p>
+
+<p>
+When one of the URL starts with <code>mirror://</code>, then its host part is interpreted as the name of a mirror scheme, taken from <code>%mirror-file</code>.
+</p>
+
+<p>
+Alternatively, when URL starts with <code>file://</code>, return the corresponding file name in the store.
+</p></dd>
+</dl>
+
+<p>
+Likewise, the <code>(guix git-download)</code> module defines the <code>git-fetch</code> origin method, which fetches data from a Git version control repository, and the <code>git-reference</code> data type to describe the repository and revision to fetch.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: git-fetch ref hash-algo hash [name]</dt><dd>Return a fixed-output derivation that fetches <code>ref</code>, a <code>&lt;git-reference&gt;</code> object. The output is expected to have recursive hash <code>hash</code> of type <code>hash-algo</code> (a symbol). Use <code>name</code> as the file name, or a generic name if <code>#f</code>.</dd>
+
+<dt>Procedure: git-fetch/lfs ref hash-algo hash [name]</dt><dd>This is a variant of the <code>git-fetch</code> procedure that supports the Git LFS (Large File Storage) extension. This may be useful to pull some binary test data to run the test suite of a package, for example.</dd>
+
+<dt>Data Type: git-reference </dt><dd><p>
+This data type represents a Git reference for <code>git-fetch</code> to retrieve.
+</p>
+
+<dl class="org-dl">
+<dt><code>url</code></dt><dd>The URL of the Git repository to clone.</dd>
+
+<dt><code>commit</code></dt><dd>This string denotes either the commit to fetch (a hexadecimal string), or the tag to fetch. You can also use a “short” commit ID or a <code>git describe</code> style identifier such as <code>v1.0.1-10-g58d7909c97</code>.</dd>
+
+<dt><code>recursive?</code> (default: <code>#f</code>)</dt><dd>This Boolean indicates whether to recursively fetch Git sub-modules.</dd>
+</dl>
+
+<p>
+The example below denotes the <code>v2.10</code> tag of the GNU Hello repository:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(git-reference
+  (url "https://git.savannah.gnu.org/git/hello.git")
+  (commit "v2.10"))
+</pre>
+</div>
+
+<p>
+This is equivalent to the reference below, which explicitly names the commit:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(git-reference
+  (url "https://git.savannah.gnu.org/git/hello.git")
+  (commit "dc7dc56a00e48fe6f231a58f6537139fe2908fb9"))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+For Mercurial repositories, the module <code>(guix hg-download)</code> defines the <code>hg-fetch</code> origin method and <code>hg-reference</code> data type for support of the Mercurial version control system.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: hg-fetch ref hash-algo hash [name]</dt><dd>Return a fixed-output derivation that fetches <code>ref</code>, a <code>&lt;hg-reference&gt;</code> object. The output is expected to have recursive hash <code>hash</code> of type <code>hash-algo</code> (a symbol). Use <code>name</code> as the file name, or a generic name if <code>#f</code>.</dd>
+
+<dt>Data Type: hg-reference </dt><dd>This data type represents a Mercurial reference for <code>hg-fetch</code> to retrieve.
+
+<dl class="org-dl">
+<dt><code>url</code></dt><dd>The URL of the Mercurial repository to clone.</dd>
+
+<dt><code>changeset</code></dt><dd>This string denotes the changeset to fetch.</dd>
+</dl></dd>
+</dl>
+
+<p>
+For Subversion repositories, the module <code>(guix svn-download)</code> defines the <code>svn-fetch</code> origin method and <code>svn-reference</code> data type for support of the Subversion version control system.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: svn-fetch ref hash-algo hash [name]</dt><dd>Return a fixed-output derivation that fetches <code>ref</code>, a <code>&lt;svn-reference&gt;</code> object. The output is expected to have recursive hash <code>hash</code> of type <code>hash-algo</code> (a symbol). Use <code>name</code> as the file name, or a generic name if <code>#f</code>.</dd>
+
+<dt>Data Type: svn-reference </dt><dd>This data type represents a Subversion reference for <code>svn-fetch</code> to retrieve.
+
+<dl class="org-dl">
+<dt><code>url</code></dt><dd>The URL of the Subversion repository to clone.</dd>
+
+<dt><code>revision</code></dt><dd>This string denotes the revision to fetch specified as a number.</dd>
+
+<dt><code>recursive?</code> (default: <code>#f</code>)</dt><dd>This Boolean indicates whether to recursively fetch Subversion “externals”.</dd>
+
+<dt><code>user-name</code> (default: <code>#f</code>)</dt><dd>The name of an account that has read-access to the repository, if the repository isn't public.</dd>
+
+<dt><code>password</code> (default: <code>#f</code>)</dt><dd>Password to access the Subversion repository, if required.</dd>
+</dl></dd>
+</dl>
+
+<p>
+For Bazaar repositories, the module <code>(guix bzr-download)</code> defines the <code>bzr-fetch</code> origin method and <code>bzr-reference</code> data type for support of the Bazaar version control system.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: bzr-fetch ref hash-algo hash [name]</dt><dd>Return a fixed-output derivation that fetches <code>ref</code>, a <code>&lt;bzr-reference&gt;</code> object. The output is expected to have recursive hash <code>hash</code> of type <code>hash-algo</code> (a symbol). Use <code>name</code> as the file name, or a generic name if <code>#f</code>.</dd>
+
+<dt>Data Type: bzr-reference </dt><dd>This data type represents a Bazaar reference for <code>bzr-fetch</code> to retrieve.
+
+<dl class="org-dl">
+<dt><code>url</code></dt><dd>The URL of the Bazaar repository to clone.</dd>
+
+<dt><code>revision</code></dt><dd>This string denotes revision to fetch specified as a number.</dd>
+</dl></dd>
+</dl>
+
+<p>
+For CVS repositories, the module <code>(guix cvs-download)</code> defines the <code>cvs-fetch</code> origin method and <code>cvs-reference</code> data type for support of the Concurrent Versions System (CVS).
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: cvs-fetch ref hash-algo hash [name]</dt><dd>Return a fixed-output derivation that fetches <code>ref</code>, a <code>&lt;cvs-reference&gt;</code> object. The output is expected to have recursive hash <code>hash</code> of type <code>hash-algo</code> (a symbol). Use <code>name</code> as the file name, or a generic name if <code>#f</code>.</dd>
+
+<dt>Data Type: cvs-reference </dt><dd><p>
+This data type represents a CVS reference for <code>cvs-fetch</code> to retrieve.
+</p>
+
+<dl class="org-dl">
+<dt><code>root-directory</code></dt><dd>The CVS root directory.</dd>
+
+<dt><code>module</code></dt><dd>Module to fetch.</dd>
+
+<dt><code>revision</code></dt><dd>Revision to fetch.</dd>
+</dl>
+
+<p>
+The example below denotes a version of gnu-standards to fetch:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(cvs-reference
+  (root-directory ":pserver:anonymous@cvs.savannah.gnu.org:/sources/gnustandards")
+  (module "gnustandards")
+  (revision "2020-11-25"))
+</pre>
+</div></dd>
+</dl>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>, Up: <a href="docs/guix--Defining-Packages.html">Defining Packages</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

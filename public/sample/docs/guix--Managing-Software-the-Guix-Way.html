@@ -1,0 +1,106 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#managing-software-the-guix-way">1.0.1. 1.1 Managing Software the Guix Way</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Managing-Software-the-Guix-Way"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--GNU-Distribution.html">GNU Distribution</a>, Up: <a href="docs/guix--Introduction.html">Introduction</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Managing-Software-the-Guix-Way-1"></a>
+</p>
+</div>
+<div id="outline-container-managing-software-the-guix-way" class="outline-4">
+<h4 id="managing-software-the-guix-way"><span class="section-number-4">1.0.1.</span> 1.1 Managing Software the Guix Way</h4>
+<div class="outline-text-4" id="text-managing-software-the-guix-way">
+<p>
+<a id="index-user-interfaces"></a>
+Guix provides a command-line package management interface (see <a href="docs/guix--Package-Management.html">Package Management</a>), tools to help with software development (see <a href="docs/guix--Development.html">Development</a>), command-line utilities for more advanced usage (see <a href="docs/guix--Utilities.html">Utilities</a>), as well as Scheme programming interfaces (see <a href="docs/guix--Programming-Interface.html">Programming Interface</a>). <a id="index-build-daemon"></a> Its <i>build daemon</i> is responsible for building packages on behalf of users (see <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>) and for downloading pre-built binaries from authorized sources (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<p>
+<a id="index-extensibility-of-the-distribution"></a> <a id="index-customization_002c-of-packages"></a>
+Guix includes package definitions for many GNU and non-GNU packages, all of which <a href="https://www.gnu.org/philosophy/free-sw.html">respect the user's computing freedom</a>. It is <i>extensible</i>: users can write their own package definitions (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>) and make them available as independent package modules (see <a href="docs/guix--Package-Modules.html">Package Modules</a>). It is also <i>customizable</i>: users can <i>derive</i> specialized package definitions from existing ones, including from the command line (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>).
+</p>
+
+<p>
+<a id="index-functional-package-management"></a> <a id="index-isolation"></a>
+Under the hood, Guix implements the <i>functional package management</i> discipline pioneered by Nix (see <a href="docs/guix--Acknowledgments.html">Acknowledgments</a>). In Guix, the package build and installation process is seen as a <i>function</i>, in the mathematical sense. That function takes inputs, such as build scripts, a compiler, and libraries, and returns an installed package. As a pure function, its result depends solely on its inputs&#x2014;for instance, it cannot refer to software or scripts that were not explicitly passed as inputs. A build function always produces the same result when passed a given set of inputs. It cannot alter the environment of the running system in any way; for instance, it cannot create, modify, or delete files outside of its build and installation directories. This is achieved by running build processes in isolated environments (or <i>containers</i>), where only their explicit inputs are visible.
+</p>
+
+<p>
+<a id="index-store"></a>
+The result of package build functions is <i>cached</i> in the file system, in a special directory called <i>the store</i> (see <a href="docs/guix--The-Store.html">The Store</a>). Each package is installed in a directory of its own in the store&#x2014;by default under <code>/gnu/store</code>. The directory name contains a hash of all the inputs used to build that package; thus, changing an input yields a different directory name.
+</p>
+
+<p>
+This approach is the foundation for the salient features of Guix: support for transactional package upgrade and rollback, per-user installation, and garbage collection of packages (see <a href="docs/guix--Features.html">Features</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--GNU-Distribution.html">GNU Distribution</a>, Up: <a href="docs/guix--Introduction.html">Introduction</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

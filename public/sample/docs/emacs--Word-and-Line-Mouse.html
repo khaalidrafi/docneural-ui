@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Commands-for-Words-and-Lines">1. 23.2 Mouse Commands for Words and Lines ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mouse-References.html">Following References with the Mouse</a>   Previous: <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Word-and-Line-Mouse"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Commands-for-Words-and-Lines" class="outline-2">
+<h2 id="Mouse-Commands-for-Words-and-Lines"><span class="section-number-2">1.</span> 23.2 Mouse Commands for Words and Lines <a href="#Mouse-Commands-for-Words-and-Lines">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Commands-for-Words-and-Lines">
+<p>
+These variants of mouse-1 select entire words or lines at a time. Emacs activates the region around the selected text, which is also copied to the kill ring.
+</p>
+
+<dl class="org-dl">
+<dt>Double-mouse-1</dt><dd><p>
+Select the text around the word or character which you click on.
+</p>
+
+<p>
+Double-clicking on a character with symbol syntax (such as underscore, in C mode) selects the symbol surrounding that character. Double-clicking on a character with open- or close-parenthesis syntax selects the parenthetical grouping which that character starts or ends. Double-clicking on a character with string-delimiter syntax (such as a single-quote or double-quote in C) selects the string constant (Emacs uses heuristics to figure out whether that character is the beginning or the end of it).
+</p>
+
+<p>
+Double-clicking on the beginning of a parenthetical grouping or beginning string-delimiter moves point to the end of the region, scrolling the buffer display forward if necessary to show the new location of point. Double-clicking on the end of a parenthetical grouping or end string-delimiter keeps point at the end of the region by default, so the beginning of the region will not be visible if it is above the top of the window; setting the user option <code>mouse-select-region-move-to-beginning</code> to non-<code>nil</code> changes this to move point to the beginning of the region, scrolling the display backward if necessary.
+</p></dd>
+
+<dt>Double-Drag-mouse-1</dt><dd>Select the text you drag across, in units of whole words.</dd>
+
+<dt>Triple-mouse-1</dt><dd>Select the line you click on.</dd>
+
+<dt>Triple-Drag-mouse-1</dt><dd>Select the text you drag across, in units of whole lines.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

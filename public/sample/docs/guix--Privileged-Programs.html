@@ -1,0 +1,153 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#privileged-programs">1.0.1. 11.11 Privileged Programs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Privileged-Programs"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>, Previous: <a href="docs/guix--Services.html">Services</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Privileged-Programs-1"></a>
+</p>
+</div>
+<div id="outline-container-privileged-programs" class="outline-4">
+<h4 id="privileged-programs"><span class="section-number-4">1.0.1.</span> 11.11 Privileged Programs</h4>
+<div class="outline-text-4" id="text-privileged-programs">
+<p>
+<a id="index-privileged-programs"></a> <a id="index-setuid-programs"></a> <a id="index-setgid-programs"></a> <a id="index-capabilities_002c-POSIX"></a> <a id="index-setcap"></a>
+Some programs need to run with elevated privileges, even when they are launched by unprivileged users. A notorious example is the <code>passwd</code> program, which users can run to change their password, and which needs to access the <code>/etc/passwd</code> and <code>/etc/shadow</code> files&#x2014;something normally restricted to root, for obvious security reasons. To address that, <code>passwd</code> should be <i>setuid-root</i>, meaning that it always runs with root privileges (see <a href="https://www.gnu.org/software/libc/manual/html_node/How-Change-Persona.html#How-Change-Persona">How Change Persona</a> in The GNU C Library Reference Manual, for more info about the setuid mechanism).
+</p>
+
+<p>
+The store itself <i>cannot</i> contain privileged programs: that would be a security issue since any user on the system can write derivations that populate the store (see <a href="docs/guix--The-Store.html">The Store</a>). Thus, a different mechanism is used: instead of directly granting permissions to files that are in the store, we let the system administrator <i>declare</i> which programs should be entrusted with these additional privileges.
+</p>
+
+<p>
+The <code>privileged-programs</code> field of an <code>operating-system</code> declaration contains a list of <code>&lt;privileged-program&gt;</code> denoting the names of programs to have a setuid or setgid bit set (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>). For instance, the <code>mount.nfs</code> program, which is part of the nfs-utils package, with a setuid root can be designated like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(privileged-program
+  (program (file-append nfs-utils "/sbin/mount.nfs"))
+  (setuid? #t))
+</pre>
+</div>
+
+<p>
+And then, to make <code>mount.nfs</code> setuid on your system, add the previous example to your operating system declaration by appending it to <code>%default-privileged-programs</code> like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; Some fields omitted...
+  (privileged-programs
+    (append (list (privileged-program
+                    (program (file-append nfs-utils "/sbin/mount.nfs"))
+                    (setuid? #t)))
+            %default-privileged-programs)))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Data Type: privileged-program </dt><dd>This data type represents a program with special privileges, such as setuid
+
+<dl class="org-dl">
+<dt><code>program</code></dt><dd>A file-like object to which all given privileges should apply.</dd>
+
+<dt><code>setuid?</code> (default: <code>#f</code>)</dt><dd>Whether to set user setuid bit.</dd>
+
+<dt><code>setgid?</code> (default: <code>#f</code>)</dt><dd>Whether to set group setgid bit.</dd>
+
+<dt><code>user</code> (default: <code>0</code>)</dt><dd>UID (integer) or user name (string) for the user owner of the program, defaults to root.</dd>
+
+<dt><code>group</code> (default: <code>0</code>)</dt><dd>GID (integer) group name (string) for the group owner of the program, defaults to root.</dd>
+
+<dt><code>capabilities</code> (default: <code>#f</code>)</dt><dd>A string representing the program's POSIX capabilities, as described by the <code>cap_to_text(3)</code> man page from the libcap package, or <code>#f</code> to make no changes.</dd>
+</dl></dd>
+</dl>
+
+<p>
+A default set of privileged programs is defined by the <code>%default-privileged-programs</code> variable of the <code>(gnu system)</code> module.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: Scheme Variable %default-privileged-programs</dt><dd><p>
+A list of <code>&lt;privileged-program&gt;</code> denoting common programs with elevated privileges.
+</p>
+
+<p>
+The list includes commands such as <code>passwd</code>, <code>ping</code>, <code>su</code>, and <code>sudo</code>.
+</p></dd>
+</dl>
+
+<p>
+Under the hood, the actual privileged programs are created in the <code>/run/privileged/bin</code> directory at system activation time. The files in this directory refer to the “real” binaries, which are in the store.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>, Previous: <a href="docs/guix--Services.html">Services</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>
