@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Action-Arguments-1">1. C.1 Action Arguments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Initial-Options.html">Initial Options</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Action-Arguments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Action-Arguments-1" class="outline-2">
+<h2 id="Action-Arguments-1"><span class="section-number-2">1.</span> C.1 Action Arguments <a href="#Action-Arguments-1">¶</a></h2>
+<div class="outline-text-2" id="text-Action-Arguments-1">
+<p>
+Here is a table of action arguments:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-visiting-files_002c-command_002dline-argument"></a>‘=file=' </dt><dd></dd>
+
+<dt>‘=&#x2013;file===file='</dt><dd></dd>
+
+<dt>‘=&#x2013;find-file===file='</dt><dd></dd>
+
+<dt>‘=&#x2013;visit===file='</dt><dd><p>
+Visit the specified <code>file</code>. See <a href="docs/emacs--Visiting.html">Visiting Files</a>.
+</p>
+
+<p>
+When Emacs starts up, it displays the startup buffer in one window, and the buffer visiting <code>file</code> in another window (see <a href="docs/emacs--Windows.html">Multiple Windows</a>). If you supply more than one file argument, the displayed file is the last one specified on the command line; the other files are visited but their buffers are not shown.
+</p>
+
+<p>
+If the startup buffer is disabled (see <a href="docs/emacs--Entering-Emacs.html">Entering Emacs</a>), then starting Emacs with one file argument displays the buffer visiting <code>file</code> in a single window. With two file arguments, Emacs displays the files in two different windows. With more than two file arguments, Emacs displays the last file specified in one window, plus another window with a Buffer Menu showing all the other files (see <a href="docs/emacs--Several-Buffers.html">Operating on Several Buffers</a>). To inhibit using the Buffer Menu for this, change the variable <code>inhibit-startup-buffer-menu</code> to <code>t</code>.
+</p></dd>
+
+<dt><a id="index-_002blinenum"></a>‘=+==linenum== <code>=file</code>' </dt><dd>Visit the specified <code>file</code>, then go to line number <code>linenum</code> in it.</dd>
+
+<dt>‘=+==linenum==:==columnnum== <code>=file</code>'</dt><dd>Visit the specified <code>file</code>, then go to line number <code>linenum</code> and put point at column number <code>columnnum</code>.</dd>
+
+<dt><a id="index-_002d_002dload"></a>‘=-l <code>=file</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;load===file='</dt><dd><p>
+Load a Lisp library named <code>file</code> with the function <code>load</code>. If <code>file</code> is not an absolute file name, Emacs first looks for it in the current directory, then in the directories listed in <code>load-path</code> (see <a href="docs/emacs--Lisp-Libraries.html">Libraries of Lisp Code for Emacs</a>).
+</p>
+
+<p>
+<b>Warning:</b> If previous command-line arguments have visited files, the current directory is the directory of the last file visited.
+</p></dd>
+
+<dt><a id="index-_002d_002ddirectory"></a>‘=-L <code>=dir</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;directory===dir='</dt><dd>Prepend directory <code>dir</code> to the variable <code>load-path</code>. If you specify multiple ‘=-L=' options, Emacs preserves the relative order; i.e., using ‘=-L /foo -L /bar=' results in a <code>load-path</code> of the form <code>("/foo" "/bar" …)</code>. If <code>dir</code> begins with ‘=:=', Emacs removes the ‘=:=' and appends (rather than prepends) the remainder to <code>load-path</code>. (On MS Windows, use ‘=;=' instead of ‘=:='; i.e., use the value of <code>path-separator</code>.)</dd>
+
+<dt><a id="index-_002d_002dfuncall"></a>‘=-f <code>=function</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;funcall===function='</dt><dd>Call Lisp function <code>function</code>. If it is an interactive function (a command), it reads the arguments interactively just as if you had called the same function with a key sequence. Otherwise, it calls the function with no arguments.</dd>
+
+<dt><a id="index-_002d_002dexecute"></a>‘=&#x2013;eval===expression=' </dt><dd></dd>
+
+<dt>‘=&#x2013;execute===expression='</dt><dd>Evaluate Lisp expression <code>expression</code>.</dd>
+
+<dt><a id="index-_002d_002dinsert"></a>‘=&#x2013;insert===file=' </dt><dd>Insert the contents of <code>file</code> into the buffer that is current when this command-line argument is processed. Usually, this is the <code>*scratch*</code> buffer (see <a href="docs/emacs--Lisp-Interaction.html">Lisp Interaction Buffers</a>), but if arguments earlier on the command line visit files or switch buffers, that might be a different buffer. The effect of this command-line argument is like what M-x insert-file does (see <a href="docs/emacs--Misc-File-Ops.html">Miscellaneous File Operations</a>).</dd>
+
+<dt><a id="index-_002d_002dkill"></a>‘=&#x2013;kill=' </dt><dd>Exit from Emacs without asking for confirmation.</dd>
+
+<dt><a id="index-_002d_002dhelp"></a>‘=&#x2013;help=' </dt><dd>Print a usage message listing all available options, then exit successfully.</dd>
+
+<dt><a id="index-_002d_002dversion"></a>‘=&#x2013;version=' </dt><dd>Print Emacs version, then exit successfully.</dd>
+
+<dt><a id="index-_002d_002dfingerprint"></a>‘=&#x2013;fingerprint=' </dt><dd>Print the Emacs “fingerprint”, which is used to uniquely identify the compiled version of Emacs.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

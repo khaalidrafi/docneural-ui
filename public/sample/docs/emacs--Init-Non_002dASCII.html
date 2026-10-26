@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Non_002dASCII-Characters-in-Init-Files">1. 51.4.5 Non-ASCII Characters in Init Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Early-Init-File.html">The Early Init File</a>   Previous: <a href="docs/emacs--Find-Init.html">How Emacs Finds Your Init File</a>   Up: <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>
+</p>
+
+<p>
+<a id="Init-Non_002dASCII"></a>
+</p>
+
+<hr />
+<div id="outline-container-Non_002dASCII-Characters-in-Init-Files" class="outline-2">
+<h2 id="Non_002dASCII-Characters-in-Init-Files"><span class="section-number-2">1.</span> 51.4.5 Non-ASCII Characters in Init Files <a href="#Non_002dASCII-Characters-in-Init-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Non_002dASCII-Characters-in-Init-Files">
+<p>
+Language and coding systems may cause problems if your init file contains non-ASCII characters, such as accented letters, in strings or key bindings.
+</p>
+
+<p>
+If you want to use non-ASCII characters in your init file, you should put a ‘=-<b>-coding: <code>=coding-system=</code>-</b>-<code>' tag on the first line of the init file, and specify a coding system that supports the character(s) in question. See [[id:emacs--Recognize-Coding][Recognizing Coding Systems]]. This is because the defaults for decoding non-ASCII text might not yet be set up by the time Emacs reads those parts of your init file which use such strings, possibly leading Emacs to decode those strings incorrectly. You should then avoid adding Emacs Lisp code that modifies the coding system in other ways, such as calls to =set-language-environment</code>.
+</p>
+
+<p>
+An alternative to using non-ASCII characters directly is to use one of the character escape syntaxes described in see <a href="../elisp_html/General-Escape-Syntax.html#General-Escape-Syntax">General Escape Syntax</a> in The Emacs Lisp Reference Manual, as they allow all Unicode codepoints to be specified using only ASCII characters.
+</p>
+
+<p>
+To bind non-ASCII keys, you must use a vector (see <a href="docs/emacs--Init-Rebinding.html">Rebinding Keys in Your Init File</a>). The string syntax cannot be used, since the non-ASCII characters will be interpreted as meta keys. For instance:
+</p>
+
+<pre class="example" id="orgd69f4cf">
+(global-set-key [?char] 'some-function)
+</pre>
+
+<p>
+Type C-q, followed by the key you want to bind, to insert <code>char</code>.
+</p>
+
+<hr />
+</div>
+</div>

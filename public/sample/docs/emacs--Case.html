@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Case-Conversion-Commands">1. 27.7 Case Conversion Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Text-Mode.html">Text Mode</a>   Previous: <a href="docs/emacs--Filling.html">Filling Text</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Case"></a>
+</p>
+
+<hr />
+<div id="outline-container-Case-Conversion-Commands" class="outline-2">
+<h2 id="Case-Conversion-Commands"><span class="section-number-2">1.</span> 27.7 Case Conversion Commands <a href="#Case-Conversion-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Case-Conversion-Commands">
+<p>
+Emacs has commands for converting either a single word or any arbitrary range of text to upper case or to lower case.
+</p>
+
+<dl class="org-dl">
+<dt>M-l</dt><dd>Convert following word to lower case (<code>downcase-word</code>).</dd>
+
+<dt>M&#x2013; M-l</dt><dd>Convert previous/last word to lower case. Note: Meta&#x2013; is Meta-minus.</dd>
+
+<dt>M-u</dt><dd>Convert following word to upper case (<code>upcase-word</code>).</dd>
+
+<dt>M&#x2013; M-u</dt><dd>Convert previous/last last word to all upper case.</dd>
+
+<dt>M-c</dt><dd>Capitalize the following word (<code>capitalize-word</code>).</dd>
+
+<dt>M&#x2013; M-c</dt><dd>Convert previous/last last word to lower case with capital initial.</dd>
+
+<dt>C-x C-l</dt><dd>Convert region to lower case (<code>downcase-region</code>).</dd>
+
+<dt>C-x C-u</dt><dd>Convert region to upper case (<code>upcase-region</code>).</dd>
+</dl>
+
+<p>
+M-l (<code>downcase-word</code>) converts the word after point to lower case, moving past it. Thus, repeating M-l converts successive words. M-u (<code>upcase-word</code>) converts to all capitals instead, while M-c (<code>capitalize-word</code>) puts the first letter of the word into upper case and the rest into lower case. All these commands convert several words at once if given an argument. They are especially convenient for converting a large amount of text from all upper case to mixed case, because you can move through the text using M-l, M-u or M-c on each word as appropriate, occasionally using M-f instead to skip a word.
+</p>
+
+<p>
+When given a negative argument, as in C-u - 5 M-c, the word case-conversion commands apply to the appropriate number of words before point, but do not move point. This is convenient when you have just typed a word in the wrong case: you can give the case conversion command, like M&#x2013; M-u, and continue typing.
+</p>
+
+<p>
+If a word case conversion command is given in the middle of a word, it applies only to the part of the word which follows point. (This is comparable to what M-d (<code>kill-word</code>) does.) With a negative argument, case conversion applies only to the part of the word before point.
+</p>
+
+<p>
+The other case conversion commands are C-x C-u (<code>upcase-region</code>) and C-x C-l (<code>downcase-region</code>), which convert everything between point and mark to the specified case. Point and mark do not move.
+</p>
+
+<p>
+The region case conversion commands <code>upcase-region</code> and <code>downcase-region</code> are normally disabled. This means that they ask for confirmation if you try to use them. When you confirm, you may enable the command, which means it will not ask for confirmation again. See <a href="docs/emacs--Disabling.html">Disabling Commands</a>.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,309 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#file-systems">1.0.1. 11.4 File Systems</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="File-Systems"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>, Previous: <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="File-Systems-1"></a>
+</p>
+</div>
+<div id="outline-container-file-systems" class="outline-4">
+<h4 id="file-systems"><span class="section-number-4">1.0.1.</span> 11.4 File Systems</h4>
+<div class="outline-text-4" id="text-file-systems">
+<p>
+The list of file systems to be mounted is specified in the <code>file-systems</code> field of the operating system declaration (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>). Each file system is declared using the <code>file-system</code> form, like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system
+  (mount-point "/home")
+  (device "/dev/sda3")
+  (type "ext4"))
+</pre>
+</div>
+
+<p>
+As usual, some of the fields are mandatory&#x2014;those shown in the example above&#x2014;while others can be omitted. These are described below.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: file-system </dt><dd>Objects of this type represent file systems to be mounted. They contain the following members:
+
+<dl class="org-dl">
+<dt><code>type</code></dt><dd>This is a string specifying the type of the file system&#x2014;e.g., <code>"ext4"</code>.</dd>
+
+<dt><code>mount-point</code></dt><dd>This designates the place where the file system is to be mounted.</dd>
+
+<dt><code>device</code></dt><dd><p>
+This names the “source” of the file system. It can be one of three things: a file system label, a file system UUID, or the name of a <code>/dev</code> node. Labels and UUIDs offer a way to refer to file systems without having to hard-code their actual device name.
+</p>
+
+<p>
+<a id="index-file_002dsystem_002dlabel"></a>
+</p>
+
+<p>
+File system labels are created using the <code>file-system-label</code> procedure, UUIDs are created using <code>uuid</code>, and <code>/dev</code> nodes are plain strings. Here's an example of a file system referred to by its label, as shown by the <code>e2label</code> command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system
+  (mount-point "/home")
+  (type "ext4")
+  (device (file-system-label "my-home")))
+</pre>
+</div>
+
+<p>
+<a id="index-uuid"></a>
+</p>
+
+<p>
+UUIDs are converted from their string representation (as shown by the <code>tune2fs -l</code> command) using the <code>uuid</code> form, like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system
+  (mount-point "/home")
+  (type "ext4")
+  (device (uuid "4dab5feb-d176-45de-b287-9b0a6e4c01cb")))
+</pre>
+</div>
+
+<p>
+When the source of a file system is a mapped device (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>), its <code>device</code> field <i>must</i> refer to the mapped device name&#x2014;e.g., <code>"/dev/mapper/root-partition"</code>. This is required so that the system knows that mounting the file system depends on having the corresponding device mapping established.
+</p></dd>
+
+<dt><code>flags</code> (default: <code>'()</code>)</dt><dd>This is a list of symbols denoting mount flags. Recognized flags include <code>read-only</code>, <code>bind-mount</code>, <code>no-dev</code> (disallow access to special files), <code>no-suid</code> (ignore setuid and setgid bits), <code>no-atime</code> (do not update file access times), <code>no-diratime</code> (likewise for directories only), <code>strict-atime</code> (update file access time), <code>lazy-time</code> (only update time on the in-memory version of the file inode), <code>no-exec</code> (disallow program execution), <code>remount</code> (remount a mounted file system), and <code>shared</code> (make the mount shared). See <a href="https://www.gnu.org/software/libc/manual/html_node/Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount">Mount-Unmount-Remount</a> in The GNU C Library Reference Manual, for more information on these flags.</dd>
+
+<dt><code>options</code> (default: <code>#f</code>)</dt><dd><p>
+This is either <code>#f</code>, or a string denoting mount options passed to the file system driver. See <a href="https://www.gnu.org/software/libc/manual/html_node/Mount_002dUnmount_002dRemount.html#Mount_002dUnmount_002dRemount">Mount-Unmount-Remount</a> in The GNU C Library Reference Manual, for details.
+</p>
+
+<p>
+Run <code>man 8 mount</code> for options for various file systems, but beware that what it lists as file-system-independent “mount options” are in fact flags, and belong in the <code>flags</code> field described above.
+</p>
+
+<p>
+The <code>file-system-options-&gt;alist</code> and <code>alist-&gt;file-system-options</code> procedures from <code>(gnu system file-systems)</code> can be used to convert file system options given as an association list to the string representation, and vice-versa.
+</p></dd>
+
+<dt><code>mount?</code> (default: <code>#t</code>)</dt><dd>This value indicates whether to automatically mount the file system when the system is brought up. When set to <code>#f</code>, the file system gets an entry in <code>/etc/fstab</code> (read by the <code>mount</code> command) but is not automatically mounted.</dd>
+
+<dt><code>needed-for-boot?</code> (default: <code>#f</code>)</dt><dd>This Boolean value indicates whether the file system is needed when booting. If that is true, then the file system is mounted when the initial RAM disk (initrd) is loaded. This is always the case, for instance, for the root file system.</dd>
+
+<dt><code>check?</code> (default: <code>#t</code>)</dt><dd>This Boolean indicates whether the file system should be checked for errors before being mounted. How and when this happens can be further adjusted with the following options.</dd>
+
+<dt><code>skip-check-if-clean?</code> (default: <code>#t</code>)</dt><dd><p>
+When true, this Boolean indicates that a file system check triggered by <code>check?</code> may exit early if the file system is marked as “clean”, meaning that it was previously correctly unmounted and should not contain errors.
+</p>
+
+<p>
+Setting this to false will always force a full consistency check when <code>check?</code> is true. This may take a very long time and is not recommended on healthy systems&#x2014;in fact, it may reduce reliability!
+</p>
+
+<p>
+Conversely, some primitive file systems like <code>fat</code> do not keep track of clean shutdowns and will perform a full scan regardless of the value of this option.
+</p></dd>
+
+<dt><code>repair</code> (default: <code>'preen</code>)</dt><dd><p>
+When <code>check?</code> finds errors, it can (try to) repair them and continue booting. This option controls when and how to do so.
+</p>
+
+<p>
+If false, try not to modify the file system at all. Checking certain file systems like <code>jfs</code> may still write to the device to replay the journal. No repairs will be attempted.
+</p>
+
+<p>
+If <code>#t</code>, try to repair any errors found and assume “yes” to all questions. This will fix the most errors, but may be risky.
+</p>
+
+<p>
+If <code>'preen</code>, repair only errors that are safe to fix without human interaction. What that means is left up to the developers of each file system and may be equivalent to “none” or “all”.
+</p></dd>
+
+<dt><code>create-mount-point?</code> (default: <code>#f</code>)</dt><dd>When true, the mount point is created if it does not exist yet.</dd>
+
+<dt><code>mount-may-fail?</code> (default: <code>#f</code>)</dt><dd>When true, this indicates that mounting this file system can fail but that should not be considered an error. This is useful in unusual cases; an example of this is <code>efivarfs</code>, a file system that can only be mounted on EFI/UEFI systems.</dd>
+
+<dt><code>dependencies</code> (default: <code>'()</code>)</dt><dd><p>
+This is a list of <code>&lt;file-system&gt;</code> or <code>&lt;mapped-device&gt;</code> objects representing file systems that must be mounted or mapped devices that must be opened before (and unmounted or closed after) this one.
+</p>
+
+<p>
+As an example, consider a hierarchy of mounts: <code>/sys/fs/cgroup</code> is a dependency of <code>/sys/fs/cgroup/cpu</code> and <code>/sys/fs/cgroup/memory</code>.
+</p>
+
+<p>
+Another example is a file system that depends on a mapped device, for example for an encrypted partition (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>).
+</p></dd>
+
+<dt><code>shepherd-requirements</code> (default: <code>'()</code>)</dt><dd><p>
+This is a list of symbols denoting Shepherd requirements that must be met before mounting the file system.
+</p>
+
+<p>
+As an example, an NFS file system would typically have a requirement for <code>networking</code>. In some situations, requiring <code>networking</code> might not be sufficient as <code>networking</code> being marked as started does <i>not</i> imply the network has already been configured and in working order (for example, when using <code>dhcp-client-service-type</code>). For such cases, adding a requirement on a custom <code>network-online</code> service may be necessary. A sample <code>network-online</code> one-shot Shepherd service implementation is provided below:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'network-online shepherd-root-service-type
+  (list
+   (shepherd-service
+    (requirement '(networking))
+    (provision '(network-online))
+    (documentation "Wait for the network to come up.")
+    (start #~(lambda _
+               (let* ((cmd
+                       "set -eux
+c=0
+while ! /run/setuid-programs/ping -qc1 -W1 example.org; do
+    sleep 1
+    [ \"$((c += 1))\" -lt 30 ] || exit 1  # Limit the wait time
+done
+")
+                    (status (system cmd)))
+               (= 0 (status:exit-val status)))))
+    (one-shot? #t))))
+</pre>
+</div>
+
+<p>
+Typically, file systems are mounted before most other Shepherd services are started. However, file systems with a non-empty shepherd-requirements field are mounted after Shepherd services have begun. Any Shepherd service that depends on a file system with a non-empty shepherd-requirements field must depend on it directly and not on the generic symbol <code>file-systems</code>.
+</p></dd>
+</dl></dd>
+
+<dt>Procedure: file-system-label str</dt><dd><p>
+This procedure returns an opaque file system label from <code>str</code>, a string:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system-label "home")
+⇒ #&lt;file-system-label "home"&gt;
+</pre>
+</div>
+
+<p>
+File system labels are used to refer to file systems by label rather than by device name. See above for examples.
+</p></dd>
+</dl>
+
+<p>
+The <code>(gnu system file-systems)</code> exports the following useful variables.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: %base-file-systems </dt><dd>These are essential file systems that are required on normal systems, such as <code>%pseudo-terminal-file-system</code> and <code>%immutable-store</code> (see below). Operating system declarations should always contain at least these.</dd>
+
+<dt>Variable: %pseudo-terminal-file-system </dt><dd>This is the file system to be mounted as <code>/dev/pts</code>. It supports <i>pseudo-terminals</i> created <i>via</i> <code>openpty</code> and similar functions (see <a href="https://www.gnu.org/software/libc/manual/html_node/Pseudo_002dTerminals.html#Pseudo_002dTerminals">Pseudo-Terminals</a> in The GNU C Library Reference Manual). Pseudo-terminals are used by terminal emulators such as <code>xterm</code>.</dd>
+
+<dt>Variable: %shared-memory-file-system </dt><dd>This file system is mounted as <code>/dev/shm</code> and is used to support memory sharing across processes (see <a href="https://www.gnu.org/software/libc/manual/html_node/Memory_002dmapped-I_002fO.html#Memory_002dmapped-I_002fO"><code>shm_open</code></a> in The GNU C Library Reference Manual).</dd>
+
+<dt>Variable: %immutable-store </dt><dd><p>
+This file system performs a read-only “bind mount” of <code>/gnu/store</code>, making it read-only for all the users including <code>root</code>. This prevents against accidental modification by software running as <code>root</code> or by system administrators.
+</p>
+
+<p>
+The daemon itself is still able to write to the store: it remounts it read-write in its own “name space.”
+</p></dd>
+
+<dt>Variable: %binary-format-file-system </dt><dd>The <code>binfmt_misc</code> file system, which allows handling of arbitrary executable file types to be delegated to user space. This requires the <code>binfmt.ko</code> kernel module to be loaded.</dd>
+
+<dt>Variable: %fuse-control-file-system </dt><dd>The <code>fusectl</code> file system, which allows unprivileged users to mount and unmount user-space FUSE file systems. This requires the <code>fuse.ko</code> kernel module to be loaded.</dd>
+</dl>
+
+<p>
+The <code>(gnu system uuid)</code> module provides tools to deal with file system “unique identifiers” (UUIDs).
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: uuid str [type]</dt><dd><p>
+Return an opaque UUID (unique identifier) object of the given <code>type</code> (a symbol) by parsing <code>str</code> (a string):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(uuid "4dab5feb-d176-45de-b287-9b0a6e4c01cb")
+⇒ #&lt;&lt;uuid&gt; type: dce bv: …&gt;
+
+(uuid "1234-ABCD" 'fat)
+⇒ #&lt;&lt;uuid&gt; type: fat bv: …&gt;
+</pre>
+</div>
+
+<p>
+<code>type</code> may be one of <code>dce</code>, <code>iso9660</code>, <code>fat</code>, <code>ntfs</code>, or one of the commonly found synonyms for these.
+</p>
+
+<p>
+UUIDs are another way to unambiguously refer to file systems in operating system configuration. See the examples above.
+</p></dd>
+
+<dt>(no term)</dt><dd><a href="docs/guix--Btrfs-file-system.html">Btrfs file system</a></dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

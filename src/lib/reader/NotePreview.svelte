@@ -3,6 +3,8 @@
   // promise kept: click a node, its text appears; follow its links
   // and the graph selection follows you. org-roam-lite-ui got its text via
   // a `getText` WS frame; here we fetch the static Org-export fragment.
+  import { fly } from 'svelte/transition'
+  import { cubicOut } from 'svelte/easing'
   import type { DocneuralStore } from '../core/store.svelte'
   import { backlinks, outlinks } from '../core/graph'
   import { sourceTitle, sourceVars } from '../core/source'
@@ -113,7 +115,14 @@
 </script>
 
 {#if doc}
-  <aside class="note-preview" aria-label="Note preview" style={sourceVars(doc.tags[0])}>
+  <!-- Slide-in: the panel is a HUD surface arriving, not a div blinking in.
+       Fly from the right (the edge it is docked to), 200ms, spring-ish ease. -->
+  <aside
+    class="note-preview"
+    aria-label="Note preview"
+    style={sourceVars(doc.tags[0])}
+    in:fly={{ x: 24, duration: 200, easing: cubicOut }}
+  >
     <header>
       <p class="kicker dn-label">node // preview</p>
       <h2 class="dn-mono">{doc.title}</h2>
@@ -161,13 +170,14 @@
     overflow-y: auto;
     /* Solid ink, not frosted glass: a big backdrop-filter over an animating
        canvas is the first thing that stutters on a potato, and a HUD panel is
-       opaque anyway. The lit left edge carries the source's hue. */
+       opaque anyway. The lit left edge carries the source's hue, and the top
+       edge carries a whisper of the same — a panel plugged into the bus. */
     background: color-mix(in srgb, var(--dn-bg-raise) 97%, transparent);
-    border-left: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, var(--dn-border-strong));
+    border-left: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border-strong));
     padding: 1.2rem 1.6rem 3rem;
     box-shadow:
-      -1px 0 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent),
-      -18px 0 40px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
+      -1px 0 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent),
+      -22px 0 44px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
   }
   .note-preview.empty {
     width: auto;

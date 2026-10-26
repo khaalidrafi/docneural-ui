@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Markdown-Export-1">1. 13.11 Markdown Export ¶</a>
+<ul>
+<li><a href="#Markdown-export-commands-1">1.1. Markdown export commands ¶</a></li>
+<li><a href="#Header-and-sectioning-structure-2">1.2. Header and sectioning structure ¶</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Markdown-Export"></a>
+Next: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>, Previous: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Markdown-Export-1" class="outline-2">
+<h2 id="Markdown-Export-1"><span class="section-number-2">1.</span> 13.11 Markdown Export <a href="#Markdown-Export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Markdown-Export-1">
+<p>
+The Markdown export backend, “md”, converts an Org file to Markdown format, as defined at <a href="https://daringfireball.net/projects/markdown/">https://daringfireball.net/projects/markdown/</a>. This is the original Markdown specification, developed by John Gruber and Aaron Swartz.
+</p>
+
+<p>
+Since “md” backend is built on top of the HTML backend (see <a href="docs/org--HTML-Export.html">HTML Export</a>), it converts every Org construct not defined in Markdown syntax, such as tables, to HTML.
+</p>
+
+<p>
+Do note that the original Markdown syntax has differences with other commonly used Markdown flavors. See <a href="https://en.wikipedia.org/wiki/Markdown">https://en.wikipedia.org/wiki/Markdown</a> for more details.
+</p>
+</div>
+<div id="outline-container-Markdown-export-commands-1" class="outline-3">
+<h3 id="Markdown-export-commands-1"><span class="section-number-3">1.1.</span> Markdown export commands <a href="#Markdown-export-commands-1">¶</a></h3>
+<div class="outline-text-3" id="text-Markdown-export-commands-1">
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dc-m-m"></a>C-c C-e m m (<code>org-md-export-to-markdown</code>) </dt><dd>Export to a text file with Markdown syntax. For ‘=myfile.org=', Org exports to ‘=myfile.md=', overwritten without warning.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-m-M"></a>C-c C-e m M (<code>org-md-export-as-markdown</code>) </dt><dd>Export to a temporary buffer. Does not create a file.</dd>
+
+<dt><a id="index-C_002dc-C_002de-m-o"></a>C-c C-e m o </dt><dd>Export as a text file with Markdown syntax, then open it.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Header-and-sectioning-structure-2" class="outline-3">
+<h3 id="Header-and-sectioning-structure-2"><span class="section-number-3">1.2.</span> Header and sectioning structure <a href="#Header-and-sectioning-structure-2">¶</a></h3>
+<div class="outline-text-3" id="text-Header-and-sectioning-structure-2">
+<p>
+Based on <code>org-md-headline-style</code>, Markdown export can generate headlines of both <i>atx</i> and <i>setext</i> types. <i>setext</i> limits headline levels to two whereas <i>atx</i> limits headline levels to six. <i>mixed</i> exports headline levels one and two in <i>setext</i>-style, and headline levels three through six as <i>atx</i>-style headlines. Beyond these limits, the export backend converts headlines to lists. To set a limit to a level before the absolute limit (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>, Previous: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

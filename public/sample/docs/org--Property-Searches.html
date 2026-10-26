@@ -1,0 +1,52 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Property-Searches-1">1. 7.3 Property Searches ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Property-Searches"></a>
+Next: <a href="docs/org--Property-Inheritance.html">Property Inheritance</a>, Previous: <a href="docs/org--Special-Properties.html">Special Properties</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Property-Searches-1" class="outline-2">
+<h2 id="Property-Searches-1"><span class="section-number-2">1.</span> 7.3 Property Searches <a href="#Property-Searches-1">¶</a></h2>
+<div class="outline-text-2" id="text-Property-Searches-1">
+<p>
+To create sparse trees and special lists with selection based on properties, the same commands are used as for tag searches (see <a href="docs/org--Tag-Searches.html">Tag Searches</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_002f-m-1"></a>C-c / m or C-c \ (<code>org-match-sparse-tree</code>) </dt><dd>Create a sparse tree with all matching entries. With a C-u prefix argument, ignore headlines that are not a TODO line.</dd>
+
+<dt><a id="index-m-_0028Agenda-dispatcher_0029-1"></a>M-x org-agenda m (<code>org-tags-view</code>) </dt><dd>Create a global list of tag/property matches from all agenda files.</dd>
+
+<dt><a id="index-M-_0028Agenda-dispatcher_0029-1"></a>M-x org-agenda M (<code>org-tags-view</code>) </dt><dd>Create a global list of tag matches from all agenda files, but check only TODO items.</dd>
+</dl>
+
+<p>
+The syntax for the search string is described in <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a>.
+</p>
+
+<p>
+There is also a special command for creating sparse trees based on a single property:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_002f-p"></a>C-c / p </dt><dd>Create a sparse tree based on the value of a property. This first prompts for the name of a property, and then for a value. A sparse tree is created with all entries that define this property with the given value. If you enclose the value in curly braces, it is interpreted as a regular expression and matched against the property values (see <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>).</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Property-Inheritance.html">Property Inheritance</a>, Previous: <a href="docs/org--Special-Properties.html">Special Properties</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

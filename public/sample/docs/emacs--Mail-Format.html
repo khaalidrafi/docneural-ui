@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Format-of-the-Mail-Buffer">1. 34.1 The Format of the Mail Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mail-Headers.html">Mail Header Fields</a>   Up: <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>
+</p>
+
+<p>
+<a id="Mail-Format"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Format-of-the-Mail-Buffer" class="outline-2">
+<h2 id="The-Format-of-the-Mail-Buffer"><span class="section-number-2">1.</span> 34.1 The Format of the Mail Buffer <a href="#The-Format-of-the-Mail-Buffer">¶</a></h2>
+<div class="outline-text-2" id="text-The-Format-of-the-Mail-Buffer">
+<p>
+Here is an example of the contents of a mail buffer:
+</p>
+
+<pre class="example" id="org6e20916">
+To: subotai@example.org
+CC: mongol.soldier@example.net, rms@gnu.org
+Subject: Re: What is best in life?
+From: conan@example.org
+--text follows this line--
+To crush your enemies, see them driven before you, and to
+hear the lamentation of their women.
+</pre>
+
+<p>
+At the top of the mail buffer is a set of <i>header fields</i>, which are used for specifying information about the email's recipient(s), subject, and so on. The above buffer contains header fields for ‘=To=', ‘=CC=', ‘=Subject=', and ‘=From='. Some header fields are automatically pre-initialized in the mail buffer, when appropriate.
+</p>
+
+<p>
+The line that says ‘=&#x2013;text follows this line&#x2013;=' separates the header fields from the <i>body</i> (or <i>text</i>) of the message. Everything above that line is treated as part of the headers; everything below it is treated as the body. The delimiter line itself does not appear in the message actually sent.
+</p>
+
+<p>
+You can insert and edit header fields using ordinary editing commands. See <a href="docs/emacs--Header-Editing.html">Mail Header Editing</a>, for commands specific to editing header fields. Certain headers, such as ‘=Date=' and ‘=Message-Id=', are normally omitted from the mail buffer and are created automatically when the message is sent.
+</p>
+</div>
+</div>

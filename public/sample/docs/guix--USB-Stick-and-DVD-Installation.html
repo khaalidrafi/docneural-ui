@@ -1,0 +1,188 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#usb-stick-and-dvd-installation">1.0.1. 3.3 USB Stick and DVD Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="USB-Stick-and-DVD-Installation"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Preparing-for-Installation.html">Preparing for Installation</a>, Previous: <a href="docs/guix--Hardware-Considerations.html">Hardware Considerations</a>, Up: <a href="docs/guix--System-Installation.html">System Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="USB-Stick-and-DVD-Installation-1"></a>
+</p>
+</div>
+<div id="outline-container-usb-stick-and-dvd-installation" class="outline-4">
+<h4 id="usb-stick-and-dvd-installation"><span class="section-number-4">1.0.1.</span> 3.3 USB Stick and DVD Installation</h4>
+<div class="outline-text-4" id="text-usb-stick-and-dvd-installation">
+<p>
+An ISO-9660 installation image that can be written to a USB stick or burnt to a DVD can be downloaded from ‘=<a href="https://ftpmirror.gnu.org/gnu/guix/guix-system-install-1.5.0.x86_64-linux.iso">https://ftpmirror.gnu.org/gnu/guix/guix-system-install-1.5.0.x86_64-linux.iso</a>=', where you can replace <code>x86_64-linux</code> with one of:
+</p>
+
+<dl class="org-dl">
+<dt><code>x86_64-linux</code></dt><dd>for a GNU/Linux system on Intel/AMD-compatible 64-bit CPUs;</dd>
+
+<dt><code>i686-linux</code></dt><dd>for a 32-bit GNU/Linux system on Intel-compatible CPUs.</dd>
+</dl>
+
+<p>
+Make sure to download the associated <code>.sig</code> file and to verify the authenticity of the image against it, along these lines:
+</p>
+
+<pre class="example" id="orge43dfa2">
+$ wget https://ftpmirror.gnu.org/gnu/guix/guix-system-install-1.5.0.x86_64-linux.iso.sig
+$ gpg --verify guix-system-install-1.5.0.x86_64-linux.iso.sig
+</pre>
+
+<p>
+If that command fails because you do not have the required public key, then run this command to import it:
+</p>
+
+<pre class="example" id="org1cf888f">
+$ wget https://codeberg.org/efraim.gpg \
+      -qO - | gpg --import -
+</pre>
+
+<p>
+and rerun the <code>gpg --verify</code> command.
+</p>
+
+<p>
+Take note that a warning like “This key is not certified with a trusted signature!” is normal.
+</p>
+
+<p>
+This image contains the tools necessary for an installation. It is meant to be copied <i>as is</i> to a large-enough USB stick or DVD.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Copying-to-a-USB-Stick"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="copying-to-a-usb-stick"></a>Copying to a USB Stick<br />
+<div class="outline-text-5" id="text-copying-to-a-usb-stick">
+<p>
+Insert a USB stick of 1 GiB or more into your machine, and determine its device name. Assuming that the USB stick is known as <code>/dev/sdX</code>, copy the image with:
+</p>
+
+<pre class="example" id="org9d3ec54">
+dd if=guix-system-install-1.5.0.x86_64-linux.iso of=/dev/sdX status=progress
+sync
+</pre>
+
+<p>
+Access to <code>/dev/sdX</code> usually requires root privileges.
+</p>
+
+<p>
+<a id="Burning-on-a-DVD"></a>
+</p>
+</div>
+</li>
+<li><a id="burning-on-a-dvd"></a>Burning on a DVD<br />
+<div class="outline-text-5" id="text-burning-on-a-dvd">
+<p>
+Insert a blank DVD into your machine, and determine its device name. Assuming that the DVD drive is known as <code>/dev/srX</code>, copy the image with:
+</p>
+
+<pre class="example" id="orgb48c759">
+growisofs -dvd-compat -Z /dev/srX=guix-system-install-1.5.0.x86_64-linux.iso
+</pre>
+
+<p>
+Access to <code>/dev/srX</code> usually requires root privileges.
+</p>
+
+<p>
+<a id="Booting"></a>
+</p>
+</div>
+</li>
+<li><a id="booting"></a>Booting<br />
+<div class="outline-text-5" id="text-booting">
+<p>
+Once this is done, you should be able to reboot the system and boot from the USB stick or DVD. The latter usually requires you to get in the BIOS or UEFI boot menu, where you can choose to boot from the USB stick. In order to boot from Libreboot, switch to the command mode by pressing the c key and type <code>search_grub usb</code>.
+</p>
+
+<p>
+Sadly, on some machines, the installation medium cannot be properly booted and you only see a black screen after booting even after you waited for ten minutes. This may indicate that your machine cannot run Guix System; perhaps you instead want to install Guix on a foreign distro (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>). But don't give up just yet; a possible workaround is pressing the e key in the GRUB boot menu and appending <code>nomodeset</code> to the Linux bootline. Sometimes the black screen issue can also be resolved by connecting a different display.
+</p>
+
+<p>
+See <a href="docs/guix--Installing-Guix-in-a-VM.html">Installing Guix in a Virtual Machine</a>, if, instead, you would like to install Guix System in a virtual machine (VM).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Preparing-for-Installation.html">Preparing for Installation</a>, Previous: <a href="docs/guix--Hardware-Considerations.html">Hardware Considerations</a>, Up: <a href="docs/guix--System-Installation.html">System Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>

@@ -1,0 +1,108 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#package-modules">1.0.1. 8.1 Package Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Package-Modules"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Defining-Packages.html">Defining Packages</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Package-Modules-1"></a>
+</p>
+</div>
+<div id="outline-container-package-modules" class="outline-4">
+<h4 id="package-modules"><span class="section-number-4">1.0.1.</span> 8.1 Package Modules</h4>
+<div class="outline-text-4" id="text-package-modules">
+<p>
+From a programming viewpoint, the package definitions of the GNU distribution are provided by Guile modules in the <code>(gnu packages …)</code> name space (see <a href="https://www.gnu.org/software/guile/manual/html_node/Modules.html#Modules">Guile modules</a> in GNU Guile Reference Manual). For instance, the <code>(gnu packages emacs)</code> module exports a variable named <code>emacs</code>, which is bound to a <code>&lt;package&gt;</code> object (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>).
+</p>
+
+<p>
+The <code>(gnu packages …)</code> module name space is automatically scanned for packages by the command-line tools. For instance, when running <code>guix install emacs</code>, all the <code>(gnu packages …)</code> modules are scanned until one that exports a package object whose name is <code>emacs</code> is found. This package search facility is implemented in the <code>(gnu packages)</code> module.
+</p>
+
+<p>
+<a id="index-customization_002c-of-packages-1"></a> <a id="index-package-module-search-path"></a>
+Users can store package definitions in modules with different names&#x2014;e.g., <code>(my-packages emacs)</code>. There are two ways to make these package definitions visible to the user interfaces:
+</p>
+
+<ol class="org-ol">
+<li>By adding the directory containing your package modules to the search path with the <code>-L</code> flag of <code>guix package</code> and other commands (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>), or by setting the <code>GUIX_PACKAGE_PATH</code> environment variable described below.</li>
+<li>By defining a <i>channel</i> and configuring <code>guix pull</code> so that it pulls from it. A channel is essentially a Git repository containing package modules. See <a href="docs/guix--Channels.html">Channels</a>, for more information on how to define and use channels.</li>
+</ol>
+
+<p>
+<code>GUIX_PACKAGE_PATH</code> works similarly to other search path variables:
+</p>
+
+<dl class="org-dl">
+<dt>Environment Variable: GUIX<sub>PACKAGE</sub><sub>PATH</sub> </dt><dd>This is a colon-separated list of directories to search for additional package modules. Directories listed in this variable take precedence over the own modules of the distribution.</dd>
+</dl>
+
+<p>
+The distribution is fully <i>bootstrapped</i> and <i>self-contained</i>: each package is built based solely on other packages in the distribution. The root of this dependency graph is a small set of <i>bootstrap binaries</i>, provided by the <code>(gnu packages bootstrap)</code> module. For more information on bootstrapping, see <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

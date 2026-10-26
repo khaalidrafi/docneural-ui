@@ -1,0 +1,41 @@
+:PROPERTIES:
+:ID: emacs--Init-File
+:END:
+#+filetags: :emacs:
+#+title: Init File
+
+Next: [[id:emacs--Authentication][Keeping Persistent Authentication Information]]   Previous: [[id:emacs--Key-Bindings][Customizing Key Bindings]]   Up: [[id:emacs--Customization][Customization]]
+
+<<Init-File>>
+
+--------------
+
+*** 51.4 The Emacs Initialization File [[#The-Emacs-Initialization-File][¶]]
+:PROPERTIES:
+:CUSTOM_ID: The-Emacs-Initialization-File
+:CLASS: section
+:END:
+When Emacs is started, it normally tries to load a Lisp program from an /initialization file/, or /init file/ for short. This file, if it exists, specifies how to initialize Emacs for you. Traditionally, file =~/.emacs= is used as the init file, although Emacs also looks at =~/.emacs.el=, =~/.emacs.d/init.el=, =~/.config/emacs/init.el=, or other locations. See [[id:emacs--Find-Init][How Emacs Finds Your Init File]].
+
+You may find it convenient to have all your Emacs configuration in one directory, in which case you should use =~/.emacs.d/init.el= or the XDG-compatible =~/.config/emacs/init.el=.
+
+You can use the command line switch ‘=-q=' to prevent loading your init file, and ‘=-u=' (or ‘=--user=') to specify a different user's init file (see [[id:emacs--Initial-Options][Initial Options]]).
+
+There can also be a /default init file/, which is the library named =default.el=, found via the standard search path for libraries. The Emacs distribution contains no such library; your site may create one for local customizations. If this library exists, it is loaded whenever you start Emacs (except when you specify ‘=-q='). But your init file, if any, is loaded first; if it sets =inhibit-default-init= non-=nil=, then =default= is not loaded.
+
+Your site may also have a /site startup file/; this is named =site-start.el=, if it exists. Like =default.el=, Emacs finds this file via the standard search path for Lisp libraries. Emacs loads this library before it loads your init file. To inhibit loading of this library, use the option ‘=--no-site-file='. See [[id:emacs--Initial-Options][Initial Options]]. We recommend against using =site-start.el= for changes that some users may not like. It is better to put them in =default.el=, so that users can more easily override them.
+
+You can place =default.el= and =site-start.el= in any of the directories which Emacs searches for Lisp libraries. The variable =load-path= (see [[id:emacs--Lisp-Libraries][Libraries of Lisp Code for Emacs]]) specifies these directories. Many sites put these files in a subdirectory named =site-lisp= in the Emacs installation directory, such as =/usr/local/share/emacs/site-lisp=.
+
+Byte-compiling your init file is not recommended (see [[../elisp_html/Byte-Compilation.html#Byte-Compilation][Byte Compilation]] in the Emacs Lisp Reference Manual). It generally does not speed up startup very much, and often leads to problems when you forget to recompile the file. A better solution is to use the Emacs server to reduce the number of times you have to start Emacs (see [[id:emacs--Emacs-Server][Using Emacs as a Server]]). If your init file defines many functions, consider moving them to a separate (byte-compiled) file that you load in your init file.
+
+If you are going to write actual Emacs Lisp programs that go beyond minor customization, you should read the Emacs Lisp Reference Manual. See [[../elisp_html/index.html#Top][Emacs Lisp]] in the Emacs Lisp Reference Manual.
+
+- [[id:emacs--Init-Syntax][Init File Syntax]]
+- [[id:emacs--Init-Examples][Init File Examples]]
+- [[id:emacs--Terminal-Init][Terminal-specific Initialization]]
+- [[id:emacs--Find-Init][How Emacs Finds Your Init File]]
+- [[id:emacs--Init-Non_002dASCII][Non-ASCII Characters in Init Files]]
+- [[id:emacs--Early-Init-File][The Early Init File]]
+
+--------------

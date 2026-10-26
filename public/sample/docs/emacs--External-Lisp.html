@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Running-an-External-Lisp">1. 29.11 Running an External Lisp ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Lisp-Interaction.html">Lisp Interaction Buffers</a>   Up: <a href="docs/emacs--Building.html">Compiling and Testing Programs</a>
+</p>
+
+<p>
+<a id="External-Lisp"></a>
+</p>
+
+<hr />
+<div id="outline-container-Running-an-External-Lisp" class="outline-2">
+<h2 id="Running-an-External-Lisp"><span class="section-number-2">1.</span> 29.11 Running an External Lisp <a href="#Running-an-External-Lisp">¶</a></h2>
+<div class="outline-text-2" id="text-Running-an-External-Lisp">
+<p>
+Lisp mode is the major mode for editing programs written in general-purpose Lisp dialects, such as Common Lisp. Its mode command is M-x lisp-mode. Emacs uses Lisp mode automatically for files whose names end in <code>.l</code>, <code>.lsp</code>, or <code>.lisp</code>.
+</p>
+
+<p>
+You can run an external Lisp session as a subprocess or <i>inferior process</i> of Emacs, and pass expressions to it to be evaluated. To begin an external Lisp session, type M-x run-lisp. This runs the program named <code>lisp</code>, and sets it up so that both input and output go through an Emacs buffer named <code>*inferior-lisp*</code>. To change the name of the Lisp program run by M-x run-lisp, change the variable <code>inferior-lisp-program</code>.
+</p>
+
+<p>
+The major mode for the <code>*lisp*</code> buffer is Inferior Lisp mode, which combines the characteristics of Lisp mode and Shell mode (see <a href="docs/emacs--Shell-Mode.html">Shell Mode</a>). To send input to the Lisp session, go to the end of the <code>*lisp*</code> buffer and type the input, followed by RET. Terminal output from the Lisp session is automatically inserted in the buffer.
+</p>
+
+<p>
+When you edit a Lisp program in Lisp mode, you can type C-M-x (<code>lisp-eval-defun</code>) to send an expression from the Lisp mode buffer to a Lisp session that you had started with M-x run-lisp. The expression sent is the top-level Lisp expression at or following point. The resulting value goes as usual into the <code>*inferior-lisp*</code> buffer. Note that the effect of C-M-x in Lisp mode is thus very similar to its effect in Emacs Lisp mode (see <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>), except that the expression is sent to a different Lisp environment instead of being evaluated in Emacs.
+</p>
+
+<p>
+The facilities for editing Scheme code, and for sending expressions to a Scheme subprocess, are very similar. Scheme source files are edited in Scheme mode, which can be explicitly enabled with M-x scheme-mode. You can initiate a Scheme session by typing M-x run-scheme (the buffer for interacting with Scheme is named <code>*scheme*</code>), and send expressions to it by typing C-M-x.
+</p>
+
+<hr />
+</div>
+</div>

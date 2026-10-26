@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Per_002dDirectory-Variables-via-EditorConfig">1. 51.2.5.1 Per-Directory Variables via EditorConfig ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Up: <a href="docs/emacs--Directory-Variables.html">Per-Directory Local Variables</a>
+</p>
+
+<p>
+<a id="EditorConfig-support"></a>
+</p>
+
+<hr />
+<div id="outline-container-Per_002dDirectory-Variables-via-EditorConfig" class="outline-2">
+<h2 id="Per_002dDirectory-Variables-via-EditorConfig"><span class="section-number-2">1.</span> 51.2.5.1 Per-Directory Variables via EditorConfig <a href="#Per_002dDirectory-Variables-via-EditorConfig">¶</a></h2>
+<div class="outline-text-2" id="text-Per_002dDirectory-Variables-via-EditorConfig">
+<p>
+The <a href="https://editorconfig.org/">EditorConfig standard</a> is an alternative to the <code>.dir-locals.el</code> files, which can control only a very small number of variables, but has the advantage of being editor-neutral, not specific to Emacs. Those settings are stored in files named <code>.editorconfig</code>, and affect the files in that directory and its subdirectories.
+</p>
+
+<p>
+If you want Emacs to obey the settings from <code>.editorconfig</code> files, you need to enable the <code>editorconfig-mode</code> global minor mode. This is usually all that is needed: when the mode is activated, whenever a file is visited, Emacs will look for <code>.editorconfig</code> in the file's directory and its parent directories, just as it does for <code>.dir-locals.el</code>. When both <code>.editorconfig</code> and <code>.dir-locals.el</code> files are found, their settings are combined, and in case of a conflict, the setting coming from the file closest in the directory hierarchy takes precedence. If they are equally close, <code>.dir-locals.el</code> takes precedence. In terms of security, the <code>.editorconfig</code> settings are subject to the same checks as those coming from <code>.dir-locals.el</code> and from file-local variables (and also honor <code>enable-local-variables</code>). See <a href="docs/emacs--Safe-File-Variables.html">Safety of File Variables</a>.
+</p>
+
+<p>
+The <code>indent_size</code> setting of the EditorConfig standard does not correspond to a fixed variable in Emacs, but instead needs to set different variables depending on the major mode. Ideally all major modes should set the corresponding <code>editorconfig-indent-size-vars</code>, but if you use a major mode in which <code>indent_size</code> does not take effect because the major mode does not yet support it, you can customize the <code>editorconfig-indentation-alist</code> variable to tell Emacs which variables need to be set in that major mode.
+</p>
+
+<p>
+Similarly, there are several different ways to trim whitespace at the end of lines. When the EditorConfig <code>trim_trailing_whitespace</code> setting is used, by default <code>editorconfig-mode</code> simply calls <code>delete-trailing-whitespace</code> (see <a href="docs/emacs--Useless-Whitespace.html">Useless Whitespace</a>) every time you save your file. If you prefer some other behavior, you can customize <code>editorconfig-trim-whitespaces-mode</code> to the minor mode of your preference, such as <code>ws-butler-mode</code>.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,118 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Rebinding-Keys-in-Your-Init-File">1. 51.3.6 Rebinding Keys in Your Init File ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Modifier-Keys.html">Modifier Keys</a>   Previous: <a href="docs/emacs--Rebinding.html">Changing Key Bindings Interactively</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Init-Rebinding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Rebinding-Keys-in-Your-Init-File" class="outline-2">
+<h2 id="Rebinding-Keys-in-Your-Init-File"><span class="section-number-2">1.</span> 51.3.6 Rebinding Keys in Your Init File <a href="#Rebinding-Keys-in-Your-Init-File">¶</a></h2>
+<div class="outline-text-2" id="text-Rebinding-Keys-in-Your-Init-File">
+<p>
+If you have a set of key bindings that you like to use all the time, you can specify them in your initialization file by writing Lisp code. See <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>, for a description of the initialization file.
+</p>
+
+<p>
+The recommended way to write a key binding using Lisp is to use either the <code>keymap-global-set</code> or the <code>keymap-set</code> functions. For example, here's how to bind C-z to the <code>shell</code> command in the global keymap (see <a href="docs/emacs--Interactive-Shell.html">Interactive Subshell</a>):
+</p>
+
+<pre class="example" id="org0f5e05f">
+(keymap-global-set "C-z" 'shell)
+</pre>
+
+<p>
+The first argument to <code>keymap-global-set</code> describes the key sequence. It is a string made of a series of characters separated by spaces, with each character corresponding to a key. Keys with modifiers can be specified by prepending the modifier, such as ‘=C-<code>' for Control, or ‘=M-</code>' for Meta. Special keys, such as TAB and RET, can be specified within angle brackets as in TAB and RET.
+</p>
+
+<p>
+The single-quote before the command name that is being bound to the key sequence, <code>shell</code> in the above example, marks it as a constant symbol rather than a variable. If you omit the quote, Emacs would try to evaluate <code>shell</code> as a variable. This will probably cause an error; it certainly isn't what you want.
+</p>
+
+<p>
+Here are some additional examples, including binding function keys and mouse events:
+</p>
+
+<pre class="example" id="orgf6ae336">
+(keymap-global-set "C-c y" 'clipboard-yank)
+(keymap-global-set "C-M-q" 'query-replace)
+(keymap-global-set "&lt;f5&gt;" 'flyspell-mode)
+(keymap-global-set "C-&lt;f5&gt;" 'display-line-numbers-mode)
+(keymap-global-set "C-&lt;right&gt;" 'forward-sentence)
+(keymap-global-set "&lt;mouse-2&gt;" 'mouse-save-then-kill)
+</pre>
+
+<p>
+Key sequences can also be bound directly to Lisp strings rather than commands. Such strings are written using the same syntax as key sequences. For example, to bind C-c h to the string ‘=hello=':
+</p>
+
+<pre class="example" id="org0c0925e">
+(keymap-global-set "C-c h" "h e l l o")
+</pre>
+
+<p>
+Since this is somewhat cumbersome to write, the convenience function <code>key-description</code> can be used instead:
+</p>
+
+<pre class="example" id="org2321005">
+(keymap-global-set "C-c h" (key-description "hello"))
+</pre>
+
+<p>
+Non-ASCII characters can be specified directly in the string. To bind to, for example, ‘=olá=', use:
+</p>
+
+<pre class="example" id="org2a89055">
+(keymap-global-set "C-c h" (key-description "olá"))
+</pre>
+
+<p>
+However, be aware that language and coding systems may cause problems with key bindings for non-ASCII characters (see <a href="docs/emacs--Init-Non_002dASCII.html">Non-ASCII Characters in Init Files</a>). Writing the binding directly with the Unicode codepoint avoids these problems (see <a href="docs/emacs--International-Chars.html">Introduction to International Character Sets</a> for how to determine the codepoint of a character from within Emacs):
+</p>
+
+<pre class="example" id="orgfe32a21">
+(keymap-global-set "C-c h" (key-description "ol\u00E1"))
+</pre>
+
+<p>
+Alternatively, you can use the low level functions <code>define-key</code> and <code>global-set-key</code>. For example, to bind C-z to the <code>shell</code> command, as in the above example, using these low-level functions, use:
+</p>
+
+<pre class="example" id="orgafbd9f7">
+(global-set-key (kbd "C-z") 'shell)
+</pre>
+
+<p>
+There are various ways to specify the key sequence but the simplest is to use the function <code>kbd</code> as shown in the example above. <code>kbd</code> takes a single string argument that is a textual representation of a key sequence, and converts it into a form suitable for low-level functions such as <code>global-set-key</code>. For more details about binding keys using Lisp, see <a href="../elisp_html/Keymaps.html#Keymaps">Keymaps</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+As described in <a href="docs/emacs--Local-Keymaps.html">Local Keymaps</a>, major modes and minor modes can define local keymaps. These keymaps are constructed when the mode is loaded for the first time in a session. The function <code>keymap-set</code> can be used to make changes in a specific keymap. To remove a key binding, use <code>keymap-unset</code>.
+</p>
+
+<p>
+Since a mode's keymaps are not constructed until it has been loaded, you must delay running code which modifies them, e.g., by putting it on a <i>mode hook</i> (see <a href="docs/emacs--Hooks.html">Hooks</a>). For example, Texinfo mode runs the hook <code>texinfo-mode-hook</code>. Here's how you can use the hook to add local bindings for C-c n and C-c p, and remove the one for C-c C-x x in Texinfo mode:
+</p>
+
+<pre class="example" id="org2cb155b">
+(add-hook 'texinfo-mode-hook
+          (lambda ()
+            (keymap-set texinfo-mode-map "C-c p"
+                        'backward-paragraph)
+            (keymap-set texinfo-mode-map "C-c n"
+                        'forward-paragraph)
+            (keymap-set texinfo-mode-map "C-c C-x x" nil)))
+</pre>
+
+<hr />
+</div>
+</div>

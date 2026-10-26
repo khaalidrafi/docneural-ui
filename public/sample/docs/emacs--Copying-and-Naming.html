@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Copying_002c-Naming-and-Renaming-Files">1. 20.11 Copying, Naming and Renaming Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Misc-File-Ops.html">Miscellaneous File Operations</a>   Previous: <a href="docs/emacs--Diff-Mode.html">Diff Mode</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Copying-and-Naming"></a>
+</p>
+
+<hr />
+<div id="outline-container-Copying_002c-Naming-and-Renaming-Files" class="outline-2">
+<h2 id="Copying_002c-Naming-and-Renaming-Files"><span class="section-number-2">1.</span> 20.11 Copying, Naming and Renaming Files <a href="#Copying_002c-Naming-and-Renaming-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Copying_002c-Naming-and-Renaming-Files">
+<p>
+Emacs has several commands for copying, naming, and renaming files. All of them read two file names, <code>old</code> (or <code>target</code>) and <code>new</code>, using the minibuffer, and then copy or adjust a file's name accordingly; they do not accept wildcard file names.
+</p>
+
+<p>
+In all these commands, if the argument <code>new</code> is just a directory name (see <a href="../elisp_html/Directory-Names.html#Directory-Names">Directory Names</a> in the Emacs Lisp Reference Manual), the real new name is in that directory, with the same non-directory component as <code>old</code>. For example, the command M-x rename-file RET ~/foo RET <i>tmp</i> RET renames <code>~/foo</code> to <code>/tmp/foo</code>. On GNU and other POSIX-like systems, directory names end in ‘=/='.
+</p>
+
+<p>
+All these commands ask for confirmation when the new file name already exists.
+</p>
+
+<p>
+M-x copy-file copies the contents of the file <code>old</code> to the file <code>new</code>.
+</p>
+
+<p>
+M-x copy-directory copies directories, similar to the <code>cp -r</code> shell command. If <code>new</code> is a directory name, it creates a copy of the <code>old</code> directory and puts it in <code>new</code>. Otherwise it copies all the contents of <code>old</code> into a new directory named <code>new</code>. If <code>copy-directory-create-symlink</code> is non-<code>nil</code> and <code>old</code> is a symbolic link, this command will copy the symbolic link. If <code>nil</code>, this command will follow the link and copy the contents instead. (This is the default.)
+</p>
+
+<p>
+M-x rename-file renames file <code>old</code> as <code>new</code>. If the file name <code>new</code> already exists, you must confirm with yes or renaming is not done; this is because renaming causes the old meaning of the name <code>new</code> to be lost. If <code>old</code> and <code>new</code> are on different file systems, the file <code>old</code> is copied and deleted.
+</p>
+
+<p>
+If a file is under version control (see <a href="docs/emacs--Version-Control.html">Version Control</a>), you should rename it using M-x vc-rename-file instead of M-x rename-file. See <a href="docs/emacs--VC-Delete_002fRename.html">Deleting and Renaming Version-Controlled Files</a>.
+</p>
+
+<p>
+M-x add-name-to-file adds an additional name to an existing file without removing the old name. The new name is created as a hard link to the existing file. The new name must belong on the same file system that the file is on. On MS-Windows, this command works only if the file resides in an NTFS file system. On MS-DOS, and some remote system types, it works by copying the file.
+</p>
+
+<p>
+M-x make-symbolic-link creates a symbolic link named <code>new</code>, which points at <code>target</code>. The effect is that future attempts to open file <code>new</code> will refer to whatever file is named <code>target</code> at the time the opening is done, or will get an error if the name <code>target</code> is nonexistent at that time. This command does not expand the argument <code>target</code>, so that it allows you to specify a relative name as the target of the link. However, this command does expand leading ‘=~=' in <code>target</code> so that you can easily specify home directories, and strips leading ‘=/:=' so that you can specify relative names beginning with literal ‘=~=' or ‘=/:='. See <a href="docs/emacs--Quoted-File-Names.html">Quoted File Names</a>. On MS-Windows, this command works only on MS Windows Vista and later. When <code>new</code> is remote, it works depending on the system type.
+</p>
+
+<hr />
+</div>
+</div>

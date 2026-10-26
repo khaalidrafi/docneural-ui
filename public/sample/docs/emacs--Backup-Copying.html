@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Copying-vs_002e-Renaming">1. 20.3.2.3 Copying vs. Renaming ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Backup-Deletion.html">Automatic Deletion of Backups</a>   Up: <a href="docs/emacs--Backup.html">Backup Files</a>
+</p>
+
+<p>
+<a id="Backup-Copying"></a>
+</p>
+
+<hr />
+<div id="outline-container-Copying-vs_002e-Renaming" class="outline-2">
+<h2 id="Copying-vs_002e-Renaming"><span class="section-number-2">1.</span> 20.3.2.3 Copying vs. Renaming <a href="#Copying-vs_002e-Renaming">¶</a></h2>
+<div class="outline-text-2" id="text-Copying-vs_002e-Renaming">
+<p>
+Backup files can be made by copying the old file or by renaming it. This makes a difference when the old file has multiple names (hard links). If the old file is renamed into the backup file, then the alternate names become names for the backup file. If the old file is copied instead, then the alternate names remain names for the file that you are editing, and the contents accessed by those names will be the new contents.
+</p>
+
+<p>
+The method of making a backup file may also affect the file's owner and group. If copying is used, these do not change. If renaming is used, you become the file's owner, and the file's group becomes the default (different operating systems have different defaults for the group).
+</p>
+
+<p>
+The choice of renaming or copying is made as follows:
+</p>
+
+<ul class="org-ul">
+<li>If the variable <code>backup-by-copying</code> is non-<code>nil</code> (the default is <code>nil</code>), use copying.</li>
+
+<li>Otherwise, if the variable <code>backup-by-copying-when-linked</code> is non-<code>nil</code> (the default is <code>nil</code>), and the file has multiple names, use copying.</li>
+
+<li><p>
+Otherwise, if the variable <code>backup-by-copying-when-mismatch</code> is non-<code>nil</code> (the default is <code>t</code>), and renaming would change the file's owner or group, use copying.
+</p>
+
+<p>
+If you change <code>backup-by-copying-when-mismatch</code> to <code>nil</code>, Emacs checks the numeric user-id of the file's owner and the numeric group-id of the file's group. If either is no greater than <code>backup-by-copying-when-privileged-mismatch</code>, then it behaves as though <code>backup-by-copying-when-mismatch</code> is non-<code>nil</code> anyway.
+</p></li>
+
+<li>Otherwise, renaming is the default choice.</li>
+</ul>
+
+<p>
+When a file is managed with a version control system (see <a href="docs/emacs--Version-Control.html">Version Control</a>), Emacs does not normally make backups in the usual way for that file. But <i>committing</i> (a.k.a. <i>checking in</i>, see <a href="docs/emacs--VCS-Concepts.html">Concepts of Version Control</a>) new versions of files is similar in some ways to making backups. One unfortunate similarity is that these operations typically break hard links, disconnecting the file name you visited from any alternate names for the same file. This has nothing to do with Emacs&#x2014;the version control system does it.
+</p>
+
+<p>
+Some file storage services support <i>file versioning</i>: they record history of previous versions of files, and allow reverting to those previous versions. If you want to be able to do that with files hosted by those services when editing them with Emacs, customize <code>backup-by-copying</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+Copying the old file for backup is also useful when editing precious files, because it makes sure the old file keeps its name if something fails between the backup and the saving of your edits. Alternatively, you can customize <code>file-precious-flag</code> to a non-<code>nil</code> value, which implies backups by copying and also protects against I/O errors while saving your edits.
+</p>
+
+<hr />
+</div>
+</div>

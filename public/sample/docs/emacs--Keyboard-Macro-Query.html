@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Executing-Macros-with-Variations">1. 19.4 Executing Macros with Variations ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Save-Keyboard-Macro.html">Naming and Saving Keyboard Macros</a>   Previous: <a href="docs/emacs--Keyboard-Macro-Counter.html">The Keyboard Macro Counter</a>   Up: <a href="docs/emacs--Keyboard-Macros.html">Keyboard Macros</a>
+</p>
+
+<p>
+<a id="Keyboard-Macro-Query"></a>
+</p>
+
+<hr />
+<div id="outline-container-Executing-Macros-with-Variations" class="outline-2">
+<h2 id="Executing-Macros-with-Variations"><span class="section-number-2">1.</span> 19.4 Executing Macros with Variations <a href="#Executing-Macros-with-Variations">¶</a></h2>
+<div class="outline-text-2" id="text-Executing-Macros-with-Variations">
+<p>
+In a keyboard macro, you can create an effect similar to that of <code>query-replace</code>, in that the macro asks you each time around whether to make a change.
+</p>
+
+<dl class="org-dl">
+<dt>C-x q</dt><dd>When this point is reached during macro execution, ask for confirmation (<code>kbd-macro-query</code>).</dd>
+</dl>
+
+<p>
+While defining the macro, type C-x q at the point where you want the query to occur. During macro definition, the C-x q does nothing, but when you run the macro later, C-x q asks you interactively whether to continue.
+</p>
+
+<p>
+The valid responses when C-x q asks are:
+</p>
+
+<dl class="org-dl">
+<dt>SPC (or y)</dt><dd>Continue executing the keyboard macro.</dd>
+
+<dt>DEL (or n)</dt><dd>Skip the remainder of this repetition of the macro, and start right away with the next repetition.</dd>
+
+<dt>RET (or q)</dt><dd>Skip the remainder of this repetition and cancel further repetitions.</dd>
+
+<dt>C-r</dt><dd>Enter a recursive editing level, in which you can perform editing which is not part of the macro. When you exit the recursive edit using C-M-c, you are asked again how to continue with the keyboard macro. If you type a SPC at this time, the rest of the macro definition is executed. It is up to you to leave point and the text in a state such that the rest of the macro will do what you want.</dd>
+</dl>
+
+<p>
+C-u C-x q, which is C-x q with a prefix argument, performs a completely different function. It enters a recursive edit reading input from the keyboard, both when you type it during the definition of the macro, and when it is executed from the macro. During definition, the editing you do inside the recursive edit does not become part of the macro. During macro execution, the recursive edit gives you a chance to do some particularized editing on each repetition. See <a href="docs/emacs--Recursive-Edit.html">Recursive Editing Levels</a>.
+</p>
+
+<hr />
+</div>
+</div>

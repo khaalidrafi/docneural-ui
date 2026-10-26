@@ -1,0 +1,25 @@
+:PROPERTIES:
+:ID: emacs--Saving
+:END:
+#+filetags: :emacs:
+#+title: Saving
+
+Next: [[id:emacs--Reverting][Reverting a Buffer]]   Previous: [[id:emacs--Visiting][Visiting Files]]   Up: [[id:emacs--Files][File Handling]]
+
+<<Saving>>
+
+--------------
+
+*** 20.3 Saving Files [[#Saving-Files][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Saving-Files
+:CLASS: section
+:END:
+/Saving/ a buffer in Emacs means writing its contents back into the file that was visited in the buffer.
+
+- [[id:emacs--Save-Commands][Commands for Saving Files]]
+- [[id:emacs--Backup][Backup Files]]
+- [[id:emacs--Customize-Save][Customizing Saving of Files]]
+- [[id:emacs--Interlocking][Protection against Simultaneous Editing]]
+- [[id:emacs--File-Shadowing][Shadowing Files]]
+- [[id:emacs--Time-Stamps][Updating Time Stamps Automatically]]

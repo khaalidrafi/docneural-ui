@@ -1,0 +1,434 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Sway-window-manager"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Networking-Home-Services.html">Networking Home Services</a>, Previous: <a href="docs/guix--Niri-window-manager.html">Niri window manager</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Sway-window-manager-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="sway-window-manager"></a>13.3.18 Sway window manager<br />
+<div class="outline-text-5" id="text-sway-window-manager">
+<p>
+<a id="index-sway_002c-Home-Service"></a> <a id="index-sway_002c-configuration"></a>
+The <code>(gnu home services sway)</code> module provides <code>home-sway-service-type</code>, a home service to configure the <a href="https://github.com/swaywm/sway">Sway window manager for Wayland</a> in a declarative way.
+</p>
+
+<p>
+Here is an example of a service and its configuration that you could add to the <code>services</code> field of your <code>home-environment</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-sway-service-type
+         (sway-configuration
+          (gestures
+           '((swipe:3:down . "move to scratchpad")
+             (swipe:3:up   . "scratchpad show")))
+          (outputs
+           (list (sway-output
+                  (identifier '*)
+                  (background (file-append sway
+                                           "\
+/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png")))))))
+</pre>
+</div>
+
+<p>
+The above example describes a Sway configuration in which
+</p>
+
+<ul class="org-ul">
+<li>all monitors use a particular wallpaper whose <code>.png</code> is provided by the <code>sway</code> package;</li>
+<li>swiping down (resp. up) with three fingers moves the active window to the scratchpad (resp. shows/hides the scratchpad).</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Note:</b> This home service only sets up the configuration file and profile packages for Sway. It does <i>not</i> start Sway in any way. If you want to do so, you might be interested in using <code>greetd-wlgreet-sway-session</code> instead.
+</p>
+
+<p>
+The procedure <code>sway-configuration-&gt;file</code> defined below can be used to provide the value for the <i>optional</i> <code>sway-configuration</code> field of <code>greetd-wlgreet-sway-session</code>.
+</p>
+</blockquote>
+
+<dl class="org-dl">
+<dt>Procedure: sway-configuration-&gt;file config</dt><dd>This procedure takes one argument <code>config</code>, which must be a <code>sway-configuration</code> record (defined below), and returns a file-like object representing the serialized configuration.</dd>
+
+<dt>Variable: home-sway-service-type </dt><dd><p>
+This is a home service type to set up Sway. It takes care of:
+</p>
+
+<ul class="org-ul">
+<li>providing a <code>~/.config/sway/config</code> file,</li>
+<li>adding Sway-related packages to your profile.</li>
+</ul>
+
+<p>
+It is possible to extend this service (see <a href="docs/guix--Service-Composition.html">Service Composition</a>). The resulting configuration file contains the concatenation of keybindings, modes, <i>etc.</i> found in all extensions.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> At the moment, only one bar configuration is allowed. If more are found, an error will be raised.
+</p>
+</blockquote></dd>
+
+<dt>Variable: %empty-sway-configuration </dt><dd>The variable <code>%empty-sway-configuration</code> contains an empty <code>sway-configuration</code> record. This value can help users write simple service extensions.</dd>
+
+<dt>Data Type: sway-configuration </dt><dd>This configuration record describes the Sway configuration (see sway(5)). Available fields are:
+
+<dl class="org-dl">
+<dt><code>variables</code> (default: <code>%sway-default-variables</code>)</dt><dd><p>
+The value of this field is an association list in which keys are symbols and values are either strings, G-expressions or file-like objects (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).
+</p>
+
+<p>
+Example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(variables `((mod . "Mod4") ; string
+             (term ; file-append
+              . ,(file-append foot "/bin/foot"))
+             (Term ; G-expression
+              . ,#~(string-append #$foot "/bin/foot"))))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Note:</b> Default keybindings assume the existence of variables named <code>$mod</code>, <code>$left</code>, <code>$right</code>, <code>$up</code> and <code>$down</code>. If you choose not to define these variables, make sure to remove keybindings referring to them.
+</p>
+</blockquote></dd>
+
+<dt><code>keybindings</code> (default: <code>%sway-default-keybindings</code>)</dt><dd><p>
+This field describes keybindings for the <i>default</i> mode. The value is an association list in which keys are symbols. Values can either be:
+</p>
+
+<ul class="org-ul">
+<li>strings or G-expressions,</li>
+<li>a cons-cell of a string or G-expression and a list of options. Options must be a string starting with “input-device=” or strings among “no-warn”, “whole-window”, “border”, “exclude-titlebar”, “release”, “locked”, “to-code”, “inhibited” and “no-repeat”.</li>
+</ul>
+
+<p>
+The following snippet launches the terminal when pressing $mod+t and $mod+Shift+t (assuming that a variable <code>$term</code> is defined):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`(($mod+t . ,#~(string-append "exec " #$foot "/bin/foot"))
+  ($mod+Shift+t . "exec $term")
+  ($mod+q "exec $term" . ("to-code"))) ;; passes the --to-code option.
+</pre>
+</div></dd>
+
+<dt><code>gestures</code> (default: <code>%sway-default-gestures</code>)</dt><dd><p>
+Similar to the previous field, but for finger-gestures. Options must start with “input-device=” or be among “exact” and “no-warn”.
+</p>
+
+<p>
+The following snippet allows to navigate through workspaces by swiping right and left with three fingers:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'((swipe:3:right . "workspace next_on_output")
+  (swipe:3:left    "workspace prev_on_output" . ("exact")))
+</pre>
+</div></dd>
+
+<dt><code>packages</code> (default: <code>%sway-default-packages</code>)</dt><dd>This field describes a list of packages to add to the user profile. At the moment, the default value only adds <code>sway</code> to the profile.</dd>
+
+<dt><code>inputs</code> (default: <code>'()</code>)</dt><dd>List of <code>sway-input</code> configuration records (described below).</dd>
+
+<dt><code>outputs</code> (default: <code>'()</code>)</dt><dd>List of <code>sway-output</code> configuration records (described below).</dd>
+
+<dt><code>bar</code> (optional <code>sway-bar</code> record)</dt><dd>Optional <code>sway-bar</code> record (described below) to configure a Sway bar.</dd>
+
+<dt><code>modes</code> (default: <code>%sway-default-modes</code>)</dt><dd>List of <code>sway-mode</code> records (described below) to add modes to the Sway configuration. The default value <code>%sway-default-modes</code> adds the “resize” mode of the default Sway configuration (as described below).</dd>
+
+<dt><code>startup+reload-programs</code> (default: <code>'()</code>)</dt><dd>Programs to execute at startup time <i>and</i> after every configuration reload. The value of this field is a list of strings, G-expressions or file-like objects (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).</dd>
+
+<dt><code>startup-programs</code> (default: <code>%sway-default-startup-programs</code>)</dt><dd><p>
+Programs to execute at startup time. As above, values of this field are a list of strings, G-expressions or file-like objects.
+</p>
+
+<p>
+The default value, <code>%sway-default-startup-programs</code>, executes <code>swayidle</code> in order to lock the screen after 5 minutes of inactivity (displaying a background distributed with Sway) and turn the screen off after 10 minutes of inactivity.
+</p></dd>
+
+<dt><code>extra-content</code> (default: <code>'()</code>)</dt><dd>Lines to add to the configuration file. The value of this field is a list of strings or G-expressions.</dd>
+</dl></dd>
+
+<dt>Data Type: sway-input </dt><dd><p>
+<code>sway-input</code> records describe input blocks (see sway-input(5)). For example, the following snippet makes all keyboards use a French layout, in which capslock has been remapped to ctrl:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(sway-input (identifier "type:keyboard")
+            (layout
+              (keyboard-layout "fr" #:options '("ctrl:nocaps"))))
+</pre>
+</div>
+
+<p>
+Available fields for <code>sway-input</code> configuration records are:
+</p>
+
+<dl class="org-dl">
+<dt><code>identifier</code> (default: <code>'*</code>)</dt><dd>Identifier of the input. The field accepts symbols and strings. If the <code>identifier</code> is a symbol, it is inserted as is; if it is a string, it will be quoted in the configuration file.</dd>
+
+<dt><code>layout</code> (optional <code>&lt;keyboard-layout&gt;</code> record)</dt><dd><p>
+Keyboard specific option. Field specifying the layout to use for the input. The value must be a <code>&lt;keyboard-layout&gt;</code> record (see <a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> <code>(gnu home services sway)</code> does not re-export the <code>keyboard-layout</code> procedure.
+</p>
+</blockquote></dd>
+
+<dt><code>disable-while-typing</code> (optional boolean)</dt><dd>If <code>#t</code> (resp. <code>#f</code>) enables (resp. disables) the “disable while typing” option for this input.</dd>
+
+<dt><code>disable-while-trackpointing</code> (optional boolean)</dt><dd>If <code>#t</code> (resp. <code>#f</code>), enables (resp. disables) the “disable while track-pointing” option for this input.</dd>
+
+<dt><code>tap</code> (optional boolean)</dt><dd>Enables or disables the “tap” option, which allows clicking by tapping on a touchpad.</dd>
+
+<dt><code>extra-content</code> (default: <code>'()</code>)</dt><dd>Lines to add to the input block. The value of this field must a list whose elements are either strings or G-expressions.</dd>
+</dl></dd>
+
+<dt>Data Type: sway-output </dt><dd><code>sway-output</code> records describe Sway outputs (see sway-output(5)). Available fields are:
+
+<dl class="org-dl">
+<dt><code>identifier</code> (default: <code>'*</code>)</dt><dd>Identifier of the monitor. The field accepts symbols and strings. If the <code>identifier</code> is a symbol, it is inserted as is; if it is a string, it will be quoted in the configuration file.</dd>
+
+<dt><code>resolution</code> (optional string)</dt><dd>This string defines the resolution of the monitor.</dd>
+
+<dt><code>position</code> (optional)</dt><dd><p>
+The (optional) value of this field must be a <code>point</code>. Example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(position
+ (point (x 1920)
+        (y 0)))
+</pre>
+</div></dd>
+
+<dt><code>background</code> (optional)</dt><dd><p>
+The value of this field describes what wallpaper to use on this output. The field accepts the following types of values:
+</p>
+
+<ul class="org-ul">
+<li>a string,</li>
+
+<li>a G-expression,</li>
+
+<li>a file-like object,</li>
+
+<li><p>
+a pair. The first argument of this pair must be a string, a G-expression or a file-like object. The second element describes how the wallpaper will be displayed. It must be a symbol among <code>stretch</code>, <code>fill</code>, <code>fit</code>, <code>center</code> and <code>tile</code>.
+</p>
+
+<p>
+If the second element is not specified (<i>i.e.</i> when the value is not a pair), the <code>fill</code> mode will be used.
+</p></li>
+</ul>
+
+<blockquote>
+<p>
+<b>Note:</b> In order to use an SVG file, you must have <code>librsvg</code> in your profile (<i>e.g.</i> by adding it in the <code>packages</code> field of <code>sway-configuration</code>).
+</p>
+</blockquote></dd>
+
+<dt><code>extra-content</code> (default: <code>'()</code>)</dt><dd>List defining additional lines to add to the output configuration block. Elements of the list must be either strings or G-expressions.</dd>
+</dl></dd>
+
+<dt>Data Type: sway-border-color  :: - <code>border</code></dt><dd>Color of the border.
+
+<dl class="org-dl">
+<dt><code>background</code></dt><dd>Color of the background.</dd>
+
+<dt><code>text</code></dt><dd>Color of the text.</dd>
+</dl></dd>
+
+<dt>Data Type: sway-color  :: - <code>background</code> (optional string)</dt><dd>Background color of the bar.
+
+<dl class="org-dl">
+<dt><code>statusline</code> (optional string)</dt><dd>Text color of the status line.</dd>
+
+<dt><code>focused-background</code> (optional string)</dt><dd>Background color of the bar on the currently focused monitor.</dd>
+
+<dt><code>focused-statusline</code> (optional string)</dt><dd>Text color of the statusline on the currently focused monitor.</dd>
+
+<dt><code>focused-workspace</code> (optional <code>sway-border-color</code>)</dt><dd>Color scheme for focused workspaces.</dd>
+
+<dt><code>active-workspace</code> (optional <code>sway-border-color</code>)</dt><dd>Color scheme for active workspaces.</dd>
+
+<dt><code>inactive-workspace</code> (optional <code>sway-border-color</code>)</dt><dd>Color scheme for inactive workspaces.</dd>
+
+<dt><code>urgent-workspace</code> (optional <code>sway-border-color</code>)</dt><dd>Color scheme for workspaces containing “urgent windows”.</dd>
+
+<dt><code>binding-mode</code> (optional <code>sway-border-color</code>)</dt><dd>Color scheme for the binding mode indicator.</dd>
+</dl></dd>
+
+<dt>Data Type: sway-bar </dt><dd>Describes the Sway bar (see sway-bar(5)).
+
+<dl class="org-dl">
+<dt><code>identifier</code> (default: <code>'bar0</code>)</dt><dd>Identifier of the bar. The value must be a symbol.</dd>
+
+<dt><code>position</code> (optional)</dt><dd>Specify the position of the bar. Accepted values are <code>'top</code> or <code>'bottom</code>.</dd>
+
+<dt><code>hidden-state</code> (optional)</dt><dd>Specify the appearance of the bar when it is hidden. Accepted values are <code>'hide</code> or <code>'show</code>.</dd>
+
+<dt><code>binding-mode-indicator</code> (optional)</dt><dd>Boolean enabling or disabling the binding mode indicator.</dd>
+
+<dt><code>colors</code> (optional)</dt><dd>An optional <code>sway-color</code> configuration record.</dd>
+
+<dt><code>status-command</code> (optional)</dt><dd><p>
+This field accept strings, G-expressions and executable file-like values. The default value is a command (string) that prints the date and time every second.
+</p>
+
+<p>
+Each line printed on <code>stdout</code> by this command (or script) will be displayed on the status area of the bar.
+</p>
+
+<p>
+Below are a few examples using:
+</p>
+
+<ul class="org-ul">
+<li>a string: <code>"while date +'%Y-%m-%d %X'; do sleep 1; done"</code>,</li>
+<li><p>
+a G-exp:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">#~(string-append "while "
+                 #$coreutils "/bin/date"
+                 " +'%Y-%m-%d %X'; do sleep 1; done")
+</pre>
+</div></li>
+
+<li><p>
+an executable file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(program-file
+ "sway-bar-status"
+ #~(begin
+     (use-modules (ice-9 format)
+                  (srfi srfi-19))
+     (let loop ()
+       (let* ((date (date-&gt;string
+                     (current-date)
+                     "~d/~m/~Y (~a) • ~H:~M:~S")))
+         (format #t "~a~%~!" date)
+         (sleep 1)
+         (loop)))))
+</pre>
+</div></li>
+</ul></dd>
+
+<dt><code>mouse-bindings</code> (default: <code>'()</code>)</dt><dd><p>
+This field accepts an associative list. Keys are integers describing mouse events. Values are similar to that of key-bindings (except that “to-code” is not a valid option for mouse-bindings).
+</p>
+
+<p>
+The module <code>(gnu home services sway)</code> exports constants <code>%ev-code-mouse-left</code>, <code>%ev-code-mouse-right</code> and <code>%ev-code-mouse-scroll-click</code> whose values are integers corresponding to left, right and scroll click respectively. For example, with <code>(mouse-bindings `((,%ev-code-mouse-left . "exec $term")))</code>, left clicks in the status bar open the terminal (assuming that the variable <code>$term</code> is bound to a terminal).
+</p></dd>
+</dl></dd>
+
+<dt>Data Type: sway-mode </dt><dd><p>
+Describes a Sway mode (see sway(5)). For example, the following snippet defines the resize mode of the default Sway configuration:
+</p>
+
+<pre class="example" id="orga2041c8">
+(sway-mode
+ (mode-name "resize")
+ (keybindings
+  '(($left  . "resize shrink width 10px")
+    ($right . "resize grow width 10px")
+    ($down  . "resize grow height 10px")
+    ($up    . "resize shrink height 10px")
+    (Left   . "resize shrink width 10px")
+    (Right  . "resize grow width 10px")
+    (Down   . "resize grow height 10px")
+    (Up     . "resize shrink height 10px")
+    (Return . "mode \"default\"")
+    (Escape . "mode \"default\""))))
+</pre>
+
+<dl class="org-dl">
+<dt><code>mode-name</code> (default: <code>"default"</code>)</dt><dd>Name of the mode. This field accepts strings.</dd>
+
+<dt><code>keybindings</code> (default: <code>'()</code>)</dt><dd>This field describes keybindings. The value is an association list. As above, keys are symbols and values are either strings, G-expressions or cons-cells.</dd>
+
+<dt><code>mouse-bindings</code> (default: <code>'()</code>)</dt><dd>Ditto, but keys are mouse events (integers). Constants <code>%ev-code-mouse-*</code> described above can be used as helpers to define mouse bindings.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Networking-Home-Services.html">Networking Home Services</a>, Previous: <a href="docs/guix--Niri-window-manager.html">Niri window manager</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Recovery-After-a-Crash">1. 53.6 Recovery After a Crash ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Emergency-Escape.html">Emergency Escape</a>   Previous: <a href="docs/emacs--Crashing.html">When Emacs Crashes</a>   Up: <a href="docs/emacs--Lossage.html">Dealing with Emacs Trouble</a>
+</p>
+
+<p>
+<a id="After-a-Crash"></a>
+</p>
+
+<hr />
+<div id="outline-container-Recovery-After-a-Crash" class="outline-2">
+<h2 id="Recovery-After-a-Crash"><span class="section-number-2">1.</span> 53.6 Recovery After a Crash <a href="#Recovery-After-a-Crash">¶</a></h2>
+<div class="outline-text-2" id="text-Recovery-After-a-Crash">
+<p>
+If Emacs or the computer crashes, you can recover the files you were editing at the time of the crash from their auto-save files. To do this, start Emacs again and type the command M-x recover-session.
+</p>
+
+<p>
+This command initially displays a buffer which lists interrupted session files, each with its date. You must choose which session to recover from. Typically the one you want is the most recent one. Move point to the one you choose, and type C-c C-c.
+</p>
+
+<p>
+Then <code>recover-session</code> considers each of the files that you were editing during that session; for each such file, it asks whether to recover that file. If you answer y for a file, it shows the dates of that file and its auto-save file, then asks once again whether to recover that file. For the second question, you must confirm with yes. If you do, Emacs visits the file but gets the text from the auto-save file.
+</p>
+
+<p>
+When <code>recover-session</code> is done, the files you've chosen to recover are present in Emacs buffers. You should then save them. Only this&#x2014;saving them&#x2014;updates the files themselves.
+</p>
+
+<p>
+As a last resort, if you had buffers with content which were not associated with any files, or if the autosave was not recent enough to have recorded important changes, you can use the <code>etc/emacs-buffer.gdb</code> script with GDB (the GNU Debugger) to retrieve them from a core dump&#x2014;provided that a core dump was saved, and that the Emacs executable was not stripped of its debugging symbols.
+</p>
+
+<p>
+As soon as you get the core dump, rename it to another name such as <code>core.emacs</code>, so that another crash won't overwrite it.
+</p>
+
+<p>
+To use this script, run <code>gdb</code> with the file name of your Emacs executable and the file name of the core dump, e.g., ‘=gdb /usr/bin/emacs core.emacs='. At the <code>(gdb)</code> prompt, load the recovery script: ‘=source /usr/src/emacs/etc/emacs-buffer.gdb='. Then type the command <code>ybuffer-list</code> to see which buffers are available. For each buffer, it lists a buffer number. To save a buffer, use <code>ysave-buffer</code>; you specify the buffer number, and the file name to write that buffer into. You should use a file name which does not already exist; if the file does exist, the script does not make a backup of its old contents.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,138 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Python-Modules"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Perl-Modules.html">Perl Modules</a>, Previous: <a href="docs/guix--Emacs-Packages.html">Emacs Packages</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Python-Modules-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="python-modules"></a>22.8.9 Python Modules<br />
+<div class="outline-text-5" id="text-python-modules">
+<p>
+<a id="index-python"></a>
+We currently package Python 2 and Python 3, under the Scheme variable names <code>python-2</code> and <code>python</code> as explained in <a href="docs/guix--Version-Numbers.html">Version Numbers</a>. To avoid confusion and naming clashes with other programming languages, it seems desirable that the name of a package for a Python module contains the word <code>python</code>.
+</p>
+
+<p>
+Some modules are compatible with only one version of Python, others with both. If the package Foo is compiled with Python 3, we name it <code>python-foo</code>. If it is compiled with Python 2, we name it <code>python2-foo</code>. Python 2 packages are being removed from the distribution; please do no not submit any new Python 2 packages.
+</p>
+
+<p>
+If a project already contains the word <code>python</code>, we drop this; for instance, the module python-dateutil is packaged under the names <code>python-dateutil</code> and <code>python2-dateutil</code>. If the project name starts with <code>py</code> (e.g. <code>pytz</code>), we keep it and prefix it as described above.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Currently there are two different build systems for Python packages in Guix: <code>python-build-system</code> and <code>pyproject-build-system</code>. For the longest time, Python packages were built from an informally specified <code>setup.py</code> file. That worked amazingly well, considering Python's success, but was difficult to build tooling around. As a result, a host of alternative build systems emerged and the community eventually settled on a <a href="https://peps.python.org/pep-0517/">formal standard</a> for specifying build requirements. <code>pyproject-build-system</code> is Guix's implementation of this standard. It is considered “experimental” in that it does not yet support all the various PEP-517 <i>build backends</i>, but you are encouraged to try it for new Python packages and report any problems. It will eventually be deprecated and merged into <code>python-build-system</code>.
+</p>
+</blockquote>
+
+<ul class="org-ul">
+<li></li>
+</ul>
+
+<p>
+<a id="Specifying-Dependencies"></a>
+</p>
+</div>
+</li>
+<li><a id="specifying-dependencies"></a>22.8.9.1 Specifying Dependencies<br />
+<div class="outline-text-5" id="text-specifying-dependencies">
+<p>
+<a id="index-inputs_002c-for-Python-packages"></a>
+Dependency information for Python packages is usually available in the package source tree, with varying degrees of accuracy: in the <code>pyproject.toml</code> file, the <code>setup.py</code> file, in <code>requirements.txt</code>, or in <code>tox.ini</code> (the latter mostly for test dependencies).
+</p>
+
+<p>
+Your mission, when writing a recipe for a Python package, is to map these dependencies to the appropriate type of “input” (see <a href="docs/guix--package-Reference.html">inputs</a>). Although the <code>pypi</code> importer normally does a good job (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>), you may want to check the following check list to determine which dependency goes where.
+</p>
+
+<ul class="org-ul">
+<li><p>
+We currently package Python with <code>setuptools</code> and <code>pip</code> installed per default. This is about to change, and users are encouraged to use <code>python-toolchain</code> if they want a build environment for Python.
+</p>
+
+<p>
+<code>guix lint</code> will warn if <code>setuptools</code> or <code>pip</code> are added as native-inputs because they are generally not necessary.
+</p></li>
+
+<li>Python dependencies required at run time go into <code>propagated-inputs</code>. They are typically defined with the <code>install_requires</code> keyword in <code>setup.py</code>, or in the <code>requirements.txt</code> file.</li>
+
+<li><p>
+Python packages required only at build time&#x2014;e.g., those listed under <code>build-system.requires</code> in <code>pyproject.toml</code> or with the <code>setup_requires</code> keyword in <code>setup.py</code>&#x2014;or dependencies only for testing&#x2014;e.g., those in <code>tests_require</code> or <code>tox.ini</code>&#x2014;go into <code>native-inputs</code>. The rationale is that (1) they do not need to be propagated because they are not needed at run time, and (2) in a cross-compilation context, it's the “native” input that we'd want.
+</p>
+
+<p>
+Examples are the <code>pytest</code>, <code>mock</code>, and <code>nose</code> test frameworks. Of course if any of these packages is also required at run-time, it needs to go to <code>propagated-inputs</code>.
+</p></li>
+
+<li>Anything that does not fall in the previous categories goes to <code>inputs</code>, for example programs or C libraries required for building Python packages containing C extensions.</li>
+
+<li>If a Python package has optional dependencies (<code>extras_require</code>), it is up to you to decide whether to add them or not, based on their usefulness/overhead ratio (see <a href="docs/guix--Submitting-Patches.html"><code>guix size</code></a>).</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Perl-Modules.html">Perl Modules</a>, Previous: <a href="docs/guix--Emacs-Packages.html">Emacs Packages</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

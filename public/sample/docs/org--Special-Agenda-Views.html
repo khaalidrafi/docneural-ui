@@ -1,0 +1,114 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Special-Agenda-Views-1">1. A.8 Special Agenda Views ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (177)</a></li>
+<li><a href="#section-1">1.0.2. (178)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Special-Agenda-Views"></a>
+Next: <a href="docs/org--Speeding-Up-Your-Agendas.html">Speeding Up Your Agendas</a>, Previous: <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Special-Agenda-Views-1" class="outline-2">
+<h2 id="Special-Agenda-Views-1"><span class="section-number-2">1.</span> A.8 Special Agenda Views <a href="#Special-Agenda-Views-1">¶</a></h2>
+<div class="outline-text-2" id="text-Special-Agenda-Views-1">
+<p>
+Org provides a special hook to further limit items in agenda views: <code>agenda</code>, <code>agenda*</code>, <code>todo</code>, <code>alltodo</code>, <code>tags</code>, <code>tags-todo</code>, <code>tags-tree</code>. Specify a custom function that tests inclusion of every matched item in the view. This function can also skip as much as is needed.
+</p>
+
+<p>
+For a global condition applicable to agenda views, use the <code>org-agenda-skip-function-global</code> variable. Org uses a global condition with <code>org-agenda-skip-function</code> for custom searching.
+</p>
+
+<p>
+This example defines a function for a custom view showing TODO items with ‘=waiting=' status. Manually this is a multistep search process, but with a custom view, this can be automated as follows:
+</p>
+
+<p>
+The custom function searches the subtree for the ‘=waiting=' tag and returns <code>nil</code> on match. Otherwise, it gives the location from where the search continues.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(defun my-skip-unless-waiting ()
+  "Skip trees that are not waiting"
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (if (re-search-forward ":waiting:" subtree-end t)
+        nil          ; tag found, do not skip
+      subtree-end))) ; tag not found, continue after end of subtree
+</pre>
+</div>
+
+<p>
+To use this custom function in a custom agenda command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(org-add-agenda-custom-command
+ '("b" todo "PROJECT"
+   ((org-agenda-skip-function 'my-skip-unless-waiting)
+    (org-agenda-overriding-header "Projects waiting for something: "))))
+</pre>
+</div>
+
+<p>
+Note that this also binds <code>org-agenda-overriding-header</code> to a more meaningful string suitable for the agenda view.
+</p>
+
+<p>
+Search for entries with a limit set on levels for the custom search. This is a general approach to creating custom searches in Org. To include all levels, use ‘=LEVEL&gt;0='. Then to selectively pick the matched entries, use <code>org-agenda-skip-function</code>, which also accepts Lisp forms, such as <code>org-agenda-skip-entry-if</code> and <code>org-agenda-skip-subtree-if</code>. For example:
+</p>
+
+<dl class="org-dl">
+<dt>‘=(org-agenda-skip-entry-if 'scheduled)='</dt><dd>Skip current entry if it has been scheduled.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'notscheduled)='</dt><dd>Skip current entry if it has not been scheduled.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'deadline)='</dt><dd>Skip current entry if it has a deadline.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'scheduled 'deadline)='</dt><dd>Skip current entry if it has a deadline, or if it is scheduled.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'todo '("TODO" "WAITING"))='</dt><dd>Skip current entry if the TODO keyword is TODO or WAITING.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'todo 'done)='</dt><dd>Skip current entry if the TODO keyword marks a DONE state.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'timestamp)='</dt><dd>Skip current entry if it has any timestamp, may also be deadline or scheduled.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'regexp "regular expression")='</dt><dd>Skip current entry if the regular expression matches in the entry.</dd>
+
+<dt>‘=(org-agenda-skip-entry-if 'notregexp "regular expression")='</dt><dd>Skip current entry unless the regular expression matches.</dd>
+
+<dt>‘=(org-agenda-skip-subtree-if 'regexp "regular expression")='</dt><dd>Same as above, but check and skip the entire subtree.</dd>
+</dl>
+
+<p>
+The following is an example of a search for ‘=waiting=' without the special function:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(org-add-agenda-custom-command
+ '("b" todo "PROJECT"
+   ((org-agenda-skip-function '(org-agenda-skip-subtree-if
+                                'regexp ":waiting:"))
+    (org-agenda-overriding-header "Projects waiting for something: "))))
+</pre>
+</div>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,88 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#What-Files-Emacs-Can-Access-on-Android">1. H.3 What Files Emacs Can Access on Android ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Android-Document-Providers.html">Accessing Files from Other Programs on Android</a>   Previous: <a href="docs/emacs--Android-Startup.html">Starting Emacs on Android</a>   Up: <a href="docs/emacs--Android.html">Emacs and Android</a>
+</p>
+
+<p>
+<a id="Android-File-System"></a>
+</p>
+
+<hr />
+<div id="outline-container-What-Files-Emacs-Can-Access-on-Android" class="outline-2">
+<h2 id="What-Files-Emacs-Can-Access-on-Android"><span class="section-number-2">1.</span> H.3 What Files Emacs Can Access on Android <a href="#What-Files-Emacs-Can-Access-on-Android">¶</a></h2>
+<div class="outline-text-2" id="text-What-Files-Emacs-Can-Access-on-Android">
+<p>
+Emacs exposes a special directory on Android systems: the name of the directory is <code>/assets</code>, and it contains the <code>etc</code>, <code>lisp</code> and <code>info</code> directories which are normally installed in <code>/usr/share/emacs</code> directory on GNU and Unix systems. On Android systems, the Lisp emulation of <code>ls</code> (see <a href="docs/emacs--ls-in-Lisp.html">Emulation of <code>ls</code> on MS-Windows</a>) is also enabled by default, as the <code>ls</code> binary which comes with the system varies by manufacturer and usually does not support all of the features required by Emacs. One copy of <code>ls</code> distributed with some Android systems is even known to lack support for the <code>-l</code> flag.
+</p>
+
+<p>
+This directory exists because Android does not extract the contents of application packages on to the file system while unpacking them, but instead requires programs like Emacs to access its contents using a special “asset manager” interface. Here are the peculiarities that result from such an implementation:
+</p>
+
+<ul class="org-ul">
+<li>Subprocesses (such as <code>ls</code>) can not run from the <code>/assets</code> directory; if you try to run a subprocess with <code>current-directory</code> set to <code>/assets</code>, <code>/content/storage</code> or a subdirectory thereof, it will run from the home directory instead.</li>
+<li>There are no <code>.</code> and <code>..</code> directories inside the <code>/assets</code> or <code>/content</code> directory.</li>
+<li>Files in the <code>/assets</code> directory are always read only, and may be read in to memory more than once each time they are opened.</li>
+</ul>
+
+<p>
+Aside from the <code>/assets</code> directory, Android programs normally have access to four other directories. They are:
+</p>
+
+<ul class="org-ul">
+<li>The <i>app data</i> directory. This also serves as the home directory for Emacs, and is always accessible read-write.</li>
+<li>The <i>app library</i> directory. This is automatically appended to <code>exec-path</code> and made <code>exec-directory</code> upon startup, and contains utility executables alongside Emacs itself.</li>
+<li>The <i>external storage</i> directory. This is accessible to Emacs when the user grants the “Files and Media” permission to Emacs via system settings.</li>
+<li>Directories provided by <i>document providers</i> on Android 5.0 and later. These directories exist outside the normal Unix filesystem, containing files provided by external programs (see <a href="docs/emacs--Android-Document-Providers.html">Accessing Files from Other Programs on Android</a>.)</li>
+</ul>
+
+<p>
+Despite ordinary installations of Android not having files within the (normally read-only) root directory named <code>content</code> or <code>assets</code>, you may want to access real files by these names if the Android installation in use has been customized. These files will conflict with the aforementioned special directories, but can nevertheless be accessed by writing their names relative to the “parent” directory of the root directory, as so illustrated: <code>/../content</code>, <code>/../assets</code>.
+</p>
+
+<p>
+The external storage directory is found at <code>/sdcard</code>. The other directories are not found at any fixed location (but see below), although the app data directory is typically symlinked to <code>/data/data/org.gnu.emacs/files</code>.
+</p>
+
+<p>
+Older versions of Android used to place the app library directory under the name <code>lib</code> in the parent of the app data directory. Today, this directory is often placed in a directory with a randomly generated name under <code>/data/app</code>.
+</p>
+
+<p>
+For the convenience of scripts running within applications sharing the same user ID as Emacs (which have no access to the <code>exec-directory</code> variable), a fairly considerable effort is made at startup to symlink the application library directory to its traditional location within the parent of the app data directory.
+</p>
+
+<p>
+If Emacs is reinstalled and the location of the app library directory consequently changes, that symlink will also be updated to point to its new location the next time Emacs is started by the system.
+</p>
+
+<p>
+On Android devices running very old (2.6.29) versions of the Linux kernel, Emacs needs to create files named starting with <code>temp~unlinked</code> in the temporary file directory in order to read from asset files. Do not create files with such names yourself, or they may be overwritten or removed.
+</p>
+
+<p>
+On Android 11 and later, the Android system restricts applications from accessing files in the <code>/sdcard</code> directory using file-related system calls such as <code>open</code> and <code>readdir</code>.
+</p>
+
+<p>
+This restriction is known as “Scoped Storage”, and supposedly makes the system more secure. Unfortunately, it also means that Emacs cannot access files in those directories, despite holding the necessary permissions. Thankfully, the Open Handset Alliance's version of Android allows this restriction to be disabled on a per-program basis; the corresponding option in the system settings panel is:
+</p>
+
+<pre class="example" id="org6167316">
+System -&gt; Apps -&gt; Special App Access -&gt; All files access -&gt; Emacs
+</pre>
+
+<p>
+After you disable or enable this setting as appropriate and grant Emacs the “Files and Media” permission, it will be able to access files under <code>/sdcard</code> as usual. These settings are not present on some proprietary versions of Android.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Specifying-the-Display-Name">1. C.5 Specifying the Display Name ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Font-X.html">Font Specification Options</a>   Previous: <a href="docs/emacs--Environment.html">Environment Variables</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Display-X"></a>
+</p>
+
+<hr />
+<div id="outline-container-Specifying-the-Display-Name" class="outline-2">
+<h2 id="Specifying-the-Display-Name"><span class="section-number-2">1.</span> C.5 Specifying the Display Name <a href="#Specifying-the-Display-Name">¶</a></h2>
+<div class="outline-text-2" id="text-Specifying-the-Display-Name">
+<p>
+The environment variable <code>DISPLAY</code> tells all X clients, including Emacs, where to display their windows. Its value is set by default in ordinary circumstances, when you start an X server and run jobs locally. You can specify the display yourself; one reason to do this is if you want to log into another system and run Emacs there, and have the window displayed at your local terminal.
+</p>
+
+<p>
+<code>DISPLAY</code> has the syntax ‘=host==:==display==.==screen=', where <code>host</code> is the host name of the X Window System server machine, <code>display</code> is an arbitrarily-assigned number that distinguishes your server (X terminal) from other servers on the same machine, and <code>screen</code> is a field that allows an X server to control multiple terminal screens. The period and the <code>screen</code> field are optional. If included, <code>screen</code> is usually zero.
+</p>
+
+<p>
+For example, if your host is named ‘=glasperle=' and your server is the first (or perhaps the only) server listed in the configuration, your <code>DISPLAY</code> is ‘=glasperle:0.0='.
+</p>
+
+<p>
+You can specify the display name explicitly when you run Emacs, either by changing the <code>DISPLAY</code> variable, or with the option ‘=-d <code>=display</code>' or ‘=&#x2013;display===display='. Here is an example:
+</p>
+
+<pre class="example" id="orgbf43827">
+emacs --display=glasperle:0 &amp;
+</pre>
+
+<p>
+You can inhibit the use of the X window system with the ‘=-nw=' option. Then Emacs uses its controlling text terminal for display. See <a href="docs/emacs--Initial-Options.html">Initial Options</a>.
+</p>
+
+<p>
+Sometimes, security arrangements prevent a program on a remote system from displaying on your local system. In this case, trying to run Emacs produces messages like this:
+</p>
+
+<pre class="example" id="org11af319">
+Xlib:  connection to "glasperle:0.0" refused by server
+</pre>
+
+<p>
+You might be able to overcome this problem by using the <code>xhost</code> command on the local system to give permission for access from your remote machine.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Documentation-for-a-Key">1. 12.2 Documentation for a Key ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>   Previous: <a href="docs/emacs--Help-Summary.html">Help Summary</a>   Up: <a href="docs/emacs--Help.html">Help</a>
+</p>
+
+<p>
+<a id="Key-Help"></a>
+</p>
+
+<hr />
+<div id="outline-container-Documentation-for-a-Key" class="outline-2">
+<h2 id="Documentation-for-a-Key"><span class="section-number-2">1.</span> 12.2 Documentation for a Key <a href="#Documentation-for-a-Key">¶</a></h2>
+<div class="outline-text-2" id="text-Documentation-for-a-Key">
+<p>
+The help commands to get information about a key sequence are C-h c (<code>describe-key-briefly</code>) and C-h k (<code>describe-key</code>).
+</p>
+
+<p>
+C-h c <code>key</code> displays in the echo area the name of the command that <code>key</code> is bound to. For example, C-h c C-f displays ‘=forward-char='.
+</p>
+
+<p>
+C-h k <code>key</code> is similar but gives more information: it displays a help buffer containing the command's <i>documentation string</i>, which describes exactly what the command does.
+</p>
+
+<p>
+C-h K <code>key</code> displays the section of the Emacs manual that describes the command corresponding to <code>key</code>.
+</p>
+
+<p>
+C-h c, C-h k and C-h K work for any sort of key sequences, including function keys, menus, and mouse events (except that C-h c ignores mouse movement events). For instance, after C-h k you can select a menu item from the menu bar, to view the documentation string of the command it runs.
+</p>
+
+<p>
+C-h w <code>command</code> RET lists the keys that are bound to <code>command</code>. It displays the list in the echo area. If it says the command is not on any key, that means you must use M-x to run it. C-h w runs the command <code>where-is</code>.
+</p>
+
+<p>
+Some modes in Emacs use various buttons (see <a href="../elisp_html/Buttons.html#Buttons">Buttons</a> in The Emacs Lisp Reference Manual) and widgets (see <a href="../widget_html/Introduction.html#Introduction">Introduction</a> in Emacs Widgets) that can be clicked to perform some action. To find out what function is ultimately invoked by these buttons, Emacs provides the <code>button-describe</code> and <code>widget-describe</code> commands, that should be run with point over the button.
+</p>
+
+<p>
+M-x which-key is a global minor mode which helps in discovering keymaps. It displays keybindings following your currently entered incomplete command (prefix), in a popup.
+</p>
+
+<hr />
+</div>
+</div>

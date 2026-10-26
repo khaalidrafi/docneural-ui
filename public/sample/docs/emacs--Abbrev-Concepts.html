@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Abbrev-Concepts-1">1. 31.1 Abbrev Concepts ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Defining-Abbrevs.html">Defining Abbrevs</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Abbrev-Concepts"></a>
+</p>
+
+<hr />
+<div id="outline-container-Abbrev-Concepts-1" class="outline-2">
+<h2 id="Abbrev-Concepts-1"><span class="section-number-2">1.</span> 31.1 Abbrev Concepts <a href="#Abbrev-Concepts-1">¶</a></h2>
+<div class="outline-text-2" id="text-Abbrev-Concepts-1">
+<p>
+An <i>abbrev</i> is a word that has been defined to <i>expand</i> into a specified <i>expansion</i>. When you insert a word-separator character following the abbrev, that expands the abbrev&#x2014;replacing the abbrev with its expansion. For example, if ‘=foo=' is defined as an abbrev expanding to ‘=find outer otter=', then typing f o o . will insert ‘=find outer otter.='.
+</p>
+
+<p>
+Abbrevs expand only when Abbrev mode, a buffer-local minor mode, is enabled. Disabling Abbrev mode does not cause abbrev definitions to be forgotten, but they do not expand until Abbrev mode is enabled again. The command M-x abbrev-mode toggles Abbrev mode; with a numeric argument, it turns Abbrev mode on if the argument is positive, off otherwise. See <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>.
+</p>
+
+<p>
+Abbrevs can have <i>mode-specific</i> definitions, active only in one major mode. Abbrevs can also have <i>global</i> definitions that are active in all major modes. The same abbrev can have a global definition and various mode-specific definitions for different major modes. A mode-specific definition for the current major mode overrides a global definition.
+</p>
+
+<p>
+You can define abbrevs interactively during the editing session, irrespective of whether Abbrev mode is enabled. You can also save lists of abbrev definitions in files, which you can then reload for use in later sessions.
+</p>
+</div>
+</div>

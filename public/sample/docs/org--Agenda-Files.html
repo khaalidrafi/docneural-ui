@@ -1,0 +1,76 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Agenda-Files-1">1. 11.1 Agenda Files ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (92)</a></li>
+<li><a href="#section-1">1.0.2. (93)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Agenda-Files"></a>
+Next: <a href="docs/org--Agenda-Dispatcher.html">The Agenda Dispatcher</a>, Up: <a href="docs/org--Agenda-Views.html">Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Agenda-Files-1" class="outline-2">
+<h2 id="Agenda-Files-1"><span class="section-number-2">1.</span> 11.1 Agenda Files <a href="#Agenda-Files-1">¶</a></h2>
+<div class="outline-text-2" id="text-Agenda-Files-1">
+<p>
+The information to be shown is normally collected from all <i>agenda files</i>, the files listed in the variable <code>org-agenda-files</code>. If a directory is part of this list, all files with the extension ‘=.org=' in this directory are part of the list.
+</p>
+
+<p>
+Thus, even if you only work with a single Org file, that file should be put into the list. You can customize <code>org-agenda-files</code>, but the easiest way to maintain it is through the following commands
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_005b"></a>C-c [ (<code>org-agenda-file-to-front</code>) </dt><dd>Add current file to the list of agenda files. The file is added to the front of the list. If it was already in the list, it is moved to the front. With a prefix argument, file is added/moved to the end.</dd>
+
+<dt><a id="index-C_002dc-_005d"></a>C-c ] (<code>org-remove-file</code>) </dt><dd>Remove current file from the list of agenda files.</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002d_0027"></a>C-' <br />
+C-, (<code>org-cycle-agenda-files</code>) :: Cycle through agenda file list, visiting one file after the other.</dd>
+
+<dt><a id="index-org_002dswitchb"></a>M-x org-switchb </dt><dd>Command to use an Iswitchb-like interface to switch to and between Org buffers.</dd>
+</dl>
+
+<p>
+The Org menu contains the current list of files and can be used to visit any of them.
+</p>
+
+<p>
+If you would like to focus the agenda temporarily on a file not in this list, or on just one file in the list, or even on only a subtree in a file, then this can be done in different ways. For a single agenda command, you may press &lt; once or several times in the dispatcher (see <a href="docs/org--Agenda-Dispatcher.html">The Agenda Dispatcher</a>). To restrict the agenda scope for an extended period, use the following commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-_003c"></a>C-c C-x &lt; (<code>org-agenda-set-restriction-lock</code>) </dt><dd>Restrict the agenda to the current subtree. If there already is a restriction at point, remove it. When called with a universal prefix argument or with point before the first headline in a file, set the agenda scope to the entire file. This restriction remains in effect until removed with C-c C-x &gt;, or by typing either &lt; or &gt; in the agenda dispatcher. If there is a window displaying an agenda view, the new restriction takes effect immediately.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-_003e"></a>C-c C-x &gt; (<code>org-agenda-remove-restriction-lock</code>) </dt><dd>Remove the restriction created by C-c C-x &lt;.</dd>
+</dl>
+
+<p>
+When working with Speedbar, you can use the following commands in the Speedbar frame:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dspeedbar_002dset_002dagenda_002drestriction"></a>&lt; (<code>org-speedbar-set-agenda-restriction</code>) </dt><dd>Restrict the agenda to the item&#x2014;either an Org file or a subtree in such a file&#x2014;at point in the Speedbar frame. If agenda is already restricted there, remove the restriction. If there is a window displaying an agenda view, the new restriction takes effect immediately.</dd>
+
+<dt><a id="index-org_002dagenda_002dremove_002drestriction_002dlock-1"></a>&gt; (<code>org-agenda-remove-restriction-lock</code>) </dt><dd>Remove the restriction.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

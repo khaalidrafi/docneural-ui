@@ -1,0 +1,24 @@
+:PROPERTIES:
+:ID: emacs--Other-Calendars
+:END:
+#+filetags: :emacs:
+#+title: Other Calendars
+
+Next: [[id:emacs--Diary][The Diary]]   Previous: [[id:emacs--Lunar-Phases][Phases of the Moon]]   Up: [[id:emacs--Calendar_002fDiary][The Calendar and the Diary]]
+
+<<Other-Calendars>>
+
+--------------
+
+*** 33.9 Conversion To and From Other Calendars [[#Conversion-To-and-From-Other-Calendars][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Conversion-To-and-From-Other-Calendars
+:CLASS: section
+:END:
+The Emacs calendar displayed is /always/ the /Gregorian calendar/, sometimes called the /New Style calendar/, which is used in most of the world today. However, this calendar did not exist before the sixteenth century and was not widely used before the eighteenth century; it did not fully displace the Julian calendar and gain universal acceptance until the early twentieth century. The Emacs calendar can display any month since January, year 1 of the current era, but the calendar displayed is always the Gregorian, even for a date at which the Gregorian calendar did not exist.
+
+While Emacs cannot display other calendars, it can convert dates to and from several other calendars.
+
+- [[id:emacs--Calendar-Systems][Supported Calendar Systems]]
+- [[id:emacs--To-Other-Calendar][Converting To Other Calendars]]
+- [[id:emacs--From-Other-Calendar][Converting From Other Calendars]]

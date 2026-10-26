@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Flagging-Many-Files-at-Once">1. 32.4 Flagging Many Files at Once ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Dired-Visiting.html">Visiting Files in Dired</a>   Previous: <a href="docs/emacs--Dired-Deletion.html">Deleting Files with Dired</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Flagging-Many-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Flagging-Many-Files-at-Once" class="outline-2">
+<h2 id="Flagging-Many-Files-at-Once"><span class="section-number-2">1.</span> 32.4 Flagging Many Files at Once <a href="#Flagging-Many-Files-at-Once">¶</a></h2>
+<div class="outline-text-2" id="text-Flagging-Many-Files-at-Once">
+<p>
+The #, ~, ., % &amp;, and % d commands flag many files for deletion, based on their file names:
+</p>
+
+<dl class="org-dl">
+<dt>#</dt><dd>Flag all auto-save files (files whose names start and end with ‘=#=') for deletion (see <a href="docs/emacs--Auto-Save.html">Auto-Saving: Protection Against Disasters</a>).</dd>
+
+<dt>~</dt><dd>Flag all backup files (files whose names end with ‘=~=') for deletion (see <a href="docs/emacs--Backup.html">Backup Files</a>).</dd>
+
+<dt>. (Period)</dt><dd>Flag excess numeric backup files for deletion. The oldest and newest few backup files of any one file are exempt; the middle ones are flagged.</dd>
+
+<dt>% &amp;</dt><dd>Flag for deletion all files with certain kinds of names which suggest you could easily create those files again.</dd>
+
+<dt>% d <code>regexp</code> RET</dt><dd>Flag for deletion all files whose names match the regular expression <code>regexp</code>.</dd>
+</dl>
+
+<p>
+​# (<code>dired-flag-auto-save-files</code>) flags all files whose names look like auto-save files&#x2014;that is, files whose names begin and end with ‘=#='. See <a href="docs/emacs--Auto-Save.html">Auto-Saving: Protection Against Disasters</a>.
+</p>
+
+<p>
+~ (<code>dired-flag-backup-files</code>) flags all files whose names say they are backup files&#x2014;that is, files whose names end in ‘=~='. See <a href="docs/emacs--Backup.html">Backup Files</a>.
+</p>
+
+<p>
+. (period, <code>dired-clean-directory</code>) flags just some of the backup files for deletion: all but the oldest few and newest few backups of any one file. Normally, the number of newest versions kept for each file is given by the variable <code>dired-kept-versions</code> (<i>not</i> <code>kept-new-versions</code>; that applies only when saving). The number of oldest versions to keep is given by the variable <code>kept-old-versions</code>.
+</p>
+
+<p>
+Period with a positive numeric argument, as in C-u 3 ., specifies the number of newest versions to keep, overriding <code>dired-kept-versions</code>. A negative numeric argument overrides <code>kept-old-versions</code>, using minus the value of the argument to specify the number of oldest versions of each file to keep.
+</p>
+
+<p>
+% &amp; (<code>dired-flag-garbage-files</code>) flags files whose names match the regular expression specified by the variable <code>dired-garbage-files-regexp</code>. By default, this matches certain files produced by TeX, ‘=.bak=' files, and the ‘=.orig=' and ‘=.rej=' files produced by <code>patch</code>.
+</p>
+
+<p>
+% d flags all files whose names match a specified regular expression (<code>dired-flag-files-regexp</code>). Only the non-directory part of the file name is used in matching. You can use ‘=^=' and ‘=$=' to anchor matches. You can exclude certain subdirectories from marking by hiding them while you use % d. See <a href="docs/emacs--Hiding-Subdirectories.html">Hiding Subdirectories</a>.
+</p>
+
+<hr />
+</div>
+</div>

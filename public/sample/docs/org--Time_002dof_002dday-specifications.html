@@ -1,0 +1,85 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Time_002dof_002dday-specifications-1">1. 11.4.2 Time-of-day specifications ¶</a>
+<ul>
+<li><a href="#section">1.1. (98)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Time_002dof_002dday-specifications"></a>
+Next: <a href="docs/org--Sorting-of-agenda-items.html">Sorting of agenda items</a>, Previous: <a href="docs/org--Categories.html">Categories</a>, Up: <a href="docs/org--Presentation-and-Sorting.html">Presentation and Sorting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Time_002dof_002dday-specifications-1" class="outline-2">
+<h2 id="Time_002dof_002dday-specifications-1"><span class="section-number-2">1.</span> 11.4.2 Time-of-day specifications <a href="#Time_002dof_002dday-specifications-1">¶</a></h2>
+<div class="outline-text-2" id="text-Time_002dof_002dday-specifications-1">
+<p>
+Org mode checks each agenda item for a time-of-day specification. The time can be part of the timestamp that triggered inclusion into the agenda, for example
+</p>
+
+<pre class="example" id="org2d1a66b">
+&lt;2005-05-10 Tue 19:00&gt;
+</pre>
+
+<p>
+Time ranges can be specified with two timestamps:
+</p>
+
+<pre class="example" id="org8dc803c">
+&lt;2005-05-10 Tue 20:30&gt;--&lt;2005-05-10 Tue 22:15&gt;
+</pre>
+
+<p>
+In the headline of the entry itself, a time(range)&#x2014;like ‘=12:45=' or a ‘=8:30-1pm='&#x2014;may also appear as plain text.
+</p>
+
+<p>
+If the agenda integrates the Emacs diary (see <a href="docs/org--Weekly_002fdaily-agenda.html">Weekly/daily agenda</a>), time specifications in diary entries are recognized as well.
+</p>
+
+<p>
+For agenda display, Org mode extracts the time and displays it in a standard 24-hour format as part of the prefix. The example times in the previous paragraphs would end up in the agenda like this:
+</p>
+
+<pre class="example" id="org8dd474d">
+ 8:30-13:00 Arthur Dent lies in front of the bulldozer
+12:45...... Ford Prefect arrives and takes Arthur to the pub
+19:00...... The Vogon reads his poem
+20:30-22:15 Marvin escorts the Hitchhikers to the bridge
+</pre>
+
+<p>
+If the agenda is in single-day mode, or for the display of today, the timed entries are embedded in a time grid, like
+</p>
+
+<pre class="example" id="orgf846620">
+ 8:00...... ------------------
+ 8:30-13:00 Arthur Dent lies in front of the bulldozer
+10:00...... ------------------
+12:00...... ------------------
+12:45...... Ford Prefect arrives and takes Arthur to the pub
+14:00...... ------------------
+16:00...... ------------------
+18:00...... ------------------
+19:00...... The Vogon reads his poem
+20:00...... ------------------
+20:30-22:15 Marvin escorts the Hitchhikers to the bridge
+</pre>
+
+<p>
+The time grid can be turned on and off with the variable <code>org-agenda-use-time-grid</code>, and can be configured with <code>org-agenda-time-grid</code>.
+</p>
+
+<hr />
+</div>
+</div>

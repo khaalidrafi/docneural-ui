@@ -8,12 +8,19 @@ import type { LayoutMode } from './types'
 
 const KEY = 'docneural:layout'
 
-export function loadLayout(): LayoutMode {
+/** First-visit default: SMALL corpora open packed (the cluster silhouette
+ *  shows how a small corpus hangs together); big ones open spread — past a
+ *  few hundred neurons the packed view is a solid blob of ink, and the
+ *  spread layout is the one overview you can actually read. The visitor's
+ *  own toggle always wins from here on. */
+export function loadLayout(nodeCount = 0): LayoutMode {
   try {
-    return localStorage.getItem(KEY) === 'spread' ? 'spread' : 'cluster'
+    const saved = localStorage.getItem(KEY)
+    if (saved === 'spread' || saved === 'cluster') return saved
   } catch {
-    return 'cluster' // private mode: the shipped default
+    /* private mode: fall through to the size-based default */
   }
+  return nodeCount > 300 ? 'spread' : 'cluster'
 }
 
 export function writeLayout(mode: LayoutMode): void {

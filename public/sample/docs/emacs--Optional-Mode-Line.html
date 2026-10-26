@@ -1,0 +1,95 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Optional-Mode-Line-Features">1. 16.19 Optional Mode Line Features ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Text-Display.html">How Text Is Displayed</a>   Previous: <a href="docs/emacs--Selective-Display.html">Selective Display</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Optional-Mode-Line"></a>
+</p>
+
+<hr />
+<div id="outline-container-Optional-Mode-Line-Features" class="outline-2">
+<h2 id="Optional-Mode-Line-Features"><span class="section-number-2">1.</span> 16.19 Optional Mode Line Features <a href="#Optional-Mode-Line-Features">¶</a></h2>
+<div class="outline-text-2" id="text-Optional-Mode-Line-Features">
+<p>
+The buffer percentage <code>pos</code> indicates the percentage of the buffer above the top of the window. You can additionally display the size of the buffer by typing M-x size-indication-mode to turn on Size Indication mode. The size will be displayed immediately following the buffer percentage like this:
+</p>
+
+<pre class="example" id="orgb5222a6">
+pos of size
+</pre>
+
+<p>
+Here <code>size</code> is the human readable representation of the number of characters in the buffer, which means that ‘=k=' for 10<sup>3</sup>, ‘=M=' for 10<sup>6</sup>, ‘=G=' for 10<sup>9</sup>, etc., are used to abbreviate.
+</p>
+
+<p>
+The current line number of point appears in the mode line when Line Number mode is enabled. Use the command M-x line-number-mode to turn this mode on and off; normally it is on. The line number appears after the buffer percentage <code>pos</code>, with the letter ‘=L=' to indicate what it is.
+</p>
+
+<p>
+Similarly, you can display the current column number by turning on Column Number mode with M-x column-number-mode. The column number is indicated by the letter ‘=C='. However, when both of these modes are enabled, the line and column numbers are displayed in parentheses, the line number first, rather than with ‘=L=' and ‘=C='. For example: ‘=(561,2)='. See <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>, for more information about minor modes and about how to use these commands.
+</p>
+
+<p>
+In Column Number mode, the displayed column number counts from zero starting at the left margin of the window. If you would prefer for the displayed column number to count from one, you may set <code>column-number-indicator-zero-based</code> to <code>nil</code>.
+</p>
+
+<p>
+If you have narrowed the buffer (see <a href="docs/emacs--Narrowing.html">Narrowing</a>), the displayed line number is relative to the accessible portion of the buffer. Thus, it isn't suitable as an argument to <code>goto-line</code>. (The command <code>what-line</code> shows the line number relative to the whole file.) You can use <code>goto-line-relative</code> command to move point to the line relative to the accessible portion of the narrowed buffer.
+</p>
+
+<p>
+If the buffer is very large (larger than the value of <code>line-number-display-limit</code>), Emacs won't compute the line number, because that would be too slow; therefore, the line number won't appear on the mode-line. To remove this limit, set <code>line-number-display-limit</code> to <code>nil</code>.
+</p>
+
+<p>
+Line-number computation can also be slow if the lines in the buffer are too long. For this reason, Emacs doesn't display line numbers if the average width, in characters, of lines near point is larger than the value of <code>line-number-display-limit-width</code>. The default value is 200 characters.
+</p>
+
+<p>
+Emacs can optionally display the time and system load in all mode lines. To enable this feature, type M-x display-time or customize the option <code>display-time-mode</code>. The information added to the mode line looks like this:
+</p>
+
+<pre class="example" id="orgb8baea2">
+hh:mmPM l.ll
+</pre>
+
+<p>
+Here <code>hh</code> and <code>mm</code> are the hour and minute, followed always by ‘=AM=' or ‘=PM='. <code>l.ll</code> is the average number, collected for the last few minutes, of processes in the whole system that were either running or ready to run (i.e., were waiting for an available processor). (Some fields may be missing if your operating system cannot support them.) If you prefer time display in 24-hour format, set the variable <code>display-time-24hr-format</code> to <code>t</code>.
+</p>
+
+<p>
+The word ‘=Mail=' appears after the load level if there is mail for you that you have not read yet. On graphical displays, you can use an icon instead of ‘=Mail=' by customizing <code>display-time-use-mail-icon</code>; this may save some space on the mode line. You can customize <code>display-time-mail-face</code> to make the mail indicator prominent. Use <code>display-time-mail-file</code> to specify the mail file to check, or set <code>display-time-mail-directory</code> to specify the directory to check for incoming mail (any nonempty regular file in the directory is considered to be newly arrived mail).
+</p>
+
+<p>
+When running Emacs on a laptop computer, you can display the battery charge on the mode-line, by using the command <code>display-battery-mode</code> or customizing the variable <code>display-battery-mode</code>. The variable <code>battery-mode-line-format</code> determines the way the battery charge is displayed; the exact mode-line message depends on the operating system, and it usually shows the current battery charge as a percentage of the total charge. The functions in <code>battery-update-functions</code> are run after updating the mode line, and can be used to trigger actions based on the battery status.
+</p>
+
+<p>
+On graphical displays, the mode line is drawn as a 3D box. If you don't like this effect, you can disable it by customizing the <code>mode-line</code> face and setting its <code>box</code> attribute to <code>nil</code>. See <a href="docs/emacs--Face-Customization.html">Customizing Faces</a>.
+</p>
+
+<p>
+By default, the mode line of nonselected windows is displayed in a different face, called <code>mode-line-inactive</code>. Only the selected window is displayed in the <code>mode-line</code> face. This helps show which window is selected. When the minibuffer is selected, since it has no mode line, the window from which you activated the minibuffer has its mode line displayed using <code>mode-line</code>; as a result, ordinary entry to the minibuffer does not change any mode lines.
+</p>
+
+<p>
+You can disable use of <code>mode-line-inactive</code> by setting variable <code>mode-line-in-non-selected-windows</code> to <code>nil</code>; then all mode lines are displayed in the <code>mode-line</code> face.
+</p>
+
+<p>
+You can customize the mode line display for each of the end-of-line formats by setting each of the variables <code>eol-mnemonic-unix</code>, <code>eol-mnemonic-dos</code>, <code>eol-mnemonic-mac</code>, and <code>eol-mnemonic-undecided</code> to the strings you prefer.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,202 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-weather">1.0.1. 9.15 Invoking <code>guix weather</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-weather"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-processes.html">Invoking <code>guix processes</code></a>, Previous: <a href="docs/guix--Invoking-guix-container.html">Invoking <code>guix container</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-weather-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-weather" class="outline-4">
+<h4 id="invoking-guix-weather"><span class="section-number-4">1.0.1.</span> 9.15 Invoking <code>guix weather</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-weather">
+<p>
+<a id="index-guix-weather"></a>
+Occasionally you're grumpy because substitutes are lacking and you end up building packages by yourself (see <a href="docs/guix--Substitutes.html">Substitutes</a>). The <code>guix weather</code> command reports on substitute availability on the specified servers so you can have an idea of whether you'll be grumpy today. It can sometimes be useful info as a user, but it is primarily useful to people running <code>guix publish</code> (see <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>). Sometimes substitutes <i>are</i> available but they are not authorized on your system; <code>guix weather</code> reports it so you can authorize them if you want (see <a href="docs/guix--Getting-Substitutes-from-Other-Servers.html">Getting Substitutes from Other Servers</a>).
+</p>
+
+<p>
+<a id="index-statistics_002c-for-substitutes"></a> <a id="index-availability-of-substitutes"></a> <a id="index-substitute-availability"></a> <a id="index-weather_002c-substitute-availability"></a>
+Here's a sample run:
+</p>
+
+<pre class="example" id="org88c96de">
+$ guix weather --substitute-urls=https://guix.example.org
+computing 5,872 package derivations for x86_64-linux...
+looking for 6,128 store items on https://guix.example.org..
+updating substitutes from 'https://guix.example.org'... 100.0%
+https://guix.example.org
+  43.4% substitutes available (2,658 out of 6,128)
+  7,032.5 MiB of nars (compressed)
+  19,824.2 MiB on disk (uncompressed)
+  0.030 seconds per request (182.9 seconds in total)
+  33.5 requests per second
+
+  9.8% (342 out of 3,470) of the missing items are queued
+  867 queued builds
+      x86_64-linux: 518 (59.7%)
+      i686-linux: 221 (25.5%)
+      aarch64-linux: 128 (14.8%)
+  build rate: 23.41 builds per hour
+      x86_64-linux: 11.16 builds per hour
+      i686-linux: 6.03 builds per hour
+      aarch64-linux: 6.41 builds per hour
+</pre>
+
+<p>
+<a id="index-continuous-integration_002c-statistics"></a>
+As you can see, it reports the fraction of all the packages for which substitutes are available on the server&#x2014;regardless of whether substitutes are enabled, and regardless of whether this server's signing key is authorized. It also reports the size of the compressed archives (“nars”) provided by the server, the size the corresponding store items occupy in the store (assuming deduplication is turned off), and the server's throughput. The second part gives continuous integration (CI) statistics, if the server supports it. In addition, using the <code>--coverage</code> option, <code>guix weather</code> can list “important” package substitutes missing on the server (see below).
+</p>
+
+<p>
+To achieve that, <code>guix weather</code> queries over HTTP(S) meta-data (<i>narinfos</i>) for all the relevant store items. Like <code>guix challenge</code>, it ignores signatures on those substitutes, which is innocuous since the command only gathers statistics and cannot install those substitutes.
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org5cac83f">
+guix weather options… [packages…]
+</pre>
+
+<p>
+When <code>packages</code> is omitted, <code>guix weather</code> checks the availability of substitutes for <i>all</i> the packages, or for those specified with <code>--manifest</code>; otherwise it only considers the specified packages. It is also possible to query specific system types with <code>--system</code>. <code>guix weather</code> exits with a non-zero code when the fraction of available substitutes is below 100%.
+</p>
+
+<p>
+The available options are listed below.
+</p>
+
+<dl class="org-dl">
+<dt><code>--substitute-urls===urls</code></dt><dd><code>urls</code> is the space-separated list of substitute server URLs to query. When this option is omitted, the URLs specified with the <code>--substitute-urls</code> option of <code>guix-daemon</code> are used or, as a last resort, the default set of substitute URLs.</dd>
+
+<dt>(no term)</dt><dd><code>--system===system</code><br />
+<code>-s ==system</code> :: Query substitutes for <code>system</code>&#x2014;e.g., <code>aarch64-linux</code>. This option can be repeated, in which case <code>guix weather</code> will query substitutes for several system types.</dd>
+
+<dt><code>--manifest===file</code></dt><dd><p>
+Instead of querying substitutes for all the packages, only ask for those specified in <code>file</code>. <code>file</code> must contain a <i>manifest</i>, as with the <code>-m</code> option of <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+This option can be repeated several times, in which case the manifests are concatenated.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Consider the package <code>expr</code> evaluates to.
+</p>
+
+<p>
+A typical use case for this option is specifying a package that is hidden and thus cannot be referred to in the usual way, as in this example:
+</p>
+
+<pre class="example" id="org9bef236">
+guix weather -e '(@@ (gnu packages rust) rust-bootstrap)'
+</pre>
+
+<p>
+This option can be repeated.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--coverage[===count==]</code><br />
+<code>-c [==count==]</code> :: Report on substitute coverage for packages: list packages with at least <code>count</code> dependents (zero by default) for which substitutes are unavailable. Dependent packages themselves are not listed: if <code>b</code> depends on <code>a</code> and <code>a</code> has no substitutes, only <code>a</code> is listed, even though <code>b</code> usually lacks substitutes as well. The result looks like this:
+</p>
+
+<pre class="example" id="org241077d">
+$ guix weather --substitute-urls=https://bordeaux.guix.gnu.org https://ci.guix.gnu.org -c 10
+computing 8,983 package derivations for x86_64-linux...
+looking for 9,343 store items on https://bordeaux.guix.gnu.org https://ci.guix.gnu.org...
+updating substitutes from 'https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'... 100.0%
+https://bordeaux.guix.gnu.org https://ci.guix.gnu.org
+  64.7% substitutes available (6,047 out of 9,343)
+…
+2502 packages are missing from 'https://bordeaux.guix.gnu.org https://ci.guix.gnu.org' for 'x86_64-linux', among which:
+    58  kcoreaddons@5.49.0      /gnu/store/…-kcoreaddons-5.49.0
+    46  qgpgme@1.11.1           /gnu/store/…-qgpgme-1.11.1
+    37  perl-http-cookiejar@0.008  /gnu/store/…-perl-http-cookiejar-0.008
+    …
+</pre>
+
+<p>
+What this example shows is that <code>kcoreaddons</code> and presumably the 58 packages that depend on it have no substitutes at <code>bordeaux.guix.gnu.org</code>; likewise for <code>qgpgme</code> and the 46 packages that depend on it.
+</p>
+
+<p>
+If you are a Guix developer, or if you are taking care of this build farm, you'll probably want to have a closer look at these packages: they may simply fail to build.
+</p></dd>
+
+<dt><code>--display-missing</code></dt><dd>Display the list of store items for which substitutes are missing.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-processes.html">Invoking <code>guix processes</code></a>, Previous: <a href="docs/guix--Invoking-guix-container.html">Invoking <code>guix container</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

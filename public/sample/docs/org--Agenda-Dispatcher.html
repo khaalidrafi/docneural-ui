@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Agenda-Dispatcher">1. 11.2 The Agenda Dispatcher ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (94)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Agenda-Dispatcher"></a>
+Next: <a href="docs/org--Built_002din-Agenda-Views.html">The Built-in Agenda Views</a>, Previous: <a href="docs/org--Agenda-Files.html">Agenda Files</a>, Up: <a href="docs/org--Agenda-Views.html">Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-Agenda-Dispatcher" class="outline-2">
+<h2 id="The-Agenda-Dispatcher"><span class="section-number-2">1.</span> 11.2 The Agenda Dispatcher <a href="#The-Agenda-Dispatcher">¶</a></h2>
+<div class="outline-text-2" id="text-The-Agenda-Dispatcher">
+<p>
+The views are created through a dispatcher, accessible with M-x org-agenda, or, better, bound to a global key (see <a href="docs/org--Activation.html">Activation</a>). It displays a menu from which an additional letter is required to execute a command. The dispatcher offers the following default commands:
+</p>
+
+<dl class="org-dl">
+<dt>a</dt><dd>Create the calendar-like agenda (see <a href="docs/org--Weekly_002fdaily-agenda.html">Weekly/daily agenda</a>).</dd>
+
+<dt>t, T</dt><dd>Create a list of all TODO items (see <a href="docs/org--Global-TODO-list.html">The global TODO list</a>).</dd>
+
+<dt>m, M</dt><dd>Create a list of headlines matching a given expression (see <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a>).</dd>
+
+<dt><a id="index-s-_0028Agenda-dispatcher_0029"></a>s </dt><dd>Create a list of entries selected by a boolean expression of keywords and/or regular expressions that must or must not occur in the entry.</dd>
+
+<dt><a id="index-_002f-_0028Agenda-dispatcher_0029"></a>/ </dt><dd>Search for a regular expression in all agenda files and additionally in the files listed in <code>org-agenda-text-search-extra-files</code>. This uses the Emacs command <code>multi-occur</code>. A prefix argument can be used to specify the number of context lines for each match, the default is 1.</dd>
+
+<dt>#</dt><dd>Create a list of stuck projects (see <a href="docs/org--Stuck-projects.html">Stuck projects</a>).</dd>
+
+<dt>!</dt><dd>Configure the list of stuck projects (see <a href="docs/org--Stuck-projects.html">Stuck projects</a>).</dd>
+
+<dt><a id="index-_003c-_0028Agenda-dispatcher_0029"></a>&lt; </dt><dd>Restrict an agenda command to the current buffer. If narrowing is in effect restrict to the narrowed part of the buffer. After pressing &lt;, you still need to press the character selecting the command.</dd>
+
+<dt><a id="index-_003c-_003c-_0028Agenda-dispatcher_0029"></a>&lt; &lt; </dt><dd>If there is an active region, restrict the following agenda command to the region. Otherwise, restrict it to the current subtree. After pressing &lt; &lt;, you still need to press the character selecting the command.</dd>
+
+<dt><a id="index-_002a-_0028Agenda-dispatcher_0029"></a>* </dt><dd>Toggle sticky agenda views. By default, Org maintains only a single agenda buffer and rebuilds it each time you change the view, to make sure everything is always up-to-date. If you switch between views often and the build time bothers you, you can turn on sticky agenda buffers (make this the default by customizing the variable <code>org-agenda-sticky</code>). With sticky agendas, the dispatcher only switches to the selected view, you need to update it by hand with r or g. You can toggle sticky agenda view any time with <code>org-toggle-sticky-agenda</code>.</dd>
+</dl>
+
+<p>
+You can also define custom commands that are accessible through the dispatcher, just like the default commands. This includes the possibility to create extended agenda buffers that contain several blocks together, for example the weekly agenda, the global TODO list and a number of special tags matches. See <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>.
+</p>
+
+<hr />
+</div>
+</div>

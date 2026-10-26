@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Killing-Buffers">1. 21.4 Killing Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Several-Buffers.html">Operating on Several Buffers</a>   Previous: <a href="docs/emacs--Misc-Buffer.html">Miscellaneous Buffer Operations</a>   Up: <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>
+</p>
+
+<p>
+<a id="Kill-Buffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Killing-Buffers" class="outline-2">
+<h2 id="Killing-Buffers"><span class="section-number-2">1.</span> 21.4 Killing Buffers <a href="#Killing-Buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Killing-Buffers">
+<p>
+If you continue an Emacs session for a while, you may accumulate a large number of buffers. You may then find it convenient to <i>kill</i> the buffers you no longer need. (Some other editors call this operation <i>close</i>, and talk about “closing the buffer” or “closing the file” visited in the buffer.) On most operating systems, killing a buffer releases the memory Emacs used for the buffer back to the operating system so that other programs can use it. Here are some commands for killing buffers:
+</p>
+
+<dl class="org-dl">
+<dt>C-x k <code>buffer</code> RET</dt><dd>Kill buffer <code>buffer</code> (<code>kill-buffer</code>).</dd>
+
+<dt>M-x kill-some-buffers</dt><dd>Offer to kill each buffer, one by one.</dd>
+
+<dt>M-x kill-matching-buffers</dt><dd>Offer to kill all buffers matching a regular expression.</dd>
+
+<dt>M-x kill-matching-buffers-no-ask</dt><dd>Like <code>kill-matching-buffers</code>, but don't ask for confirmation.</dd>
+</dl>
+
+<p>
+C-x k (<code>kill-buffer</code>) kills one buffer, whose name you specify in the minibuffer. The default, used if you type just RET in the minibuffer, is to kill the current buffer. If you kill the current buffer, another buffer becomes current: one that was current in the recent past but is not displayed in any window now. If you ask to kill a file-visiting buffer that is modified, then you must confirm with yes before the buffer is killed.
+</p>
+
+<p>
+The command M-x kill-some-buffers asks about each buffer, one by one. An answer of yes means to kill the buffer, just like <code>kill-buffer</code>. This command ignores buffers whose names begin with a space, which are used internally by Emacs.
+</p>
+
+<p>
+The command M-x kill-matching-buffers prompts for a regular expression and kills all buffers whose names match that expression. See <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>. Like <code>kill-some-buffers</code>, it asks for confirmation before each kill. This command normally ignores buffers whose names begin with a space, which are used internally by Emacs. To kill internal buffers as well, call <code>kill-matching-buffers</code> with a prefix argument. The command M-x kill-matching-buffers-no-ask works like <code>kill-matching-buffers</code>, but doesn't ask for confirmation before killing each matching buffer.
+</p>
+
+<p>
+The Buffer Menu feature is also convenient for killing various buffers. See <a href="docs/emacs--Several-Buffers.html">Operating on Several Buffers</a>.
+</p>
+
+<p>
+If you want to do something special every time a buffer is killed, you can add hook functions to the hook <code>kill-buffer-hook</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>).
+</p>
+
+<p>
+If you run one Emacs session for a period of days, as many people do, it can fill up with buffers that you used several days ago. The command M-x clean-buffer-list is a convenient way to purge them; it kills all the unmodified buffers that you have not used for a long time. An ordinary buffer is killed if it has not been displayed for three days; however, you can specify certain buffers that should never be killed automatically, and others that should be killed if they have been unused for a mere hour. These defaults, and other aspects of this command's behavior, can be controlled by customizing several options described in the doc string of <code>clean-buffer-list</code>.
+</p>
+
+<p>
+You can also have this buffer purging done for you, once a day, by enabling Midnight mode. Midnight mode operates each day at midnight; at that time, it runs <code>clean-buffer-list</code>, or whichever functions you have placed in the normal hook <code>midnight-hook</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>). To enable Midnight mode, use the Customization buffer to set the variable <code>midnight-mode</code> to <code>t</code>. See <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>.
+</p>
+
+<hr />
+</div>
+</div>

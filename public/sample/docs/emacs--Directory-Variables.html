@@ -1,0 +1,125 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Per_002dDirectory-Local-Variables">1. 51.2.5 Per-Directory Local Variables ¶</a>
+<ul>
+<li><a href="#section">1.1. (25)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Connection-Variables.html">Per-Connection Local Variables</a>   Previous: <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>   Up: <a href="docs/emacs--Variables.html">Variables</a>
+</p>
+
+<p>
+<a id="Directory-Variables"></a>
+</p>
+
+<hr />
+<div id="outline-container-Per_002dDirectory-Local-Variables" class="outline-2">
+<h2 id="Per_002dDirectory-Local-Variables"><span class="section-number-2">1.</span> 51.2.5 Per-Directory Local Variables <a href="#Per_002dDirectory-Local-Variables">¶</a></h2>
+<div class="outline-text-2" id="text-Per_002dDirectory-Local-Variables">
+<p>
+Sometimes, you may wish to define the same set of local variables to all the files in a certain directory and its subdirectories, such as the directory tree of a large software project. This can be accomplished with <i>directory-local variables</i>. File local variables override directory local variables, so if some of the files in a directory need specialized settings, you can specify the settings for the majority of the directory's files in directory variables, and then define file local variables in a few files which need the general settings overridden.
+</p>
+
+<p>
+The usual way to define directory-local variables is to put a file named <code>.dir-locals.el</code>in a directory. Whenever Emacs visits any file in that directory or any of its subdirectories, it will apply the directory-local variables specified in <code>.dir-locals.el</code>, as though they had been defined as file-local variables for that file (see <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>). Emacs searches for <code>.dir-locals.el</code> starting in the directory of the visited file, and moving up the directory tree. To avoid slowdown, this search is skipped for remote files. If needed, the search can be extended for remote files by setting the variable <code>enable-remote-dir-locals</code> to <code>t</code>.
+</p>
+
+<p>
+You can also use <code>.dir-locals-2.el</code>; if found in the same directory as <code>.dir-locals.el</code>, Emacs loads it in addition to <code>.dir-locals.el</code>. This is useful when <code>.dir-locals.el</code> is under version control in a shared repository and can't be used for personal customizations.
+</p>
+
+<p>
+The <code>.dir-locals.el</code> file should hold a specially-constructed list, which maps major mode names (symbols) to alists (see <a href="../elisp_html/Association-Lists.html#Association-Lists">Association Lists</a> in The Emacs Lisp Reference Manual). Each alist entry consists of a variable name and the directory-local value to assign to that variable, when the specified major mode is enabled. Instead of a mode name, you can specify ‘=nil=', which means that the alist applies to any mode; or you can specify a subdirectory (a string), in which case the alist applies to all files in that subdirectory.
+</p>
+
+<p>
+Here's an example of a <code>.dir-locals.el</code> file:
+</p>
+
+<pre class="example" id="org4b1b908">
+((nil . ((indent-tabs-mode . t)
+         (fill-column . 80)
+         (mode . auto-fill)))
+ (c-mode . ((c-file-style . "BSD")
+            (subdirs . nil)))
+ ("src/imported"
+  . ((nil . ((change-log-default-name
+              . "ChangeLog.local"))))))
+</pre>
+
+<p>
+This sets the variables ‘=indent-tabs-mode=' and <code>fill-column</code> for any file in the directory tree, and the indentation style for any C source file. The special <code>mode</code> element specifies the minor mode to be enabled. So <code>(mode . auto-fill)</code> specifies that the minor mode <code>auto-fill-mode</code> needs to be enabled. The special <code>subdirs</code> element is not a variable, but a special keyword which indicates that the C mode settings are only to be applied in the current directory, not in any subdirectories. Finally, it specifies a different <code>ChangeLog</code> file name for any file in the <code>src/imported</code> subdirectory.
+</p>
+
+<p>
+If the <code>.dir-locals.el</code> file contains multiple different values for a variable using different mode names or directories, the values will be applied in an order such that the values for more specific modes take priority over more generic modes. Values specified under a directory have even more priority. For example:
+</p>
+
+<pre class="example" id="org99e0c61">
+((nil . ((fill-column . 40)))
+ (c-mode . ((fill-column . 50)))
+ (prog-mode . ((fill-column . 60)))
+ ("narrow-files" . ((nil . ((fill-column . 20))))))
+</pre>
+
+<p>
+Files that use <code>c-mode</code> also match <code>prog-mode</code> because the former inherits from the latter. The value used for <code>fill-column</code> in C files will however be <code>50</code> because the mode name is more specific than <code>prog-mode</code>. Files using other modes inheriting from <code>prog-mode</code> will use <code>60</code>. Any file under the directory <code>narrow-files</code> will use the value <code>20</code> even if they use <code>c-mode</code> because directory entries have priority over mode entries.
+</p>
+
+<p>
+You can specify the variables <code>mode</code>, <code>eval</code>, and <code>unibyte</code> in your <code>.dir-locals.el</code>, and they have the same meanings as they would have in file local variables. <code>coding</code> cannot be specified as a directory local variable. See <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>.
+</p>
+
+<p>
+The special key <code>auto-mode-alist</code> in a <code>.dir-locals.el</code> lets you set a file's major mode. It works much like the variable <code>auto-mode-alist</code> (see <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>). For example, here is how you can tell Emacs that <code>.def</code> source files in this directory should be in C mode:
+</p>
+
+<pre class="example" id="orgb813bae">
+((auto-mode-alist . (("\\.def\\'" . c-mode))))
+</pre>
+
+<p>
+Instead of editing the <code>.dir-locals.el</code> file by hand, you can use the command M-x add-dir-local-variable. This prompts for a mode or subdirectory, and for variable and value, and adds the entry defining the directory-local variable. M-x delete-dir-local-variable deletes an entry. M-x copy-file-locals-to-dir-locals copies the file-local variables in the current file into <code>.dir-locals.el</code>, or <code>.dir-locals-2.el</code> if that file is also present.
+</p>
+
+<p>
+With a prefix argument, all three commands prompt for the file you want to modify. Although it doesn't have to exist, you must enter a valid filename, either <code>.dir-locals.el</code> or <code>.dir-locals-2.el</code>.
+</p>
+
+<p>
+There's also a command to pop up an Easy Customization buffer (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>) to edit directory local variables, <code>customize-dirlocals</code>.
+</p>
+
+<p>
+Another method of specifying directory-local variables is to define a group of variables/value pairs in a <i>directory class</i>, using the <code>dir-locals-set-class-variables</code> function; then, tell Emacs which directories correspond to the class by using the <code>dir-locals-set-directory-class</code> function. These function calls normally go in your initialization file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>). This method is useful when you can't put <code>.dir-locals.el</code> in a directory for some reason. For example, you could apply settings to an unwritable directory this way:
+</p>
+
+<pre class="example" id="org7226cd0">
+(dir-locals-set-class-variables 'unwritable-directory
+   '((nil . ((some-useful-setting . value)))))
+
+(dir-locals-set-directory-class
+   "/usr/include/" 'unwritable-directory)
+</pre>
+
+<p>
+If a variable has both a directory-local and file-local value specified, the file-local value takes effect. Unsafe directory-local variables are handled in the same way as unsafe file-local variables (see <a href="docs/emacs--Safe-File-Variables.html">Safety of File Variables</a>).
+</p>
+
+<p>
+Directory-local variables also take effect in certain buffers that do not visit a file directly but perform work within a directory, such as Dired buffers (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>).
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--EditorConfig-support.html">Per-Directory Variables via EditorConfig</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

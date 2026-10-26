@@ -1,0 +1,144 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Defining-Fontsets-1">1. 24.15 Defining Fontsets ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Modifying-Fontsets.html">Modifying Fontsets</a>   Previous: <a href="docs/emacs--Fontsets.html">Fontsets</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Defining-Fontsets"></a>
+</p>
+
+<hr />
+<div id="outline-container-Defining-Fontsets-1" class="outline-2">
+<h2 id="Defining-Fontsets-1"><span class="section-number-2">1.</span> 24.15 Defining Fontsets <a href="#Defining-Fontsets-1">¶</a></h2>
+<div class="outline-text-2" id="text-Defining-Fontsets-1">
+<p>
+When running on X, Emacs creates a standard fontset automatically according to the value of <code>standard-fontset-spec</code>. This fontset's name is
+</p>
+
+<pre class="example" id="orgb6f985a">
+-*-fixed-medium-r-normal-*-16-*-*-*-*-*-fontset-standard
+</pre>
+
+<p>
+or just ‘=fontset-standard=' for short.
+</p>
+
+<p>
+On GNUstep and macOS, the standard fontset is created using the value of <code>ns-standard-fontset-spec</code>, and on MS Windows it is created using the value of <code>w32-standard-fontset-spec</code>.
+</p>
+
+<p>
+Bold, italic, and bold-italic variants of the standard fontset are created automatically. Their names have ‘=bold=' instead of ‘=medium=', or ‘=i=' instead of ‘=r=', or both.
+</p>
+
+<p>
+Emacs generates a fontset automatically, based on any default ASCII font that you specify with the ‘=Font=' resource or the ‘=-fn=' argument, or the default font that Emacs found when it started. This is the <i>startup fontset</i> and its name is <code>fontset-startup</code>. Emacs generates this fontset by replacing the <code>charset_registry</code> field with ‘=fontset=', and replacing the <code>charset_encoding</code> field with ‘=startup=', then using the resulting string to specify a fontset.
+</p>
+
+<p>
+For instance, if you start Emacs with a font of this form,
+</p>
+
+<pre class="example" id="orgfbf4951">
+emacs -fn "*courier-medium-r-normal--14-140-*-iso8859-1"
+</pre>
+
+<p>
+Emacs generates the following fontset and uses it for the initial X window frame:
+</p>
+
+<pre class="example" id="org59fdce8">
+-*-courier-medium-r-normal-*-14-140-*-*-*-*-fontset-startup
+</pre>
+
+<p>
+The startup fontset will use the font that you specify, or a variant with a different registry and encoding, for all the characters that are supported by that font, and fallback on ‘=fontset-default=' for other characters.
+</p>
+
+<p>
+With the X resource ‘=Emacs.Font=', you can specify a fontset name just like an actual font name. But be careful not to specify a fontset name in a wildcard resource like ‘=Emacs*Font='&#x2014;that wildcard specification matches various other resources, such as for menus, and menus cannot handle fontsets. See <a href="docs/emacs--X-Resources.html">X Options and Resources</a>.
+</p>
+
+<p>
+You can specify additional fontsets using X resources named ‘=Fontset-<code>=n</code>', where <code>n</code> is an integer starting from 0. The resource value should have this form:
+</p>
+
+<pre class="example" id="org5c77365">
+fontpattern, [charset:font]...
+</pre>
+
+<p>
+where <code>fontpattern</code> should have the form of a standard X font name (see the previous fontset-startup example), except for the last two fields. They should have the form ‘=fontset-<code>=alias</code>'.
+</p>
+
+<p>
+Each fontset has two names, one long and one short. The long name is <code>fontpattern</code>. The short name is ‘=fontset-<code>=alias</code>', the last 2 fields of the long name (e.g., ‘=fontset-startup=' for the fontset automatically created at startup). You can refer to the fontset by either name.
+</p>
+
+<p>
+The construct ‘=charset==:==font=' specifies which font to use (in this fontset) for one particular character set. Here, <code>charset</code> is the name of a character set, and <code>font</code> is the font to use for that character set. You can use this construct any number of times in defining one fontset.
+</p>
+
+<p>
+For the other character sets, Emacs chooses a font based on <code>fontpattern</code>. It replaces ‘=fontset-<code>=alias</code>' with values that describe the character set. For the ASCII character font, ‘=fontset-<code>=alias</code>' is replaced with ‘=ISO8859-1='.
+</p>
+
+<p>
+In addition, when several consecutive fields are wildcards, Emacs collapses them into a single wildcard. This is to prevent use of auto-scaled fonts. Fonts made by scaling larger fonts are not usable for editing, and scaling a smaller font is also not useful, because it is better to use the smaller font in its own size, which is what Emacs does.
+</p>
+
+<p>
+Thus if <code>fontpattern</code> is this,
+</p>
+
+<pre class="example" id="orgad590cc">
+-*-fixed-medium-r-normal-*-24-*-*-*-*-*-fontset-24
+</pre>
+
+<p>
+the font specification for ASCII characters would be this:
+</p>
+
+<pre class="example" id="org585b1cb">
+-*-fixed-medium-r-normal-*-24-*-ISO8859-1
+</pre>
+
+<p>
+and the font specification for Chinese GB2312 characters would be this:
+</p>
+
+<pre class="example" id="orgb607ae4">
+-*-fixed-medium-r-normal-*-24-*-gb2312*-*
+</pre>
+
+<p>
+You may not have any Chinese font matching the above font specification. Most X distributions include only Chinese fonts that have ‘=song ti=' or ‘=fangsong ti=' in the <code>family</code> field. In such a case, ‘=Fontset-<code>=n</code>' can be specified as:
+</p>
+
+<pre class="example" id="org721e849">
+Emacs.Fontset-0: -*-fixed-medium-r-normal-*-24-*-*-*-*-*-fontset-24,\
+        chinese-gb2312:-*-*-medium-r-normal-*-24-*-gb2312*-*
+</pre>
+
+<p>
+Then, the font specifications for all but Chinese GB2312 characters have ‘=fixed=' in the <code>family</code> field, and the font specification for Chinese GB2312 characters has a wild card ‘=*=' in the <code>family</code> field.
+</p>
+
+<p>
+The function that processes the fontset resource value to create the fontset is called <code>create-fontset-from-fontset-spec</code>. You can also call this function explicitly to create a fontset.
+</p>
+
+<p>
+See <a href="docs/emacs--Fonts.html">Fonts</a>, for more information about font naming.
+</p>
+
+<hr />
+</div>
+</div>

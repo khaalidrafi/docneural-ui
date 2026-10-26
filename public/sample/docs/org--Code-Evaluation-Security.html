@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Code-Evaluation-and-Security-Issues">1. 17.13 Code Evaluation and Security Issues ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Code-Evaluation-Security"></a>
+Next: <a href="docs/org--Interaction.html">Interaction with Other Packages</a>, Previous: <a href="docs/org--Escape-Character.html">Escape Character</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Code-Evaluation-and-Security-Issues" class="outline-2">
+<h2 id="Code-Evaluation-and-Security-Issues"><span class="section-number-2">1.</span> 17.13 Code Evaluation and Security Issues <a href="#Code-Evaluation-and-Security-Issues">¶</a></h2>
+<div class="outline-text-2" id="text-Code-Evaluation-and-Security-Issues">
+<p>
+Unlike plain text, running code comes with risk. Each source code block, in terms of risk, is equivalent to an executable file. Org therefore puts a few confirmation prompts by default. This is to alert the casual user from accidentally running untrusted code.
+</p>
+
+<p>
+For users who do not run code blocks or write code regularly, Org's default settings should suffice. However, some users may want to tweak the prompts for fewer interruptions. To weigh the risks of automatic execution of code blocks, here are some details about code evaluation.
+</p>
+
+<p>
+Org evaluates code in the following circumstances:
+</p>
+
+<dl class="org-dl">
+<dt><i>Source code blocks</i></dt><dd><p>
+Org evaluates source code blocks in an Org file during export. Org also evaluates a source code block with the C-c C-c key chord. Users exporting or running code blocks must load files only from trusted sources. Be wary of customizing variables that remove or alter default security measures.
+</p>
+
+<dl class="org-dl">
+<dt>User Option: <b>org-confirm-babel-evaluate</b> </dt><dd>When <code>t</code>, Org prompts the user for confirmation before executing each code block. When <code>nil</code>, Org executes code blocks without prompting the user for confirmation. When this option is set to a custom function, Org invokes the function with these two arguments: the source code language and the body of the code block. The custom function must return either a <code>t</code> or <code>nil</code>, which determines if the user is prompted. Each source code language can be handled separately through this function argument.</dd>
+</dl>
+
+<p>
+For example, here is how to execute ditaa code blocks without prompting:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(defun my-org-confirm-babel-evaluate (lang body)
+  (not (string= lang "ditaa")))  ;don't ask for ditaa
+(setq org-confirm-babel-evaluate #'my-org-confirm-babel-evaluate)
+</pre>
+</div></dd>
+
+<dt><i>Following ‘=shell=' and ‘=elisp=' links</i></dt><dd>Org has two link types that can directly evaluate code (see <a href="docs/org--External-Links.html">External Links</a>). Because such code is not visible, these links have a potential risk. Org therefore prompts the user when it encounters such links. The customization variables are:
+
+<dl class="org-dl">
+<dt>User Option: <b>org-link-shell-confirm-function</b> </dt><dd>Function that prompts the user before executing a shell link.</dd>
+
+<dt>User Option: <b>org-link-elisp-confirm-function</b> </dt><dd>Function that prompts the user before executing an Emacs Lisp link.</dd>
+</dl></dd>
+
+<dt><i>Formulas in tables</i></dt><dd>Formulas in tables (see <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>) are code that is evaluated either by the Calc interpreter, or by the Emacs Lisp interpreter.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Interaction.html">Interaction with Other Packages</a>, Previous: <a href="docs/org--Escape-Character.html">Escape Character</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

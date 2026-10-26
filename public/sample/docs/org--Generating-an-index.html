@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Generating-an-index-1">0.1. 14.1.8 Generating an index ¶</a></li>
+</ul>
+</li>
+<li><a href="#org6a59a1d">1. Curriculum Vitae</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Generating-an-index"></a>
+Previous: <a href="docs/org--Site-map.html">Generating a sitemap</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Generating-an-index-1" class="outline-3">
+<h3 id="Generating-an-index-1"><span class="section-number-3">0.1.</span> 14.1.8 Generating an index <a href="#Generating-an-index-1">¶</a></h3>
+<div class="outline-text-3" id="text-Generating-an-index-1">
+<p>
+Org mode can generate an index across the files of a publishing project.
+</p>
+
+<dl class="org-dl">
+<dt><code>:makeindex</code></dt><dd>When non-<code>nil</code>, generate in index in the file ‘=theindex.org=' and publish it as ‘=theindex.html='.</dd>
+</dl>
+
+<p>
+The file is created when first publishing a project with the <code>:makeindex</code> set. The file only contains a statement ‘=#+INCLUDE: "theindex.inc"='. You can then build around this include statement by adding a title, style information, etc.
+</p>
+
+<p>
+Index entries are specified with ‘=INDEX=' keyword. An entry that contains an exclamation mark creates a sub item.
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org6a59a1d" class="outline-2">
+<h2 id="org6a59a1d"><span class="section-number-2">1.</span> Curriculum Vitae</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+#+end<sub>src</sub>
+</p>
+</div>
+</div>

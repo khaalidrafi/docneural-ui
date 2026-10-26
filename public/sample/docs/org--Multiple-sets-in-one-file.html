@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Multiple-keyword-sets-in-one-file">1. 5.2.3 Multiple keyword sets in one file ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Multiple-sets-in-one-file"></a>
+Next: <a href="docs/org--Fast-access-to-TODO-states.html">Fast access to TODO states</a>, Previous: <a href="docs/org--TODO-types.html">TODO keywords as types</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Multiple-keyword-sets-in-one-file" class="outline-2">
+<h2 id="Multiple-keyword-sets-in-one-file"><span class="section-number-2">1.</span> 5.2.3 Multiple keyword sets in one file <a href="#Multiple-keyword-sets-in-one-file">¶</a></h2>
+<div class="outline-text-2" id="text-Multiple-keyword-sets-in-one-file">
+<p>
+Sometimes you may want to use different sets of TODO keywords in parallel. For example, you may want to have the basic TODO/DONE, but also a workflow for bug fixing, and a separate state indicating that an item has been canceled&#x2014;so it is not DONE, but also does not require action. Your setup would then look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-todo-keywords
+      '((sequence "TODO" "|" "DONE")
+        (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")
+        (sequence "|" "CANCELED")))
+</pre>
+</div>
+
+<p>
+The keywords should all be different, this helps Org mode keep track of which subsequence should be used for a given entry. In this setup, C-c C-t only operates within a sub-sequence, so it switches from ‘=DONE=' to (nothing) to ‘=TODO=', and from ‘=FIXED=' to (nothing) to ‘=REPORT='. Therefore, you need a mechanism to initially select the correct sequence. In addition to typing a keyword or using completion (see <a href="docs/org--Completion.html">Completion</a>), you may also apply the following commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dS_002dRIGHT"></a>C-u C-u C-c C-t, C-S-RIGHT, C-S-LEFT </dt><dd>These keys jump from one TODO sub-sequence to the next. In the above example, C-u C-u C-c C-t or C-S-RIGHT would jump from ‘=TODO=' or ‘=DONE=' to ‘=REPORT=', and any of the words in the second row to ‘=CANCELED='. Note that the C-S- key binding conflicts with shift-selection (see <a href="docs/org--Conflicts.html">Packages that conflict with Org mode</a>).</dd>
+
+<dt><a id="index-S_002dRIGHT-4"></a>S-RIGHT, S-LEFT </dt><dd>S-LEFT and S-RIGHT walk through <i>all</i> keywords from all sub-sequences, so for example S-RIGHT would switch from ‘=DONE=' to ‘=REPORT=' in the example above. For a discussion of the interaction with shift-selection, see <a href="docs/org--Conflicts.html">Packages that conflict with Org mode</a>.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Fast-access-to-TODO-states.html">Fast access to TODO states</a>, Previous: <a href="docs/org--TODO-types.html">TODO keywords as types</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

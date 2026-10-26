@@ -1,0 +1,112 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#programming-interface">1.1. 8 Programming Interface</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Programming-Interface"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Utilities.html">Utilities</a>, Previous: <a href="docs/guix--Development.html">Development</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Programming-Interface-1"></a>
+</p>
+</div>
+<div id="outline-container-programming-interface" class="outline-3">
+<h3 id="programming-interface"><span class="section-number-3">1.1.</span> 8 Programming Interface</h3>
+<div class="outline-text-3" id="text-programming-interface">
+<p>
+GNU Guix provides several Scheme programming interfaces (APIs) to define, build, and query packages. The first interface allows users to write high-level package definitions. These definitions refer to familiar packaging concepts, such as the name and version of a package, its build system, and its dependencies. These definitions can then be turned into concrete build actions.
+</p>
+
+<p>
+Build actions are performed by the Guix daemon, on behalf of users. In a standard setup, the daemon has write access to the store&#x2014;the <code>/gnu/store</code> directory&#x2014;whereas users do not. The recommended setup also has the daemon perform builds in chroots, under specific build users, to minimize interference with the rest of the system.
+</p>
+
+<p>
+<a id="index-derivation-1"></a>
+Lower-level APIs are available to interact with the daemon and the store. To instruct the daemon to perform a build action, users actually provide it with a <i>derivation</i>. A derivation is a low-level representation of the build actions to be taken, and the environment in which they should occur&#x2014;derivations are to package definitions what assembly is to C programs. The term “derivation” comes from the fact that build results <i>derive</i> from them.
+</p>
+
+<p>
+This chapter describes all these APIs in turn, starting from high-level package definitions. See <a href="docs/guix--Source-Tree-Structure.html">Source Tree Structure</a>, for a more general overview of the source code.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Package-Modules.html">Package Modules</a></li>
+<li><a href="docs/guix--Defining-Packages.html">Defining Packages</a></li>
+<li><a href="docs/guix--Defining-Package-Variants.html">Defining Package Variants</a></li>
+<li><a href="docs/guix--Writing-Manifests.html">Writing Manifests</a></li>
+<li><a href="docs/guix--Build-Systems.html">Build Systems</a></li>
+<li><a href="docs/guix--Build-Phases.html">Build Phases</a></li>
+<li><a href="docs/guix--Build-Utilities.html">Build Utilities</a></li>
+<li><a href="docs/guix--Search-Paths.html">Search Paths</a></li>
+<li><a href="docs/guix--The-Store.html">The Store</a></li>
+<li><a href="docs/guix--Derivations.html">Derivations</a></li>
+<li><a href="docs/guix--The-Store-Monad.html">The Store Monad</a></li>
+<li><a href="docs/guix--G_002dExpressions.html">G-Expressions</a></li>
+<li><a href="docs/guix--Invoking-guix-repl.html">Invoking <code>guix repl</code></a></li>
+<li><a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Utilities.html">Utilities</a>, Previous: <a href="docs/guix--Development.html">Development</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

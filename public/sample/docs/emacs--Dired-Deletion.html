@@ -1,0 +1,73 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Deleting-Files-with-Dired">1. 32.3 Deleting Files with Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Flagging-Many-Files.html">Flagging Many Files at Once</a>   Previous: <a href="docs/emacs--Dired-Navigation.html">Navigation in the Dired Buffer</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Dired-Deletion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Deleting-Files-with-Dired" class="outline-2">
+<h2 id="Deleting-Files-with-Dired"><span class="section-number-2">1.</span> 32.3 Deleting Files with Dired <a href="#Deleting-Files-with-Dired">¶</a></h2>
+<div class="outline-text-2" id="text-Deleting-Files-with-Dired">
+<p>
+One of the most frequent uses of Dired is to first <i>flag</i> files for deletion, then delete the files that were flagged.
+</p>
+
+<dl class="org-dl">
+<dt>d</dt><dd>Flag this file for deletion (<code>dired-flag-file-deletion</code>).</dd>
+
+<dt>u</dt><dd>Remove the deletion flag (<code>dired-unmark</code>).</dd>
+
+<dt>DEL</dt><dd>Move point to previous line and remove the deletion flag on that line (<code>dired-unmark-backward</code>).</dd>
+
+<dt>x</dt><dd>Delete files flagged for deletion (<code>dired-do-flagged-delete</code>).</dd>
+</dl>
+
+<p>
+You can flag a file for deletion by moving to the line describing the file and typing d (<code>dired-flag-file-deletion</code>). The deletion flag is visible as a ‘=D=' at the beginning of the line. This command moves point to the next line, so that repeated d commands flag successive files. A numeric prefix argument serves as a repeat count; a negative count means to flag preceding files.
+</p>
+
+<p>
+If the region is active, the d command flags all files in the region for deletion; in this case, the command does not move point, and ignores any prefix argument.
+</p>
+
+<p>
+The reason for flagging files for deletion, rather than deleting files immediately, is to reduce the danger of deleting a file accidentally. Until you direct Dired to delete the flagged files, you can remove deletion flags using the commands u and DEL. u (<code>dired-unmark</code>) works just like d, but removes flags rather than making flags. DEL (<code>dired-unmark-backward</code>) moves upward, removing flags; it is like u with argument −1. A numeric prefix argument to either command serves as a repeat count, with a negative count meaning to unflag in the opposite direction. If the region is active, these commands instead unflag all files in the region, without moving point.
+</p>
+
+<p>
+To delete flagged files, type x (<code>dired-do-flagged-delete</code>). This command displays a list of all the file names flagged for deletion, and requests confirmation with yes. If you confirm, Dired deletes the flagged files, then deletes their lines from the text of the Dired buffer. The Dired buffer, with somewhat fewer lines, remains selected.
+</p>
+
+<p>
+If you answer no or quit with C-g when asked to confirm, you return immediately to Dired, with the deletion flags still present in the buffer, and no files actually deleted.
+</p>
+
+<p>
+You can delete empty directories just like other files, but normally Dired cannot delete directories that are nonempty. However, if the variable <code>dired-recursive-deletes</code> is non-<code>nil</code>, then Dired is allowed to delete nonempty directories including all their contents. That can be somewhat risky. If the value of the variable is <code>always</code>, Dired will delete nonempty directories recursively, which is even more risky.
+</p>
+
+<p>
+Even if you have set <code>dired-recursive-deletes</code> to <code>nil</code>, you might want sometimes to delete directories recursively without being asked for confirmation for all of them. For example, you may want that when you have marked many directories for deletion and you are very sure that all of them can safely be deleted. For every nonempty directory you are asked for confirmation to delete, if you answer <code>all</code>, then all the remaining directories will be deleted without any further questions.
+</p>
+
+<p>
+If you change the variable <code>delete-by-moving-to-trash</code> to <code>t</code>, the above deletion commands will move the affected files or directories into the operating system's Trash, instead of deleting them outright. See <a href="docs/emacs--Misc-File-Ops.html">Miscellaneous File Operations</a>.
+</p>
+
+<p>
+An alternative way of deleting files is to mark them with m and delete with D, see <a href="docs/emacs--Operating-on-Files.html">Operating on Files</a>.
+</p>
+
+<hr />
+</div>
+</div>

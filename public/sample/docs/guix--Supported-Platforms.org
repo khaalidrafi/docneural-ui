@@ -1,0 +1,86 @@
+:PROPERTIES:
+:ID: guix--Supported-Platforms
+:END:
+#+filetags: :guix:
+#+title: Supported Platforms
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Supported-Platforms>>
+
+Previous: [[id:guix--platform-Reference][=platform= Reference]], Up: [[id:guix--Platforms][Platforms]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Supported-Platforms-1>>
+*** 15.2 Supported Platforms
+:PROPERTIES:
+:CUSTOM_ID: supported-platforms
+:CLASS: section
+:END:
+The =(guix platforms …)= modules export the following variables, each of which is bound to a =platform= record.
+
+- Variable: armv7-linux  :: Platform targeting ARM v7 CPU running GNU/Linux.
+
+- Variable: aarch64-linux  :: Platform targeting ARM v8 CPU running GNU/Linux.
+
+- Variable: loongarch64-linux  :: Platform targeting loongarch 64-bit CPU running GNU/Linux.
+
+- Variable: mips64-linux  :: Platform targeting MIPS little-endian 64-bit CPU running GNU/Linux.
+
+- Variable: powerpc-linux  :: Platform targeting PowerPC big-endian 32-bit CPU running GNU/Linux.
+
+- Variable: powerpc64le-linux  :: Platform targeting PowerPC little-endian 64-bit CPU running GNU/Linux.
+
+- Variable: riscv64-linux  :: Platform targeting RISC-V 64-bit CPU running GNU/Linux.
+
+- Variable: i686-linux  :: Platform targeting x86 CPU running GNU/Linux.
+
+- Variable: x86_64-linux  :: Platform targeting x86 64-bit CPU running GNU/Linux.
+
+- Variable: x86_64-linux-x32  :: Platform targeting x86 64-bit CPU running GNU/Linux with the run-time using the X32 ABI.
+
+- Variable: i686-mingw  :: Platform targeting x86 CPU running Windows, with run-time support from MinGW.
+
+- Variable: x86_64-mingw  :: Platform targeting x86 64-bit CPU running Windows, with run-time support from MinGW.
+
+- Variable: i586-gnu  :: Platform targeting x86 CPU running GNU/Hurd (also referred to as “GNU”).
+
+- Variable: avr  :: Platform targeting AVR CPUs without an operating system, with run-time support from AVR Libc.
+
+- Variable: or1k-elf  :: Platform targeting OpenRISC 1000 CPU without an operating system and without a C standard library.
+
+- Variable: xtensa-ath9k-elf  :: Platform targeting Xtensa CPU used in the Qualcomm Atheros AR7010 and AR9271 USB 802.11n NICs (Network Interface Controllers).
+
+--------------
+
+Previous: [[id:guix--platform-Reference][=platform= Reference]], Up: [[id:guix--Platforms][Platforms]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]

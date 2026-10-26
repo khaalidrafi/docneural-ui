@@ -1,0 +1,25 @@
+:PROPERTIES:
+:ID: emacs--Mail-Commands
+:END:
+#+filetags: :emacs:
+#+title: Mail Commands
+
+Next: [[id:emacs--Mail-Signature][Mail Signature]]   Previous: [[id:emacs--Mail-Aliases][Mail Aliases]]   Up: [[id:emacs--Sending-Mail][Sending Mail]]
+
+<<Mail-Commands>>
+
+--------------
+
+*** 34.4 Mail Commands [[#Mail-Commands-1][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Mail-Commands-1
+:CLASS: section
+:END:
+The default major mode for the =*mail*= buffer is called Message mode. It behaves like Text mode in many ways, but provides several additional commands on the C-c prefix, which make editing a message more convenient.
+
+In this section, we will describe some of the most commonly-used commands available in Message mode. Message mode also has its own manual, where its features are described in greater detail. See [[../message_html/index.html#Top][Message]] in Message.
+
+- [[id:emacs--Mail-Sending][Mail Sending]]
+- [[id:emacs--Header-Editing][Mail Header Editing]]
+- [[id:emacs--Citing-Mail][Citing Mail]]
+- [[id:emacs--Mail-Misc][Mail Miscellany]]

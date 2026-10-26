@@ -1,0 +1,98 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Fonts-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Sound-Home-Services.html">Sound Home Services</a>, Previous: <a href="docs/guix--Backup-Home-Services.html">Backup Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Fonts-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="fonts-home-services"></a>13.3.11 Fonts Home Services<br />
+<div class="outline-text-5" id="text-fonts-home-services">
+<p>
+The <code>(gnu home services fontutils)</code> module provides services for user-specific Fontconfig setup. The <a href="https://www.freedesktop.org/wiki/Software/fontconfig">Fontconfig</a> library is used by many applications to access fonts on the system.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-fontconfig-service-type </dt><dd><p>
+This is the service type for generating configurations for Fontconfig. Its associated value is a list of either strings (or gexps) pointing to fonts locations, or SXML (see <a href="https://www.gnu.org/software/guile/manual/html_node/SXML.html#SXML">SXML</a> in GNU Guile Reference Manual) fragments to be converted into XML and put inside the main <code>fontconfig</code> node.
+</p>
+
+<p>
+Generally, it is better to extend this service than to directly configure it, as its default value is the default Guix Home's profile font installation path (<code>~/.guix-home/profile/share/fonts</code>). If you configure this service directly, be sure to include the above directory.
+</p>
+
+<p>
+Here's how you'd extend it to include fonts installed with the Nix package manager, and to prefer your favourite monospace font:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'additional-fonts-service
+                home-fontconfig-service-type
+                (list "~/.nix-profile/share/fonts"
+                      '(alias
+                        (family "monospace")
+                        (prefer
+                         (family "Liberation Mono")))))
+</pre>
+</div></dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>

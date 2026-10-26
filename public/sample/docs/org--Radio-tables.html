@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Radio-tables-1">1. A.6.1 Radio tables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Radio-tables"></a>
+Next: <a href="docs/org--A-LaTeX-example.html">A LaTeX example of radio tables</a>, Up: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Radio-tables-1" class="outline-2">
+<h2 id="Radio-tables-1"><span class="section-number-2">1.</span> A.6.1 Radio tables <a href="#Radio-tables-1">¶</a></h2>
+<div class="outline-text-2" id="text-Radio-tables-1">
+<p>
+Radio tables are target locations for translated tables that are not near their source. Org finds the target location and inserts the translated table.
+</p>
+
+<p>
+The key to finding the target location is the magic words ‘=BEGIN/END RECEIVE ORGTBL='. They have to appear as comments in the current mode. If the mode is C, then:
+</p>
+
+<pre class="example" id="org71e1e69">
+/* BEGIN RECEIVE ORGTBL table_name */
+/* END RECEIVE ORGTBL table_name */
+</pre>
+
+<p>
+At the location of source, Org needs a special line to direct Orgtbl to translate and to find the target for inserting the translated table. For example:
+</p>
+
+<pre class="example" id="org7d8d28c">
+#+ORGTBL: SEND table_name translation_function arguments ...
+</pre>
+
+<p>
+‘=table<sub>name</sub>=' is the table's reference name, which is also used in the receiver lines, and the ‘=translation<sub>function</sub>=' is the Lisp function that translates. This line, in addition, may also contain alternating key and value arguments at the end. The translation function gets these values as a property list. A few standard parameters are already recognized and acted upon before the translation function is called:
+</p>
+
+<dl class="org-dl">
+<dt>‘=:skip N='</dt><dd>Skip the first N lines of the table. Hlines do count; include them if they are to be skipped.</dd>
+
+<dt>‘=:skipcols (n1 n2 &#x2026;)='</dt><dd>List of columns to be skipped. First Org automatically discards columns with calculation marks and then sends the table to the translator function, which then skips columns as specified in ‘=skipcols='.</dd>
+</dl>
+
+<p>
+To keep the source table intact in the buffer without being disturbed when the source file is compiled or otherwise being worked on, use one of these strategies:
+</p>
+
+<ul class="org-ul">
+<li>Place the table in a block comment. For example, in C mode you could wrap the table between ‘=/*=' and ‘=*/=' lines.</li>
+<li>Put the table after an “end” statement. For example <code>\bye</code> in TeX and <code>\end{document}</code> in LaTeX.</li>
+<li>Comment and uncomment each line of the table during edits. The M-x orgtbl-toggle-comment command makes toggling easy.</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--A-LaTeX-example.html">A LaTeX example of radio tables</a>, Up: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

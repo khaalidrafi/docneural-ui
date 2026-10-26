@@ -1,0 +1,31 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tables-in-Texinfo-export-1">1. 13.14.10 Tables in Texinfo export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tables-in-Texinfo-export"></a>
+Next: <a href="docs/org--Images-in-Texinfo-export.html">Images in Texinfo export</a>, Previous: <a href="docs/org--Plain-lists-in-Texinfo-export.html">Plain lists in Texinfo export</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tables-in-Texinfo-export-1" class="outline-2">
+<h2 id="Tables-in-Texinfo-export-1"><span class="section-number-2">1.</span> 13.14.10 Tables in Texinfo export <a href="#Tables-in-Texinfo-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tables-in-Texinfo-export-1">
+<p>
+When exporting tables, the Texinfo export backend uses the widest cell width in each column. To override this and instead specify as fractions of line length, use the ‘=:columns=' attribute. See example below.
+</p>
+
+<pre class="example" id="org96d23c0">
+#+ATTR_TEXINFO: :columns .5 .5
+| a cell | another cell |
+</pre>
+</div>
+</div>

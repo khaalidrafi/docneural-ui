@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Breakpoints-Buffer-1">1. 29.6.5.3 Breakpoints Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Threads-Buffer.html">Threads Buffer</a>   Previous: <a href="docs/emacs--Source-Buffers.html">Source Buffers</a>   Up: <a href="docs/emacs--GDB-Graphical-Interface.html">GDB Graphical Interface</a>
+</p>
+
+<p>
+<a id="Breakpoints-Buffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Breakpoints-Buffer-1" class="outline-2">
+<h2 id="Breakpoints-Buffer-1"><span class="section-number-2">1.</span> 29.6.5.3 Breakpoints Buffer <a href="#Breakpoints-Buffer-1">¶</a></h2>
+<div class="outline-text-2" id="text-Breakpoints-Buffer-1">
+<p>
+The GDB Breakpoints buffer shows the breakpoints, watchpoints and catchpoints in the debugger session. See <a href="../gdb_html/Breakpoints.html#Breakpoints">Breakpoints</a> in The GNU debugger. It provides the following commands, which mostly apply to the <i>current breakpoint</i> (the breakpoint which point is on):
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-SPC-_0028GDB-Breakpoints-buffer_0029"></a>SPC </dt><dd>Enable/disable current breakpoint (<code>gdb-toggle-breakpoint</code>). On a graphical display, this changes the color of the dot in the fringe of the source buffer at that line. The dot is red when the breakpoint is enabled, and gray when it is disabled.</dd>
+
+<dt><a id="index-D-_0028GDB-Breakpoints-buffer_0029"></a>D </dt><dd>Delete the current breakpoint (<code>gdb-delete-breakpoint</code>).</dd>
+
+<dt><a id="index-RET-_0028GDB-Breakpoints-buffer_0029"></a>RET </dt><dd>Visit the source line for the current breakpoint (<code>gdb-goto-breakpoint</code>).</dd>
+
+<dt><a id="index-mouse_002d2-_0028GDB-Breakpoints-buffer_0029"></a>mouse-2 </dt><dd>Visit the source line for the breakpoint you click on (<code>gdb-goto-breakpoint</code>).</dd>
+</dl>
+
+<p>
+When <code>gdb-many-windows</code> is non-<code>nil</code>, the GDB Breakpoints buffer shares its window with the GDB Threads buffer. To switch from one to the other click with mouse-1 on the relevant button in the header line. If <code>gdb-show-threads-by-default</code> is non-<code>nil</code>, the GDB Threads buffer is the one shown by default.
+</p>
+</div>
+</div>

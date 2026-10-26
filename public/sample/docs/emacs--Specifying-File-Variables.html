@@ -1,0 +1,149 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Specifying-File-Variables-1">1. 51.2.4.1 Specifying File Variables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Safe-File-Variables.html">Safety of File Variables</a>   Up: <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>
+</p>
+
+<p>
+<a id="Specifying-File-Variables"></a>
+</p>
+
+<hr />
+<div id="outline-container-Specifying-File-Variables-1" class="outline-2">
+<h2 id="Specifying-File-Variables-1"><span class="section-number-2">1.</span> 51.2.4.1 Specifying File Variables <a href="#Specifying-File-Variables-1">¶</a></h2>
+<div class="outline-text-2" id="text-Specifying-File-Variables-1">
+<p>
+There are two ways to specify file local variable values: in the first line, or with a local variables list. Here's how to specify them in the first line:
+</p>
+
+<pre class="example" id="orgedb1702">
+-*- mode: modename; var: value; ... -*-
+</pre>
+
+<p>
+You can specify any number of variable/value pairs in this way, each pair with a colon and semicolon. The special variable/value pair <code>mode: ==modename=</code>;=, if present, specifies a major mode (without the “-mode” suffix). The =value=s are used literally, and not evaluated.
+</p>
+
+<p>
+You can use M-x add-file-local-variable-prop-line instead of adding entries by hand. This command prompts for a variable and value, and adds them to the first line in the appropriate way. M-x delete-file-local-variable-prop-line prompts for a variable, and deletes its entry from the line. The command M-x copy-dir-locals-to-file-locals-prop-line copies the current directory-local variables to the first line (see <a href="docs/emacs--Directory-Variables.html">Per-Directory Local Variables</a>).
+</p>
+
+<p>
+Here is an example first line that specifies Lisp mode and sets two variables with numeric values:
+</p>
+
+<pre class="example" id="orgd59c5c1">
+;; -*- mode: Lisp; fill-column: 75; comment-column: 50; -*-
+</pre>
+
+<p>
+Aside from <code>mode</code>, other keywords that have special meanings as file variables are <code>coding</code>, <code>unibyte</code>, and <code>eval</code>. These are described below.
+</p>
+
+<p>
+In shell scripts, the first line is used to identify the script interpreter, so you cannot put any local variables there. To accommodate this, Emacs looks for local variable specifications in the <i>second</i> line if the first line specifies an interpreter. The same is true for man pages which start with the magic string ‘='\"=' to specify a list of troff preprocessors (not all do, however).
+</p>
+
+<p>
+Apart from using a ‘=-*-=' line, you can define file local variables using a <i>local variables list</i> near the end of the file. The start of the local variables list should be no more than 3000 characters from the end of the file, and must be on the last page if the file is divided into pages.
+</p>
+
+<p>
+If a file has both a local variables list and a ‘=-<b>-<code>' line, Emacs processes /everything/ in the ‘</code>-</b>-=' line first, and <i>everything</i> in the local variables list afterward. The exception to this is a major mode specification. Emacs applies this first, wherever it appears, since most major modes kill all local variables as part of their initialization.
+</p>
+
+<p>
+A local variables list starts with a line containing the string ‘=Local Variables:=', and ends with a line containing the string ‘=End:='. In between come the variable names and values, one set per line, like this:
+</p>
+
+<pre class="example" id="orgfbab158">
+/* Local Variables:  */
+/* mode: c           */
+/* comment-column: 0 */
+/* End:              */
+</pre>
+
+<p>
+In this example, each line starts with the prefix ‘=/*=' and ends with the suffix ‘=*/='. Emacs recognizes the prefix and suffix by finding them surrounding the magic string ‘=Local Variables:=', on the first line of the list; it then automatically discards them from the other lines of the list. The usual reason for using a prefix and/or suffix is to embed the local variables list in a comment, so it won't confuse other programs that the file is intended for. The example above is for the C programming language, where comments start with ‘=/*=' and end with ‘=*/='.
+</p>
+
+<p>
+If some unrelated text might look to Emacs as a local variables list, you can countermand that by inserting a form-feed character (a page delimiter, see <a href="docs/emacs--Pages.html">Pages</a>) after that text. Emacs only looks for file-local variables in the last page of a file, after the last page delimiter.
+</p>
+
+<p>
+Instead of typing in the local variables list directly, you can use the command M-x add-file-local-variable. This prompts for a variable and value, and adds them to the list, adding the ‘=Local Variables:=' string and start and end markers as necessary. The command M-x delete-file-local-variable deletes a variable from the list. M-x copy-dir-locals-to-file-locals copies directory-local variables to the list (see <a href="docs/emacs--Directory-Variables.html">Per-Directory Local Variables</a>).
+</p>
+
+<p>
+As with the ‘=-*-=' line, the variables in a local variables list are used literally, and are not evaluated first. If you want to split a long string value across multiple lines of the file, you can use backslash-newline, which is ignored in Lisp string constants; you should put the prefix and suffix on each line, even lines that start or end within the string, as they will be stripped off when processing the list. Here is an example:
+</p>
+
+<pre class="example" id="org58b72d1">
+# Local Variables:
+# compile-command: "cc foo.c -Dfoo=bar -Dhack=whatever \
+#   -Dmumble=blaah"
+# End:
+</pre>
+
+<p>
+Some names have special meanings in a local variables list:
+</p>
+
+<ul class="org-ul">
+<li><code>mode</code> enables the specified major mode.</li>
+<li><code>eval</code> evaluates the specified Lisp expression (the value returned by that expression is ignored).</li>
+<li><code>coding</code> specifies the coding system for character code conversion of this file. See <a href="docs/emacs--Coding-Systems.html">Coding Systems</a>.</li>
+<li><code>unibyte</code> says to load or compile a file of Emacs Lisp in unibyte mode, if the value is <code>t</code>. See <a href="../elisp_html/Disabling-Multibyte.html#Disabling-Multibyte">Disabling Multibyte Characters</a> in GNU Emacs Lisp Reference Manual.</li>
+</ul>
+
+<p>
+These four keywords are not really variables; setting them in any other context has no special meaning.
+</p>
+
+<p>
+If you're editing a file across Emacs versions, and a new mode has been introduced to handle a file in a newer Emacs version, you can use several <code>mode</code> entries to use the new mode (called <code>my-new-mode</code>) in the new Emacs, and fall back to the old mode (called <code>my-old-mode</code>) in older Emacs versions. If you're enabling the modes in the first line of the file, can say:
+</p>
+
+<pre class="example" id="org8bd4f7b">
+-*- mode: my-old; mode: my-new -*-
+</pre>
+
+<p>
+Emacs will use the final defined mode it finds, so in older Emacs versions it will ignore <code>my-new-mode</code>, while in Emacs versions where <code>my-new-mode</code> is defined, it'll ignore <code>my-old-mode</code>. Similarly, in a local variable block at the end of the file:
+</p>
+
+<pre class="example" id="org4b9c06f">
+Local variables:
+mode: my-old
+mode: my-new
+</pre>
+
+<p>
+Do not use the <code>mode</code> keyword for minor modes. To enable or disable a minor mode in a local variables list, use the <code>eval</code> keyword with a Lisp expression that runs the mode command (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>). For example, the following local variables list enables ElDoc mode (see <a href="docs/emacs--Programming-Language-Doc.html">Programming Language Documentation Lookup</a>) by calling <code>eldoc-mode</code> with no argument (calling it with an argument of 1 would do the same), and disables Font Lock mode (see <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>) by calling <code>font-lock-mode</code> with an argument of −1.
+</p>
+
+<pre class="example" id="org35309d0">
+;; Local Variables:
+;; eval: (eldoc-mode)
+;; eval: (font-lock-mode -1)
+;; End:
+</pre>
+
+<p>
+Note, however, that it is often a mistake to specify minor modes this way. Minor modes represent individual user preferences, and it may be inappropriate to impose your preferences on another user who might edit the file. If you wish to automatically enable or disable a minor mode in a situation-dependent way, it is often better to do it in a major mode hook (see <a href="docs/emacs--Hooks.html">Hooks</a>).
+</p>
+
+<p>
+Use the command M-x normal-mode to reset the local variables and major mode of a buffer according to the file name and contents, including the local variables list if any. See <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#GTK_002b-widget-names">1. D.5.2 GTK+ widget names ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--GTK-Names-in-Emacs.html">GTK+ Widget Names in Emacs</a>   Previous: <a href="docs/emacs--GTK-Resource-Basics.html">GTK+ Resource Basics</a>   Up: <a href="docs/emacs--GTK-resources.html">GTK+ resources</a>
+</p>
+
+<p>
+<a id="GTK-Widget-Names"></a>
+</p>
+
+<hr />
+<div id="outline-container-GTK_002b-widget-names" class="outline-2">
+<h2 id="GTK_002b-widget-names"><span class="section-number-2">1.</span> D.5.2 GTK+ widget names <a href="#GTK_002b-widget-names">¶</a></h2>
+<div class="outline-text-2" id="text-GTK_002b-widget-names">
+<p>
+A GTK+ widget is specified by a <i>widget name</i> and a <i>widget class</i>. The widget name refers to a specific widget (e.g., ‘=emacs-menuitem='), while the widget class refers to a collection of similar widgets (e.g., ‘=GtkMenuItem='). A widget always has a class, but need not have a name.
+</p>
+
+<p>
+<i>Absolute names</i> are sequences of widget names or widget classes, corresponding to hierarchies of widgets embedded within other widgets. For example, if a <code>GtkWindow</code> named <code>top</code> contains a <code>GtkVBox</code> named <code>box</code>, which in turn contains a <code>GtkMenuBar</code> called <code>menubar</code>, the absolute class name of the menu-bar widget is <code>GtkWindow.GtkVBox.GtkMenuBar</code>, and its absolute widget name is <code>top.box.menubar</code>.
+</p>
+
+<p>
+GTK+ resource files can contain two types of commands for specifying widget appearances:
+</p>
+
+<dl class="org-dl">
+<dt><code>widget</code></dt><dd>specifies a style for widgets based on the class name, or just the class.</dd>
+
+<dt><code>widget_class</code></dt><dd>specifies a style for widgets based on the class name.</dd>
+</dl>
+
+<p>
+See the previous subsection for examples of using the <code>widget</code> command; the <code>widget_class</code> command is used similarly. Note that the widget name/class and the style must be enclosed in double-quotes, and these commands must be at the top level in the GTK+ resource file.
+</p>
+
+<p>
+As previously noted, you may specify a widget name or class with shell wildcard syntax: ‘=*=' matches zero or more characters and ‘=?=' matches one character. This example assigns a style to all widgets:
+</p>
+
+<pre class="example" id="org4d56808">
+widget "*" style "my_style"
+</pre>
+
+<hr />
+</div>
+</div>

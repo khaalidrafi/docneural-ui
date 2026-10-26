@@ -1,0 +1,108 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#setting-up-the-daemon">1.0.1. 2.2 Setting Up the Daemon</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Setting-Up-the-Daemon"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>, Previous: <a href="docs/guix--Binary-Installation.html">Binary Installation</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Setting-Up-the-Daemon-1"></a>
+</p>
+</div>
+<div id="outline-container-setting-up-the-daemon" class="outline-4">
+<h4 id="setting-up-the-daemon"><span class="section-number-4">1.0.1.</span> 2.2 Setting Up the Daemon</h4>
+<div class="outline-text-4" id="text-setting-up-the-daemon">
+<p>
+<a id="index-daemon"></a> <a id="index-build-daemon-1"></a>
+During installation, the <i>build daemon</i> that must be running to use Guix has already been set up and you can run <code>guix</code> commands in your terminal program, see <a href="docs/guix--Getting-Started.html">Getting Started</a>:
+</p>
+
+<pre class="example" id="org20860b3">
+guix build hello
+</pre>
+
+<p>
+If this runs through without error, feel free to skip this section. You should continue with the following section, <a href="docs/guix--Application-Setup.html">Application Setup</a>.
+</p>
+
+<p>
+However, now would be a good time to replace outdated daemon versions, tweak it, perform builds on other machines (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>), or start it manually in special environments like “chroots” (see <a href="docs/guix--Chrooting-into-an-existing-system.html">Chrooting into an existing system</a>) or WSL (not needed for WSL images created with Guix, see <a href="docs/guix--System-Images.html"><code>wsl2-image-type</code></a>). If you want to know more or optimize your system, this section is worth reading.
+</p>
+
+<p>
+Operations such as building a package or running the garbage collector are all performed by a specialized process, the build daemon, on behalf of clients. Only the daemon may access the store and its associated database. Thus, any operation that manipulates the store goes through the daemon. For instance, command-line tools such as <code>guix package</code> and <code>guix build</code> communicate with the daemon (<i>via</i> remote procedure calls) to instruct it what to do.
+</p>
+
+<p>
+The following sections explain how to prepare the build daemon's environment. See <a href="docs/guix--Substitutes.html">Substitutes</a> for how to allow the daemon to download pre-built binaries.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Build-Environment-Setup.html">Build Environment Setup</a></li>
+<li><a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a></li>
+<li><a href="docs/guix--SELinux-Support.html">SELinux Support</a></li>
+<li><a href="docs/guix--AppArmor-Support.html">AppArmor Support</a></li>
+</ul>
+</div>
+</div>
+</div>

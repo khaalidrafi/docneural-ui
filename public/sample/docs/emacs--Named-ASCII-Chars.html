@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Named-ASCII-Control-Characters">1. 51.3.9 Named ASCII Control Characters ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mouse-Buttons.html">Rebinding Mouse Buttons</a>   Previous: <a href="docs/emacs--Function-Keys.html">Rebinding Function Keys</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Named-ASCII-Chars"></a>
+</p>
+
+<hr />
+<div id="outline-container-Named-ASCII-Control-Characters" class="outline-2">
+<h2 id="Named-ASCII-Control-Characters"><span class="section-number-2">1.</span> 51.3.9 Named ASCII Control Characters <a href="#Named-ASCII-Control-Characters">¶</a></h2>
+<div class="outline-text-2" id="text-Named-ASCII-Control-Characters">
+<p>
+TAB, RET, BS, LFD, ESC, and DEL started out as names for certain ASCII control characters, used so often that they have special keys of their own. For instance, TAB was another name for C-i. Later, users found it convenient to distinguish in Emacs between these keys and the corresponding control characters typed with the Ctrl key. Therefore, on most modern terminals, they are no longer the same: TAB is different from C-i.
+</p>
+
+<p>
+Emacs can distinguish these two kinds of input if the keyboard does. It treats the special keys as function keys named <code>tab</code>, <code>return</code>, <code>backspace</code>, <code>linefeed</code>, <code>escape</code>, and <code>delete</code>. These function keys translate automatically into the corresponding ASCII characters <i>if</i> they have no bindings of their own. As a result, neither users nor Lisp programs need to pay attention to the distinction unless they care to.
+</p>
+
+<p>
+If you do not want to distinguish between (for example) TAB and C-i, make just one binding, for the ASCII character TAB (octal code 011). If you do want to distinguish, make one binding for this ASCII character, and another for the function key <code>tab</code>.
+</p>
+
+<p>
+With an ordinary ASCII terminal, there is no way to distinguish between TAB and C-i (and likewise for other such pairs), because the terminal sends the same character in both cases.
+</p>
+</div>
+</div>

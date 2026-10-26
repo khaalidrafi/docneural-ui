@@ -1,0 +1,218 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Feedback-1">1. 1.4 Feedback ¶</a>
+<ul>
+<li><a href="#How-to-create-a-useful-backtrace-1">1.1. How to create a useful backtrace ¶</a></li>
+<li><a href="#How-to-profile-Org-performance-1">1.2. How to profile Org performance ¶</a>
+<ul>
+<li><a href="#section">1.2.1. (2)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Feedback"></a>
+Next: <a href="docs/org--Conventions.html">Typesetting Conventions Used in this Manual</a>, Previous: <a href="docs/org--Activation.html">Activation</a>, Up: <a href="docs/org--Introduction.html">Introduction</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Feedback-1" class="outline-2">
+<h2 id="Feedback-1"><span class="section-number-2">1.</span> 1.4 Feedback <a href="#Feedback-1">¶</a></h2>
+<div class="outline-text-2" id="text-Feedback-1">
+<p>
+If you find problems with Org, or if you have questions, remarks, or ideas about it, please send an email to the Org mailing list <a href="mailto:mailto:emacs-orgmode@gnu.org">mailto:emacs-orgmode@gnu.org</a>. You can subscribe to the list <a href="https://lists.gnu.org/mailman/listinfo/emacs-orgmode">from this web page</a>. If you are not a member of the mailing list, your mail will be passed to the list after a moderator approves it. We ask you to read and respect the <a href="https://www.gnu.org/philosophy/kind-communication.html">GNU Kind Communications Guidelines</a> when sending messages on this mailing list. Please allow up to one month for a response and follow up if no response is received on the bug report.
+</p>
+
+<p>
+For bug reports, please first try to reproduce the bug with the latest version of Org available&#x2014;if you are running an outdated version, it is quite possible that the bug has been fixed already. If the bug persists, prepare a report and provide as much information as possible, including the version information of Emacs (M-x emacs-version) and Org (M-x org-version), as well as the Org-related setup in the Emacs init file. The easiest way to do this is to use the command
+</p>
+
+<pre class="example" id="org6bd2884">
+M-x org-submit-bug-report &lt;RET&gt;
+</pre>
+
+<p>
+which puts all this information into an Emacs mail buffer so that you only need to add your description. If you are not sending the email from within Emacs, please copy and paste the content into your email program.
+</p>
+
+<p>
+Sometimes you might face a problem due to an error in your Emacs or Org mode setup. Before reporting a bug, it is very helpful to start Emacs with minimal customizations and to reproduce the problem. Doing so often helps you determine if the problem is with your customization or with Org mode itself. You can start a typical minimal session with a command like the example below.
+</p>
+
+<pre class="example" id="orgaed24ad">
+$ emacs -Q -l /path/to/minimal-org.el
+</pre>
+
+<p>
+However, if you are using Org mode as distributed with Emacs, a minimal setup is not necessary. In that case it is sufficient to start Emacs as ‘=emacs -Q='. The ‘=minimal-org.el=' setup file can have contents as shown below.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">;;; Minimal setup to load latest `org-mode'.
+
+;; Activate debugging.
+(setq debug-on-error t
+      debug-on-signal nil
+      debug-on-quit nil)
+
+;; Add latest Org mode to load path.
+(add-to-list 'load-path (expand-file-name "/path/to/org-mode/lisp"))
+</pre>
+</div>
+
+<p>
+If you are using the Org mode version from the Git repository, you can start a minimal session using ‘=make='.
+</p>
+
+<pre class="example" id="orga6e0acc">
+# Bare Emacs
+make repro
+# or pass extra arguments
+make repro REPRO_ARGS="-l /path/to/minimal/config.el /tmp/bug.org"
+</pre>
+
+<p>
+If an error occurs, a “backtrace” can be very useful&#x2014;see below for instructions on how to create one. Often a small example file helps, along with clear information about:
+</p>
+
+<ol class="org-ol">
+<li>What exactly did you do?</li>
+<li>What did you expect to happen?</li>
+<li>What happened instead?</li>
+</ol>
+
+<p>
+If you experience degraded performance, you can record a “profile” and share it on the Org mailing list. See below for instructions on how to record a useful profile.
+</p>
+
+<p>
+Thank you for helping to improve this program.
+</p>
+</div>
+<div id="outline-container-How-to-create-a-useful-backtrace-1" class="outline-3">
+<h3 id="How-to-create-a-useful-backtrace-1"><span class="section-number-3">1.1.</span> How to create a useful backtrace <a href="#How-to-create-a-useful-backtrace-1">¶</a></h3>
+<div class="outline-text-3" id="text-How-to-create-a-useful-backtrace-1">
+<p>
+If working with Org produces an error with a message you do not understand, you may have hit a bug. The best way to report this is by providing, in addition to what was mentioned above, a backtrace. This is information from the built-in debugger about where and how the error occurred. Here is how to produce a useful backtrace:
+</p>
+
+<ol class="org-ol">
+<li><p>
+Reload uncompiled versions of all Org mode Lisp files. The backtrace contains much more information if it is produced with uncompiled code. To do this, use
+</p>
+
+<pre class="example" id="orgb640563">
+C-u M-x org-reload &lt;RET&gt;
+</pre>
+
+<p>
+or, from the menu: Org → Refresh/Reload → Reload Org uncompiled.
+</p></li>
+
+<li><p>
+Then, activate the debugger:
+</p>
+
+<pre class="example" id="org077d0a1">
+M-x toggle-debug-on-error &lt;RET&gt;
+</pre>
+
+<p>
+or, from the menu: Options → Enter Debugger on Error.
+</p></li>
+
+<li>Do whatever you have to do to hit the error. Do not forget to document the steps you take.</li>
+
+<li>When you hit the error, a ‘=*Backtrace*=' buffer appears on the screen. Save this buffer to a file&#x2014;for example using C-x C-w&#x2014;and attach it to your bug report.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-How-to-profile-Org-performance-1" class="outline-3">
+<h3 id="How-to-profile-Org-performance-1"><span class="section-number-3">1.2.</span> How to profile Org performance <a href="#How-to-profile-Org-performance-1">¶</a></h3>
+<div class="outline-text-3" id="text-How-to-profile-Org-performance-1">
+<p>
+Sometimes, Org becomes slow for no apparent reason. Such slowdown is often caused by interaction between third-party packages and Org mode. However, identifying the root cause is not always straightforward.
+</p>
+
+<p>
+Emacs is able to record performance statistics, which can then be used to find out which functions are taking the most time to execute. To record the statistics, one can use a profiler. To use the Emacs profiler, we recommend the following steps:
+</p>
+
+<ol class="org-ol">
+<li><p>
+Make sure that no profiler is currently active:
+</p>
+
+<pre class="example" id="org4e9db9d">
+M-x profiler-stop &lt;RET&gt;
+</pre></li>
+
+<li><p>
+Start a new CPU profiler session:
+</p>
+
+<pre class="example" id="org0ec763b">
+M-x profiler-start &lt;RET&gt; cpu &lt;RET&gt;
+</pre></li>
+
+<li>Use Emacs as usual, performing the actions that are deemed slow.</li>
+
+<li><p>
+Display and examine the recorded performance statistics:
+</p>
+
+<pre class="example" id="org10918ee">
+M-x profiler-report &lt;RET&gt;
+</pre>
+
+<p>
+This command will display a summary of the commands and functions that have been executed between <code>profiler-start</code> and <code>profiler-report</code> invocations, with the command taking the most time displayed on top.
+</p>
+
+<p>
+The ‘=&lt;TAB&gt;=' key can be used to fold and unfold lines in the profiler buffer. The child items revealed upon unfolding are the functions and commands called by the unfolded parent.
+</p>
+
+<p>
+The root causes are often buried deep inside child items in the profiler. You can press ‘=B=' (<code>profiler-report-render-reversed-calltree</code>) to quickly reveal the actual function/command that takes the most time to run.
+</p>
+
+<p>
+Pressing ‘=C=' <code>profiler-report-render-calltree</code> will recover the original view.
+</p></li>
+
+<li><p>
+If you need further help, you can share the statistics data.
+</p>
+
+<p>
+To save the data, issue
+</p>
+
+<pre class="example" id="org62cedfb">
+M-x profiler-report-write-profile &lt;RET&gt;
+/path/to/profile-file-to-be-saved &lt;RET&gt;
+</pre>
+
+<p>
+Then, you can attach the saved file to your email to the Org mailing list, along with details about what you did to trigger the slowdown.
+</p>
+
+<p>
+Note that the saved statistics will only contain the function names and how long their execution takes. No private data will be recorded.
+</p></li>
+</ol>
+
+<hr />
+</div>
+</div>
+</div>

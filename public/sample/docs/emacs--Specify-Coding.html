@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Specifying-a-File_0027s-Coding-System">1. 24.7 Specifying a File's Coding System ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Output-Coding.html">Choosing Coding Systems for Output</a>   Previous: <a href="docs/emacs--Recognize-Coding.html">Recognizing Coding Systems</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Specify-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Specifying-a-File_0027s-Coding-System" class="outline-2">
+<h2 id="Specifying-a-File_0027s-Coding-System"><span class="section-number-2">1.</span> 24.7 Specifying a File's Coding System <a href="#Specifying-a-File_0027s-Coding-System">¶</a></h2>
+<div class="outline-text-2" id="text-Specifying-a-File_0027s-Coding-System">
+<p>
+If Emacs recognizes the encoding of a file incorrectly, you can reread the file using the correct coding system with C-x RET r (<code>revert-buffer-with-coding-system</code>). This command prompts for the coding system to use. To see what coding system Emacs actually used to decode the file, look at the coding system mnemonic letter near the left edge of the mode line (see <a href="docs/emacs--Mode-Line.html">The Mode Line</a>), or type C-h C (<code>describe-coding-system</code>).
+</p>
+
+<p>
+You can specify the coding system for a particular file in the file itself, using the ‘=-<b>-…-</b>-<code>' construct at the beginning, or a local variables list at the end (see [[id:emacs--File-Variables][Local Variables in Files]]). You do this by defining a value for the “variable” named =coding</code>. Emacs does not really have a variable <code>coding</code>; instead of setting a variable, this uses the specified coding system for the file. For example, ‘=-<b>-mode: C; coding: latin-1; -</b>-<code>' specifies use of the Latin-1 coding system, as well as C mode. When you specify the coding explicitly in the file, that overrides =file-coding-system-alist</code>.
+</p>
+</div>
+</div>

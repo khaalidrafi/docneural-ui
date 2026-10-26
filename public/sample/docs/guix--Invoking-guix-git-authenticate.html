@@ -1,0 +1,143 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-git-authenticate">1.0.1. 7.5 Invoking <code>guix git authenticate</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-git-authenticate"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--The-GCC-toolchain.html">The GCC toolchain</a>, Up: <a href="docs/guix--Development.html">Development</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-git-authenticate-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-git-authenticate" class="outline-4">
+<h4 id="invoking-guix-git-authenticate"><span class="section-number-4">1.0.1.</span> 7.5 Invoking <code>guix git authenticate</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-git-authenticate">
+<p>
+<a id="index-guix-git-authenticate"></a> <a id="index-authentication_002c-of-Git-checkouts"></a> <a id="index-Git-checkout-authentication"></a>
+The <code>guix git authenticate</code> command authenticates a Git checkout following the same rule as for channels (see <a href="docs/guix--Channel-Authentication.html#channel_002dauthentication">channel authentication</a>). That is, starting from a given commit, it ensures that all subsequent commits are signed by an OpenPGP key whose fingerprint appears in the <code>.guix-authorizations</code> file of its parent commit(s).
+</p>
+
+<p>
+You will find this command useful if you maintain a channel. But in fact, this authentication mechanism is useful in a broader context, so you might want to use it for Git repositories that have nothing to do with Guix.
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="orgb152adb">
+guix git authenticate commit signer [options…]
+</pre>
+
+<p>
+<a id="index-introduction_002c-for-Git-authentication"></a>
+By default, this command authenticates the Git checkout in the current directory; it outputs nothing and exits with exit code zero on success and non-zero on failure. <code>commit</code> above denotes the first commit where authentication takes place, and <code>signer</code> is the OpenPGP fingerprint of public key used to sign <code>commit</code>. Together, they form a <i>channel introduction</i> (see <a href="docs/guix--Channel-Authentication.html#channel_002dauthentication">channel introduction</a>). On your first successful run, the introduction is recorded in the <code>.git/config</code> file of your checkout, allowing you to omit them from subsequent invocations:
+</p>
+
+<pre class="example" id="org4313663">
+guix git authenticate [options…]
+</pre>
+
+<p>
+Should you have branches that require different introductions, you can specify them directly in <code>.git/config</code>. For example, if the branch called <code>personal-fork</code> has a different introduction than other branches, you can extend <code>.git/config</code> along these lines:
+</p>
+
+<pre class="example" id="org802084a">
+[guix "authentication-personal-fork"]
+    introduction-commit = cabba936fd807b096b48283debdcddccfea3900d
+    introduction-signer = C0FF EECA BBA9 E6A8 0D1D  E643 A2A0 6DF2 A33A 54FA
+    keyring = keyring
+</pre>
+
+<p>
+The first run also attempts to install pre-push and post-merge hooks, such that <code>guix git authenticate</code> is invoked as soon as you run <code>git push</code>, <code>git pull</code>, and related commands; it does not overwrite preexisting hooks though.
+</p>
+
+<p>
+The command-line options described below allow you to fine-tune the process.
+</p>
+
+<ul class="org-ul">
+<li><code>--repository===directory</code><br />
+<code>-r ==directory</code> :: Open the Git repository in <code>directory</code> instead of the current directory.</li>
+
+<li><code>--keyring===reference</code><br />
+<code>-k ==reference</code> :: Load OpenPGP keyring from <code>reference</code>, the reference of a branch such as <code>origin/keyring</code> or <code>my-keyring</code>. The branch must contain OpenPGP public keys in <code>.key</code> files, either in binary form or “ASCII-armored”. By default the keyring is loaded from the branch named <code>keyring</code>.</li>
+
+<li id="<code>--end===commit</code>">Authenticate revisions up to <code>commit</code>.</li>
+
+<li id="<code>--stats</code>">Display commit signing statistics upon completion.</li>
+
+<li id="<code>--cache-key===key</code>">Previously-authenticated commits are cached in a file under <code>~/.cache/guix/authentication</code>. This option forces the cache to be stored in file <code>key</code> in that directory.</li>
+
+<li id="<code>--historical-authorizations===file</code>">By default, any commit whose parent commit(s) lack the <code>.guix-authorizations</code> file is considered inauthentic. In contrast, this option considers the authorizations in <code>file</code> for any commit that lacks <code>.guix-authorizations</code>. The format of <code>file</code> is the same as that of <code>.guix-authorizations</code> (see <a href="docs/guix--Specifying-Channel-Authorizations.html#channel_002dauthorizations"><code>.guix-authorizations</code> format</a>).</li>
+</ul>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--The-GCC-toolchain.html">The GCC toolchain</a>, Up: <a href="docs/guix--Development.html">Development</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

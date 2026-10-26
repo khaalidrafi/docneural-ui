@@ -13,6 +13,24 @@
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
 
+  /* Instrument-style count-up on the corpus readout: the numbers sweep from
+     zero once on mount, mono digits make it read like a boot readout.
+     Reduced-motion visitors (and crawlers) just get the final value. */
+  function countup(node: HTMLElement, target: number) {
+    if (!Number.isFinite(target)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const t0 = performance.now()
+    const DUR = 900
+    const tick = (t: number) => {
+      const k = Math.min(1, (t - t0) / DUR)
+      const eased = 1 - Math.pow(1 - k, 3)
+      node.textContent = String(Math.round(target * eased))
+      if (k < 1) requestAnimationFrame(tick)
+    }
+    node.textContent = '0'
+    requestAnimationFrame(tick)
+  }
+
   let { store, title = 'org-docs' }: { store: DocneuralStore; title?: string } = $props()
 
   const chapters = $derived(store.chapters)
@@ -65,6 +83,49 @@
     return m
   })
 
+  /* The terminal status line: a slow typewriter cycling REAL corpus facts.
+     It types only after the data is live (a boot line that lies is worse
+     than none), it is aria-hidden (the same facts are in the stats block
+     below it), and reduced-motion visitors get a static line, no loop. */
+  const feedLines = $derived([
+    `// ${sources.length} corpora indexed · ${pageCount} pages live`,
+    `// ${synCount} synapses primed — ego lens armed`,
+    `// drop into ⌁ SYNAPSES to watch the wires fire`
+  ])
+  let feedText = $state('')
+  let feedTimer: ReturnType<typeof setTimeout> | 0 = 0
+  $effect(() => {
+    if (!store.ready) return
+    const lines = feedLines
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      feedText = lines[1] ?? ''
+      return
+    }
+    let li = 0
+    let ci = 0
+    let cancelled = false
+    const step = (): void => {
+      if (cancelled) return
+      const line = lines[li % lines.length]
+      if (ci <= line.length) {
+        feedText = line.slice(0, ci)
+        ci++
+        feedTimer = setTimeout(step, 24)
+      } else {
+        feedTimer = setTimeout(() => {
+          li++
+          ci = 0
+          step()
+        }, 3200)
+      }
+    }
+    step()
+    return () => {
+      cancelled = true
+      clearTimeout(feedTimer)
+    }
+  })
+
   // A source card: open that corpus and land its first chapter (showManual
   // alone only retargets the TOC; here there is no selection, so we do it).
   function openManual(m: string): void {
@@ -90,6 +151,7 @@
       <span class="dn-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
     </div>
     <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
+    <p class="feed dn-mono" aria-hidden="true">{feedText}<span class="feed-caret">▌</span></p>
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual
       split per section, exported from Org by Emacs, and wired into an org-roam
@@ -102,17 +164,17 @@
     <!-- The corpus readout, stated plainly. The size of the site IS the pitch,
          so the numbers get a panel of their own — but as a panel, not as a
          pretend shell session: no prompt, no window buttons, no "[ ok ]". -->
-    <div class="stats" role="status" aria-live="polite">
+    <div class="stats dn-hud" role="status" aria-live="polite">
       <div class="stats-hd dn-label">
         <span class="dn-neuron-mark" aria-hidden="true"></span>
         <span>this corpus</span>
       </div>
       <div class="dn-kv">
         <span>sources</span><span>{sources.length} · {sourceList}</span>
-        <span>pages</span><span>{pageCount}</span>
-        <span>neurons</span><span>{docCount}</span>
-        <span>synapses</span><span><b>{synCount}</b> firing</span>
-        <span>artifacts</span><span>graph.json · llms.txt · *.org</span>
+        <span>pages</span><span class="num" use:countup={pageCount}>{pageCount}</span>
+        <span>neurons</span><span class="num" use:countup={docCount}>{docCount}</span>
+        <span>synapses</span><span class="num"><b use:countup={synCount}>{synCount}</b> <em>firing</em></span>
+        <span>artifacts</span><span class="files">graph.json · llms.txt · *.org</span>
       </div>
       <p class="note">indexed at build time — no database, no server</p>
       <!-- Resume, straight off the front door: the last page you were on, at
@@ -155,8 +217,8 @@
   <section class="sources">
     <h2 class="dn-label">// sources <span class="hint">each corpus wears its graph hue</span></h2>
     <div class="src-row">
-      {#each sources as s (s.name)}
-        <button class="src-card dn-hud" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
+      {#each sources as s, si (s.name)}
+        <button class="src-card dn-hud" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
           <span class="src-name dn-mono">{DocneuralStore.manualTitle(s.name)}</span>
           <span class="src-meta dn-mono">{s.pages} pages · {s.links} wires</span>
           <span class="src-open">read ↗</span>
@@ -197,7 +259,7 @@
   </div>
 
   <div class="cta-row">
-    {#each sources as s (s.name)}
+    {#each sources as s, si (s.name)}
       <button class="cta dn-notch" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
         <span class="cta-k">▤</span>
         <span class="cta-t">{DocneuralStore.manualTitle(s.name)}</span>
@@ -229,8 +291,8 @@
       <ManualTabs {store} />
     </div>
     <div class="grid">
-      {#each showAll ? chapters : chapters.slice(0, 60) as c (c.id)}
-        <button class="card" style={sourceVars(c.tags[0])} onclick={() => store.goto(c)}>
+      {#each showAll ? chapters : chapters.slice(0, 60) as c, ci (c.id)}
+        <button class="card" style="--i: {ci}; {sourceVars(c.tags[0])}" onclick={() => store.goto(c)}>
           <span class="card-title">{c.title}</span>
           <span class="card-deg dn-mono">{degree.get(c.id) ?? 0}⌁</span>
         </button>
@@ -276,34 +338,38 @@
     isolation: isolate;
     padding: 1.6rem 1.4rem 0.4rem;
   }
-  .hero::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -30% -12% -20%;
-    background:
-      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--dn-accent) 11%, transparent), transparent 70%),
-      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--dn-accent-2) 9%, transparent), transparent 70%);
-    filter: blur(8px);
-    pointer-events: none;
-  }
   .kicker {
-    color: var(--dn-hot);
+    /* Acid: this line is the site's "online" lamp — // knowledge uplink ·
+       online — so it wears the live signal, with a matching glow. */
+    color: var(--dn-acid);
     letter-spacing: 0.2em;
     margin: 0 0 0.9rem;
+    text-shadow: 0 0 12px color-mix(in srgb, var(--dn-acid) 45%, transparent);
   }
   .wordmark {
     font-family: var(--dn-font-display);
-    font-size: clamp(2.4rem, 8vw, 4.4rem);
+    /* SIGNAL pass: bigger, tighter — the front door announces itself. */
+    font-size: clamp(2.7rem, 9vw, 5.2rem);
     /* Electrolize is single-weight; asking for 700 here only gets the
        browser's fake bold, which is ugly at display size. */
     font-weight: 400;
     /* Display face, tight tracking, uppercase: the brand mark. The letters
        are the glitch's real text — the ::before/::after ghosts in .dn-glitch
-       carry the same string from data-text. */
+       carry the same string from data-text. R2: the fill is the neon-sign
+       decay gradient with the chromatic fringe under it. */
     letter-spacing: 0.02em;
-    color: var(--dn-fg);
-    text-shadow: 0 0 30px color-mix(in srgb, var(--dn-accent) 26%, transparent);
+    /* R3: the fill is the neon-sign decay gradient (cyan -> violet -> hot
+       pink) with the chromatic fringe under it — the SIGNAL split-glow,
+       extended into a full gradient. background-clip keeps the letters
+       selectable and the accessible name intact. */
+    background: var(--dn-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      -2px 0 color-mix(in srgb, var(--dn-accent-2) 50%, transparent),
+      2px 0 color-mix(in srgb, var(--dn-accent) 40%, transparent),
+      0 0 34px color-mix(in srgb, var(--dn-accent) 28%, transparent);
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
@@ -314,24 +380,64 @@
     letter-spacing: 0.14em;
     font-size: 0.75rem;
     text-transform: lowercase;
-    margin: 0.5rem 0 1.2rem;
+    margin: 0.5rem 0 0.35rem;
+  }
+  /* The terminal status line: types real corpus facts, caret blinking.
+     aria-hidden in the markup; its facts are duplicated in the stats. */
+  .feed {
+    min-height: 1.3em;
+    margin: 0 0 1.1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--dn-accent);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 35%, transparent);
+  }
+  .feed-caret {
+    color: var(--dn-hot);
+    text-shadow: 0 0 9px color-mix(in srgb, var(--dn-hot) 70%, transparent);
+    animation: dn-blink 1.1s steps(1, end) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feed-caret { animation: none; }
   }
   .lede { color: var(--dn-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
   .lede strong { color: var(--dn-fg); }
   .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2); }
   /* The hero readout: a bordered panel of real numbers, left-aligned inside a
-     centered hero and wide enough that the columns never wrap on a laptop. */
+     centered hero and wide enough that the columns never wrap on a laptop.
+     SIGNAL pass: darker glass, accent edge — and the numbers are the hero's
+     second voice: big mono digits with a neon keyline, not a data table. */
   .stats {
     width: min(46rem, 100%);
     margin-top: 1.4rem;
     text-align: left;
     display: grid;
-    gap: 0.7rem;
+    gap: 0.55rem;
     padding: 1.1rem 1.3rem 1.2rem;
-    background: var(--dn-bg-raise);
-    border: 1px solid var(--dn-border);
-    border-left: 2px solid var(--dn-src, var(--dn-accent));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--dn-accent) 4%, transparent), transparent 46%),
+      color-mix(in srgb, var(--dn-bg-raise) 94%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 42%, var(--dn-border-strong));
+    border-left: 3px solid var(--dn-src, var(--dn-accent));
     border-radius: 3px;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 14%, transparent),
+      0 14px 40px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
+  }
+  /* The glow behind the wordmark: three radial blooms in the signal hues
+     (cyan left, hot pink right, violet top), blurred — the night-city
+     ambience. Sits under the hero (z-index -1) and never repaints. */
+  .hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -30% -12% -20%;
+    background:
+      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--dn-accent) 13%, transparent), transparent 70%),
+      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--dn-accent-2) 10%, transparent), transparent 70%),
+      radial-gradient(30% 40% at 55% 20%, color-mix(in srgb, var(--dn-violet) 8%, transparent), transparent 70%);
+    filter: blur(8px);
+    pointer-events: none;
   }
   .stats-hd {
     display: flex;
@@ -343,7 +449,39 @@
   .stats .note { margin: 0; font-size: 0.78rem; color: var(--dn-fg-muted); }
   /* The readout is monospace: digits that do not shift width between builds are
      the difference between a machine's count and a sentence about a count. */
-  .stats .dn-kv { font-family: var(--dn-font-mono); font-size: 0.84rem; }
+  .stats .dn-kv {
+    font-family: var(--dn-font-mono);
+    font-size: 0.84rem;
+    align-items: baseline;
+    row-gap: 0.35rem;
+  }
+  .stats .dn-kv > span:nth-child(odd) {
+    text-transform: uppercase;
+    letter-spacing: var(--dn-track);
+    font-size: 0.66rem;
+    padding-top: 0.45em;
+  }
+  /* Big neon count-up numbers: the corpus size IS the pitch. */
+  .stats .dn-kv .num {
+    font-size: 1.6rem;
+    line-height: 1.05;
+    color: var(--dn-fg);
+    text-shadow: 0 0 16px color-mix(in srgb, var(--dn-accent) 26%, transparent);
+  }
+  .stats .dn-kv .num b {
+    font-weight: 600;
+    color: var(--dn-hot);
+    text-shadow: 0 0 16px color-mix(in srgb, var(--dn-hot) 42%, transparent);
+  }
+  .stats .dn-kv .num em {
+    font-style: normal;
+    font-size: 0.66rem;
+    letter-spacing: var(--dn-track);
+    text-transform: uppercase;
+    color: var(--dn-fg-muted);
+    text-shadow: none;
+  }
+  .stats .dn-kv .files { font-size: 0.84rem; }
   /* Resume: a labelled row, not a command line. The label says what it does,
      the value says where it goes. */
   .resume {
@@ -411,6 +549,12 @@
   .mk .mk-to { color: var(--dn-fg-faint); }
   .sources h2, .section-h { color: var(--dn-fg-muted); margin: 0 0 0.7rem; }
   .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
+  /* Entrance choreography: a 24ms-per-card rise, capped so a 200-row grid
+     does not turn into a slow curtain. Reduced motion is killed globally. */
+  .card, .src-card {
+    animation: dn-rise 340ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    animation-delay: calc(min(var(--i, 0), 16) * 24ms);
+  }
   .src-row {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
@@ -425,16 +569,20 @@
     text-align: left;
     color: var(--dn-fg);
     background: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent);
-    border-left: 2px solid var(--dn-src, var(--dn-accent));
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 32%, transparent);
+    border-left: 3px solid var(--dn-src, var(--dn-accent));
     border-radius: 2px;
     padding: 0.7em 0.8em;
     cursor: pointer;
-    transition: border-color 120ms, box-shadow 120ms, background 120ms;
+    transition: border-color 120ms, box-shadow 120ms, background 120ms, transform 120ms;
   }
   .src-card:hover {
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 9%, transparent);
-    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent);
+    box-shadow:
+      0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
+      0 6px 18px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
+    transform: translateY(-2px);
   }
   .src-name { font-size: 0.85rem; font-weight: 600; color: var(--dn-src, var(--dn-fg)); letter-spacing: 0.03em; }
   .src-meta { font-size: 0.68rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
@@ -536,10 +684,10 @@
     color: var(--dn-fg);
     background:
       linear-gradient(180deg,
-        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 9%, transparent),
+        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 11%, transparent),
         transparent 55%),
       var(--dn-bg-raise);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 34%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 42%, transparent);
     padding: 0.9em 1.1em;
     cursor: pointer;
     overflow: hidden;
@@ -563,13 +711,27 @@
   .cta:hover {
     transform: translateY(-2px);
     border-color: var(--dn-src, var(--dn-accent));
-    box-shadow: 0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 20%, transparent);
+    box-shadow:
+      0 0 26px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
+      0 8px 22px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
   }
   .cta-k { font-size: 1.1rem; color: var(--dn-src, var(--dn-accent-2)); }
   .cta-k.spark { color: var(--dn-hot); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
   .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
-  .cta.graph { border-style: dashed; }
+  .cta.graph {
+    /* The synapses CTA is the door to the canvas: gradient border, not a
+       dashed outline — it should read as the highest-voltage control here. */
+    border: 1px solid transparent;
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--dn-accent) 10%, transparent), transparent 55%),
+      var(--dn-bg-raise) padding-box,
+      linear-gradient(135deg, var(--dn-accent), var(--dn-violet), var(--dn-accent-2)) border-box;
+  }
+  .cta.graph:hover {
+    box-shadow: 0 0 26px color-mix(in srgb, var(--dn-violet) 35%, transparent);
+  }
 
   /* ---------- contents grid ---------- */
   .chapters-grid { width: min(68rem, 100%); }
@@ -613,9 +775,10 @@
     transition: height 160ms ease;
   }
   .card:hover {
-    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, transparent);
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent);
-    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, transparent);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--dn-bg-sunken) 65%, transparent);
+    transform: translateY(-2px);
   }
   .card:hover::before { height: 72%; }
   .show-all {

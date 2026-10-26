@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Convenience-Features-for-Finding-Files">1. 20.18 Convenience Features for Finding Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Image-Mode.html">Viewing Image Files</a>   Previous: <a href="docs/emacs--File-Name-Cache.html">File Name Cache</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="File-Conveniences"></a>
+</p>
+
+<hr />
+<div id="outline-container-Convenience-Features-for-Finding-Files" class="outline-2">
+<h2 id="Convenience-Features-for-Finding-Files"><span class="section-number-2">1.</span> 20.18 Convenience Features for Finding Files <a href="#Convenience-Features-for-Finding-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Convenience-Features-for-Finding-Files">
+<p>
+In this section, we introduce some convenient facilities for finding recently-opened files, reading file names from a buffer.
+</p>
+
+<p>
+If you enable Recentf mode, with M-x recentf-mode, Emacs maintains a list of recently opened files. To open a file from this list, use the M-x recentf-open command. When this mode is enabled, the ‘=File=' menu will include a submenu that you can use to visit one of these files. M-x recentf-save-list saves the current <code>recentf-list</code> to a file, and M-x recentf-edit-list edits it.
+</p>
+
+<p>
+If you use remote files, you might also consider customizing <code>remote-file-name-access-timeout</code>, which is the number of seconds after which the check whether a remote file shall be used in Recentf is stopped. This prevents Emacs being blocked.
+</p>
+
+<p>
+The M-x ffap command generalizes <code>find-file</code> with more powerful heuristic defaults (see <a href="docs/emacs--FFAP.html">Finding Files and URLs at Point</a>), often based on the text at point. Partial Completion mode offers other features extending <code>find-file</code>, which can be used with <code>ffap</code>. See <a href="docs/emacs--Completion-Options.html">Completion Options</a>.
+</p>
+</div>
+</div>

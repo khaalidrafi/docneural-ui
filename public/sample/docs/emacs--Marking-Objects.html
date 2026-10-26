@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Commands-to-Mark-Textual-Objects">1. 13.2 Commands to Mark Textual Objects ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Using-Region.html">Operating on the Region</a>   Previous: <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>   Up: <a href="docs/emacs--Mark.html">The Mark and the Region</a>
+</p>
+
+<p>
+<a id="Marking-Objects"></a>
+</p>
+
+<hr />
+<div id="outline-container-Commands-to-Mark-Textual-Objects" class="outline-2">
+<h2 id="Commands-to-Mark-Textual-Objects"><span class="section-number-2">1.</span> 13.2 Commands to Mark Textual Objects <a href="#Commands-to-Mark-Textual-Objects">¶</a></h2>
+<div class="outline-text-2" id="text-Commands-to-Mark-Textual-Objects">
+<p>
+Here are commands for placing point and the mark around a textual object such as a word, list, paragraph or page:
+</p>
+
+<dl class="org-dl">
+<dt>M-@</dt><dd>Set mark at the end of the next word (<code>mark-word</code>). This does not move point.</dd>
+
+<dt>C-M-@</dt><dd>Set mark after end of following balanced expression (<code>mark-sexp</code>). This does not move point.</dd>
+
+<dt>M-h</dt><dd>Move point to the beginning of the current paragraph, and set mark at the end (<code>mark-paragraph</code>).</dd>
+
+<dt>C-M-h</dt><dd>Move point to the beginning of the current defun, and set mark at the end (<code>mark-defun</code>).</dd>
+
+<dt>C-x C-p</dt><dd>Move point to the beginning of the current page, and set mark at the end (<code>mark-page</code>).</dd>
+
+<dt>C-x h</dt><dd>Move point to the beginning of the buffer, and set mark at the end (<code>mark-whole-buffer</code>).</dd>
+</dl>
+
+<p>
+M-@ (<code>mark-word</code>) sets the mark at the end of the next word (see <a href="docs/emacs--Words.html">Words</a>, for information about words). Repeated invocations of this command extend the region by advancing the mark one word at a time. As an exception, if the mark is active and located before point, M-@ moves the mark backwards from its current position one word at a time.
+</p>
+
+<p>
+This command also accepts a numeric argument <code>n</code>, which tells it to advance the mark by <code>n</code> words. A negative argument −=n= moves the mark back by <code>n</code> words.
+</p>
+
+<p>
+Similarly, C-M-@ (<code>mark-sexp</code>) puts the mark at the end of the next balanced expression (see <a href="docs/emacs--Expressions.html">Expressions with Balanced Parentheses</a>). Repeated invocations extend the region to subsequent expressions, while positive or negative numeric arguments move the mark forward or backward by the specified number of expressions.
+</p>
+
+<p>
+The other commands in the above list set both point and mark, so as to delimit an object in the buffer. M-h (<code>mark-paragraph</code>) marks paragraphs (see <a href="docs/emacs--Paragraphs.html">Paragraphs</a>), C-M-h (<code>mark-defun</code>) marks top-level definitions (see <a href="docs/emacs--Moving-by-Defuns.html">Moving by Defuns</a>), and C-x C-p (<code>mark-page</code>) marks pages (see <a href="docs/emacs--Pages.html">Pages</a>). Repeated invocations again play the same role, extending the region to consecutive objects; similarly, numeric arguments specify how many objects to move the mark by.
+</p>
+
+<p>
+C-x h (<code>mark-whole-buffer</code>) sets up the entire buffer as the region, by putting point at the beginning and the mark at the end.
+</p>
+
+<hr />
+</div>
+</div>

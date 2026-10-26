@@ -1,0 +1,245 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-Header-Arguments-1">0.0.1. 16.3 Using Header Arguments ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6588725">1. sample header</a></li>
+<li><a href="#org7c87182">2. Heading</a>
+<ul>
+<li><a href="#org631122a">2.1. Subheading</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Using-Header-Arguments"></a>
+Next: <a href="docs/org--Environment-of-a-Code-Block.html">Environment of a Code Block</a>, Previous: <a href="docs/org--Structure-of-Code-Blocks.html">Structure of Code Blocks</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Using-Header-Arguments-1" class="outline-4">
+<h4 id="Using-Header-Arguments-1"><span class="section-number-4">0.0.1.</span> 16.3 Using Header Arguments <a href="#Using-Header-Arguments-1">¶</a></h4>
+<div class="outline-text-4" id="text-Using-Header-Arguments-1">
+<p>
+Org comes with many header arguments common to all languages. New header arguments are added for specific languages as they become available for use in source code blocks. A header argument is specified with an initial colon followed by the argument's name in lowercase.
+</p>
+
+<p>
+Since header arguments can be set in several ways, Org prioritizes them in case of overlaps or conflicts by giving local settings a higher priority. Header values in function calls, for example, override header values from global defaults.
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="System_002dwide-header-arguments-1"></a>System-wide header arguments <a href="#System_002dwide-header-arguments-1">¶</a><br />
+<div class="outline-text-5" id="text-System_002dwide-header-arguments-1">
+<p>
+System-wide values of header arguments can be specified by customizing the <code>org-babel-default-header-args</code> variable, which defaults to the following values:
+</p>
+
+<pre class="example" id="org062fe9c">
+:session    =&gt; "none"
+:results    =&gt; "replace"
+:exports    =&gt; "code"
+:cache      =&gt; "no"
+:noweb      =&gt; "no"
+:hlines     =&gt; "no"
+:tangle     =&gt; "no"
+</pre>
+
+<p>
+Inline source blocks (see <a href="docs/org--Structure-of-Code-Blocks.html">Structure of Code Blocks</a>) use slightly different default header arguments defined in <code>org-babel-default-inline-header-args</code>:
+</p>
+
+<pre class="example" id="orge1b6dd1">
+:session    =&gt; "none"
+:results    =&gt; "replace"
+:exports    =&gt; "results"
+:hlines     =&gt; "yes"
+</pre>
+
+<p>
+The most notable difference between default header arguments for inline and normal source blocks is ‘=:exports=' argument. For inline source blocks, results of evaluation are exported by default; not the code.
+</p>
+
+<p>
+Unlike the default values, header arguments set using Org mode properties (see ) do apply to both the normal source blocks and inline source blocks.
+</p>
+
+<p>
+The example below sets ‘=:noweb=' header arguments to ‘=yes=', which makes Org expand ‘=:noweb=' references by default.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-babel-default-header-args
+      (cons '(:noweb . "yes")
+            (assq-delete-all :noweb org-babel-default-header-args)))
+</pre>
+</div>
+
+<p>
+Each language can have separate default header arguments by customizing the variable <code>org-babel-default-header-args:&lt;LANG&gt;</code>, where <code>&lt;LANG&gt;</code> is the name of the language. For details, see the language-specific online documentation at <a href="https://orgmode.org/worg/org-contrib/babel/">https://orgmode.org/worg/org-contrib/babel/</a>.
+</p>
+</div>
+</li>
+<li><a id="Header-arguments-in-Org-mode-properties-1"></a>Header arguments in Org mode properties <a href="#Header-arguments-in-Org-mode-properties-1">¶</a><br />
+<div class="outline-text-5" id="text-Header-arguments-in-Org-mode-properties-1">
+<p>
+For header arguments applicable to the buffer, use ‘=PROPERTY=' keyword anywhere in the Org file (see <a href="docs/org--Property-Syntax.html">Property Syntax</a>).
+</p>
+
+<p>
+The following example makes all the R code blocks execute in the same session. Setting ‘=:results=' to ‘=silent=' ignores the results of executions for all blocks, not just R code blocks; no results inserted for any block.
+</p>
+
+<pre class="example" id="orge11990a">
+#+PROPERTY: header-args:R  :session *R*
+#+PROPERTY: header-args    :results silent
+</pre>
+
+<p>
+Header arguments set through Org's property drawers (see <a href="docs/org--Property-Syntax.html">Property Syntax</a>) apply at the subtree level on down. Since these property drawers can appear anywhere in the file hierarchy, Org uses outermost call or source block to resolve the values. Org ignores <code>org-use-property-inheritance</code> setting.
+</p>
+
+<p>
+In this example, ‘=:cache=' defaults to ‘=yes=' for all code blocks in the subtree.
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org6588725" class="outline-2">
+<h2 id="org6588725"><span class="section-number-2">1.</span> sample header</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+Properties defined through <code>org-set-property</code> function, bound to C-c C-x p, apply to all active languages. They override properties set in <code>org-babel-default-header-args</code>.
+</p>
+
+<p>
+Language-specific header arguments are also read from properties ‘=header-args:&lt;LANG&gt;=' where <code>&lt;LANG&gt;</code> is the language identifier. For example,
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org7c87182" class="outline-2">
+<h2 id="org7c87182"><span class="section-number-2">2.</span> Heading</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org631122a" class="outline-3">
+<h3 id="org631122a"><span class="section-number-3">2.1.</span> Subheading</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+would force separate sessions for Clojure blocks in ‘=Heading=' and ‘=Subheading=', but use the same session for all R blocks. Blocks in ‘=Subheading=' inherit settings from ‘=Heading='.
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="Code-block-specific-header-arguments-1"></a>Code block specific header arguments <a href="#Code-block-specific-header-arguments-1">¶</a><br />
+<div class="outline-text-5" id="text-Code-block-specific-header-arguments-1">
+<p>
+Header arguments are most commonly set at the source code block level, on the ‘=#+BEGIN<sub>SRC</sub>=' line. Arguments set at this level take precedence over those set in the <code>org-babel-default-header-args</code> variable, and also those set as header properties.
+</p>
+
+<p>
+In the following example, setting ‘=:results=' to ‘=silent=' makes it ignore results of the code execution. Setting ‘=:exports=' to ‘=code=' exports only the body of the code block to HTML or LaTeX.
+</p>
+
+<pre class="example" id="org5aea839">
+#+NAME: factorial
+#+BEGIN_SRC haskell :results silent :exports code :var n=0
+  fac 0 = 1
+  fac n = n * fac (n-1)
+#+END_SRC
+</pre>
+
+<p>
+The same header arguments in an inline code block:
+</p>
+
+<pre class="example" id="org5a39978">
+src_haskell[:exports both]{fac 5}
+</pre>
+
+<p>
+Code block header arguments can span multiple lines using ‘=#+HEADER:=' on each line. Note that Org currently accepts the plural spelling of ‘=#+HEADER:=' only as a convenience for backward-compatibility. It may be removed at some point.
+</p>
+
+<p>
+Multi-line header arguments on an unnamed code block:
+</p>
+
+<pre class="example" id="org69cde4c">
+#+HEADER: :var data1=1
+#+BEGIN_SRC emacs-lisp :var data2=2
+   (message "data1:%S, data2:%S" data1 data2)
+#+END_SRC
+
+#+RESULTS:
+: data1:1, data2:2
+</pre>
+
+<p>
+Multi-line header arguments on a named code block:
+</p>
+
+<pre class="example" id="org609d865">
+#+NAME: named-block
+#+HEADER: :var data=2
+#+BEGIN_SRC emacs-lisp
+  (message "data:%S" data)
+#+END_SRC
+
+#+RESULTS: named-block
+  : data:2
+</pre>
+</div>
+</li>
+<li><a id="Header-arguments-in-function-calls-1"></a>Header arguments in function calls <a href="#Header-arguments-in-function-calls-1">¶</a><br />
+<div class="outline-text-5" id="text-Header-arguments-in-function-calls-1">
+<p>
+Header arguments in function calls are the most specific and override all other settings in case of an overlap. They get the highest priority. Two ‘=#+CALL:=' examples are shown below. For the complete syntax of ‘=CALL=' keyword, see <a href="docs/org--Evaluating-Code-Blocks.html">Evaluating Code Blocks</a>.
+</p>
+
+<p>
+In this example, ‘=:exports results=' header argument is applied to the evaluation of the ‘=#+CALL:=' line.
+</p>
+
+<pre class="example" id="org919bf5d">
+#+CALL: factorial(n=5) :exports results
+</pre>
+
+<p>
+In this example, ‘=:session special=' header argument is applied to the evaluation of ‘=factorial=' code block.
+</p>
+
+<pre class="example" id="org10d6c5d">
+#+CALL: factorial[:session special](n=5)
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Environment-of-a-Code-Block.html">Environment of a Code Block</a>, Previous: <a href="docs/org--Structure-of-Code-Blocks.html">Structure of Code Blocks</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>

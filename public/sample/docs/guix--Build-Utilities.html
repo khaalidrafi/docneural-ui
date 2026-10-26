@@ -1,0 +1,522 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#build-utilities">1.0.1. 8.7 Build Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Build-Utilities"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Search-Paths.html">Search Paths</a>, Previous: <a href="docs/guix--Build-Phases.html">Build Phases</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Build-Utilities-1"></a>
+</p>
+</div>
+<div id="outline-container-build-utilities" class="outline-4">
+<h4 id="build-utilities"><span class="section-number-4">1.0.1.</span> 8.7 Build Utilities</h4>
+<div class="outline-text-4" id="text-build-utilities">
+<p>
+As soon as you start writing non-trivial package definitions (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>) or other build actions (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>), you will likely start looking for helpers for “shell-like” actions&#x2014;creating directories, copying and deleting files recursively, manipulating build phases, and so on. The <code>(guix build utils)</code> module provides such utility procedures.
+</p>
+
+<p>
+Most build systems load <code>(guix build utils)</code> (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Thus, when writing custom build phases for your package definitions, you can usually assume those procedures are in scope.
+</p>
+
+<p>
+When writing G-expressions, you can import <code>(guix build utils)</code> on the “build side” using <code>with-imported-modules</code> and then put it in scope with the <code>use-modules</code> form (see <a href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-Modules.html#Using-Guile-Modules">Using Guile Modules</a> in GNU Guile Reference Manual):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(with-imported-modules '((guix build utils))  ;import it
+  (computed-file "empty-tree"
+                 #~(begin
+                     ;; Put it in scope.
+                     (use-modules (guix build utils))
+
+                     ;; Happily use its 'mkdir-p' procedure.
+                     (mkdir-p (string-append #$output "/a/b/c")))))
+</pre>
+</div>
+
+<p>
+The remainder of this section is the reference for most of the utility procedures provided by <code>(guix build utils)</code>.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Dealing-with-Store-File-Names"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="dealing-with-store-file-names"></a>8.7.1 Dealing with Store File Names<br />
+<div class="outline-text-5" id="text-dealing-with-store-file-names">
+<p>
+This section documents procedures that deal with store file names.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: %store-directory </dt><dd>Return the directory name of the store.</dd>
+
+<dt>Procedure: store-file-name? file</dt><dd>Return true if <code>file</code> is in the store.</dd>
+
+<dt>Procedure: strip-store-file-name file</dt><dd>Strip the <code>/gnu/store</code> and hash from <code>file</code>, a store file name. The result is typically a <code>"==package=</code>-<code>=version=</code>"= string.</dd>
+
+<dt>Procedure: package-name-&gt;name+version name</dt><dd>Given <code>name</code>, a package name like <code>"foo-0.9.1b"</code>, return two values: <code>"foo"</code> and <code>"0.9.1b"</code>. When the version part is unavailable, <code>name</code> and <code>#f</code> are returned. The first hyphen followed by a digit is considered to introduce the version part.</dd>
+</dl>
+
+<p>
+<a id="File-Types"></a>
+</p>
+</div>
+</li>
+<li><a id="file-types"></a>8.7.2 File Types<br />
+<div class="outline-text-5" id="text-file-types">
+<p>
+The procedures below deal with files and file types.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: directory-exists? dir</dt><dd>Return <code>#t</code> if <code>dir</code> exists and is a directory.</dd>
+
+<dt>Procedure: executable-file? file</dt><dd>Return <code>#t</code> if <code>file</code> exists and is executable.</dd>
+
+<dt>Procedure: symbolic-link? file</dt><dd>Return <code>#t</code> if <code>file</code> is a symbolic link (aka. a “symlink”).</dd>
+
+<dt>(no term)</dt><dd>Procedure: elf-file? file<br />
+Procedure: ar-file? file<br />
+Procedure: gzip-file? file :: Return <code>#t</code> if <code>file</code> is, respectively, an ELF file, an <code>ar</code> archive (such as a <code>.a</code> static library), or a gzip file.</dd>
+
+<dt>Procedure: reset-gzip-timestamp file [#:keep-mtime? #t]</dt><dd>If <code>file</code> is a gzip file, reset its embedded timestamp (as with <code>gzip --no-name</code>) and return true. Otherwise return <code>#f</code>. When <code>keep-mtime?</code> is true, preserve <code>file</code>'s modification time.</dd>
+</dl>
+
+<p>
+<a id="File-Manipulation"></a>
+</p>
+</div>
+</li>
+<li><a id="file-manipulation"></a>8.7.3 File Manipulation<br />
+<div class="outline-text-5" id="text-file-manipulation">
+<p>
+The following procedures and macros help create, modify, and delete files. They provide functionality comparable to common shell utilities such as <code>mkdir -p</code>, <code>cp -r</code>, <code>rm -r</code>, and <code>sed</code>. They complement Guile's extensive, but low-level, file system interface (see <a href="https://www.gnu.org/software/guile/manual/html_node/POSIX.html#POSIX">POSIX</a> in GNU Guile Reference Manual).
+</p>
+
+<dl class="org-dl">
+<dt>Macro: with-directory-excursion directory body &#x2026;</dt><dd><p>
+Run <code>body</code> with <code>directory</code> as the process's current directory.
+</p>
+
+<p>
+Essentially, this macro changes the current directory to <code>directory</code> before evaluating <code>body</code>, using <code>chdir</code> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Processes.html#Processes">Processes</a> in GNU Guile Reference Manual). It changes back to the initial directory when the dynamic extent of <code>body</code> is left, be it <i>via</i> normal procedure return or <i>via</i> a non-local exit such as an exception.
+</p></dd>
+
+<dt>Procedure: mkdir-p dir</dt><dd>Create directory <code>dir</code> and all its ancestors.</dd>
+
+<dt>Procedure: install-file file directory</dt><dd>Create <code>directory</code> if it does not exist and copy <code>file</code> in there under the same name.</dd>
+
+<dt>Procedure: make-file-writable file</dt><dd>Make <code>file</code> writable for its owner.</dd>
+
+<dt>Procedure: copy-recursively source destination [#:log (current-output-port)] [#:follow-symlinks? #f] [#:copy-file copy-file] [#:keep-mtime? #f] [#:keep-permissions? #t] [#:select? (const #t)]</dt><dd>Copy <code>source</code> directory to <code>destination</code>. Follow symlinks if <code>follow-symlinks?</code> is true; otherwise, just preserve them. Call <code>copy-file</code> to copy regular files. Call <code>select?</code>, taking two arguments, <code>file</code> and <code>stat</code>, for each entry in <code>source</code>, where <code>file</code> is the entry's absolute file name and <code>stat</code> is the result of <code>lstat</code> (or <code>stat</code> if <code>follow-symlinks?</code> is true); exclude entries for which <code>select?</code> does not return true. When <code>keep-mtime?</code> is true, keep the modification time of the files in <code>source</code> on those of <code>destination</code>. When <code>keep-permissions?</code> is true, preserve file permissions. Write verbose output to the <code>log</code> port.</dd>
+
+<dt>Procedure: delete-file-recursively dir [#:follow-mounts? #f]</dt><dd>Delete <code>dir</code> recursively, like <code>rm -rf</code>, without following symlinks. Don't follow mount points either, unless <code>follow-mounts?</code> is true. Report but ignore errors.</dd>
+
+<dt>Macro: substitute* file ((regexp match-var&#x2026;) body&#x2026;) &#x2026;</dt><dd><p>
+Substitute <code>regexp</code> in <code>file</code> by the string returned by <code>body</code>. <code>body</code> is evaluated with each <code>match-var</code> bound to the corresponding positional regexp sub-expression. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(substitute* file
+  (("hello")
+   "good morning\n")
+  (("foo([a-z]+)bar(.*)$" all letters end)
+   (string-append "baz" letters end)))
+</pre>
+</div>
+
+<p>
+Here, anytime a line of <code>file</code> contains <code>hello</code>, it is replaced by <code>good morning</code>. Anytime a line of <code>file</code> matches the second regexp, <code>all</code> is bound to the complete match, <code>letters</code> is bound to the first sub-expression, and <code>end</code> is bound to the last one.
+</p>
+
+<p>
+When one of the <code>match-var</code> is <code>_</code>, no variable is bound to the corresponding match substring.
+</p>
+
+<p>
+Alternatively, <code>file</code> may be a list of file names, in which case they are all subject to the substitutions.
+</p>
+
+<p>
+Be careful about using <code>$</code> to match the end of a line; by itself it won't match the terminating newline of a line. For example, to match a whole line ending with a backslash, one needs a regex like <code>"(.*)\\\\\n$"</code>.
+</p></dd>
+</dl>
+
+<p>
+<a id="File-Search"></a>
+</p>
+</div>
+</li>
+<li><a id="file-search"></a>8.7.4 File Search<br />
+<div class="outline-text-5" id="text-file-search">
+<p>
+<a id="index-file_002c-searching"></a>
+This section documents procedures to search and filter files.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: file-name-predicate regexp</dt><dd>Return a predicate that returns true when passed a file name whose base name matches <code>regexp</code>.</dd>
+
+<dt>Procedure: find-files dir [pred] [#:stat lstat] [#:directories? #f] [#:fail-on-error? #f]</dt><dd>Return the lexicographically sorted list of files under <code>dir</code> for which <code>pred</code> returns true. <code>pred</code> is passed two arguments: the absolute file name, and its stat buffer; the default predicate always returns true. <code>pred</code> can also be a regular expression, in which case it is equivalent to <code>(file-name-predicate ==pred=</code>)=. <code>stat</code> is used to obtain file information; using <code>lstat</code> means that symlinks are not followed. If <code>directories?</code> is true, then directories will also be included. If <code>fail-on-error?</code> is true, raise an exception upon error.</dd>
+</dl>
+
+<p>
+Here are a few examples where we assume that the current directory is the root of the Guix source tree:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; List all the regular files in the current directory.
+(find-files ".")
+⇒ ("./.dir-locals.el" "./.gitignore" …)
+
+;; List all the .scm files under gnu/services.
+(find-files "gnu/services" "\\.scm$")
+⇒ ("gnu/services/admin.scm" "gnu/services/audio.scm" …)
+
+;; List ar files in the current directory.
+(find-files "." (lambda (file stat) (ar-file? file)))
+⇒ ("./libformat.a" "./libstore.a" …)
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Procedure: which program</dt><dd>Return the complete file name for <code>program</code> as found in <code>$PATH</code>, or <code>#f</code> if <code>program</code> could not be found.</dd>
+
+<dt>(no term)</dt><dd><p>
+Procedure: search-input-file inputs name<br />
+Procedure: search-input-directory inputs name :: Return the complete file name for <code>name</code> as found in <code>inputs</code>; <code>search-input-file</code> searches for a regular file and <code>search-input-directory</code> searches for a directory. If <code>name</code> could not be found, an exception is raised.
+</p>
+
+<p>
+Here, <code>inputs</code> must be an association list like <code>inputs</code> and <code>native-inputs</code> as available to build phases (see <a href="docs/guix--Build-Phases.html">Build Phases</a>).
+</p></dd>
+</dl>
+
+<p>
+Here is a (simplified) example of how <code>search-input-file</code> is used in a build phase of the <code>wireguard-tools</code> package:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(add-after 'install 'wrap-wg-quick
+  (lambda* (#:key inputs outputs #:allow-other-keys)
+    (let ((coreutils (string-append (assoc-ref inputs "coreutils")
+                                    "/bin")))
+      (wrap-program (search-input-file outputs "bin/wg-quick")
+        #:sh (search-input-file inputs "bin/bash")
+        `("PATH" ":" prefix ,(list coreutils))))))
+</pre>
+</div>
+
+<p>
+<a id="Program-Invocation"></a>
+</p>
+</div>
+</li>
+<li><a id="program-invocation"></a>8.7.5 Program Invocation<br />
+<div class="outline-text-5" id="text-program-invocation">
+<p>
+<a id="index-program-invocation_002c-from-Scheme"></a> <a id="index-invoking-programs_002c-from-Scheme"></a>
+You'll find handy procedures to spawn processes in this module, essentially convenient wrappers around Guile's <code>system*</code> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Processes.html#Processes"><code>system*</code></a> in GNU Guile Reference Manual).
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: invoke program args&#x2026;</dt><dd><p>
+Invoke <code>program</code> with the given <code>args</code>. Raise an <code>&amp;invoke-error</code> exception if the exit code is non-zero; otherwise return <code>#t</code>.
+</p>
+
+<p>
+The advantage compared to <code>system*</code> is that you do not need to check the return value. This reduces boilerplate in shell-script-like snippets for instance in package build phases.
+</p></dd>
+
+<dt>Procedure: invoke-error? c</dt><dd>Return true if <code>c</code> is an <code>&amp;invoke-error</code> condition.</dd>
+
+<dt>(no term)</dt><dd>Procedure: invoke-error-program c<br />
+Procedure: invoke-error-arguments c<br />
+Procedure: invoke-error-exit-status c<br />
+Procedure: invoke-error-term-signal c<br />
+Procedure: invoke-error-stop-signal c :: Access specific fields of <code>c</code>, an <code>&amp;invoke-error</code> condition.</dd>
+
+<dt>Procedure: report-invoke-error c [port]</dt><dd><p>
+Report to <code>port</code> (by default the current error port) about <code>c</code>, an <code>&amp;invoke-error</code> condition, in a human-friendly way.
+</p>
+
+<p>
+Typical usage would look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (srfi srfi-34) ;for 'guard'
+             (guix build utils))
+
+(guard (c ((invoke-error? c)
+           (report-invoke-error c)))
+  (invoke "date" "--imaginary-option"))
+
+-| command "date" "--imaginary-option" failed with status 1
+</pre>
+</div></dd>
+
+<dt>Procedure: invoke/quiet program args&#x2026;</dt><dd><p>
+Invoke <code>program</code> with <code>args</code> and capture <code>program</code>'s standard output and standard error. If <code>program</code> succeeds, print nothing and return the unspecified value; otherwise, raise a <code>&amp;message</code> error condition that includes the status code and the output of <code>program</code>.
+</p>
+
+<p>
+Here's an example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (srfi srfi-34) ;for 'guard'
+             (srfi srfi-35) ;for 'message-condition?'
+             (guix build utils))
+
+(guard (c ((message-condition? c)
+           (display (condition-message c))))
+  (invoke/quiet "date")  ;all is fine
+  (invoke/quiet "date" "--imaginary-option"))
+
+-| 'date --imaginary-option' exited with status 1; output follows:
+
+    date: unrecognized option '--imaginary-option'
+    Try 'date --help' for more information.
+</pre>
+</div></dd>
+</dl>
+
+<p>
+<a id="Build-Phases-2"></a>
+</p>
+</div>
+</li>
+<li><a id="build-phases"></a>8.7.6 Build Phases<br />
+<div class="outline-text-5" id="text-build-phases">
+<p>
+<a id="index-build-phases-2"></a>
+The <code>(guix build utils)</code> also contains tools to manipulate build phases as used by build systems (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Build phases are represented as association lists or “alists” (see <a href="https://www.gnu.org/software/guile/manual/html_node/Association-Lists.html#Association-Lists">Association Lists</a> in GNU Guile Reference Manual) where each key is a symbol naming the phase and the associated value is a procedure (see <a href="docs/guix--Build-Phases.html">Build Phases</a>).
+</p>
+
+<p>
+Guile core and the <code>(srfi srfi-1)</code> module both provide tools to manipulate alists. The <code>(guix build utils)</code> module complements those with tools written with build phases in mind.
+</p>
+
+<p>
+<a id="index-build-phases_002c-modifying"></a>
+</p>
+<dl class="org-dl">
+<dt>Macro: modify-phases phases clause&#x2026;</dt><dd><p>
+Modify <code>phases</code> sequentially as per each <code>clause</code>, which may have one of the following forms:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(delete old-phase-name)
+(replace old-phase-name new-phase)
+(add-before old-phase-name new-phase-name new-phase)
+(add-after old-phase-name new-phase-name new-phase)
+</pre>
+</div>
+
+<p>
+Where every <code>phase-name</code> above is an expression evaluating to a symbol, and <code>new-phase</code> an expression evaluating to a procedure.
+</p></dd>
+</dl>
+
+<p>
+The example below is taken from the definition of the <code>grep</code> package. It adds a phase to run after the <code>install</code> phase, called <code>fix-egrep-and-fgrep</code>. That phase is a procedure (<code>lambda*</code> is for anonymous procedures) that takes a <code>#:outputs</code> keyword argument and ignores extra keyword arguments (see <a href="https://www.gnu.org/software/guile/manual/html_node/Optional-Arguments.html#Optional-Arguments">Optional Arguments</a> in GNU Guile Reference Manual, for more on <code>lambda*</code> and optional and keyword arguments.) The phase uses <code>substitute*</code> to modify the installed <code>egrep</code> and <code>fgrep</code> scripts so that they refer to <code>grep</code> by its absolute file name:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(modify-phases %standard-phases
+  (add-after 'install 'fix-egrep-and-fgrep
+    ;; Patch 'egrep' and 'fgrep' to execute 'grep' via its
+    ;; absolute file name instead of searching for it in $PATH.
+    (lambda* (#:key outputs #:allow-other-keys)
+      (let* ((out (assoc-ref outputs "out"))
+             (bin (string-append out "/bin")))
+        (substitute* (list (string-append bin "/egrep")
+                           (string-append bin "/fgrep"))
+          (("^exec grep")
+           (string-append "exec " bin "/grep")))))))
+</pre>
+</div>
+
+<p>
+In the example below, phases are modified in two ways: the standard <code>configure</code> phase is deleted, presumably because the package does not have a <code>configure</code> script or anything similar, and the default <code>install</code> phase is replaced by one that manually copies the executable files to be installed:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(modify-phases %standard-phases
+  (delete 'configure)      ;no 'configure' script
+  (replace 'install
+    (lambda* (#:key outputs #:allow-other-keys)
+      ;; The package's Makefile doesn't provide an "install"
+      ;; rule so do it by ourselves.
+      (let ((bin (string-append (assoc-ref outputs "out")
+                                "/bin")))
+        (install-file "footswitch" bin)
+        (install-file "scythe" bin)))))
+</pre>
+</div>
+
+<p>
+<a id="Wrappers"></a>
+</p>
+</div>
+</li>
+<li><a id="wrappers"></a>8.7.7 Wrappers<br />
+<div class="outline-text-5" id="text-wrappers">
+<p>
+<a id="index-program-wrappers"></a> <a id="index-wrapping-programs"></a>
+It is not unusual for a command to require certain environment variables to be set for proper functioning, typically search paths (see <a href="docs/guix--Search-Paths.html">Search Paths</a>). Failing to do that, the command might fail to find files or other commands it relies on, or it might pick the “wrong” ones&#x2014;depending on the environment in which it runs. Examples include:
+</p>
+
+<ul class="org-ul">
+<li>a shell script that assumes all the commands it uses are in <code>PATH</code>;</li>
+<li>a Guile program that assumes all its modules are in <code>GUILE_LOAD_PATH</code> and <code>GUILE_LOAD_COMPILED_PATH</code>;</li>
+<li>a Qt application that expects to find certain plugins in <code>QT_PLUGIN_PATH</code>.</li>
+</ul>
+
+<p>
+For a package writer, the goal is to make sure commands always work the same rather than depend on some external settings. One way to achieve that is to <i>wrap</i> commands in a thin script that sets those environment variables, thereby ensuring that those run-time dependencies are always found. The wrapper would be used to set <code>PATH</code>, <code>GUILE_LOAD_PATH</code>, or <code>QT_PLUGIN_PATH</code> in the examples above.
+</p>
+
+<p>
+To ease that task, the <code>(guix build utils)</code> module provides a couple of helpers to wrap commands.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: wrap-program program [#:sh sh] [#:rest variables]</dt><dd><p>
+Make a wrapper for <code>program</code>. <code>variables</code> should look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'(variable delimiter position list-of-directories)
+</pre>
+</div>
+
+<p>
+where <code>delimiter</code> is optional. <code>:</code> will be used if <code>delimiter</code> is not given.
+</p>
+
+<p>
+For example, this call:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(wrap-program "foo"
+              '("PATH" ":" = ("/gnu/.../bar/bin"))
+              '("CERT_PATH" suffix ("/gnu/.../baz/certs"
+                                    "/qux/certs")))
+</pre>
+</div>
+
+<p>
+will copy <code>foo</code> to <code>.foo-real</code> and create the file <code>foo</code> with the following contents:
+</p>
+
+<pre class="example" id="org3f27862">
+#!location/of/bin/bash
+export PATH="/gnu/.../bar/bin"
+export CERT_PATH="$CERT_PATH${CERT_PATH:+:}/gnu/.../baz/certs:/qux/certs"
+exec -a $0 location/of/.foo-real "$@"
+</pre>
+
+<p>
+If <code>program</code> has previously been wrapped by <code>wrap-program</code>, the wrapper is extended with definitions for <code>variables</code>. If it is not, <code>sh</code> will be used as the interpreter.
+</p></dd>
+
+<dt>Procedure: wrap-script program [#:guile guile] [#:rest variables]</dt><dd><p>
+Wrap the script <code>program</code> such that <code>variables</code> are set first. The format of <code>variables</code> is the same as in the <code>wrap-program</code> procedure. This procedure differs from <code>wrap-program</code> in that it does not create a separate shell script. Instead, <code>program</code> is modified directly by prepending a Guile script, which is interpreted as a comment in the script's language.
+</p>
+
+<p>
+Special encoding comments as supported by Python are recreated on the second line.
+</p>
+
+<p>
+Note that this procedure can only be used once per file as Guile scripts are not supported.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Search-Paths.html">Search Paths</a>, Previous: <a href="docs/guix--Build-Phases.html">Build Phases</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>

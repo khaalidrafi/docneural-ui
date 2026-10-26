@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Searching-the-Minibuffer">1. 17.1.7 Searching the Minibuffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Not-Exiting-Isearch.html">Not Exiting Incremental Search</a>   Up: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>
+</p>
+
+<p>
+<a id="Isearch-Minibuffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Searching-the-Minibuffer" class="outline-2">
+<h2 id="Searching-the-Minibuffer"><span class="section-number-2">1.</span> 17.1.7 Searching the Minibuffer <a href="#Searching-the-Minibuffer">¶</a></h2>
+<div class="outline-text-2" id="text-Searching-the-Minibuffer">
+<p>
+If you start an incremental search while the minibuffer is active, Emacs searches the contents of the minibuffer. Unlike searching an ordinary buffer, the search string is not shown in the echo area, because that is used to display the minibuffer.
+</p>
+
+<p>
+If an incremental search fails in the minibuffer, it tries searching the minibuffer history. See <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>. You can visualize the minibuffer and its history as a series of pages, with the earliest history element on the first page and the current minibuffer on the last page. A forward search, C-s, searches forward to later pages; a reverse search, C-r, searches backwards to earlier pages. Like in ordinary buffer search, a failing search can wrap around, going from the last page to the first page or vice versa.
+</p>
+
+<p>
+When the current match is on a history element, that history element is pulled into the minibuffer. If you exit the incremental search normally (e.g., by typing RET), it remains in the minibuffer afterwards. Canceling the search, with C-g, restores the contents of the minibuffer when you began the search.
+</p>
+</div>
+</div>

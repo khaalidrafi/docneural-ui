@@ -1,0 +1,402 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Additional-Build-Options"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Debugging-Build-Failures.html">Debugging Build Failures</a>, Previous: <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>, Up: <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Additional-Build-Options-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="additional-build-options"></a>9.1.3 Additional Build Options<br />
+<div class="outline-text-5" id="text-additional-build-options">
+<p>
+The command-line options presented below are specific to <code>guix build</code>.
+</p>
+
+<ul class="org-ul">
+<li><code>--quiet</code><br />
+<code>-q</code> :: Build quietly, without displaying the build log; this is equivalent to <code>--verbosity=0</code>. Upon completion, the build log is kept in <code>/var</code> (or similar) and can always be retrieved using the <code>--log-file</code> option.</li>
+
+<li><p>
+<code>--file===file</code><br />
+<code>-f ==file</code> :: Build the package, derivation, or other file-like object that the code within <code>file</code> evaluates to (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>).
+</p>
+
+<p>
+As an example, <code>file</code> might contain a package definition like this (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix)
+             (guix build-system gnu)
+             (guix licenses))
+
+(package
+  (name "hello")
+  (version "2.10")
+  (source (origin
+            (method url-fetch)
+            (uri (string-append "mirror://gnu/hello/hello-" version
+                                ".tar.gz"))
+            (sha256
+             (base32
+              "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
+  (build-system gnu-build-system)
+  (synopsis "Hello, GNU world: An example GNU package")
+  (description "Guess what GNU Hello prints!")
+  (home-page "http://www.gnu.org/software/hello/")
+  (license gpl3+))
+</pre>
+</div>
+
+<p>
+The <code>file</code> may also contain a JSON representation of one or more package definitions. Running <code>guix build -f</code> on <code>hello.json</code> with the following contents would result in building the packages <code>myhello</code> and <code>greeter</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-verbatim">[
+  {
+    "name": "myhello",
+    "version": "2.10",
+    "source": "mirror://gnu/hello/hello-2.10.tar.gz",
+    "build-system": "gnu",
+    "arguments": {
+      "tests?": false
+    },
+    "home-page": "https://www.gnu.org/software/hello/",
+    "synopsis": "Hello, GNU world: An example GNU package",
+    "description": "GNU Hello prints a greeting.",
+    "license": "GPL-3.0+",
+    "native-inputs": ["gettext"]
+  },
+  {
+    "name": "greeter",
+    "version": "1.0",
+    "source": "mirror://gnu/hello/hello-2.10.tar.gz",
+    "build-system": "gnu",
+    "arguments": {
+      "test-target": "foo",
+      "parallel-build?": false
+    },
+    "home-page": "https://example.com/",
+    "synopsis": "Greeter using GNU Hello",
+    "description": "This is a wrapper around GNU Hello.",
+    "license": "GPL-3.0+",
+    "inputs": ["myhello", "hello"]
+  }
+]
+</pre>
+</div></li>
+
+<li><code>--manifest===manifest</code><br />
+<code>-m ==manifest</code> :: Build all packages listed in the given <code>manifest</code> (see <a href="docs/guix--Invoking-guix-package.html#profile_002dmanifest"><code>--manifest</code></a>).</li>
+
+<li><p>
+<code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Build the package or derivation <code>expr</code> evaluates to.
+</p>
+
+<p>
+For example, <code>expr</code> may be <code>(@ (gnu packages guile) guile-1.8)</code>, which unambiguously designates this specific variant of version 1.8 of Guile.
+</p>
+
+<p>
+Alternatively, <code>expr</code> may be a G-expression, in which case it is used as a build program passed to <code>gexp-&gt;derivation</code> (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).
+</p>
+
+<p>
+Lastly, <code>expr</code> may refer to a zero-argument monadic procedure (see <a href="docs/guix--The-Store-Monad.html">The Store Monad</a>). The procedure must return a derivation as a monadic value, which is then passed through <code>run-with-store</code>.
+</p></li>
+
+<li><p>
+<code>--development</code><br />
+<code>-D</code> :: Build the “development environment” (build dependencies) of the following package.
+</p>
+
+<p>
+For example, the following command builds the inputs of <code>hello</code>, but <i>not</i> <code>hello</code> itself, and also builds <code>guile</code>:
+</p>
+
+<pre class="example" id="org7b6a773">
+guix build -D hello guile
+</pre>
+
+<p>
+Notice that <code>-D</code> (or <code>--development</code>) only applies to the immediately following package on the command line. Under the hood, it uses <code>package-&gt;development-manifest</code> (see <a href="docs/guix--Writing-Manifests.html#package_002ddevelopment_002dmanifest"><code>package-&gt;development-manifest</code></a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The effect of combining <code>--development</code> with <code>--target</code> (for cross-compilation) may not be what you expect: it will cross-compile all the dependencies of the given package when it is built natively.
+</p>
+</blockquote>
+
+<p>
+<a id="index-dependents-of-a-package_002c-building-them"></a> <a id="index-building-the-dependents-of-a-package"></a> <a id="build_002ddependents"></a>
+</p></li>
+
+<li><p>
+<code>--dependents[===depth==]</code><br />
+<code>-P ==depth</code> :: Build the dependents of the following package. By default, build all the direct and indirect dependents; when <code>depth</code> is provided, limit to dependents at that distance: 1 for direct dependents, 2 for dependents of dependents, and so on.
+</p>
+
+<p>
+For example, the command below builds <i>all</i> the dependents of libgit2:
+</p>
+
+<pre class="example" id="orgfb1a61e">
+guix build --dependents libgit2
+</pre>
+
+<p>
+To build all the packages that directly depend on NumPy, run:
+</p>
+
+<pre class="example" id="org4516125">
+guix build -P1 python-numpy
+</pre>
+
+<p>
+The list of dependents is computed in the same way as with <code>guix refresh --list-dependent</code> (see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>).
+</p></li>
+
+<li><p>
+<code>--source</code><br />
+<code>-S</code> :: Build the source derivations of the packages, rather than the packages themselves.
+</p>
+
+<p>
+For instance, <code>guix build -S gcc</code> returns something like <code>/gnu/store/…-gcc-4.7.2.tar.bz2</code>, which is the GCC source tarball.
+</p>
+
+<p>
+The returned source tarball is the result of applying any patches and code snippets specified in the package <code>origin</code> (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>).
+</p>
+
+<p>
+<a id="index-source_002c-verification"></a>
+</p>
+
+<p>
+As with other derivations, the result of building a source derivation can be verified using the <code>--check</code> option (see ). This is useful to validate that a (potentially already built or substituted, thus cached) package source matches against its declared hash.
+</p>
+
+<p>
+Note that <code>guix build -S</code> compiles the sources only of the specified packages. They do not include the sources of statically linked dependencies and by themselves are insufficient for reproducing the packages.
+</p></li>
+
+<li id="<code>--sources</code>">Fetch and return the source of <code>package-or-derivation</code> and all their dependencies, recursively. This is a handy way to obtain a local copy of all the source code needed to build <code>packages</code>, allowing you to eventually build them even without network access. It is an extension of the <code>--source</code> option and can accept one of the following optional argument values:
+
+<dl class="org-dl">
+<dt><code>package</code></dt><dd>This value causes the <code>--sources</code> option to behave in the same way as the <code>--source</code> option.</dd>
+
+<dt><code>all</code></dt><dd><p>
+Build the source derivations of all packages, including any source that might be listed as <code>inputs</code>. This is the default value.
+</p>
+
+<pre class="example" id="org2d60787">
+$ guix build --sources tzdata
+The following derivations will be built:
+   /gnu/store/…-tzdata2015b.tar.gz.drv
+   /gnu/store/…-tzcode2015b.tar.gz.drv
+</pre></dd>
+
+<dt><code>transitive</code></dt><dd><p>
+Build the source derivations of all packages, as well of all transitive inputs to the packages. This can be used e.g. to prefetch package source for later offline building.
+</p>
+
+<pre class="example" id="orge6799f1">
+$ guix build --sources=transitive tzdata
+The following derivations will be built:
+   /gnu/store/…-tzcode2015b.tar.gz.drv
+   /gnu/store/…-findutils-4.4.2.tar.xz.drv
+   /gnu/store/…-grep-2.21.tar.xz.drv
+   /gnu/store/…-coreutils-8.23.tar.xz.drv
+   /gnu/store/…-make-4.1.tar.xz.drv
+   /gnu/store/…-bash-4.3.tar.xz.drv
+…
+</pre></dd>
+</dl></li>
+
+<li><p>
+<code>--system===system</code><br />
+<code>-s ==system</code> :: Attempt to build for <code>system</code>&#x2014;e.g., <code>i686-linux</code>&#x2014;instead of the system type of the build host. The <code>guix build</code> command allows you to repeat this option several times, in which case it builds for all the specified systems; other commands ignore extraneous <code>-s</code> options.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>--system</code> flag is for <i>native</i> compilation and must not be confused with cross-compilation. See <code>--target</code> below for information on cross-compilation.
+</p>
+</blockquote>
+
+<p>
+An example use of this is on Linux-based systems, which can emulate different personalities. For instance, passing <code>--system=i686-linux</code> on an <code>x86_64-linux</code> system or <code>--system=armhf-linux</code> on an <code>aarch64-linux</code> system allows you to build packages in a complete 32-bit environment.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Building for an <code>armhf-linux</code> system is unconditionally enabled on <code>aarch64-linux</code> machines, although certain aarch64 chipsets do not allow for this functionality, notably the ThunderX.
+</p>
+</blockquote>
+
+<p>
+Similarly, when transparent emulation with QEMU and <code>binfmt_misc</code> is enabled (see <a href="docs/guix--Virtualization-Services.html"><code>qemu-binfmt-service-type</code></a>), you can build for any system for which a QEMU <code>binfmt_misc</code> handler is installed.
+</p>
+
+<p>
+Builds for a system other than that of the machine you are using can also be offloaded to a remote machine of the right architecture. See <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>, for more information on offloading.
+</p></li>
+
+<li id="<code>--target===triplet</code> ">Cross-build for <code>triplet</code>, which must be a valid GNU triplet, such as <code>"aarch64-linux-gnu"</code> (see <a href="https://www.gnu.org/software/autoconf/manual/html_node/Specifying-Target-Triplets.html#Specifying-Target-Triplets">GNU configuration triplets</a> in Autoconf).</li>
+
+<li id="<code>--list-systems</code>">List all the supported systems, that can be passed as an argument to <code>--system</code>.</li>
+
+<li id="<code>--list-targets</code>"><p>
+List all the supported targets, that can be passed as an argument to <code>--target</code>.
+</p>
+
+<p>
+<a id="build_002dcheck"></a>
+</p></li>
+
+<li id="<code>--check</code> "><p>
+<a id="index-reproducibility_002c-checking"></a>
+</p>
+
+<p>
+Rebuild <code>package-or-derivation</code>, which are already available in the store, and raise an error if the build results are not bit-for-bit identical.
+</p>
+
+<p>
+This mechanism allows you to check whether previously installed substitutes are genuine (see <a href="docs/guix--Substitutes.html">Substitutes</a>), or whether the build result of a package is deterministic. See <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>, for more background information and tools.
+</p>
+
+<p>
+When used in conjunction with <code>--keep-failed</code>, the differing output is kept in the store, under <code>/gnu/store/…-check</code>. This makes it easy to look for differences between the two results.
+</p></li>
+
+<li id="<code>--repair</code> "><p>
+<a id="index-corruption_002c-recovering-from-1"></a>
+</p>
+
+<p>
+Attempt to repair the specified store items, if they are corrupt, by re-downloading or rebuilding them.
+</p>
+
+<p>
+This operation is not atomic and thus restricted to <code>root</code>.
+</p></li>
+
+<li><code>--derivations</code><br />
+<code>-d</code> :: Return the derivation paths, not the output paths, of the given packages.</li>
+
+<li><p>
+<code>--root===file</code> <br />
+<code>-r ==file</code> :: <a id="index-garbage-collector-roots_002c-adding"></a>
+</p>
+
+<p>
+Make <code>file</code> a symlink to the result, and register it as a garbage collector root.
+</p>
+
+<p>
+Consequently, the results of this <code>guix build</code> invocation are protected from garbage collection until <code>file</code> is removed. When that option is omitted, build results are eligible for garbage collection as soon as the build completes. See <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, for more on GC roots.
+</p></li>
+
+<li id="<code>--log-file</code> "><p>
+Return the build log file names or URLs for the given <code>package-or-derivation</code>, or raise an error if build logs are missing.
+</p>
+
+<p>
+This works regardless of how packages or derivations are specified. For instance, the following invocations are equivalent:
+</p>
+
+<pre class="example" id="org14dc965">
+guix build --log-file $(guix build -d guile)
+guix build --log-file $(guix build guile)
+guix build --log-file guile
+guix build --log-file -e '(@ (gnu packages guile) guile-2.0)'
+</pre>
+
+<p>
+If a log is unavailable locally, and unless <code>--no-substitutes</code> is passed, the command looks for a corresponding log on one of the substitute servers.
+</p>
+
+<p>
+So for instance, imagine you want to see the build log of GDB on <code>aarch64</code>, but you are actually on an <code>x86_64</code> machine:
+</p>
+
+<pre class="example" id="org350d23a">
+$ guix build --log-file gdb -s aarch64-linux
+https://bordeaux.guix.gnu.org/log/…-gdb-7.10
+</pre>
+
+<p>
+You can freely access a huge library of build logs!
+</p></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Debugging-Build-Failures.html">Debugging Build Failures</a>, Previous: <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>, Up: <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

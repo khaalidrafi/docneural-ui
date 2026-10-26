@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Internal-archiving-1">1. 9.2.2 Internal archiving ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Internal-archiving"></a>
+Previous: <a href="docs/org--Moving-subtrees.html">Moving a tree to an archive file</a>, Up: <a href="docs/org--Archiving.html">Archiving</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Internal-archiving-1" class="outline-2">
+<h2 id="Internal-archiving-1"><span class="section-number-2">1.</span> 9.2.2 Internal archiving <a href="#Internal-archiving-1">¶</a></h2>
+<div class="outline-text-2" id="text-Internal-archiving-1">
+<p>
+If you want to just switch off&#x2014;for agenda views&#x2014;certain subtrees without moving them to a different file, you can use the ‘=ARCHIVE=' tag.
+</p>
+
+<p>
+A headline that is marked with the ‘=ARCHIVE=' tag (see <a href="docs/org--Tags.html">Tags</a>) stays at its location in the outline tree, but behaves in the following way:
+</p>
+
+<ul class="org-ul">
+<li>It does not open when you attempt to do so with a visibility cycling command (see <a href="docs/org--Visibility-Cycling.html">Visibility Cycling</a>). You can force cycling archived subtrees with C-c C-TAB, or by setting the option <code>org-cycle-open-archived-trees</code>. Also, normal outline commands, like <code>org-fold-show-all</code>, open archived subtrees.</li>
+<li>During sparse tree construction (see <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>), matches in archived subtrees are not exposed, unless you configure the option <code>org-sparse-tree-open-archived-trees</code>.</li>
+<li>During agenda view construction (see <a href="docs/org--Agenda-Views.html">Agenda Views</a>), the content of archived trees is ignored unless you configure the option <code>org-agenda-skip-archived-trees</code>, in which case these trees are always included. In the agenda you can press v a to get archives temporarily included.</li>
+<li>Archived trees are not exported (see <a href="docs/org--Exporting.html">Exporting</a>), only the headline is. Configure the details using the variable <code>org-export-with-archived-trees</code>.</li>
+<li>Archived trees are excluded from column view unless the variable <code>org-columns-skip-archived-trees</code> is configured to <code>nil</code>.</li>
+</ul>
+
+<p>
+The following commands help manage the ‘=ARCHIVE=' tag:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-a"></a>C-c C-x a (<code>org-toggle-archive-tag</code>) </dt><dd>Toggle the archive tag for the current headline. When the tag is set, the headline changes to a shadowed face, and the subtree below it is hidden.</dd>
+
+<dt><a id="index-C_002du-C_002dc-C_002dx-a"></a>C-u C-c C-x a </dt><dd>Check if any direct children of the current headline should be archived. To do this, check each subtree for open TODO entries. If none is found, the command offers to set the ‘=ARCHIVE=' tag for the child. If point is <i>not</i> on a headline when this command is invoked, check the level 1 trees.</dd>
+
+<dt><a id="index-C_002dc-C_002dTAB"></a>C-c C-TAB (<code>org-cycle-force-archived</code>) </dt><dd>Cycle a tree even if it is tagged with ‘=ARCHIVE='.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-A"></a>C-c C-x A (<code>org-archive-to-archive-sibling</code>) </dt><dd>Move the current entry to the <i>Archive Sibling</i>. This is a sibling of the entry with the heading ‘=Archive=' and the archive tag. The entry becomes a child of that sibling and in this way retains a lot of its original context, including inherited tags and approximate position in the outline.</dd>
+</dl>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Moving-subtrees.html">Moving a tree to an archive file</a>, Up: <a href="docs/org--Archiving.html">Archiving</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

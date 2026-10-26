@@ -1,0 +1,137 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Special-Properties-1">1. 7.2 Special Properties ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (55)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Special-Properties"></a>
+Next: <a href="docs/org--Property-Searches.html">Property Searches</a>, Previous: <a href="docs/org--Property-Syntax.html">Property Syntax</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Special-Properties-1" class="outline-2">
+<h2 id="Special-Properties-1"><span class="section-number-2">1.</span> 7.2 Special Properties <a href="#Special-Properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-Special-Properties-1">
+<p>
+Special properties provide an alternative access method to Org mode features, like the TODO state or the priority of an entry, discussed in the previous chapters. This interface exists so that you can include these states in a column view (see <a href="docs/org--Column-View.html">Column View</a>), or to use them in queries. The following property names are special and should not be used as keys in the properties drawer:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=ALLTAGS='</td>
+<td class="org-left">All tags, including inherited ones.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=BLOCKED='</td>
+<td class="org-left"><code>t</code> if task is currently blocked by children or siblings.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=CATEGORY='</td>
+<td class="org-left">The category of an entry.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=CLOCKSUM='</td>
+<td class="org-left">The sum of CLOCK intervals in the subtree. <code>org-clock-sum</code></td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">must be run first to compute the values in the current buffer.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=CLOCKSUM<sub>T</sub>='</td>
+<td class="org-left">The sum of CLOCK intervals in the subtree for today.</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left"><code>org-clock-sum-today</code> must be run first to compute the</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">values in the current buffer.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=CLOSED='</td>
+<td class="org-left">When was this entry closed?</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=DEADLINE='</td>
+<td class="org-left">The deadline timestamp.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=FILE='</td>
+<td class="org-left">The filename the entry is located in.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=ITEM='</td>
+<td class="org-left">The headline of the entry.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=PRIORITY='</td>
+<td class="org-left">The priority of the entry, a string with a single letter.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=SCHEDULED='</td>
+<td class="org-left">The scheduling timestamp.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=TAGS='</td>
+<td class="org-left">The tags defined directly in the headline.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=TIMESTAMP='</td>
+<td class="org-left">The first active keyword-less timestamp in the entry.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=TIMESTAMP<sub>IA</sub>='</td>
+<td class="org-left">The first inactive keyword-less timestamp in the entry.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=TODO='</td>
+<td class="org-left">The TODO keyword of the entry.</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>

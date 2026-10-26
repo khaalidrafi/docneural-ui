@@ -1,0 +1,159 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#teams">1.0.1. 22.12 Teams</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Teams"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Making-Decisions.html">Making Decisions</a>, Previous: <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Teams-1"></a>
+</p>
+</div>
+<div id="outline-container-teams" class="outline-4">
+<h4 id="teams"><span class="section-number-4">1.0.1.</span> 22.12 Teams</h4>
+<div class="outline-text-4" id="text-teams">
+<p>
+<a id="index-teams-1"></a>
+To organize work on Guix, including but not just development efforts, the project has a set of <i>teams</i>. Each team has its own focus and interests and is the primary contact point for questions and contributions in those areas. A team's primary mission is to coordinate and review the work of individuals in its scope (see <a href="docs/guix--Reviewing-the-Work-of-Others.html">Reviewing the Work of Others</a>); it can make decisions within its scope, in agreement with other teams whenever there is overlap or a close connection, and in accordance with other project rules such as seeking consensus (see <a href="docs/guix--Making-Decisions.html">Making Decisions</a>).
+</p>
+
+<p>
+As an example, the Python team is responsible for core Python packaging matters; it can decide to upgrade core Python packages in a dedicated <code>python-team</code> branch, in collaboration with any team whose scope is directly dependent on Python&#x2014;e.g., the Science team&#x2014;and following branching rules (see <a href="docs/guix--Managing-Patches-and-Branches.html">Managing Patches and Branches</a>). The Documentation team helps review changes to the documentation and can initiate overarching documentation changes. The Translations team organizes translation of Guix and its manual and coordinates efforts in that area. The Core team is responsible for the development of core functionality and interfaces of Guix; because of its central nature, some of its work may require soliciting input from the community at large and seeking consensus before enacting decisions that would affect the entire community.
+</p>
+
+<p>
+Teams are defined in the <code>etc/teams.scm</code> file in the Guix repository. The scope of each team is defined, when applicable, as a set of files or as a regular expression matching file names.
+</p>
+
+<p>
+<a id="index-team-membership"></a>
+Anyone with interest in a team's domain and willing to contribute to its work can apply to become a member by contacting current members by email; commit access is not a precondition. Membership is formalized by adding the person's name and email address to <code>etc/teams.scm</code>. Members who have not been participating in the team's work for one year or more may be removed; they are free to reapply for membership later.
+</p>
+
+<p>
+<a id="index-team-creation"></a>
+One or more people may propose the creation of a new team by reaching out to the community by email at <a href="mailto:guix-devel@gnu.org">guix-devel@gnu.org</a>, clarifying the intended scope and purpose. When consensus is reached on the creation of this team, someone with commit access formalizes its creation by adding it and its initial members to <code>etc/teams.scm</code>.
+</p>
+
+<p>
+To list existing teams, run the following command from a Guix checkout:
+</p>
+
+<pre class="example" id="org38146ba">
+$ ./etc/teams.scm list-teams
+id: mentors
+name: Mentors
+description: A group of mentors who chaperone contributions by newcomers.
+members:
++ Charlie Smith &lt;charlie@example.org&gt;
+…
+</pre>
+
+<p>
+<a id="index-mentoring"></a>
+You can run the following command to have the Mentors team put in CC of a patch series:
+</p>
+
+<pre class="example" id="orgbc52145">
+$ git send-email --to=ISSUE_NUMBER@debbugs.gnu.org \
+  --header-cmd='etc/teams.scm cc-mentors-header-cmd' *.patch
+</pre>
+
+<p>
+The appropriate team or teams can also be inferred from the modified files. For instance, if you want to send the two latest commits of the current Git repository to review, you can run:
+</p>
+
+<pre class="example" id="org27b610d">
+$ guix shell -D guix
+[env]$ git send-email --to=ISSUE_NUMBER@debbugs.gnu.org -2
+</pre>
+
+<p>
+<a id="index-teams_002c-on-Codeberg"></a>
+To generate a <code>CODEOWNERS</code> file, which Forgejo&#x2014;the software behind Codeberg&#x2014;uses to determine which team or person should review changes to a given set of files, run:
+</p>
+
+<pre class="example" id="orge72d98a">
+./etc/teams.scm codeowners &gt; CODEOWNERS
+</pre>
+
+<p>
+Teams defined in <code>etc/teams.scm</code> are reflected <a href="https://codeberg.org/guix/guix">on Codeberg</a>; the “Owners” team on Codeberg, whose members have administration privileges over <a href="https://codeberg.org/guix">the entire “organization”</a>, is the only one missing from this file. To synchronize team changes with Codeberg, a member of the “Owners” team can run:
+</p>
+
+<pre class="example" id="org1f4c7fd">
+./etc/teams.scm sync-codeberg-teams token
+</pre>
+
+<p>
+&#x2026; where <code>token</code> is a token created via the <a href="https://codeberg.org/user/settings/applications">Codeberg applications settings page</a>, granting read/write access to the ‘=organization=' permission.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Making-Decisions.html">Making Decisions</a>, Previous: <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

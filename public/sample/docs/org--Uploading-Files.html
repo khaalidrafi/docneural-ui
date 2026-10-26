@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Uploading-Files-1">1. 14.2 Uploading Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Uploading-Files"></a>
+Next: <a href="docs/org--Sample-Configuration.html">Sample Configuration</a>, Previous: <a href="docs/org--Configuration.html">Configuration</a>, Up: <a href="docs/org--Publishing.html">Publishing</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Uploading-Files-1" class="outline-2">
+<h2 id="Uploading-Files-1"><span class="section-number-2">1.</span> 14.2 Uploading Files <a href="#Uploading-Files-1">¶</a></h2>
+<div class="outline-text-2" id="text-Uploading-Files-1">
+<p>
+For those people already utilizing third party sync tools such as Rsync or Unison, it might be preferable not to use the built-in remote publishing facilities of Org mode which rely heavily on Tramp. Tramp, while very useful and powerful, tends not to be so efficient for multiple file transfer and has been known to cause problems under heavy usage.
+</p>
+
+<p>
+Specialized synchronization utilities offer several advantages. In addition to timestamp comparison, they also do content and permissions/attribute checks. For this reason you might prefer to publish your web to a local directory&#x2014;possibly even <i>in place</i> with your Org files&#x2014;and then use Unison or Rsync to do the synchronization with the remote host.
+</p>
+
+<p>
+Since Unison, for example, can be configured as to which files to transfer to a certain remote destination, it can greatly simplify the project publishing definition. Simply keep all files in the correct location, process your Org files with <code>org-publish</code> and let the synchronization tool do the rest. You do not need, in this scenario, to include attachments such as JPG, CSS or PNG files in the project definition since the third-party tool syncs them.
+</p>
+
+<p>
+Publishing to a local directory is also much faster than to a remote one, so that you can more easily afford to republish entire projects. If you set <code>org-publish-use-timestamps-flag</code> to <code>nil</code>, you gain the main benefit of re-including any changed external files such as source example files you might include with ‘=INCLUDE=' keyword. The timestamp mechanism in Org is not smart enough to detect if included files have been modified.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Sample-Configuration.html">Sample Configuration</a>, Previous: <a href="docs/org--Configuration.html">Configuration</a>, Up: <a href="docs/org--Publishing.html">Publishing</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

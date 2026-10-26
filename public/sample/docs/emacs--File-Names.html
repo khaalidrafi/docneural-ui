@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#File-Names-1">1. 20.1 File Names ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Visiting.html">Visiting Files</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="File-Names"></a>
+</p>
+
+<hr />
+<div id="outline-container-File-Names-1" class="outline-2">
+<h2 id="File-Names-1"><span class="section-number-2">1.</span> 20.1 File Names <a href="#File-Names-1">¶</a></h2>
+<div class="outline-text-2" id="text-File-Names-1">
+<p>
+Many Emacs commands that operate on a file require you to specify the file name, using the minibuffer (see <a href="docs/emacs--Minibuffer-File.html">Minibuffers for File Names</a>).
+</p>
+
+<p>
+While in the minibuffer, you can use the usual completion and history commands (see <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>). Note that file name completion ignores file names whose extensions appear in the variable <code>completion-ignored-extensions</code> (see <a href="docs/emacs--Completion-Options.html">Completion Options</a>). Note also that most commands use permissive completion with confirmation for reading file names: you are allowed to submit a nonexistent file name, but if you type RET immediately after completing up to a nonexistent file name, Emacs prints ‘=[Confirm]=' and you must type a second RET to confirm. See <a href="docs/emacs--Completion-Exit.html">Completion Exit</a>, for details.
+</p>
+
+<p>
+Minibuffer history commands offer some special features for reading file names, see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>.
+</p>
+
+<p>
+Each buffer has a <i>default directory</i>, stored in the buffer-local variable <code>default-directory</code>. Whenever Emacs reads a file name using the minibuffer, it usually inserts the default directory into the minibuffer as the initial contents. You can inhibit this insertion by changing the variable <code>insert-default-directory</code> to <code>nil</code> (see <a href="docs/emacs--Minibuffer-File.html">Minibuffers for File Names</a>). Regardless, Emacs always assumes that any relative file name is relative to the default directory, e.g., entering a file name without a directory specifies a file in the default directory.
+</p>
+
+<p>
+When you visit a file, Emacs sets <code>default-directory</code> in the visiting buffer to the directory of its file. When you create a new buffer that is not visiting a file, via a command like C-x b, its default directory is usually copied from the buffer that was current at the time (see <a href="docs/emacs--Select-Buffer.html">Creating and Selecting Buffers</a>). You can use the command M-x pwd to see the value of <code>default-directory</code> in the current buffer. The command M-x cd prompts for a directory's name, and sets the buffer's <code>default-directory</code> to that directory (doing this does not change the buffer's file name, if any).
+</p>
+
+<p>
+As an example, when you visit the file <code>/u/rms/gnu/gnu.tasks</code>, the default directory is set to <code>/u/rms/gnu/</code>. If you invoke a command that reads a file name, entering just ‘=foo=' in the minibuffer, with a directory omitted, specifies the file <code>/u/rms/gnu/foo</code>; entering ‘=../.login=' specifies <code>/u/rms/.login</code>; and entering ‘=new/foo=' specifies <code>/u/rms/gnu/new/foo</code>.
+</p>
+
+<p>
+When typing a file name into the minibuffer, you can make use of a couple of shortcuts: a double slash ignores everything before the second slash in the pair, and ‘=~/=' is your home directory. See <a href="docs/emacs--Minibuffer-File.html">Minibuffers for File Names</a>.
+</p>
+
+<p>
+The character ‘=$=' is used to substitute an environment variable into a file name. The name of the environment variable consists of all the alphanumeric characters after the ‘=$='; alternatively, it can be enclosed in braces after the ‘=$='. For example, if you have used the shell command <code>export FOO=rms/hacks</code> to set up an environment variable named <code>FOO</code>, then both <code>/u/$FOO/test.c</code> and <code>/u/${FOO}/test.c</code> are abbreviations for <code>/u/rms/hacks/test.c</code>. If the environment variable is not defined, no substitution occurs, so that the character ‘=$=' stands for itself. Note that environment variables set outside Emacs affect Emacs only if they are applied before Emacs is started.
+</p>
+
+<p>
+To access a file with ‘=$=' in its name, if the ‘=$=' causes expansion, type ‘=$$='. This pair is converted to a single ‘=$=' at the same time that variable substitution is performed for a single ‘=$='. Alternatively, quote the whole file name with ‘=/:=' (see <a href="docs/emacs--Quoted-File-Names.html">Quoted File Names</a>). File names which begin with a literal ‘=~=' should also be quoted with ‘=/:='.
+</p>
+
+<p>
+You can include non-ASCII characters in file names. See <a href="docs/emacs--File-Name-Coding.html">Coding Systems for File Names</a>.
+</p>
+
+<hr />
+</div>
+</div>

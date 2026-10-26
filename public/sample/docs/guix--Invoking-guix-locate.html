@@ -1,0 +1,192 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-locate">1.0.1. 5.5 Invoking <code>guix locate</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-locate"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, Previous: <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-locate-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-locate" class="outline-4">
+<h4 id="invoking-guix-locate"><span class="section-number-4">1.0.1.</span> 5.5 Invoking <code>guix locate</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-locate">
+<p>
+<a id="index-file_002c-searching-in-packages"></a> <a id="index-file-search"></a> <a id="index-searching-for-packages-1"></a>
+There's so much free software out there that sooner or later, you will need to search for packages. The <code>guix search</code> command that we've seen before (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>) lets you search by keywords:
+</p>
+
+<pre class="example" id="org6fa2c33">
+guix search video editor
+</pre>
+
+<p>
+<a id="index-searching-for-packages_002c-by-file-name"></a>
+Sometimes, you instead want to find which package provides a given file, and this is where <code>guix locate</code> comes in. Here is how you can find which package provides the <code>ls</code> command:
+</p>
+
+<pre class="example" id="org499193d">
+$ guix locate ls
+coreutils@9.1       /gnu/store/…-coreutils-9.1/bin/ls
+</pre>
+
+<p>
+Of course the command works for any file, not just commands:
+</p>
+
+<pre class="example" id="org70a2dc9">
+$ guix locate unistr.h
+icu4c@71.1          /gnu/store/…/include/unicode/unistr.h
+libunistring@1.0    /gnu/store/…/include/unistr.h
+</pre>
+
+<p>
+You may also specify <i>glob patterns</i> with wildcards. For example, here is how you would search for packages providing <code>.service</code> files:
+</p>
+
+<pre class="example" id="orgdfa68d1">
+$ guix locate -g '*.service'
+man-db@2.11.1        …/lib/systemd/system/man-db.service
+wpa-supplicant@2.10  …/system-services/fi.w1.wpa_supplicant1.service
+</pre>
+
+<p>
+The <code>guix locate</code> command relies on a database that maps file names to package names. By default, it automatically creates that database if it does not exist yet by traversing packages available <i>locally</i>, which can take a few minutes (depending on the size of your store and the speed of your storage device).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> For now, <code>guix locate</code> builds its database based on purely local knowledge&#x2014;meaning that you will not find packages that never reached your store. Eventually it will support downloading a pre-built database so you can potentially find more packages.
+</p>
+</blockquote>
+
+<p>
+By default, <code>guix locate</code> first tries to look for a system-wide database, usually under <code>/var/cache/guix/locate</code>; if it does not exist or is too old, it falls back to the per-user database, by default under <code>~/.cache/guix/locate</code>. On a multi-user system, administrators may want to periodically update the system-wide database so that all users can benefit from it, for instance by setting up <code>package-database-service-type</code> (see <a href="docs/guix--File-Search-Services.html"><code>package-database-service-type</code></a>).
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org401c42e">
+guix locate [options…] file…
+</pre>
+
+<p>
+&#x2026; where <code>file</code> is the name of a file to search for (specifically, the “base name” of the file: files whose parent directories are called <code>file</code> are not matched).
+</p>
+
+<p>
+The available options are as follows:
+</p>
+
+<ul class="org-ul">
+<li><code>--glob</code><br />
+<code>-g</code> :: Interpret <code>file</code>&#x2026; as <i>glob patterns</i>&#x2014;patterns that may include wildcards, such as ‘=*.scm=' to denote all files ending in ‘=.scm='.</li>
+
+<li id="<code>--stats</code>">Display database statistics.</li>
+
+<li><p>
+<code>--update</code><br />
+<code>-u</code> :: Update the file database.
+</p>
+
+<p>
+By default, the database is automatically updated when it is too old.
+</p></li>
+
+<li id="<code>--clear</code>"><p>
+Clear the database and re-populate it.
+</p>
+
+<p>
+This option lets you start anew, ensuring old data is removed from the database, which also avoids having an endlessly growing database. By default <code>guix locate</code> automatically does that periodically, though infrequently.
+</p></li>
+
+<li id="<code>--database===file</code>"><p>
+Use <code>file</code> as the database, creating it if necessary.
+</p>
+
+<p>
+By default, <code>guix locate</code> picks the database under <code>~/.cache/guix</code> or <code>/var/cache/guix</code>, whichever is the most recent one.
+</p></li>
+
+<li><code>--method===method</code><br />
+<code>-m ==method</code> :: Use <code>method</code> to select the set of packages to index. Possible values are:
+
+<dl class="org-dl">
+<dt><code>manifests</code></dt><dd>This is the default method: it works by traversing profiles on the machine and recording packages it encounters&#x2014;packages you or other users of the machine installed, directly or indirectly. It is fast but it can miss other packages available in the store but not referred to by any profile.</dd>
+
+<dt><code>store</code></dt><dd>This is a slower but more exhaustive method: it checks among all the existing packages those that are available in the store and records them.</dd>
+</dl></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, Previous: <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Font-Specification-Options">1. C.6 Font Specification Options ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Colors-X.html">Window Color Options</a>   Previous: <a href="docs/emacs--Display-X.html">Specifying the Display Name</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Font-X"></a>
+</p>
+
+<hr />
+<div id="outline-container-Font-Specification-Options" class="outline-2">
+<h2 id="Font-Specification-Options"><span class="section-number-2">1.</span> C.6 Font Specification Options <a href="#Font-Specification-Options">¶</a></h2>
+<div class="outline-text-2" id="text-Font-Specification-Options">
+<p>
+You can use the command line option ‘=-fn <code>=font</code>' (or ‘=&#x2013;font=', which is an alias for ‘=-fn=') to specify a default font:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-_002d_002dfont"></a>‘=-fn <code>=font</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;font===font='</dt><dd>Use <code>font</code> as the default font.</dd>
+</dl>
+
+<p>
+When passing a font name to Emacs on the command line, you may need to quote it, by enclosing it in quotation marks, if it contains characters that the shell treats specially (e.g., spaces). For example:
+</p>
+
+<pre class="example" id="orga0aa659">
+emacs -fn "DejaVu Sans Mono-12"
+</pre>
+
+<p>
+See <a href="docs/emacs--Fonts.html">Fonts</a>, for details about font names and other ways to specify the default font.
+</p>
+</div>
+</div>

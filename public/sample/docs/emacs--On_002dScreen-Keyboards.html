@@ -1,0 +1,79 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-Emacs-with-Virtual-Keyboards">1. 6.2 Using Emacs with Virtual Keyboards ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Touchscreens.html">Using Emacs on Touchscreens</a>   Up: <a href="docs/emacs--Other-Input.html">Touchscreen Input and Virtual Keyboards</a>
+</p>
+
+<p>
+<a id="On_002dScreen-Keyboards"></a>
+</p>
+
+<hr />
+<div id="outline-container-Using-Emacs-with-Virtual-Keyboards" class="outline-2">
+<h2 id="Using-Emacs-with-Virtual-Keyboards"><span class="section-number-2">1.</span> 6.2 Using Emacs with Virtual Keyboards <a href="#Using-Emacs-with-Virtual-Keyboards">¶</a></h2>
+<div class="outline-text-2" id="text-Using-Emacs-with-Virtual-Keyboards">
+<p>
+When there is no physical keyboard attached to a system, its windowing system might provide an on-screen keyboard, widely known as a “virtual keyboard”, containing rows of clickable buttons that send keyboard input to the application, much as a real keyboard would.
+</p>
+
+<p>
+This virtual keyboard is hidden when the focused program is not requesting text input as it occupies scarce space on display, and programs are therefore enjoined to display it once they are ready to accept keyboard input. Systems running X detect when the presence of the virtual keyboard is warranted, but on others such as Android Emacs is responsible for displaying it when need be, generally in reaction to a touch screen “tap” gesture (see <a href="docs/emacs--Touchscreens.html">Using Emacs on Touchscreens</a>) or the minibuffer being brought into use (see <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>).
+</p>
+
+<p>
+When a “tap” gesture results in a command being executed, Emacs checks whether the command is meant to set the point by searching for it in the list <code>touch-screen-set-point-commands</code>. If it is, and the text beneath the new point is not read-only, the virtual keyboard is activated, in anticipation of the user input there.
+</p>
+
+<p>
+The default value of <code>touch-screen-set-point-commands</code> holds only the command <code>mouse-set-point</code> (see <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>), which is the default binding of <code>mouse-1</code>, and therefore of touchscreen tap gestures as well.
+</p>
+
+<p>
+The user option <code>touch-screen-display-keyboard</code> compels Emacs to display the virtual keyboard on all tap gestures even if the text is read only; it may also be set buffer locally, in which case Emacs will always display the keyboard in response to a tap on a window displaying the buffer it is set in.
+</p>
+
+<p>
+There are moreover several functions that display or hide the on-screen keyboard. For more details, See <a href="../elisp_html/On_002dScreen-Keyboards.html#On_002dScreen-Keyboards">On-Screen Keyboards</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+Since it may not be possible for Emacs to display the virtual keyboard while it is executing a command, Emacs implements a feature on window systems frequently equipped with no physical keyboard, by which two rapid clicks of a hardware button that is always present on the device induces a quit. See <a href="docs/emacs--Quitting.html">Quitting and Aborting</a>.
+</p>
+
+<p>
+No such button is enabled on X, but one can be configured through the variable <code>x-quit-keysym</code>, whereas the default key is the volume down button on Android, which is also configurable through a variable, <code>android-quit-keycode</code>.
+</p>
+
+<p>
+Most input methods designed to work with virtual keyboards edit text differently from desktop input methods.
+</p>
+
+<p>
+On a conventional desktop windowing system, an input method will simply display the contents of any ongoing character composition on screen, and send key events reflecting its contents to Emacs after it is confirmed by the user.
+</p>
+
+<p>
+By contrast, virtual keyboard input methods directly perform edits to the selected window of each frame; this is known as “text conversion”, or “string conversion” under the X Window System.
+</p>
+
+<p>
+Emacs enables these input methods whenever the buffer local value of <code>text-conversion-style</code> is non-<code>nil</code>, that is to say, generally inside derivatives of <code>text-mode</code> and <code>prog-mode</code>.
+</p>
+
+<p>
+Text conversion is performed asynchronously whenever Emacs receives a request to perform the conversion from the input method, and Emacs is not currently reading a key sequence for which one prefix key has already been read (see <a href="docs/emacs--Keys.html">Keys</a>). After the conversion completes, a <code>text-conversion</code> event is sent. See <a href="../elisp_html/Misc-Events.html#Misc-Events">Misc Events</a> in the Emacs Reference Manual.
+</p>
+
+<p>
+If the input method needs to work on a region of the buffer, then the region is designated the “composing region” (or “preconversion region”). The variable <code>text-conversion-face</code> controls whether to display the composing region in a distinctive face, and if so, which face to employ.
+</p>
+
+<hr />
+</div>
+</div>

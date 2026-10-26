@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Global-and-local-cycling-1">1. 2.2.1 Global and local cycling ¶</a>
+<ul>
+<li><a href="#section">1.1. (4)</a></li>
+<li><a href="#section-1">1.2. (5)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Global-and-local-cycling"></a>
+Next: <a href="docs/org--Initial-visibility.html">Initial visibility</a>, Up: <a href="docs/org--Visibility-Cycling.html">Visibility Cycling</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Global-and-local-cycling-1" class="outline-2">
+<h2 id="Global-and-local-cycling-1"><span class="section-number-2">1.</span> 2.2.1 Global and local cycling <a href="#Global-and-local-cycling-1">¶</a></h2>
+<div class="outline-text-2" id="text-Global-and-local-cycling-1">
+<p>
+Outlines make it possible to hide parts of the text in the buffer. Org uses just two commands, bound to TAB and S-TAB, to change the visibility in the buffer.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-TAB"></a>TAB (<code>org-cycle</code>) </dt><dd><p>
+<i>Subtree cycling</i>: Rotate current subtree among the states
+</p>
+
+<pre class="example" id="org245fe0f">
+,-&gt; FOLDED -&gt; CHILDREN -&gt; SUBTREE --.
+'-----------------------------------'
+</pre>
+
+<p>
+Point must be on a headline for this to work.
+</p></dd>
+
+<dt><a id="index-global-visibility-states"></a>S-TAB (<code>org-global-cycle</code>), C-u TAB </dt><dd><p>
+<i>Global cycling</i>: Rotate the entire buffer among the states
+</p>
+
+<pre class="example" id="orgca7e1b2">
+,-&gt; OVERVIEW -&gt; CONTENTS -&gt; SHOW ALL --.
+'--------------------------------------'
+</pre>
+
+<p>
+When S-TAB is called with a numeric prefix argument <code>N</code>, view contents only up to headlines of level <code>N</code>.
+</p>
+
+<p>
+Note that inside tables (see <a href="docs/org--Tables.html">Tables</a>), S-TAB jumps to the previous field instead.
+</p>
+
+<p>
+You can run global cycling using TAB only if point is at the very beginning of the buffer, but not on a headline, and <code>org-cycle-global-at-bob</code> is set to a non-<code>nil</code> value.
+</p></dd>
+
+<dt><a id="index-startup-visibility"></a>C-u C-u TAB (<code>org-cycle-set-startup-visibility</code>) </dt><dd>Switch back to the startup visibility of the buffer (see <a href="docs/org--Initial-visibility.html">Initial visibility</a>).</dd>
+
+<dt><a id="index-show-all_002c-command"></a>C-u C-u C-u TAB (<code>org-fold-show-all</code>) </dt><dd>Show all, including drawers.</dd>
+
+<dt><a id="index-revealing-context"></a>C-c C-r (<code>org-reveal</code>) </dt><dd>Reveal context around point, showing the current entry, the following heading, and the hierarchy above. It is useful for working near a location that has been exposed by a sparse tree command (see <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>) or an agenda command (see <a href="docs/org--Agenda-Commands.html">Commands in the Agenda Buffer</a>). With a prefix argument, show, on each level, all sibling headings. With a double prefix argument, also show the entire subtree of the parent.</dd>
+
+<dt><a id="index-show-branches_002c-command"></a>C-c C-k (<code>org-show-branches</code>) </dt><dd>Expose all the headings of the subtree, but not their bodies.</dd>
+
+<dt><a id="index-show-children_002c-command"></a>C-c TAB (<code>org-fold-show-children</code>) </dt><dd>Expose all direct children of the subtree. With a numeric prefix argument <code>N</code>, expose all children down to level <code>N</code>.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-b"></a>C-c C-x b (<code>org-tree-to-indirect-buffer</code>) </dt><dd>Show the current subtree in an indirect buffer. With a numeric prefix argument <code>N</code>, go up to level <code>N</code> and then take that tree. If <code>N</code> is negative, then go up that many levels. With a C-u prefix, do not remove the previously used indirect buffer.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-v"></a>C-c C-x v (<code>org-copy-visible</code>) </dt><dd>Copy the <i>visible</i> text in the region into the kill ring.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

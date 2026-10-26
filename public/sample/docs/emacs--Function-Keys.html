@@ -1,0 +1,66 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Rebinding-Function-Keys">1. 51.3.8 Rebinding Function Keys ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Named-ASCII-Chars.html">Named ASCII Control Characters</a>   Previous: <a href="docs/emacs--Modifier-Keys.html">Modifier Keys</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Function-Keys"></a>
+</p>
+
+<hr />
+<div id="outline-container-Rebinding-Function-Keys" class="outline-2">
+<h2 id="Rebinding-Function-Keys"><span class="section-number-2">1.</span> 51.3.8 Rebinding Function Keys <a href="#Rebinding-Function-Keys">¶</a></h2>
+<div class="outline-text-2" id="text-Rebinding-Function-Keys">
+<p>
+Key sequences can contain function keys as well as ordinary characters. Just as Lisp characters (actually integers) represent keyboard characters, Lisp symbols represent function keys. If the function key has a word as its label, then that word is also the name of the corresponding Lisp symbol. Here are the conventional Lisp names for common function keys:
+</p>
+
+<dl class="org-dl">
+<dt><code>left</code>, <code>up</code>, <code>right</code>, <code>down</code></dt><dd>Cursor arrow keys.</dd>
+
+<dt><code>begin</code>, <code>end</code>, <code>home</code>, <code>next</code>, <code>prior</code></dt><dd>Other cursor repositioning keys.</dd>
+
+<dt>(no term)</dt><dd><code>select</code>, <code>print</code>, <code>execute</code>, <code>backtab</code><br />
+<code>insert</code>, <code>undo</code>, <code>redo</code>, <code>clearline</code><br />
+<code>insertline</code>, <code>deleteline</code>, <code>insertchar</code>, <code>deletechar</code> :: Miscellaneous function keys.</dd>
+
+<dt><code>f1</code>, <code>f2</code>, &#x2026; <code>f35</code></dt><dd>Numbered function keys (across the top of the keyboard).</dd>
+
+<dt>(no term)</dt><dd><code>kp-add</code>, <code>kp-subtract</code>, <code>kp-multiply</code>, <code>kp-divide</code><br />
+<code>kp-backtab</code>, <code>kp-space</code>, <code>kp-tab</code>, <code>kp-enter</code><br />
+<code>kp-separator</code>, <code>kp-decimal</code>, <code>kp-equal</code><br />
+<code>kp-prior</code>, <code>kp-next</code>, <code>kp-end</code>, <code>kp-home</code><br />
+<code>kp-left</code>, <code>kp-up</code>, <code>kp-right</code>, <code>kp-down</code><br />
+<code>kp-insert =, =kp-delete</code> :: Keypad keys (to the right of the regular keyboard), with names or punctuation.</dd>
+
+<dt><code>kp-0</code>, <code>kp-1</code>, &#x2026; <code>kp-9</code></dt><dd>Keypad keys with digits.</dd>
+
+<dt><code>kp-f1</code>, <code>kp-f2</code>, <code>kp-f3</code>, <code>kp-f4</code></dt><dd>Keypad PF keys.</dd>
+</dl>
+
+<p>
+These names are conventional, but some systems (especially when using X) may use different names. To make certain what symbol is used for a given function key on your terminal, type C-h c followed by that key.
+</p>
+
+<p>
+See <a href="docs/emacs--Init-Rebinding.html">Rebinding Keys in Your Init File</a>, for examples of binding function keys.
+</p>
+
+<p>
+Many keyboards have a numeric keypad on the right-hand side. The numeric keys in the keypad double up as cursor motion keys, toggled by a key labeled ‘=Num Lock='. By default, Emacs translates these keys to the corresponding keys on the main keyboard. For example, when ‘=Num Lock=' is on, the key labeled ‘=8=' on the numeric keypad produces <code>kp-8</code>, which is translated to 8; when ‘=Num Lock=' is off, the same key produces <code>kp-up</code>, which is translated to UP. If you rebind a key such as 8 or UP, it affects the equivalent keypad key too. However, if you rebind a ‘=kp-<code>' key directly, that won't affect its non-keypad equivalent. Note that the modified keys are not translated: for instance, if you hold down the Meta key while pressing the ‘=8</code>' key on the numeric keypad, that generates M-kp-8.
+</p>
+
+<p>
+Emacs provides a convenient method for binding the numeric keypad keys, using the variables <code>keypad-setup</code>, <code>keypad-numlock-setup</code>, <code>keypad-shifted-setup</code>, and <code>keypad-numlock-shifted-setup</code>. These can be found in the ‘=keyboard=' customization group (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>). You can rebind the keys to perform other tasks, such as issuing numeric prefix arguments.
+</p>
+
+<hr />
+</div>
+</div>

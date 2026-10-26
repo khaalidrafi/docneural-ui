@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Killing-by-Lines-1">1. 14.1.2 Killing by Lines ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Other-Kill-Commands.html">Other Kill Commands</a>   Previous: <a href="docs/emacs--Deletion.html">Deletion</a>   Up: <a href="docs/emacs--Deletion-and-Killing.html">Deletion and Killing</a>
+</p>
+
+<p>
+<a id="Killing-by-Lines"></a>
+</p>
+
+<hr />
+<div id="outline-container-Killing-by-Lines-1" class="outline-2">
+<h2 id="Killing-by-Lines-1"><span class="section-number-2">1.</span> 14.1.2 Killing by Lines <a href="#Killing-by-Lines-1">¶</a></h2>
+<div class="outline-text-2" id="text-Killing-by-Lines-1">
+<dl class="org-dl">
+<dt>C-k</dt><dd>Kill rest of line or one or more lines (<code>kill-line</code>).</dd>
+
+<dt>C-S-backspace</dt><dd>Kill an entire line at once (<code>kill-whole-line</code>)</dd>
+</dl>
+
+<p>
+The simplest kill command is C-k (<code>kill-line</code>). If used at the end of a line, it kills the line-ending newline character, merging the next line into the current one (thus, a blank line is entirely removed). Otherwise, C-k kills all the text from point up to the end of the line; if point was originally at the beginning of the line, this leaves the line blank.
+</p>
+
+<p>
+Spaces and tabs at the end of the line are ignored when deciding which case applies. As long as point is after the last non-whitespace character in the line, you can be sure that C-k will kill the newline. To kill an entire non-blank line, go to the beginning and type C-k twice.
+</p>
+
+<p>
+In this context, “line” means a logical text line, not a screen line (see <a href="docs/emacs--Continuation-Lines.html">Continuation Lines</a>).
+</p>
+
+<p>
+When C-k is given a positive argument <code>n</code>, it kills <code>n</code> lines and the newlines that follow them (text on the current line before point is not killed). With a negative argument −=n=, it kills <code>n</code> lines preceding the current line, together with the text on the current line before point. C-k with an argument of zero kills the text before point on the current line.
+</p>
+
+<p>
+If the variable <code>kill-whole-line</code> is non-<code>nil</code>, C-k at the very beginning of a line kills the entire line including the following newline. This variable is normally <code>nil</code>.
+</p>
+
+<p>
+C-S-backspace (<code>kill-whole-line</code>) kills a whole line including its newline, regardless of the position of point within the line. Note that many text terminals will prevent you from typing the key sequence C-S-backspace.
+</p>
+
+<hr />
+</div>
+</div>

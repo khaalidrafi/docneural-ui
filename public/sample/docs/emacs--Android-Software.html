@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Installing-Extra-Software-on-Android">1. H.9 Installing Extra Software on Android ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Android-Troubleshooting.html">Troubleshooting Startup Problems on Android</a>   Up: <a href="docs/emacs--Android.html">Emacs and Android</a>
+</p>
+
+<p>
+<a id="Android-Software"></a>
+</p>
+
+<hr />
+<div id="outline-container-Installing-Extra-Software-on-Android" class="outline-2">
+<h2 id="Installing-Extra-Software-on-Android"><span class="section-number-2">1.</span> H.9 Installing Extra Software on Android <a href="#Installing-Extra-Software-on-Android">¶</a></h2>
+<div class="outline-text-2" id="text-Installing-Extra-Software-on-Android">
+<p>
+An exceptionally limited set of Unix-like command line tools is distributed alongside default installations of Android. Several projects exist to augment this selection, providing options that range from improved reproductions of Unix command-line utilities to package repositories providing extensive collections of free GNU and Unix software.
+</p>
+
+<p>
+<a href="https://busybox.net">Busybox</a> provides Unix utilities and limited replicas of certain popular GNU programs such as <code>wget</code> in a single statically-linked Linux binary, which is capable of running under Android.
+</p>
+
+<p>
+<a href="https://termux.dev">Termux</a> provides a package manager based on the Debian project's <code>dpkg</code> system and a set of package repositories containing substantial amounts of free software for Unix systems, including compilers, debuggers, and runtimes for languages such as C, C++, Java, Python and Common Lisp. These packages are customarily installed from within a purpose-built terminal emulator application, but access is also granted to Emacs when it is built with the same application signing key, and its “shared user ID” is set to the same package name, as that of the terminal emulator program. The file <code>java/INSTALL</code> within the Emacs distribution illustrates how to build Emacs in this fashion.
+</p>
+
+<p>
+<a href="https://github.com/termux/termux-packages">termux-packages</a> provides the package definitions used by Termux to generate their package repositories, which may also be independently compiled for installation within Emacs's home directory.
+</p>
+
+<p>
+In addition to the projects mentioned above, statically linked binaries for most Linux kernel-based systems can also be run on Android.
+</p>
+</div>
+</div>

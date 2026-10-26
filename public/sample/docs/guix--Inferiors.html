@@ -1,0 +1,178 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#inferiors">1.0.1. 5.9 Inferiors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Inferiors"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>, Previous: <a href="docs/guix--Invoking-guix-time_002dmachine.html">Invoking <code>guix time-machine</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Inferiors-1"></a>
+</p>
+</div>
+<div id="outline-container-inferiors" class="outline-4">
+<h4 id="inferiors"><span class="section-number-4">1.0.1.</span> 5.9 Inferiors</h4>
+<div class="outline-text-4" id="text-inferiors">
+<blockquote>
+<p>
+<b>Note:</b> The functionality described here is a “technology preview” as of version 1.5.0. As such, the interface is subject to change.
+</p>
+</blockquote>
+
+<p>
+<a id="index-inferiors"></a> <a id="index-composition-of-Guix-revisions"></a>
+Sometimes you might need to mix packages from the revision of Guix you're currently running with packages available in a different revision of Guix. Guix <i>inferiors</i> allow you to achieve that by composing different Guix revisions in arbitrary ways.
+</p>
+
+<p>
+<a id="index-inferior-packages"></a>
+Technically, an “inferior” is essentially a separate Guix process connected to your main Guix process through a REPL (see <a href="docs/guix--Invoking-guix-repl.html">Invoking <code>guix repl</code></a>). The <code>(guix inferior)</code> module allows you to create inferiors and to communicate with them. It also provides a high-level interface to browse and manipulate the packages that an inferior provides---<i>inferior packages</i>.
+</p>
+
+<p>
+When combined with channels (see <a href="docs/guix--Channels.html">Channels</a>), inferiors provide a simple way to interact with a separate revision of Guix. For example, let's assume you want to install in your profile the current <code>guile</code> package, along with the <code>guile-json</code> as it existed in an older revision of Guix&#x2014;perhaps because the newer <code>guile-json</code> has an incompatible API and you want to run your code against the old API. To do that, you could write a manifest for use by <code>guix package --manifest</code> (see <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>); in that manifest, you would create an inferior for that old Guix revision you care about, and you would look up the <code>guile-json</code> package in the inferior:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix inferior) (guix channels)
+             (srfi srfi-1))   ;for 'first'
+
+(define channels
+  ;; This is the old revision from which we want to
+  ;; extract guile-json.
+  (list (channel
+         (name 'guix)
+         (url "https://git.guix.gnu.org/guix.git")
+         (commit
+          "65956ad3526ba09e1f7a40722c96c6ef7c0936fe"))))
+
+(define inferior
+  ;; An inferior representing the above revision.
+  (inferior-for-channels channels))
+
+;; Now create a manifest with the current "guile" package
+;; and the old "guile-json" package.
+(packages-&gt;manifest
+ (list (first (lookup-inferior-packages inferior "guile-json"))
+       (specification-&gt;package "guile")))
+</pre>
+</div>
+
+<p>
+On its first run, <code>guix package --manifest</code> might have to build the channel you specified before it can create the inferior; subsequent runs will be much faster because the Guix revision will be cached.
+</p>
+
+<p>
+The <code>(guix inferior)</code> module provides the following procedures to open an inferior:
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: inferior-for-channels channels [#:cache-directory] [#:ttl]</dt><dd><p>
+Return an inferior for <code>channels</code>, a list of channels. Use the cache at <code>cache-directory</code>, where entries can be reclaimed after <code>ttl</code> seconds. This procedure opens a new connection to the build daemon.
+</p>
+
+<p>
+As a side effect, this procedure may build or substitute binaries for <code>channels</code>, which can take time.
+</p></dd>
+
+<dt>Procedure: open-inferior directory [#:command "bin/guix"]</dt><dd>Open the inferior Guix in <code>directory</code>, running <code>directory==/==command=</code> repl= or equivalent. Return <code>#f</code> if the inferior could not be launched.</dd>
+</dl>
+
+<p>
+<a id="index-inferior-packages-1"></a>
+The procedures listed below allow you to obtain and manipulate inferior packages.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: inferior-packages inferior</dt><dd>Return the list of packages known to <code>inferior</code>.</dd>
+
+<dt>Procedure: lookup-inferior-packages inferior name [version]</dt><dd>Return the sorted list of inferior packages matching <code>name</code> in <code>inferior</code>, with highest version numbers first. If <code>version</code> is true, return only packages with a version number prefixed by <code>version</code>.</dd>
+
+<dt>Procedure: inferior-package? obj</dt><dd>Return true if <code>obj</code> is an inferior package.</dd>
+
+<dt>(no term)</dt><dd>Procedure: inferior-package-name package<br />
+Procedure: inferior-package-version package<br />
+Procedure: inferior-package-synopsis package<br />
+Procedure: inferior-package-description package<br />
+Procedure: inferior-package-home-page package<br />
+Procedure: inferior-package-location package<br />
+Procedure: inferior-package-inputs package<br />
+Procedure: inferior-package-native-inputs package<br />
+Procedure: inferior-package-propagated-inputs package<br />
+Procedure: inferior-package-transitive-propagated-inputs package<br />
+Procedure: inferior-package-native-search-paths package<br />
+Procedure: inferior-package-transitive-native-search-paths package<br />
+Procedure: inferior-package-search-paths package :: These procedures are the counterpart of package record accessors (see <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>). Most of them work by querying the inferior <code>package</code> comes from, so the inferior must still be live when you call these procedures.</dd>
+</dl>
+
+<p>
+Inferior packages can be used transparently like any other package or file-like object in G-expressions (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>). They are also transparently handled by the <code>packages-&gt;manifest</code> procedure, which is commonly used in manifests (see <a href="docs/guix--Invoking-guix-package.html">the <code>--manifest</code> option of <code>guix package</code></a>). Thus you can insert an inferior package pretty much anywhere you would insert a regular package: in manifests, in the <code>packages</code> field of your <code>operating-system</code> declaration, and so on.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>, Previous: <a href="docs/guix--Invoking-guix-time_002dmachine.html">Invoking <code>guix time-machine</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

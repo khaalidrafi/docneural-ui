@@ -1,0 +1,98 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Export-Dispatcher-1">1. 13.1 The Export Dispatcher ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="The-Export-Dispatcher"></a>
+Next: <a href="docs/org--Export-Settings.html">Export Settings</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-Export-Dispatcher-1" class="outline-2">
+<h2 id="The-Export-Dispatcher-1"><span class="section-number-2">1.</span> 13.1 The Export Dispatcher <a href="#The-Export-Dispatcher-1">¶</a></h2>
+<div class="outline-text-2" id="text-The-Export-Dispatcher-1">
+<p>
+The export dispatcher is the main interface for Org's exports. A hierarchical menu presents the currently configured export formats. Options are shown as easy toggle switches on the same screen.
+</p>
+
+<p>
+Org also has a minimal prompt interface for the export dispatcher. When the variable <code>org-export-dispatch-use-expert-ui</code> is set to a non-<code>nil</code> value, Org prompts in the minibuffer. To switch back to the hierarchical menu, press ?.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002de"></a>C-c C-e (<code>org-export-dispatch</code>) </dt><dd>Invokes the export dispatcher interface. The options show default settings. The C-u prefix argument preserves options from the previous export, including any subtree selections.</dd>
+</dl>
+
+<p>
+Org exports the entire buffer by default. If the Org buffer has an active region, then Org exports just that region.
+</p>
+
+<p>
+Within the dispatcher interface, the following key combinations can further alter what is exported, and how.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002de-C_002da"></a>C-a </dt><dd><p>
+Toggle asynchronous export. Asynchronous export uses an external Emacs process with a specially configured initialization file to complete the exporting process in the background, without tying-up Emacs. This is particularly useful when exporting long documents.
+</p>
+
+<p>
+Output from an asynchronous export is saved on the <i>export stack</i>. To view this stack, call the export dispatcher with a double C-u prefix argument. If already in the export dispatcher menu, &amp; displays the stack.
+</p>
+
+<p>
+You can make asynchronous export the default by setting <code>org-export-in-background</code>.
+</p>
+
+<p>
+You can set the initialization file used by the background process by setting <code>org-export-async-init-file</code>.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002de-C_002db"></a>C-b </dt><dd><p>
+Toggle body-only export. Useful for excluding headers and footers in the export. Affects only those backend formats that have sections like ‘=&lt;head&gt;&#x2026;&lt;/head&gt;=' in HTML.
+</p>
+
+<p>
+To make body-only export the default, customize the variable <code>org-export-body-only</code>.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002de-C_002df"></a>C-f </dt><dd><p>
+Toggle force-publishing export. Publish functions normally only publish changed files (see <a href="docs/org--Triggering-Publication.html">Triggering Publication</a>). Forced publishing causes files to be published even if their timestamps do not indicate the file has been changed.
+</p>
+
+<p>
+To make forced publishing the default, customize the variable <code>org-export-force-publishing</code>. (This is similar to <code>org-publish-use-timestamps-flag</code>, but only affects the export dispatcher.)
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002de-C_002ds"></a>C-s </dt><dd><p>
+Toggle subtree export. When turned on, Org exports only the subtree starting from point position at the time the export dispatcher was invoked. Org uses the top heading of this subtree as the document's title. If point is not on a heading, Org uses the nearest enclosing header. If point is in the document preamble, Org signals an error and aborts export.
+</p>
+
+<p>
+To make subtree export the default, customize the variable <code>org-export-initial-scope</code>.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002de-C_002dv-1"></a>C-v </dt><dd><p>
+Toggle visible-only export. This is useful for exporting only certain parts of an Org document by adjusting the visibility of particular headings. See also <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>.
+</p>
+
+<p>
+To make visible-only export the default, customize the variable <code>org-export-visible-only</code>.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Export-Settings.html">Export Settings</a>, Up: <a href="docs/org--Exporting.html">Exporting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

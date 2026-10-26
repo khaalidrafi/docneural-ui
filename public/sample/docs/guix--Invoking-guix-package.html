@@ -1,0 +1,697 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-package">1.0.1. 5.2 Invoking <code>guix package</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-package"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Substitutes.html">Substitutes</a>, Previous: <a href="docs/guix--Features.html">Features</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-package-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-package" class="outline-4">
+<h4 id="invoking-guix-package"><span class="section-number-4">1.0.1.</span> 5.2 Invoking <code>guix package</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-package">
+<p>
+<a id="index-installing-packages"></a> <a id="index-removing-packages"></a> <a id="index-package-installation"></a> <a id="index-package-removal"></a> <a id="index-profile-1"></a> <a id="index-guix-package"></a>
+The <code>guix package</code> command is the tool that allows users to install, upgrade, and remove packages, as well as rolling back to previous configurations. These operations work on a user <i>profile</i>&#x2014;a directory of installed packages. Each user has a default profile in <code>$HOME/.guix-profile</code>. The command operates only on the user's own profile, and works with normal user privileges (see <a href="docs/guix--Features.html">Features</a>). Its syntax is:
+</p>
+
+<pre class="example" id="org61765e8">
+guix package options
+</pre>
+
+<p>
+<a id="index-transactions-1"></a>
+Primarily, <code>options</code> specifies the operations to be performed during the transaction. Upon completion, a new profile is created, but previous <i>generations</i> of the profile remain available, should the user want to roll back.
+</p>
+
+<p>
+For example, to remove <code>lua</code> and install <code>guile</code> and <code>guile-cairo</code> in a single transaction:
+</p>
+
+<pre class="example" id="org3822da0">
+guix package -r lua -i guile guile-cairo
+</pre>
+
+<p>
+<a id="index-aliases_002c-for-guix-package"></a>
+For your convenience, we also provide the following aliases:
+</p>
+
+<ul class="org-ul">
+<li><code>guix search</code> is an alias for <code>guix package -s</code>,</li>
+<li><code>guix install</code> is an alias for <code>guix package -i</code>,</li>
+<li><code>guix remove</code> is an alias for <code>guix package -r</code>,</li>
+<li><code>guix upgrade</code> is an alias for <code>guix package -u</code>,</li>
+<li>and <code>guix show</code> is an alias for <code>guix package --show=</code>.</li>
+</ul>
+
+<p>
+These aliases are less expressive than <code>guix package</code> and provide fewer options, so in some cases you'll probably want to use <code>guix package</code> directly.
+</p>
+
+<p>
+<code>guix package</code> also supports a <i>declarative approach</i> whereby the user specifies the exact set of packages to be available and passes it <i>via</i> the <code>--manifest</code> option (see ).
+</p>
+
+<p>
+<a id="index-profile-2"></a>
+For each user, a symlink to the user's default profile is automatically created in <code>$HOME/.guix-profile</code>. This symlink always points to the current generation of the user's default profile. Thus, users can add <code>$HOME/.guix-profile/bin</code> to their <code>PATH</code> environment variable, and so on. <a id="index-search-paths"></a> If you are not using Guix System, consider adding the following lines to your <code>~/.bash_profile</code> (see <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash Startup Files</a> in The GNU Bash Reference Manual) so that newly-spawned shells get all the right environment variable definitions:
+</p>
+
+<pre class="example" id="orgce495dc">
+GUIX_PROFILE="$HOME/.guix-profile" ; \
+source "$GUIX_PROFILE/etc/profile"
+</pre>
+
+<p>
+In a multi-user setup, user profiles are stored in a place registered as a <i>garbage-collector root</i>, which <code>$HOME/.guix-profile</code> points to (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>). That directory is normally <code>localstatedir==/guix/profiles/per-user/==user</code>, where <code>localstatedir</code> is the value passed to <code>configure</code> as <code>--localstatedir</code>, and <code>user</code> is the user name. The <code>per-user</code> directory is created when <code>guix-daemon</code> is started, and the <code>user</code> sub-directory is created by <code>guix package</code>.
+</p>
+
+<p>
+The <code>options</code> can be among the following:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>--install===package=</code> …=<br />
+<code>-i ==package=</code> …= :: Install the specified =package=s.
+</p>
+
+<p>
+Each <code>package</code> may specify a simple package name, such as <code>guile</code>, optionally followed by an at-sign and version number, such as <code>guile@3.0.7</code> or simply <code>guile@3.0</code>. In the latter case, the newest version prefixed by <code>3.0</code> is selected.
+</p>
+
+<p>
+If no version number is specified, the newest available version will be selected. In addition, such a <code>package</code> specification may contain a colon, followed by the name of one of the outputs of the package, as in <code>gcc:doc</code> or <code>binutils@2.22:lib</code> (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>).
+</p>
+
+<p>
+Packages with a corresponding name (and optionally version) are searched for among the GNU distribution modules (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+Alternatively, a <code>package</code> can directly specify a store file name such as <code>/gnu/store/...-guile-3.0.7</code>, as produced by, e.g., <code>guix build</code>.
+</p>
+
+<p>
+<a id="index-propagated-inputs"></a>
+</p>
+
+<p>
+Sometimes packages have <i>propagated inputs</i>: these are dependencies that automatically get installed along with the required package (see <a href="docs/guix--package-Reference.html#package_002dpropagated_002dinputs"><code>propagated-inputs</code> in <code>package</code> objects</a>, for information about propagated inputs in package definitions).
+</p>
+
+<p>
+<a id="package_002dcmd_002dpropagated_002dinputs"></a>
+</p>
+
+<p>
+An example is the GNU MPC library: its C header files refer to those of the GNU MPFR library, which in turn refer to those of the GMP library. Thus, when installing MPC, the MPFR and GMP libraries also get installed in the profile; removing MPC also removes MPFR and GMP&#x2014;unless they had also been explicitly installed by the user.
+</p>
+
+<p>
+Besides, packages sometimes rely on the definition of environment variables for their search paths (see explanation of <code>--search-paths</code> below). Any missing or possibly incorrect environment variable definitions are reported here.
+</p></li>
+
+<li><p>
+<code>--install-from-expression===exp</code><br />
+<code>-e ==exp</code> :: Install the package <code>exp</code> evaluates to.
+</p>
+
+<p>
+<code>exp</code> must be a Scheme expression that evaluates to a <code>&lt;package&gt;</code> object. This option is notably useful to disambiguate between same-named variants of a package, with expressions such as <code>(@ (gnu packages commencement) guile-final)</code>.
+</p>
+
+<p>
+Note that this option installs the first output of the specified package, which may be insufficient when needing a specific output of a multiple-output package.
+</p></li>
+
+<li><p>
+<code>--install-from-file===file</code><br />
+<code>-f ==file</code> :: Install the package that the code within <code>file</code> evaluates to.
+</p>
+
+<p>
+As an example, <code>file</code> might contain a definition like this (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix)
+             (guix build-system gnu)
+             (guix licenses))
+
+(package
+  (name "hello")
+  (version "2.10")
+  (source (origin
+            (method url-fetch)
+            (uri (string-append "mirror://gnu/hello/hello-" version
+                                ".tar.gz"))
+            (sha256
+             (base32
+              "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
+  (build-system gnu-build-system)
+  (synopsis "Hello, GNU world: An example GNU package")
+  (description "Guess what GNU Hello prints!")
+  (home-page "http://www.gnu.org/software/hello/")
+  (license gpl3+))
+</pre>
+</div>
+
+<p>
+Developers may find it useful to include such a <code>guix.scm</code> file in the root of their project source tree that can be used to test development snapshots and create reproducible development environments (see <a href="docs/guix--Invoking-guix-shell.html">Invoking <code>guix shell</code></a>).
+</p>
+
+<p>
+The <code>file</code> may also contain a JSON representation of one or more package definitions. Running <code>guix package -f</code> on <code>hello.json</code> with the following contents would result in installing the package <code>greeter</code> after building <code>myhello</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-verbatim">[
+  {
+    "name": "myhello",
+    "version": "2.10",
+    "source": "mirror://gnu/hello/hello-2.10.tar.gz",
+    "build-system": "gnu",
+    "arguments": {
+      "tests?": false
+    },
+    "home-page": "https://www.gnu.org/software/hello/",
+    "synopsis": "Hello, GNU world: An example GNU package",
+    "description": "GNU Hello prints a greeting.",
+    "license": "GPL-3.0+",
+    "native-inputs": ["gettext"]
+  },
+  {
+    "name": "greeter",
+    "version": "1.0",
+    "source": "mirror://gnu/hello/hello-2.10.tar.gz",
+    "build-system": "gnu",
+    "arguments": {
+      "test-target": "foo",
+      "parallel-build?": false
+    },
+    "home-page": "https://example.com/",
+    "synopsis": "Greeter using GNU Hello",
+    "description": "This is a wrapper around GNU Hello.",
+    "license": "GPL-3.0+",
+    "inputs": ["myhello", "hello"]
+  }
+]
+</pre>
+</div></li>
+
+<li><p>
+<code>--remove===package=</code> …=<br />
+<code>-r ==package=</code> …= :: Remove the specified =package=s.
+</p>
+
+<p>
+As for <code>--install</code>, each <code>package</code> may specify a version number and/or output name in addition to the package name. For instance, ‘=-r glibc:debug=' would remove the <code>debug</code> output of <code>glibc</code>.
+</p></li>
+
+<li><p>
+<code>--upgrade[===regexp=</code> …]= <br />
+<code>-u [==regexp=</code> …]= :: Upgrade all the installed packages. If one or more <code>regexp=s are specified, upgrade only installed packages whose name matches a =regexp</code>. Also see the <code>--do-not-upgrade</code> option below.
+</p>
+
+<p>
+Note that this upgrades package to the latest version of packages found in the distribution currently installed. To update your distribution, you should regularly run <code>guix pull</code> (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>).
+</p>
+
+<p>
+<a id="index-package-transformations_002c-upgrades"></a>
+</p>
+
+<p>
+When upgrading, package transformations that were originally applied when creating the profile are automatically re-applied (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>). For example, assume you first installed Emacs from the tip of its development branch with:
+</p>
+
+<pre class="example" id="org9011943">
+guix install emacs-next --with-branch=emacs-next=master
+</pre>
+
+<p>
+Next time you run <code>guix upgrade</code>, Guix will again pull the tip of the Emacs development branch and build <code>emacs-next</code> from that checkout.
+</p>
+
+<p>
+Note that transformation options such as <code>--with-branch</code> and <code>--with-source</code> depend on external state; it is up to you to ensure that they work as expected. You can also discard a transformations that apply to a package by running:
+</p>
+
+<pre class="example" id="orgf597841">
+guix install package
+</pre></li>
+
+<li id="<code>--do-not-upgrade[===regexp=</code> …]="><p>
+When used together with the <code>--upgrade</code> option, do <i>not</i> upgrade any packages whose name matches a <code>regexp</code>. For example, to upgrade all packages in the current profile except those containing the substring “emacs”:
+</p>
+
+<pre class="example" id="orge088a8f">
+$ guix package --upgrade . --do-not-upgrade emacs
+</pre></li>
+
+<li><p>
+<a id="profile_002dmanifest"></a>=&#x2013;manifest===file= <br />
+<code>-m ==file</code> :: <a id="index-profile-manifest"></a>
+</p>
+
+<p>
+Create a new generation of the profile from the manifest object returned by the Scheme code in <code>file</code>. This option can be repeated several times, in which case the manifests are concatenated.
+</p>
+
+<p>
+This allows you to <i>declare</i> the profile's contents rather than constructing it through a sequence of <code>--install</code> and similar commands. The advantage is that <code>file</code> can be put under version control, copied to different machines to reproduce the same profile, and so on.
+</p>
+
+<p>
+<code>file</code> must return a <i>manifest</i> object, which is roughly a list of packages:
+</p>
+
+<p>
+<a id="index-packages_002d_003emanifest"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-package-modules guile emacs)
+
+(packages-&gt;manifest
+ (list emacs
+       guile-2.0
+       ;; Use a specific package output.
+       (list guile-2.0 "debug")))
+</pre>
+</div>
+
+<p>
+See <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>, for information on how to write a manifest. See , to learn how to obtain a manifest file from an existing profile.
+</p></li>
+
+<li id="<code>--roll-back</code> "><p>
+<a id="index-undoing-transactions"></a> <a id="index-transactions_002c-undoing"></a>
+</p>
+
+<p>
+Roll back to the previous <i>generation</i> of the profile&#x2014;i.e., undo the last transaction.
+</p>
+
+<p>
+When combined with options such as <code>--install</code>, roll back occurs before any other actions.
+</p>
+
+<p>
+When rolling back from the first generation that actually contains installed packages, the profile is made to point to the <i>zeroth generation</i>, which contains no files apart from its own metadata.
+</p>
+
+<p>
+After having rolled back, installing, removing, or upgrading packages overwrites previous future generations. Thus, the history of the generations in a profile is always linear.
+</p></li>
+
+<li><p>
+<code>--switch-generation===pattern</code> <br />
+<code>-S ==pattern</code> :: Switch to a particular generation defined by <code>pattern</code>.
+</p>
+
+<p>
+<code>pattern</code> may be either a generation number or a number prefixed with “+” or “-”. The latter means: move forward/backward by a specified number of generations. For example, if you want to return to the latest generation after <code>--roll-back</code>, use <code>--switch-generation=+1</code>.
+</p>
+
+<p>
+The difference between <code>--roll-back</code> and <code>--switch-generation</code>-1= is that <code>--switch-generation</code> will not make a zeroth generation, so if a specified generation does not exist, the current generation will not be changed.
+</p></li>
+
+<li id="<code>--search-paths[===kind==]</code> "><p>
+Report environment variable definitions, in Bash syntax, that may be needed in order to use the set of installed packages. These environment variables are used to specify <i>search paths</i> for files used by some of the installed packages.
+</p>
+
+<p>
+For example, GCC needs the <code>CPATH</code> and <code>LIBRARY_PATH</code> environment variables to be defined so it can look for headers and libraries in the user's profile (see <a href="https://gcc.gnu.org/onlinedocs/gcc/Environment-Variables.html#Environment-Variables">Environment Variables</a> in Using the GNU Compiler Collection (GCC)). If GCC and, say, the C library are installed in the profile, then <code>--search-paths</code> will suggest setting these variables to <code>profile==/include</code> and <code>profile==/lib</code>, respectively (see <a href="docs/guix--Search-Paths.html">Search Paths</a>, for info on search path specifications associated with packages.)
+</p>
+
+<p>
+The typical use case is to define these environment variables in the shell:
+</p>
+
+<pre class="example" id="org19cf871">
+$ eval $(guix package --search-paths)
+</pre>
+
+<p>
+<code>kind</code> may be one of <code>exact</code>, <code>prefix</code>, or <code>suffix</code>, meaning that the returned environment variable definitions will either be exact settings, or prefixes or suffixes of the current value of these variables. When omitted, <code>kind</code> defaults to <code>exact</code>.
+</p>
+
+<p>
+This option can also be used to compute the <i>combined</i> search paths of several profiles. Consider this example:
+</p>
+
+<pre class="example" id="orgeb03517">
+$ guix package -p foo -i guile
+$ guix package -p bar -i guile-json
+$ guix package -p foo -p bar --search-paths
+</pre>
+
+<p>
+The last command above reports about the <code>GUILE_LOAD_PATH</code> variable, even though, taken individually, neither <code>foo</code> nor <code>bar</code> would lead to that recommendation.
+</p>
+
+<p>
+<a id="index-profile_002c-choosing"></a>
+</p></li>
+
+<li><p>
+<code>--profile===profile</code><br />
+<code>-p ==profile</code> :: Use <code>profile</code> instead of the user's default profile.
+</p>
+
+<p>
+<code>profile</code> must be the name of a file that will be created upon completion. Concretely, <code>profile</code> will be a mere symbolic link (“symlink”) pointing to the actual profile where packages are installed:
+</p>
+
+<pre class="example" id="orgdb61970">
+$ guix install hello -p ~/code/my-profile
+…
+$ ~/code/my-profile/bin/hello
+Hello, world!
+</pre>
+
+<p>
+All it takes to get rid of the profile is to remove this symlink and its siblings that point to specific generations:
+</p>
+
+<pre class="example" id="org5dc4070">
+$ rm ~/code/my-profile ~/code/my-profile-*-link
+</pre></li>
+
+<li id="<code>--list-profiles</code>"><p>
+List all the user's profiles:
+</p>
+
+<pre class="example" id="org714b2de">
+$ guix package --list-profiles
+/home/charlie/.guix-profile
+/home/charlie/code/my-profile
+/home/charlie/code/devel-profile
+/home/charlie/tmp/test
+</pre>
+
+<p>
+When running as root, list all the profiles of all the users.
+</p>
+
+<p>
+<a id="index-collisions_002c-in-a-profile"></a> <a id="index-colliding-packages-in-profiles"></a> <a id="index-profile-collisions"></a>
+</p></li>
+
+<li id="<code>--allow-collisions</code>"><p>
+Allow colliding packages in the new profile. Use at your own risk!
+</p>
+
+<p>
+By default, <code>guix package</code> reports as an error <i>collisions</i> in the profile. Collisions happen when two or more different versions or variants of a given package end up in the profile.
+</p></li>
+
+<li id="<code>--bootstrap</code>">Use the bootstrap Guile to build the profile. This option is only useful to distribution developers.</li>
+</ul>
+
+<p>
+In addition to these actions, <code>guix package</code> supports the following options to query the current state of a profile, or the availability of packages:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>--search===regexp</code><br />
+<code>-s ==regexp</code> :: <a id="guix_002dsearch"></a><a id="index-searching-for-packages"></a>
+</p>
+
+<p>
+List the available packages whose name, synopsis, or description matches <code>regexp</code> (in a case-insensitive fashion), sorted by relevance. Print all the metadata of matching packages in <code>recutils</code> format (see <a href="https://www.gnu.org/software/recutils/manual/html_node/index.html#Top">GNU recutils databases</a> in GNU recutils manual).
+</p>
+
+<p>
+This allows specific fields to be extracted using the <code>recsel</code> command, for instance:
+</p>
+
+<pre class="example" id="org7bf9cfe">
+$ guix package -s malloc | recsel -p name,version,relevance
+name: jemalloc
+version: 4.5.0
+relevance: 6
+
+name: glibc
+version: 2.25
+relevance: 1
+
+name: libgc
+version: 7.6.0
+relevance: 1
+</pre>
+
+<p>
+Similarly, to show the name of all the packages available under the terms of the GNU LGPL version 3:
+</p>
+
+<pre class="example" id="org7642e30">
+$ guix package -s "" | recsel -p name -e 'license ~ "LGPL 3"'
+name: elfutils
+
+name: gmp
+…
+</pre>
+
+<p>
+It is also possible to refine search results using several <code>-s</code> flags to <code>guix package</code>, or several arguments to <code>guix search</code>. For example, the following command returns a list of board games (this time using the <code>guix search</code> alias):
+</p>
+
+<pre class="example" id="orgc3b8627">
+$ guix search '\&lt;board\&gt;' game | recsel -p name
+name: gnubg
+…
+</pre>
+
+<p>
+If we were to omit <code>-s game</code>, we would also get software packages that deal with printed circuit boards; removing the angle brackets around <code>board</code> would further add packages that have to do with keyboards.
+</p>
+
+<p>
+And now for a more elaborate example. The following command searches for cryptographic libraries, filters out Haskell, Perl, Python, and Ruby libraries, and prints the name and synopsis of the matching packages:
+</p>
+
+<pre class="example" id="org3b05325">
+$ guix search crypto library | \
+    recsel -e '! (name ~ "^(ghc|perl|python|ruby)")' -p name,synopsis
+</pre>
+
+<p>
+See <a href="https://www.gnu.org/software/recutils/manual/html_node/Selection-Expressions.html#Selection-Expressions">Selection Expressions</a> in GNU recutils manual, for more information on <i>selection expressions</i> for <code>recsel -e</code>.
+</p></li>
+
+<li id="<code>--show===package</code>"><p>
+Show details about <code>package</code>, taken from the list of available packages, in <code>recutils</code> format (see <a href="https://www.gnu.org/software/recutils/manual/html_node/index.html#Top">GNU recutils databases</a> in GNU recutils manual).
+</p>
+
+<pre class="example" id="org9e4cb61">
+$ guix package --show=guile | recsel -p name,version
+name: guile
+version: 3.0.5
+
+name: guile
+version: 3.0.2
+
+name: guile
+version: 2.2.7
+…
+</pre>
+
+<p>
+You may also specify the full name of a package to only get details about a specific version of it (this time using the <code>guix show</code> alias):
+</p>
+
+<pre class="example" id="org2ab11bb">
+$ guix show guile@3.0.5 | recsel -p name,version
+name: guile
+version: 3.0.5
+</pre></li>
+
+<li><p>
+<code>--list-installed[===regexp==]</code><br />
+<code>-I [==regexp==]</code> :: List the currently installed packages in the specified profile, with the most recently installed packages shown last. When <code>regexp</code> is specified, list only installed packages whose name matches <code>regexp</code>.
+</p>
+
+<p>
+For each installed package, print the following items, separated by tabs: the package name, its version string, the part of the package that is installed (for instance, <code>out</code> for the default output, <code>include</code> for its headers, etc.), and the path of this package in the store.
+</p></li>
+
+<li><p>
+<code>--list-available[===regexp==]</code><br />
+<code>-A [==regexp==]</code> :: List packages currently available in the distribution for this system (see <a href="docs/guix--GNU-Distribution.html">GNU Distribution</a>). When <code>regexp</code> is specified, list only available packages whose name matches <code>regexp</code>.
+</p>
+
+<p>
+For each package, print the following items separated by tabs: its name, its version string, the parts of the package (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>), and the source location of its definition.
+</p></li>
+
+<li><p>
+<code>--list-generations[===pattern==]</code> <br />
+<code>-l [==pattern==]</code> :: Return a list of generations along with their creation dates; for each generation, show the installed packages, with the most recently installed packages shown last. Note that the zeroth generation is never shown.
+</p>
+
+<p>
+For each installed package, print the following items, separated by tabs: the name of a package, its version string, the part of the package that is installed (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>), and the location of this package in the store.
+</p>
+
+<p>
+When <code>pattern</code> is used, the command returns only matching generations. Valid patterns include:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<i>Integers and comma-separated integers</i>. Both patterns denote generation numbers. For instance, <code>--list-generations=1</code> returns the first one.
+</p>
+
+<p>
+And <code>--list-generations=1,8,2</code> outputs three generations in the specified order. Neither spaces nor trailing commas are allowed.
+</p></li>
+
+<li><p>
+<i>Ranges</i>. <code>--list-generations=2..9</code> prints the specified generations and everything in between. Note that the start of a range must be smaller than its end.
+</p>
+
+<p>
+It is also possible to omit the endpoint. For example, <code>--list-generations=2..</code>, returns all generations starting from the second one.
+</p></li>
+
+<li><i>Durations</i>. You can also get the last <i>N</i> days, weeks, or months by passing an integer along with the first letter of the duration. For example, <code>--list-generations=20d</code> lists generations that are up to 20 days old.</li>
+</ul></li>
+
+<li><p>
+<code>--delete-generations[===pattern==]</code><br />
+<code>-d [==pattern==]</code> :: When <code>pattern</code> is omitted, delete all generations except the current one.
+</p>
+
+<p>
+This command accepts the same patterns as <code>--list-generations</code>. When <code>pattern</code> is specified, delete the matching generations. When <code>pattern</code> specifies a duration, generations <i>older</i> than the specified duration match. For instance, <code>--delete-generations=1m</code> deletes generations that are more than one month old.
+</p>
+
+<p>
+If the current generation matches, it is <i>not</i> deleted. Also, the zeroth generation is never deleted.
+</p>
+
+<p>
+Note that deleting generations prevents rolling back to them. Consequently, this command must be used with care.
+</p>
+
+<p>
+<a id="index-manifest_002c-exporting"></a> <a id="export_002dmanifest"></a>
+</p></li>
+
+<li id="<code>--export-manifest</code>"><p>
+Write to standard output a manifest suitable for <code>--manifest</code> corresponding to the chosen profile(s).
+</p>
+
+<p>
+This option is meant to help you migrate from the “imperative” operating mode&#x2014;running <code>guix install</code>, <code>guix upgrade</code>, etc.&#x2014;to the declarative mode that <code>--manifest</code> offers.
+</p>
+
+<p>
+Be aware that the resulting manifest <i>approximates</i> what your profile actually contains; for instance, depending on how your profile was created, it can refer to packages or package versions that are not exactly what you specified.
+</p>
+
+<p>
+Keep in mind that a manifest is purely symbolic: it only contains package names and possibly versions, and their meaning varies over time. If you wish to “pin” channels to the revisions that were used to build the profile(s), see <code>--export-channels</code> below.
+</p>
+
+<p>
+<a id="index-pinning_002c-channel-revisions-of-a-profile"></a>
+</p></li>
+
+<li id="<code>--export-channels</code>"><p>
+Write to standard output the list of channels used by the chosen profile(s), in a format suitable for <code>guix pull --channels</code> or <code>guix time-machine --channels</code> (see <a href="docs/guix--Channels.html">Channels</a>).
+</p>
+
+<p>
+Together with <code>--export-manifest</code>, this option provides information allowing you to replicate the current profile (see <a href="docs/guix--Replicating-Guix.html">Replicating Guix</a>).
+</p>
+
+<p>
+However, note that the output of this command <i>approximates</i> what was actually used to build this profile. In particular, a single profile might have been built from several different revisions of the same channel. In that case, <code>--export-manifest</code> chooses the last one and writes the list of other revisions in a comment. If you really need to pick packages from different channel revisions, you can use inferiors in your manifest to do so (see <a href="docs/guix--Inferiors.html">Inferiors</a>).
+</p>
+
+<p>
+Together with <code>--export-manifest</code>, this is a good starting point if you are willing to migrate from the “imperative” model to the fully declarative model consisting of a manifest file along with a channels file pinning the exact channel revision(s) you want.
+</p></li>
+</ul>
+
+<p>
+Finally, since <code>guix package</code> may actually start build processes, it supports all the common build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>). It also supports package transformation options, such as <code>--with-source</code>, and preserves them across upgrades (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Substitutes.html">Substitutes</a>, Previous: <a href="docs/guix--Features.html">Features</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

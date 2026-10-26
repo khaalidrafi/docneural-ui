@@ -1,0 +1,342 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-graph">1.0.1. 9.10 Invoking <code>guix graph</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-graph"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>, Previous: <a href="docs/guix--Invoking-guix-size.html">Invoking <code>guix size</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-graph-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-graph" class="outline-4">
+<h4 id="invoking-guix-graph"><span class="section-number-4">1.0.1.</span> 9.10 Invoking <code>guix graph</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-graph">
+<p>
+<a id="index-DAG"></a> <a id="index-guix-graph"></a> <a id="index-package-dependencies-1"></a>
+Packages and their dependencies form a <i>graph</i>, specifically a directed acyclic graph (DAG). It can quickly become difficult to have a mental model of the package DAG, so the <code>guix graph</code> command provides a visual representation of the DAG. By default, <code>guix graph</code> emits a DAG representation in the input format of <a href="https://www.graphviz.org/">Graphviz</a>, so its output can be passed directly to the <code>dot</code> command of Graphviz. It can also emit an HTML page with embedded JavaScript code to display a “chord diagram” in a Web browser, using the <a href="https://d3js.org/">d3.js</a> library, or emit Cypher queries to construct a graph in a graph database supporting the <a href="https://www.opencypher.org/">openCypher</a> query language. With <code>--path</code>, it simply displays the shortest path between two packages. The general syntax is:
+</p>
+
+<pre class="example" id="org2582234">
+guix graph options package…
+</pre>
+
+<p>
+For example, the following command generates a PDF file representing the package DAG for the GNU Core Utilities, showing its build-time dependencies:
+</p>
+
+<pre class="example" id="orgb3b52f6">
+guix graph coreutils | dot -Tpdf &gt; dag.pdf
+</pre>
+
+<p>
+The output looks like this:
+</p>
+
+<p>
+Nice little graph, no?
+</p>
+
+<p>
+You may find it more pleasant to navigate the graph interactively with <code>xdot</code> (from the <code>xdot</code> package):
+</p>
+
+<pre class="example" id="orgca2937a">
+guix graph coreutils | xdot -
+</pre>
+
+<p>
+But there is more than one graph! The one above is concise: it is the graph of package objects, omitting implicit inputs such as GCC, libc, grep, etc. It is often useful to have such a concise graph, but sometimes one may want to see more details. <code>guix graph</code> supports several types of graphs, allowing you to choose the level of detail:
+</p>
+
+<dl class="org-dl">
+<dt><code>package</code></dt><dd>This is the default type used in the example above. It shows the DAG of package objects, excluding implicit dependencies. It is concise, but filters out many details.</dd>
+
+<dt><code>reverse-package</code></dt><dd><p>
+This shows the <i>reverse</i> DAG of packages. For example:
+</p>
+
+<pre class="example" id="orgf75dd17">
+guix graph --type=reverse-package ocaml
+</pre>
+
+<p>
+&#x2026; yields the graph of packages that <i>explicitly</i> depend on OCaml (if you are also interested in cases where OCaml is an implicit dependency, see <code>reverse-bag</code> below).
+</p>
+
+<p>
+Note that for core packages this can yield huge graphs. If all you want is to know the number of packages that depend on a given package, use <code>guix refresh --list-dependent</code> (see <a href="docs/guix--Invoking-guix-refresh.html"><code>--list-dependent</code></a>).
+</p></dd>
+
+<dt><code>bag-emerged</code></dt><dd><p>
+This is the package DAG, <i>including</i> implicit inputs.
+</p>
+
+<p>
+For instance, the following command:
+</p>
+
+<pre class="example" id="orgc75975c">
+guix graph --type=bag-emerged coreutils
+</pre>
+
+<p>
+&#x2026; yields this bigger graph:
+</p>
+
+<p>
+At the bottom of the graph, we see all the implicit inputs of <code>gnu-build-system</code> (see <a href="docs/guix--Build-Systems.html"><code>gnu-build-system</code></a>).
+</p>
+
+<p>
+Now, note that the dependencies of these implicit inputs&#x2014;that is, the <i>bootstrap dependencies</i> (see <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>)&#x2014;are not shown here, for conciseness.
+</p></dd>
+
+<dt><code>bag</code></dt><dd>Similar to <code>bag-emerged</code>, but this time including all the bootstrap dependencies.</dd>
+
+<dt><code>bag-with-origins</code></dt><dd>Similar to <code>bag</code>, but also showing origins and their dependencies.</dd>
+
+<dt><code>reverse-bag</code></dt><dd><p>
+This shows the <i>reverse</i> DAG of packages. Unlike <code>reverse-package</code>, it also takes implicit dependencies into account. For example:
+</p>
+
+<pre class="example" id="org3560c22">
+guix graph -t reverse-bag dune
+</pre>
+
+<p>
+&#x2026; yields the graph of all packages that depend on Dune, directly or indirectly. Since Dune is an <i>implicit</i> dependency of many packages <i>via</i> <code>dune-build-system</code>, this shows a large number of packages, whereas <code>reverse-package</code> would show very few if any.
+</p></dd>
+
+<dt><code>derivation</code></dt><dd><p>
+This is the most detailed representation: It shows the DAG of derivations (see <a href="docs/guix--Derivations.html">Derivations</a>) and plain store items. Compared to the above representation, many additional nodes are visible, including build scripts, patches, Guile modules, etc.
+</p>
+
+<p>
+For this type of graph, it is also possible to pass a <code>.drv</code> file name instead of a package name, as in:
+</p>
+
+<pre class="example" id="org5e8b7d2">
+guix graph -t derivation $(guix system build -d my-config.scm)
+</pre></dd>
+
+<dt><code>module</code></dt><dd><p>
+This is the graph of <i>package modules</i> (see <a href="docs/guix--Package-Modules.html">Package Modules</a>). For example, the following command shows the graph for the package module that defines the <code>guile</code> package:
+</p>
+
+<pre class="example" id="org0b579da">
+guix graph -t module guile | xdot -
+</pre></dd>
+</dl>
+
+<p>
+All the types above correspond to <i>build-time dependencies</i>. The following graph type represents the <i>run-time dependencies</i>:
+</p>
+
+<dl class="org-dl">
+<dt><code>references</code></dt><dd><p>
+This is the graph of <i>references</i> of a package output, as returned by <code>guix gc --references</code> (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>).
+</p>
+
+<p>
+If the given package output is not available in the store, <code>guix graph</code> attempts to obtain dependency information from substitutes.
+</p>
+
+<p>
+Here you can also pass a store file name instead of a package name. For example, the command below produces the reference graph of your profile (which can be big!):
+</p>
+
+<pre class="example" id="org3755803">
+guix graph -t references $(readlink -f ~/.guix-profile)
+</pre></dd>
+
+<dt><code>referrers</code></dt><dd><p>
+This is the graph of the <i>referrers</i> of a store item, as returned by <code>guix gc --referrers</code> (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>).
+</p>
+
+<p>
+This relies exclusively on local information from your store. For instance, let us suppose that the current Inkscape is available in 10 profiles on your machine; <code>guix graph -t referrers inkscape</code> will show a graph rooted at Inkscape and with those 10 profiles linked to it.
+</p>
+
+<p>
+It can help determine what is preventing a store item from being garbage collected.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-shortest-path_002c-between-packages"></a>
+Often, the graph of the package you are interested in does not fit on your screen, and anyway all you want to know is <i>why</i> that package actually depends on some seemingly unrelated package. The <code>--path</code> option instructs <code>guix graph</code> to display the shortest path between two packages (or derivations, or store items, etc.):
+</p>
+
+<pre class="example" id="org4be4317">
+$ guix graph --path emacs libunistring
+emacs@26.3
+mailutils@3.9
+libunistring@0.9.10
+$ guix graph --path -t derivation emacs libunistring
+/gnu/store/…-emacs-26.3.drv
+/gnu/store/…-mailutils-3.9.drv
+/gnu/store/…-libunistring-0.9.10.drv
+$ guix graph --path -t references emacs libunistring
+/gnu/store/…-emacs-26.3
+/gnu/store/…-libidn2-2.2.0
+/gnu/store/…-libunistring-0.9.10
+</pre>
+
+<p>
+Sometimes you still want to visualize the graph but would like to trim it so it can actually be displayed. One way to do it is via the <code>--max-depth</code> (or <code>-M</code>) option, which lets you specify the maximum depth of the graph. In the example below, we visualize only <code>libreoffice</code> and the nodes whose distance to <code>libreoffice</code> is at most 2:
+</p>
+
+<pre class="example" id="org1e6f8a9">
+guix graph -M 2 libreoffice | xdot -f fdp -
+</pre>
+
+<p>
+Mind you, that's still a big ball of spaghetti, but at least <code>dot</code> can render it quickly and it can be browsed somewhat.
+</p>
+
+<p>
+The available options are the following:
+</p>
+
+<ul class="org-ul">
+<li><code>--type===type</code><br />
+<code>-t ==type</code> :: Produce a graph output of <code>type</code>, where <code>type</code> must be one of the values listed above.</li>
+
+<li id="<code>--list-types</code>">List the supported graph types.</li>
+
+<li><code>--backend===backend</code><br />
+<code>-b ==backend</code> :: Produce a graph using the selected <code>backend</code>.</li>
+
+<li id="<code>--list-backends</code>"><p>
+List the supported graph backends.
+</p>
+
+<p>
+Currently, the available backends are Graphviz and d3.js.
+</p></li>
+
+<li id="<code>--path</code>"><p>
+Display the shortest path between two nodes of the type specified by <code>--type</code>. The example below shows the shortest path between <code>libreoffice</code> and <code>llvm</code> according to the references of <code>libreoffice</code>:
+</p>
+
+<pre class="example" id="orgbbd2840">
+$ guix graph --path -t references libreoffice llvm
+/gnu/store/…-libreoffice-6.4.2.2
+/gnu/store/…-libepoxy-1.5.4
+/gnu/store/…-mesa-19.3.4
+/gnu/store/…-llvm-9.0.1
+</pre></li>
+
+<li><p>
+<code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Consider the package <code>expr</code> evaluates to.
+</p>
+
+<p>
+This is useful to precisely refer to a package, as in this example:
+</p>
+
+<pre class="example" id="orgac749d0">
+guix graph -e '(@@ (gnu packages commencement) gnu-make-final)'
+</pre></li>
+
+<li><p>
+<code>--system===system</code><br />
+<code>-s ==system</code> :: Display the graph for <code>system</code>&#x2014;e.g., <code>i686-linux</code>.
+</p>
+
+<p>
+The package dependency graph is largely architecture-independent, but there are some architecture-dependent bits that this option allows you to visualize.
+</p></li>
+
+<li><p>
+<code>--load-path===directory</code><br />
+<code>-L ==directory</code> :: Add <code>directory</code> to the front of the package module search path (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+This allows users to define their own packages and make them visible to the command-line tools.
+</p></li>
+</ul>
+
+<p>
+On top of that, <code>guix graph</code> supports all the usual package transformation options (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>). This makes it easy to view the effect of a graph-rewriting transformation such as <code>--with-input</code>. For example, the command below outputs the graph of <code>git</code> once <code>openssl</code> has been replaced by <code>libressl</code> everywhere in the graph:
+</p>
+
+<pre class="example" id="org7ce6c59">
+guix graph git --with-input=openssl=libressl
+</pre>
+
+<p>
+So many possibilities, so much fun!
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>, Previous: <a href="docs/guix--Invoking-guix-size.html">Invoking <code>guix size</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

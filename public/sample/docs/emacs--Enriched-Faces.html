@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Faces-in-Enriched-Text">1. 27.14.4 Faces in Enriched Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Enriched-Indentation.html">Indentation in Enriched Text</a>   Previous: <a href="docs/emacs--Editing-Format-Info.html">Editing Format Information</a>   Up: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>
+</p>
+
+<p>
+<a id="Enriched-Faces"></a>
+</p>
+
+<hr />
+<div id="outline-container-Faces-in-Enriched-Text" class="outline-2">
+<h2 id="Faces-in-Enriched-Text"><span class="section-number-2">1.</span> 27.14.4 Faces in Enriched Text <a href="#Faces-in-Enriched-Text">¶</a></h2>
+<div class="outline-text-2" id="text-Faces-in-Enriched-Text">
+<p>
+The following commands can be used to add or remove faces (see <a href="docs/emacs--Faces.html">Text Faces</a>). Each applies to the text in the region if the mark is active, and to the next self-inserting character if the mark is inactive. With a prefix argument, each command applies to the next self-inserting character even if the region is active.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-M_002do-d-_0028Enriched-mode_0029"></a>M-o d </dt><dd>Remove all <code>face</code> properties (<code>facemenu-set-default</code>).</dd>
+
+<dt><a id="index-M_002do-b-_0028Enriched-mode_0029"></a>M-o b </dt><dd>Apply the <code>bold</code> face (<code>facemenu-set-bold</code>).</dd>
+
+<dt><a id="index-M_002do-i-_0028Enriched-mode_0029"></a>M-o i </dt><dd>Apply the <code>italic</code> face (<code>facemenu-set-italic</code>).</dd>
+
+<dt><a id="index-M_002do-l-_0028Enriched-mode_0029"></a>M-o l </dt><dd>Apply the <code>bold-italic</code> face (<code>facemenu-set-bold-italic</code>).</dd>
+
+<dt><a id="index-M_002do-u-_0028Enriched-mode_0029"></a>M-o u </dt><dd>Apply the <code>underline</code> face (<code>facemenu-set-underline</code>).</dd>
+
+<dt><a id="index-M_002do-o-_0028Enriched-mode_0029"></a>M-o o <code>face</code> RET </dt><dd>Apply the face <code>face</code> (<code>facemenu-set-face</code>).</dd>
+
+<dt><a id="index-facemenu_002dset_002dforeground"></a>M-x facemenu-set-foreground </dt><dd>Prompt for a color (see <a href="docs/emacs--Colors.html">Colors for Faces</a>), and apply it as a foreground color.</dd>
+
+<dt><a id="index-facemenu_002dset_002dbackground"></a>M-x facemenu-set-background </dt><dd>Prompt for a color, and apply it as a background color.</dd>
+</dl>
+
+<p>
+These commands are also available via the Text Properties menu.
+</p>
+
+<p>
+A self-inserting character normally inherits the face properties (and most other text properties) from the preceding character in the buffer. If you use one of the above commands to specify the face for the next self-inserting character, that character will not inherit the faces properties from the preceding character, but it will still inherit other text properties.
+</p>
+
+<p>
+Enriched mode defines two additional faces: <code>excerpt</code> and <code>fixed</code>. These correspond to codes used in the text/enriched file format. The <code>excerpt</code> face is intended for quotations; by default, it appears the same as <code>italic</code>. The <code>fixed</code> face specifies fixed-width text; by default, it appears the same as <code>bold</code>.
+</p>
+
+<hr />
+</div>
+</div>

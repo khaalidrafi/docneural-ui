@@ -1,0 +1,188 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#binary-installation">1.0.1. 2.1 Binary Installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Binary-Installation"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Binary-Installation-1"></a>
+</p>
+</div>
+<div id="outline-container-binary-installation" class="outline-4">
+<h4 id="binary-installation"><span class="section-number-4">1.0.1.</span> 2.1 Binary Installation</h4>
+<div class="outline-text-4" id="text-binary-installation">
+<p>
+<a id="index-installing-Guix-from-binaries"></a> <a id="index-installer-script"></a>
+This section describes how to install Guix from a self-contained tarball providing binaries for Guix and for all its dependencies. This is often quicker than installing from source, described later (see <a href="docs/guix--Building-from-Git.html">Building from Git</a>).
+</p>
+
+<blockquote>
+<p>
+<b>Important:</b> This section only applies to systems without Guix. Following it for existing Guix installations will overwrite important system files.
+</p>
+</blockquote>
+
+<p>
+The <a href="https://guix.gnu.org/guix-install.sh"><code>guix-install.sh</code></a> shell script automates the binary installation process. Use of <code>guix-install.sh</code> requires Bash, GnuPG, GNU tar, wget, and Xz. On systems where systemd is detected, the tool <code>newgidmap</code> from the <code>uidmap</code> package is also required.
+</p>
+
+<p>
+To install Guix on top of your GNU/Linux system, run the following commands as root:
+</p>
+
+<pre class="example" id="org9cd87ca">
+cd /tmp
+wget https://guix.gnu.org/guix-install.sh
+chmod +x guix-install.sh
+./guix-install.sh
+</pre>
+
+<p>
+When you're done installing Guix, see <a href="docs/guix--Application-Setup.html">Application Setup</a> for extra configuration you might need, and <a href="docs/guix--Getting-Started.html">Getting Started</a> for your first steps!
+</p>
+
+<p>
+The script goes through the following steps:
+</p>
+
+<ol class="org-ol">
+<li>Downloading the binary tarball from ‘=<a href="https://ftpmirror.gnu.org/gnu/guix/guix-binary-1.5.0.x86_64-linux.tar.xz">https://ftpmirror.gnu.org/gnu/guix/guix-binary-1.5.0.x86_64-linux.tar.xz</a>=' (where <code>x86_64-linux</code> can be replaced with <code>i686-linux</code> for an <code>i686</code> (32-bits) machine already running the kernel Linux, and so on&#x2014;see <a href="docs/guix--GNU-Distribution.html">GNU Distribution</a>) and extracting it.</li>
+<li>Setting up the build daemon (see <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>).</li>
+<li>Making the <code>guix</code> command available to non-root users.</li>
+<li>Configuring substitute servers (see <a href="docs/guix--Official-Substitute-Servers.html">Official Substitute Servers</a>).</li>
+</ol>
+
+<blockquote>
+<p>
+<b>Note:</b> By default, <code>guix-install.sh</code> will configure Guix to download pre-built package binaries, called <i>substitutes</i> (see <a href="docs/guix--Substitutes.html">Substitutes</a>), from the project's build farms. If you choose not to permit this, Guix will build <i>everything</i> from source, making each installation and upgrade very expensive. See <a href="docs/guix--On-Trusting-Binaries.html">On Trusting Binaries</a> for a discussion of why you may want to build packages from source.
+</p>
+
+<p>
+<a id="index-substitutes_002c-authorization-thereof"></a>
+</p>
+
+<p>
+To use substitutes from <code>bordeaux.guix.gnu.org</code>, <code>ci.guix.gnu.org</code> or a mirror, you must authorize them. For example,
+</p>
+
+<pre class="example" id="org77e3ceb">
+guix archive --authorize &lt; \
+   ~root/.config/guix/current/share/guix/bordeaux.guix.gnu.org.pub
+guix archive --authorize &lt; \
+   ~root/.config/guix/current/share/guix/ci.guix.gnu.org.pub
+</pre>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Note:</b> The binary installation tarball can be (re)produced and verified simply by running the following command in the Guix source tree:
+</p>
+
+<pre class="example" id="org62573be">
+make guix-binary.system.tar.xz
+</pre>
+
+<p>
+&#x2026; which, in turn, runs:
+</p>
+
+<pre class="example" id="org0f97334">
+guix pack -s system --localstatedir \
+  --profile-name=current-guix guix
+</pre>
+
+<p>
+See <a href="docs/guix--Invoking-guix-pack.html">Invoking <code>guix pack</code></a>, for more info on this handy tool.
+</p>
+</blockquote>
+
+<p>
+<a id="index-uninstalling-Guix"></a> <a id="index-uninstallation_002c-of-Guix"></a>
+Should you eventually want to uninstall Guix, run the same script with the <code>--uninstall</code> flag:
+</p>
+
+<pre class="example" id="org5259e91">
+./guix-install.sh --uninstall
+</pre>
+
+<p>
+With <code>--uninstall</code>, the script irreversibly deletes all the Guix files, configuration, and services.
+</p>
+
+<p>
+Some GNU/Linux distributions, such as openSUSE, Alpine and NixOS provide Guix through their own package managers. The version of Guix may be older than 1.5.0 but you can update it afterwards by running <code>guix pull</code>.
+</p>
+
+<p>
+We advise system administrators who install Guix, both from the installation script or <i>via</i> the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by <code>guix pull</code>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

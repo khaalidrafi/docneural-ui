@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emphasis-and-Monospace-1">1. 12.2 Emphasis and Monospace ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (109)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Emphasis-and-Monospace"></a>
+Next: <a href="docs/org--Subscripts-and-Superscripts.html">Subscripts and Superscripts</a>, Previous: <a href="docs/org--Paragraphs.html">Paragraphs</a>, Up: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Emphasis-and-Monospace-1" class="outline-2">
+<h2 id="Emphasis-and-Monospace-1"><span class="section-number-2">1.</span> 12.2 Emphasis and Monospace <a href="#Emphasis-and-Monospace-1">¶</a></h2>
+<div class="outline-text-2" id="text-Emphasis-and-Monospace-1">
+<p>
+You can make words ‘=*bold*=', ‘=/italic/=', ‘=<sub>underlined</sub>_=', ‘==verbatim==' and ‘=~code~=', and, if you must, ‘=+strike-through+='. Text in the code and verbatim string is not processed for Org specific syntax; it is exported verbatim. Org provides a single command as entry point for inserting the marker character.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002df"></a>C-c C-x C-f (<code>org-emphasize</code>) </dt><dd>Prompt for a marker character and insert or change an emphasis. If there is an active region, change that region to a new emphasis. If there is no region, just insert the marker characters and position the cursor between them.</dd>
+</dl>
+
+<p>
+To turn off fontification for marked up text, you can set <code>org-fontify-emphasized-text</code> to <code>nil</code>. To narrow down the list of the fontified markup syntax, you can customize <code>org-emphasis-alist</code>.
+</p>
+
+<p>
+To hide the emphasis markup characters in your buffers, set <code>org-hide-emphasis-markers</code> to <code>t</code>.
+</p>
+
+<p>
+Sometimes, when marked text also contains the marker character itself, the result may be unsettling. For example,
+</p>
+
+<pre class="example" id="org5093e85">
+/One may expect this whole sentence to be italicized, but the
+following ~user/?variable~ contains =/= character, which effectively
+stops emphasis there./
+</pre>
+
+<p>
+You can use zero width space to help Org sorting out the ambiguity. See <a href="docs/org--Escape-Character.html">Escape Character</a> for more details.
+</p>
+
+<hr />
+</div>
+</div>

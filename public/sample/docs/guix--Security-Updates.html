@@ -1,0 +1,170 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#security-updates">1.1. 19 Security Updates</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Security-Updates"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>, Previous: <a href="docs/guix--Using-TeX-and-LaTeX.html">Using TeX and LaTeX</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Security-Updates-1"></a>
+</p>
+</div>
+<div id="outline-container-security-updates" class="outline-3">
+<h3 id="security-updates"><span class="section-number-3">1.1.</span> 19 Security Updates</h3>
+<div class="outline-text-3" id="text-security-updates">
+<p>
+<a id="index-security-updates"></a> <a id="index-security-vulnerabilities-1"></a>
+Occasionally, important security vulnerabilities are discovered in software packages and must be patched. Guix developers try hard to keep track of known vulnerabilities and to apply fixes as soon as possible in the <code>master</code> branch of Guix (we do not yet provide a “stable” branch containing only security updates). The <code>guix lint</code> tool helps developers find out about vulnerable versions of software packages in the distribution:
+</p>
+
+<pre class="example" id="org26d3fb9">
+$ guix lint -c cve
+gnu/packages/base.scm:652:2: glibc@2.21: probably vulnerable to CVE-2015-1781, CVE-2015-7547
+gnu/packages/gcc.scm:334:2: gcc@4.9.3: probably vulnerable to CVE-2015-5276
+gnu/packages/image.scm:312:2: openjpeg@2.1.0: probably vulnerable to CVE-2016-1923, CVE-2016-1924
+…
+</pre>
+
+<p>
+See <a href="docs/guix--Invoking-guix-lint.html">Invoking <code>guix lint</code></a>, for more information.
+</p>
+
+<p>
+Guix follows a functional package management discipline (see <a href="docs/guix--Introduction.html">Introduction</a>), which implies that, when a package is changed, <i>every package that depends on it</i> must be rebuilt. This can significantly slow down the deployment of fixes in core packages such as libc or Bash, since basically the whole distribution would need to be rebuilt. Using pre-built binaries helps (see <a href="docs/guix--Substitutes.html">Substitutes</a>), but deployment may still take more time than desired.
+</p>
+
+<p>
+<a id="index-grafts"></a>
+To address this, Guix implements <i>grafts</i>, a mechanism that allows for fast deployment of critical updates without the costs associated with a whole-distribution rebuild. The idea is to rebuild only the package that needs to be patched, and then to “graft” it onto packages explicitly installed by the user and that were previously referring to the original package. The cost of grafting is typically very low, and order of magnitudes lower than a full rebuild of the dependency chain.
+</p>
+
+<p>
+<a id="index-replacements-of-packages_002c-for-grafts"></a>
+For instance, suppose a security update needs to be applied to Bash. Guix developers will provide a package definition for the “fixed” Bash, say <code>bash-fixed</code>, in the usual way (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>). Then, the original package definition is augmented with a <code>replacement</code> field pointing to the package containing the bug fix:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define bash
+  (package
+    (name "bash")
+    ;; …
+    (replacement bash-fixed)))
+</pre>
+</div>
+
+<p>
+From there on, any package depending directly or indirectly on Bash&#x2014;as reported by <code>guix gc --requisites</code> (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>)&#x2014;that is installed is automatically “rewritten” to refer to <code>bash-fixed</code> instead of <code>bash</code>. This grafting process takes time proportional to the size of the package, usually less than a minute for an “average” package on a recent machine. Grafting is recursive: when an indirect dependency requires grafting, then grafting “propagates” up to the package that the user is installing.
+</p>
+
+<p>
+Currently, the length of the name and version of the graft and that of the package it replaces (<code>bash-fixed</code> and <code>bash</code> in the example above) must be equal. This restriction mostly comes from the fact that grafting works by patching files, including binary files, directly. Other restrictions may apply: for instance, when adding a graft to a package providing a shared library, the original shared library and its replacement must have the same <code>SONAME</code> and be binary-compatible.
+</p>
+
+<p>
+The <code>--no-grafts</code> command-line option allows you to forcefully avoid grafting (see <a href="docs/guix--Common-Build-Options.html"><code>--no-grafts</code></a>). Thus, the command:
+</p>
+
+<pre class="example" id="orgd01462d">
+guix build bash --no-grafts
+</pre>
+
+<p>
+returns the store file name of the original Bash, whereas:
+</p>
+
+<pre class="example" id="orgbc3037e">
+guix build bash
+</pre>
+
+<p>
+returns the store file name of the “fixed”, replacement Bash. This allows you to distinguish between the two variants of Bash.
+</p>
+
+<p>
+To verify which Bash your whole profile refers to, you can run (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>):
+</p>
+
+<pre class="example" id="org76ff514">
+guix gc -R $(readlink -f ~/.guix-profile) | grep bash
+</pre>
+
+<p>
+&#x2026; and compare the store file names that you get with those above. Likewise for a complete Guix system generation:
+</p>
+
+<pre class="example" id="org02389b2">
+guix gc -R $(guix system build my-config.scm) | grep bash
+</pre>
+
+<p>
+Lastly, to check which Bash running processes are using, you can use the <code>lsof</code> command:
+</p>
+
+<pre class="example" id="org1c19ea1">
+lsof | grep /gnu/store/.*bash
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>, Previous: <a href="docs/guix--Using-TeX-and-LaTeX.html">Using TeX and LaTeX</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

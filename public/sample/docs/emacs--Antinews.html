@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emacs-29-Antinews">1. Appendix E Emacs 29 Antinews ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mac-OS-_002f-GNUstep.html">Emacs and macOS / GNUstep</a>   Previous: <a href="docs/emacs--X-Resources.html">X Options and Resources</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Antinews"></a>
+</p>
+
+<hr />
+<div id="outline-container-Emacs-29-Antinews" class="outline-2">
+<h2 id="Emacs-29-Antinews"><span class="section-number-2">1.</span> Appendix E Emacs 29 Antinews <a href="#Emacs-29-Antinews">¶</a></h2>
+<div class="outline-text-2" id="text-Emacs-29-Antinews">
+<p>
+For those users who live backwards in time, here is information about downgrading to Emacs version 29.4. We hope you will enjoy the greater simplicity that results from the absence of many Emacs 30.1 features.
+</p>
+
+<ul class="org-ul">
+<li>Emacs can no longer be built for Android mobile devices. We have removed the Android support because it was deemed unnecessary, what with the screens of the mobile devices becoming smaller and smaller as you move back in time. We expect Android users to enjoy the much simpler text editors available on their devices. As a nice bonus, removing Android support allowed us to get rid of gobs of related files, thus making the release tarballs much leaner.</li>
+
+<li>We have deleted much of the enhanced support for touchscreen devices, for the same reason we dropped Android: there will be no need for that as you move back in time.</li>
+
+<li>We also dropped support for sophisticated input methods that include text conversions, again because those are mostly needed on mobile and hand-held devices, which we gradually remove from Emacs in each past version.</li>
+
+<li>Like its newer releases, Emacs 29 can still be built with support of native compilation of Lisp programs. However, in preparation for removal of this feature in some previous version, we've made the native compiler support off by default; you will now have to request it explicitly at configure time. This makes the default Emacs build process much faster.</li>
+
+<li>JSON interfaces slowly move into oblivion as past years come closer, so we have removed our internal implementation of JSON; you will now need to build Emacs with the libjansson library, if you need JSON. Eventually, we plan on removing JSON support from Emacs altogether; this move will make the removal much simpler.</li>
+
+<li>Tree-sitter based modes are now completely independent of their non-Tree-Sitter counterparts. We decided that keeping the settings separate and independent goes a long way toward simplicity, which is one of our main motivations for removing stuff from Emacs.</li>
+
+<li><p>
+Various Help commands no longer turn on Outline minor mode. With less material to display in the <b>Help</b> buffers, due to removing of excess documentation from Emacs, we think using outlining is an unnecessary complication, as scrolling through plain text is so much simpler.
+</p>
+
+<p>
+For the same reasons, Emacs no longer shows Unicode names of characters in <b>Help</b> buffers shown by <code>describe-bindings</code>.
+</p></li>
+
+<li>To make Emacs configuration simpler and easier to control, the tool bar can now be displayed only in its natural and logical position: on the top of the frame; no more of that <code>tool-bar-position</code> nonsense with tool bars on the bottom. For the same reasons <code>modifier-bar-mode</code> is now gone.</li>
+
+<li>The command <code>recover-file</code> no longer lets you display the diffs between a file and its auto-save file. You either want to recover a file or you don't; confusing users with a third alternative when they are anxious already by the possibility of losing precious edits is considered a bad idea, certainly so as we move further towards smaller, simpler Emacs.</li>
+
+<li>Several languages and input methods, which will fall in disuse as you move back in time, were removed. This includes Urdu, Pashto, and Sindhi languages, and the input method for the Colemak keyboard layout. Many C-x 8 key sequences, including those which insert various quotation characters and guillemets, were deleted for the same reason.</li>
+
+<li>The support for <code>lzip</code>-compressed Info manuals was removed from the Info mode. We anticipate that <code>lzip</code> will disappear from the face of the Earth in the near past, and are preparing Emacs for that in advance.</li>
+
+<li>Support for LLDB in Grand Unified Debugger mode was dropped. We decided that given LLDB's diminishing popularity, its support is just code bloat.</li>
+
+<li>Several fancy Project and VC commands were deleted, as part of our consistent effort of making Emacs simpler to use.</li>
+
+<li>The user option <code>shell-command-guess-functions</code> and the context menu ‘=Open With=' in Dired are gone. We trust Emacs users to always know themselves which shell command is the appropriate one for a given file, so no guessing by Dired is needed, or welcome. The <code>dired-do-open</code> command was deleted for the same reasons.</li>
+
+<li>We went back to the original lean-and-mean interface for specifying registers for register-related commands. The fancy preview and the options to go with it were deemed gratuitous and were removed.</li>
+
+<li>Eshell is now much smaller and easier to use, due to dropping quite a few of the new commands and fancy new options.</li>
+
+<li>The command <code>customize-dirlocals</code> was removed. Editing the <code>.dir-locals.el</code> files as plain text is so much simpler, and quite enough.</li>
+
+<li>We have removed several packages that we consider unnecessary for the past of Emacs. This includes EditorConfig support, ‘=which-key=', PEG, and Window-Tool-Bar.</li>
+
+<li>The <code>etags-regen-mode</code> was deleted. Regeneration of <code>TAGS</code> tables manually is all Emacs users will need in the past.</li>
+
+<li>To keep up with decreasing computer memory capacity and disk space, many other functions and files have been eliminated in Emacs 29.4.</li>
+</ul>
+
+<hr />
+</div>
+</div>

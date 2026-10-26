@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Exiting-Emerge-1">1. 30.6.5 Exiting Emerge ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Combining-in-Emerge.html">Combining the Two Versions</a>   Previous: <a href="docs/emacs--Merge-Commands.html">Merge Commands</a>   Up: <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>
+</p>
+
+<p>
+<a id="Exiting-Emerge"></a>
+</p>
+
+<hr />
+<div id="outline-container-Exiting-Emerge-1" class="outline-2">
+<h2 id="Exiting-Emerge-1"><span class="section-number-2">1.</span> 30.6.5 Exiting Emerge <a href="#Exiting-Emerge-1">¶</a></h2>
+<div class="outline-text-2" id="text-Exiting-Emerge-1">
+<p>
+The q command (<code>emerge-quit</code>) finishes the merge, storing the results into the output file if you specified one. It restores the A and B buffers to their proper contents, or kills them if they were created by Emerge and you haven't changed them. It also disables the Emerge commands in the merge buffer, since executing them later could damage the contents of the various buffers.
+</p>
+
+<p>
+C-] aborts the merge. This means exiting without writing the output file. If you didn't specify an output file, then there is no real difference between aborting and finishing the merge.
+</p>
+
+<p>
+If the Emerge command was called from another Lisp program, then its return value is <code>t</code> for successful completion, or <code>nil</code> if you abort.
+</p>
+</div>
+</div>

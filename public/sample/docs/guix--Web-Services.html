@@ -1,0 +1,1380 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Web-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--High-Availability-Services.html">High Availability Services</a>, Previous: <a href="docs/guix--LDAP-Services.html">LDAP Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Web-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="web-services"></a>11.10.20 Web Services<br />
+<div class="outline-text-5" id="text-web-services">
+<p>
+<a id="index-web"></a> <a id="index-www"></a> <a id="index-HTTP"></a>
+The <code>(gnu services web)</code> module provides the Apache HTTP Server, the nginx web server, and also a fastcgi wrapper daemon.
+</p>
+
+<p>
+<a id="Apache-HTTP-Server"></a>
+</p>
+</div>
+</li>
+<li><a id="apache-http-server"></a>Apache HTTP Server<br />
+<div class="outline-text-5" id="text-apache-http-server">
+<dl class="org-dl">
+<dt>Variable: httpd-service-type </dt><dd><p>
+Service type for the <a href="https://httpd.apache.org/">Apache HTTP</a> server (<i>httpd</i>). The value for this service type is a <code>httpd-configuration</code> record.
+</p>
+
+<p>
+A simple example configuration is given below.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service httpd-service-type
+         (httpd-configuration
+           (config
+             (httpd-config-file
+               (server-name "www.example.com")
+               (document-root "/srv/http/www.example.com")))))
+</pre>
+</div>
+
+<p>
+Other services can also extend the <code>httpd-service-type</code> to add to the configuration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'www.example.com-server httpd-service-type
+                (list
+                  (httpd-virtualhost
+                    "*:80"
+                    (list (string-join '("ServerName www.example.com"
+                                         "DocumentRoot /srv/http/www.example.com")
+                                       "\n")))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+The details for the <code>httpd-configuration</code>, <code>httpd-module</code>, <code>httpd-config-file</code> and <code>httpd-virtualhost</code> record types are given below.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: httpd-configuration </dt><dd>This data type represents the configuration for the httpd service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>httpd</code>)</dt><dd>The httpd package to use.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/httpd"</code>)</dt><dd>The pid file used by the shepherd-service.</dd>
+
+<dt><code>config</code> (default: <code>(httpd-config-file)</code>)</dt><dd>The configuration file to use with the httpd service. The default value is a <code>httpd-config-file</code> record, but this can also be a different G-expression that generates a file, for example a <code>plain-file</code>. A file outside of the store can also be specified through a string.</dd>
+</dl></dd>
+
+<dt>Data Type: httpd-module </dt><dd>This data type represents a module for the httpd service.
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The name of the module.</dd>
+
+<dt><code>file</code></dt><dd>The file for the module. This can be relative to the httpd package being used, the absolute location of a file, or a G-expression for a file within the store, for example <code>(file-append mod-wsgi "/modules/mod_wsgi.so")</code>.</dd>
+</dl></dd>
+
+<dt>Variable: %default-httpd-modules </dt><dd>A default list of <code>httpd-module</code> objects.</dd>
+
+<dt>Data Type: httpd-config-file </dt><dd>This data type represents a configuration file for the httpd service.
+
+<dl class="org-dl">
+<dt><code>modules</code> (default: <code>%default-httpd-modules</code>)</dt><dd><p>
+The modules to load. Additional modules can be added here, or loaded by additional configuration.
+</p>
+
+<p>
+For example, in order to handle requests for PHP files, you can use Apache's <code>mod_proxy_fcgi</code> module along with <code>php-fpm-service-type</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service httpd-service-type
+         (httpd-configuration
+          (config
+           (httpd-config-file
+            (modules (cons*
+                      (httpd-module
+                       (name "proxy_module")
+                       (file "modules/mod_proxy.so"))
+                      (httpd-module
+                       (name "proxy_fcgi_module")
+                       (file "modules/mod_proxy_fcgi.so"))
+                      %default-httpd-modules))
+            (extra-config (list "\
+&lt;FilesMatch \\.php$&gt;
+    SetHandler \"proxy:unix:/var/run/php-fpm.sock|fcgi://localhost/\"
+&lt;/FilesMatch&gt;"))))))
+(service php-fpm-service-type
+         (php-fpm-configuration
+          (socket "/var/run/php-fpm.sock")
+          (socket-group "httpd")))
+</pre>
+</div></dd>
+
+<dt><code>server-root</code> (default: <code>httpd</code>)</dt><dd>The <code>ServerRoot</code> in the configuration file, defaults to the httpd package. Directives including <code>Include</code> and <code>LoadModule</code> are taken as relative to the server root.</dd>
+
+<dt><code>server-name</code> (default: <code>#f</code>)</dt><dd><p>
+The <code>ServerName</code> in the configuration file, used to specify the request scheme, hostname and port that the server uses to identify itself.
+</p>
+
+<p>
+This doesn't need to be set in the server config, and can be specified in virtual hosts. The default is <code>#f</code> to not specify a <code>ServerName</code>.
+</p></dd>
+
+<dt><code>document-root</code> (default: <code>"/srv/http"</code>)</dt><dd>The <code>DocumentRoot</code> from which files will be served.</dd>
+
+<dt><code>listen</code> (default: <code>'("80")</code>)</dt><dd>The list of values for the <code>Listen</code> directives in the config file. The value should be a list of strings, when each string can specify the port number to listen on, and optionally the IP address and protocol to use.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/httpd"</code>)</dt><dd>The <code>PidFile</code> to use. This should match the <code>pid-file</code> set in the <code>httpd-configuration</code> so that the Shepherd service is configured correctly.</dd>
+
+<dt><code>error-log</code> (default: <code>"/var/log/httpd/error_log"</code>)</dt><dd>The <code>ErrorLog</code> to which the server will log errors.</dd>
+
+<dt><code>user</code> (default: <code>"httpd"</code>)</dt><dd>The <code>User</code> which the server will answer requests as.</dd>
+
+<dt><code>group</code> (default: <code>"httpd"</code>)</dt><dd>The <code>Group</code> which the server will answer requests as.</dd>
+
+<dt><code>extra-config</code> (default: <code>(list "TypesConfig etc/httpd/mime.types")</code>)</dt><dd><p>
+A flat list of strings and G-expressions which will be added to the end of the configuration file.
+</p>
+
+<p>
+Any values which the service is extended with will be appended to this list.
+</p></dd>
+</dl></dd>
+
+<dt>Data Type: httpd-virtualhost </dt><dd><p>
+This data type represents a virtualhost configuration block for the httpd service.
+</p>
+
+<p>
+These should be added to the extra-config for the httpd-service.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'www.example.com-server httpd-service-type
+                (list
+                  (httpd-virtualhost
+                    "*:80"
+                    (list (string-join '("ServerName www.example.com"
+                                          "DocumentRoot /srv/http/www.example.com")
+                                       "\n")))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>addresses-and-ports</code></dt><dd>The addresses and ports for the <code>VirtualHost</code> directive.</dd>
+
+<dt><code>contents</code></dt><dd>The contents of the <code>VirtualHost</code> directive, this should be a list of strings and G-expressions.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="NGINX"></a><a id="NGINX-1"></a>
+</p>
+</div>
+</li>
+<li><a id="nginx"></a>NGINX<br />
+<div class="outline-text-5" id="text-nginx">
+<dl class="org-dl">
+<dt>Variable: nginx-service-type </dt><dd><p>
+Service type for the <a href="https://nginx.org/">NGinx</a> web server. The value for this service type is a <code>&lt;nginx-configuration&gt;</code> record.
+</p>
+
+<p>
+A simple example configuration is given below.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service nginx-service-type
+         (nginx-configuration
+           (server-blocks
+             (list (nginx-server-configuration
+                     (server-name '("www.example.com"))
+                     (root "/srv/http/www.example.com"))))))
+</pre>
+</div>
+
+<p>
+In addition to adding server blocks to the service configuration directly, this service can be extended by other services to add server blocks, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'my-extra-server nginx-service-type
+                (list (nginx-server-configuration
+                        (root "/srv/http/extra-website")
+                        (try-files (list "$uri" "$uri/index.html")))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+At startup, <code>nginx</code> has not yet read its configuration file, so it uses a default file to log error messages. If it fails to load its configuration file, that is where error messages are logged. After the configuration file is loaded, the default error log file changes as per configuration. In our case, startup error messages can be found in <code>/var/run/nginx/logs/error.log</code>, and after configuration in <code>/var/log/nginx/error.log</code>. The second location can be changed with the <code>log-directory</code> configuration option.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: nginx-configuration </dt><dd>This data type represents the configuration for NGinx. Some configuration can be done through this and the other provided record types, or alternatively, a config file can be provided.
+
+<dl class="org-dl">
+<dt><code>nginx</code> (default: <code>nginx</code>)</dt><dd>The nginx package to use.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>)</dt><dd><p>
+This is a list of symbols naming Shepherd services the nginx service will depend on.
+</p>
+
+<p>
+This is useful if you would like <code>nginx</code> to be started after a back-end web server or a logging service such as Anonip has been started.
+</p></dd>
+
+<dt><code>log-directory</code> (default: <code>"/var/log/nginx"</code>)</dt><dd>The directory to which NGinx will write log files.</dd>
+
+<dt><code>log-format</code> (default: <code>'combined</code>) (type: symbol)</dt><dd>Logging format for the access log. Nginx defaults to the httpd-like format named <code>'combined</code>. Other formats can be defined using <code>log-formats</code>.</dd>
+
+<dt><code>log-formats</code> (default: <code>'()</code>)</dt><dd>A list of additional <i>log formats</i> to define, the elements should be of type <code>&lt;nginx-log-format-configuration&gt;</code>.</dd>
+
+<dt><code>log-level</code> (default: <code>'error</code>) (type: symbol)</dt><dd>Logging level for the error log, which can be any of the following values: <code>'debug</code>, <code>'info</code>, <code>'notice</code>, <code>'warn</code>, <code>'error</code>, <code>'crit</code>, <code>'alert</code>, or <code>'emerg</code>.</dd>
+
+<dt><code>run-directory</code> (default: <code>"/var/run/nginx"</code>)</dt><dd>The directory in which NGinx will create a pid file, and write temporary files.</dd>
+
+<dt><code>server-blocks</code> (default: <code>'()</code>)</dt><dd><p>
+A list of <i>server blocks</i> to create in the generated configuration file, the elements should be of type <code>&lt;nginx-server-configuration&gt;</code>.
+</p>
+
+<p>
+The following example would setup NGinx to serve <code>www.example.com</code> from the <code>/srv/http/www.example.com</code> directory, without using HTTPS.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service nginx-service-type
+         (nginx-configuration
+           (server-blocks
+             (list (nginx-server-configuration
+                     (server-name '("www.example.com"))
+                     (root "/srv/http/www.example.com"))))))
+</pre>
+</div></dd>
+
+<dt><code>upstream-blocks</code> (default: <code>'()</code>)</dt><dd><p>
+A list of <i>upstream blocks</i> to create in the generated configuration file, the elements should be of type <code>&lt;nginx-upstream-configuration&gt;</code>.
+</p>
+
+<p>
+Configuring upstreams through the <code>upstream-blocks</code> can be useful when combined with <code>locations</code> in the <code>&lt;nginx-server-configuration&gt;</code> records. The following example creates a server configuration with one location configuration, that will proxy requests to a upstream configuration, which will handle requests with two servers.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service
+  nginx-service-type
+  (nginx-configuration
+    (server-blocks
+      (list (nginx-server-configuration
+              (server-name '("www.example.com"))
+              (root "/srv/http/www.example.com")
+              (locations
+                (list
+                  (nginx-location-configuration
+                  (uri "/path1")
+                  (body '("proxy_pass http://server-proxy;"))))))))
+    (upstream-blocks
+      (list (nginx-upstream-configuration
+              (name "server-proxy")
+              (servers (list "server1.example.com"
+                             "server2.example.com")))))))
+</pre>
+</div></dd>
+
+<dt><code>file</code> (default: <code>#f</code>)</dt><dd><p>
+If a configuration <code>file</code> is provided, this will be used, rather than generating a configuration file from the provided <code>log-directory</code>, <code>run-directory</code>, <code>server-blocks</code> and <code>upstream-blocks</code>. For proper operation, these arguments should match what is in <code>file</code> to ensure that the directories are created when the service is activated.
+</p>
+
+<p>
+This can be useful if you have an existing configuration file, or it's not possible to do what is required through the other parts of the nginx-configuration record.
+</p></dd>
+
+<dt><code>server-names-hash-bucket-size</code> (default: <code>#f</code>)</dt><dd>Bucket size for the server names hash tables, defaults to <code>#f</code> to use the size of the processors cache line.</dd>
+
+<dt><code>server-names-hash-bucket-max-size</code> (default: <code>#f</code>)</dt><dd>Maximum bucket size for the server names hash tables.</dd>
+
+<dt><code>stream</code> (default: <code>#f</code>)</dt><dd><code>&lt;nginx-stream-configuration&gt;</code> object describing stream server directives.</dd>
+
+<dt><code>modules</code> (default: <code>'()</code>)</dt><dd><p>
+List of nginx dynamic modules to load. This should be a list of file names of loadable modules, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(modules
+ (list
+  (file-append nginx-accept-language-module "\
+/etc/nginx/modules/ngx_http_accept_language_module.so")
+  (file-append nginx-lua-module "\
+/etc/nginx/modules/ngx_http_lua_module.so")))
+</pre>
+</div></dd>
+
+<dt><code>lua-package-path</code> (default: <code>'()</code>)</dt><dd><p>
+List of nginx lua packages to load. This should be a list of package names of loadable lua modules, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(lua-package-path (list lua-resty-core
+                        lua-resty-lrucache
+                        lua-resty-signal
+                        lua-tablepool
+                        lua-resty-shell))
+</pre>
+</div></dd>
+
+<dt><code>lua-package-cpath</code> (default: <code>'()</code>)</dt><dd><p>
+List of nginx lua C packages to load. This should be a list of package names of loadable lua C modules, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(lua-package-cpath (list lua-resty-signal))
+</pre>
+</div></dd>
+
+<dt><code>global-directives</code> (default: <code>'((events . ()))</code>)</dt><dd><p>
+Association list of global directives for the top level of the nginx configuration. Values may themselves be association lists.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(global-directives
+ `((worker_processes . 16)
+   (pcre_jit . on)
+   (events . ((worker_connections . 1024)))))
+</pre>
+</div></dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>)</dt><dd><p>
+Additional content to be appended to the <code>http</code> block. Can either be a value that can be lowered into a string or a list of such values. In the former case, it is inserted directly. In the latter, it is prefixed with indentation and suffixed with a newline. Nested lists are flattened into one line.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(extra-content "include /etc/nginx/custom-config.conf;")
+(extra-content `("include /etc/nginx/custom-config.conf;"
+                 ("include " ,%custom-config.conf ";")))
+</pre>
+</div></dd>
+</dl></dd>
+
+<dt>Data Type: nginx-log-format-configuration </dt><dd>Data type representing the configuration of a custom Nginx log format. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: symbol)</dt><dd>The name of the log format as a symbol.</dd>
+
+<dt><code>escape</code> (default: <code>'default</code>) (type: symbol)</dt><dd>The mode used to escape values of variables in the format. The supported values are:
+
+<ul class="org-ul">
+<li><code>'default</code>, to escape all characters outside of the ASCII printable range.</li>
+<li><code>'json</code>, to escape all characters invalid in JSON strings.</li>
+<li><code>'none</code>, to disable escaping.</li>
+</ul></dd>
+
+<dt><code>format</code> (type: string)</dt><dd>The format as accepted by the <code>log_format</code> directive.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="nginx_002dserver_002dconfiguration"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: nginx-server-configuration </dt><dd>Data type representing the configuration of an nginx server block. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>listen</code> (default: <code>'("80" "443 ssl")</code>)</dt><dd><p>
+Each <code>listen</code> directive sets the address and port for IP, or the path for a UNIX-domain socket on which the server will accept requests. Both address and port, or only address or only port can be specified. An address may also be a hostname, for example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'("127.0.0.1:8000" "127.0.0.1" "8000" "*:8000" "localhost:8000")
+</pre>
+</div></dd>
+
+<dt><code>server-name</code> (default: <code>(list 'default)</code>)</dt><dd>A list of server names this server represents. <code>'default</code> represents the default server for connections matching no other server.</dd>
+
+<dt><code>root</code> (default: <code>"/srv/http"</code>)</dt><dd>Root of the website nginx will serve.</dd>
+
+<dt><code>locations</code> (default: <code>'()</code>)</dt><dd>A list of <i>nginx-location-configuration</i> or <i>nginx-named-location-configuration</i> records to use within this server block.</dd>
+
+<dt><code>index</code> (default: <code>(list "index.html")</code>)</dt><dd>Index files to look for when clients ask for a directory. If it cannot be found, Nginx will send the list of files in the directory.</dd>
+
+<dt><code>try-files</code> (default: <code>'()</code>)</dt><dd>A list of files whose existence is checked in the specified order. <code>nginx</code> will use the first file it finds to process the request.</dd>
+
+<dt><code>ssl-certificate</code> (default: <code>#f</code>)</dt><dd>Where to find the certificate for secure connections. Set it to <code>#f</code> if you don't have a certificate or you don't want to use HTTPS.</dd>
+
+<dt><code>ssl-certificate-key</code> (default: <code>#f</code>)</dt><dd>Where to find the private key for secure connections. Set it to <code>#f</code> if you don't have a key or you don't want to use HTTPS.</dd>
+
+<dt><code>server-tokens?</code> (default: <code>#f</code>)</dt><dd>Whether the server should add its configuration to response.</dd>
+
+<dt><code>raw-content</code> (default: <code>'()</code>)</dt><dd>A list of strings or file-like objects to be appended to the server block. Each item is prefixed with indentation and suffixed with a new line. Nested lists are flattened.</dd>
+</dl></dd>
+
+<dt>Data Type: nginx-upstream-configuration </dt><dd>Data type representing the configuration of an nginx <code>upstream</code> block. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>Name for this group of servers.</dd>
+
+<dt><code>servers</code></dt><dd>Specify the addresses of the servers in the group. The address can be specified as a IP address (e.g. ‘=127.0.0.1='), domain name (e.g. ‘=backend1.example.com=') or a path to a UNIX socket using the prefix ‘=unix:='. For addresses using an IP address or domain name, the default port is 80, and a different port can be specified explicitly.</dd>
+
+<dt><code>extra-content</code></dt><dd><p>
+Additional content to be appended to the upstream block. Can be a string or file-like object or list of thereof. In case of list, each item is prefixed with indentation and suffixed with a new line. Nested lists are flattened.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(extra-content "include /etc/nginx/custom-config.conf;")
+(extra-content `("include /etc/nginx/custom-config.conf;"
+                 ("include " ,%custom-config.conf ";")))
+</pre>
+</div></dd>
+</dl></dd>
+
+<dt>Data Type: nginx-location-configuration </dt><dd>Data type representing the configuration of an nginx <code>location</code> block. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>uri</code></dt><dd><p>
+URI which this location block matches.
+</p>
+
+<p>
+<a id="nginx_002dlocation_002dconfiguration-body"></a>
+</p></dd>
+
+<dt><code>body</code></dt><dd><p>
+Body of the location block, specified as a list of strings or file-like objects. Each item is prefixed with indentation and suffixed with a new line. Nested lists are flattened.
+</p>
+
+<p>
+For example, to pass requests to a upstream server group defined using an <code>nginx-upstream-configuration</code> block, the following directive would be specified in the body ‘=(list "proxy<sub>pass</sub> <a href="http://upstream-name">http://upstream-name</a>;")='.
+</p></dd>
+</dl></dd>
+
+<dt>Data Type: nginx-named-location-configuration </dt><dd>Data type representing the configuration of an nginx named location block. Named location blocks are used for request redirection, and not used for regular request processing. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>Name to identify this location block.</dd>
+
+<dt><code>body</code></dt><dd>See , as the body for named location blocks can be used in a similar way to the <code>nginx-location-configuration body</code>. One restriction is that the body of a named location block cannot contain location blocks.</dd>
+</dl></dd>
+
+<dt>Data Type: nginx-stream-configuration </dt><dd>Data type representing the configuration file context in which stream directives are specified. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>upstream-blocks</code> (default: <code>'()</code>)</dt><dd>A list of upstream blocks to create in the generated configuration file, the elements should be of type <code>&lt;nginx-upstream-configuration&gt;</code>.</dd>
+
+<dt><code>server-blocks</code> (default: <code>'()</code>)</dt><dd>A list of server blocks to create in the generated configuration file, the elements should be of type <code>&lt;nginx-server-configuration&gt;</code>.</dd>
+
+<dt><code>extra-content</code> (default: <code>'()</code>)</dt><dd>Additional content to be appended to the <code>stream</code> block. Can either be a value that can be lowered into a string or a list of such values. In the former case, it is inserted directly. In the latter, it is prefixed with indentation and suffixed with a newline. Nested lists are flattened into one line.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Varnish-Cache"></a>
+</p>
+</div>
+</li>
+<li><a id="varnish-cache"></a>Varnish Cache<br />
+<div class="outline-text-5" id="text-varnish-cache">
+<p>
+<a id="index-Varnish"></a>
+Varnish is a fast cache server that sits in between web applications and end users. It proxies requests from clients and caches the accessed URLs such that multiple requests for the same resource only creates one request to the back-end.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: varnish-service-type </dt><dd>Service type for the Varnish daemon.</dd>
+
+<dt>Data Type: varnish-configuration </dt><dd>Data type representing the <code>varnish</code> service configuration. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>varnish</code>)</dt><dd>The Varnish package to use.</dd>
+
+<dt><code>name</code> (default: <code>"default"</code>)</dt><dd><p>
+A name for this Varnish instance. Varnish will create a directory in <code>/var/varnish/</code> with this name and keep temporary files there. If the name starts with a forward slash, it is interpreted as an absolute directory name.
+</p>
+
+<p>
+Pass the <code>-n</code> argument to other Varnish programs to connect to the named instance, e.g. <code>varnishncsa -n default</code>.
+</p></dd>
+
+<dt><code>backend</code> (default: <code>"localhost:8080"</code>)</dt><dd>The backend to use. This option has no effect if <code>vcl</code> is set.</dd>
+
+<dt><code>vcl</code> (default: #f)</dt><dd><p>
+The <i>VCL</i> (Varnish Configuration Language) program to run. If this is <code>#f</code>, Varnish will proxy <code>backend</code> using the default configuration. Otherwise this must be a file-like object with valid VCL syntax.
+</p>
+
+<p>
+For example, to mirror <a href="https://www.gnu.org">www.gnu.org</a> with VCL you can do something along these lines:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define %gnu-mirror
+  (plain-file "gnu.vcl"
+              "vcl 4.1;
+backend gnu { .host = \"www.gnu.org\"; }"))
+
+(operating-system
+  ;; …
+  (services (cons (service varnish-service-type
+                           (varnish-configuration
+                            (listen '(":80"))
+                            (vcl %gnu-mirror)))
+                  %base-services)))
+</pre>
+</div>
+
+<p>
+The configuration of an already running Varnish instance can be inspected and changed using the <code>varnishadm</code> program.
+</p>
+
+<p>
+Consult the <a href="https://varnish-cache.org/docs/">Varnish User Guide</a> and <a href="https://book.varnish-software.com/4.0/">Varnish Book</a> for comprehensive documentation on Varnish and its configuration language.
+</p></dd>
+
+<dt><code>listen</code> (default: <code>'("localhost:80")</code>)</dt><dd>List of addresses Varnish will listen on.</dd>
+
+<dt><code>storage</code> (default: <code>'("malloc,128m")</code>)</dt><dd>List of storage backends that will be available in VCL.</dd>
+
+<dt><code>parameters</code> (default: <code>'()</code>)</dt><dd>List of run-time parameters in the form <code>'(("parameter" . "value"))</code>.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Additional arguments to pass to the <code>varnishd</code> process.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Whoogle-Search"></a>
+</p>
+</div>
+</li>
+<li><a id="whoogle-search"></a>Whoogle Search<br />
+<div class="outline-text-5" id="text-whoogle-search">
+<p>
+<a id="index-Whoogle-Search"></a>
+<a href="https://github.com/benbusby/whoogle-search">Whoogle Search</a> is a self-hosted, ad-free, privacy-respecting meta search engine that collects and displays Google search results. By default, you can configure it by adding this line to the <code>services</code> field of your operating system declaration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service whoogle-service-type)
+</pre>
+</div>
+
+<p>
+As a result, Whoogle Search runs as local Web server, which you can access by opening ‘=<a href="http://localhost:5000">http://localhost:5000</a>=' in your browser. The configuration reference is given below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: whoogle-service-type </dt><dd>Service type for Whoogle Search. Its value must be a <code>whoogle-configuration</code> record&#x2014;see below.</dd>
+
+<dt>Data Type: whoogle-configuration </dt><dd>Data type representing Whoogle Search service configuration.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>whoogle-search</code>)</dt><dd>The Whoogle Search package to use.</dd>
+
+<dt><code>host</code> (default: <code>"127.0.0.1"</code>)</dt><dd>The host address to run Whoogle on.</dd>
+
+<dt><code>port</code> (default: <code>5000</code>)</dt><dd>The port where Whoogle will be exposed.</dd>
+
+<dt><code>environment-variables</code> (default: <code>'()</code>)</dt><dd>A list of strings with the environment variables to configure Whoogle. You can consult <a href="https://github.com/benbusby/whoogle-search/blob/main/whoogle.template.env">its environment variables template</a> for the list of available options.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Patchwork"></a>
+</p>
+</div>
+</li>
+<li><a id="patchwork"></a>Patchwork<br />
+<div class="outline-text-5" id="text-patchwork">
+<p>
+<a id="index-Patchwork"></a>
+Patchwork is a patch tracking system. It can collect patches sent to a mailing list, and display them in a web interface.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: patchwork-service-type </dt><dd>Service type for Patchwork.</dd>
+</dl>
+
+<p>
+The following example is an example of a minimal service for Patchwork, for the <code>patchwork.example.com</code> domain.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service patchwork-service-type
+         (patchwork-configuration
+          (domain "patchwork.example.com")
+          (settings-module
+           (patchwork-settings-module
+            (allowed-hosts (list domain))
+            (default-from-email "patchwork@patchwork.example.com")))
+          (getmail-retriever-config
+           (getmail-retriever-configuration
+            (type "SimpleIMAPSSLRetriever")
+            (server "imap.example.com")
+            (port 993)
+            (username "patchwork")
+            (password-command
+             (list (file-append coreutils "/bin/cat")
+                   "/etc/getmail-patchwork-imap-password"))
+            (extra-parameters
+            '((mailboxes . ("Patches"))))))))
+</pre>
+</div>
+
+<p>
+There are three records for configuring the Patchwork service. The <code>&lt;patchwork-configuration&gt;</code> relates to the configuration for Patchwork within the HTTPD service.
+</p>
+
+<p>
+The <code>settings-module</code> field within the <code>&lt;patchwork-configuration&gt;</code> record can be populated with the <code>&lt;patchwork-settings-module&gt;</code> record, which describes a settings module that is generated within the Guix store.
+</p>
+
+<p>
+For the <code>database-configuration</code> field within the <code>&lt;patchwork-settings-module&gt;</code>, the <code>&lt;patchwork-database-configuration&gt;</code> must be used.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: patchwork-configuration </dt><dd>Data type representing the Patchwork service configuration. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>patchwork</code> (default: <code>patchwork</code>)</dt><dd>The Patchwork package to use.</dd>
+
+<dt><code>domain</code></dt><dd>The domain to use for Patchwork, this is used in the HTTPD service virtual host.</dd>
+
+<dt><code>settings-module</code></dt><dd>The settings module to use for Patchwork. As a Django application, Patchwork is configured with a Python module containing the settings. This can either be an instance of the <code>&lt;patchwork-settings-module&gt;</code> record, any other record that represents the settings in the store, or a directory outside of the store.</dd>
+
+<dt><code>static-path</code> (default: <code>"/static/"</code>)</dt><dd>The path under which the HTTPD service should serve the static files.</dd>
+
+<dt><code>getmail-retriever-config</code></dt><dd>The getmail-retriever-configuration record value to use with Patchwork. Getmail will be configured with this value, the messages will be delivered to Patchwork.</dd>
+</dl></dd>
+
+<dt>Data Type: patchwork-settings-module </dt><dd>Data type representing a settings module for Patchwork. Some of these settings relate directly to Patchwork, but others relate to Django, the web framework used by Patchwork, or the Django Rest Framework library. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>database-configuration</code> (default: <code>(patchwork-database-configuration)</code>)</dt><dd>The database connection settings used for Patchwork. See the <code>&lt;patchwork-database-configuration&gt;</code> record type for more information.</dd>
+
+<dt><code>secret-key-file</code> (default: <code>"/etc/patchwork/django-secret-key"</code>)</dt><dd><p>
+Patchwork, as a Django web application uses a secret key for cryptographically signing values. This file should contain a unique unpredictable value.
+</p>
+
+<p>
+If this file does not exist, it will be created and populated with a random value by the patchwork-setup shepherd service.
+</p>
+
+<p>
+This setting relates to Django.
+</p></dd>
+
+<dt><code>allowed-hosts</code></dt><dd><p>
+A list of valid hosts for this Patchwork service. This should at least include the domain specified in the <code>&lt;patchwork-configuration&gt;</code> record.
+</p>
+
+<p>
+This is a Django setting.
+</p></dd>
+
+<dt><code>default-from-email</code></dt><dd><p>
+The email address from which Patchwork should send email by default.
+</p>
+
+<p>
+This is a Patchwork setting.
+</p></dd>
+
+<dt><code>static-url</code> (default: <code>#f</code>)</dt><dd><p>
+The URL to use when serving static assets. It can be part of a URL, or a full URL, but must end in a <code>/</code>.
+</p>
+
+<p>
+If the default value is used, the <code>static-path</code> value from the <code>&lt;patchwork-configuration&gt;</code> record will be used.
+</p>
+
+<p>
+This is a Django setting.
+</p></dd>
+
+<dt><code>admins</code> (default: <code>'()</code>)</dt><dd><p>
+Email addresses to send the details of errors that occur. Each value should be a list containing two elements, the name and then the email address.
+</p>
+
+<p>
+This is a Django setting.
+</p></dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>)</dt><dd><p>
+Whether to run Patchwork in debug mode. If set to <code>#t</code>, detailed error messages will be shown.
+</p>
+
+<p>
+This is a Django setting.
+</p></dd>
+
+<dt><code>enable-rest-api?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to enable the Patchwork REST API.
+</p>
+
+<p>
+This is a Patchwork setting.
+</p></dd>
+
+<dt><code>enable-xmlrpc?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to enable the XML RPC API.
+</p>
+
+<p>
+This is a Patchwork setting.
+</p></dd>
+
+<dt><code>force-https-links?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to use HTTPS links on Patchwork pages.
+</p>
+
+<p>
+This is a Patchwork setting.
+</p></dd>
+
+<dt><code>extra-settings</code> (default: <code>""</code>)</dt><dd>Extra code to place at the end of the Patchwork settings module.</dd>
+</dl></dd>
+
+<dt>Data Type: patchwork-database-configuration </dt><dd>Data type representing the database configuration for Patchwork.
+
+<dl class="org-dl">
+<dt><code>engine</code> (default: <code>"django.db.backends.postgresql_psycopg2"</code>)</dt><dd>The database engine to use.</dd>
+
+<dt><code>name</code> (default: <code>"patchwork"</code>)</dt><dd>The name of the database to use.</dd>
+
+<dt><code>user</code> (default: <code>"httpd"</code>)</dt><dd>The user to connect to the database as.</dd>
+
+<dt><code>password</code> (default: <code>""</code>)</dt><dd>The password to use when connecting to the database.</dd>
+
+<dt><code>host</code> (default: <code>""</code>)</dt><dd>The host to make the database connection to.</dd>
+
+<dt><code>port</code> (default: <code>""</code>)</dt><dd>The port on which to connect to the database.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Mumi"></a>
+</p>
+</div>
+</li>
+<li><a id="mumi"></a>Mumi<br />
+<div class="outline-text-5" id="text-mumi">
+<p>
+<a id="index-Mumi_002c-Debbugs-Web-interface"></a> <a id="index-Debbugs_002c-Mumi-Web-interface"></a>
+<a href="https://codeberg.org/guix/mumi">Mumi</a> is a Web interface to the Debbugs bug tracker, by default for <a href="https://bugs.gnu.org">the GNU instance</a>. Mumi is a Web server, but it also fetches and indexes mail retrieved from Debbugs.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: mumi-service-type </dt><dd>This is the service type for Mumi.</dd>
+
+<dt>Data Type: mumi-configuration </dt><dd>Data type representing the Mumi service configuration. This type has the following fields:
+
+<dl class="org-dl">
+<dt><code>mumi</code> (default: <code>mumi</code>)</dt><dd>The Mumi package to use.</dd>
+
+<dt><code>data-directory</code> (default: <code>"/var/mumi/data"</code>)</dt><dd>Data directory to store Debbugs data from upstream Debbugs instance.</dd>
+
+<dt><code>rsync-remote</code></dt><dd>Remote rsync path from which to download Debbugs data. The remote is polled every 5 minutes, unless a previous instance of rsync is already running.</dd>
+
+<dt><code>rsync-flags</code> (default: <code>'()</code>)</dt><dd>Additional flags to pass to <code>rsync</code>.</dd>
+
+<dt><code>mailer?</code> (default: <code>#true</code>)</dt><dd>Whether to enable or disable the mailer component.</dd>
+
+<dt><code>sender</code></dt><dd>The email address used as the sender for comments.</dd>
+
+<dt><code>smtp</code></dt><dd>A URI to configure the SMTP settings for Mailutils. This could be something like <code>sendmail:///path/to/bin/msmtp</code> or any other URI supported by Mailutils. See <a href="https://www.gnu.org/software/mailutils/manual/html_node/SMTP-Mailboxes.html#SMTP-Mailboxes">SMTP Mailboxes</a> in GNU Mailutils.</dd>
+
+<dt><code>packages</code></dt><dd>List of <code>&lt;mumi-package-configuration&gt;</code> objects representing packages configured on Mumi.</dd>
+</dl></dd>
+
+<dt>Data Type: mumi-package-configuration </dt><dd>Data type representing the configuration of a package on Mumi. This type has the following fields:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>Name of the package.</dd>
+
+<dt><code>display-name</code></dt><dd>Display name used for this package in the web interface.</dd>
+
+<dt><code>debbugs-packages</code></dt><dd>List of Debbugs packages this package refers to.</dd>
+
+<dt><code>bug-email-address</code></dt><dd>Email address to send bug reports to.</dd>
+
+<dt><code>patch-email-address</code></dt><dd>Email address to send patches to, if that is different from <code>bug-email-address</code>.</dd>
+
+<dt><code>file-tags</code></dt><dd>Association list mapping tags to filename regular expressions. Keys are tag names, and values are lists of regular expressions. For each entry of the association list, the tag is applied if a filename referred to in a patch matches any of the regular expressions.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="FastCGI"></a>
+</p>
+</div>
+</li>
+<li><a id="fastcgi"></a>FastCGI<br />
+<div class="outline-text-5" id="text-fastcgi">
+<p>
+<a id="index-fastcgi"></a> <a id="index-fcgiwrap"></a>
+FastCGI is an interface between the front-end and the back-end of a web service. It is a somewhat legacy facility; new web services should generally just talk HTTP between the front-end and the back-end. However there are a number of back-end services such as PHP or the optimized HTTP Git repository access that use FastCGI, so we have support for it in Guix.
+</p>
+
+<p>
+To use FastCGI, you configure the front-end web server (e.g., nginx) to dispatch some subset of its requests to the fastcgi backend, which listens on a local TCP or UNIX socket. There is an intermediary <code>fcgiwrap</code> program that sits between the actual backend process and the web server. The front-end indicates which backend program to run, passing that information to the <code>fcgiwrap</code> process.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: fcgiwrap-service-type </dt><dd>A service type for the <code>fcgiwrap</code> FastCGI proxy.</dd>
+
+<dt>Data Type: fcgiwrap-configuration </dt><dd>Data type representing the configuration of the <code>fcgiwrap</code> service. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>fcgiwrap</code>)</dt><dd>The fcgiwrap package to use.</dd>
+
+<dt><code>socket</code> (default: <code>tcp:127.0.0.1:9000</code>)</dt><dd>The socket on which the <code>fcgiwrap</code> process should listen, as a string. Valid <code>socket</code> values include <code>unix:==/path/to/unix/socket</code>, <code>tcp:==dot.ted.qu.ad=</code>:==port= and <code>tcp6:[==ipv6_addr==]:port</code>.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>user</code> (default: <code>fcgiwrap</code>)<br />
+<code>group</code> (default: <code>fcgiwrap</code>) :: The user and group names, as strings, under which to run the <code>fcgiwrap</code> process. The <code>fastcgi</code> service will ensure that if the user asks for the specific user or group names <code>fcgiwrap</code> that the corresponding user and/or group is present on the system.
+</p>
+
+<p>
+It is possible to configure a FastCGI-backed web service to pass HTTP authentication information from the front-end to the back-end, and to allow <code>fcgiwrap</code> to run the back-end process as a corresponding local user. To enable this capability on the back-end, run <code>fcgiwrap</code> as the <code>root</code> user and group. Note that this capability also has to be configured on the front-end as well.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="PHP_002dFPM"></a><a id="PHP_002dFPM-1"></a>
+</p>
+</div>
+</li>
+<li><a id="php-fpm"></a>PHP-FPM<br />
+<div class="outline-text-5" id="text-php-fpm">
+<p>
+<a id="index-php_002dfpm"></a>
+PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation with some additional features useful for sites of any size.
+</p>
+
+<p>
+These features include:
+</p>
+
+<ul class="org-ul">
+<li>Adaptive process spawning</li>
+<li>Basic statistics (similar to Apache's mod<sub>status</sub>)</li>
+<li>Advanced process management with graceful stop/start</li>
+<li>Ability to start workers with different uid/gid/chroot/environment and different php.ini (replaces safe<sub>mode</sub>)</li>
+<li>Stdout &amp; stderr logging</li>
+<li>Emergency restart in case of accidental opcode cache destruction</li>
+<li>Accelerated upload support</li>
+<li>Support for a "slowlog"</li>
+<li>Enhancements to FastCGI, such as fastcgi<sub>finish</sub><sub>request</sub>() - a special function to finish request &amp; flush all data while continuing to do something time-consuming (video converting, stats processing, etc.)</li>
+</ul>
+
+<p>
+&#x2026; and much more.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: php-fpm-service-type </dt><dd>A Service type for <code>php-fpm</code>.</dd>
+</dl>
+
+<p>
+Data Type: php-fpm-configuration
+Data Type for php-fpm service configuration.
+</p>
+
+<p>
+<code>php</code> (default: <code>php</code>)
+The php package to use.
+</p>
+
+<p>
+<code>socket</code> (default: <code>(string-append "/var/run/php" (version-major (package-version php)) "-fpm.sock")</code>)
+The address on which to accept FastCGI requests. Valid syntaxes are:
+</p>
+
+<dl class="org-dl">
+<dt><code>"ip.add.re.ss:port"</code></dt><dd>Listen on a TCP socket to a specific address on a specific port.</dd>
+
+<dt><code>"port"</code></dt><dd>Listen on a TCP socket to all addresses on a specific port.</dd>
+
+<dt><code>"/path/to/unix/socket"</code></dt><dd>Listen on a unix socket.</dd>
+</dl>
+
+<p>
+<code>user</code> (default: <code>php-fpm</code>)
+User who will own the php worker processes.
+</p>
+
+<p>
+<code>group</code> (default: <code>php-fpm</code>)
+Group of the worker processes.
+</p>
+
+<p>
+<code>socket-user</code> (default: <code>php-fpm</code>)
+User who can speak to the php-fpm socket.
+</p>
+
+<p>
+<code>socket-group</code> (default: <code>nginx</code>)
+Group that can speak to the php-fpm socket.
+</p>
+
+<p>
+<code>pid-file</code> (default: <code>(string-append "/var/run/php" (version-major (package-version php)) "-fpm.pid")</code>)
+The process id of the php-fpm process is written to this file once the service has started.
+</p>
+
+<p>
+<code>log-file</code> (default: <code>(string-append "/var/log/php" (version-major (package-version php)) "-fpm.log")</code>)
+Log for the php-fpm master process.
+</p>
+
+<p>
+<code>process-manager</code> (default: <code>(php-fpm-dynamic-process-manager-configuration)</code>)
+Detailed settings for the php-fpm process manager. Must be one of:
+</p>
+
+<p>
+<code>&lt;php-fpm-dynamic-process-manager-configuration&gt;</code>
+<code>&lt;php-fpm-static-process-manager-configuration&gt;</code>
+<code>&lt;php-fpm-on-demand-process-manager-configuration&gt;</code>
+<code>display-errors</code> (default <code>#f</code>)
+Determines whether php errors and warning should be sent to clients and displayed in their browsers. This is useful for local php development, but a security risk for public sites, as error messages can reveal passwords and personal data.
+</p>
+
+<p>
+<code>timezone</code> (default <code>#f</code>)
+Specifies <code>php_admin_value[date.timezone]</code> parameter.
+</p>
+
+<p>
+<code>workers-logfile</code> (default <code>(string-append "/var/log/php" (version-major (package-version php)) "-fpm.www.log")</code>)
+This file will log the <code>stderr</code> outputs of php worker processes. Can be set to <code>#f</code> to disable logging.
+</p>
+
+<p>
+<code>file</code> (default <code>#f</code>)
+An optional override of the whole configuration. You can use the <code>mixed-text-file</code> function or an absolute filepath for it.
+</p>
+
+<p>
+<code>php-ini-file</code> (default <code>#f</code>)
+An optional override of the default php settings. It may be any “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>). You can use the <code>mixed-text-file</code> function or an absolute filepath for it.
+</p>
+
+<p>
+For local development it is useful to set a higher timeout and memory limit for spawned php processes. This be accomplished with the following operating system configuration snippet:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define %local-php-ini
+  (plain-file "php.ini"
+              "memory_limit = 2G
+max_execution_time = 1800"))
+
+(operating-system
+  ;; …
+  (services (cons (service php-fpm-service-type
+                           (php-fpm-configuration
+                            (php-ini-file %local-php-ini)))
+                  %base-services)))
+</pre>
+</div>
+
+<p>
+Consult the <a href="https://www.php.net/manual/en/ini.core.php">core php.ini directives</a> for comprehensive documentation on the acceptable <code>php.ini</code> directives.
+</p>
+
+<dl class="org-dl">
+<dt>Data type: php-fpm-dynamic-process-manager-configuration </dt><dd>Data Type for the <code>dynamic</code> php-fpm process manager. With the <code>dynamic</code> process manager, spare worker processes are kept around based on its configured limits.
+
+<dl class="org-dl">
+<dt><code>max-children</code> (default: <code>5</code>)</dt><dd>Maximum of worker processes.</dd>
+
+<dt><code>start-servers</code> (default: <code>2</code>)</dt><dd>How many worker processes should be started on start-up.</dd>
+
+<dt><code>min-spare-servers</code> (default: <code>1</code>)</dt><dd>How many spare worker processes should be kept around at minimum.</dd>
+
+<dt><code>max-spare-servers</code> (default: <code>3</code>)</dt><dd>How many spare worker processes should be kept around at maximum.</dd>
+</dl></dd>
+
+<dt>Data type: php-fpm-static-process-manager-configuration </dt><dd>Data Type for the <code>static</code> php-fpm process manager. With the <code>static</code> process manager, an unchanging number of worker processes are created.
+
+<dl class="org-dl">
+<dt><code>max-children</code> (default: <code>5</code>)</dt><dd>Maximum of worker processes.</dd>
+</dl></dd>
+
+<dt>Data type: php-fpm-on-demand-process-manager-configuration </dt><dd>Data Type for the <code>on-demand</code> php-fpm process manager. With the <code>on-demand</code> process manager, worker processes are only created as requests arrive.
+
+<dl class="org-dl">
+<dt><code>max-children</code> (default: <code>5</code>)</dt><dd>Maximum of worker processes.</dd>
+
+<dt><code>process-idle-timeout</code> (default: <code>10</code>)</dt><dd>The time in seconds after which a process with no requests is killed.</dd>
+</dl></dd>
+
+<dt>Procedure: nginx-php-location [#:nginx-package nginx] [socket (string-append "/var/run/php" (version-major (package-version php)) "-fpm.sock")]</dt><dd>A helper function to quickly add php to an <code>nginx-server-configuration</code>.</dd>
+</dl>
+
+<p>
+A simple services setup for nginx with php can look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(services (cons* (service dhcp-client-service-type)
+                 (service php-fpm-service-type)
+                 (service nginx-service-type
+                          (nginx-server-configuration
+                           (server-name '("example.com"))
+                           (root "/srv/http/")
+                           (locations
+                            (list (nginx-php-location)))
+                           (listen '("80"))
+                           (ssl-certificate #f)
+                           (ssl-certificate-key #f)))
+                 %base-services))
+</pre>
+</div>
+
+<p>
+<a id="index-cat_002davatar_002dgenerator"></a>
+The cat avatar generator is a simple service to demonstrate the use of php-fpm in <code>Nginx</code>. It is used to generate cat avatar from a seed, for instance the hash of a user's email address.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: cat-avatar-generator-service [#:cache-dir "/var/cache/cat-avatar-generator"] [#:package cat-avatar-generator] [#:configuration (nginx-server-configuration)]</dt><dd>Returns an nginx-server-configuration that inherits <code>configuration</code>. It extends the nginx configuration to add a server block that serves <code>package</code>, a version of cat-avatar-generator. During execution, cat-avatar-generator will be able to use <code>cache-dir</code> as its cache directory.</dd>
+</dl>
+
+<p>
+A simple setup for cat-avatar-generator can look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(services (cons* (cat-avatar-generator-service
+                  #:configuration
+                  (nginx-server-configuration
+                    (server-name '("example.com"))))
+                 ...
+                 %base-services))
+</pre>
+</div>
+
+<p>
+<a id="Hpcguix_002dweb"></a>
+</p>
+</div>
+</li>
+<li><a id="hpcguix-web"></a>Hpcguix-web<br />
+<div class="outline-text-5" id="text-hpcguix-web">
+<p>
+<a id="index-hpcguix_002dweb"></a>
+The <a href="https://github.com/UMCUGenetics/hpcguix-web/">hpcguix-web</a> program is a customizable web interface to browse Guix packages, initially designed for users of high-performance computing (HPC) clusters.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: hpcguix-web-service-type </dt><dd>The service type for <code>hpcguix-web</code>.</dd>
+
+<dt>Data Type: hpcguix-web-configuration </dt><dd>Data type for the hpcguix-web service configuration.
+
+<dl class="org-dl">
+<dt><code>specs</code> (default: <code>#f</code>)</dt><dd><p>
+Either <code>#f</code> or a gexp (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>) specifying the hpcguix-web service configuration as an <code>hpcguix-web-configuration</code> record. The main fields of that record type are:
+</p>
+
+<dl class="org-dl">
+<dt><code>title-prefix</code> (default: <code>"hpcguix | "</code>)</dt><dd>The page title prefix.</dd>
+
+<dt><code>guix-command</code> (default: <code>"guix"</code>)</dt><dd>The <code>guix</code> command to use in examples that appear on HTML pages.</dd>
+
+<dt><code>package-filter-proc</code> (default: <code>(const #t)</code>)</dt><dd>A procedure specifying how to filter packages that are displayed.</dd>
+
+<dt><code>package-page-extension-proc</code> (default: <code>(const '())</code>)</dt><dd>Extension package for <code>hpcguix-web</code>.</dd>
+
+<dt><code>menu</code> (default: <code>'()</code>)</dt><dd>Additional entry in page <code>menu</code>.</dd>
+
+<dt><code>channels</code> (default: <code>%default-channels</code>)</dt><dd>List of channels from which the package list is built (see <a href="docs/guix--Channels.html">Channels</a>).</dd>
+
+<dt><code>package-list-expiration</code> (default: <code>(* 12 3600)</code>)</dt><dd>The expiration time, in seconds, after which the package list is rebuilt from the latest instances of the given channels.</dd>
+</dl>
+
+<p>
+See the hpcguix-web repository for a <a href="https://github.com/UMCUGenetics/hpcguix-web/blob/master/hpcweb-configuration.scm">complete example</a>.
+</p></dd>
+
+<dt><code>package</code> (default: <code>hpcguix-web</code>)</dt><dd>The hpcguix-web package to use.</dd>
+
+<dt><code>address</code> (default: <code>"127.0.0.1"</code>)</dt><dd>The IP address to listen to.</dd>
+
+<dt><code>port</code> (default: <code>5000</code>)</dt><dd>The port number to listen to.</dd>
+</dl></dd>
+</dl>
+
+<p>
+A typical hpcguix-web service declaration looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service hpcguix-web-service-type
+         (hpcguix-web-configuration
+          (specs
+           #~(hpcweb-configuration
+              (title-prefix "Guix-HPC - ")
+              (menu '(("/about" "ABOUT")))))))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Note:</b> The hpcguix-web service periodically updates the package list it publishes by pulling channels from Git. To that end, it needs to access X.509 certificates so that it can authenticate Git servers when communicating over HTTPS, and it assumes that <code>/etc/ssl/certs</code> contains those certificates.
+</p>
+
+<p>
+A certificate package, <code>nss-certs</code>, is provided by default as part of <code>%base-packages</code>. <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>, for more information on X.509 certificates.
+</p>
+</blockquote>
+
+<p>
+<a id="gmnisrv"></a>
+</p>
+</div>
+</li>
+<li><a id="gmnisrv"></a>gmnisrv<br />
+<div class="outline-text-5" id="text-gmnisrv">
+<p>
+<a id="index-gmnisrv"></a>
+The <a href="https://git.sr.ht/~sircmpwn/gmnisrv">gmnisrv</a> program is a simple <a href="https://gemini.circumlunar.space/">Gemini</a> protocol server.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: gmnisrv-service-type </dt><dd><p>
+This is the type of the gmnisrv service, whose value should be a <code>gmnisrv-configuration</code> object, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service gmnisrv-service-type
+         (gmnisrv-configuration
+           (config-file (local-file "./my-gmnisrv.ini"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: gmnisrv-configuration </dt><dd>Data type representing the configuration of gmnisrv.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>gmnisrv</code>)</dt><dd>Package object of the gmnisrv server.</dd>
+
+<dt><code>config-file</code> (default: <code>%default-gmnisrv-config-file</code>)</dt><dd>File-like object of the gmnisrv configuration file to use. The default configuration listens on port 1965 and serves files from <code>/srv/gemini</code>. Certificates are stored in <code>/var/lib/gemini/certs</code>. For more information, run <code>man gmnisrv</code> and <code>man gmnisrv.ini</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Agate"></a>
+</p>
+</div>
+</li>
+<li><a id="agate"></a>Agate<br />
+<div class="outline-text-5" id="text-agate">
+<p>
+<a id="index-agate"></a>
+The (<a href="https://github.com/mbrubeck/agate">GitHub page over HTTPS</a>) program is a simple <a href="https://gemini.circumlunar.space/">Gemini</a> protocol server written in Rust.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: agate-service-type </dt><dd><p>
+This is the type of the agate service, whose value should be an <code>agate-service-type</code> object, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service agate-service-type
+     (agate-configuration
+       (content "/srv/gemini")
+       (certificates "/srv/gemini-certs")))
+</pre>
+</div>
+
+<p>
+The example above represents the minimal tweaking necessary to get Agate up and running. Specifying the path to the certificate and key directory is always necessary, as the Gemini protocol requires TLS by default.
+</p>
+
+<p>
+If the specified <code>certificates</code> path is writable by Agate, and contains no valid pre-generated key and certificate, Agate will try to generate them on the first start. In this case you should pass at least one hostname using the <code>hostnames</code> option. If the specified directory is read-only, key and certificate should be pre-generated by the user.
+</p>
+
+<p>
+To obtain a certificate and a key in DER format, you could, for example, use OpenSSL, running commands similar to the following example:
+</p>
+
+<pre class="example" id="orga52534c">
+openssl genpkey -out key.der -outform DER -algorithm RSA \
+    -pkeyopt rsa_keygen_bits:4096
+openssl req -x509 -key key.der -outform DER -days 3650 -out cert.der \
+    -subj "/CN=example.com"
+</pre>
+
+<p>
+Of course, you'll have to replace <i>example.com</i> with your own domain name, and then point the Agate configuration towards the path of the directory with the generated key and certificate using the <code>certificates</code> option.
+</p></dd>
+
+<dt>Data Type: agate-configuration </dt><dd>Data type representing the configuration of Agate.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>agate</code>)</dt><dd>The package object of the Agate server.</dd>
+
+<dt><code>content</code> (default: <code>"/srv/gemini"</code>)</dt><dd>The directory from which Agate will serve files.</dd>
+
+<dt><code>certificates</code> (default: <code>"/srv/gemini-certs"</code>)</dt><dd>Root of the certificate directory. Must be filled in with a value from the user.</dd>
+
+<dt><code>addresses</code> (default: <code>'("[::]:1965" "0.0.0.0:1965")</code>)</dt><dd>A list of the addresses to listen on.</dd>
+
+<dt><code>hostnames</code> (default: <code>'()</code>)</dt><dd>Virtual hosts for the Gemini server. If multiple values are specified, corresponding directory names should be present in the <code>content</code> directory. Optional.</dd>
+
+<dt><code>languages</code> (default: <code>#f</code>)</dt><dd>RFC 4646 language code(s) for text/gemini documents. Optional.</dd>
+
+<dt><code>only-tls13?</code> (default: <code>#f</code>)</dt><dd>Set to <code>#t</code> to disable support for TLSv1.2.</dd>
+
+<dt><code>serve-secret?</code> (default: <code>#f</code>)</dt><dd>Set to <code>#t</code> to serve secret files (files/directories starting with a dot).</dd>
+
+<dt><code>central-configuration?</code> (default: <code>#f</code>)</dt><dd>Set to <code>#t</code> to look for the .meta configuration file in the <code>content</code> root directory and will ignore <code>.meta</code> files in other directories</dd>
+
+<dt><code>ed25519?</code> (default: <code>#f</code>)</dt><dd>Set to <code>#t</code> to generate keys using the Ed25519 signature algorithm instead of the default ECDSA.</dd>
+
+<dt><code>skip-port-check?</code> (default: <code>#f</code>)</dt><dd>Set to <code>#t</code> to skip URL port check even when a <code>hostname</code> is specified.</dd>
+
+<dt><code>log-ip?</code> (default: <code>#t</code>)</dt><dd>Whether or not to output IP addresses when logging.</dd>
+
+<dt><code>user</code> (default: <code>"agate"</code>)</dt><dd>Owner of the <code>agate</code> process.</dd>
+
+<dt><code>group</code> (default: <code>"agate"</code>)</dt><dd>Owner's group of the <code>agate</code> process.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/agate.log"</code>)</dt><dd>The file which should store the logging output of Agate.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Miniflux"></a>
+</p>
+</div>
+</li>
+<li><a id="miniflux"></a>Miniflux<br />
+<div class="outline-text-5" id="text-miniflux">
+<p>
+<a id="index-miniflux"></a>
+The <a href="https://miniflux.app/">Miniflux</a> is a minimalist RSS feed reader with a web interface.
+</p>
+
+<p>
+Depending on the configuration, an initial administrator user can be pre-created on startup. To enable this, <code>create-admin?</code> should be set to <code>#t</code>, and both <code>admin-username-file</code> and <code>admin-password-file</code> should point to files containing the username and password, respectively. However, it is recommended to manually change the password to a secure one via the web UI after the initial service startup.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: miniflux-service-type </dt><dd><p>
+This is the type of the Miniflux service. Its value must be a <code>miniflux-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service miniflux-service-type
+         (miniflux-configuration
+          (listen-address "0.0.0.0:8080")
+          (base-url "http://my-news-source.test")
+          (create-administrator-account? #t)
+          (administrator-account-name "/var/miniflux/initial-admin-username")
+          (administrator-account-password "/var/miniflux/initial-admin-password")))
+</pre>
+</div>
+
+<p>
+The details of the <code>miniflux-configuration</code> record type are given below.
+</p></dd>
+
+<dt>Data Type: miniflux-configuration </dt><dd>Available <code>miniflux-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>listen-address</code> (default: <code>"127.0.0.1:8080"</code>) (type: string)</dt><dd>Address to listen on. Use absolute path like <code>"/var/run/miniflux/miniflux.sock"</code> for a Unix socket.</dd>
+
+<dt><code>base-url</code> (default: <code>"http://127.0.0.1/"</code>) (type: string)</dt><dd>Base URL to generate HTML links and base path for cookies.</dd>
+
+<dt><code>create-administrator-account?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Create an initial administrator account.</dd>
+
+<dt><code>administrator-account-name</code> (type: maybe-string-or-file-path)</dt><dd>Initial administrator account name as a string or an absolute path to a file with an account name inside.</dd>
+
+<dt><code>administrator-account-password</code> (type: maybe-string-or-file-path)</dt><dd>Initial administrator account password as a string or an absolute path to a file with a password inside.</dd>
+
+<dt><code>run-migrations?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Run database migrations during application startup.</dd>
+
+<dt><code>database-url</code> (default: <code>"host=/var/run/postgresql"</code>) (type: string)</dt><dd>PostgreSQL connection string.</dd>
+
+<dt><code>user</code> (default: <code>"miniflux"</code>) (type: string)</dt><dd>User name for Postgresql and system account.</dd>
+
+<dt><code>group</code> (default: <code>"miniflux"</code>) (type: string)</dt><dd>Group for the system account.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/miniflux.log"</code>) (type: string)</dt><dd>Path to the log file.</dd>
+
+<dt><code>extra-settings</code> (type: maybe-list)</dt><dd>Extra configuration parameters as a list of strings.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--High-Availability-Services.html">High Availability Services</a>, Previous: <a href="docs/guix--LDAP-Services.html">LDAP Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Single-or-Numbered-Backups">1. 20.3.2.1 Single or Numbered Backups ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Backup-Deletion.html">Automatic Deletion of Backups</a>   Up: <a href="docs/emacs--Backup.html">Backup Files</a>
+</p>
+
+<p>
+<a id="Backup-Names"></a>
+</p>
+
+<hr />
+<div id="outline-container-Single-or-Numbered-Backups" class="outline-2">
+<h2 id="Single-or-Numbered-Backups"><span class="section-number-2">1.</span> 20.3.2.1 Single or Numbered Backups <a href="#Single-or-Numbered-Backups">¶</a></h2>
+<div class="outline-text-2" id="text-Single-or-Numbered-Backups">
+<p>
+When Emacs makes a backup file, its name is normally constructed by appending ‘=~=' to the file name being edited; thus, the backup file for <code>eval.c</code> would be <code>eval.c~</code>.
+</p>
+
+<p>
+If access control stops Emacs from writing backup files under the usual names, it writes the backup file as <code>~/.emacs.d/%backup%~</code>. Only one such file can exist, so only the most recently made such backup is available.
+</p>
+
+<p>
+Emacs can also make <i>numbered backup files</i>. Numbered backup file names contain ‘=.~=', the number, and another ‘=~=' after the original file name. Thus, the backup files of <code>eval.c</code> would be called <code>eval.c.~1~</code>, <code>eval.c.~2~</code>, and so on, all the way through names like <code>eval.c.~259~</code> and beyond.
+</p>
+
+<p>
+The variable <code>version-control</code> determines whether to make single backup files or multiple numbered backup files. Its possible values are:
+</p>
+
+<dl class="org-dl">
+<dt><code>nil</code></dt><dd>Make numbered backups for files that have numbered backups already. Otherwise, make single backups. This is the default.</dd>
+
+<dt><code>t</code></dt><dd>Make numbered backups.</dd>
+
+<dt><code>never</code></dt><dd>Never make numbered backups; always make single backups.</dd>
+</dl>
+
+<p>
+The usual way to set this variable is globally, through your init file or the customization buffer. However, you can set <code>version-control</code> locally in an individual buffer to control the making of backups for that buffer's file (see <a href="docs/emacs--Locals.html">Local Variables</a>). Some modes, such as Rmail mode, set this variable. You can also have Emacs set <code>version-control</code> locally whenever you visit a given file (see <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>).
+</p>
+
+<p>
+If you set the environment variable <code>VERSION_CONTROL</code>, to tell various GNU utilities what to do with backup files, Emacs also obeys the environment variable by setting the Lisp variable <code>version-control</code> accordingly at startup. If the environment variable's value is ‘=t=' or ‘=numbered=', then <code>version-control</code> becomes <code>t</code>; if the value is ‘=nil=' or ‘=existing=', then <code>version-control</code> becomes <code>nil</code>; if it is ‘=never=' or ‘=simple=', then <code>version-control</code> becomes <code>never</code>.
+</p>
+
+<p>
+If you set the variable <code>make-backup-file-name-function</code> to a suitable Lisp function, you can override the usual way Emacs constructs backup file names.
+</p>
+
+<hr />
+</div>
+</div>

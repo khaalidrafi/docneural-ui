@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Diary-Display-1">1. 33.13.8 Diary Display ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fancy-Diary-Display.html">Fancy Diary Display</a>   Previous: <a href="docs/emacs--Non_002dGregorian-Diary.html">Diary Entries Using non-Gregorian Calendars</a>   Up: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>
+</p>
+
+<p>
+<a id="Diary-Display"></a>
+</p>
+
+<hr />
+<div id="outline-container-Diary-Display-1" class="outline-2">
+<h2 id="Diary-Display-1"><span class="section-number-2">1.</span> 33.13.8 Diary Display <a href="#Diary-Display-1">¶</a></h2>
+<div class="outline-text-2" id="text-Diary-Display-1">
+<p>
+Diary display works by preparing the list of diary entries and then running the function specified by the variable <code>diary-display-function</code>. The default value <code>diary-fancy-display</code> displays diary entries and holidays by copying them into a special buffer that exists only for the sake of display. Copying diary entries to a separate buffer provides an opportunity to change the displayed text to make it prettier&#x2014;for example, to sort the entries by the dates they apply to.
+</p>
+
+<p>
+Ordinarily, the fancy diary buffer does not show days for which there are no diary entries, even if that day is a holiday. If you want such days to be shown in the fancy diary buffer, set the variable <code>diary-list-include-blanks</code> to <code>t</code>.
+</p>
+
+<p>
+The fancy diary buffer enables View mode (see <a href="docs/emacs--View-Mode.html">View Mode</a>).
+</p>
+
+<p>
+The alternative display method <code>diary-simple-display</code> shows the actual diary buffer, and uses invisible text to hide entries that don't apply. Holidays are shown in the mode line. The advantage of this method is that you can edit the buffer and save your changes directly to the diary file. This method is not as flexible as the fancy method, however. For example, it cannot sort entries. Another disadvantage is that invisible text can be confusing. For example, if you copy a region of text in order to paste it elsewhere, invisible text may be included. Similarly, since the diary buffer as you see it is an illusion, simply printing the buffer may not print what you see on your screen.
+</p>
+
+<p>
+For this reason, there is a special command to print hard copy of the diary buffer <i>as it appears</i>; this command is M-x diary-print-entries. It works with either display method, although with the fancy display you can also print the buffer like any other. To print a hard copy of a day-by-day diary for a week, position point on the first day of the week, type 7 d, and then do M-x diary-print-entries. As usual, the inclusion of the holidays slows down the display slightly; you can speed things up by setting the variable <code>diary-show-holidays-flag</code> to <code>nil</code>.
+</p>
+
+<p>
+This command prepares a temporary buffer that contains only the diary entries currently visible in the diary buffer. Unlike with the simple display, the other irrelevant entries are really absent, not just hidden. After preparing the buffer, it runs the hook <code>diary-print-entries-hook</code>. The default value of this hook sends the data directly to the printer with the command <code>lpr-buffer</code> (see <a href="docs/emacs--Printing.html">Printing Hard Copies</a>). If you want to use a different command to do the printing, just change the value of this hook. Other uses might include, for example, rearranging the lines into order by day and time.
+</p>
+
+<p>
+You can edit the diary entries as they appear in the simple diary window, but it is important to remember that the buffer displayed contains the <i>entire</i> diary file, with portions of it concealed from view. This means, for instance, that the C-f (<code>forward-char</code>) command can put point at what appears to be the end of the line, but what is in reality the middle of some concealed line.
+</p>
+
+<p>
+<i>Be careful when editing the diary entries in the simple display!</i> Inserting additional lines or adding/deleting characters in the middle of a visible line cannot cause problems, but editing at the end of a line may not do what you expect. Deleting a line may delete other invisible entries that follow it. Before editing the simple diary buffer, it is best to display the entire file with s (<code>diary-show-all-entries</code>).
+</p>
+
+<hr />
+</div>
+</div>

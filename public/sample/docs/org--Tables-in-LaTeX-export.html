@@ -1,0 +1,104 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tables-in-LaTeX-export-1">1. 13.10.5 Tables in LaTeX export ¶</a>
+<ul>
+<li><a href="#section">1.1. (143)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tables-in-LaTeX-export"></a>
+Next: <a href="docs/org--Images-in-LaTeX-export.html">Images in LaTeX export</a>, Previous: <a href="docs/org--Quoting-LaTeX-code.html">Quoting LaTeX code</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tables-in-LaTeX-export-1" class="outline-2">
+<h2 id="Tables-in-LaTeX-export-1"><span class="section-number-2">1.</span> 13.10.5 Tables in LaTeX export <a href="#Tables-in-LaTeX-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tables-in-LaTeX-export-1">
+<p>
+The LaTeX export backend can pass several LaTeX attributes for table contents and layout. Besides specifying a label (see <a href="docs/org--Internal-Links.html">Internal Links</a>) and a caption (see <a href="docs/org--Captions.html">Captions</a>), the other valid LaTeX attributes include:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dlatex_002ddefault_002dtable_002dmode"></a>‘=:mode=' </dt><dd><p>
+The LaTeX export backend wraps the table differently depending on the mode for accurate rendering of math symbols. Mode is either ‘=table=', ‘=math=', ‘=inline-math=', ‘=verbatim=' or ‘=tabbing='.
+</p>
+
+<p>
+For ‘=math=' or ‘=inline-math=' mode, LaTeX export backend wraps the table in a math environment, but every cell in it is exported as-is. For ‘=tabbing=' the LaTeX tabbing environment is used and the correct tabbing delimiters ‘=\&gt;=' are used. The LaTeX export backend determines the default mode from <code>org-latex-default-table-mode</code>. The LaTeX export backend merges contiguous tables in the same mode into a single environment.
+</p></dd>
+
+<dt><a id="index-org_002dlatex_002ddefault_002dtable_002denvironment"></a>‘=:environment=' </dt><dd>Set the default LaTeX table environment for the LaTeX export backend to use when exporting Org tables. Common LaTeX table environments are provided by these packages: tabularx, longtable, array, tabu, and bmatrix. For packages, such as tabularx and tabu, or any newer replacements, include them in the <code>org-latex-packages-alist</code> variable so the LaTeX export backend can insert the appropriate load package headers in the converted LaTeX file. Look in the docstring for the <code>org-latex-packages-alist</code> variable for configuring these packages for LaTeX snippet previews, if any.</dd>
+
+<dt>‘=:caption='</dt><dd>Use ‘=CAPTION=' keyword to set a simple caption for a table (see <a href="docs/org--Captions.html">Captions</a>). For custom captions, use ‘=:caption=' attribute, which accepts raw LaTeX code. ‘=:caption=' value overrides ‘=CAPTION=' value.</dd>
+
+<dt>‘=:float=', ‘=:placement='</dt><dd><p>
+The table environments by default are not floats in LaTeX. To make them floating objects use ‘=:float=' with one of the following options: ‘=t=' (for a default ‘=table=' environment), ‘=sideways=' (for a ‘=sidewaystable=' environment), ‘=multicolumn=' (to span the table across multiple columns of a page in a ‘=table*=' environment) and ‘=nil='. In addition to these three values, ‘=:float=' can pass through any arbitrary value, for example a user-defined float type with the ‘=float=' LaTeX package.
+</p>
+
+<p>
+LaTeX floats can also have additional layout ‘=:placement=' attributes. These are the usual ‘=[h t b p ! H]=' permissions specified in square brackets. Note that for ‘=:float sideways=' tables, the LaTeX export backend ignores ‘=:placement=' attributes.
+</p></dd>
+
+<dt>‘=:align=', ‘=:font=', ‘=:width='</dt><dd>The LaTeX export backend uses these attributes for regular tables to set their alignments, fonts, and widths.</dd>
+
+<dt>‘=:options='</dt><dd>The ‘=:options=' attribute allows adding an optional argument with a list of various table options (between brackets in LaTeX export), since certain tabular environments, such as longtblr of the tabularray LaTeX package, provides this structure. For example: ‘=:options remark{Note}={note},remark{Source}={source}='.</dd>
+
+<dt>‘=:spread='</dt><dd>When ‘=:spread=' is non-<code>nil</code>, the LaTeX export backend spreads or shrinks the table by the ‘=:width=' for tabu and longtabu environments. ‘=:spread=' has no effect if ‘=:width=' is not set.</dd>
+
+<dt><a id="index-org_002dlatex_002dtables_002dbooktabs"></a>‘=:booktabs=', ‘=:center=', ‘=:rmlines=' </dt><dd>All three commands are toggles. ‘=:booktabs=' brings in modern typesetting enhancements to regular tables. The ‘=booktabs=' package needs to be loaded through <code>org-latex-packages-alist</code>, unless it is already included by your document class. ‘=:center=' is for centering the table. ‘=:rmlines=' removes all but the very first horizontal line made of ASCII characters from “table.el” tables only.</dd>
+
+<dt>‘=:math-prefix=', ‘=:math-suffix=', ‘=:math-arguments='</dt><dd>The LaTeX export backend inserts ‘=:math-prefix=' string value in a math environment before the table. The LaTeX export backend inserts ‘=:math-suffix=' string value in a math environment after the table. The LaTeX export backend inserts ‘=:math-arguments=' string value between the macro name and the table's contents. ‘=:math-arguments=' comes in use for matrix macros that require more than one argument, such as ‘=qbordermatrix='.</dd>
+</dl>
+
+<p>
+LaTeX table attributes help to format tables for a wide range of situations, such as matrix product or spanning multiple pages:
+</p>
+
+<pre class="example" id="org37c7a16">
+#+ATTR_LATEX: :environment longtable :align l|lp{3cm}r|l
+| ... | ... |
+| ... | ... |
+
+#+ATTR_LATEX: :mode math :environment bmatrix :math-suffix \times
+| a | b |
+| c | d |
+#+ATTR_LATEX: :mode math :environment bmatrix
+| 1 | 2 |
+| 3 | 4 |
+</pre>
+
+<p>
+Set the caption with the LaTeX command ‘=\bicaption{HeadingA}{HeadingB}=':
+</p>
+
+<pre class="example" id="orgf374e24">
+#+ATTR_LATEX: :caption \bicaption{HeadingA}{HeadingB}
+| ... | ... |
+| ... | ... |
+</pre>
+
+<p>
+If your table has numbers in scientific notation, you can control how they are shown with the variable <code>org-latex-table-scientific-notation</code>. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-latex-table-scientific-notation "\\num{%se%s}")
+</pre>
+</div>
+
+<p>
+will print your numbers as <i>m x 10<sup>exp</sup></i> instead of using the engineering format ‘=m.mmmEnn='. The first string placeholder(‘=%s=') in <code>org-latex-table-scientific-notation</code> will be replaced by the mantissa and the second by the exponent. <b>Note</b> that to use the example above, you will need to add the <code>siunitx</code> package to your <code>org-latex-packages-alist</code>.
+</p>
+
+<hr />
+</div>
+</div>

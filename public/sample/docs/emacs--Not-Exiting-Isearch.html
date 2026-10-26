@@ -1,0 +1,77 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Not-Exiting-Incremental-Search">1. 17.1.6 Not Exiting Incremental Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Isearch-Minibuffer.html">Searching the Minibuffer</a>   Previous: <a href="docs/emacs--Special-Isearch.html">Special Input for Incremental Search</a>   Up: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>
+</p>
+
+<p>
+<a id="Not-Exiting-Isearch"></a>
+</p>
+
+<hr />
+<div id="outline-container-Not-Exiting-Incremental-Search" class="outline-2">
+<h2 id="Not-Exiting-Incremental-Search"><span class="section-number-2">1.</span> 17.1.6 Not Exiting Incremental Search <a href="#Not-Exiting-Incremental-Search">¶</a></h2>
+<div class="outline-text-2" id="text-Not-Exiting-Incremental-Search">
+<p>
+This subsection describes how to control whether typing a command not specifically meaningful in searches exits the search before executing the command. It also describes three categories of commands which you can type without exiting the current incremental search, even though they are not themselves part of incremental search.
+</p>
+
+<p>
+Normally, typing a command that is not bound by the incremental search exits the search before executing the command. Thus, the command operates on the buffer from which you invoked the search. However, if you customize the variable <code>search-exit-option</code> to <code>append</code>, the characters which you type that are not interpreted by the incremental search are simply appended to the search string. This is so you could include in the search string control characters, such as C-a, that would normally exit the search and invoke the command bound to them on the buffer.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-prefix-argument-commands_002c-during-incremental-search"></a>Prefix Arguments </dt><dd><p>
+In incremental search, when you type a command that specifies a prefix argument (see <a href="docs/emacs--Arguments.html">Numeric Arguments</a>), by default it will apply either to the next action in the search or to the command that exits the search. In other words, entering a prefix argument will not by itself terminate the search.
+</p>
+
+<p>
+In previous versions of Emacs, entering a prefix argument always terminated the search. You can revert to this behavior by setting the variable <code>isearch-allow-prefix</code> to <code>nil</code>.
+</p>
+
+<p>
+When <code>isearch-allow-scroll</code> is non-<code>nil</code> (see below), prefix arguments always have the default behavior described above, i.e., they don't terminate the search, even if <code>isearch-allow-prefix</code> is <code>nil</code>.
+</p></dd>
+
+<dt><a id="index-scrolling-commands_002c-during-incremental-search"></a>Scrolling Commands </dt><dd><p>
+Normally, scrolling commands exit incremental search. But if you change the variable <code>isearch-allow-scroll</code> to a non-<code>nil</code> value, that enables the use of the scroll-bar, as well as keyboard scrolling commands like C-v, M-v, and C-l (see <a href="docs/emacs--Scrolling.html">Scrolling</a>), which have a non-<code>nil</code> <code>scroll-command</code> property, without exiting the search. This applies only to calling these commands via their bound key sequences&#x2014;typing M-x will still exit the search. You can give prefix arguments to these commands in the usual way. This feature normally won't let you scroll the current match out of visibility; but if you customize <code>isearch-allow-scroll</code> to the special value <code>unlimited</code>, that restriction is lifted.
+</p>
+
+<p>
+The <code>isearch-allow-scroll</code> feature also affects some other commands, such as C-x 2 (<code>split-window-below</code>) and C-x ^ (<code>enlarge-window</code>), which don't exactly scroll but do affect where the text appears on the screen. In fact, it affects any command that has a non-<code>nil</code> <code>isearch-scroll</code> property. So you can control which commands are affected by changing these properties.
+</p>
+
+<p>
+For example, to make C-h l usable within an incremental search in all future Emacs sessions, use C-h c to find what command it runs (see <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>), which is <code>view-lossage</code>. Then you can put the following line in your init file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>):
+</p>
+
+<pre class="example" id="org9d2f595">
+(put 'view-lossage 'isearch-scroll t)
+</pre>
+
+<p>
+This feature can be applied to any command that doesn't permanently change point, the buffer contents, the match data, the current buffer, or the selected window and frame. The command must not itself attempt an incremental search. This feature is disabled if <code>isearch-allow-scroll</code> is <code>nil</code> (which it is by default).
+</p>
+
+<p>
+Likewise, if you change the variable <code>isearch-allow-motion</code> to a non-<code>nil</code> value, this enables the use of the keyboard motion commands M-&lt;, M-&gt;, C-v and M-v, to move respectively to the first occurrence of the current search string in the buffer, the last one, the first one after the current window, and the last one before the current window. The search direction does not change when these motion commands are used, unless you change the variable <code>isearch-motion-changes-direction</code> to a non-<code>nil</code> value, in which case the search direction is forward after M-&lt; and C-v, and backward after M-&gt; and M-v.
+</p></dd>
+
+<dt><a id="index-motion-commands_002c-during-incremental-search"></a>Motion Commands </dt><dd><p>
+When <code>isearch-yank-on-move</code> is customized to <code>shift</code>, you can extend the search string by holding down the shift key while typing cursor motion commands. It will yank text that ends at the new position after moving point in the current buffer.
+</p>
+
+<p>
+When <code>isearch-yank-on-move</code> is <code>t</code>, you can extend the search string without using the shift key for cursor motion commands, but it applies only for certain motion command that have the <code>isearch-move</code> property on their symbols.
+</p></dd>
+</dl>
+
+<hr />
+</div>
+</div>

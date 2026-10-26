@@ -1,0 +1,129 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#General-Variables-1">1. C.4.1 General Variables ¶</a>
+<ul>
+<li><a href="#section">1.1. (28)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Misc-Variables.html">Miscellaneous Variables</a>   Up: <a href="docs/emacs--Environment.html">Environment Variables</a>
+</p>
+
+<p>
+<a id="General-Variables"></a>
+</p>
+
+<hr />
+<div id="outline-container-General-Variables-1" class="outline-2">
+<h2 id="General-Variables-1"><span class="section-number-2">1.</span> C.4.1 General Variables <a href="#General-Variables-1">¶</a></h2>
+<div class="outline-text-2" id="text-General-Variables-1">
+<p>
+Here is an alphabetical list of environment variables that have special meanings in Emacs. Most of these variables are also used by some other programs. Emacs does not require any of these environment variables to be set, but it uses their values if they are set.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-CDPATH_002c-environment-variable"></a>=CDPATH= </dt><dd>Used by the <code>cd</code> command to search for the directory you specify, when you specify a relative directory.</dd>
+
+<dt><a id="index-COLORTERM_002c-environment-variable"></a>=COLORTERM= </dt><dd>If this variable is set to the value ‘=truecolor=', it tells Emacs to use 24-bit true color on text-mode displays even if the terminfo database is not installed. Emacs will use built-in commands to request true color by RGB values instead of the missing terminfo information.</dd>
+
+<dt><a id="index-DBUS_005fSESSION_005fBUS_005fADDRESS_002c-environment-variable"></a>=DBUS<sub>SESSION</sub><sub>BUS</sub><sub>ADDRESS</sub>= </dt><dd>Used by D-Bus when Emacs is compiled with it. Usually, there is no need to change it. Setting it to a dummy address, like ‘=unix:path=/dev/null=', suppresses connections to the D-Bus session bus as well as autolaunching the D-Bus session bus if not running yet.</dd>
+
+<dt><a id="index-EMACSDATA_002c-environment-variable"></a>=EMACSDATA= </dt><dd>Directory for the architecture-independent files that come with Emacs. This is used to initialize the variable <code>data-directory</code>.</dd>
+
+<dt><a id="index-EMACSDOC_002c-environment-variable"></a>=EMACSDOC= </dt><dd>Directory for the documentation string file, which is used to initialize the Lisp variable <code>doc-directory</code>.</dd>
+
+<dt><a id="index-EMACSLOADPATH_002c-environment-variable"></a>=EMACSLOADPATH= </dt><dd>A colon-separated list of directories to search for Emacs Lisp files. If set, it modifies the usual initial value of the <code>load-path</code> variable (see <a href="docs/emacs--Lisp-Libraries.html">Libraries of Lisp Code for Emacs</a>). An empty element stands for the default value of <code>load-path</code>; e.g., using ‘=EMACSLOADPATH="/tmp:"<code>' adds =/tmp</code> to the front of the default <code>load-path</code>. To specify an empty element in the middle of the list, use 2 colons in a row, as in ‘=EMACSLOADPATH="/tmp::/foo"='.</dd>
+
+<dt><a id="index-EMACSPATH_002c-environment-variable"></a>=EMACSPATH= </dt><dd>A colon-separated list of directories to search for executable files. If set, Emacs uses this in addition to <code>PATH</code> (see below) when initializing the variable <code>exec-path</code> (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>).</dd>
+
+<dt><a id="index-EMAIL_002c-environment-variable"></a>=EMAIL= </dt><dd>Your email address; used to initialize the Lisp variable <code>user-mail-address</code>, which the Emacs mail interface puts into the ‘=From=' header of outgoing messages (see <a href="docs/emacs--Mail-Headers.html">Mail Header Fields</a>).</dd>
+
+<dt><a id="index-ESHELL_002c-environment-variable"></a>=ESHELL= </dt><dd>Used for shell-mode to override the <code>SHELL</code> environment variable (see <a href="docs/emacs--Interactive-Shell.html">Interactive Subshell</a>).</dd>
+
+<dt><a id="index-HISTFILE_002c-environment-variable"></a>=HISTFILE= </dt><dd>The name of the file that shell commands are saved in between logins. This variable defaults to <code>~/.bash_history</code> if you use Bash, to <code>~/.sh_history</code> if you use ksh, and to <code>~/.history</code> otherwise.</dd>
+
+<dt><a id="index-HOME_002c-environment-variable"></a>=HOME= </dt><dd>The location of your files in the directory tree; used for expansion of file names starting with a tilde (<code>~</code>). If set, it should be set to an absolute file name. (If set to a relative file name, Emacs interprets it relative to the directory where Emacs was started, but we don't recommend to use this feature.) If unset, <code>HOME</code> normally defaults to the home directory of the user given by <code>LOGNAME</code>, <code>USER</code> or your user ID, or to <code>/</code> if all else fails. On MS-DOS, it defaults to the directory from which Emacs was started, with ‘=/bin=' removed from the end if it was present. On Windows, the default value of <code>HOME</code> is the <code>Application Data</code> subdirectory of the user profile directory (normally, this is <code>C:/Documents and Settings/==username==/Application Data</code>, where <code>username</code> is your user name), though for backwards compatibility <code>C:/</code> will be used instead if a <code>.emacs</code> file is found there.</dd>
+
+<dt><a id="index-HOSTNAME_002c-environment-variable"></a>=HOSTNAME= </dt><dd>The name of the machine that Emacs is running on.</dd>
+
+<dt><a id="index-INFOPATH_002c-environment-variable"></a>=INFOPATH= </dt><dd>A colon-separated list of directories in which to search for Info files.</dd>
+
+<dt><a id="index-LANG_002c-environment-variable"></a>=LC<sub>ALL</sub>= </dt><dd></dd>
+
+<dt><code>LC_COLLATE</code></dt><dd></dd>
+
+<dt><code>LC_CTYPE</code></dt><dd></dd>
+
+<dt><code>LC_MESSAGES</code></dt><dd></dd>
+
+<dt><code>LC_MONETARY</code></dt><dd></dd>
+
+<dt><code>LC_NUMERIC</code></dt><dd></dd>
+
+<dt><code>LC_TIME</code></dt><dd></dd>
+
+<dt><code>LANG</code></dt><dd><p>
+The user's preferred locale. The locale has six categories, specified by the environment variables <code>LC_COLLATE</code> for sorting, <code>LC_CTYPE</code> for character encoding, <code>LC_MESSAGES</code> for system messages, <code>LC_MONETARY</code> for monetary formats, <code>LC_NUMERIC</code> for numbers, and <code>LC_TIME</code> for dates and times. If one of these variables is not set, the category defaults to the value of the <code>LANG</code> environment variable, or to the default ‘=C=' locale if <code>LANG</code> is not set. But if <code>LC_ALL</code> is specified, it overrides the settings of all the other locale environment variables.
+</p>
+
+<p>
+On MS-Windows and macOS, if <code>LANG</code> is not already set in the environment, Emacs sets it based on the system-wide default. You can set this in the “Regional Settings” Control Panel on some versions of MS-Windows, and in the “Language and Region” System Preference on macOS.
+</p>
+
+<p>
+When running a GUI session on Android, <code>LANG</code> is set to a fixed value, but the language and locale environment is derived from the system's “Languages &amp; Input” preferences. See <a href="docs/emacs--Android-Environment.html">Running Emacs under Android</a>.
+</p>
+
+<p>
+The value of the <code>LC_CTYPE</code> category is matched against entries in <code>locale-language-names</code>, <code>locale-charset-language-names</code>, and <code>locale-preferred-coding-systems</code>, to select a default language environment and coding system. See <a href="docs/emacs--Language-Environments.html">Language Environments</a>.
+</p></dd>
+
+<dt><a id="index-LOGNAME_002c-environment-variable"></a>=LOGNAME= </dt><dd>The user's login name. See also <code>USER</code>.</dd>
+
+<dt><a id="index-MAIL_002c-environment-variable"></a>=MAIL= </dt><dd>The name of your system mail inbox.</dd>
+
+<dt><a id="index-MH_002c-environment-variable"></a>=MH= </dt><dd>Name of setup file for the mh system. See <a href="../mh-e_html/index.html#Top">MH-E</a> in The Emacs Interface to MH.</dd>
+
+<dt><a id="index-NAME_002c-environment-variable"></a>=NAME= </dt><dd>Your real-world name. This is used to initialize the variable <code>user-full-name</code> (see <a href="docs/emacs--Mail-Headers.html">Mail Header Fields</a>).</dd>
+
+<dt><a id="index-NNTPSERVER_002c-environment-variable"></a>=NNTPSERVER= </dt><dd>The name of the news server. Used by the mh and Gnus packages.</dd>
+
+<dt><a id="index-ORGANIZATION_002c-environment-variable"></a>=ORGANIZATION= </dt><dd>The name of the organization to which you belong. Used for setting the ‘=Organization:=' header in your posts from the Gnus package.</dd>
+
+<dt><a id="index-PATH_002c-environment-variable"></a>=PATH= </dt><dd>A colon-separated list of directories containing executable files. This is used to initialize the variable <code>exec-path</code> (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>).</dd>
+
+<dt><a id="index-PWD_002c-environment-variable"></a>=PWD= </dt><dd>If set, this should be the default directory when Emacs was started.</dd>
+
+<dt><a id="index-REPLYTO_002c-environment-variable"></a>=REPLYTO= </dt><dd>If set, this specifies an initial value for the variable <code>mail-default-reply-to</code> (see <a href="docs/emacs--Mail-Headers.html">Mail Header Fields</a>).</dd>
+
+<dt><a id="index-SAVEDIR_002c-environment-variable"></a>=SAVEDIR= </dt><dd>The name of a directory in which news articles are saved by default. Used by the Gnus package.</dd>
+
+<dt><a id="index-SHELL_002c-environment-variable"></a>=SHELL= </dt><dd>The name of an interpreter used to parse and execute programs run from inside Emacs. This is used to initialize the variable <code>shell-file-name</code> (see <a href="docs/emacs--Single-Shell.html">Single Shell Commands</a>).</dd>
+
+<dt><a id="index-SMTPSERVER_002c-environment-variable"></a>=SMTPSERVER= </dt><dd>The name of the outgoing mail server. This is used to initialize the variable <code>smtpmail-smtp-server</code> (see <a href="docs/emacs--Mail-Sending.html">Mail Sending</a>).</dd>
+
+<dt><a id="index-TERM_002c-environment-variable"></a>=TERM= </dt><dd>The type of the terminal that Emacs is using. This variable must be set unless Emacs is run in batch mode. On MS-DOS, it defaults to ‘=internal=', which specifies a built-in terminal emulation that handles the machine's own display.</dd>
+
+<dt><a id="index-TERMCAP_002c-environment-variable"></a>=TERMCAP= </dt><dd>The name of the termcap library file describing how to program the terminal specified by <code>TERM</code>. This defaults to <code>/etc/termcap</code>.</dd>
+
+<dt><a id="index-TEMP_002c-environment-variable"></a>=TMPDIR= </dt><dd></dd>
+
+<dt><code>TMP</code></dt><dd></dd>
+
+<dt><code>TEMP</code></dt><dd>These environment variables are used to initialize the variable <code>temporary-file-directory</code>, which specifies a directory in which to put temporary files (see <a href="docs/emacs--Backup.html">Backup Files</a>). Emacs tries to use <code>TMPDIR</code> first. If that is unset, Emacs normally falls back on <code>/tmp</code>, but on MS-Windows and MS-DOS it instead falls back on <code>TMP</code>, then <code>TEMP</code>, and finally <code>c:/temp</code>.</dd>
+
+<dt><a id="index-TZ_002c-environment-variable"></a>=TZ= </dt><dd>This specifies the default time zone and possibly also daylight saving time information. See <a href="../elisp_html/Time-Zone-Rules.html#Time-Zone-Rules">Time Zone Rules</a> in The GNU Emacs Lisp Reference Manual. On MS-DOS, if <code>TZ</code> is not set in the environment when Emacs starts, Emacs defines a default value as appropriate for the country code returned by DOS. On MS-Windows, Emacs does not use <code>TZ</code> at all.</dd>
+
+<dt><a id="index-USER_002c-environment-variable"></a>=USER= </dt><dd>The user's login name. See also <code>LOGNAME</code>. On MS-DOS, this defaults to ‘=root='.</dd>
+
+<dt><a id="index-VERSION_005fCONTROL_002c-environment-variable"></a>=VERSION<sub>CONTROL</sub>= </dt><dd>Used to initialize the <code>version-control</code> variable (see <a href="docs/emacs--Backup-Names.html">Single or Numbered Backups</a>).</dd>
+</dl>
+
+<hr />
+</div>
+</div>

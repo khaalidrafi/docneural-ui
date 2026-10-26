@@ -1,0 +1,115 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#declaring-channel-dependencies">1.0.1. 6.9 Declaring Channel Dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Declaring-Channel-Dependencies"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Specifying-Channel-Authorizations.html">Specifying Channel Authorizations</a>, Previous: <a href="docs/guix--Package-Modules-in-a-Sub_002ddirectory.html">Package Modules in a Sub-directory</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Declaring-Channel-Dependencies-1"></a>
+</p>
+</div>
+<div id="outline-container-declaring-channel-dependencies" class="outline-4">
+<h4 id="declaring-channel-dependencies"><span class="section-number-4">1.0.1.</span> 6.9 Declaring Channel Dependencies</h4>
+<div class="outline-text-4" id="text-declaring-channel-dependencies">
+<p>
+<a id="index-dependencies_002c-channels"></a> <a id="index-meta_002ddata_002c-channels"></a>
+Channel authors may decide to augment a package collection provided by other channels. They can declare their channel to be dependent on other channels in a meta-data file <code>.guix-channel</code>, which is to be placed in the root of the channel repository.
+</p>
+
+<p>
+The meta-data file should contain a simple S-expression like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(channel
+ (version 0)
+ (dependencies
+  (channel
+   (name some-collection)
+   (url "https://example.org/first-collection.git")
+
+   ;; The 'introduction' bit below is optional: you would
+   ;; provide it for dependencies that can be authenticated.
+   (introduction
+    (channel-introduction
+      (version 0)
+      (commit "a8883b58dc82e167c96506cf05095f37c2c2c6cd")
+      (signer "CABB A931 C0FF EEC6 900D  0CFB 090B 1199 3D9A EBB5"))))
+  (channel
+   (name some-other-collection)
+   (url "https://example.org/second-collection.git")
+   (branch "testing"))))
+</pre>
+</div>
+
+<p>
+In the above example this channel is declared to depend on two other channels, which will both be fetched automatically. The modules provided by the channel will be compiled in an environment where the modules of all these declared channels are available.
+</p>
+
+<p>
+For the sake of reliability and maintainability, you should avoid dependencies on channels that you don't control, and you should aim to keep the number of dependencies to a minimum.
+</p>
+</div>
+</div>
+</div>

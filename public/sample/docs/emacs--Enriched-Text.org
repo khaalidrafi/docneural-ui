@@ -1,0 +1,30 @@
+:PROPERTIES:
+:ID: emacs--Enriched-Text
+:END:
+#+filetags: :emacs:
+#+title: Enriched Text
+
+Next: [[id:emacs--Text-Based-Tables][Editing Text-based Tables]]   Previous: [[id:emacs--Nroff-Mode][Nroff Mode]]   Up: [[id:emacs--Text][Commands for Human Languages]]
+
+<<Enriched-Text>>
+
+--------------
+
+*** 27.14 Enriched Text [[#Enriched-Text-1][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Enriched-Text-1
+:CLASS: section
+:END:
+Enriched mode is a minor mode for editing formatted text files in a WYSIWYG (What You See Is What You Get) fashion. When Enriched mode is enabled, you can apply various formatting properties to the text in the buffer, such as fonts and colors; upon saving the buffer, those properties are saved together with the text, using the MIME ‘=text/enriched=' file format.
+
+Enriched mode is typically used with Text mode (see [[id:emacs--Text-Mode][Text Mode]]). It is /not/ compatible with Font Lock mode, which is used by many major modes, including most programming language modes, for syntax highlighting (see [[id:emacs--Font-Lock][Font Lock mode]]). Unlike Enriched mode, Font Lock mode assigns text properties automatically, based on the current buffer contents; those properties are not saved to disk.
+
+The file =enriched.txt= in Emacs's =data-directory= serves as an example of the features of Enriched mode.
+
+- [[id:emacs--Enriched-Mode][Enriched Mode]]
+- [[id:emacs--Hard-and-Soft-Newlines][Hard and Soft Newlines]]
+- [[id:emacs--Editing-Format-Info][Editing Format Information]]
+- [[id:emacs--Enriched-Faces][Faces in Enriched Text]]
+- [[id:emacs--Enriched-Indentation][Indentation in Enriched Text]]
+- [[id:emacs--Enriched-Justification][Justification in Enriched Text]]
+- [[id:emacs--Enriched-Properties][Setting Other Text Properties]]

@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-VC-1">1. 30.1.13 Customizing VC ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Miscellaneous-VC.html">Miscellaneous Commands and Features of VC</a>   Up: <a href="docs/emacs--Version-Control.html">Version Control</a>
+</p>
+
+<p>
+<a id="Customizing-VC"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-VC-1" class="outline-2">
+<h2 id="Customizing-VC-1"><span class="section-number-2">1.</span> 30.1.13 Customizing VC <a href="#Customizing-VC-1">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-VC-1">
+<p>
+The variable <code>vc-handled-backends</code> determines which version control systems VC should handle. The default value is <code>(RCS CVS SVN SCCS SRC Bzr Git Hg)</code>, so it contains all the version systems that are currently supported. If you want VC to ignore one or more of these systems, exclude its name from the list. To disable VC entirely, set this variable to <code>nil</code>.
+</p>
+
+<p>
+The order of systems in the list is significant: when you visit a file registered in more than one system, VC uses the system that comes first in <code>vc-handled-backends</code> by default. The order is also significant when you register a file for the first time (see <a href="docs/emacs--Registering.html">Registering a File for Version Control</a>).
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--General-VC-Options.html">General Options</a></li>
+<li><a href="docs/emacs--RCS-and-SCCS.html">Options for RCS and SCCS</a></li>
+<li><a href="docs/emacs--CVS-Options.html">Options specific for CVS</a></li>
+</ul>
+</div>
+</div>

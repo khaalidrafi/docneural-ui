@@ -1,0 +1,115 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tracking-your-habits-1">0.0.1. 5.3.3 Tracking your habits ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org7b2fae6">1. <span class="todo TODO">TODO</span> Shave</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tracking-your-habits"></a>
+Previous: <a href="docs/org--Tracking-TODO-state-changes.html">Tracking TODO state changes</a>, Up: <a href="docs/org--Progress-Logging.html">Progress Logging</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tracking-your-habits-1" class="outline-4">
+<h4 id="Tracking-your-habits-1"><span class="section-number-4">0.0.1.</span> 5.3.3 Tracking your habits <a href="#Tracking-your-habits-1">¶</a></h4>
+<div class="outline-text-4" id="text-Tracking-your-habits-1">
+<p>
+Org has the ability to track the consistency of a special category of TODO, called “habits.” To use habits, you have to enable the <code>habit</code> module by customizing the variable <code>org-modules</code>.
+</p>
+
+<p>
+A habit has the following properties:
+</p>
+
+<ol class="org-ol">
+<li>The habit is a TODO item, with a TODO keyword representing an open state.</li>
+<li>The property ‘=STYLE=' is set to the value ‘=habit=' (see <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>).</li>
+<li>The TODO has a scheduled date, usually with a ‘=.+=' style repeat interval. A ‘=++=' style may be appropriate for habits with time constraints, e.g., must be done on specific days of week (‘=++1w='), or a ‘=+=' style for an unusual habit that can have a backlog, e.g., weekly reports. See <a href="docs/org--Repeated-tasks.html">Repeated tasks</a> for more details about repeat intervals.</li>
+<li>The TODO may also have minimum and maximum ranges specified by using the syntax ‘=.+2d/3d=', which says that you want to do the task at least every three days, but, at most, every two days.</li>
+<li>State logging for the DONE state is enabled (see <a href="docs/org--Tracking-TODO-state-changes.html">Tracking TODO state changes</a>), in order for historical data to be represented in the consistency graph. If it is not enabled it is not an error, but the consistency graphs are largely meaningless.</li>
+</ol>
+
+<p>
+To give you an idea of what the above rules look like in action, here's an actual habit with some history:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org7b2fae6" class="outline-2">
+<h2 id="org7b2fae6"><span class="section-number-2">1.</span> <span class="todo TODO">TODO</span> Shave</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-10-15 Thu]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-10-12 Mon]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-10-10 Sat]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-10-04 Sun]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-10-02 Fri]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-09-29 Tue]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-09-25 Fri]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-09-19 Sat]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-09-16 Wed]</span></span></li>
+<li>State "DONE"       from "TODO"       <span class="timestamp-wrapper"><span class="timestamp">[2009-09-12 Sat]</span></span></li>
+</ul>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+What this habit says is: I want to shave, at most, every 2 days&#x2014;given by the ‘=SCHEDULED=' date and repeat interval&#x2014;and at least every 4 days. If today is the 15th, then the habit first appears in the agenda (see <a href="docs/org--Agenda-Views.html">Agenda Views</a>) on Oct 17, after the minimum of 2 days has elapsed, and will appear overdue on Oct 19, after four days have elapsed.
+</p>
+
+<p>
+What's really useful about habits is that they are displayed along with a consistency graph, to show how consistent you've been at getting that task done in the past. This graph shows every day that the task was done over the past three weeks, with colors for each day. The colors used are:
+</p>
+
+<dl class="org-dl">
+<dt>Blue</dt><dd>If the task was not to be done yet on that day.</dd>
+
+<dt>Green</dt><dd>If the task could have been done on that day.</dd>
+
+<dt>Yellow</dt><dd>If the task was going to be overdue the next day.</dd>
+
+<dt>Red</dt><dd>If the task was overdue on that day.</dd>
+</dl>
+
+<p>
+In addition to coloring each day, the day is also marked with an asterisk if the task was actually done that day, and an exclamation mark to show where the current day falls in the graph.
+</p>
+
+<p>
+There are several configuration variables that can be used to change the way habits are displayed in the agenda.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dhabit_002dgraph_002dcolumn"></a>=org-habit-graph-column= </dt><dd>The buffer column at which the consistency graph should be drawn. This overwrites any text in that column, so it is a good idea to keep your habits' titles brief and to the point.</dd>
+
+<dt><a id="index-org_002dhabit_002dpreceding_002ddays"></a>=org-habit-preceding-days= </dt><dd>The amount of history, in days before today, to appear in consistency graphs.</dd>
+
+<dt><a id="index-org_002dhabit_002dfollowing_002ddays"></a>=org-habit-following-days= </dt><dd>The number of days after today that appear in consistency graphs.</dd>
+
+<dt><a id="index-org_002dhabit_002dshow_002dhabits_002donly_002dfor_002dtoday"></a>=org-habit-show-habits-only-for-today= </dt><dd>If non-<code>nil</code>, only show habits in today's agenda view. The default value is <code>t</code>. Pressing C-u K in the agenda toggles this variable.</dd>
+</dl>
+
+<p>
+Lastly, pressing K in the agenda buffer causes habits to temporarily be disabled and do not appear at all. Press K again to bring them back. They are also subject to tag filtering, if you have habits which should only be done in certain contexts, for example.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Tracking-TODO-state-changes.html">Tracking TODO state changes</a>, Up: <a href="docs/org--Progress-Logging.html">Progress Logging</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

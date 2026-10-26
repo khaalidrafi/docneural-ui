@@ -1,0 +1,119 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#home-services">1.0.1. 13.3 Home Services</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-home.html">Invoking <code>guix home</code></a>, Previous: <a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Home-Services-1"></a>
+</p>
+</div>
+<div id="outline-container-home-services" class="outline-4">
+<h4 id="home-services"><span class="section-number-4">1.0.1.</span> 13.3 Home Services</h4>
+<div class="outline-text-4" id="text-home-services">
+<p>
+<a id="index-home-services"></a>
+A <i>home service</i> is not necessarily something that has a daemon and is managed by Shepherd (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Jump-Start.html#Jump-Start">Jump Start</a> in The GNU Shepherd Manual), in most cases it doesn't. It's a simple building block of the home environment, often declaring a set of packages to be installed in the home environment profile, a set of config files to be symlinked into <code>XDG_CONFIG_HOME</code> (<code>~/.config</code> by default), and environment variables to be set by a login shell.
+</p>
+
+<p>
+There is a service extension mechanism (see <a href="docs/guix--Service-Composition.html">Service Composition</a>) which allows home services to extend other home services and utilize capabilities they provide; for example: declare mcron jobs (see <a href="https://www.gnu.org/software/mcron/manual/html_node/index.html#Top">GNU Mcron</a>) by extending <a href="docs/guix--Mcron-Home-Service.html">Scheduled User's Job Execution</a>; declare daemons by extending <a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a>; add commands, which will be invoked on by the Bash by extending <a href="docs/guix--Shells-Home-Services.html"><code>home-bash-service-type</code></a>.
+</p>
+
+<p>
+A good way to discover available home services is using the <code>guix home search</code> command (see <a href="docs/guix--Invoking-guix-home.html">Invoking <code>guix home</code></a>). After the required home services are found, include its module with the <code>use-modules</code> form (see <a href="https://www.gnu.org/software/guile/manual/html_node/use_002dmodules.html#use_002dmodules">Using Guile Modules</a> in The GNU Guile Reference Manual), or the <code>#:use-modules</code> directive (see <a href="https://www.gnu.org/software/guile/manual/html_node/define_002dmodule.html#define_002dmodule">Creating Guile Modules</a> in The GNU Guile Reference Manual) and declare a home service using the <code>service</code> function, or extend a service type by declaring a new service with the <code>simple-service</code> procedure from <code>(gnu services)</code>.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Essential-Home-Services.html">Essential Home Services</a></li>
+<li><a href="docs/guix--Shells-Home-Services.html">Shells</a></li>
+<li><a href="docs/guix--Mcron-Home-Service.html">Scheduled User's Job Execution</a></li>
+<li><a href="docs/guix--Power-Management-Home-Services.html">Power Management Home Services</a></li>
+<li><a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a></li>
+<li><a href="docs/guix--Secure-Shell.html">Secure Shell</a></li>
+<li><a href="docs/guix--GNU-Privacy-Guard.html">GNU Privacy Guard</a></li>
+<li><a href="docs/guix--Desktop-Home-Services.html">Desktop Home Services</a></li>
+<li><a href="docs/guix--Guix-Home-Services.html">Guix Home Services</a></li>
+<li><a href="docs/guix--Backup-Home-Services.html">Backup Services</a></li>
+<li><a href="docs/guix--Fonts-Home-Services.html">Fonts Home Services</a></li>
+<li><a href="docs/guix--Sound-Home-Services.html">Sound Home Services</a></li>
+<li><a href="docs/guix--Mail-Home-Services.html">Mail Home Services</a></li>
+<li><a href="docs/guix--Messaging-Home-Services.html">Messaging Home Services</a></li>
+<li><a href="docs/guix--Media-Home-Services.html">Media Home Services</a></li>
+<li><a href="docs/guix--mpv-Media-Player.html">mpv Media Player</a></li>
+<li><a href="docs/guix--Niri-window-manager.html">Niri window manager</a></li>
+<li><a href="docs/guix--Sway-window-manager.html">Sway window manager</a></li>
+<li><a href="docs/guix--Networking-Home-Services.html">Networking Home Services</a></li>
+<li><a href="docs/guix--Secrets-Home-Services.html">Secrets Home Services</a></li>
+<li><a href="docs/guix--Miscellaneous-Home-Services.html">Miscellaneous Home Services</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-home.html">Invoking <code>guix home</code></a>, Previous: <a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

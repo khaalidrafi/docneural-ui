@@ -1,0 +1,100 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Resolving-idle-time-and-continuous-clocking">1. 8.4.3 Resolving idle time and continuous clocking ¶</a></li>
+<li><a href="#Resolving-idle-time-1">2. Resolving idle time ¶</a></li>
+<li><a href="#Continuous-clocking-1">3. Continuous clocking ¶</a></li>
+<li><a href="#Clocking-out-automatically-after-some-idle-time-1">4. Clocking out automatically after some idle time ¶</a>
+<ul>
+<li><a href="#section">4.1. (82)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Resolving-idle-time"></a>
+Previous: <a href="docs/org--The-clock-table.html">The clock table</a>, Up: <a href="docs/org--Clocking-Work-Time.html">Clocking Work Time</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Resolving-idle-time-and-continuous-clocking" class="outline-2">
+<h2 id="Resolving-idle-time-and-continuous-clocking"><span class="section-number-2">1.</span> 8.4.3 Resolving idle time and continuous clocking <a href="#Resolving-idle-time-and-continuous-clocking">¶</a></h2>
+<div class="outline-text-2" id="text-Resolving-idle-time-and-continuous-clocking">
+</div>
+</div>
+<div id="outline-container-Resolving-idle-time-1" class="outline-2">
+<h2 id="Resolving-idle-time-1"><span class="section-number-2">2.</span> Resolving idle time <a href="#Resolving-idle-time-1">¶</a></h2>
+<div class="outline-text-2" id="text-Resolving-idle-time-1">
+<p>
+If you clock in on a work item, and then walk away from your computer&#x2014;perhaps to take a phone call&#x2014;you often need to “resolve” the time you were away by either subtracting it from the current clock, or applying it to another one.
+</p>
+
+<p>
+By customizing the variable <code>org-clock-idle-time</code> to some integer, such as 10 or 15, Emacs can alert you when you get back to your computer after being idle for that many minutes, and ask what you want to do with the idle time. There will be a question waiting for you when you get back, indicating how much idle time has passed constantly updated with the current amount, as well as a set of choices to correct the discrepancy:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-k"></a>k </dt><dd>To keep some or all of the minutes and stay clocked in, press k. Org asks how many of the minutes to keep. Press RET to keep them all, effectively changing nothing, or enter a number to keep that many minutes.</dd>
+
+<dt><a id="index-K"></a>K </dt><dd>If you use the shift key and press K, it keeps however many minutes you request and then immediately clock out of that task. If you keep all the minutes, this is the same as just clocking out of the current task.</dd>
+
+<dt><a id="index-s"></a>s </dt><dd>To keep none of the minutes, use s to subtract all the away time from the clock, and then check back in from the moment you returned.</dd>
+
+<dt><a id="index-S"></a>S </dt><dd>To keep none of the minutes and just clock out at the start of the away time, use the shift key and press S. Remember that using shift always leave you clocked out, no matter which option you choose.</dd>
+
+<dt><a id="index-C"></a>C </dt><dd>To cancel the clock altogether, use C. Note that if instead of canceling you subtract the away time, and the resulting clock amount is less than a minute, the clock is still canceled rather than cluttering up the log with an empty entry.</dd>
+</dl>
+
+<p>
+What if you subtracted those away minutes from the current clock, and now want to apply them to a new clock? Simply clock in to any task immediately after the subtraction. Org will notice that you have subtracted time “on the books”, so to speak, and will ask if you want to apply those minutes to the next task you clock in on.
+</p>
+
+<p>
+There is one other instance when this clock resolution magic occurs. Say you were clocked in and hacking away, and suddenly your cat chased a mouse who scared a hamster that crashed into your UPS's power button! You suddenly lose all your buffers, but thanks to auto-save you still have your recent Org mode changes, including your last clock in.
+</p>
+
+<p>
+If you restart Emacs and clock into any task, Org will notice that you have a dangling clock which was never clocked out from your last session. Using that clock's starting time as the beginning of the unaccounted-for period, Org will ask how you want to resolve that time. The logic and behavior is identical to dealing with away time due to idleness; it is just happening due to a recovery event rather than a set amount of idle time.
+</p>
+
+<p>
+You can also check all the files visited by your Org agenda for dangling clocks at any time using M-x org-resolve-clocks RET (or C-c C-x C-z).
+</p>
+</div>
+</div>
+<div id="outline-container-Continuous-clocking-1" class="outline-2">
+<h2 id="Continuous-clocking-1"><span class="section-number-2">3.</span> Continuous clocking <a href="#Continuous-clocking-1">¶</a></h2>
+<div class="outline-text-2" id="text-Continuous-clocking-1">
+<p>
+You may want to start clocking from the time when you clocked out the previous task. To enable this systematically, set <code>org-clock-continuously</code> to non-<code>nil</code>. Each time you clock in, Org retrieves the clock-out time of the last clocked entry for this session, and start the new clock from there.
+</p>
+
+<p>
+If you only want this from time to time, use three universal prefix arguments with <code>org-clock-in</code> and two C-u C-u with <code>org-clock-in-last</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-Clocking-out-automatically-after-some-idle-time-1" class="outline-2">
+<h2 id="Clocking-out-automatically-after-some-idle-time-1"><span class="section-number-2">4.</span> Clocking out automatically after some idle time <a href="#Clocking-out-automatically-after-some-idle-time-1">¶</a></h2>
+<div class="outline-text-2" id="text-Clocking-out-automatically-after-some-idle-time-1">
+<p>
+When you often forget to clock out before being idle, and you don't want to manually set the clocking time to take into account, you can set <code>org-clock-auto-clockout-timer</code> to a number of seconds and add ‘=(org-clock-auto-clockout-insinuate)=' to your ‘=.emacs=' file.
+</p>
+
+<p>
+When the clock is running and Emacs is idle for more than this number of seconds, the clock will be clocked out automatically.
+</p>
+
+<p>
+Use ‘=M-x org-clock-toggle-auto-clockout RET=' to temporarily turn this on or off.
+</p>
+
+<hr />
+</div>
+</div>

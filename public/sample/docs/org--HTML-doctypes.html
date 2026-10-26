@@ -1,0 +1,113 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#HTML-doctypes-1">1. 13.9.3 HTML doctypes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="HTML-doctypes"></a>
+Next: <a href="docs/org--HTML-preamble-and-postamble.html">HTML preamble and postamble</a>, Previous: <a href="docs/org--HTML-specific-export-settings.html">HTML specific export settings</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-HTML-doctypes-1" class="outline-2">
+<h2 id="HTML-doctypes-1"><span class="section-number-2">1.</span> 13.9.3 HTML doctypes <a href="#HTML-doctypes-1">¶</a></h2>
+<div class="outline-text-2" id="text-HTML-doctypes-1">
+<p>
+Org can export to various (X)HTML flavors.
+</p>
+
+<p>
+Set the <code>org-html-doctype</code> variable for different (X)HTML variants. Depending on the variant, the HTML exporter adjusts the syntax of HTML conversion accordingly. Org includes the following ready-made variants:
+</p>
+
+<ul class="org-ul">
+<li><code>"html4-strict"</code></li>
+<li><code>"html4-transitional"</code></li>
+<li><code>"html4-frameset"</code></li>
+<li><code>"xhtml-strict"</code></li>
+<li><code>"xhtml-transitional"</code></li>
+<li><code>"xhtml-frameset"</code></li>
+<li><code>"xhtml-11"</code></li>
+<li><code>"html5"</code></li>
+<li><code>"xhtml5"</code></li>
+</ul>
+
+<p>
+See the variable <code>org-html-doctype-alist</code> for details. The default is <code>"xhtml-strict"</code>.
+</p>
+
+<p>
+Org's HTML exporter does not by default enable new block elements introduced with the HTML5 standard. To enable them, set <code>org-html-html5-fancy</code> to non-<code>nil</code>. Or use an ‘=OPTIONS=' line in the file to set ‘=html5-fancy='.
+</p>
+
+<p>
+HTML5 documents can have arbitrary ‘=#+BEGIN=' &#x2026; ‘=#+END=' blocks. For example:
+</p>
+
+<pre class="example" id="org0f09952">
+#+BEGIN_aside
+  Lorem ipsum
+</pre>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+exports to:
+</p>
+
+<pre class="example" id="orgf81f406">
+&lt;aside&gt;
+  &lt;p&gt;Lorem ipsum&lt;/p&gt;
+&lt;/aside&gt;
+</pre>
+
+<p>
+while this:
+</p>
+
+<pre class="example" id="org2a2098c">
+#+ATTR_HTML: :controls controls :width 350
+#+BEGIN_video
+#+HTML: &lt;source src="movie.mp4" type="video/mp4"&gt;
+#+HTML: &lt;source src="movie.ogg" type="video/ogg"&gt;
+Your browser does not support the video tag.
+</pre>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+exports to:
+</p>
+
+<pre class="example" id="org26934f8">
+&lt;video controls="controls" width="350"&gt;
+  &lt;source src="movie.mp4" type="video/mp4"&gt;
+  &lt;source src="movie.ogg" type="video/ogg"&gt;
+  &lt;p&gt;Your browser does not support the video tag.&lt;/p&gt;
+&lt;/video&gt;
+</pre>
+
+<p>
+When special blocks do not have a corresponding HTML5 element, the HTML exporter reverts to standard translation (see <code>org-html-html5-elements</code>). For example, ‘=#+BEGIN<sub>lederhosen</sub>=' exports to <code>&lt;div class</code>"lederhosen"&gt;=.
+</p>
+
+<p>
+Special blocks cannot have headlines. For the HTML exporter to wrap the headline and its contents in <code>&lt;section&gt;</code> or <code>&lt;article&gt;</code> tags, set the ‘=HTML<sub>CONTAINER</sub>=' property for the headline.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--HTML-preamble-and-postamble.html">HTML preamble and postamble</a>, Previous: <a href="docs/org--HTML-specific-export-settings.html">HTML specific export settings</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

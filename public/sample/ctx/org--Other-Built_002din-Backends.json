@@ -1,0 +1,1 @@
+{"org--Exporting>org--Other-Built_002din-Backends":"- Other Built-in Backends","org--Other-Built_002din-Backends>org--The-Export-Dispatcher":"To activate such backends, either customize org-export-backends or load directly with ‘(require 'ox-man)'. On successful load, the backend adds new keys in","org--index>org--Other-Built_002din-Backends":"- 13.16 Other Built-in Backends"}

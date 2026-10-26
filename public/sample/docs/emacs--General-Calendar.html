@@ -1,0 +1,52 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Miscellaneous-Calendar-Commands">1. 33.4 Miscellaneous Calendar Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Writing-Calendar-Files.html">Writing Calendar Files</a>   Previous: <a href="docs/emacs--Counting-Days.html">Counting Days</a>   Up: <a href="docs/emacs--Calendar_002fDiary.html">The Calendar and the Diary</a>
+</p>
+
+<p>
+<a id="General-Calendar"></a>
+</p>
+
+<hr />
+<div id="outline-container-Miscellaneous-Calendar-Commands" class="outline-2">
+<h2 id="Miscellaneous-Calendar-Commands"><span class="section-number-2">1.</span> 33.4 Miscellaneous Calendar Commands <a href="#Miscellaneous-Calendar-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Miscellaneous-Calendar-Commands">
+<dl class="org-dl">
+<dt>p d</dt><dd>Display day-in-year (<code>calendar-print-day-of-year</code>).</dd>
+
+<dt>C-c C-l</dt><dd>Regenerate the calendar window (<code>calendar-redraw</code>).</dd>
+
+<dt>SPC</dt><dd>Scroll the next window up (<code>scroll-other-window</code>).</dd>
+
+<dt>(no term)</dt><dd>DEL<br />
+S-SPC :: Scroll the next window down (<code>scroll-other-window-down</code>).</dd>
+
+<dt>q</dt><dd>Exit from calendar (<code>calendar-exit</code>).</dd>
+</dl>
+
+<p>
+To display the number of days elapsed since the start of the year, or the number of days remaining in the year, type the p d command (<code>calendar-print-day-of-year</code>). This displays both of those numbers in the echo area. The count of days elapsed includes the selected date. The count of days remaining does not include that date.
+</p>
+
+<p>
+If the calendar window text gets corrupted, type C-c C-l (<code>calendar-redraw</code>) to redraw it. (This can only happen if you use non-Calendar-mode editing commands.)
+</p>
+
+<p>
+In Calendar mode, you can use SPC (<code>scroll-other-window</code>) and DEL (<code>scroll-other-window-down</code>) to scroll the other window (if there is one) up or down, respectively. This is handy when you display a list of holidays or diary entries in another window.
+</p>
+
+<p>
+To exit from the calendar, type q (<code>calendar-exit</code>). This buries all buffers related to the calendar, selecting other buffers. (If a frame contains a dedicated calendar window, exiting from the calendar deletes or iconifies that frame depending on the value of <code>calendar-remove-frame-by-deleting</code>.)
+</p>
+
+<hr />
+</div>
+</div>

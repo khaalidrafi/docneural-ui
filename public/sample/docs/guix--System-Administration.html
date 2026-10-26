@@ -1,0 +1,119 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="System-Administration"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Day_002dto_002dDay-System-Administration.html">Day-to-Day System Administration</a>, Previous: <a href="docs/guix--Coding.html">Coding</a>, Up: <a href="docs/guix--Contributing-to-Guix_0027s-Infrastructure.html">Contributing to Guix's Infrastructure</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="System-Administration-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="system-administration"></a>22.20.2 System Administration<br />
+<div class="outline-text-5" id="text-system-administration">
+<p>
+Guix System configuration for all our systems is held in this repository:
+</p>
+
+<p>
+<a href="https://codeberg.org/guix/maintenance.git/src/branch/master/hydra/">https://codeberg.org/guix/maintenance.git/src/branch/master/hydra/</a>
+</p>
+
+<p>
+The two front-ends are <code>berlin.scm</code> (the machine behind ci.guix.gnu.org) and <code>bayfront.scm</code> (the machine behind bordeaux.guix.gnu.org, guix.gnu.org, hpc.guix.info, qa.guix.gnu.org, and more). Both connect to a number of build machines and helpers.
+</p>
+
+<p>
+Without even having SSH access to the machine, you can help by posting patches to improve the configuration (you can test it with <code>guix system vm</code>). Here are ways you can help:
+</p>
+
+<ul class="org-ul">
+<li>Improve infra monitoring: set up a dashboard to monitor all the infrastructure, and an out-of-band channel to communicate about downtime.</li>
+
+<li>Implement web site redundancy: guix.gnu.org should be backed by several machines on different sites. Get in touch with us and/or send a patch!</li>
+
+<li>Implement substitute redundancy: likewise, bordeaux.guix.gnu.org and ci.guix.gnu.org should be backed by several head nodes.</li>
+
+<li>Improve backup: there's currently ad-hoc backup of selected pieces over rsync between the two head nodes; we can improve on that, for example with a dedicated backup site and proper testing of recoverability.</li>
+
+<li>Support mirroring: We'd like to make it easy for others to mirror substitutes from ci.guix and bordeaux.guix, perhaps by offering public rsync access.</li>
+
+<li><p>
+Optimize our web services: Monitor the performance of our services and tweak nginx config or whatever it takes to improve it.
+</p>
+
+<p>
+There is no time constraint on this activity: any improvement is welcome, whenever you can work on it.
+</p>
+
+<p>
+Prerequisite: Familiarity with Guix System administration and ideally with the infrastructure handbook:
+</p>
+
+<p>
+<a href="https://codeberg.org/guix/maintenance.git/src/branch/master/doc/infra-handbook.org">Infra-Handbook</a>
+</p></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Day_002dto_002dDay-System-Administration.html">Day-to-Day System Administration</a>, Previous: <a href="docs/guix--Coding.html">Coding</a>, Up: <a href="docs/guix--Contributing-to-Guix_0027s-Infrastructure.html">Contributing to Guix's Infrastructure</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

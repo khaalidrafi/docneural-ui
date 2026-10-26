@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#When-Is-There-a-Bug">1. 54.2 When Is There a Bug ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Understanding-Bug-Reporting.html">Understanding Bug Reporting</a>   Previous: <a href="docs/emacs--Known-Problems.html">Reading Existing Bug Reports and Known Problems</a>   Up: <a href="docs/emacs--Bugs.html">Reporting Bugs</a>
+</p>
+
+<p>
+<a id="Bug-Criteria"></a>
+</p>
+
+<hr />
+<div id="outline-container-When-Is-There-a-Bug" class="outline-2">
+<h2 id="When-Is-There-a-Bug"><span class="section-number-2">1.</span> 54.2 When Is There a Bug <a href="#When-Is-There-a-Bug">¶</a></h2>
+<div class="outline-text-2" id="text-When-Is-There-a-Bug">
+<p>
+If Emacs accesses an invalid memory location (a.k.a. “segmentation fault”) or exits with an operating system error message that indicates a problem in the program (as opposed to something like “disk full”), then it is certainly a bug.
+</p>
+
+<p>
+If the Emacs display does not correspond properly to the contents of the buffer, then it is a bug. But you should check that features like buffer narrowing (see <a href="docs/emacs--Narrowing.html">Narrowing</a>), which can hide parts of the buffer or change how it is displayed, are not responsible.
+</p>
+
+<p>
+Taking forever to complete a command can be a bug, but you must make sure that it is really Emacs's fault. Some commands simply take a long time. Type C-g (C-Break on MS-DOS) and then C-h l to see whether the input Emacs received was what you intended to type; if the input was such that you <i>know</i> it should have been processed quickly, report a bug. If you don't know whether the command should take a long time, find out by looking in the manual or by asking for assistance.
+</p>
+
+<p>
+If a command you are familiar with causes an Emacs error message in a case where its usual definition ought to be reasonable, it is probably a bug.
+</p>
+
+<p>
+If a command does the wrong thing, that is a bug. But be sure you know for certain what it ought to have done. If you aren't familiar with the command, it might actually be working right. If in doubt, read the command's documentation (see <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>).
+</p>
+
+<p>
+A command's intended definition may not be the best possible definition for editing with. This is a very important sort of problem, but it is also a matter of judgment. Also, it is easy to come to such a conclusion out of ignorance of some of the existing features. It is probably best not to complain about such a problem until you have checked the documentation in the usual ways, feel confident that you understand it, and know for certain that what you want is not available. Ask other Emacs users, too. If you are not sure what the command is supposed to do after a careful reading of the manual, check the index and glossary for any terms that may be unclear.
+</p>
+
+<p>
+If after careful rereading of the manual you still do not understand what the command should do, that indicates a bug in the manual, which you should report. The manual's job is to make everything clear to people who are not Emacs experts&#x2014;including you. It is just as important to report documentation bugs as program bugs.
+</p>
+
+<p>
+If the built-in documentation for a function or variable disagrees with the manual, one of them must be wrong; that is a bug.
+</p>
+
+<p>
+For problems with packages that are not part of Emacs, it is better to begin by reporting them to the package developers.
+</p>
+
+<hr />
+</div>
+</div>

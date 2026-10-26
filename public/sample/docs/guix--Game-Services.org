@@ -1,0 +1,84 @@
+:PROPERTIES:
+:ID: guix--Game-Services
+:END:
+#+filetags: :guix:
+#+title: Game Services
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Game-Services>>
+
+Next: [[id:guix--PAM-Mount-Service][PAM Mount Service]], Previous: [[id:guix--Version-Control-Services][Version Control Services]], Up: [[id:guix--Services][Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Game-Services-1>>
+**** 11.10.33 Game Services
+:PROPERTIES:
+:CUSTOM_ID: game-services
+:CLASS: subsection
+:END:
+<<Joycond-service>>
+**** Joycond service
+:PROPERTIES:
+:CUSTOM_ID: joycond-service
+:CLASS: subsubheading
+:END:
+<<index-joycond>> <<index-nintendo-controllers>>
+The joycond service allows the pairing of Nintendo joycon game controllers over Bluetooth. (see [[id:guix--Desktop-Services][Desktop Services]] for setting up Bluetooth.)
+
+- Data Type: joycond-configuration  :: Data type representing the configuration of =joycond=.
+
+  - =package= (default: =joycond=) :: The joycond package to use.
+
+- Variable: joycond-service-type  :: Service type for the joycond service. It also extends the =udev-service-type= with the =joycond= package (provided via the =joycond-configuration= configuration), so that joycond controllers can be detected and used by an unprivileged user.
+
+<<The-Battle-for-Wesnoth-Service>>
+**** The Battle for Wesnoth Service
+:PROPERTIES:
+:CUSTOM_ID: the-battle-for-wesnoth-service
+:CLASS: subsubheading
+:END:
+<<index-wesnothd>>
+[[https://wesnoth.org][The Battle for Wesnoth]] is a fantasy, turn based tactical strategy game, with several single player campaigns, and multiplayer games (both networked and local).
+
+- Variable: wesnothd-service-type  :: Service type for the wesnothd service. Its value must be a =wesnothd-configuration= object. To run wesnothd in the default configuration, instantiate it as:
+
+  #+begin_src lisp
+  (service wesnothd-service-type)
+  #+end_src
+
+- Data Type: wesnothd-configuration  :: Data type representing the configuration of =wesnothd=.
+
+  - =package= (default: =wesnoth-server=) :: The wesnoth server package to use.
+
+  - =port= (default: =15000=) :: The port to bind the server to.

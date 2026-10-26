@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Displaying-a-Buffer-in-a-Window">1. 22.6 Displaying a Buffer in a Window ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Window-Convenience.html">Convenience Features for Window Handling</a>   Previous: <a href="docs/emacs--Change-Window.html">Deleting and Resizing Windows</a>   Up: <a href="docs/emacs--Windows.html">Multiple Windows</a>
+</p>
+
+<p>
+<a id="Displaying-Buffers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Displaying-a-Buffer-in-a-Window" class="outline-2">
+<h2 id="Displaying-a-Buffer-in-a-Window"><span class="section-number-2">1.</span> 22.6 Displaying a Buffer in a Window <a href="#Displaying-a-Buffer-in-a-Window">¶</a></h2>
+<div class="outline-text-2" id="text-Displaying-a-Buffer-in-a-Window">
+<p>
+It is a common Emacs operation to display or pop up some buffer in response to a user command. There are several different ways in which commands do this.
+</p>
+
+<p>
+Many commands, like C-x C-f (<code>find-file</code>), by default display the buffer by “taking over” the selected window, expecting that the user's attention will be diverted to that buffer.
+</p>
+
+<p>
+Some commands try to display intelligently, trying not to take over the selected window, e.g., by splitting off a new window and displaying the desired buffer there. Such commands, which include the various help commands (see <a href="docs/emacs--Help.html">Help</a>), work by calling <code>display-buffer</code> internally. See <a href="docs/emacs--Window-Choice.html">How <code>display-buffer</code> works</a>, for details.
+</p>
+
+<p>
+Other commands do the same as <code>display-buffer</code>, and additionally select the displaying window so that you can begin editing its buffer. The command M-g M-n (<code>next-error</code>) is one example (see <a href="docs/emacs--Compilation-Mode.html">Compilation Mode</a>). Such commands work by calling the function <code>pop-to-buffer</code> internally. See <a href="../elisp_html/Switching-Buffers.html#Switching-Buffers">Switching to a Buffer in a Window</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+Commands with names ending in <code>-other-window</code> behave like <code>display-buffer</code>, except that they never display in the selected window. Several of these commands are bound in the C-x 4 prefix key (see <a href="docs/emacs--Pop-Up-Window.html">Displaying in Another Window</a>).
+</p>
+
+<p>
+Commands with names ending in <code>-other-frame</code> behave like <code>display-buffer</code>, except that they (i) never display in the selected window and (ii) prefer to either create a new frame or use a window on some other frame to display the desired buffer. Several of these commands are bound in the C-x 5 prefix key.
+</p>
+
+<p>
+Sometimes, a window is “dedicated” to its current buffer. See <a href="../elisp_html/Dedicated-Windows.html#Dedicated-Windows">Dedicated Windows</a> in The Emacs Lisp Reference Manual. <code>display-buffer</code> will avoid reusing dedicated windows most of the time. This is indicated by a ‘=d=' in the mode line (see <a href="docs/emacs--Mode-Line.html">The Mode Line</a>). A window can also be strongly dedicated, which prevents any changes to the buffer displayed in the window. This is indicated by a ‘=D=' in the mode line.
+</p>
+
+<p>
+Usually, dedicated windows are used to display specialized buffers, but dedication can sometimes be useful interactively. For example, when viewing errors with M-g M-n <code>next-error</code>, newly displayed source code may replace a buffer you want to refer to. If you dedicate a window to that buffer, the command (through <code>display-buffer</code>) will prefer to use a different window instead.
+</p>
+
+<p>
+You can use the command C-x w d (<code>toggle-window-dedicated</code>) to toggle whether the selected window is dedicated to the current buffer. With a prefix argument, it makes the window strongly dedicated.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Window-Choice.html">How <code>display-buffer</code> works</a></li>
+<li><a href="docs/emacs--Temporary-Displays.html">Displaying non-editable buffers.</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

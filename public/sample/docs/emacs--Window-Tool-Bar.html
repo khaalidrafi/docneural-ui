@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Window-Tool-Bar-1">1. 22.9 Window Tool Bar ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Tab-Line.html">Window Tab Line</a>   Up: <a href="docs/emacs--Windows.html">Multiple Windows</a>
+</p>
+
+<p>
+<a id="Window-Tool-Bar"></a>
+</p>
+
+<hr />
+<div id="outline-container-Window-Tool-Bar-1" class="outline-2">
+<h2 id="Window-Tool-Bar-1"><span class="section-number-2">1.</span> 22.9 Window Tool Bar <a href="#Window-Tool-Bar-1">¶</a></h2>
+<div class="outline-text-2" id="text-Window-Tool-Bar-1">
+<p>
+The command <code>global-window-tool-bar-mode</code> toggles the display of a tool bar at the top of each window. When enabled, multiple windows can display their own tool bar simultaneously. To conserve space, a window tool bar is hidden if there are no buttons to show, i.e. if <code>tool-bar-map</code> is <code>nil</code>.
+</p>
+
+<p>
+If you want to toggle the display of a window tool bar for only some buffers, run the command <code>window-tool-bar-mode</code> in those buffers. This is useful to put in a mode hook. For example, if you want the window tool bar to appear only for buffers that do not represent files and have a custom tool bar, you could add the following code to your init file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>):
+</p>
+
+<pre class="example" id="org2054e36">
+(add-hook 'special-mode-hook 'window-tool-bar-mode)
+</pre>
+
+<p>
+Emacs can also display a single tool bar at the top of frames (see <a href="docs/emacs--Tool-Bars.html">Tool Bars</a>).
+</p>
+
+<p>
+Note that the window tool bar displays in the same space as the tab line, so only one of them can be displayed at any given time, unless you customize the value of <code>tab-line-format</code> to add <code>(:eval (window-tool-bar-string))</code> to <code>tab-line-format</code>. See <a href="../elisp_html/Mode-Line-Format.html#Mode-Line-Format">Mode Line Format</a> in The Emacs Lisp Reference Manual.
+</p>
+</div>
+</div>

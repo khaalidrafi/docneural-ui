@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Publishing-action-1">1. 14.1.4 Publishing action ¶</a>
+<ul>
+<li><a href="#section">1.1. (155)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Publishing-action"></a>
+Next: <a href="docs/org--Publishing-options.html">Options for the exporters</a>, Previous: <a href="docs/org--Selecting-files.html">Selecting files</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Publishing-action-1" class="outline-2">
+<h2 id="Publishing-action-1"><span class="section-number-2">1.</span> 14.1.4 Publishing action <a href="#Publishing-action-1">¶</a></h2>
+<div class="outline-text-2" id="text-Publishing-action-1">
+<p>
+Publishing means that a file is copied to the destination directory and possibly transformed in the process. The default transformation is to export Org files as HTML files, and this is done by the function <code>org-html-publish-to-html</code> which calls the HTML exporter (see <a href="docs/org--HTML-Export.html">HTML Export</a>). But you can also publish your content as PDF files using <code>org-latex-publish-to-pdf</code>, or as ASCII, Texinfo, etc., using the corresponding functions.
+</p>
+
+<p>
+If you want to publish the Org file as an ‘=.org=' file but with <i>archived</i>, <i>commented</i>, and <i>tag-excluded</i> trees removed, use <code>org-org-publish-to-org</code>. This produces ‘=file.org=' and puts it in the publishing directory. If you want a htmlized version of this file, set the parameter <code>:htmlized-source</code> to <code>t</code>. It produces ‘=file.org.html=' in the publishing directory.
+</p>
+
+<p>
+Other files like images only need to be copied to the publishing destination; for this you can use <code>org-publish-attachment</code>. For non-Org files, you always need to specify the publishing function:
+</p>
+
+<dl class="org-dl">
+<dt><code>:publishing-function</code></dt><dd>Function executing the publication of a file. This may also be a list of functions, which are all called in turn.</dd>
+
+<dt><code>:htmlized-source</code></dt><dd>Non-<code>nil</code> means, publish an htmlized version of the source.</dd>
+</dl>
+
+<p>
+The function must accept three arguments: a property list containing at least a <code>:publishing-directory</code> property, the name of the file to be published, and the path to the publishing directory of the output file. It should take the specified file, make the necessary transformation, if any, and place the result into the destination folder.
+</p>
+
+<hr />
+</div>
+</div>

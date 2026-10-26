@@ -1,0 +1,77 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Indentation-Commands-1">1. 26.1 Indentation Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Tab-Stops.html">Tab Stops</a>   Up: <a href="docs/emacs--Indentation.html">Indentation</a>
+</p>
+
+<p>
+<a id="Indentation-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Indentation-Commands-1" class="outline-2">
+<h2 id="Indentation-Commands-1"><span class="section-number-2">1.</span> 26.1 Indentation Commands <a href="#Indentation-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-Indentation-Commands-1">
+<p>
+Apart from the TAB (<code>indent-for-tab-command</code>) command, Emacs provides a variety of commands to perform indentation in other ways.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dM_002do"></a>C-M-o </dt><dd>Split the current line at point (<code>split-line</code>). The text on the line after point becomes a new line, indented to the same column where point is located. This command first moves point forward over any spaces and tabs. Afterward, point is positioned before the inserted newline.</dd>
+
+<dt><a id="index-M_002dm"></a>M-m </dt><dd>Move (forward or back) to the first non-whitespace character on the current line (<code>back-to-indentation</code>). If there are no non-whitespace characters on the line, move to the end of the line.</dd>
+
+<dt><a id="index-M_002di"></a>M-i </dt><dd>Indent whitespace at point, up to the next tab stop (<code>tab-to-tab-stop</code>). See <a href="docs/emacs--Tab-Stops.html">Tab Stops</a>.</dd>
+
+<dt><a id="index-indent_002drelative"></a>M-x indent-relative </dt><dd>Insert whitespace at point, until point is aligned with the first non-whitespace character on the previous line (actually, the last non-blank line). If point is already farther right than that, run <code>tab-to-tab-stop</code> instead&#x2014;unless called with a numeric argument, in which case do nothing.</dd>
+
+<dt><a id="index-M_002d_005e"></a>M-^ </dt><dd><p>
+Merge the previous and the current line (<code>delete-indentation</code>). This joins the two lines cleanly, by replacing any indentation at the front of the current line, together with the line boundary, with a single space.
+</p>
+
+<p>
+As a special case (useful for Lisp code), the single space is omitted if the characters to be joined are consecutive opening and closing parentheses, or if the junction follows another newline.
+</p>
+
+<p>
+If there is a fill prefix, M-^ deletes the fill prefix if it appears after the newline that is deleted. See <a href="docs/emacs--Fill-Prefix.html">The Fill Prefix</a>.
+</p>
+
+<p>
+With a prefix argument, join the current line to the following line. If the region is active, and no prefix argument is given, join all lines in the region instead.
+</p></dd>
+
+<dt><a id="index-C_002dM_002d_005c"></a>C-M-\ </dt><dd><p>
+Indent all the lines in the region, as though you had typed TAB at the beginning of each line (<code>indent-region</code>).
+</p>
+
+<p>
+If a numeric argument is supplied, indent every line in the region to that column number.
+</p></dd>
+
+<dt><a id="index-C_002dx-TAB"></a>C-x TAB </dt><dd><p>
+Indent all lines that begin in the region, moving the affected lines as a rigid unit (<code>indent-rigidly</code>).
+</p>
+
+<p>
+If called with no argument, this command activates a transient mode for adjusting the indentation of the affected lines interactively. While this transient mode is active, typing LEFT or RIGHT indents leftward and rightward, respectively, by one space. You can also type S-LEFT or S-RIGHT to indent leftward or rightward to the next tab stop (see <a href="docs/emacs--Tab-Stops.html">Tab Stops</a>). Typing any other key disables the transient mode, and this key is then acted upon as normally.
+</p>
+
+<p>
+If called with a prefix argument <code>n</code>, this command indents the lines forward by <code>n</code> spaces (without enabling the transient mode). Negative values of <code>n</code> indent backward, so you can remove all indentation from the lines in the region using a large negative argument, like this:
+</p>
+
+<pre class="example" id="orgfedba4d">
+C-u -999 C-x TAB
+</pre></dd>
+</dl>
+
+<hr />
+</div>
+</div>

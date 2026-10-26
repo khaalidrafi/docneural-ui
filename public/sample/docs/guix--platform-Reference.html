@@ -1,0 +1,106 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#platform-reference">1.0.1. 15.1 <code>platform</code> Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="platform-Reference"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Supported-Platforms.html">Supported Platforms</a>, Up: <a href="docs/guix--Platforms.html">Platforms</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="platform-Reference-1"></a>
+</p>
+</div>
+<div id="outline-container-platform-reference" class="outline-4">
+<h4 id="platform-reference"><span class="section-number-4">1.0.1.</span> 15.1 <code>platform</code> Reference</h4>
+<div class="outline-text-4" id="text-platform-reference">
+<p>
+The <code>platform</code> data type describes a <i>platform</i>: an ISA (instruction set architecture), combined with an operating system and possibly additional system-wide settings such as the ABI (application binary interface).
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: platform </dt><dd>This is the data type representing a platform.
+
+<dl class="org-dl">
+<dt><code>target</code></dt><dd>This field specifies the platform's GNU triplet as a string (see <a href="https://www.gnu.org/software/autoconf/manual/html_node/Specifying-Target-Triplets.html#Specifying-Target-Triplets">GNU configuration triplets</a> in Autoconf).</dd>
+
+<dt><code>system</code></dt><dd><p>
+This string is the system type as it is known to Guix and passed, for instance, to the <code>--system</code> option of most commands.
+</p>
+
+<p>
+It usually has the form <code>"==cpu=</code>-<code>=kernel=</code>"<code>, where =cpu</code> is the target CPU and <code>kernel</code> the target operating system kernel.
+</p>
+
+<p>
+It can be for instance <code>"aarch64-linux"</code> or <code>"armhf-linux"</code>. You will encounter system types when you perform native builds (see <a href="docs/guix--Native-Builds.html">Native Builds</a>).
+</p></dd>
+
+<dt><code>linux-architecture</code> (default: <code>#false</code>)</dt><dd>This optional string field is only relevant if the kernel is Linux. In that case, it corresponds to the ARCH variable used when building Linux, <code>"mips"</code> for instance.</dd>
+
+<dt><code>rust-target</code> (default: <code>#false</code>)</dt><dd>This optional string field is used to determine which rust target is best supported by this platform. For example, the base level system targeted by <code>armhf-linux</code> system is closest to <code>armv7-unknown-linux-gnueabihf</code>.</dd>
+
+<dt><code>glibc-dynamic-linker</code></dt><dd>This field is the name of the GNU C Library dynamic linker for the corresponding system, as a string. It can be <code>"/lib/ld-linux-armhf.so.3"</code>.</dd>
+</dl></dd>
+</dl>
+</div>
+</div>
+</div>

@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Headlines-in-HTML-export-1">1. 13.9.7 Headlines in HTML export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Headlines-in-HTML-export"></a>
+Next: <a href="docs/org--Links-in-HTML-export.html">Links in HTML export</a>, Previous: <a href="docs/org--Quoting-HTML-tags.html">Quoting HTML tags</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Headlines-in-HTML-export-1" class="outline-2">
+<h2 id="Headlines-in-HTML-export-1"><span class="section-number-2">1.</span> 13.9.7 Headlines in HTML export <a href="#Headlines-in-HTML-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Headlines-in-HTML-export-1">
+<p>
+Headlines are exported to ‘=&lt;h1&gt;=', ‘=&lt;h2&gt;=', etc. Each headline gets the ‘=id=' attribute from ‘=CUSTOM<sub>ID</sub>=' property, or a unique generated value, see <a href="docs/org--Internal-Links.html">Internal Links</a>.
+</p>
+
+<p>
+Headlines can contain a link to themselves. To enable it, you can:
+</p>
+
+<ul class="org-ul">
+<li>Set the variable <code>org-html-self-link-headlines</code> to a non-<code>nil</code> value</li>
+<li><p>
+In an Org file, use <code>html-self-link-headlines</code> option
+</p>
+
+<pre class="example" id="org3996ac2">
+#+OPTIONS: html-self-link-headlines:t
+</pre></li>
+</ul>
+
+<p>
+When enabled, the text of the headlines is wrapped in ‘=&lt;a&gt;=' tags. These tags have a ‘=href=' attribute making the headlines link to themselves.
+</p>
+</div>
+</div>

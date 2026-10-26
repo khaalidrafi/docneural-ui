@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#How-Completion-Alternatives-Are-Chosen">1. 10.4.4 How Completion Alternatives Are Chosen ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Completion-Options.html">Completion Options</a>   Previous: <a href="docs/emacs--Completion-Exit.html">Completion Exit</a>   Up: <a href="docs/emacs--Completion.html">Completion</a>
+</p>
+
+<p>
+<a id="Completion-Styles"></a>
+</p>
+
+<hr />
+<div id="outline-container-How-Completion-Alternatives-Are-Chosen" class="outline-2">
+<h2 id="How-Completion-Alternatives-Are-Chosen"><span class="section-number-2">1.</span> 10.4.4 How Completion Alternatives Are Chosen <a href="#How-Completion-Alternatives-Are-Chosen">¶</a></h2>
+<div class="outline-text-2" id="text-How-Completion-Alternatives-Are-Chosen">
+<p>
+Completion commands work by narrowing a large list of possible completion alternatives to a smaller subset that matches what you have typed in the minibuffer. In <a href="docs/emacs--Completion-Example.html">Completion Example</a>, we gave a simple example of such matching. The procedure of determining what constitutes a match is quite intricate. Emacs attempts to offer plausible completions under most circumstances.
+</p>
+
+<p>
+Emacs performs completion using one or more <i>completion styles</i>&#x2014;sets of criteria for matching minibuffer text to completion alternatives. During completion, Emacs tries each completion style in turn. If a style yields one or more matches, that is used as the list of completion alternatives. If a style produces no matches, Emacs falls back on the next style.
+</p>
+
+<p>
+The list variable <code>completion-styles</code> specifies the completion styles to use. Each list element is the name of a completion style (a Lisp symbol). The available style symbols are stored in the variable <code>completion-styles-alist</code> (see <a href="../elisp_html/Completion-Variables.html#Completion-Variables">Completion Variables</a> in The Emacs Lisp Reference Manual). The default completion styles are (in order):
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-basic_002c-completion-style"></a>=basic= </dt><dd>A matching completion alternative must have the same beginning as the text in the minibuffer before point. Furthermore, if there is any text in the minibuffer after point, the rest of the completion alternative must contain that text as a substring.</dd>
+
+<dt><a id="index-partial-completion"></a>=partial-completion= </dt><dd><p>
+This aggressive completion style divides the minibuffer text into words separated by hyphens or spaces, and completes each word separately. (For example, when completing command names, ‘=em-l-m=' completes to ‘=emacs-lisp-mode='.)
+</p>
+
+<p>
+Furthermore, a ‘=*=' in the minibuffer text is treated as a <i>wildcard</i>&#x2014;it matches any string of characters at the corresponding position in the completion alternative.
+</p></dd>
+
+<dt><a id="index-emacs22_002c-completion-style"></a>=emacs22= </dt><dd>This completion style is similar to <code>basic</code>, except that it ignores the text in the minibuffer after point. It is so-named because it corresponds to the completion behavior in Emacs 22.</dd>
+</dl>
+
+<p>
+The following additional completion styles are also defined, and you can add them to <code>completion-styles</code> if you wish (see <a href="docs/emacs--Customization.html">Customization</a>):
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-substring_002c-completion-style"></a>=substring= </dt><dd><p>
+A matching completion alternative must contain the text in the minibuffer before point, and the text in the minibuffer after point, as substrings (in that same order).
+</p>
+
+<p>
+Thus, if the text in the minibuffer is ‘=foobar=', with point between ‘=foo=' and ‘=bar=', that matches ‘=a==foo==b==bar==c=', where <code>a</code>, <code>b</code>, and <code>c</code> can be any string including the empty string.
+</p></dd>
+
+<dt><a id="index-flex_002c-completion-style"></a>=flex= </dt><dd>This aggressive completion style, also known as <code>flx</code> or <code>fuzzy</code> or <code>scatter</code> completion, attempts to complete using in-order substrings. For example, it can consider ‘=foo=' to match ‘=frodo=' or ‘=fbarbazoo='.</dd>
+
+<dt><a id="index-initials_002c-completion-style"></a>=initials= </dt><dd>This very aggressive completion style attempts to complete acronyms and initialisms. For example, when completing command names, it matches ‘=lch=' to ‘=list-command-history='.</dd>
+</dl>
+
+<p>
+There is also a very simple completion style called <code>emacs21</code>. In this style, if the text in the minibuffer is ‘=foobar=', only matches starting with ‘=foobar=' are considered.
+</p>
+
+<p>
+You can use different completion styles in different situations, by setting the variable <code>completion-category-overrides</code>. For example, the default setting says to use only <code>basic</code> and <code>substring</code> completion for buffer names.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,361 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Audio-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Virtualization-Services.html">Virtualization Services</a>, Previous: <a href="docs/guix--Power-Management-Services.html">Power Management Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Audio-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="audio-services"></a>11.10.30 Audio Services<br />
+<div class="outline-text-5" id="text-audio-services">
+<p>
+The <code>(gnu services audio)</code> module provides a service to start MPD (the Music Player Daemon).
+</p>
+
+<p>
+<a id="index-mpd"></a> <a id="Music-Player-Daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="music-player-daemon"></a>Music Player Daemon<br />
+<div class="outline-text-5" id="text-music-player-daemon">
+<p>
+The Music Player Daemon (MPD) is a service that can play music while being controlled from the local machine or over the network by a variety of clients.
+</p>
+
+<p>
+The following example shows the simplest configuration to locally expose, via PulseAudio, a music collection kept at <code>/srv/music</code>, with <code>mpd</code> running as the default ‘=mpd=' user. This user will spawn its own PulseAudio daemon, which may compete for the sound card access with that of your own user. In this configuration, you may have to stop the playback of your user audio applications to hear MPD's output and vice-versa.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service mpd-service-type
+         (mpd-configuration
+          (music-directory "/srv/music")))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Important:</b> The music directory must be readable to the MPD user, by default, ‘=mpd='. Permission problems will be reported via ‘=Permission denied=' errors in the MPD logs, which appear in <code>/var/log/messages</code> by default.
+</p>
+</blockquote>
+
+<p>
+Most MPD clients will trigger a database update upon connecting, but you can also use the <code>update</code> action do to so:
+</p>
+
+<pre class="example" id="orgd3a2853">
+herd update mpd
+</pre>
+
+<p>
+All the MPD configuration fields are documented below, and a more complex example follows.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: mpd-service-type </dt><dd>The service type for <code>mpd</code></dd>
+
+<dt>Data Type: mpd-configuration </dt><dd>Available <code>mpd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>mpd</code>) (type: file-like)</dt><dd>The MPD package.</dd>
+
+<dt><code>user</code> (type: user-account)</dt><dd>The user to run mpd as.</dd>
+
+<dt><code>group</code> (type: user-group)</dt><dd><p>
+The group to run mpd as.
+</p>
+
+<p>
+The default <code>%mpd-group</code> is a system group with name “mpd”.
+</p></dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>) (type: list-of-symbols)</dt><dd>A list of symbols naming Shepherd services that this service will depend on.</dd>
+
+<dt><code>environment-variables</code> (default: <code>'("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")</code>) (type: list-of-strings)</dt><dd>A list of strings specifying environment variables.</dd>
+
+<dt><code>log-file</code> (type: maybe-string)</dt><dd>The location of the log file. Unless specified, logs are sent to the local syslog daemon. Alternatively, a log file name can be specified, for example <code>/var/log/mpd.log</code>.</dd>
+
+<dt><code>log-level</code> (type: maybe-string)</dt><dd>Suppress any messages below this threshold. The available values, in decreasing order of verbosity, are: <code>verbose</code>, <code>info</code>, <code>notice</code>, <code>warning</code> and <code>error</code>.</dd>
+
+<dt><code>music-directory</code> (type: maybe-string)</dt><dd>The directory to scan for music files.</dd>
+
+<dt><code>music-dir</code> (type: maybe-string)</dt><dd>The directory to scan for music files.</dd>
+
+<dt><code>playlist-directory</code> (type: maybe-string)</dt><dd>The directory to store playlists.</dd>
+
+<dt><code>playlist-dir</code> (type: maybe-string)</dt><dd>The directory to store playlists.</dd>
+
+<dt><code>db-file</code> (type: maybe-string)</dt><dd>The location of the music database. When left unspecified, <code>~/.cache/db</code> is used.</dd>
+
+<dt><code>state-file</code> (type: maybe-string)</dt><dd>The location of the file that stores current MPD's state.</dd>
+
+<dt><code>sticker-file</code> (type: maybe-string)</dt><dd>The location of the sticker database.</dd>
+
+<dt><code>default-port</code> (default: <code>6600</code>) (type: maybe-port)</dt><dd>The default port to run mpd on.</dd>
+
+<dt><code>endpoints</code> (type: maybe-list-of-strings)</dt><dd>The addresses that mpd will bind to. A port different from <code>default-port</code> may be specified, e.g. <code>localhost:6602</code> and IPv6 addresses must be enclosed in square brackets when a different port is used. To use a Unix domain socket, an absolute path or a path starting with <code>~</code> can be specified here.</dd>
+
+<dt><code>address</code> (type: maybe-string)</dt><dd>The address that mpd will bind to. To use a Unix domain socket, an absolute path can be specified here.</dd>
+
+<dt><code>database</code> (type: maybe-mpd-plugin)</dt><dd>MPD database plugin configuration.</dd>
+
+<dt><code>partitions</code> (default: <code>'()</code>) (type: list-of-mpd-partition)</dt><dd>List of MPD "partitions".</dd>
+
+<dt><code>neighbors</code> (default: <code>'()</code>) (type: list-of-mpd-plugin)</dt><dd>List of MPD neighbor plugin configurations.</dd>
+
+<dt><code>inputs</code> (default: <code>'()</code>) (type: list-of-mpd-plugin)</dt><dd>List of MPD input plugin configurations.</dd>
+
+<dt><code>archive-plugins</code> (default: <code>'()</code>) (type: list-of-mpd-plugin)</dt><dd>List of MPD archive plugin configurations.</dd>
+
+<dt><code>auto-update?</code> (type: maybe-boolean)</dt><dd>Whether to automatically update the music database when files are changed in the <code>music-directory</code>.</dd>
+
+<dt><code>input-cache-size</code> (type: maybe-string)</dt><dd>MPD input cache size.</dd>
+
+<dt><code>decoders</code> (default: <code>'()</code>) (type: list-of-mpd-plugin)</dt><dd>List of MPD decoder plugin configurations.</dd>
+
+<dt><code>resampler</code> (type: maybe-mpd-plugin)</dt><dd>MPD resampler plugin configuration.</dd>
+
+<dt><code>filters</code> (default: <code>'()</code>) (type: list-of-mpd-plugin)</dt><dd>List of MPD filter plugin configurations.</dd>
+
+<dt><code>outputs</code> (type: list-of-mpd-plugin-or-output)</dt><dd>The audio outputs that MPD can use. By default this is a single output using pulseaudio.</dd>
+
+<dt><code>playlist-plugins</code> (default: <code>'()</code>) (type: list-of-mpd-plugin)</dt><dd>List of MPD playlist plugin configurations.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the configuration.</dd>
+</dl></dd>
+
+<dt>Data Type: mpd-plugin </dt><dd>Data type representing a <code>mpd</code> plugin.
+
+<dl class="org-dl">
+<dt><code>plugin</code> (type: maybe-string)</dt><dd>Plugin name.</dd>
+
+<dt><code>name</code> (type: maybe-string)</dt><dd>Name.</dd>
+
+<dt><code>enabled?</code> (type: maybe-boolean)</dt><dd>Whether the plugin is enabled/disabled.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the plugin configuration. See <a href="https://mpd.readthedocs.io/en/latest/plugins.html">MPD plugin reference</a> for available options.</dd>
+</dl></dd>
+
+<dt>Data Type: mpd-partition </dt><dd>Data type representing a <code>mpd</code> partition.
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>Partition name.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the partition configuration. See <a href="https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions">Configuring Partitions</a> for available options.</dd>
+</dl></dd>
+
+<dt>Data Type: mpd-output </dt><dd>Available <code>mpd-output</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <code>"MPD"</code>) (type: string)</dt><dd>The name of the audio output.</dd>
+
+<dt><code>type</code> (default: <code>"pulse"</code>) (type: string)</dt><dd>The type of audio output.</dd>
+
+<dt><code>enabled?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Specifies whether this audio output is enabled when MPD is started. By default, all audio outputs are enabled. This is just the default setting when there is no state file; with a state file, the previous state is restored.</dd>
+
+<dt><code>format</code> (type: maybe-string)</dt><dd>Force a specific audio format on output. See <a href="https://mpd.readthedocs.io/en/latest/user.html#audio-output-format">Global Audio Format</a> for a more detailed description.</dd>
+
+<dt><code>tags?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>If set to <code>#f</code>, then MPD will not send tags to this output. This is only useful for output plugins that can receive tags, for example the <code>httpd</code> output plugin.</dd>
+
+<dt><code>always-on?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>If set to <code>#t</code>, then MPD attempts to keep this audio output always open. This may be useful for streaming servers, when you don't want to disconnect all listeners even when playback is accidentally stopped.</dd>
+
+<dt><code>mixer-type</code> (type: maybe-string)</dt><dd>This field accepts a string that specifies which mixer should be used for this audio output: the <code>hardware</code> mixer, the <code>software</code> mixer, the <code>null</code> mixer (allows setting the volume, but with no effect; this can be used as a trick to implement an external mixer External Mixer) or no mixer (<code>none</code>). When left unspecified, a <code>hardware</code> mixer is used for devices that support it.</dd>
+
+<dt><code>replay-gain-handler</code> (type: maybe-string)</dt><dd>This field accepts a string that specifies how <a href="https://mpd.readthedocs.io/en/latest/user.html#replay-gain">Replay Gain</a> is to be applied. <code>software</code> uses an internal software volume control, <code>mixer</code> uses the configured (hardware) mixer control and <code>none</code> disables replay gain on this audio output.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the audio output configuration.</dd>
+</dl></dd>
+</dl>
+
+<p>
+The following example shows a configuration of <code>mpd</code> that configures some of its plugins and provides a HTTP audio streaming output.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service mpd-service-type
+         (mpd-configuration
+           (outputs
+             (list (mpd-output
+                     (name "streaming")
+                     (type "httpd")
+                     (mixer-type 'null)
+                     (extra-options
+                      `((encoder . "vorbis")
+                        (port    . "8080"))))))
+           (decoders
+             (list (mpd-plugin
+                     (plugin "mikmod")
+                     (enabled? #f))
+                   (mpd-plugin
+                     (plugin "openmpt")
+                     (enabled? #t)
+                     (extra-options `((repeat-count . -1)
+                                      (interpolation-filter . 1))))))
+           (resampler (mpd-plugin
+                        (plugin "libsamplerate")
+                        (extra-options `((type . 0)))))))
+</pre>
+</div>
+
+<p>
+<a id="myMPD"></a>
+</p>
+</div>
+</li>
+<li><a id="mympd"></a>myMPD<br />
+<div class="outline-text-5" id="text-mympd">
+<p>
+<a id="index-MPD_002c-web-interface"></a> <a id="index-myMPD-service"></a>
+<a href="https://jcorporation.github.io/myMPD/">myMPD</a> is a web server frontend for MPD that provides a mobile friendly web client for MPD.
+</p>
+
+<p>
+The following example shows a myMPD instance listening on port 80, with album cover caching disabled.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service mympd-service-type
+         (mympd-configuration
+          (port 80)
+          (covercache-ttl 0)))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: mympd-service-type </dt><dd>The service type for <code>mympd</code>.</dd>
+
+<dt>Data Type: mympd-configuration </dt><dd>Available <code>mympd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>mympd</code>) (type: file-like)</dt><dd>The package object of the myMPD server.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>) (type: list-of-symbols)</dt><dd>This is a list of symbols naming Shepherd services that this service will depend on.</dd>
+
+<dt><code>user</code> (default: <code>%mympd-user</code>) (type: user-account)</dt><dd><p>
+Owner of the <code>mympd</code> process.
+</p>
+
+<p>
+The default <code>%mympd-user</code> is a system user with the name “mympd”, who is a part of the group <code>group</code> (see below).
+</p></dd>
+
+<dt><code>group</code> (default: <code>%mympd-group</code>) (type: user-group)</dt><dd><p>
+Owner group of the <code>mympd</code> process.
+</p>
+
+<p>
+The default <code>%mympd-group</code> is a system group with name “mympd”.
+</p></dd>
+
+<dt><code>work-directory</code> (default: <code>"/var/lib/mympd"</code>) (type: string)</dt><dd>Where myMPD will store its data.</dd>
+
+<dt><code>cache-directory</code> (default: <code>"/var/cache/mympd"</code>) (type: string)</dt><dd>Where myMPD will store its cache.</dd>
+
+<dt><code>acl</code> (type: maybe-mympd-ip-acl)</dt><dd>ACL to access the myMPD webserver.</dd>
+
+<dt><code>covercache-ttl</code> (default: <code>31</code>) (type: maybe-integer)</dt><dd>How long to keep cached covers, <code>0</code> disables cover caching.</dd>
+
+<dt><code>http?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>HTTP support.</dd>
+
+<dt><code>host</code> (default: <code>"[::]"</code>) (type: string)</dt><dd>Host name to listen on.</dd>
+
+<dt><code>port</code> (default: <code>80</code>) (type: maybe-port)</dt><dd>HTTP port to listen on.</dd>
+
+<dt><code>log-level</code> (default: <code>5</code>) (type: integer)</dt><dd>How much detail to include in logs, possible values: <code>0</code> to <code>7</code>.</dd>
+
+<dt><code>log-to</code> (type: maybe-string)</dt><dd>Where to send logs. Unless specified, the service logs to the local syslog service under the ‘=daemon=' facility. Alternatively, a log file name can be specified, for example <code>/var/log/mympd.log</code>.</dd>
+
+<dt><code>lualibs</code> (default: <code>"all"</code>) (type: maybe-string)</dt><dd>See <a href="https://jcorporation.github.io/myMPD/scripting/#lua-standard-libraries">https://jcorporation.github.io/myMPD/scripting/#lua-standard-libraries</a>.</dd>
+
+<dt><code>uri</code> (type: maybe-string)</dt><dd>Override URI to myMPD. See <a href="https://github.com/jcorporation/myMPD/issues/950">https://github.com/jcorporation/myMPD/issues/950</a>.</dd>
+
+<dt><code>script-acl</code> (default: <code>(mympd-ip-acl (allow '("127.0.0.1")))</code>) (type: maybe-mympd-ip-acl)</dt><dd>ACL to access the myMPD script backend.</dd>
+
+<dt><code>ssl?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>SSL/TLS support.</dd>
+
+<dt><code>ssl-port</code> (default: <code>443</code>) (type: maybe-port)</dt><dd>Port to listen for HTTPS.</dd>
+
+<dt><code>ssl-cert</code> (type: maybe-string)</dt><dd>Path to PEM encoded X.509 SSL/TLS certificate (public key).</dd>
+
+<dt><code>ssl-key</code> (type: maybe-string)</dt><dd>Path to PEM encoded SSL/TLS private key.</dd>
+
+<dt><code>pin-hash</code> (type: maybe-string)</dt><dd>SHA-256 hashed pin used by myMPD to control settings access by prompting a pin from the user.</dd>
+
+<dt><code>save-caches?</code> (type: maybe-boolean)</dt><dd>Whether to preserve caches between service restarts.</dd>
+</dl></dd>
+
+<dt>Data Type: mympd-ip-acl </dt><dd>Available <code>mympd-ip-acl</code> fields are:
+
+<dl class="org-dl">
+<dt><code>allow</code> (default: <code>'()</code>) (type: list-of-strings)</dt><dd>Allowed IP addresses.</dd>
+
+<dt><code>deny</code> (default: <code>'()</code>) (type: list-of-strings)</dt><dd>Disallowed IP addresses.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Virtualization-Services.html">Virtualization Services</a>, Previous: <a href="docs/guix--Power-Management-Services.html">Power Management Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

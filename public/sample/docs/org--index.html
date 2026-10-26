@@ -1,0 +1,487 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Org-Manual">1. The Org Manual ¶</a>
+<ul>
+<li><a href="#table-of-contents">1.1. Table of Contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Top"></a>
+Next: <a href="docs/org--Introduction.html">Introduction</a>   [][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-Org-Manual" class="outline-2">
+<h2 id="The-Org-Manual"><span class="section-number-2">1.</span> The Org Manual <a href="#The-Org-Manual">¶</a></h2>
+<div class="outline-text-2" id="text-The-Org-Manual">
+<p>
+This manual is for Org version 9.8.
+</p>
+
+<p>
+Copyright © 2004&#x2013;2026 Free Software Foundation, Inc.
+</p>
+
+<blockquote>
+<p>
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with the Front-Cover Texts being “A GNU Manual,” and with the Back-Cover Texts as in (a) below. A copy of the license is included in the section entitled “GNU Free Documentation License.”
+</p>
+
+<p>
+(a) The FSF's Back-Cover Text is: “You have the freedom to copy and modify this GNU manual.”
+</p>
+</blockquote>
+
+<p>
+<a id="SEC_Contents"></a>
+</p>
+</div>
+<div id="outline-container-table-of-contents" class="outline-3">
+<h3 id="table-of-contents"><span class="section-number-3">1.1.</span> Table of Contents</h3>
+<div class="outline-text-3" id="text-table-of-contents">
+<ul class="org-ul">
+<li><a href="docs/org--Introduction.html">1 Introduction</a>
+<ul class="org-ul">
+<li><a href="docs/org--Summary.html">1.1 Summary</a></li>
+<li><a href="docs/org--Installation.html">1.2 Installation</a></li>
+<li><a href="docs/org--Activation.html">1.3 Activation</a></li>
+<li><a href="docs/org--Feedback.html">1.4 Feedback</a></li>
+<li><a href="docs/org--Conventions.html">1.5 Typesetting Conventions Used in this Manual</a></li>
+</ul></li>
+<li><a href="docs/org--Document-Structure.html">2 Document Structure</a>
+<ul class="org-ul">
+<li><a href="docs/org--Headlines.html">2.1 Headlines</a></li>
+<li><a href="docs/org--Visibility-Cycling.html">2.2 Visibility Cycling</a>
+<ul class="org-ul">
+<li><a href="docs/org--Global-and-local-cycling.html">2.2.1 Global and local cycling</a></li>
+<li><a href="docs/org--Initial-visibility.html">2.2.2 Initial visibility</a></li>
+<li><a href="docs/org--Catching-invisible-edits.html">2.2.3 Catching invisible edits</a></li>
+</ul></li>
+<li><a href="docs/org--Motion.html">2.3 Motion</a></li>
+<li><a href="docs/org--Structure-Editing.html">2.4 Structure Editing</a></li>
+<li><a href="docs/org--Sparse-Trees.html">2.5 Sparse Trees</a></li>
+<li><a href="docs/org--Plain-Lists.html">2.6 Plain Lists</a></li>
+<li><a href="docs/org--Drawers.html">2.7 Drawers</a></li>
+<li><a href="docs/org--Blocks.html">2.8 Blocks</a></li>
+</ul></li>
+<li><a href="docs/org--Tables.html">3 Tables</a>
+<ul class="org-ul">
+<li><a href="docs/org--Built_002din-Table-Editor.html">3.1 Built-in Table Editor</a></li>
+<li><a href="docs/org--Column-Width-and-Alignment.html">3.2 Column Width and Alignment</a></li>
+<li><a href="docs/org--Column-Groups.html">3.3 Column Groups</a></li>
+<li><a href="docs/org--Orgtbl-Mode.html">3.4 The Orgtbl Minor Mode</a></li>
+<li><a href="docs/org--The-Spreadsheet.html">3.5 The Spreadsheet</a>
+<ul class="org-ul">
+<li><a href="docs/org--References.html">3.5.1 References</a></li>
+<li><a href="docs/org--Formula-syntax-for-Calc.html">3.5.2 Formula syntax for Calc</a></li>
+<li><a href="docs/org--Formula-syntax-for-Lisp.html">3.5.3 Emacs Lisp forms as formulas</a></li>
+<li><a href="docs/org--Durations-and-time-values.html">3.5.4 Durations and time values</a></li>
+<li><a href="docs/org--Field-and-range-formulas.html">3.5.5 Field and range formulas</a></li>
+<li><a href="docs/org--Column-formulas.html">3.5.6 Column formulas</a></li>
+<li><a href="docs/org--Lookup-functions.html">3.5.7 Lookup functions</a></li>
+<li><a href="docs/org--Editing-and-debugging-formulas.html">3.5.8 Editing and debugging formulas</a></li>
+<li><a href="docs/org--Updating-the-table.html">3.5.9 Updating the table</a></li>
+<li><a href="docs/org--Advanced-features.html">3.5.10 Advanced features</a></li>
+</ul></li>
+<li><a href="docs/org--Org-Plot.html">3.6 Org Plot</a></li>
+</ul></li>
+<li><a href="docs/org--Hyperlinks.html">4 Hyperlinks</a>
+<ul class="org-ul">
+<li><a href="docs/org--Link-Format.html">4.1 Link Format</a></li>
+<li><a href="docs/org--Internal-Links.html">4.2 Internal Links</a></li>
+<li><a href="docs/org--Radio-Targets.html">4.3 Radio Targets</a></li>
+<li><a href="docs/org--External-Links.html">4.4 External Links</a></li>
+<li><a href="docs/org--Handling-Links.html">4.5 Handling Links</a></li>
+<li><a href="docs/org--Using-Links-Outside-Org.html">4.6 Using Links Outside Org</a></li>
+<li><a href="docs/org--Link-Abbreviations.html">4.7 Link Abbreviations</a></li>
+<li><a href="docs/org--Search-Options.html">4.8 Search Options in File Links</a></li>
+<li><a href="docs/org--Custom-Searches.html">4.9 Custom Searches</a></li>
+</ul></li>
+<li><a href="docs/org--TODO-Items.html">5 TODO Items</a>
+<ul class="org-ul">
+<li><a href="docs/org--TODO-Basics.html">5.1 Basic TODO Functionality</a></li>
+<li><a href="docs/org--TODO-Extensions.html">5.2 Extended Use of TODO Keywords</a>
+<ul class="org-ul">
+<li><a href="docs/org--Workflow-states.html">5.2.1 TODO keywords as workflow states</a></li>
+<li><a href="docs/org--TODO-types.html">5.2.2 TODO keywords as types</a></li>
+<li><a href="docs/org--Multiple-sets-in-one-file.html">5.2.3 Multiple keyword sets in one file</a></li>
+<li><a href="docs/org--Fast-access-to-TODO-states.html">5.2.4 Fast access to TODO states</a></li>
+<li><a href="docs/org--Per_002dfile-keywords.html">5.2.5 Setting up keywords for individual files</a></li>
+<li><a href="docs/org--Faces-for-TODO-keywords.html">5.2.6 Faces for TODO keywords</a></li>
+<li><a href="docs/org--TODO-dependencies.html">5.2.7 TODO dependencies</a></li>
+</ul></li>
+<li><a href="docs/org--Progress-Logging.html">5.3 Progress Logging</a>
+<ul class="org-ul">
+<li><a href="docs/org--Closing-items.html">5.3.1 Closing items</a></li>
+<li><a href="docs/org--Tracking-TODO-state-changes.html">5.3.2 Tracking TODO state changes</a></li>
+<li><a href="docs/org--Tracking-your-habits.html">5.3.3 Tracking your habits</a></li>
+</ul></li>
+<li><a href="docs/org--Priorities.html">5.4 Priorities</a></li>
+<li><a href="docs/org--Breaking-Down-Tasks.html">5.5 Breaking Down Tasks into Subtasks</a></li>
+<li><a href="docs/org--Checkboxes.html">5.6 Checkboxes</a></li>
+</ul></li>
+<li><a href="docs/org--Tags.html">6 Tags</a>
+<ul class="org-ul">
+<li><a href="docs/org--Tag-Inheritance.html">6.1 Tag Inheritance</a></li>
+<li><a href="docs/org--Setting-Tags.html">6.2 Setting Tags</a></li>
+<li><a href="docs/org--Tag-Hierarchy.html">6.3 Tag Hierarchy</a></li>
+<li><a href="docs/org--Tag-Searches.html">6.4 Tag Searches</a></li>
+</ul></li>
+<li><a href="docs/org--Properties-and-Columns.html">7 Properties and Columns</a>
+<ul class="org-ul">
+<li><a href="docs/org--Property-Syntax.html">7.1 Property Syntax</a></li>
+<li><a href="docs/org--Special-Properties.html">7.2 Special Properties</a></li>
+<li><a href="docs/org--Property-Searches.html">7.3 Property Searches</a></li>
+<li><a href="docs/org--Property-Inheritance.html">7.4 Property Inheritance</a></li>
+<li><a href="docs/org--Column-View.html">7.5 Column View</a>
+<ul class="org-ul">
+<li><a href="docs/org--Defining-columns.html">7.5.1 Defining columns</a>
+<ul class="org-ul">
+<li><a href="docs/org--Scope-of-column-definitions.html">7.5.1.1 Scope of column definitions</a></li>
+<li><a href="docs/org--Column-attributes.html">7.5.1.2 Column attributes</a></li>
+</ul></li>
+<li><a href="docs/org--Using-column-view.html">7.5.2 Using column view</a></li>
+<li><a href="docs/org--Capturing-column-view.html">7.5.3 Capturing column view</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/org--Dates-and-Times.html">8 Dates and Times</a>
+<ul class="org-ul">
+<li><a href="docs/org--Timestamps.html">8.1 Timestamps</a></li>
+<li><a href="docs/org--Creating-Timestamps.html">8.2 Creating Timestamps</a>
+<ul class="org-ul">
+<li><a href="docs/org--The-date_002ftime-prompt.html">8.2.1 The date/time prompt</a></li>
+<li><a href="docs/org--Custom-time-format.html">8.2.2 Custom time format</a></li>
+</ul></li>
+<li><a href="docs/org--Deadlines-and-Scheduling.html">8.3 Deadlines and Scheduling</a>
+<ul class="org-ul">
+<li><a href="docs/org--Inserting-deadline_002fschedule.html">8.3.1 Inserting deadlines or schedules</a></li>
+<li><a href="docs/org--Repeated-tasks.html">8.3.2 Repeated tasks</a></li>
+</ul></li>
+<li><a href="docs/org--Clocking-Work-Time.html">8.4 Clocking Work Time</a>
+<ul class="org-ul">
+<li><a href="docs/org--Clocking-commands.html">8.4.1 Clocking commands</a></li>
+<li><a href="docs/org--The-clock-table.html">8.4.2 The clock table</a></li>
+<li><a href="docs/org--Resolving-idle-time.html">8.4.3 Resolving idle time and continuous clocking</a></li>
+</ul></li>
+<li><a href="docs/org--Effort-Estimates.html">8.5 Effort Estimates</a></li>
+<li><a href="docs/org--Timers.html">8.6 Taking Notes with a Relative Timer</a></li>
+</ul></li>
+<li><a href="docs/org--Refiling-and-Archiving.html">9 Refiling and Archiving</a>
+<ul class="org-ul">
+<li><a href="docs/org--Refile-and-Copy.html">9.1 Refile and Copy</a></li>
+<li><a href="docs/org--Archiving.html">9.2 Archiving</a>
+<ul class="org-ul">
+<li><a href="docs/org--Moving-subtrees.html">9.2.1 Moving a tree to an archive file</a></li>
+<li><a href="docs/org--Internal-archiving.html">9.2.2 Internal archiving</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/org--Capture-and-Attachments.html">10 Capture and Attachments</a>
+<ul class="org-ul">
+<li><a href="docs/org--Capture.html">10.1 Capture</a>
+<ul class="org-ul">
+<li><a href="docs/org--Setting-up-capture.html">10.1.1 Setting up capture</a></li>
+<li><a href="docs/org--Using-capture.html">10.1.2 Using capture</a></li>
+<li><a href="docs/org--Capture-templates.html">10.1.3 Capture templates</a>
+<ul class="org-ul">
+<li><a href="docs/org--Template-elements.html">10.1.3.1 Template elements</a></li>
+<li><a href="docs/org--Template-expansion.html">10.1.3.2 Template expansion</a></li>
+<li><a href="docs/org--Templates-in-contexts.html">10.1.3.3 Templates in contexts</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/org--Attachments.html">10.2 Attachments</a>
+<ul class="org-ul">
+<li><a href="docs/org--Attachment-defaults-and-dispatcher.html">10.2.1 Attachment defaults and dispatcher</a></li>
+<li><a href="docs/org--Attachment-options.html">10.2.2 Attachment options</a></li>
+<li><a href="docs/org--Attachment-links.html">10.2.3 Attachment links</a></li>
+<li><a href="docs/org--Automatic-version_002dcontrol-with-Git.html">10.2.4 Automatic version-control with Git</a></li>
+<li><a href="docs/org--Attach-from-Dired.html">10.2.5 Attach from Dired</a></li>
+</ul></li>
+<li><a href="docs/org--RSS-Feeds.html">10.3 RSS Feeds</a></li>
+</ul></li>
+<li><a href="docs/org--Agenda-Views.html">11 Agenda Views</a>
+<ul class="org-ul">
+<li><a href="docs/org--Agenda-Files.html">11.1 Agenda Files</a></li>
+<li><a href="docs/org--Agenda-Dispatcher.html">11.2 The Agenda Dispatcher</a></li>
+<li><a href="docs/org--Built_002din-Agenda-Views.html">11.3 The Built-in Agenda Views</a>
+<ul class="org-ul">
+<li><a href="docs/org--Weekly_002fdaily-agenda.html">11.3.1 Weekly/daily agenda</a></li>
+<li><a href="docs/org--Global-TODO-list.html">11.3.2 The global TODO list</a></li>
+<li><a href="docs/org--Matching-tags-and-properties.html">11.3.3 Matching tags and properties</a></li>
+<li><a href="docs/org--Search-view.html">11.3.4 Search view</a></li>
+<li><a href="docs/org--Stuck-projects.html">11.3.5 Stuck projects</a></li>
+</ul></li>
+<li><a href="docs/org--Presentation-and-Sorting.html">11.4 Presentation and Sorting</a>
+<ul class="org-ul">
+<li><a href="docs/org--Categories.html">11.4.1 Categories</a></li>
+<li><a href="docs/org--Time_002dof_002dday-specifications.html">11.4.2 Time-of-day specifications</a></li>
+<li><a href="docs/org--Sorting-of-agenda-items.html">11.4.3 Sorting of agenda items</a></li>
+<li><a href="docs/org--Filtering_002flimiting-agenda-items.html">11.4.4 Filtering/limiting agenda items</a></li>
+</ul></li>
+<li><a href="docs/org--Agenda-Commands.html">11.5 Commands in the Agenda Buffer</a></li>
+<li><a href="docs/org--Custom-Agenda-Views.html">11.6 Custom Agenda Views</a>
+<ul class="org-ul">
+<li><a href="docs/org--Storing-searches.html">11.6.1 Storing searches</a></li>
+<li><a href="docs/org--Block-agenda.html">11.6.2 Block agenda</a></li>
+<li><a href="docs/org--Setting-options.html">11.6.3 Setting options for custom commands</a></li>
+</ul></li>
+<li><a href="docs/org--Exporting-Agenda-Views.html">11.7 Exporting Agenda Views</a></li>
+<li><a href="docs/org--Agenda-Column-View.html">11.8 Using Column View in the Agenda</a></li>
+</ul></li>
+<li><a href="docs/org--Markup-for-Rich-Contents.html">12 Markup for Rich Contents</a>
+<ul class="org-ul">
+<li><a href="docs/org--Paragraphs.html">12.1 Paragraphs</a></li>
+<li><a href="docs/org--Emphasis-and-Monospace.html">12.2 Emphasis and Monospace</a></li>
+<li><a href="docs/org--Subscripts-and-Superscripts.html">12.3 Subscripts and Superscripts</a></li>
+<li><a href="docs/org--Special-Symbols.html">12.4 Special Symbols</a></li>
+<li><a href="docs/org--Embedded-LaTeX.html">12.5 Embedded LaTeX</a>
+<ul class="org-ul">
+<li><a href="docs/org--LaTeX-fragments.html">12.5.1 LaTeX fragments</a></li>
+<li><a href="docs/org--Previewing-LaTeX-fragments.html">12.5.2 Previewing LaTeX fragments</a></li>
+<li><a href="docs/org--CDLaTeX-mode.html">12.5.3 Using CDLaTeX to enter math</a></li>
+</ul></li>
+<li><a href="docs/org--Literal-Examples.html">12.6 Literal Examples</a></li>
+<li><a href="docs/org--Images-and-link-previews.html">12.7 Images and link previews</a>
+<ul class="org-ul">
+<li><a href="docs/org--Images.html">12.7.1 Images</a></li>
+</ul></li>
+<li><a href="docs/org--Captions.html">12.8 Captions</a></li>
+<li><a href="docs/org--Horizontal-Rules.html">12.9 Horizontal Rules</a></li>
+<li><a href="docs/org--Creating-Footnotes.html">12.10 Creating Footnotes</a></li>
+</ul></li>
+<li><a href="docs/org--Exporting.html">13 Exporting</a>
+<ul class="org-ul">
+<li><a href="docs/org--The-Export-Dispatcher.html">13.1 The Export Dispatcher</a></li>
+<li><a href="docs/org--Export-Settings.html">13.2 Export Settings</a></li>
+<li><a href="docs/org--Table-of-Contents.html">13.3 Table of Contents</a></li>
+<li><a href="docs/org--Include-Files.html">13.4 Include Files</a></li>
+<li><a href="docs/org--Macro-Replacement.html">13.5 Macro Replacement</a></li>
+<li><a href="docs/org--Comment-Lines.html">13.6 Comment Lines</a></li>
+<li><a href="docs/org--ASCII_002fLatin_002d1_002fUTF_002d8-export.html">13.7 ASCII/Latin-1/UTF-8 export</a></li>
+<li><a href="docs/org--Beamer-Export.html">13.8 Beamer Export</a>
+<ul class="org-ul">
+<li><a href="docs/org--Beamer-export-commands.html">13.8.1 Beamer export commands</a></li>
+<li><a href="docs/org--Beamer-specific-export-settings.html">13.8.2 Beamer specific export settings</a></li>
+<li><a href="docs/org--Frames-and-Blocks-in-Beamer.html">13.8.3 Frames and Blocks in Beamer</a></li>
+<li><a href="docs/org--Beamer-specific-syntax.html">13.8.4 Beamer specific syntax</a></li>
+<li><a href="docs/org--Editing-support.html">13.8.5 Editing support</a></li>
+<li><a href="docs/org--A-Beamer-example.html">13.8.6 A Beamer example</a></li>
+</ul></li>
+<li><a href="docs/org--HTML-Export.html">13.9 HTML Export</a>
+<ul class="org-ul">
+<li><a href="docs/org--HTML-export-commands.html">13.9.1 HTML export commands</a></li>
+<li><a href="docs/org--HTML-specific-export-settings.html">13.9.2 HTML specific export settings</a></li>
+<li><a href="docs/org--HTML-doctypes.html">13.9.3 HTML doctypes</a></li>
+<li><a href="docs/org--HTML-preamble-and-postamble.html">13.9.4 HTML preamble and postamble</a></li>
+<li><a href="docs/org--Bare-HTML.html">13.9.5 Exporting to minimal HTML</a></li>
+<li><a href="docs/org--Quoting-HTML-tags.html">13.9.6 Quoting HTML tags</a></li>
+<li><a href="docs/org--Headlines-in-HTML-export.html">13.9.7 Headlines in HTML export</a></li>
+<li><a href="docs/org--Links-in-HTML-export.html">13.9.8 Links in HTML export</a></li>
+<li><a href="docs/org--Tables-in-HTML-export.html">13.9.9 Tables in HTML export</a></li>
+<li><a href="docs/org--Images-in-HTML-export.html">13.9.10 Images in HTML export</a></li>
+<li><a href="docs/org--Math-formatting-in-HTML-export.html">13.9.11 Math formatting in HTML export</a></li>
+<li><a href="docs/org--Text-areas-in-HTML-export.html">13.9.12 Text areas in HTML export</a></li>
+<li><a href="docs/org--CSS-support.html">13.9.13 CSS support</a></li>
+<li><a href="docs/org--JavaScript-support.html">13.9.14 JavaScript supported display of web pages</a></li>
+</ul></li>
+<li><a href="docs/org--LaTeX-Export.html">13.10 LaTeX Export</a>
+<ul class="org-ul">
+<li><a href="docs/org--LaTeX_002fPDF-export-commands.html">13.10.1 LaTeX/PDF export commands</a></li>
+<li><a href="docs/org--LaTeX-specific-export-settings.html">13.10.2 LaTeX specific export settings</a></li>
+<li><a href="docs/org--LaTeX-header-and-sectioning.html">13.10.3 LaTeX header and sectioning structure</a></li>
+<li><a href="docs/org--Quoting-LaTeX-code.html">13.10.4 Quoting LaTeX code</a></li>
+<li><a href="docs/org--Tables-in-LaTeX-export.html">13.10.5 Tables in LaTeX export</a></li>
+<li><a href="docs/org--Images-in-LaTeX-export.html">13.10.6 Images in LaTeX export</a></li>
+<li><a href="docs/org--Plain-lists-in-LaTeX-export.html">13.10.7 Plain lists in LaTeX export</a></li>
+<li><a href="docs/org--Source-blocks-in-LaTeX-export.html">13.10.8 Source blocks in LaTeX export</a></li>
+<li><a href="docs/org--Example-blocks-in-LaTeX-export.html">13.10.9 Example blocks in LaTeX export</a></li>
+<li><a href="docs/org--Special-blocks-in-LaTeX-export.html">13.10.10 Special blocks in LaTeX export</a></li>
+<li><a href="docs/org--Horizontal-rules-in-LaTeX-export.html">13.10.11 Horizontal rules in LaTeX export</a></li>
+<li><a href="docs/org--Verse-blocks-in-LaTeX-export.html">13.10.12 Verse blocks in LaTeX export</a></li>
+<li><a href="docs/org--Quote-blocks-in-LaTeX-export.html">13.10.13 Quote blocks in LaTeX export</a></li>
+<li><a href="docs/org--Controlling-the-way-the-table-of-contents-is-generated.html">13.10.14 Controlling the way the table of contents is generated</a></li>
+</ul></li>
+<li><a href="docs/org--Markdown-Export.html">13.11 Markdown Export</a></li>
+<li><a href="docs/org--OpenDocument-Text-Export.html">13.12 OpenDocument Text Export</a>
+<ul class="org-ul">
+<li><a href="docs/org--Pre_002drequisites-for-ODT-export.html">13.12.1 Pre-requisites for ODT export</a></li>
+<li><a href="docs/org--ODT-export-commands.html">13.12.2 ODT export commands</a></li>
+<li><a href="docs/org--ODT-specific-export-settings.html">13.12.3 ODT specific export settings</a></li>
+<li><a href="docs/org--Extending-ODT-export.html">13.12.4 Extending ODT export</a></li>
+<li><a href="docs/org--Applying-custom-styles.html">13.12.5 Applying custom styles</a></li>
+<li><a href="docs/org--Links-in-ODT-export.html">13.12.6 Links in ODT export</a></li>
+<li><a href="docs/org--Tables-in-ODT-export.html">13.12.7 Tables in ODT export</a></li>
+<li><a href="docs/org--Images-in-ODT-export.html">13.12.8 Images in ODT export</a></li>
+<li><a href="docs/org--Math-formatting-in-ODT-export.html">13.12.9 Math formatting in ODT export</a>
+<ul class="org-ul">
+<li><a href="docs/org--LaTeX-math-snippets.html">13.12.9.1 LaTeX math snippets</a></li>
+<li><a href="docs/org--MathML-and-OpenDocument-formula-files.html">13.12.9.2 MathML and OpenDocument formula files</a></li>
+</ul></li>
+<li><a href="docs/org--Labels-and-captions-in-ODT-export.html">13.12.10 Labels and captions in ODT export</a></li>
+<li><a href="docs/org--Literal-examples-in-ODT-export.html">13.12.11 Literal examples in ODT export</a></li>
+<li><a href="docs/org--Advanced-topics-in-ODT-export.html">13.12.12 Advanced topics in ODT export</a></li>
+</ul></li>
+<li><a href="docs/org--Org-Export.html">13.13 Org Export</a></li>
+<li><a href="docs/org--Texinfo-Export.html">13.14 Texinfo Export</a>
+<ul class="org-ul">
+<li><a href="docs/org--Texinfo-export-commands.html">13.14.1 Texinfo export commands</a></li>
+<li><a href="docs/org--Texinfo-specific-export-settings.html">13.14.2 Texinfo specific export settings</a></li>
+<li><a href="docs/org--Texinfo-file-header.html">13.14.3 Texinfo file header</a></li>
+<li><a href="docs/org--Texinfo-title-and-copyright-page.html">13.14.4 Texinfo title and copyright page</a></li>
+<li><a href="docs/org--Info-directory-file.html">13.14.5 Info directory file</a></li>
+<li><a href="docs/org--Headings-and-sectioning-structure.html">13.14.6 Headings and sectioning structure</a></li>
+<li><a href="docs/org--Indices.html">13.14.7 Indices</a></li>
+<li><a href="docs/org--Quoting-Texinfo-code.html">13.14.8 Quoting Texinfo code</a></li>
+<li><a href="docs/org--Plain-lists-in-Texinfo-export.html">13.14.9 Plain lists in Texinfo export</a></li>
+<li><a href="docs/org--Tables-in-Texinfo-export.html">13.14.10 Tables in Texinfo export</a></li>
+<li><a href="docs/org--Images-in-Texinfo-export.html">13.14.11 Images in Texinfo export</a></li>
+<li><a href="docs/org--Quotations-in-Texinfo-export.html">13.14.12 Quotations in Texinfo export</a></li>
+<li><a href="docs/org--Key-bindings-in-Texinfo-export.html">13.14.13 Key bindings in Texinfo export</a></li>
+<li><a href="docs/org--Special-blocks-in-Texinfo-export.html">13.14.14 Special blocks in Texinfo export</a></li>
+<li><a href="docs/org--A-Texinfo-example.html">13.14.15 A Texinfo example</a></li>
+</ul></li>
+<li><a href="docs/org--iCalendar-Export.html">13.15 iCalendar Export</a></li>
+<li><a href="docs/org--Other-Built_002din-Backends.html">13.16 Other Built-in Backends</a></li>
+<li><a href="docs/org--Advanced-Export-Configuration.html">13.17 Advanced Export Configuration</a></li>
+<li><a href="docs/org--Export-Region.html">13.18 Export Region</a></li>
+</ul></li>
+<li><a href="docs/org--Publishing.html">14 Publishing</a>
+<ul class="org-ul">
+<li><a href="docs/org--Configuration.html">14.1 Configuration</a>
+<ul class="org-ul">
+<li><a href="docs/org--Project-alist.html">14.1.1 The variable <code>org-publish-project-alist</code></a></li>
+<li><a href="docs/org--Sources-and-destinations.html">14.1.2 Sources and destinations for files</a></li>
+<li><a href="docs/org--Selecting-files.html">14.1.3 Selecting files</a></li>
+<li><a href="docs/org--Publishing-action.html">14.1.4 Publishing action</a></li>
+<li><a href="docs/org--Publishing-options.html">14.1.5 Options for the exporters</a></li>
+<li><a href="docs/org--Publishing-links.html">14.1.6 Publishing links</a></li>
+<li><a href="docs/org--Site-map.html">14.1.7 Generating a sitemap</a></li>
+<li><a href="docs/org--Generating-an-index.html">14.1.8 Generating an index</a></li>
+</ul></li>
+<li><a href="docs/org--Uploading-Files.html">14.2 Uploading Files</a></li>
+<li><a href="docs/org--Sample-Configuration.html">14.3 Sample Configuration</a>
+<ul class="org-ul">
+<li><a href="docs/org--Simple-example.html">14.3.1 Example: simple publishing configuration</a></li>
+<li><a href="docs/org--Complex-example.html">14.3.2 Example: complex publishing configuration</a></li>
+</ul></li>
+<li><a href="docs/org--Triggering-Publication.html">14.4 Triggering Publication</a></li>
+</ul></li>
+<li><a href="docs/org--Citation-handling.html">15 Citation handling</a>
+<ul class="org-ul">
+<li><a href="docs/org--Citations.html">15.1 Citations</a></li>
+<li><a href="docs/org--Citation-export-processors.html">15.2 Citation export processors</a></li>
+<li><a href="docs/org--Bibliography-printing.html">15.3 Bibliography printing</a>
+<ul class="org-ul">
+<li><a href="docs/org--Bibliography-options-in-the-biblatex-and-csl-export-processors.html">15.3.1 Bibliography options in the ‘=biblatex=' and ‘=csl=' export processors</a></li>
+</ul></li>
+</ul></li>
+<li><a href="docs/org--Working-with-Source-Code.html">16 Working with Source Code</a>
+<ul class="org-ul">
+<li><a href="docs/org--Features-Overview.html">16.1 Features Overview</a></li>
+<li><a href="docs/org--Structure-of-Code-Blocks.html">16.2 Structure of Code Blocks</a></li>
+<li><a href="docs/org--Using-Header-Arguments.html">16.3 Using Header Arguments</a></li>
+<li><a href="docs/org--Environment-of-a-Code-Block.html">16.4 Environment of a Code Block</a></li>
+<li><a href="docs/org--Evaluating-Code-Blocks.html">16.5 Evaluating Code Blocks</a></li>
+<li><a href="docs/org--Results-of-Evaluation.html">16.6 Results of Evaluation</a></li>
+<li><a href="docs/org--Exporting-Code-Blocks.html">16.7 Exporting Code Blocks</a></li>
+<li><a href="docs/org--Extracting-Source-Code.html">16.8 Extracting Source Code</a></li>
+<li><a href="docs/org--Languages.html">16.9 Languages</a></li>
+<li><a href="docs/org--Editing-Source-Code.html">16.10 Editing Source Code</a></li>
+<li><a href="docs/org--Noweb-Reference-Syntax.html">16.11 Noweb Reference Syntax</a></li>
+<li><a href="docs/org--Library-of-Babel.html">16.12 Library of Babel</a></li>
+<li><a href="docs/org--Key-bindings-and-Useful-Functions.html">16.13 Key bindings and Useful Functions</a></li>
+<li><a href="docs/org--Batch-Execution.html">16.14 Batch Execution</a></li>
+</ul></li>
+<li><a href="docs/org--Miscellaneous.html">17 Miscellaneous</a>
+<ul class="org-ul">
+<li><a href="docs/org--Completion.html">17.1 Completion</a></li>
+<li><a href="docs/org--Structure-Templates.html">17.2 Structure Templates</a></li>
+<li><a href="docs/org--Speed-Keys.html">17.3 Speed Keys</a></li>
+<li><a href="docs/org--Clean-View.html">17.4 A Cleaner Outline View</a>
+<ul class="org-ul">
+<li><a href="docs/org--Org-Indent-Mode.html">17.4.1 Org Indent Mode</a></li>
+<li><a href="docs/org--Hard-indentation.html">17.4.2 Hard indentation</a></li>
+</ul></li>
+<li><a href="docs/org--Execute-commands-in-the-active-region.html">17.5 Execute commands in the active region</a></li>
+<li><a href="docs/org--Dynamic-Headline-Numbering.html">17.6 Dynamic Headline Numbering</a></li>
+<li><a href="docs/org--The-Very-Busy-C_002dc-C_002dc-Key.html">17.7 The Very Busy C-c C-c Key</a></li>
+<li><a href="docs/org--In_002dbuffer-Settings.html">17.8 Summary of In-Buffer Settings</a></li>
+<li><a href="docs/org--Regular-Expressions.html">17.9 Regular Expressions</a></li>
+<li><a href="docs/org--Org-Syntax.html">17.10 Org Syntax</a></li>
+<li><a href="docs/org--Documentation-Access.html">17.11 Context Dependent Documentation</a></li>
+<li><a href="docs/org--Escape-Character.html">17.12 Escape Character</a></li>
+<li><a href="docs/org--Code-Evaluation-Security.html">17.13 Code Evaluation and Security Issues</a></li>
+<li><a href="docs/org--Interaction.html">17.14 Interaction with Other Packages</a>
+<ul class="org-ul">
+<li><a href="docs/org--Cooperation.html">17.14.1 Packages that Org cooperates with</a></li>
+<li><a href="docs/org--Conflicts.html">17.14.2 Packages that conflict with Org mode</a></li>
+</ul></li>
+<li><a href="docs/org--TTY-Keys.html">17.15 Using Org on a TTY</a></li>
+<li><a href="docs/org--Protocols.html">17.16 Protocols for External Access</a>
+<ul class="org-ul">
+<li><a href="docs/org--The-store_002dlink-protocol.html">17.16.1 The <code>store-link</code> protocol</a></li>
+<li><a href="docs/org--The-capture-protocol.html">17.16.2 The <code>capture</code> protocol</a></li>
+<li><a href="docs/org--The-open_002dsource-protocol.html">17.16.3 The <code>open-source</code> protocol</a></li>
+</ul></li>
+<li><a href="docs/org--Org-Crypt.html">17.17 Org Crypt</a></li>
+<li><a href="docs/org--Org-Mobile.html">17.18 Org Mobile</a>
+<ul class="org-ul">
+<li><a href="docs/org--Setting-up-the-staging-area.html">17.18.1 Setting up the staging area</a></li>
+<li><a href="docs/org--Pushing-to-the-mobile-application.html">17.18.2 Pushing to the mobile application</a></li>
+<li><a href="docs/org--Pulling-from-the-mobile-application.html">17.18.3 Pulling from the mobile application</a></li>
+</ul></li>
+<li><a href="docs/org--Drag-and-Drop-_0026-yank_002dmedia.html">17.19 Drag and Drop &amp; <code>yank-media</code></a></li>
+<li><a href="docs/org--Repeating-commands.html">17.20 Repeating commands</a></li>
+</ul></li>
+<li><a href="docs/org--Hacking.html">Appendix A Hacking</a>
+<ul class="org-ul">
+<li><a href="docs/org--Hooks.html">A.1 Hooks</a></li>
+<li><a href="docs/org--Add_002don-Packages.html">A.2 Add-on Packages</a></li>
+<li><a href="docs/org--Adding-Hyperlink-Types.html">A.3 Adding Hyperlink Types</a></li>
+<li><a href="docs/org--Adding-Hyperlink-preview.html">A.4 Adding Hyperlink preview</a></li>
+<li><a href="docs/org--Adding-Export-Backends.html">A.5 Adding Export Backends</a></li>
+<li><a href="docs/org--Tables-in-Arbitrary-Syntax.html">A.6 Tables in Arbitrary Syntax</a>
+<ul class="org-ul">
+<li><a href="docs/org--Radio-tables.html">A.6.1 Radio tables</a></li>
+<li><a href="docs/org--A-LaTeX-example.html">A.6.2 A LaTeX example of radio tables</a></li>
+<li><a href="docs/org--Translator-functions.html">A.6.3 Translator functions</a></li>
+</ul></li>
+<li><a href="docs/org--Dynamic-Blocks.html">A.7 Dynamic Blocks</a></li>
+<li><a href="docs/org--Special-Agenda-Views.html">A.8 Special Agenda Views</a></li>
+<li><a href="docs/org--Speeding-Up-Your-Agendas.html">A.9 Speeding Up Your Agendas</a></li>
+<li><a href="docs/org--Extracting-Agenda-Information.html">A.10 Extracting Agenda Information</a></li>
+<li><a href="docs/org--Using-the-Property-API.html">A.11 Using the Property API</a></li>
+<li><a href="docs/org--Using-the-Mapping-API.html">A.12 Using the Mapping API</a></li>
+</ul></li>
+<li><a href="docs/org--History-and-Acknowledgments.html">Appendix B History and Acknowledgments</a>
+<ul class="org-ul">
+<li><a href="docs/org--History-and-Acknowledgments.html#From-Carsten-1">B.1 From Carsten</a></li>
+<li><a href="docs/org--History-and-Acknowledgments.html#From-Bastien-1">B.2 From Bastien</a></li>
+<li><a href="docs/org--History-and-Acknowledgments.html#List-of-Contributions-1">B.3 List of Contributions</a></li>
+</ul></li>
+<li><a href="docs/org--GNU-Free-Documentation-License.html">Appendix C GNU Free Documentation License</a>
+<ul class="org-ul">
+<li><a href="docs/org--GNU-Free-Documentation-License.html#ADDENDUM_003a-How-to-use-this-License-for-your-documents">C.1 ADDENDUM: How to use this License for your documents</a></li>
+</ul></li>
+<li><a href="docs/org--Main-Index.html">D Main Index</a></li>
+<li><a href="docs/org--Key-Index.html">E Key Index</a></li>
+<li><a href="docs/org--Command-and-Function-Index.html">F Command and Function Index</a></li>
+<li><a href="docs/org--Variable-Index.html">G Variable Index</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Introduction.html">Introduction</a>   [][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

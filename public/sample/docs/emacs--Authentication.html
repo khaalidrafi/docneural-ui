@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keeping-Persistent-Authentication-Information">1. 51.5 Keeping Persistent Authentication Information ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>   Up: <a href="docs/emacs--Customization.html">Customization</a>
+</p>
+
+<p>
+<a id="Authentication"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keeping-Persistent-Authentication-Information" class="outline-2">
+<h2 id="Keeping-Persistent-Authentication-Information"><span class="section-number-2">1.</span> 51.5 Keeping Persistent Authentication Information <a href="#Keeping-Persistent-Authentication-Information">¶</a></h2>
+<div class="outline-text-2" id="text-Keeping-Persistent-Authentication-Information">
+<p>
+Some Emacs packages, which connect to other services, require authentication (see <a href="docs/emacs--Passwords.html">Entering passwords</a>), e.g., see <a href="../gnus_html/index.html#Top">Gnus</a> in The Gnus Manual, or <a href="../tramp_html/index.html#Top">Tramp</a> in The Tramp Manual. Because it might be annoying to provide the same user name and password again and again, Emacs offers to keep this information persistent via the <code>auth-source</code> library.
+</p>
+
+<p>
+By default, the authentication information is taken from the file <code>~/.authinfo</code> or <code>~/.authinfo.gpg</code> or <code>~/.netrc</code>. These files have a syntax similar to netrc files as known from the <code>ftp</code> program, like this:
+</p>
+
+<pre class="example" id="org6c34ec4">
+machine mymachine login myloginname password mypassword port myport
+</pre>
+
+<p>
+Similarly, the <code>auth-source</code> library supports multiple storage backend, currently either the classic netrc backend, JSON files, the Secret Service API, and pass, the standard unix password manager.
+</p>
+
+<p>
+All these alternatives can be customized via the user option <code>auth-sources</code>, see <a href="../auth_html/Help-for-users.html#Help-for-users">Emacs auth-source</a> in Emacs auth-source.
+</p>
+
+<p>
+When a password is entered interactively, which is not found via the configured backend, some of the backends offer to save it persistently. This can be changed by customizing the user option <code>auth-source-save-behavior</code>.
+</p>
+</div>
+</div>

@@ -1,0 +1,122 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#image-modules">1.0.1. 16.4 Image Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Image-Modules"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--image_002dtype-Reference.html">image-type Reference</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Image-Modules-1"></a>
+</p>
+</div>
+<div id="outline-container-image-modules" class="outline-4">
+<h4 id="image-modules"><span class="section-number-4">1.0.1.</span> 16.4 Image Modules</h4>
+<div class="outline-text-4" id="text-image-modules">
+<p>
+Let's take the example of the Pine64, an ARM based machine. To be able to produce an image targeting this board, we need the following elements:
+</p>
+
+<ul class="org-ul">
+<li>An <code>operating-system</code> record containing at least an appropriate kernel (<code>linux-libre-arm64-generic</code>) and bootloader <code>u-boot-pine64-lts-bootloader</code>) for the Pine64.</li>
+<li>Possibly, an <code>image-type</code> record providing a way to turn an <code>operating-system</code> record to an <code>image</code> record suitable for the Pine64.</li>
+<li>An actual <code>image</code> that can be instantiated with the <code>guix system image</code> command.</li>
+</ul>
+
+<p>
+The <code>(gnu system images pine64)</code> module provides all those elements: <code>pine64-barebones-os</code>, <code>pine64-image-type</code> and <code>pine64-barebones-raw-image</code> respectively.
+</p>
+
+<p>
+The module returns the <code>pine64-barebones-raw-image</code> in order for users to be able to run:
+</p>
+
+<pre class="example" id="org3b3880c">
+guix system image gnu/system/images/pine64.scm
+</pre>
+
+<p>
+Now, thanks to the <code>pine64-image-type</code> record declaring the <code>'pine64-raw</code> <code>image-type</code>, one could also prepare a <code>my-pine.scm</code> file with the following content:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu system images pine64))
+(operating-system
+  (inherit pine64-barebones-os)
+  (timezone "Europe/Athens"))
+</pre>
+</div>
+
+<p>
+to customize the <code>pine64-barebones-os</code>, and run:
+</p>
+
+<pre class="example" id="org8160d37">
+$ guix system image --image-type=pine64-raw my-pine.scm
+</pre>
+
+<p>
+Note that there are other modules in the <code>gnu/system/images</code> directory targeting <code>Novena</code>, <code>Pine64</code>, <code>PinebookPro</code> and <code>Rock64</code> machines.
+</p>
+</div>
+</div>
+</div>

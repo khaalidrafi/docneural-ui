@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Options-for-RCS-and-SCCS">1. 30.1.13.2 Options for RCS and SCCS ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--CVS-Options.html">Options specific for CVS</a>   Previous: <a href="docs/emacs--General-VC-Options.html">General Options</a>   Up: <a href="docs/emacs--Customizing-VC.html">Customizing VC</a>
+</p>
+
+<p>
+<a id="RCS-and-SCCS"></a>
+</p>
+
+<hr />
+<div id="outline-container-Options-for-RCS-and-SCCS" class="outline-2">
+<h2 id="Options-for-RCS-and-SCCS"><span class="section-number-2">1.</span> 30.1.13.2 Options for RCS and SCCS <a href="#Options-for-RCS-and-SCCS">¶</a></h2>
+<div class="outline-text-2" id="text-Options-for-RCS-and-SCCS">
+<p>
+By default, RCS uses locking to coordinate the activities of several users, but there is a mode called <i>non-strict locking</i> in which you can check-in changes without locking the file first. Use ‘=rcs -U=' to switch to non-strict locking for a particular file, see the <code>rcs</code> manual page for details.
+</p>
+
+<p>
+When deducing the version control state of an RCS file, VC first looks for an RCS version header string in the file (see <a href="docs/emacs--Version-Headers.html">Inserting Version Control Headers</a>). If there is no header string, VC normally looks at the file permissions of the work file; this is fast. But there might be situations when the file permissions cannot be trusted. In this case the master file has to be consulted, which is rather expensive. Also the master file can only tell you <i>if</i> there's any lock on the file, but not whether your work file really contains that locked version.
+</p>
+
+<p>
+You can tell VC not to use version headers to determine the file status by setting <code>vc-consult-headers</code> to <code>nil</code>. VC then always uses the file permissions (if it is supposed to trust them), or else checks the master file.
+</p>
+
+<p>
+VC determines the version control state of files under SCCS much as with RCS. It does not consider SCCS version headers, though. Thus, the variable <code>vc-consult-headers</code> does not affect SCCS use.
+</p>
+</div>
+</div>

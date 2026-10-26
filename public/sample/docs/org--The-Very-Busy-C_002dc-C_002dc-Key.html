@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Very-Busy-C_002dc-C_002dc-Key-1">1. 17.7 The Very Busy C-c C-c Key ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="The-Very-Busy-C_002dc-C_002dc-Key"></a>
+Next: <a href="docs/org--In_002dbuffer-Settings.html">Summary of In-Buffer Settings</a>, Previous: <a href="docs/org--Dynamic-Headline-Numbering.html">Dynamic Headline Numbering</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-Very-Busy-C_002dc-C_002dc-Key-1" class="outline-2">
+<h2 id="The-Very-Busy-C_002dc-C_002dc-Key-1"><span class="section-number-2">1.</span> 17.7 The Very Busy C-c C-c Key <a href="#The-Very-Busy-C_002dc-C_002dc-Key-1">¶</a></h2>
+<div class="outline-text-2" id="text-The-Very-Busy-C_002dc-C_002dc-Key-1">
+<p>
+The C-c C-c key in Org serves many purposes depending on the context. It is probably the most over-worked, multipurpose key combination in Org. Its uses are well documented throughout this manual, but here is a consolidated list for easy reference.
+</p>
+
+<ul class="org-ul">
+<li>If column view (see <a href="docs/org--Column-View.html">Column View</a>) is on, exit column view.</li>
+<li>If any highlights shown in the buffer from the creation of a sparse tree, or from clock display, remove such highlights.</li>
+<li>If point is in one of the special ‘=KEYWORD=' lines, scan the buffer for these lines and update the information. Also reset the Org file cache used to temporarily store the contents of URLs used as values for keywords like ‘=SETUPFILE='.</li>
+<li>If point is inside a table, realign the table.</li>
+<li>If point is on a ‘=TBLFM=' keyword, re-apply the formulas to the entire table.</li>
+<li>If the current buffer is a capture buffer, close the note and file it. With a prefix argument, also jump to the <a href="#org2cae28c">target</a> location after saving the note.</li>
+<li>If point is on a ‘=<a id="target">target</a>=', update radio targets and corresponding links in this buffer.</li>
+<li>If point is on a property line or at the start or end of a property drawer, offer property commands.</li>
+<li>If point is at a footnote reference, go to the corresponding definition, and <i>vice versa</i>.</li>
+<li>If point is on a statistics cookie, update it.</li>
+<li>If point is in a plain list item with a checkbox, toggle the status of the checkbox.</li>
+<li>If point is on a numbered item in a plain list, renumber the ordered list.</li>
+<li>If point is on the ‘=#+BEGIN=' line of a dynamic block, the block is updated.</li>
+<li>If point is at a timestamp, fix the day name in the timestamp.</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--In_002dbuffer-Settings.html">Summary of In-Buffer Settings</a>, Previous: <a href="docs/org--Dynamic-Headline-Numbering.html">Dynamic Headline Numbering</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

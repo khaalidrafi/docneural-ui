@@ -297,9 +297,13 @@
     height: 10px;
     border-radius: 50%;
     background: var(--dn-accent);
-    opacity: 0.16;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 70%, transparent);
+    opacity: 0.28;
     animation: sk-pulse 1.8s ease-in-out infinite;
   }
+  /* SIGNAL pass: the skeleton is the graph's promise — so it wears the same
+     neon duo the canvas will paint, not a single flat cyan. */
+  .skel .o2, .skel .o4 { background: var(--dn-accent-2); box-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent-2) 70%, transparent); }
   .skel .o1 { top: 30%; left: 22%; }
   .skel .o2 { top: 58%; left: 46%; width: 16px; height: 16px; animation-delay: 0.25s; }
   .skel .o3 { top: 26%; left: 68%; animation-delay: 0.5s; }

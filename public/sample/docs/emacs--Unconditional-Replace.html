@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Unconditional-Replacement">1. 17.10.1 Unconditional Replacement ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Regexp-Replace.html">Regexp Replacement</a>   Up: <a href="docs/emacs--Replace.html">Replacement Commands</a>
+</p>
+
+<p>
+<a id="Unconditional-Replace"></a>
+</p>
+
+<hr />
+<div id="outline-container-Unconditional-Replacement" class="outline-2">
+<h2 id="Unconditional-Replacement"><span class="section-number-2">1.</span> 17.10.1 Unconditional Replacement <a href="#Unconditional-Replacement">¶</a></h2>
+<div class="outline-text-2" id="text-Unconditional-Replacement">
+<dl class="org-dl">
+<dt>M-x replace-string RET <code>string</code> RET <code>newstring</code> RET</dt><dd>Replace every occurrence of <code>string</code> with <code>newstring</code>.</dd>
+</dl>
+
+<p>
+To replace every instance of ‘=foo=' after point with ‘=bar=', use the command M-x replace-string with the two arguments ‘=foo=' and ‘=bar='. Replacement happens only in the text after point, so if you want to cover the whole buffer you must go to the beginning first. All occurrences up to the end of the buffer are replaced; to limit replacement to part of the buffer, activate the region around that part. When the region is active, replacement is limited to the region (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>).
+</p>
+
+<p>
+When <code>replace-string</code> exits, it leaves point at the last occurrence replaced. It adds the prior position of point (where the <code>replace-string</code> command was issued) to the mark ring, without activating the mark; use C-u C-SPC to move back there. See <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>.
+</p>
+
+<p>
+A prefix argument restricts replacement to matches that are surrounded by word boundaries.
+</p>
+
+<p>
+See <a href="docs/emacs--Replacement-and-Lax-Matches.html">Replace Commands and Lax Matches</a>, for details about case-sensitivity and character folding in replace commands.
+</p>
+</div>
+</div>

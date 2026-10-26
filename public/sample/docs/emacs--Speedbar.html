@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Speedbar-Frames">1. 23.9 Speedbar Frames ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Multiple-Displays.html">Multiple Displays</a>   Previous: <a href="docs/emacs--Fonts.html">Fonts</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Speedbar"></a>
+</p>
+
+<hr />
+<div id="outline-container-Speedbar-Frames" class="outline-2">
+<h2 id="Speedbar-Frames"><span class="section-number-2">1.</span> 23.9 Speedbar Frames <a href="#Speedbar-Frames">¶</a></h2>
+<div class="outline-text-2" id="text-Speedbar-Frames">
+<p>
+The <i>speedbar</i> is a special frame for conveniently navigating in or operating on another frame. The speedbar, when it exists, is always associated with a specific frame, called its <i>attached frame</i>; all speedbar operations act on that frame.
+</p>
+
+<p>
+Type M-x speedbar to create the speedbar and associate it with the current frame. To dismiss the speedbar, type M-x speedbar again, or select the speedbar and type q. (You can also delete the speedbar frame like any other Emacs frame.) If you wish to associate the speedbar with a different frame, dismiss it and call M-x speedbar from that frame.
+</p>
+
+<p>
+The speedbar can operate in various modes. Its default mode is <i>File Display</i> mode, which shows the files in the current directory of the selected window of the attached frame, one file per line. Clicking on a non-directory visits that file in the selected window of the attached frame, and clicking on a directory shows that directory in the speedbar (see <a href="docs/emacs--Mouse-References.html">Following References with the Mouse</a>). Each line also has a box, ‘=[+]=' or ‘=&lt;+&gt;=', that you can click on to <i>expand</i> the contents of that item. Expanding a directory adds the contents of that directory to the speedbar display, underneath the directory's own line. Expanding an ordinary file adds a list of the tags in that file to the speedbar display; you can click on a tag name to jump to that tag in the selected window of the attached frame. When a file or directory is expanded, the ‘=[+]=' changes to ‘=[-]='; you can click on that box to <i>contract</i> the item, hiding its contents.
+</p>
+
+<p>
+You navigate through the speedbar using the keyboard, too. Typing RET while point is on a line in the speedbar is equivalent to clicking the item on the current line, and SPC expands or contracts the item. U displays the parent directory of the current directory. To copy, delete, or rename the file on the current line, type C, D, and R respectively. To create a new directory, type M.
+</p>
+
+<p>
+Another general-purpose speedbar mode is <i>Buffer Display</i> mode; in this mode, the speedbar displays a list of Emacs buffers. To switch to this mode, type b in the speedbar. To return to File Display mode, type f. You can also change the display mode by clicking mouse-3 anywhere in the speedbar window (or mouse-1 on the mode-line) and selecting ‘=Displays=' in the pop-up menu.
+</p>
+
+<p>
+Some major modes, including Rmail mode, Info, and GUD, have specialized ways of putting useful items into the speedbar for you to select. For example, in Rmail mode, the speedbar shows a list of Rmail files, and lets you move the current message to another Rmail file by clicking on its ‘=&lt;M&gt;=' box.
+</p>
+
+<p>
+For more details on using and programming the speedbar, See <a href="../speedbar_html/index.html#Top">Speedbar</a> in Speedbar Manual.
+</p>
+
+<hr />
+</div>
+</div>

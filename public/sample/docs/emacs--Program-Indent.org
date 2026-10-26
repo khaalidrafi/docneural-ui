@@ -1,0 +1,28 @@
+:PROPERTIES:
+:ID: emacs--Program-Indent
+:END:
+#+filetags: :emacs:
+#+title: Program Indent
+
+Next: [[id:emacs--Parentheses][Commands for Editing with Parentheses]]   Previous: [[id:emacs--Defuns][Top-Level Definitions, or Defuns]]   Up: [[id:emacs--Programs][Editing Programs]]
+
+<<Program-Indent>>
+
+--------------
+
+*** 28.3 Indentation for Programs [[#Indentation-for-Programs][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Indentation-for-Programs
+:CLASS: section
+:END:
+The best way to keep a program properly indented is to use Emacs to reindent it as you change it. Emacs has commands to indent either a single line, a specified number of lines, or all of the lines inside a single parenthetical grouping.
+
+See [[id:emacs--Indentation][Indentation]], for general information about indentation. This section describes indentation features specific to programming language modes.
+
+Emacs also provides a Lisp pretty-printer in the =pp= package, which reformats Lisp objects with nice-looking indentation. See [[../elisp_html/Output-Functions.html#Output-Functions][pp]] in The Emacs Lisp Reference Manual.
+
+- [[id:emacs--Basic-Indent][Basic Program Indentation Commands]]
+- [[id:emacs--Multi_002dline-Indent][Indenting Several Lines]]
+- [[id:emacs--Lisp-Indent][Customizing Lisp Indentation]]
+- [[id:emacs--C-Indent][Commands for C Indentation]]
+- [[id:emacs--Custom-C-Indent][Customizing C Indentation]]

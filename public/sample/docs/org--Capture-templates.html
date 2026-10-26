@@ -1,0 +1,87 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf486573">1. <span class="todo TODO">TODO</span> </a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Capture-templates"></a>
+Previous: <a href="docs/org--Using-capture.html">Using capture</a>, Up: <a href="docs/org--Capture.html">Capture</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Capture-templates-1"></a>10.1.3 Capture templates <a href="#Capture-templates-1">¶</a><br />
+<div class="outline-text-5" id="text-Capture-templates-1">
+<p>
+You can use templates for different types of capture items, and for different target locations. The easiest way to create such templates is through the customize interface.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C-_0028Capture-menu"></a>C </dt><dd>Customize the variable <code>org-capture-templates</code>.</dd>
+</dl>
+
+<p>
+Before we give the formal description of template definitions, let's look at an example. Say you would like to use one template to create general TODO entries, and you want to put these entries under the heading ‘=Tasks=' in your file ‘=~/org/gtd.org='. Also, a date tree in the file ‘=journal.org=' should capture journal entries. A possible configuration would look like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+         "* %?\nEntered on %U\n  %i\n  %a")))
+</pre>
+</div>
+
+<p>
+If you then press t from the capture menu, Org will prepare the template for you like this:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-orgf486573" class="outline-2">
+<h2 id="orgf486573"><span class="section-number-2">1.</span> <span class="todo TODO">TODO</span> </h2>
+<div class="outline-text-2" id="text-1">
+<p>
+  <a href="LINK TO WHERE YOU INITIATED CAPTURE">LINK TO WHERE YOU INITIATED CAPTURE</a>
+#+end<sub>src</sub>
+</p>
+
+<p>
+During expansion of the template, ‘=%a=' has been replaced by a link to the location from where you called the capture command. This can be extremely useful for deriving tasks from emails, for example. You fill in the task definition, press C-c C-c and Org returns you to the same place where you started the capture process.
+</p>
+
+<p>
+To define special keys to capture to a particular template without going through the interactive template selection, you can create your key binding like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(define-key global-map (kbd "C-c x")
+  (lambda () (interactive) (org-capture nil "x")))
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="docs/org--Template-elements.html">Template elements</a></li>
+<li><a href="docs/org--Template-expansion.html">Template expansion</a></li>
+<li><a href="docs/org--Templates-in-contexts.html">Templates in contexts</a></li>
+</ul>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Using-capture.html">Using capture</a>, Up: <a href="docs/org--Capture.html">Capture</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

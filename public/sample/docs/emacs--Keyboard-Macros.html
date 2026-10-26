@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keyboard-Macros-1">1. 19 Keyboard Macros ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Files.html">File Handling</a>   Previous: <a href="docs/emacs--Fixit.html">Commands for Fixing Typos</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Keyboard-Macros"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keyboard-Macros-1" class="outline-2">
+<h2 id="Keyboard-Macros-1"><span class="section-number-2">1.</span> 19 Keyboard Macros <a href="#Keyboard-Macros-1">¶</a></h2>
+<div class="outline-text-2" id="text-Keyboard-Macros-1">
+<p>
+In this chapter we describe how to record a sequence of editing commands so you can repeat it conveniently later.
+</p>
+
+<p>
+A <i>keyboard macro</i> is a command defined by an Emacs user to stand for another sequence of keys. For example, if you discover that you are about to type C-n M-d C-d forty times, you can speed your work by defining a keyboard macro to do C-n M-d C-d, and then executing it 39 more times.
+</p>
+
+<p>
+You define a keyboard macro by executing and recording the commands which are its definition. Put differently, as you define a keyboard macro, the definition is being executed for the first time. This way, you can see the effects of your commands, so that you don't have to figure them out in your head. When you close the definition, the keyboard macro is defined and also has been, in effect, executed once. You can then do the whole thing over again by invoking the macro.
+</p>
+
+<p>
+Keyboard macros differ from ordinary Emacs commands in that they are written in the Emacs command language rather than in Lisp. This makes it easier for the novice to write them, and makes them more convenient as temporary hacks. However, the Emacs command language is not powerful enough as a programming language to be useful for writing anything intelligent or general. For such things, Lisp must be used.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Basic-Keyboard-Macro.html">Basic Use</a></li>
+<li><a href="docs/emacs--Keyboard-Macro-Ring.html">The Keyboard Macro Ring</a></li>
+<li><a href="docs/emacs--Keyboard-Macro-Counter.html">The Keyboard Macro Counter</a></li>
+<li><a href="docs/emacs--Keyboard-Macro-Query.html">Executing Macros with Variations</a></li>
+<li><a href="docs/emacs--Save-Keyboard-Macro.html">Naming and Saving Keyboard Macros</a></li>
+<li><a href="docs/emacs--Edit-Keyboard-Macro.html">Editing a Keyboard Macro</a></li>
+<li><a href="docs/emacs--Keyboard-Macro-Step_002dEdit.html">Stepwise Editing a Keyboard Macro</a></li>
+<li><a href="docs/emacs--Kmacro-Menu.html">Listing and Editing Keyboard Macros</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

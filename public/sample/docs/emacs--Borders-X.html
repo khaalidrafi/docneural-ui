@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Internal-and-Outer-Borders">1. C.9 Internal and Outer Borders ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Title-X.html">Frame Titles</a>   Previous: <a href="docs/emacs--Window-Size-X.html">Options for Window Size and Position</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Borders-X"></a>
+</p>
+
+<hr />
+<div id="outline-container-Internal-and-Outer-Borders" class="outline-2">
+<h2 id="Internal-and-Outer-Borders"><span class="section-number-2">1.</span> C.9 Internal and Outer Borders <a href="#Internal-and-Outer-Borders">¶</a></h2>
+<div class="outline-text-2" id="text-Internal-and-Outer-Borders">
+<p>
+An Emacs frame has an internal border and an outer border. The internal border is an extra strip of the background color around the text portion of the frame. Emacs itself draws the internal border. The outer border is drawn by X outside the tool and menu bars of the frame. There is also an external border which is drawn by the window manager. The size of the external border cannot be set from within Emacs.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-_002d_002dinternal_002dborder"></a>‘=-ib <code>=width</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;internal-border===width='</dt><dd>Specify <code>width</code> as the width of the internal border (around the frame's text area), in pixels.</dd>
+
+<dt><a id="index-_002d_002dborder_002dwidth"></a>‘=-bw <code>=width</code>' </dt><dd></dd>
+
+<dt>‘=&#x2013;border-width===width='</dt><dd>Specify <code>width</code> as the width of the outer border, in pixels.</dd>
+</dl>
+
+<p>
+When you specify the size of the frame, that does not count the borders. The frame's position is measured from the outside edge of the external border.
+</p>
+
+<p>
+Use the ‘=-ib <code>=n</code>' option to specify an internal border <code>n</code> pixels wide. The default is 1. Use ‘=-bw <code>=n</code>' to specify the width of the outer border (though the window manager may not pay attention to what you specify). The default width of the outer border is 2.
+</p>
+</div>
+</div>

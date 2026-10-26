@@ -1,0 +1,248 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fonts-1">1. 23.8 Fonts ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Speedbar.html">Speedbar Frames</a>   Previous: <a href="docs/emacs--Frame-Commands.html">Frame Commands</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Fonts"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fonts-1" class="outline-2">
+<h2 id="Fonts-1"><span class="section-number-2">1.</span> 23.8 Fonts <a href="#Fonts-1">¶</a></h2>
+<div class="outline-text-2" id="text-Fonts-1">
+<p>
+By default, Emacs displays text on graphical displays using a 10-point monospace font, and the font size can be changed interactively (see <a href="docs/emacs--Text-Scale.html">Text Scale</a>).
+</p>
+
+<p>
+There are several different ways to specify a different font:
+</p>
+
+<ul class="org-ul">
+<li>Click on ‘=Set Default Font=' in the ‘=Options=' menu. This makes the selected font the default on all existing graphical frames. To save this for future sessions, click on ‘=Save Options=' in the ‘=Options=' menu.</li>
+
+<li><p>
+Add a line to your init file, modifying the variable <code>default-frame-alist</code> to specify the <code>font</code> parameter (see <a href="docs/emacs--Frame-Parameters.html">Frame Parameters</a>), like this:
+</p>
+
+<pre class="example" id="org5f9bfcd">
+(add-to-list 'default-frame-alist
+             '(font . "DejaVu Sans Mono-10"))
+</pre>
+
+<p>
+This makes the font the default on all graphical frames created after restarting Emacs with that init file.
+</p></li>
+
+<li><p>
+Add an ‘=emacs.font=' X resource setting to your X resource file, like this:
+</p>
+
+<pre class="example" id="orgfc00626">
+emacs.font: DejaVu Sans Mono-12
+</pre>
+
+<p>
+You must restart X, or use the <code>xrdb</code> command, for the X resources file to take effect. See <a href="docs/emacs--Resources.html">X Resources</a>. Do not quote font names in X resource files.
+</p></li>
+
+<li>If you are running Emacs on the GNOME desktop or Haiku, you can tell Emacs to adjust the frame's default font along with changes to the default system font by setting the variable <code>font-use-system-font</code> to <code>t</code> (the default is <code>nil</code>). For this to work, Emacs must have been compiled with support for Gsettings (or the older Gconf). (To be specific, the Gsettings configuration names used are ‘=org.gnome.desktop.interface monospace-font-name=' and ‘=org.gnome.desktop.interface font-name='.)</li>
+
+<li>Use the command line option ‘=-fn=' (or ‘=&#x2013;font='). See <a href="docs/emacs--Font-X.html">Font Specification Options</a>.</li>
+</ul>
+
+<p>
+To check what font you're currently using, the C-u C-x = command can be helpful. It describes the character at point, and names the font that it's rendered in.
+</p>
+
+<p>
+There are four different ways to express a font name. The first is to use a <i>Fontconfig pattern</i>. Fontconfig patterns have the following form:
+</p>
+
+<pre class="example" id="org85b5093">
+fontname[-fontsize][:name1=values1][:name2=values2]...
+</pre>
+
+<p>
+Within this format, any of the elements in brackets may be omitted. Here, <code>fontname</code> is the <i>family name</i> of the font, such as ‘=Monospace=' or ‘=DejaVu Sans Mono='; <code>fontsize</code> is the <i>point size</i> of the font (one <i>printer's point</i> is about 1/72 of an inch); and the ‘=name=====values=' entries specify settings such as the slant and weight of the font. Each <code>values</code> may be a single value, or a list of values separated by commas. In addition, some property values are valid with only one kind of property name, in which case the ‘=name====' part may be omitted.
+</p>
+
+<p>
+Here is a list of common font properties:
+</p>
+
+<dl class="org-dl">
+<dt>‘=slant='</dt><dd>One of ‘=italic=', ‘=oblique=', or ‘=roman='.</dd>
+
+<dt>‘=weight='</dt><dd>One of ‘=light=', ‘=medium=', ‘=demibold=', ‘=bold=' or ‘=black='.</dd>
+
+<dt>‘=style='</dt><dd>Some fonts define special styles which are a combination of slant and weight. For instance, ‘=Dejavu Sans=' defines the ‘=book=' style, which overrides the slant and weight properties.</dd>
+
+<dt>‘=width='</dt><dd>One of ‘=condensed=', ‘=normal=', or ‘=expanded='.</dd>
+
+<dt>‘=spacing='</dt><dd>One of ‘=monospace=', ‘=proportional=', ‘=dual-width=', or ‘=charcell='.</dd>
+</dl>
+
+<p>
+Here are some examples of Fontconfig patterns:
+</p>
+
+<pre class="example" id="org48b9a8f">
+Monospace
+Monospace-12
+Monospace-12:bold
+DejaVu Sans Mono:bold:italic
+Monospace-12:weight=bold:slant=italic
+</pre>
+
+<p>
+For a more detailed description of Fontconfig patterns, see the Fontconfig manual, which is distributed with Fontconfig and available online at <a href="https://fontconfig.org/fontconfig-user.html">https://fontconfig.org/fontconfig-user.html</a>.
+</p>
+
+<p>
+On MS-Windows, only the subset of the form <code>fontname</code>[-=fontsize=] is supported for all fonts; the full Fontconfig pattern might not work for all of them.
+</p>
+
+<p>
+The second way to specify a font is to use a <i>GTK font pattern</i>. These have the syntax
+</p>
+
+<pre class="example" id="orga8520a6">
+fontname [properties] [fontsize]
+</pre>
+
+<p>
+where <code>fontname</code> is the family name, <code>properties</code> is a list of property values separated by spaces, and <code>fontsize</code> is the point size. The properties that you may specify for GTK font patterns are as follows:
+</p>
+
+<ul class="org-ul">
+<li>Slant properties: ‘=Italic=' or ‘=Oblique='. If omitted, the default (roman) slant is implied.</li>
+<li>Weight properties: ‘=Bold=', ‘=Book=', ‘=Light=', ‘=Medium=', ‘=Semi-bold=', or ‘=Ultra-light='. If omitted, ‘=Medium=' weight is implied.</li>
+<li>Width properties: ‘=Semi-Condensed=' or ‘=Condensed='. If omitted, a default width is used.</li>
+</ul>
+
+<p>
+Here are some examples of GTK font patterns:
+</p>
+
+<pre class="example" id="orgec8f074">
+Monospace 12
+Monospace Bold Italic 12
+</pre>
+
+<p>
+On MS-Windows, only the subset <code>fontname</code> is supported.
+</p>
+
+<p>
+The third way to specify a font is to use an <i>XLFD</i> (<i>X Logical Font Description</i>). This is the traditional method for specifying fonts under X, and is also supported on MS-Windows. Each XLFD consists of fourteen words or numbers, separated by dashes, like this:
+</p>
+
+<pre class="example" id="org5a05ecc">
+-misc-fixed-medium-r-semicondensed--13-*-*-*-c-60-iso8859-1
+</pre>
+
+<p>
+A wildcard character (‘=*=') in an XLFD matches any sequence of characters (including none), and ‘=?=' matches any single character. However, matching is implementation-dependent, and can be inaccurate when wildcards match dashes in a long name. For reliable results, supply all 14 dashes and use wildcards only within a field. Case is insignificant in an XLFD. The syntax for an XLFD is as follows:
+</p>
+
+<pre class="example" id="org9e5a341">
+-maker-family-weight-slant-widthtype-style...
+...-pixels-height-horiz-vert-spacing-width-registry-encoding
+</pre>
+
+<p>
+The entries have the following meanings:
+</p>
+
+<dl class="org-dl">
+<dt><code>maker</code></dt><dd>The name of the font manufacturer.</dd>
+
+<dt><code>family</code></dt><dd>The name of the font family (e.g., ‘=courier=').</dd>
+
+<dt><code>weight</code></dt><dd>The font weight&#x2014;normally either ‘=bold=', ‘=medium=' or ‘=light='. Some font names support other values.</dd>
+
+<dt><code>slant</code></dt><dd>The font slant&#x2014;normally ‘=r=' (roman), ‘=i=' (italic), ‘=o=' (oblique), ‘=ri=' (reverse italic), or ‘=ot=' (other). Some font names support other values.</dd>
+
+<dt><code>widthtype</code></dt><dd>The font width&#x2014;normally ‘=normal=', ‘=condensed=', ‘=semicondensed=', or ‘=extended='. Some font names support other values.</dd>
+
+<dt><code>style</code></dt><dd>An optional additional style name. Usually it is empty&#x2014;most XLFDs have two hyphens in a row at this point. The style name can also specify a two-letter ISO-639 language name, like ‘=ja=' or ‘=ko='; some fonts that support CJK scripts have that spelled out in the style name part.</dd>
+
+<dt><code>pixels</code></dt><dd>The font height, in pixels.</dd>
+
+<dt><code>height</code></dt><dd>The font height on the screen, measured in tenths of a printer's point. This is the point size of the font, times ten. For a given vertical resolution, <code>height</code> and <code>pixels</code> are proportional; therefore, it is common to specify just one of them and use ‘=*=' for the other.</dd>
+
+<dt><code>horiz</code></dt><dd>The horizontal resolution, in pixels per inch, of the screen for which the font is intended.</dd>
+
+<dt><code>vert</code></dt><dd>The vertical resolution, in pixels per inch, of the screen for which the font is intended. Normally the resolution of the fonts on your system is the right value for your screen; therefore, you normally specify ‘=*=' for this and <code>horiz</code>.</dd>
+
+<dt><code>spacing</code></dt><dd>This is ‘=m=' (monospace), ‘=p=' (proportional) or ‘=c=' (character cell).</dd>
+
+<dt><code>width</code></dt><dd>The average character width, in pixels, multiplied by ten.</dd>
+
+<dt>(no term)</dt><dd><code>registry</code><br />
+<code>encoding</code> :: The X font character set that the font depicts. (X font character sets are not the same as Emacs character sets, but they are similar.) You can use the <code>xfontsel</code> program to check which choices you have. Normally you should use ‘=iso8859=' for <code>registry</code> and ‘=1=' for <code>encoding</code>.</dd>
+</dl>
+
+<p>
+The fourth and final method of specifying a font is to use a font nickname. Certain fonts have shorter nicknames, which you can use instead of a normal font specification. For instance, ‘=6x13=' is equivalent to
+</p>
+
+<pre class="example" id="org7f63ef4">
+-misc-fixed-medium-r-semicondensed--13-*-*-*-c-60-iso8859-1
+</pre>
+
+<p>
+This form is not supported on MS-Windows.
+</p>
+
+<p>
+On X, Emacs recognizes two types of fonts: <i>client-side</i> fonts, which are provided by the Xft and Fontconfig libraries, and <i>server-side</i> fonts, which are provided by the X server itself. Most client-side fonts support advanced font features such as antialiasing and subpixel hinting, while server-side fonts do not. Fontconfig and GTK patterns match only client-side fonts.
+</p>
+
+<p>
+You will probably want to use a fixed-width default font&#x2014;that is, a font in which all characters have the same width. For Xft and Fontconfig fonts, you can use the <code>fc-list</code> command to list the available fixed-width fonts, like this:
+</p>
+
+<pre class="example" id="orgc3b8768">
+fc-list :spacing=mono
+fc-list :spacing=charcell
+</pre>
+
+<p>
+For server-side X fonts, you can use the <code>xlsfonts</code> program to list the available fixed-width fonts, like this:
+</p>
+
+<pre class="example" id="org9cbb1a4">
+xlsfonts -fn '*x*' | grep -E '^[0-9]+x[0-9]+'
+xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
+xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
+</pre>
+
+<p>
+Any font with ‘=m=' or ‘=c=' in the <code>spacing</code> field of the XLFD is a fixed-width font. To see what a particular font looks like, use the <code>xfd</code> command. For example:
+</p>
+
+<pre class="example" id="org31e3365">
+xfd -fn 6x13
+</pre>
+
+<p>
+displays the entire font ‘=6x13='.
+</p>
+
+<p>
+While running Emacs, you can also set the font of a specific kind of text (see <a href="docs/emacs--Faces.html">Text Faces</a>), or a particular frame (see <a href="docs/emacs--Frame-Parameters.html">Frame Parameters</a>).
+</p>
+
+<hr />
+</div>
+</div>

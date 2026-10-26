@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Asm-Mode-1">1. 28.13 Asm Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fortran.html">Fortran Mode</a>   Previous: <a href="docs/emacs--C-Modes.html">C and Related Modes</a>   Up: <a href="docs/emacs--Programs.html">Editing Programs</a>
+</p>
+
+<p>
+<a id="Asm-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Asm-Mode-1" class="outline-2">
+<h2 id="Asm-Mode-1"><span class="section-number-2">1.</span> 28.13 Asm Mode <a href="#Asm-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Asm-Mode-1">
+<p>
+Asm mode is a major mode for editing files of assembler code. It defines these commands:
+</p>
+
+<dl class="org-dl">
+<dt>TAB</dt><dd><code>tab-to-tab-stop</code>.</dd>
+
+<dt>C-j</dt><dd>Insert a newline and then indent using <code>tab-to-tab-stop</code>.</dd>
+
+<dt>:</dt><dd>Insert a colon and then remove the indentation from before the label preceding colon. Then do <code>tab-to-tab-stop</code>.</dd>
+
+<dt>;</dt><dd>Insert or align a comment.</dd>
+</dl>
+
+<p>
+The variable <code>asm-comment-char</code> specifies which character starts comments in assembler syntax.
+</p>
+</div>
+</div>

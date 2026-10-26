@@ -1,0 +1,52 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Making-Buffer-Names-Unique">1. 21.7.1 Making Buffer Names Unique ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Icomplete.html">Fast minibuffer selection</a>   Up: <a href="docs/emacs--Buffer-Convenience.html">Convenience Features and Customization of Buffer Handling</a>
+</p>
+
+<p>
+<a id="Uniquify"></a>
+</p>
+
+<hr />
+<div id="outline-container-Making-Buffer-Names-Unique" class="outline-2">
+<h2 id="Making-Buffer-Names-Unique"><span class="section-number-2">1.</span> 21.7.1 Making Buffer Names Unique <a href="#Making-Buffer-Names-Unique">¶</a></h2>
+<div class="outline-text-2" id="text-Making-Buffer-Names-Unique">
+<p>
+When several buffers visit identically-named files, Emacs must give the buffers distinct names. The default method adds a suffix based on the names of the directories that contain the files. For example, if you visit files <code>/foo/bar/mumble/name</code> and <code>/baz/quux/mumble/name</code> at the same time, their buffers will be named ‘=name&lt;bar/mumble&gt;=' and ‘=name&lt;quux/mumble&gt;=', respectively. Emacs adds as many directory parts as are needed to make a unique name.
+</p>
+
+<p>
+You can choose from several different styles for constructing unique buffer names, by customizing the option <code>uniquify-buffer-name-style</code>.
+</p>
+
+<p>
+The <code>forward</code> naming method includes part of the file's directory name at the beginning of the buffer name; using this method, buffers visiting the files <code>/u/rms/tmp/Makefile</code> and <code>/usr/projects/zaphod/Makefile</code> would be named ‘=tmp/Makefile=' and ‘=zaphod/Makefile='.
+</p>
+
+<p>
+In contrast, the <code>post-forward</code> naming method would call the buffers ‘=Makefile|tmp=' and ‘=Makefile|zaphod='. The default method <code>post-forward-angle-brackets</code> is like <code>post-forward</code>, except that it encloses the unique path in angle brackets. The <code>reverse</code> naming method would call them ‘=Makefile\tmp=' and ‘=Makefile\zaphod='. The nontrivial difference between <code>post-forward</code> and <code>reverse</code> occurs when just one directory name is not enough to distinguish two files; then <code>reverse</code> puts the directory names in reverse order, so that <code>/top/middle/file</code> becomes ‘=file\middle\top=', while <code>post-forward</code> puts them in forward order after the file name, as in ‘=file|top/middle='. If <code>uniquify-buffer-name-style</code> is set to <code>nil</code>, the buffer names simply get ‘=&lt;2&gt;=', ‘=&lt;3&gt;=', etc. appended.
+</p>
+
+<p>
+The value of <code>uniquify-buffer-name-style</code> can be set to a customized function with two arguments <code>base</code> and <code>extra-strings</code> where <code>base</code> is a string and <code>extra-strings</code> is a list of strings. For example the current implementation for <code>post-forward-angle-brackets</code> could be:
+</p>
+
+<pre class="example" id="org444b983">
+(defun my-post-forward-angle-brackets (base extra-string)
+  (concat base \"&lt;\" (mapconcat #'identity extra-string \"/\") \"&gt;\"))
+</pre>
+
+<p>
+Which rule to follow for putting the directory names in the buffer name is not very important if you are going to <i>look</i> at the buffer names before you type one. But as an experienced user, if you know the rule, you won't have to look. And then you may find that one rule or another is easier for you to remember and apply quickly.
+</p>
+
+<hr />
+</div>
+</div>

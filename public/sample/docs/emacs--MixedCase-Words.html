@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#MixedCase-Words-1">1. 28.9 MixedCase Words ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Semantic.html">Semantic</a>   Previous: <a href="docs/emacs--Symbol-Completion.html">Completion for Symbol Names</a>   Up: <a href="docs/emacs--Programs.html">Editing Programs</a>
+</p>
+
+<p>
+<a id="MixedCase-Words"></a>
+</p>
+
+<hr />
+<div id="outline-container-MixedCase-Words-1" class="outline-2">
+<h2 id="MixedCase-Words-1"><span class="section-number-2">1.</span> 28.9 MixedCase Words <a href="#MixedCase-Words-1">¶</a></h2>
+<div class="outline-text-2" id="text-MixedCase-Words-1">
+<p>
+Some programming styles make use of mixed-case (or “CamelCase”) symbols like ‘=unReadableSymbol='. (In the GNU project, we recommend using underscores to separate words within an identifier, rather than using case distinctions.) Emacs has various features to make it easier to deal with such symbols.
+</p>
+
+<p>
+Glasses mode is a buffer-local minor mode that makes it easier to read such symbols, by altering how they are displayed. By default, it displays extra underscores between each lower-case letter and the following capital letter. This does not alter the buffer text, only how it is displayed.
+</p>
+
+<p>
+To toggle Glasses mode, type M-x glasses-mode (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>). When Glasses mode is enabled, the minor mode indicator ‘=o<sup>o</sup>=' appears in the mode line. For more information about Glasses mode, type C-h P glasses RET.
+</p>
+
+<p>
+Subword mode is another buffer-local minor mode. In subword mode, Emacs's word commands recognize upper case letters in ‘=StudlyCapsIdentifiers=' as word boundaries. When Subword mode is enabled, the minor mode indicator ‘=,=' appears in the mode line. See also the similar <code>superword-mode</code> (see <a href="docs/emacs--Misc-for-Programs.html">Other Features Useful for Editing Programs</a>).
+</p>
+</div>
+</div>

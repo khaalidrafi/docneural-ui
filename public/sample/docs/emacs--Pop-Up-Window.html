@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Displaying-in-Another-Window">1. 22.4 Displaying in Another Window ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Change-Window.html">Deleting and Resizing Windows</a>   Previous: <a href="docs/emacs--Other-Window.html">Using Other Windows</a>   Up: <a href="docs/emacs--Windows.html">Multiple Windows</a>
+</p>
+
+<p>
+<a id="Pop-Up-Window"></a>
+</p>
+
+<hr />
+<div id="outline-container-Displaying-in-Another-Window" class="outline-2">
+<h2 id="Displaying-in-Another-Window"><span class="section-number-2">1.</span> 22.4 Displaying in Another Window <a href="#Displaying-in-Another-Window">¶</a></h2>
+<div class="outline-text-2" id="text-Displaying-in-Another-Window">
+<p>
+C-x 4 is a prefix key for a variety of commands that switch to a buffer in a different window&#x2014;either another existing window, or a new window created by splitting the selected window. See <a href="docs/emacs--Window-Choice.html">How <code>display-buffer</code> works</a>, for how Emacs picks or creates the window to use.
+</p>
+
+<dl class="org-dl">
+<dt>C-x 4 b <code>bufname</code> RET</dt><dd>Select buffer <code>bufname</code> in another window (<code>switch-to-buffer-other-window</code>). See <a href="docs/emacs--Select-Buffer.html">Creating and Selecting Buffers</a>.</dd>
+
+<dt><a id="index-C_002dx-4-C_002do"></a>C-x 4 C-o <code>bufname</code> RET </dt><dd>Display buffer <code>bufname</code> in some window, without trying to select it (<code>display-buffer</code>). See <a href="docs/emacs--Displaying-Buffers.html">Displaying a Buffer in a Window</a>, for details about how the window is chosen.</dd>
+
+<dt>C-x 4 f <code>filename</code> RET</dt><dd>Visit file <code>filename</code> and select its buffer in another window (<code>find-file-other-window</code>). See <a href="docs/emacs--Visiting.html">Visiting Files</a>.</dd>
+
+<dt>C-x 4 d <code>directory</code> RET</dt><dd>Select a Dired buffer for directory <code>directory</code> in another window (<code>dired-other-window</code>). See <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>.</dd>
+
+<dt>C-x 4 m</dt><dd>Start composing a mail message, similar to C-x m (see <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>), but in another window (<code>compose-mail-other-window</code>).</dd>
+
+<dt><a id="index-find_002dtag_002dother_002dwindow"></a>C-x 4 . </dt><dd>Find the definition of an identifier, similar to M-. (see <a href="docs/emacs--Xref.html">Find Identifier References</a>), but in another window (<code>xref-find-definitions-other-window</code>).</dd>
+
+<dt>C-x 4 r <code>filename</code> RET</dt><dd>Visit file <code>filename</code> read-only, and select its buffer in another window (<code>find-file-read-only-other-window</code>). See <a href="docs/emacs--Visiting.html">Visiting Files</a>.</dd>
+
+<dt>C-x 4 4</dt><dd>A more general prefix command affects the buffer displayed by the next command invoked immediately after this prefix command. It requests the buffer of the next command to be displayed in another window.</dd>
+
+<dt>C-x 4 1</dt><dd>This general prefix command requests the buffer of the next command to be displayed in the same window.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

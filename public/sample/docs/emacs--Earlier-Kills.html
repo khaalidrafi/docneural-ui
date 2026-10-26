@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Yanking-Earlier-Kills">1. 14.2.2 Yanking Earlier Kills ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Appending-Kills.html">Appending Kills</a>   Previous: <a href="docs/emacs--Kill-Ring.html">The Kill Ring</a>   Up: <a href="docs/emacs--Yanking.html">Yanking</a>
+</p>
+
+<p>
+<a id="Earlier-Kills"></a>
+</p>
+
+<hr />
+<div id="outline-container-Yanking-Earlier-Kills" class="outline-2">
+<h2 id="Yanking-Earlier-Kills"><span class="section-number-2">1.</span> 14.2.2 Yanking Earlier Kills <a href="#Yanking-Earlier-Kills">¶</a></h2>
+<div class="outline-text-2" id="text-Yanking-Earlier-Kills">
+<p>
+As explained in <a href="docs/emacs--Yanking.html">Yanking</a>, you can use a numeric argument to C-y to yank text that is no longer the most recent kill. This is useful if you remember which kill ring entry you want. If you don't, you can use the M-y (<code>yank-pop</code>) command to cycle through the possibilities or to select one of the earlier kills.
+</p>
+
+<p>
+If the previous command was a yank command, M-y takes the text that was yanked and replaces it with the text from an earlier kill. So, to recover the text of the next-to-the-last kill, first use C-y to yank the last kill, and then use M-y to replace it with the previous kill. This works only after a C-y or another M-y. (If M-y is invoked after some other command, it works differently, see below.)
+</p>
+
+<p>
+You can understand this operation mode of M-y in terms of a last-yank pointer which points at an entry in the kill ring. Each time you kill, the last-yank pointer moves to the newly made entry at the front of the ring. C-y yanks the entry which the last-yank pointer points to. M-y after a C-y or another M-y moves the last-yank pointer to the previous entry, and the text in the buffer changes to match. Enough M-y commands one after another can move the pointer to any entry in the ring, so you can get any entry into the buffer. Eventually the pointer reaches the end of the ring; the next M-y loops back around to the first entry again.
+</p>
+
+<p>
+M-y moves the last-yank pointer around the ring, but it does not change the order of the entries in the ring, which always runs from the most recent kill at the front to the oldest one still remembered.
+</p>
+
+<p>
+When used after C-y or M-y, M-y can take a numeric argument, which tells it how many entries to advance the last-yank pointer by. A negative argument moves the pointer toward the front of the ring; from the front of the ring, it moves around to the last entry and continues forward from there.
+</p>
+
+<p>
+Once the text you are looking for is brought into the buffer, you can stop doing M-y commands and the last yanked text will stay there. It's just a copy of the kill ring entry, so editing it in the buffer does not change what's in the ring. As long as no new killing is done, the last-yank pointer remains at the same place in the kill ring, so repeating C-y will yank another copy of the same previous kill.
+</p>
+
+<p>
+When you call C-y with a numeric argument, that also sets the last-yank pointer to the entry that it yanks.
+</p>
+
+<p>
+You can also invoke M-y after a command that is not a yank command. In that case, M-y prompts you in the minibuffer for one of the previous kills. You can use the minibuffer history commands (see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>) to navigate or search through the entries in the kill ring until you find the one you want to reinsert. Or you can use completion commands (see <a href="docs/emacs--Completion-Commands.html">Completion Commands</a>) to complete on an entry from the list of entries in the kill ring or pop up the <code>*Completions*</code> buffer with the candidate entries from which you can choose. After selecting the kill-ring entry, you can optionally edit it in the minibuffer. Finally, type RET to exit the minibuffer and insert the text of the selected kill-ring entry. Like in case of M-y after another yank command, the last-yank pointer is left pointing at the text you just yanked, whether it is one of the previous kills or an entry from the kill-ring that you edited before inserting it. (In the latter case, the edited entry is added to the front of the kill-ring.) So here, too, typing C-y will yank another copy of the text just inserted.
+</p>
+
+<p>
+When invoked with a plain prefix argument (C-u M-y) after a command that is not a yank command, M-y leaves the cursor in front of the inserted text, and sets the mark at the end, like C-y does.
+</p>
+
+<hr />
+</div>
+</div>

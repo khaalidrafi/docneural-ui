@@ -1,0 +1,468 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#bootloader-configuration">1.0.1. 11.15 Bootloader Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Bootloader-Configuration"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>, Previous: <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Bootloader-Configuration-1"></a>
+</p>
+</div>
+<div id="outline-container-bootloader-configuration" class="outline-4">
+<h4 id="bootloader-configuration"><span class="section-number-4">1.0.1.</span> 11.15 Bootloader Configuration</h4>
+<div class="outline-text-4" id="text-bootloader-configuration">
+<p>
+<a id="index-bootloader"></a> <a id="index-boot-loader"></a>
+The operating system supports multiple bootloaders. The bootloader is configured using <code>bootloader-configuration</code> declaration. All the fields of this structure are bootloader agnostic except for one field, <code>bootloader</code> that indicates the bootloader to be configured and installed.
+</p>
+
+<p>
+Some of the bootloaders do not honor every field of <code>bootloader-configuration</code>. For instance, the extlinux bootloader does not support themes and thus ignores the <code>theme</code> field.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: bootloader-configuration </dt><dd>The type of a bootloader configuration declaration.
+
+<dl class="org-dl">
+<dt><code>bootloader</code> </dt><dd><p>
+<a id="index-UEFI_002c-bootloader"></a> <a id="index-BIOS_002c-bootloader"></a>
+</p>
+
+<p>
+The bootloader to use, as a <code>bootloader</code> object. For now <code>grub-bootloader</code>, <code>grub-efi-bootloader</code>, <code>grub-efi-removable-bootloader</code>, <code>grub-efi-netboot-bootloader</code>, <code>grub-efi-netboot-removable-bootloader</code>, <code>extlinux-bootloader</code> and <code>u-boot-bootloader</code> are supported.
+</p>
+
+<p>
+<a id="index-ARM_002c-bootloaders"></a> <a id="index-AArch64_002c-bootloaders"></a>
+</p>
+
+<p>
+Available bootloaders are described in <code>(gnu bootloader …)</code> modules. In particular, <code>(gnu bootloader u-boot)</code> contains definitions of bootloaders for a wide range of ARM and AArch64 systems, using the <a href="https://www.denx.de/wiki/U-Boot/">U-Boot bootloader</a>.
+</p>
+
+<p>
+<a id="index-grub_002dbootloader-1"></a>
+</p>
+
+<p>
+<code>grub-bootloader</code> allows you to boot in particular Intel-based machines in “legacy” BIOS mode.
+</p>
+
+<p>
+<a id="index-grub_002defi_002dbootloader-1"></a>
+</p>
+
+<p>
+<code>grub-efi-bootloader</code> allows to boot on modern systems using the <i>Unified Extensible Firmware Interface</i> (UEFI). This is what you should use if the installation image contains a <code>/sys/firmware/efi</code> directory when you boot it on your system.
+</p>
+
+<p>
+<a id="index-grub_002defi_002dremovable_002dbootloader"></a>
+</p>
+
+<p>
+<code>grub-efi-removable-bootloader</code> allows you to boot your system from removable media by writing the GRUB file to the UEFI-specification location of <code>/EFI/BOOT/BOOTX64.efi</code> of the boot directory, usually <code>/boot/efi</code>. This is also useful for some UEFI firmwares that “forget” their configuration from their non-volatile storage. Like <code>grub-efi-bootloader</code>, this can only be used if the <code>/sys/firmware/efi</code> directory is available.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This <i>will</i> overwrite the GRUB file from any other operating systems that also place their GRUB file in the UEFI-specification location; making them unbootable.
+</p>
+</blockquote>
+
+<p>
+<a id="index-grub_002defi_002dnetboot_002dbootloader"></a>
+</p>
+
+<p>
+<code>grub-efi-netboot-bootloader</code> allows you to boot your system over network through TFTP. In combination with an NFS root file system this allows you to build a diskless Guix system.
+</p>
+
+<p>
+The installation of the <code>grub-efi-netboot-bootloader</code> generates the content of the TFTP root directory at <code>targets</code> (see ) below the sub-directory <code>efi/Guix</code>, to be served by a TFTP server. You may want to mount your TFTP server directories onto the <code>targets</code> to move the required files to the TFTP server automatically during installation.
+</p>
+
+<p>
+If you plan to use an NFS root file system as well (actually if you mount the store from an NFS share), then the TFTP server needs to serve the file <code>/boot/grub/grub.cfg</code> and other files from the store (like GRUBs background image, the kernel (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>kernel</code></a>) and the initrd (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>initrd</code></a>)), too. All these files from the store will be accessed by GRUB through TFTP with their normal store path, for example as <code>tftp://tftp-server/gnu/store/…-initrd/initrd.cpio.gz</code>.
+</p>
+
+<p>
+Two symlinks are created to make this possible. For each target in the <code>targets</code> field, the first symlink is ‘=target='<code>/efi/Guix/boot/grub/grub.cfg</code> pointing to <code>../../../boot/grub/grub.cfg</code>, where ‘=target=' may be <code>/boot</code>. In this case the link is not leaving the served TFTP root directory, but otherwise it does. The second link is ‘=target='<code>/gnu/store</code> and points to <code>../gnu/store</code>. This link is leaving the served TFTP root directory.
+</p>
+
+<p>
+The assumption behind all this is that you have an NFS server exporting the root file system for your Guix system, and additionally a TFTP server exporting your <code>targets</code> directories&#x2014;usually a single <code>/boot</code>&#x2014;from that same root file system for your Guix system. In this constellation the symlinks will work.
+</p>
+
+<p>
+For other constellations you will have to program your own bootloader installer, which then takes care to make necessary files from the store accessible through TFTP, for example by copying them into the TFTP root directory for your <code>targets</code>.
+</p>
+
+<p>
+It is important to note that symlinks pointing outside the TFTP root directory may need to be allowed in the configuration of your TFTP server. Further the store link exposes the whole store through TFTP. Both points need to be considered carefully for security aspects. It is advised to disable any TFTP write access!
+</p>
+
+<p>
+Please note, that this bootloader will not modify the ‘UEFI Boot Manager' of the system.
+</p>
+
+<p>
+Beside the <code>grub-efi-netboot-bootloader</code>, the already mentioned TFTP and NFS servers, you also need a properly configured DHCP server to make the booting over netboot possible. For all this we can currently only recommend you to look for instructions about PXE (Preboot eXecution Environment).
+</p>
+
+<p>
+If a local EFI System Partition (ESP) or a similar partition with a FAT file system is mounted in <code>targets</code>, then symlinks cannot be created. In this case everything will be prepared for booting from local storage, matching the behavior of <code>grub-efi-bootloader</code>, with the difference that all GRUB binaries are copied to <code>targets</code>, necessary for booting over the network.
+</p>
+
+<p>
+<a id="index-grub_002defi_002dnetboot_002dremovable_002dbootloader"></a>
+</p>
+
+<p>
+<code>grub-efi-netboot-removable-bootloader</code> is identical to <code>grub-efi-netboot-bootloader</code> with the exception that the sub-directory <code>efi/boot</code> will be used instead of <code>efi/Guix</code> to comply with the UEFI specification for removable media.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This <i>will</i> overwrite the GRUB file from any other operating systems that also place their GRUB file in the UEFI-specification location; making them unbootable.
+</p>
+</blockquote></dd>
+
+<dt><code>targets</code></dt><dd><p>
+This is a list of strings denoting the targets onto which to install the bootloader.
+</p>
+
+<p>
+The interpretation of targets depends on the bootloader in question. For <code>grub-bootloader</code>, for example, they should be device names understood by the bootloader <code>installer</code> command, such as <code>/dev/sda</code> or <code>(hd0)</code> (see <a href="https://www.gnu.org/software/grub/manual/html_node/Invoking-grub_002dinstall.html#Invoking-grub_002dinstall">Invoking grub-install</a> in GNU GRUB Manual). For <code>grub-efi-bootloader</code> and <code>grub-efi-removable-bootloader</code> they should be mount points of the EFI file system, usually <code>/boot/efi</code>. For <code>grub-efi-netboot-bootloader</code>, <code>targets</code> should be the mount points corresponding to TFTP root directories served by your TFTP server.
+</p></dd>
+
+<dt><code>menu-entries</code> (default: <code>'()</code>)</dt><dd>A possibly empty list of <code>menu-entry</code> objects (see below), denoting entries to appear in the bootloader menu, in addition to the current system entry and the entry pointing to previous system generations.</dd>
+
+<dt><code>default-entry</code> (default: <code>0</code>)</dt><dd>The index of the default boot menu entry. Index 0 is for the entry of the current system.</dd>
+
+<dt><code>timeout</code> (default: <code>5</code>)</dt><dd><p>
+The number of seconds to wait for keyboard input before booting. Set to 0 to boot immediately, and to -1 to wait indefinitely.
+</p>
+
+<p>
+<a id="index-keyboard-layout_002c-for-the-bootloader"></a>
+</p></dd>
+
+<dt><code>keyboard-layout</code> (default: <code>#f</code>)</dt><dd><p>
+If this is <code>#f</code>, the bootloader's menu (if any) uses the default keyboard layout, usually US English (“qwerty”).
+</p>
+
+<p>
+Otherwise, this must be a <code>keyboard-layout</code> object (see <a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This option is currently ignored by bootloaders other than <code>grub</code> and <code>grub-efi</code>.
+</p>
+</blockquote></dd>
+
+<dt><code>theme</code> (default: <code>#f</code>)</dt><dd>The bootloader theme object describing the theme to use. If no theme is provided, some bootloaders might use a default theme, that's true for GRUB.</dd>
+
+<dt><code>terminal-outputs</code> (default: <code>'(gfxterm)</code>)</dt><dd>The output terminals used for the bootloader boot menu, as a list of symbols. GRUB accepts the values: <code>console</code>, <code>serial</code>, <code>serial_{0-3}</code>, <code>gfxterm</code>, <code>vga_text</code>, <code>mda_text</code>, <code>morse</code>, and <code>pkmodem</code>. This field corresponds to the GRUB variable <code>GRUB_TERMINAL_OUTPUT</code> (see <a href="https://www.gnu.org/software/grub/manual/html_node/Simple-configuration.html#Simple-configuration">Simple configuration</a> in GNU GRUB manual).</dd>
+
+<dt><code>terminal-inputs</code> (default: <code>'()</code>)</dt><dd>The input terminals used for the bootloader boot menu, as a list of symbols. For GRUB, the default is the native platform terminal as determined at run-time. GRUB accepts the values: <code>console</code>, <code>serial</code>, <code>serial_{0-3}</code>, <code>at_keyboard</code>, and <code>usb_keyboard</code>. This field corresponds to the GRUB variable <code>GRUB_TERMINAL_INPUT</code> (see <a href="https://www.gnu.org/software/grub/manual/html_node/Simple-configuration.html#Simple-configuration">Simple configuration</a> in GNU GRUB manual).</dd>
+
+<dt><code>serial-unit</code> (default: <code>#f</code>)</dt><dd>The serial unit used by the bootloader, as an integer from 0 to 3. For GRUB, it is chosen at run-time; currently GRUB chooses 0, which corresponds to COM1 (see <a href="https://www.gnu.org/software/grub/manual/html_node/Serial-terminal.html#Serial-terminal">Serial terminal</a> in GNU GRUB manual).</dd>
+
+<dt><code>serial-speed</code> (default: <code>#f</code>)</dt><dd>The speed of the serial interface, as an integer. For GRUB, the default value is chosen at run-time; currently GRUB chooses 9600 bps (see <a href="https://www.gnu.org/software/grub/manual/html_node/Serial-terminal.html#Serial-terminal">Serial terminal</a> in GNU GRUB manual).</dd>
+
+<dt><code>device-tree-support?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to support Linux <a href="https://en.wikipedia.org/wiki/Devicetree">device tree</a> files loading.
+</p>
+
+<p>
+This option in enabled by default. In some cases involving the <code>u-boot</code> bootloader, where the device tree has already been loaded in RAM, it can be handy to disable the option by setting it to <code>#f</code>.
+</p></dd>
+
+<dt><code>extra-initrd</code> (default: <code>#f</code>)</dt><dd><p>
+File name of an additional initrd to load during the boot. It may or may not point to a file in the store, but the main use case is for out-of-store files containing secrets.
+</p>
+
+<p>
+In order to be able to provide decryption keys for LUKS devices, they need to be available in the initial RAM disk. However they cannot be stored inside the usual initrd, since it is stored in the store and being world-readable (as files in the store are) is not a desired property for an initrd containing decryption keys. You can therefore use this field to instruct GRUB to also load a manually created initrd not stored in the store.
+</p>
+
+<p>
+For any use case not involving secrets, you should use regular initrd (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>initrd</code></a>) instead.
+</p>
+
+<p>
+Suitable image can be created for example like this:
+</p>
+
+<pre class="example" id="org5ab5dba">
+echo /key-file.bin | cpio -oH newc &gt;/key-file.cpio
+chmod 0000 /key-file.cpio
+</pre>
+
+<p>
+After it is created, you can use it in this manner:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Operating system with encrypted boot partition
+(operating-system
+  …
+  (bootloader (bootloader-configuration
+               (bootloader grub-efi-bootloader)
+               (targets '("/boot/efi"))
+               ;; Load the initrd with a key file...
+               (extra-initrd "/key-file.cpio")))
+  (mapped-devices
+   (list (mapped-device
+          (source (uuid "12345678-1234-1234-1234-123456789abc"))
+          (target "my-root")
+          (type luks-device-mapping)
+          ;; ... and use it to unlock the root device.
+          (arguments '(#:key-file "/key-file.bin"))))))
+</pre>
+</div>
+
+<p>
+Be careful when using this option, since pointing to a file that is not readable by the grub while booting will cause the boot to fail and require a manual edit of the initrd line in the grub menu.
+</p>
+
+<p>
+Currently only supported by GRUB.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-dual-boot"></a> <a id="index-boot-menu"></a>
+Should you want to list additional boot menu entries <i>via</i> the <code>menu-entries</code> field above, you will need to create them with the <code>menu-entry</code> form. For example, imagine you want to be able to boot another distro (hard to imagine!), you can define a menu entry along these lines:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(menu-entry
+  (label "The Other Distro")
+  (linux "/boot/old/vmlinux-2.6.32")
+  (linux-arguments '("root=/dev/sda2"))
+  (initrd "/boot/old/initrd"))
+</pre>
+</div>
+
+<p>
+Details below.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: menu-entry </dt><dd>The type of an entry in the bootloader menu.
+
+<dl class="org-dl">
+<dt><code>label</code></dt><dd>The label to show in the menu&#x2014;e.g., <code>"GNU"</code>.</dd>
+
+<dt><code>linux</code> (default: <code>#f</code>)</dt><dd><p>
+The Linux kernel image to boot, for example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-append linux-libre "/bzImage")
+</pre>
+</div>
+
+<p>
+For GRUB, it is also possible to specify a device explicitly in the file path using GRUB's device naming convention (see <a href="https://www.gnu.org/software/grub/manual/html_node/Naming-convention.html#Naming-convention">Naming convention</a> in GNU GRUB manual), for example:
+</p>
+
+<pre class="example" id="org3a2a925">
+"(hd0,msdos1)/boot/vmlinuz"
+</pre>
+
+<p>
+If the device is specified explicitly as above, then the <code>device</code> field is ignored entirely.
+</p></dd>
+
+<dt><code>linux-arguments</code> (default: <code>'()</code>)</dt><dd>The list of extra Linux kernel command-line arguments&#x2014;e.g., <code>'("console=ttyS0")</code>.</dd>
+
+<dt><code>initrd</code> (default: <code>#f</code>)</dt><dd>A G-Expression or string denoting the file name of the initial RAM disk to use (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>).</dd>
+
+<dt><code>device</code> (default: <code>#f</code>)</dt><dd><p>
+The device where the kernel and initrd are to be found&#x2014;i.e., for GRUB, <i>root</i> for this menu entry (see <a href="https://www.gnu.org/software/grub/manual/html_node/root.html#root">root</a> in GNU GRUB manual).
+</p>
+
+<p>
+This may be a file system label (a string), a file system UUID (a bytevector, see <a href="docs/guix--File-Systems.html">File Systems</a>), or <code>#f</code>, in which case the bootloader will search the device containing the file specified by the <code>linux</code> field (see <a href="https://www.gnu.org/software/grub/manual/html_node/search.html#search">search</a> in GNU GRUB manual). It must <i>not</i> be an OS device name such as <code>/dev/sda1</code>.
+</p></dd>
+
+<dt><code>multiboot-kernel</code> (default: <code>#f</code>)</dt><dd><p>
+The kernel to boot in Multiboot-mode (see <a href="https://www.gnu.org/software/grub/manual/html_node/multiboot.html#multiboot">multiboot</a> in GNU GRUB manual). When this field is set, a Multiboot menu-entry is generated. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-append mach "/boot/gnumach")
+</pre>
+</div></dd>
+
+<dt><code>multiboot-arguments</code> (default: <code>'()</code>)</dt><dd><p>
+The list of extra command-line arguments for the multiboot-kernel.
+</p>
+
+<p>
+For example, when running in QEMU it can be useful to use a text-based console (use options <code>--nographic</code> <code>--serial mon:stdio</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'("console=com0")
+</pre>
+</div>
+
+<p>
+To use the new and still experimental <a href="https://darnassus.sceen.net/~hurd-web/rump_kernel/">rumpdisk user-level disk driver</a> instead of GNU Mach's in-kernel IDE driver, set <code>kernel-arguments</code> to:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'("noide")
+</pre>
+</div>
+
+<p>
+Of course, these options can be combined:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'("console=com0" "noide")
+</pre>
+</div></dd>
+
+<dt><code>multiboot-modules</code> (default: <code>'()</code>)</dt><dd><p>
+The list of commands for loading Multiboot modules. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(list (list (file-append hurd "/hurd/ext2fs.static") "ext2fs"
+             …)
+      (list (file-append libc "/lib/ld.so.1") "exec"
+             …))
+</pre>
+</div></dd>
+
+<dt><code>chain-loader</code> (default: <code>#f</code>)</dt><dd><p>
+A string that can be accepted by <code>grub</code>'s <code>chainloader</code> directive. This has no effect if either <code>linux</code> or <code>multiboot-kernel</code> fields are specified. The following is an example of chainloading a different GNU/Linux system.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(bootloader
+ (bootloader-configuration
+  ;; …
+  (menu-entries
+   (list
+    (menu-entry
+     (label "GNU/Linux")
+     (device (uuid "1C31-A17C" 'fat))
+     (chain-loader "/EFI/GNULinux/grubx64.efi"))))))
+</pre>
+</div></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-HDPI"></a> <a id="index-HiDPI"></a> <a id="index-resolution"></a>
+For now only GRUB has theme support. GRUB themes are created using the <code>grub-theme</code> form, which is not fully documented yet.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: grub-theme </dt><dd>Data type representing the configuration of the GRUB theme.
+
+<dl class="org-dl">
+<dt><code>gfxmode</code> (default: <code>'("auto")</code>)</dt><dd>The GRUB <code>gfxmode</code> to set (a list of screen resolution strings, see <a href="https://www.gnu.org/software/grub/manual/html_node/gfxmode.html#gfxmode">gfxmode</a> in GNU GRUB manual).</dd>
+</dl></dd>
+
+<dt>Procedure: grub-theme </dt><dd><p>
+Return the default GRUB theme used by the operating system if no <code>theme</code> field is specified in <code>bootloader-configuration</code> record.
+</p>
+
+<p>
+It comes with a fancy background image displaying the GNU and Guix logos.
+</p></dd>
+</dl>
+
+<p>
+For example, to override the default resolution, you may use something like
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(bootloader
+ (bootloader-configuration
+ ;; …
+ (theme (grub-theme
+         (inherit (grub-theme))
+         (gfxmode '("1024x786x32" "auto"))))))
+</pre>
+</div>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>, Previous: <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

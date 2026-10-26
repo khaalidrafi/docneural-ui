@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fine-Points-of-Emerge-1">1. 30.6.7 Fine Points of Emerge ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Combining-in-Emerge.html">Combining the Two Versions</a>   Up: <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>
+</p>
+
+<p>
+<a id="Fine-Points-of-Emerge"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fine-Points-of-Emerge-1" class="outline-2">
+<h2 id="Fine-Points-of-Emerge-1"><span class="section-number-2">1.</span> 30.6.7 Fine Points of Emerge <a href="#Fine-Points-of-Emerge-1">¶</a></h2>
+<div class="outline-text-2" id="text-Fine-Points-of-Emerge-1">
+<p>
+During the merge, you mustn't try to edit the A and B buffers yourself. Emerge modifies them temporarily, but ultimately puts them back the way they were.
+</p>
+
+<p>
+You can have any number of merges going at once&#x2014;just don't use any one buffer as input to more than one merge at once, since the temporary changes made in these buffers would get in each other's way.
+</p>
+
+<p>
+Starting Emerge can take a long time because it needs to compare the files fully. Emacs can't do anything else until <code>diff</code> finishes. Perhaps in the future someone will change Emerge to do the comparison in the background when the input files are large&#x2014;then you could keep on doing other things with Emacs until Emerge is ready to accept commands.
+</p>
+
+<p>
+After setting up the merge, Emerge runs the hook <code>emerge-startup-hook</code>. See <a href="docs/emacs--Hooks.html">Hooks</a>.
+</p>
+</div>
+</div>

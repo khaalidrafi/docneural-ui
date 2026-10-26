@@ -1,0 +1,308 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Noweb-Reference-Syntax-1">0.0.1. 16.11 Noweb Reference Syntax ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org8cf3747">1. the mount point of the fullest disk</a>
+<ul>
+<li><a href="#orgf2915ec">1.1. query all mounted disks</a></li>
+<li><a href="#orgaceee72">1.2. strip the header row</a></li>
+<li><a href="#org4eac6a7">1.3. output mount point of fullest disk</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Noweb-Reference-Syntax"></a>
+Next: <a href="docs/org--Library-of-Babel.html">Library of Babel</a>, Previous: <a href="docs/org--Editing-Source-Code.html">Editing Source Code</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Noweb-Reference-Syntax-1" class="outline-4">
+<h4 id="Noweb-Reference-Syntax-1"><span class="section-number-4">0.0.1.</span> 16.11 Noweb Reference Syntax <a href="#Noweb-Reference-Syntax-1">¶</a></h4>
+<div class="outline-text-4" id="text-Noweb-Reference-Syntax-1">
+<p>
+Source code blocks can include references to other source code blocks, using a noweb style syntax:
+</p>
+
+<pre class="example" id="orgc75d2b0">
+&lt;&lt;CODE-BLOCK-ID&gt;&gt;
+</pre>
+
+<p>
+where <code>CODE-BLOCK-ID</code> refers to either the ‘=NAME=' of a single source code block, or a collection of one or more source code blocks sharing the same ‘=noweb-ref=' header argument (see <a href="docs/org--Using-Header-Arguments.html">Using Header Arguments</a>). Org can replace such references with the source code of the block or blocks being referenced, or, in the case of a single source code block named with ‘=NAME=', with the results of an evaluation of that block.
+</p>
+
+<p>
+The ‘=noweb=' header argument controls expansion of noweb syntax references. Expansions occur when source code blocks are evaluated, tangled, or exported.
+</p>
+
+<dl class="org-dl">
+<dt>‘=no='</dt><dd>Default. No expansion of noweb syntax references in the body of the code when evaluating, tangling, or exporting.</dd>
+
+<dt>‘=yes='</dt><dd>Expansion of noweb syntax references in the body of the code block when evaluating, tangling, or exporting.</dd>
+
+<dt>‘=tangle='</dt><dd>Expansion of noweb syntax references in the body of the code block when tangling. No expansion when evaluating or exporting.</dd>
+
+<dt>‘=strip-tangle='</dt><dd>Expansion of noweb syntax references in the body of the code block when evaluating or exporting. Removes noweb syntax references when exporting.</dd>
+
+<dt>‘=no-export='</dt><dd>Expansion of noweb syntax references in the body of the code block when evaluating or tangling. No expansion when exporting.</dd>
+
+<dt>‘=strip-export='</dt><dd>Expansion of noweb syntax references in the body of the code block when expanding prior to evaluating or tangling. Removes noweb syntax references when exporting.</dd>
+
+<dt>‘=eval='</dt><dd>Expansion of noweb syntax references in the body of the code block only before evaluating.</dd>
+</dl>
+
+<p>
+In the most simple case, the contents of a single source block is inserted within other blocks. Thus, in following example,
+</p>
+
+<pre class="example" id="org3b676e3">
+#+NAME: initialization
+#+BEGIN_SRC emacs-lisp
+  (setq sentence "Never a foot too far, even.")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :noweb yes
+  &lt;&lt;initialization&gt;&gt;
+  (reverse sentence)
+#+END_SRC
+</pre>
+
+<p>
+the second code block is expanded as
+</p>
+
+<pre class="example" id="org8457e53">
+#+BEGIN_SRC emacs-lisp :noweb yes
+  (setq sentence "Never a foot too far, even.")
+  (reverse sentence)
+#+END_SRC
+</pre>
+
+<p>
+Note that noweb expansion does not automatically carry over ‘=:var=' header arguments.
+</p>
+
+<p>
+You may also include the contents of multiple blocks sharing a common ‘=noweb-ref=' header argument, which can be set at the file, subtree, or code block level. In the example Org file shown next, the body of the source code in each block is extracted for concatenation to a pure code file when tangled.
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">&lt;&lt;fullest-disk&gt;&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org8cf3747" class="outline-2">
+<h2 id="org8cf3747"><span class="section-number-2">1.</span> the mount point of the fullest disk</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgf2915ec" class="outline-3">
+<h3 id="orgf2915ec"><span class="section-number-3">1.1.</span> query all mounted disks</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+<pre class="src src-sh">df \
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaceee72" class="outline-3">
+<h3 id="orgaceee72"><span class="section-number-3">1.2.</span> strip the header row</h3>
+<div class="outline-text-3" id="text-1-2">
+<div class="org-src-container">
+<pre class="src src-sh">|sed '1d' \
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org4eac6a7" class="outline-3">
+<h3 id="org4eac6a7"><span class="section-number-3">1.3.</span> output mount point of fullest disk</h3>
+<div class="outline-text-3" id="text-1-3">
+<div class="org-src-container">
+<pre class="src src-sh">|awk '{if (u &lt; +$5) {u = +$5; m = $6}} END {print m}'
+</pre>
+</div>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+By default a newline separates each noweb reference concatenation. To use a different separator, edit the ‘=noweb-sep=' header argument.
+</p>
+
+<p>
+Alternatively, Org can include the results of evaluation of a single code block rather than its body [. Evaluation occurs when parentheses, possibly including arguments, are appended to the code block name, as shown below.
+</p>
+
+<pre class="example" id="org2be0a18">
+&lt;&lt;NAME(optional arguments)&gt;&gt;
+</pre>
+
+<p>
+Note that in this case, a code block name set by ‘=NAME=' keyword is required; the reference set by ‘=noweb-ref=' will not work when evaluation is desired.
+</p>
+
+<p>
+Here is an example that demonstrates how the exported content changes when noweb style references are used with parentheses versus without. Given:
+</p>
+
+<pre class="example" id="org0187bbc">
+#+NAME: some-code
+#+BEGIN_SRC python :var num=0 :results output :exports none
+print(num*10)
+#+END_SRC
+</pre>
+
+<p>
+this code block:
+</p>
+
+<pre class="example" id="orgdde0edf">
+#+BEGIN_SRC text :noweb yes
+  &lt;&lt;some-code&gt;&gt;
+#+END_SRC
+</pre>
+
+<p>
+expands to:
+</p>
+
+<pre class="example" id="org397eb8a">
+print(num*10)
+</pre>
+
+<p>
+Below, a similar noweb style reference is used, but with parentheses, while setting a variable ‘=num=' to 10:
+</p>
+
+<pre class="example" id="org4e6ff8d">
+#+BEGIN_SRC text :noweb yes
+  &lt;&lt;some-code(num=10)&gt;&gt;
+#+END_SRC
+</pre>
+
+<p>
+Note that the expansion now contains the results of the code block ‘=some-code=', not the code block itself:
+</p>
+
+<pre class="example" id="orge2fea53">
+100
+</pre>
+
+<p>
+Noweb insertions honor prefix characters that appear before the noweb syntax reference. This behavior is illustrated in the following example. Because the ‘=<a id="example"></a>=' noweb reference appears behind the SQL comment syntax, each line of the expanded noweb reference is commented. With:
+</p>
+
+<pre class="example" id="org9775503">
+#+NAME: example
+#+BEGIN_SRC text
+  this is the
+  multi-line body of example
+#+END_SRC
+</pre>
+
+<p>
+this code block:
+</p>
+
+<pre class="example" id="org04e948e">
+#+BEGIN_SRC sql :noweb yes
+ ---&lt;&lt;example&gt;&gt;
+#+END_SRC
+</pre>
+
+<p>
+expands to:
+</p>
+
+<pre class="example" id="orgf6bd1a8">
+#+BEGIN_SRC sql :noweb yes
+ ---this is the
+ ---multi-line body of example
+#+END_SRC
+</pre>
+
+<p>
+Since this change does not affect noweb replacement text without newlines in them, inline noweb references are acceptable.
+</p>
+
+<p>
+This feature can also be used for management of indentation in exported code snippets. With:
+</p>
+
+<pre class="example" id="org490b876">
+#+NAME: if-true
+#+BEGIN_SRC python :exports none
+print('do things when true')
+#+end_src
+
+#+name: if-false
+#+begin_src python :exports none
+print('do things when false')
+#+end_src
+</pre>
+
+<p>
+this code block:
+</p>
+
+<pre class="example" id="orgc9e3481">
+#+begin_src python :noweb yes :results output
+if true:
+    &lt;&lt;if-true&gt;&gt;
+else:
+    &lt;&lt;if-false&gt;&gt;
+#+end_src
+</pre>
+
+<p>
+expands to:
+</p>
+
+<pre class="example" id="org2238b85">
+if true:
+    print('do things when true')
+else:
+    print('do things when false')
+</pre>
+
+<p>
+This prefix behavior can be turned off in a block by setting the ‘=noweb-prefix=' header argument to ‘=no=', as in:
+</p>
+
+<pre class="example" id="org0d949f7">
+#+BEGIN_SRC elisp :noweb-prefix no
+  (setq example-data "&lt;&lt;example&gt;&gt;")
+#+END_SRC
+</pre>
+
+<p>
+which expands to:
+</p>
+
+<pre class="example" id="org5066c2a">
+(setq example-data "this is the
+multi-line body of example")
+</pre>
+
+<p>
+When in doubt about the outcome of a source code block expansion, you can preview the results with the following command:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dbabel_002dexpand_002dsrc_002dblock"></a>C-c C-v v or C-c C-v C-v (<code>org-babel-expand-src-block</code>) </dt><dd>Expand the current source code block according to its header arguments and pop open the results in a preview buffer.</dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

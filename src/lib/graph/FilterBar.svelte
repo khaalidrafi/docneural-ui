@@ -56,7 +56,7 @@
   label { padding: 0 0.1em; }
   input {
     background: var(--dn-bg-sunken);
-    border: 1px solid var(--dn-border);
+    border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     color: var(--dn-fg);
     font-family: var(--dn-font-mono);
@@ -67,7 +67,9 @@
   input:focus {
     outline: none;
     border-color: var(--dn-accent);
-    box-shadow: inset 0 0 12px color-mix(in srgb, var(--dn-accent) 10%, transparent);
+    box-shadow:
+      inset 0 0 12px color-mix(in srgb, var(--dn-accent) 12%, transparent),
+      0 0 12px color-mix(in srgb, var(--dn-accent) 22%, transparent);
   }
   .tags {
     display: flex;
@@ -77,19 +79,21 @@
   .tag-chip {
     font-family: var(--dn-font-mono);
     font-size: 0.7rem;
-    color: var(--dn-src, var(--dn-fg-muted));
+    color: var(--dn-src, var(--dn-fg));
     background: transparent;
     border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.12em 0.55em;
     cursor: pointer;
-    transition: color 120ms, border-color 120ms, background 120ms;
+    transition: color 120ms, border-color 120ms, background 120ms, box-shadow 120ms;
   }
   .tag-chip:hover { border-color: var(--dn-src, var(--dn-accent)); color: var(--dn-src, var(--dn-accent)); }
   .tag-chip.active {
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 18%, transparent);
     color: var(--dn-src, var(--dn-accent));
     border-color: var(--dn-src, var(--dn-accent));
+    text-shadow: 0 0 8px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
   }
   /* A source chip keeps its hue even when unselected — the legend reading. */
   .tag-chip.src { border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent); }

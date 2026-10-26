@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#How-Emacs-Finds-Your-Init-File">1. 51.4.4 How Emacs Finds Your Init File ¶</a>
+<ul>
+<li><a href="#section">1.1. (26)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Init-Non_002dASCII.html">Non-ASCII Characters in Init Files</a>   Previous: <a href="docs/emacs--Terminal-Init.html">Terminal-specific Initialization</a>   Up: <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>
+</p>
+
+<p>
+<a id="Find-Init"></a>
+</p>
+
+<hr />
+<div id="outline-container-How-Emacs-Finds-Your-Init-File" class="outline-2">
+<h2 id="How-Emacs-Finds-Your-Init-File"><span class="section-number-2">1.</span> 51.4.4 How Emacs Finds Your Init File <a href="#How-Emacs-Finds-Your-Init-File">¶</a></h2>
+<div class="outline-text-2" id="text-How-Emacs-Finds-Your-Init-File">
+<p>
+Emacs normally finds your init file in a location under your home directory. See <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>.
+</p>
+
+<p>
+Emacs looks for your init file using the filenames <code>~/.emacs.el</code>, <code>~/.emacs</code>, or <code>~/.emacs.d/init.el</code> in that order; you can choose to use any one of these names. (Note that only the locations directly in your home directory have a leading dot in the location's basename.)
+</p>
+
+<p>
+Emacs can also look in an XDG-compatible location for <code>init.el</code>, the default is the directory <code>~/.config/emacs</code>. This can be overridden by setting <code>XDG_CONFIG_HOME</code> in your environment, its value replaces <code>~/.config</code> in the name of the default XDG init file. However <code>~/.emacs.d</code>, <code>~/.emacs</code>, and <code>~/.emacs.el</code> are always preferred if they exist, which means that you must delete or rename them in order to use the XDG location.
+</p>
+
+<p>
+Note also that if neither the XDG location nor <code>~/.emacs.d</code> exist, then Emacs will create <code>~/.emacs.d</code> (and therefore use it during subsequent invocations).
+</p>
+
+<p>
+Emacs will set <code>user-emacs-directory</code> to the directory it decides to use. This directory is subsequently used to look for your other user-specific Emacs files, such as <code>custom-file</code> (see <a href="docs/emacs--Saving-Customizations.html">Saving Customizations</a>), the saved desktop (see <a href="docs/emacs--Saving-Emacs-Sessions.html">Saving Emacs Sessions</a>) and others. The <code>--init-directory</code> command-line option (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>) overrides the value of <code>user-emacs-directory</code> determined as side effect of the search for your user init file described above.
+</p>
+
+<p>
+Although this is backward-compatible with older Emacs versions, modern POSIX platforms prefer putting your initialization files under <code>~/.config</code> so that troubleshooting a problem that might be due to a bad init file, or archiving a collection of init files, can be done by renaming that directory. To help older Emacs versions find configuration files in their current default locations, you can execute the following Emacs Lisp code:
+</p>
+
+<pre class="example" id="org01c8d99">
+(make-symbolic-link ".config/emacs" "~/.emacs.d")
+</pre>
+
+<p>
+However, if you run Emacs from a shell started by <code>su</code> and <code>XDG_CONFIG_HOME</code> is not set in your environment, Emacs tries to find your own initialization files, not that of the user you are currently pretending to be. The idea is that you should get your own editor customizations even if you are running as the super user.
+</p>
+
+<p>
+More precisely, Emacs first determines which user's init file to use. It gets your user name from the environment variables <code>LOGNAME</code> and <code>USER</code>; if neither of those exists, it uses the effective user-ID. If that user name matches the real user-ID, then Emacs uses <code>HOME</code>; otherwise, it looks up the home directory corresponding to that user name in the system's data base of users.
+</p>
+
+<p>
+For brevity the rest of the Emacs documentation generally uses just the current default location <code>~/.emacs.d/init.el</code> for the init file.
+</p>
+
+<hr />
+</div>
+</div>

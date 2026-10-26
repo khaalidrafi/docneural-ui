@@ -1,0 +1,82 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Quitting-and-Aborting">1. 52 Quitting and Aborting ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Lossage.html">Dealing with Emacs Trouble</a>   Previous: <a href="docs/emacs--Customization.html">Customization</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Quitting"></a>
+</p>
+
+<hr />
+<div id="outline-container-Quitting-and-Aborting" class="outline-2">
+<h2 id="Quitting-and-Aborting"><span class="section-number-2">1.</span> 52 Quitting and Aborting <a href="#Quitting-and-Aborting">¶</a></h2>
+<div class="outline-text-2" id="text-Quitting-and-Aborting">
+<ul class="org-ul">
+<li>C-g<br />
+C-Break (MS-DOS only) :: Quit: cancel running or partially typed command.</li>
+
+<li id="C-]">Abort innermost recursive editing level and cancel the command which invoked it (<code>abort-recursive-edit</code>).</li>
+
+<li id="ESC ESC ESC">Either quit or abort, whichever makes sense (<code>keyboard-escape-quit</code>).</li>
+
+<li id="M-x top-level">Abort all recursive editing levels that are currently executing.</li>
+
+<li>C-/<br />
+C-x u<br />
+C-_ :: Cancel a previously made change in the buffer contents (<code>undo</code>).</li>
+</ul>
+
+<p>
+There are two ways of canceling a command before it has finished: <i>quitting</i> with C-g, and <i>aborting</i> with C-] or M-x top-level. Quitting cancels a partially typed command, or one which is still running. Aborting exits a recursive editing level and cancels the command that invoked the recursive edit (see <a href="docs/emacs--Recursive-Edit.html">Recursive Editing Levels</a>).
+</p>
+
+<p>
+Quitting with C-g is the way to get rid of a partially typed command, or a numeric argument that you don't want. Furthermore, if you are in the middle of a command that is running, C-g stops the command in a relatively safe way. For example, if you quit out of a kill command that is taking a long time, either your text will <i>all</i> still be in the buffer, or it will <i>all</i> be in the kill ring, or maybe both. If the region is active, C-g deactivates the mark, unless Transient Mark mode is off (see <a href="docs/emacs--Disabled-Transient-Mark.html">Disabling Transient Mark Mode</a>). If you are in the middle of an incremental search, C-g behaves specially; it may take two successive C-g characters to get out of a search. See <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>, for details.
+</p>
+
+<p>
+If you type C-g in a minibuffer, this quits the command that opened that minibuffer, closing it. If that minibuffer is not the most recently opened one (which can happen when <code>minibuffer-follows-selected-frame</code> is <code>nil</code> (see <a href="docs/emacs--Basic-Minibuffer.html">Using the Minibuffer</a>)), C-g also closes the more recently opened ones, quitting their associated commands, after asking you for confirmation.
+</p>
+
+<p>
+On MS-DOS, the character C-Break serves as a quit character like C-g. The reason is that it is not feasible, on MS-DOS, to recognize C-g while a command is running, between interactions with the user. By contrast, it <i>is</i> feasible to recognize C-Break at all times. See <a href="docs/emacs--MS_002dDOS-Keyboard.html">Keyboard Usage on MS-DOS</a>.
+</p>
+
+<p>
+C-g works by setting the variable <code>quit-flag</code> to <code>t</code> the instant C-g is typed; Emacs Lisp checks this variable frequently, and quits if it is non-<code>nil</code>. C-g is only actually executed as a command if you type it while Emacs is waiting for input. In that case, the command it runs is <code>keyboard-quit</code>.
+</p>
+
+<p>
+On a text terminal, if you quit with C-g a second time before the first C-g is recognized, you activate the emergency-escape feature and return to the shell. See <a href="docs/emacs--Emergency-Escape.html">Emergency Escape</a>.
+</p>
+
+<p>
+There are some situations where you cannot quit. When Emacs is waiting for the operating system to do something, quitting is impossible unless special pains are taken for the particular system call within Emacs where the waiting occurs. We have done this for the system calls that users are likely to want to quit from, but it's possible you will encounter a case not handled. In one very common case&#x2014;waiting for file input or output using NFS&#x2014;Emacs itself knows how to quit, but many NFS implementations simply do not allow user programs to stop waiting for NFS when the NFS server is hung.
+</p>
+
+<p>
+Aborting with C-] (<code>abort-recursive-edit</code>) is used to get out of a recursive editing level and cancel the command which invoked it. Quitting with C-g does not do this, and could not do this, because it is used to cancel a partially typed command <i>within</i> the recursive editing level. Both operations are useful. For example, if you are in a recursive edit and type C-u 8 to enter a numeric argument, you can cancel that argument with C-g and remain in the recursive edit.
+</p>
+
+<p>
+The sequence ESC ESC ESC (<code>keyboard-escape-quit</code>) can either quit or abort. (We defined it this way because ESC means “get out” in many PC programs.) It can cancel a prefix argument, clear a selected region, or get out of a Query Replace, like C-g. It can get out of the minibuffer or a recursive edit, like C-]. It can also get out of splitting the frame into multiple windows, as with C-x 1. One thing it cannot do, however, is stop a command that is running. That's because it executes as an ordinary command, and Emacs doesn't notice it until it is ready for the next command.
+</p>
+
+<p>
+The command M-x top-level is equivalent to enough C-] commands to get you out of all the levels of recursive edits that you are in; it also exits the minibuffer if it is active. C-] gets you out one level at a time, but M-x top-level goes out all levels at once. Both C-] and M-x top-level are like all other commands, and unlike C-g, in that they take effect only when Emacs is ready for a command. C-] is an ordinary key and has its meaning only because of its binding in the keymap. See <a href="docs/emacs--Recursive-Edit.html">Recursive Editing Levels</a>.
+</p>
+
+<p>
+C-/ (<code>undo</code>) is not strictly speaking a way of canceling a command, but you can think of it as canceling a command that already finished executing. See <a href="docs/emacs--Undo.html">Undo</a>, for more information about the undo facility.
+</p>
+
+<hr />
+</div>
+</div>

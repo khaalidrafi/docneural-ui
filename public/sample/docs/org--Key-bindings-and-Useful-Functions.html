@@ -1,0 +1,204 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Key-bindings-and-Useful-Functions-1">1. 16.13 Key bindings and Useful Functions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Key-bindings-and-Useful-Functions"></a>
+Next: <a href="docs/org--Batch-Execution.html">Batch Execution</a>, Previous: <a href="docs/org--Library-of-Babel.html">Library of Babel</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Key-bindings-and-Useful-Functions-1" class="outline-2">
+<h2 id="Key-bindings-and-Useful-Functions-1"><span class="section-number-2">1.</span> 16.13 Key bindings and Useful Functions <a href="#Key-bindings-and-Useful-Functions-1">¶</a></h2>
+<div class="outline-text-2" id="text-Key-bindings-and-Useful-Functions-1">
+<p>
+Many common Org mode key sequences are re-bound depending on the context.
+</p>
+
+<p>
+Active key bindings in code blocks:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Key binding</th>
+<th scope="col" class="org-left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-c C-c</td>
+<td class="org-left"><code>org-babel-execute-src-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-o</td>
+<td class="org-left"><code>org-babel-open-src-block-result</code></td>
+</tr>
+
+<tr>
+<td class="org-left">M-UP</td>
+<td class="org-left"><code>org-babel-load-in-session</code></td>
+</tr>
+
+<tr>
+<td class="org-left">M-DOWN</td>
+<td class="org-left"><code>org-babel-pop-to-session</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Active key bindings in Org mode buffer:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Key binding</th>
+<th scope="col" class="org-left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">C-c C-v p or C-c C-v C-p</td>
+<td class="org-left"><code>org-babel-previous-src-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v n or C-c C-v C-n</td>
+<td class="org-left"><code>org-babel-next-src-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v e or C-c C-v C-e</td>
+<td class="org-left"><code>org-babel-execute-maybe</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v o or C-c C-v C-o</td>
+<td class="org-left"><code>org-babel-open-src-block-result</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v v or C-c C-v C-v</td>
+<td class="org-left"><code>org-babel-expand-src-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v u or C-c C-v C-u</td>
+<td class="org-left"><code>org-babel-goto-src-block-head</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v g or C-c C-v C-g</td>
+<td class="org-left"><code>org-babel-goto-named-src-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v r or C-c C-v C-r</td>
+<td class="org-left"><code>org-babel-goto-named-result</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v b or C-c C-v C-b</td>
+<td class="org-left"><code>org-babel-execute-buffer</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v s or C-c C-v C-s</td>
+<td class="org-left"><code>org-babel-execute-subtree</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v d or C-c C-v C-d</td>
+<td class="org-left"><code>org-babel-demarcate-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v t or C-c C-v C-t</td>
+<td class="org-left"><code>org-babel-tangle</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v f or C-c C-v C-f</td>
+<td class="org-left"><code>org-babel-tangle-file</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v c or C-c C-v C-c</td>
+<td class="org-left"><code>org-babel-check-src-block</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v j or C-c C-v C-j</td>
+<td class="org-left"><code>org-babel-insert-header-arg</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v l or C-c C-v C-l</td>
+<td class="org-left"><code>org-babel-load-in-session</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v i or C-c C-v C-i</td>
+<td class="org-left"><code>org-babel-lob-ingest</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v I or C-c C-v C-I</td>
+<td class="org-left"><code>org-babel-view-src-block-info</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v z or C-c C-v C-z</td>
+<td class="org-left"><code>org-babel-switch-to-session-with-code</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v a or C-c C-v C-a</td>
+<td class="org-left"><code>org-babel-sha1-hash</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v h or C-c C-v C-h</td>
+<td class="org-left"><code>org-babel-describe-bindings</code></td>
+</tr>
+
+<tr>
+<td class="org-left">C-c C-v x or C-c C-v C-x</td>
+<td class="org-left"><code>org-babel-do-key-sequence-in-edit-buffer</code></td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Batch-Execution.html">Batch Execution</a>, Previous: <a href="docs/org--Library-of-Babel.html">Library of Babel</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

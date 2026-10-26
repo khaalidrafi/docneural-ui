@@ -1,0 +1,362 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#External-Links-1">1. 4.4 External Links ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (28)</a></li>
+<li><a href="#section-1">1.0.2. (29)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="External-Links"></a>
+Next: <a href="docs/org--Handling-Links.html">Handling Links</a>, Previous: <a href="docs/org--Radio-Targets.html">Radio Targets</a>, Up: <a href="docs/org--Hyperlinks.html">Hyperlinks</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-External-Links-1" class="outline-2">
+<h2 id="External-Links-1"><span class="section-number-2">1.</span> 4.4 External Links <a href="#External-Links-1">¶</a></h2>
+<div class="outline-text-2" id="text-External-Links-1">
+<p>
+Org supports links to files, websites, Usenet and email messages, BBDB database entries and links to both IRC conversations and their logs. External links are URL-like locators. They start with a short identifying string followed by a colon. There can be no space after the colon.
+</p>
+
+<p>
+Here is the full set of built-in link types:
+</p>
+
+<dl class="org-dl">
+<dt>‘=file='</dt><dd><p>
+File links. File name may be remote, absolute, or relative.
+</p>
+
+<p>
+As a special case, the “file” prefix may be omitted if the file name is complete, e.g., it starts with ‘=./=' or ‘=/='.
+</p></dd>
+
+<dt>‘=attachment='</dt><dd>Same as file links but for files and folders attached to the current node (see <a href="docs/org--Attachments.html">Attachments</a>). Attachment links are intended to behave exactly as file links but for files relative to the attachment directory.</dd>
+
+<dt>‘=bbdb='</dt><dd>Link to a BBDB record, with possible regexp completion.</dd>
+
+<dt>‘=docview='</dt><dd>Link to a document opened with DocView mode. You may specify a page number.</dd>
+
+<dt>‘=doi='</dt><dd>Link to an electronic resource, through its handle.</dd>
+
+<dt>‘=elisp='</dt><dd>Execute an Elisp command upon activation.</dd>
+
+<dt>‘=gnus=', ‘=rmail=', ‘=mhe='</dt><dd>Link to messages or folders from a given Emacs MUA.</dd>
+
+<dt>‘=help='</dt><dd>Display documentation of a symbol in ‘=*Help*=' buffer.</dd>
+
+<dt>‘=http=', ‘=https='</dt><dd>Web links.</dd>
+
+<dt>‘=id='</dt><dd>Link to a specific headline by its ID property, in an Org file.</dd>
+
+<dt>‘=info='</dt><dd>Link to an Info manual, or to a specific node.</dd>
+
+<dt>‘=irc='</dt><dd>Link to an IRC channel.</dd>
+
+<dt>‘=mailto='</dt><dd>Link to message composition.</dd>
+
+<dt>‘=news='</dt><dd>Usenet links.</dd>
+
+<dt>‘=shell='</dt><dd>Execute a shell command upon activation.</dd>
+
+<dt>‘=shortdoc='</dt><dd><p>
+Link to short documentation summary for an Emacs Lisp function group. 
+</p>
+
+<p>
+For more information, see <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Name-Help.html#Name-Help">Name Help</a> and <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Documentation-Groups.html#Documentation-Groups">Documentation Groups</a>.
+</p></dd>
+</dl>
+
+<p>
+For ‘=file:=' and ‘=id:=' links, you can additionally specify a line number, or a text search string, separated by ‘=::='. In Org files, you may link to a headline name, a custom ID, or a code reference instead.
+</p>
+
+<p>
+The following table illustrates the link types above, along with their options:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Link Type</th>
+<th scope="col" class="org-left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">http</td>
+<td class="org-left">‘=<a href="http://orgmode.org/">http://orgmode.org/</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">https</td>
+<td class="org-left">‘=<a href="https://orgmode.org/">https://orgmode.org/</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">doi</td>
+<td class="org-left">‘=<a href="https://doi.org/10.1000/182">https://doi.org/10.1000/182</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">file</td>
+<td class="org-left">‘=<img src="file:///home/dominik/images/jupiter.jpg" alt="jupiter.jpg" />='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=/home/dominik/images/jupiter.jpg=' (same as above)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="papers/last.pdf">papers/last.pdf</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=./papers/last.pdf=' (same as above)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="file://ssh:me@some.where:papers/last.pdf">file://ssh:me@some.where:papers/last.pdf</a>=' (remote)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=/ssh:me@some.where:papers/last.pdf=' (same as above)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘==' (jump to line number)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="projects.html">projects.html</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘= words=' (text search)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘= title=' (headline search)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="projects.html#custom-id">projects.html#custom-id</a>=' (headline search)</td>
+</tr>
+
+<tr>
+<td class="org-left">attachment</td>
+<td class="org-left">‘=<a href="file:///home/z/my-project/docneural/projects.html">file:///home/z/my-project/docneural/projects.html</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘= words=' (text search)</td>
+</tr>
+
+<tr>
+<td class="org-left">docview</td>
+<td class="org-left">‘=<a href="/home/z/my-project/docneural/papers/last.pdf">papers/last.pdf::NNN</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">‘=='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘==' (headline search)</td>
+</tr>
+
+<tr>
+<td class="org-left">news</td>
+<td class="org-left">‘=<a href="news:comp.emacs">news:comp.emacs</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">mailto</td>
+<td class="org-left">‘=<a href="mailto:adent@galaxy.net">mailto:adent@galaxy.net</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">mhe</td>
+<td class="org-left">‘=<a href="mhe:folder">mhe:folder</a>=' (folder link)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="mhe:folder#id">mhe:folder#id</a>=' (message link)</td>
+</tr>
+
+<tr>
+<td class="org-left">rmail</td>
+<td class="org-left">‘=<a href="rmail:folder">rmail:folder</a>=' (folder link)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="rmail:folder#id">rmail:folder#id</a>=' (message link)</td>
+</tr>
+
+<tr>
+<td class="org-left">gnus</td>
+<td class="org-left">‘=<a href="gnus:group">gnus:group</a>=' (group link)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="gnus:group#id">gnus:group#id</a>=' (article link)</td>
+</tr>
+
+<tr>
+<td class="org-left">bbdb</td>
+<td class="org-left">‘=<i>nil</i>=' (record with regexp)</td>
+</tr>
+
+<tr>
+<td class="org-left">irc</td>
+<td class="org-left">‘=<a href="irc:/irc.com/#emacs/bob">/irc.com/#emacs/bob</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">help</td>
+<td class="org-left">‘=<a href="help:org-store-link">help:org-store-link</a>='</td>
+</tr>
+
+<tr>
+<td class="org-left">info</td>
+<td class="org-left">‘=<a href="https://www.gnu.org/software/emacs/manual/html_mono/org.html#External">org#External</a> links='</td>
+</tr>
+
+<tr>
+<td class="org-left">shortdoc</td>
+<td class="org-left">‘=shortdoc:text-properties='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=shortdoc:text-properties::#get-pos-property='</td>
+</tr>
+
+<tr>
+<td class="org-left">shell</td>
+<td class="org-left">‘=<a href="shell:ls">shell:ls</a> *.org=' (synchronous), ‘=<a href="shell:inkscape">shell:inkscape</a>&amp;=' (asynchronous)</td>
+</tr>
+
+<tr>
+<td class="org-left">elisp</td>
+<td class="org-left">‘=elisp:(find-file "Elisp.org")=' (Elisp form to evaluate)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=<a href="elisp:org-agenda">elisp:org-agenda</a>=' (interactive Elisp command)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+On top of these built-in link types, additional ones are available through the ‘=org-contrib=' repository (see <a href="docs/org--Installation.html">Installation</a>). For example, these links to VM or Wanderlust messages are available when you load the corresponding libraries from the ‘=org-contrib=' repository:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=vm:folder='</td>
+<td class="org-left">VM folder link</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=vm:folder#id='</td>
+<td class="org-left">VM message link</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=vm://myself@some.where.org/folder#id='</td>
+<td class="org-left">VM on remote machine</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=vm-imap:account:folder='</td>
+<td class="org-left">VM IMAP folder link</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=vm-imap:account:folder#id='</td>
+<td class="org-left">VM IMAP message link</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=wl:folder='</td>
+<td class="org-left">Wanderlust folder link</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=wl:folder#id='</td>
+<td class="org-left">Wanderlust message link</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+For information on customizing Org to add new link types, see <a href="docs/org--Adding-Hyperlink-Types.html">Adding Hyperlink Types</a>.
+</p>
+
+<p>
+A link should be enclosed in double brackets and may contain descriptive text to be displayed instead of the URL (see <a href="docs/org--Link-Format.html">Link Format</a>), for example:
+</p>
+
+<pre class="example" id="org71ddb8c">
+[[https://www.gnu.org/software/emacs/][GNU Emacs]]
+</pre>
+
+<p>
+If the description is a file name or URL that points to an image, HTML export (see <a href="docs/org--HTML-Export.html">HTML Export</a>) inlines the image as a clickable button. If there is no description at all and the link points to an image, that image is inlined into the exported HTML file.
+</p>
+
+<p>
+Org also recognizes external links amid normal text and activates them as links. If spaces must be part of the link (for example in ‘=<i>nil</i>='), or if you need to remove ambiguities about the end of the link, enclose the link in square or angular brackets.
+</p>
+
+<hr />
+</div>
+</div>

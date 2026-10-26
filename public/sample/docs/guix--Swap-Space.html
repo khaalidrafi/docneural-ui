@@ -1,0 +1,221 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#swap-space">1.0.1. 11.6 Swap Space</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Swap-Space"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--User-Accounts.html">User Accounts</a>, Previous: <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Swap-Space-1"></a>
+</p>
+</div>
+<div id="outline-container-swap-space" class="outline-4">
+<h4 id="swap-space"><span class="section-number-4">1.0.1.</span> 11.6 Swap Space</h4>
+<div class="outline-text-4" id="text-swap-space">
+<p>
+<a id="index-swap-space"></a>
+Swap space, as it is commonly called, is a disk area specifically designated for paging: the process in charge of memory management (the Linux kernel or Hurd's default pager) can decide that some memory pages stored in RAM which belong to a running program but are unused should be stored on disk instead. It unloads those from the RAM, freeing up precious fast memory, and writes them to the swap space. If the program tries to access that very page, the memory management process loads it back into memory for the program to use.
+</p>
+
+<p>
+A common misconception about swap is that it is only useful when small amounts of RAM are available to the system. However, it should be noted that kernels often use all available RAM for disk access caching to make I/O faster, and thus paging out unused portions of program memory will expand the RAM available for such caching.
+</p>
+
+<p>
+For a more detailed description of how memory is managed from the viewpoint of a monolithic kernel, see <a href="https://www.gnu.org/software/libc/manual/html_node/Memory-Concepts.html#Memory-Concepts">Memory Concepts</a> in The GNU C Library Reference Manual.
+</p>
+
+<p>
+The Linux kernel has support for swap partitions and swap files: the former uses a whole disk partition for paging, whereas the second uses a file on a file system for that (the file system driver needs to support it). On a comparable setup, both have the same performance, so one should consider ease of use when deciding between them. Partitions are “simpler” and do not need file system support, but need to be allocated at disk formatting time (logical volumes notwithstanding), whereas files can be allocated and deallocated at any time.
+</p>
+
+<p>
+<a id="index-hibernation"></a> <a id="index-suspend-to-disk"></a>
+Swap space is also required to put the system into <i>hibernation</i> (also called <i>suspend to disk</i>), whereby memory is dumped to swap before shutdown so it can be restored when the machine is eventually restarted. Hibernation uses at most half the size of the RAM in the configured swap space. The Linux kernel needs to know about the swap space to be used to resume from hibernation on boot (<i>via</i> a kernel argument). When using a swap file, its offset in the device holding it also needs to be given to the kernel; that value has to be updated if the file is initialized again as swap&#x2014;e.g., because its size was changed.
+</p>
+
+<p>
+Note that swap space is not zeroed on shutdown, so sensitive data (such as passwords) may linger on it if it was paged out. As such, you should consider having your swap reside on an encrypted device (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>).
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: swap-space </dt><dd>Objects of this type represent swap spaces. They contain the following members:
+
+<dl class="org-dl">
+<dt><code>target</code></dt><dd>The device or file to use, either a UUID, a <code>file-system-label</code> or a string, as in the definition of a <code>file-system</code> (see <a href="docs/guix--File-Systems.html">File Systems</a>).</dd>
+
+<dt><code>dependencies</code> (default: <code>'()</code>)</dt><dd>A list of <code>file-system</code> or <code>mapped-device</code> objects, upon which the availability of the space depends. Note that just like for <code>file-system</code> objects, dependencies which are needed for boot and mounted in early userspace are not managed by the Shepherd, and so automatically filtered out for you.</dd>
+
+<dt><code>priority</code> (default: <code>#f</code>)</dt><dd>Only supported by the Linux kernel. Either <code>#f</code> to disable swap priority, or an integer between 0 and 32767. The kernel will first use swap spaces of higher priority when paging, and use same priority spaces on a round-robin basis. The kernel will use swap spaces without a set priority after prioritized spaces, and in the order that they appeared in (not round-robin).</dd>
+
+<dt><code>discard?</code> (default: <code>#f</code>)</dt><dd>Only supported by the Linux kernel. When true, the kernel will notify the disk controller of discarded pages, for example with the TRIM operation on Solid State Drives.</dd>
+</dl></dd>
+</dl>
+
+<p>
+Here are some examples:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(swap-space (target (uuid "4dab5feb-d176-45de-b287-9b0a6e4c01cb")))
+</pre>
+</div>
+
+<p>
+Use the swap partition with the given UUID. You can learn the UUID of a Linux swap partition by running <code>swaplabel ==device</code>, where <code>device</code> is the <code>/dev</code> file name of that partition.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(swap-space
+  (target (file-system-label "swap"))
+  (dependencies mapped-devices))
+</pre>
+</div>
+
+<p>
+Use the partition with label <code>swap</code>, which can be found after all the <code>mapped-devices</code> mapped devices have been opened. Again, the <code>swaplabel</code> command allows you to view and change the label of a Linux swap partition.
+</p>
+
+<p>
+Here's a more involved example with the corresponding <code>file-systems</code> part of an <code>operating-system</code> declaration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-systems
+  (list (file-system
+          (device (file-system-label "root"))
+          (mount-point "/")
+          (type "ext4"))
+        (file-system
+          (device (file-system-label "btrfs"))
+          (mount-point "/btrfs")
+          (type "btrfs"))))
+
+(swap-devices
+  (list
+    (swap-space
+      (target "/btrfs/swapfile")
+      (dependencies (filter (file-system-mount-point-predicate "/btrfs")
+                            file-systems)))))
+</pre>
+</div>
+
+<p>
+Use the file <code>/btrfs/swapfile</code> as swap space, which depends on the file system mounted at <code>/btrfs</code>. Note how we use Guile's filter to select the file system in an elegant fashion!
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(swap-devices
+  (list
+    (swap-space
+      (target "/dev/mapper/my-swap")
+      (dependencies mapped-devices))))
+
+(kernel-arguments
+  (cons* "resume=/dev/mapper/my-swap"
+         %default-kernel-arguments))
+</pre>
+</div>
+
+<p>
+The above snippet of an <code>operating-system</code> declaration enables the mapped device <code>/dev/mapper/my-swap</code> (which may be part of an encrypted device) as swap space, and tells the kernel to use it for hibernation via the <code>resume</code> kernel argument (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>, <code>kernel-arguments</code>).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(swap-devices
+  (list
+    (swap-space
+      (target "/swapfile")
+      (dependencies (filter (file-system-mount-point-predicate "/")
+                            file-systems)))))
+
+(kernel-arguments
+  (cons* "resume=/dev/sda3"        ;device that holds /swapfile
+         "resume_offset=92514304"  ;offset of /swapfile on device
+         %default-kernel-arguments))
+</pre>
+</div>
+
+<p>
+This other snippet of <code>operating-system</code> enables the swap file <code>/swapfile</code> for hibernation by telling the kernel about the partition containing it (<code>resume</code> argument) and its offset on that partition (<code>resume_offset</code> argument). The latter value can be found in the output of the command <code>filefrag -e</code> as the first number right under the <code>physical_offset</code> column header (the second command extracts its value directly):
+</p>
+
+<pre class="example" id="org0f1c775">
+$ sudo filefrag -e /swapfile
+Filesystem type is: ef53
+File size of /swapfile is 2463842304 (601524 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    2047:   92514304..  92516351:   2048:
+…
+$ sudo filefrag -e /swapfile | grep '^ *0:' | cut -d: -f3 | cut -d. -f1
+   92514304
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--User-Accounts.html">User Accounts</a>, Previous: <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

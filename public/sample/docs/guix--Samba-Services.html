@@ -1,0 +1,187 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Samba-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Continuous-Integration.html">Continuous Integration</a>, Previous: <a href="docs/guix--Network-File-System.html">Network File System</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Samba-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="samba-services"></a>11.10.27 Samba Services<br />
+<div class="outline-text-5" id="text-samba-services">
+<p>
+<a id="index-Samba"></a> <a id="index-SMB"></a>
+The <code>(gnu services samba)</code> module provides service definitions for Samba as well as additional helper services. Currently it provides the following services.
+</p>
+
+<p>
+<a id="Samba"></a>
+</p>
+</div>
+</li>
+<li><a id="samba"></a>Samba<br />
+<div class="outline-text-5" id="text-samba">
+<p>
+<a href="https://www.samba.org">Samba</a> provides network shares for folders and printers using the SMB/CIFS protocol commonly used on Windows. It can also act as an Active Directory Domain Controller (AD DC) for other hosts in an heterougenious network with different types of Computer systems.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: samba-service-type </dt><dd><p>
+The service type to enable the samba services <code>samba</code>, <code>nmbd</code>, <code>smbd</code> and <code>winbindd</code>. By default this service type does not run any of the Samba daemons; they must be enabled individually.
+</p>
+
+<p>
+Below is a basic example that configures a simple, anonymous (unauthenticated) Samba file share exposing the <code>/public</code> directory.
+</p>
+
+<blockquote>
+<p>
+<b>Tip:</b> The <code>/public</code> directory and its contents must be world readable/writable, so you'll want to run ‘=chmod -R 777 /public=' on it.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Caution:</b> Such a Samba configuration should only be used in controlled environments, and you should not share any private files using it, as anyone connecting to your network would be able to access them.
+</p>
+</blockquote>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service samba-service-type (samba-configuration
+                             (enable-smbd? #t)
+                             (config-file (plain-file "smb.conf" "\
+[global]
+map to guest = Bad User
+logging = syslog@1
+
+[public]
+browsable = yes
+path = /public
+read only = no
+guest ok = yes
+guest only = yes\n"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: samba-service-configuration </dt><dd>Configuration record for the Samba suite.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>samba</code>)</dt><dd>The samba package to use.</dd>
+
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd>The config file to use. To learn about its syntax, run ‘=man smb.conf='.</dd>
+
+<dt><code>enable-samba?</code> (default: <code>#f</code>)</dt><dd>Enable the <code>samba</code> daemon.</dd>
+
+<dt><code>enable-smbd?</code> (default: <code>#f</code>)</dt><dd>Enable the <code>smbd</code> daemon.</dd>
+
+<dt><code>enable-nmbd?</code> (default: <code>#f</code>)</dt><dd>Enable the <code>nmbd</code> daemon.</dd>
+
+<dt><code>enable-winbindd?</code> (default: <code>#f</code>)</dt><dd>Enable the <code>winbindd</code> daemon.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-wsdd_002c-Web-service-discovery-daemon"></a> <a id="Web-Service-Discovery-Daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="web-service-discovery-daemon"></a>Web Service Discovery Daemon<br />
+<div class="outline-text-5" id="text-web-service-discovery-daemon">
+<p>
+The WSDD (Web Service Discovery daemon) implements the <a href="http://docs.oasis-open.org/ws-dd/discovery/1.1/os/wsdd-discovery-1.1-spec-os.html">Web Services Dynamic Discovery</a> protocol that enables host discovery over Multicast DNS, similar to what Avahi does. It is a drop-in replacement for SMB hosts that have had SMBv1 disabled for security reasons.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: wsdd-service-type </dt><dd>Service type for the WSD host daemon. The value for this service type is a <code>wsdd-configuration</code> record. The details for the <code>wsdd-configuration</code> record type are given below.</dd>
+
+<dt>Data Type: wsdd-configuration </dt><dd>This data type represents the configuration for the wsdd service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>wsdd</code>)</dt><dd>The wsdd package to use.</dd>
+
+<dt><code>ipv4only?</code> (default: <code>#f</code>)</dt><dd>Only listen to IPv4 addresses.</dd>
+
+<dt><code>ipv6only</code> (default: <code>#f</code>)</dt><dd>Only listen to IPv6 addresses. Please note: Activating both options is not possible, since there would be no IP versions to listen to.</dd>
+
+<dt><code>chroot</code> (default: <code>#f</code>)</dt><dd>Chroot into a separate directory to prevent access to other directories. This is to increase security in case there is a vulnerability in <code>wsdd</code>.</dd>
+
+<dt><code>hop-limit</code> (default: <code>1</code>)</dt><dd>Limit to the level of hops for multicast packets. The default is <code>1</code> which should prevent packets from leaving the local network.</dd>
+
+<dt><code>interface</code> (default: <code>'()</code>)</dt><dd>Limit to the given list of interfaces to listen to. By default wsdd will listen to all interfaces. Except the loopback interface is never used.</dd>
+
+<dt><code>uuid-device</code> (default: <code>#f</code>)</dt><dd>The WSD protocol requires a device to have a UUID. Set this to manually assign the service a UUID.</dd>
+
+<dt><code>domain</code> (default: <code>#f</code>)</dt><dd>Notify this host is a member of an Active Directory.</dd>
+
+<dt><code>host-name</code> (default: <code>#f</code>)</dt><dd>Manually set the hostname rather than letting <code>wsdd</code> inherit this host's hostname. Only the host name part of a possible FQDN will be used in the default case.</dd>
+
+<dt><code>preserve-case?</code> (default: <code>#f</code>)</dt><dd>By default <code>wsdd</code> will convert the hostname in workgroup to all uppercase. The opposite is true for hostnames in domains. Setting this parameter will preserve case.</dd>
+
+<dt><code>workgroup</code> (default: <code>"WORKGROUP"</code>)</dt><dd>Change the name of the workgroup. By default <code>wsdd</code> reports this host being member of a workgroup.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Continuous-Integration.html">Continuous Integration</a>, Previous: <a href="docs/guix--Network-File-System.html">Network File System</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>
