@@ -195,12 +195,52 @@ export class DocneuralStore {
     this.lite = lite
   }
 
+  /** Boot payload: the slim pass ships graph.json in three sizes — brotli
+   *  (76 kB on the manuals corpus), gzip, and the plain JSON dev/preview
+   *  middleware always negotiated server-side. Static hosts like GitHub
+   *  Pages serve files verbatim with NO Content-Encoding, so the walk is
+   *  client-side now: fetch the .br, decompress with DecompressionStream,
+   *  fall back to .gz, then to the plain artifact. Same origin, no extra
+   *  boot request beyond the one that succeeds. */
+  async fetchGraph(): Promise<GraphData> {
+    const attempts: Array<[string, 'br' | 'gzip' | null]> = [
+      ['graph.json.br', 'br'],
+      ['graph.json.gz', 'gzip'],
+      ['graph.json', null],
+    ]
+    let lastErr: unknown
+    for (const [file, encoding] of attempts) {
+      try {
+        const res = await fetch(`${this.base}/${file}`)
+        if (!res.ok) throw new Error(`${file}: HTTP ${res.status}`)
+        if (!encoding) return (await res.json()) as GraphData
+        if (typeof res.arrayBuffer !== 'function') {
+          throw new Error(`${file}: no arrayBuffer (mocked response?)`)
+        }
+        // lib.dom's CompressionFormat predates browsers accepting 'br';
+        // the runtime (Chromium 103+, Firefox 113+) takes it fine.
+        const buf = await res.arrayBuffer()
+        if (encoding && typeof DecompressionStream === 'function') {
+          const stream = new Response(buf).body
+          if (!stream) throw new Error(`${file}: no body`)
+          const text = await new Response(
+            stream.pipeThrough(new DecompressionStream(encoding as 'gzip'))
+          ).text()
+          return JSON.parse(text) as GraphData
+        }
+        if (encoding) throw new Error(`${file}: DecompressionStream unavailable`)
+        return JSON.parse(new TextDecoder().decode(buf)) as GraphData
+      } catch (e) {
+        lastErr = e
+      }
+    }
+    throw lastErr
+  }
+
   /** Load graph.json once; then honor the deep link in the URL if present. */
   async load(): Promise<void> {
     try {
-      const res = await fetch(`${this.base}/graph.json`)
-      if (!res.ok) throw new Error(`graph.json: HTTP ${res.status}`)
-      this.data = (await res.json()) as GraphData
+      this.data = await this.fetchGraph()
       this.ready = true
       // Home opens on the first manual's contents (the exporter scans
       // manuals in --doc order); a deep link below overrides via goto().
