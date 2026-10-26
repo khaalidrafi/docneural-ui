@@ -13,6 +13,24 @@
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
 
+  /* Instrument-style count-up on the corpus readout: the numbers sweep from
+     zero once on mount, mono digits make it read like a boot readout.
+     Reduced-motion visitors (and crawlers) just get the final value. */
+  function countup(node: HTMLElement, target: number) {
+    if (!Number.isFinite(target)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const t0 = performance.now()
+    const DUR = 900
+    const tick = (t: number) => {
+      const k = Math.min(1, (t - t0) / DUR)
+      const eased = 1 - Math.pow(1 - k, 3)
+      node.textContent = String(Math.round(target * eased))
+      if (k < 1) requestAnimationFrame(tick)
+    }
+    node.textContent = '0'
+    requestAnimationFrame(tick)
+  }
+
   let { store, title = 'org-docs' }: { store: DocneuralStore; title?: string } = $props()
 
   const chapters = $derived(store.chapters)
@@ -109,9 +127,9 @@
       </div>
       <div class="dn-kv">
         <span>sources</span><span>{sources.length} · {sourceList}</span>
-        <span>pages</span><span>{pageCount}</span>
-        <span>neurons</span><span>{docCount}</span>
-        <span>synapses</span><span><b>{synCount}</b> firing</span>
+        <span>pages</span><span use:countup={pageCount}>{pageCount}</span>
+        <span>neurons</span><span use:countup={docCount}>{docCount}</span>
+        <span>synapses</span><span><b use:countup={synCount}>{synCount}</b> firing</span>
         <span>artifacts</span><span>graph.json · llms.txt · *.org</span>
       </div>
       <p class="note">indexed at build time — no database, no server</p>
@@ -155,8 +173,8 @@
   <section class="sources">
     <h2 class="dn-label">// sources <span class="hint">each corpus wears its graph hue</span></h2>
     <div class="src-row">
-      {#each sources as s (s.name)}
-        <button class="src-card dn-hud" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
+      {#each sources as s, si (s.name)}
+        <button class="src-card dn-hud" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
           <span class="src-name dn-mono">{DocneuralStore.manualTitle(s.name)}</span>
           <span class="src-meta dn-mono">{s.pages} pages · {s.links} wires</span>
           <span class="src-open">read ↗</span>
@@ -197,7 +215,7 @@
   </div>
 
   <div class="cta-row">
-    {#each sources as s (s.name)}
+    {#each sources as s, si (s.name)}
       <button class="cta dn-notch" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
         <span class="cta-k">▤</span>
         <span class="cta-t">{DocneuralStore.manualTitle(s.name)}</span>
@@ -229,8 +247,8 @@
       <ManualTabs {store} />
     </div>
     <div class="grid">
-      {#each showAll ? chapters : chapters.slice(0, 60) as c (c.id)}
-        <button class="card" style={sourceVars(c.tags[0])} onclick={() => store.goto(c)}>
+      {#each showAll ? chapters : chapters.slice(0, 60) as c, ci (c.id)}
+        <button class="card" style="--i: {ci}; {sourceVars(c.tags[0])}" onclick={() => store.goto(c)}>
           <span class="card-title">{c.title}</span>
           <span class="card-deg dn-mono">{degree.get(c.id) ?? 0}⌁</span>
         </button>
@@ -411,6 +429,12 @@
   .mk .mk-to { color: var(--dn-fg-faint); }
   .sources h2, .section-h { color: var(--dn-fg-muted); margin: 0 0 0.7rem; }
   .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
+  /* Entrance choreography: a 24ms-per-card rise, capped so a 200-row grid
+     does not turn into a slow curtain. Reduced motion is killed globally. */
+  .card, .src-card {
+    animation: dn-rise 340ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    animation-delay: calc(min(var(--i, 0), 16) * 24ms);
+  }
   .src-row {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));

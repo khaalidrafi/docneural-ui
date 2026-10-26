@@ -10,6 +10,8 @@
   // the ACTIVE source, so switching corpus re-tints the interface — the site
   // hosts docs from many projects and the chrome says which one you are in.
   import { onMount } from 'svelte'
+  import { fly } from 'svelte/transition'
+  import { cubicOut } from 'svelte/easing'
   import DocneuralGraph from './graph/DocneuralGraph.svelte'
   import FilterBar from './graph/FilterBar.svelte'
   import NotePreview from './reader/NotePreview.svelte'
@@ -50,6 +52,27 @@
   let paletteOpen = $state(false)
   let helpOpen = $state(false)
   let theme = $state<string | null>(null)
+
+  // The sliding segmented thumb: measured off the live .seg buttons (the two
+  // labels differ in width, so a 50% split would lie). Re-measured on mode
+  // flips and window resizes; the lite layout hides the second seg entirely.
+  let thumb = $state({ x: 0, w: 0 })
+  $effect(() => {
+    const measure = () => {
+      const el = document.querySelector('.seg.active') as HTMLElement | null
+      if (el) thumb = { x: el.offsetLeft, w: el.offsetWidth }
+    }
+    store.mode
+    store.lite
+    measure()
+    const raf = requestAnimationFrame(measure) // fonts settle widths late
+    window.addEventListener('resize', measure)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', measure)
+    }
+  })
+  const morph = { y: 10, duration: 200, easing: cubicOut }
 
   // Graph mode's control panel starts collapsed on phones: a full-width
   // filter bar over the canvas left a sliver of neurons to look at. The
@@ -166,6 +189,14 @@
        the graph — so it never hides. On phones the words and brackets drop
        away and the two glyphs stay, sized for a thumb. -->
   <nav class="modes" aria-label="View mode">
+    <!-- The thumb slides under the active segment — measured, not a fake
+         50% split, because DOCS and SYNAPSES are different widths. -->
+    <span
+      class="seg-thumb"
+      aria-hidden="true"
+      style:transform="translateX({thumb.x}px)"
+      style:width="{thumb.w}px"
+    ></span>
     <button class="seg" class:active={store.mode === 'reader'} aria-pressed={store.mode === 'reader'}
       onclick={() => store.setMode('reader')} title="Read the documentation">
       <span class="bracket">[</span><span class="seg-ico" aria-hidden="true">▤</span><span class="seg-txt">DOCS</span><span class="bracket">]</span>
@@ -221,7 +252,7 @@
     </div>
   </div>
 {:else if store.mode === 'graph' && !store.lite}
-  <section class="synapse-mode">
+  <section class="synapse-mode" in:fly={morph}>
     <div class="canvas-wrap">
       <DocneuralGraph {store} {onNodeClick} />
       <!-- The scope chip: what the canvas is showing, and the one click that
@@ -264,11 +295,13 @@
     <NotePreview {store} />
   </section>
 {:else if store.selected}
-  <section class="reader-mode">
+  <section class="reader-mode" in:fly={morph}>
     <DocReader {store} />
   </section>
 {:else}
-  <Home {store} {title} />
+  <div class="home-morph" in:fly={morph}>
+    <Home {store} {title} />
+  </div>
 {/if}
 
 <CommandPalette bind:open={paletteOpen} {store} />
@@ -372,8 +405,27 @@
   .seg.active {
     color: var(--dn-src, var(--dn-accent));
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
+  }
+  /* The sliding thumb paints the fill: one lit block gliding between the
+     segments (measured, so unequal labels are honest), a spring on it. */
+  .modes { position: relative; }
+  .seg-thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 2px;
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
     box-shadow: 0 0 12px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
+    transition: transform 220ms cubic-bezier(0.3, 1.3, 0.35, 1),
+      width 220ms cubic-bezier(0.3, 1.3, 0.35, 1);
+    pointer-events: none;
+  }
+  /* Press feedback everywhere: 1px sink + a brightness kick. */
+  .seg:active, .tool:active, .brand:active {
+    transform: translateY(1px);
+    filter: brightness(1.25);
   }
   .seg.active .bracket { color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent); }
   .spark { color: var(--dn-accent); animation: dn-pulse 2.6s ease-in-out infinite; }

@@ -262,6 +262,50 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     return sel != null && (id === sel || focus.neighbors().has(id))
   }
 
+  /* Sprite-baked soma glow, one offscreen canvas per hue. A radial gradient
+     drawn per node per frame is what froze the 1,500-neuron spread layout;
+     a drawImage of a cached sprite is free. Keyed by color string — the
+     palette is 8 hues plus fallbacks, so the cache is bounded. */
+  const spriteCache = new Map<string, HTMLCanvasElement>()
+  const glowSprite = (col: string): HTMLCanvasElement => {
+    let sp = spriteCache.get(col)
+    if (sp) return sp
+    const S = 64
+    sp = document.createElement('canvas')
+    sp.width = sp.height = S
+    const c = sp.getContext('2d')!
+    const g = c.createRadialGradient(S / 2, S / 2, S * 0.08, S / 2, S / 2, S / 2)
+    g.addColorStop(0, col)
+    g.addColorStop(0.42, col)
+    g.addColorStop(0.55, col) // hard-ish edge: the soma reads as a body
+    g.addColorStop(1, 'transparent')
+    c.globalAlpha = 1
+    c.fillStyle = g
+    c.fillRect(0, 0, S, S)
+    spriteCache.set(col, sp)
+    return sp
+  }
+
+  /* Deterministic per-link curvature from endpoint ids, so a wire bends the
+     same way on every relayout and the two directions of a pair separate
+     instead of overprinting. Hash by character pairs — no dependency. */
+  const curvature = (l: any): number => {
+    const a = String(l.source?.id ?? '')
+    const b = String(l.target?.id ?? '')
+    let h = 0
+    for (let i = 0; i < a.length + b.length; i++) {
+      h = (h * 31 + (a.charCodeAt(i % a.length) + b.charCodeAt(i % b.length))) | 0
+    }
+    return ((Math.abs(h) % 100) / 100) * 0.16 + 0.04
+  }
+  const traffic = (l: any): number =>
+    (l.source?.degree ?? 0) + (l.target?.degree ?? 0)
+
+  /** Fade a color to ~30%: 8-digit hex when the color is hex (the palette
+   *  always is), untouched otherwise (hsl fallbacks stay full-strength). */
+  const fade = (col: string): string =>
+    /^#[0-9a-fA-F]{6}$/.test(col) ? col + '4d' : col
+
   /* Label boxes claimed this frame. force-graph has no per-frame hook — only
      onEngineTick, which STOPS firing once the simulation cools while the
      canvas keeps repainting on every pan and zoom. So the reset is counted
@@ -325,6 +369,21 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     const chosen = n.id === focus.selected()
     const x = n.x ?? 0
     const y = n.y ?? 0
+    // Ego dimming: when a neuron is selected, everything outside its 1-hop
+    // recedes toward the paper so the synapses under inspection read first.
+    // The base disc was already painted by force-graph ('after' mode), so
+    // receding = a paper wash over it; hue-parity gates sample ALPHA and the
+    // wash keeps every pixel's color channel the node's own hue.
+    const dim = !hot && focus.selected() != null
+    if (dim && !focus.compact) {
+      ctx.save()
+      ctx.globalAlpha = 0.42
+      ctx.fillStyle = paper
+      ctx.beginPath()
+      ctx.arc(x, y, r * 1.08, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.restore()
+    }
 
     if (focus.compact) {
       // 'replace': we own the whole drawing — one small disc, ring when hot.
@@ -346,13 +405,22 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     // BRIGHTER halo than before — at corpus zoom the old 0.14 alpha outer
     // ring was invisible, which is exactly what made neurons untrackable.
     ctx.save()
+    // The sprite glow under hot neurons: a real radial bloom instead of a
+    // flat disc, at drawImage cost. Cold neurons keep the stroke rings.
+    if (hot) {
+      const sp = glowSprite(col)
+      const gs = r * 4.6
+      ctx.globalAlpha = chosen ? 0.5 : 0.34
+      ctx.drawImage(sp, x - gs / 2, y - gs / 2, gs, gs)
+      ctx.globalAlpha = 1
+    }
     ctx.strokeStyle = col
     ctx.lineWidth = (hot ? 1.6 : 1) / globalScale
-    ctx.globalAlpha = hot ? 0.85 : 0.4
+    ctx.globalAlpha = (dim ? 0.5 : 1) * (hot ? 0.85 : 0.4)
     ctx.beginPath()
     ctx.arc(x, y, r * 1.5, 0, 2 * Math.PI)
     ctx.stroke()
-    ctx.globalAlpha = hot ? 0.5 : 0.22
+    ctx.globalAlpha = (dim ? 0.5 : 1) * (hot ? 0.5 : 0.22)
     ctx.beginPath()
     ctx.arc(x, y, r * 2.4, 0, 2 * Math.PI)
     ctx.stroke()
@@ -427,10 +495,28 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       return sel != null && (l.source?.id === sel || l.target?.id === sel)
     }
     engine
-      // 0.25 was invisible on the light theme; axons should read as wires.
-      .linkWidth((l: any) => (touches(l) ? 1.4 : 0.5))
-      .linkDirectionalParticles((l: any) => (touches(l) ? 3 : 0))
-      .linkDirectionalParticleWidth(1.8)      // After graphData() force-graph resolves endpoints to node objects.
+      // Axons read as wires: 0.5 base, swollen by the traffic the two ends
+      // carry (sqrt keeps hubs from eating the picture), 1.6 on the selected
+      // neuron's synapses.
+      .linkWidth((l: any) =>
+        touches(l)
+          ? 1.6
+          : Math.min(1.3, 0.35 + 0.06 * Math.sqrt(traffic(l))))
+      // Wires bend apart so reciprocal pairs read as two roads, not one.
+      .linkCurvature(curvature)
+      // Firing traffic: the selected synapses get the full particle stream,
+      // high-traffic axons fire a single ambient pulse so the corpus is
+      // alive even before you pick anything.
+      .linkDirectionalParticles((l: any) =>
+        touches(l) ? 3 : traffic(l) >= 80 ? 1 : 0)
+      .linkDirectionalParticleWidth(1.8)
+      .linkDirectionalParticleSpeed(0.004)
+      // After graphData() force-graph resolves endpoints to node objects.
       .linkDirectionalParticleColor((l: any) => nodeColor(l.source ?? {}, tokensNow()))
+      // Untouched wires recede with the nodes when an ego view is up.
+      .linkColor((l: any) =>
+        touches(l)
+          ? nodeColor(l.source ?? {}, tokensNow())
+          : fade(nodeColor(l.source ?? {}, tokensNow())))
   }
 }
