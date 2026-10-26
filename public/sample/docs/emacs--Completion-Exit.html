@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Completion-Exit-1">1. 10.4.3 Completion Exit ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Completion-Styles.html">How Completion Alternatives Are Chosen</a>   Previous: <a href="docs/emacs--Completion-Commands.html">Completion Commands</a>   Up: <a href="docs/emacs--Completion.html">Completion</a>
+</p>
+
+<p>
+<a id="Completion-Exit"></a>
+</p>
+
+<hr />
+<div id="outline-container-Completion-Exit-1" class="outline-2">
+<h2 id="Completion-Exit-1"><span class="section-number-2">1.</span> 10.4.3 Completion Exit <a href="#Completion-Exit-1">¶</a></h2>
+<div class="outline-text-2" id="text-Completion-Exit-1">
+<p>
+When a command reads an argument using the minibuffer with completion, it also controls what happens when you type RET (<code>minibuffer-complete-and-exit</code>) to submit the argument. There are four types of behavior:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<i>Strict completion</i> accepts only exact completion matches. Typing RET exits the minibuffer only if the minibuffer text is an exact match, or completes to one. Otherwise, Emacs refuses to exit the minibuffer; instead it tries to complete, and if no completion can be done it momentarily displays ‘=[No match]=' after the minibuffer text. (You can still leave the minibuffer by typing C-g to cancel the command.)
+</p>
+
+<p>
+An example of a command that uses this behavior is M-x, since it is meaningless for it to accept a non-existent command name.
+</p></li>
+
+<li><p>
+<i>Cautious completion</i> is like strict completion, except RET exits only if the text is already an exact match. If the text completes to an exact match, RET performs that completion but does not exit yet; you must type a second RET to exit.
+</p>
+
+<p>
+Cautious completion is used for reading file names for files that must already exist, for example.
+</p></li>
+
+<li><i>Permissive completion</i> allows any input; the completion candidates are just suggestions. Typing RET does not complete, it just submits the argument as you have entered it.</li>
+
+<li><p>
+<i>Permissive completion with confirmation</i> is like permissive completion, with an exception: if you typed TAB and this completed the text up to some intermediate state (i.e., one that is not yet an exact completion match), typing RET right afterward does not submit the argument. Instead, Emacs asks for confirmation by momentarily displaying ‘=[Confirm]=' after the text; type RET again to confirm and submit the text. This catches a common mistake, in which one types RET before realizing that TAB did not complete as far as desired.
+</p>
+
+<p>
+You can tweak the confirmation behavior by customizing the variable <code>confirm-nonexistent-file-or-buffer</code>. The default value, <code>after-completion</code>, gives the behavior we have just described. If you change it to <code>nil</code>, Emacs does not ask for confirmation, falling back on permissive completion. If you change it to any other non-<code>nil</code> value, Emacs asks for confirmation whether or not the preceding command was TAB.
+</p>
+
+<p>
+This behavior is used by most commands that read file names, like C-x C-f, and commands that read buffer names, like C-x b.
+</p></li>
+</ul>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,82 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Storing-searches-1">1. 11.6.1 Storing searches ¶</a>
+<ul>
+<li><a href="#section">1.1. (103)</a></li>
+<li><a href="#section-1">1.2. (104)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Storing-searches"></a>
+Next: <a href="docs/org--Block-agenda.html">Block agenda</a>, Up: <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Storing-searches-1" class="outline-2">
+<h2 id="Storing-searches-1"><span class="section-number-2">1.</span> 11.6.1 Storing searches <a href="#Storing-searches-1">¶</a></h2>
+<div class="outline-text-2" id="text-Storing-searches-1">
+<p>
+The first application of custom searches is the definition of keyboard shortcuts for frequently used searches, either creating an agenda buffer, or a sparse tree (the latter covering of course only the current buffer).
+</p>
+
+<p>
+Custom commands are configured in the variable <code>org-agenda-custom-commands</code>. You can customize this variable, for example by pressing C from the agenda dispatcher (see <a href="docs/org--Agenda-Dispatcher.html">The Agenda Dispatcher</a>). You can also directly set it with Emacs Lisp in the Emacs init file. The following example contains all valid agenda views:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands
+      '(("x" agenda)
+        ("y" agenda*)
+        ("w" todo "WAITING")
+        ("W" todo-tree "WAITING")
+        ("u" tags "+boss-urgent")
+        ("v" tags-todo "+boss-urgent")
+        ("U" tags-tree "+boss-urgent")
+        ("f" occur-tree "\\&lt;FIXME\\&gt;")
+        ("h" . "HOME+Name tags searches") ;description for "h" prefix
+        ("hl" tags "+home+Lisa")
+        ("hp" tags "+home+Peter")
+        ("hk" tags "+home+Kim")))
+</pre>
+</div>
+
+<p>
+The initial string in each entry defines the keys you have to press after the dispatcher command in order to access the command. Usually this is just a single character, but if you have many similar commands, you can also define two-letter combinations where the first character is the same in several combinations and serves as a prefix key. The second parameter is the search type, followed by the string or regular expression to be used for the matching. The example above will therefore define:
+</p>
+
+<dl class="org-dl">
+<dt>x</dt><dd>as a global search for agenda entries planned this week/day.</dd>
+
+<dt>y</dt><dd>as the same search, but only for entries with an hour specification like ‘=[h]h:mm='&#x2014;think of them as appointments.</dd>
+
+<dt>w</dt><dd>as a global search for TODO entries with ‘=WAITING=' as the TODO keyword.</dd>
+
+<dt>W</dt><dd>as the same search, but only in the current buffer and displaying the results as a sparse tree.</dd>
+
+<dt>u</dt><dd>as a global tags search for headlines tagged ‘=boss=' but not ‘=urgent='.</dd>
+
+<dt>v</dt><dd>The same search, but limiting it to headlines that are also TODO items.</dd>
+
+<dt>U</dt><dd>as the same search, but only in the current buffer and displaying the result as a sparse tree.</dd>
+
+<dt>f</dt><dd>to create a sparse tree (again, current buffer only) with all entries containing the word ‘=FIXME='.</dd>
+
+<dt>h</dt><dd>as a prefix command for a ‘=HOME=' tags search where you have to press an additional key (l, p or k) to select a name (Lisa, Peter, or Kim) as additional tag to match.</dd>
+</dl>
+
+<p>
+Note that <code>*-tree</code> agenda views need to be called from an Org buffer as they operate on the current buffer only.
+</p>
+
+<hr />
+</div>
+</div>

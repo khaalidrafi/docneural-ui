@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#When-Emacs-Crashes">1. 53.5 When Emacs Crashes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--After-a-Crash.html">Recovery After a Crash</a>   Previous: <a href="docs/emacs--Memory-Full.html">Running out of Memory</a>   Up: <a href="docs/emacs--Lossage.html">Dealing with Emacs Trouble</a>
+</p>
+
+<p>
+<a id="Crashing"></a>
+</p>
+
+<hr />
+<div id="outline-container-When-Emacs-Crashes" class="outline-2">
+<h2 id="When-Emacs-Crashes"><span class="section-number-2">1.</span> 53.5 When Emacs Crashes <a href="#When-Emacs-Crashes">¶</a></h2>
+<div class="outline-text-2" id="text-When-Emacs-Crashes">
+<p>
+Emacs is not supposed to crash, but if it does, it produces a <i>crash report</i> prior to exiting. The crash report is printed to the standard error stream. If Emacs was started from a graphical desktop on a GNU or Unix system, the standard error stream is commonly redirected to a file such as <code>~/.xsession-errors</code>, so you can look for the crash report there. On MS-Windows, the crash report is written to a file named <code>emacs_backtrace.txt</code> in the current directory of the Emacs process, in addition to the standard error stream.
+</p>
+
+<p>
+The format of the crash report depends on the platform. On some platforms, such as those using the GNU C Library, the crash report includes a <i>backtrace</i> describing the execution state prior to crashing, which can be used to help debug the crash. Here is an example for a GNU system:
+</p>
+
+<pre class="example" id="org93a0ee3">
+Fatal error 11: Segmentation fault
+Backtrace:
+emacs[0x5094e4]
+emacs[0x4ed3e6]
+emacs[0x4ed504]
+/lib64/libpthread.so.0[0x375220efe0]
+/lib64/libpthread.so.0(read+0xe)[0x375220e08e]
+emacs[0x509af6]
+emacs[0x5acc26]
+...
+</pre>
+
+<p>
+The number ‘=11=' is the system signal number corresponding to the crash&#x2014;in this case a segmentation fault. The hexadecimal numbers are program addresses, which can be associated with source code lines using a debugging tool. For example, the GDB command ‘=list *0x509af6=' prints the source-code lines corresponding to the ‘=emacs[0x509af6]=' entry. If your system has the <code>addr2line</code> utility, the following shell command outputs a backtrace with source-code line numbers:
+</p>
+
+<pre class="example" id="orgadb226c">
+sed -n 's/.*\[\(.*\)]$/\1/p' backtrace |
+  addr2line -C -f -i -p -e bindir/emacs-binary
+</pre>
+
+<p>
+On MS-Windows, the backtrace looks somewhat differently, for example:
+</p>
+
+<pre class="example" id="org4abb1a2">
+Backtrace:
+00007ff61166a12e
+00007ff611538be1
+00007ff611559601
+00007ff6116ce84a
+00007ff9b7977ff0
+...
+</pre>
+
+<p>
+Therefore, the filtering via <code>sed</code> is not required, and the command to show the source-code line number is
+</p>
+
+<pre class="example" id="org9c7f081">
+addr2line -C -f -i -p -e bindir/emacs-binary &lt; backtrace
+</pre>
+
+<p>
+Here, <code>backtrace</code> is the name of a text file containing a copy of the backtrace (on MS-Windows, <code>emacs_backtrace.txt</code> in the directory where Emacs was started), <code>bindir</code> is the name of the directory that contains the Emacs executable, and <code>emacs-binary</code> is the name of the Emacs executable file, normally <code>emacs</code> on GNU and Unix systems and <code>emacs.exe</code> on MS-Windows and MS-DOS. Omit the <code>-p</code> option if your version of <code>addr2line</code> is too old to have it.
+</p>
+
+<p>
+Optionally, Emacs can generate a <i>core dump</i> when it crashes, on systems that support core files. A core dump is a file containing voluminous data about the state of the program prior to the crash, usually examined by loading it into a debugger such as GDB. On many platforms, core dumps are disabled by default, and you must explicitly enable them by running the shell command ‘=ulimit -c unlimited=' (e.g., in your shell startup script).
+</p>
+
+<hr />
+</div>
+</div>

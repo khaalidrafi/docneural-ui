@@ -1,0 +1,712 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Networking-Setup"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Networking-Services.html">Networking Services</a>, Previous: <a href="docs/guix--Log-Rotation.html">Log Rotation</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Networking-Setup-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="networking-setup"></a>11.10.4 Networking Setup<br />
+<div class="outline-text-5" id="text-networking-setup">
+<p>
+The <code>(gnu services networking)</code> module provides services to configure network interfaces and set up networking on your machine. Those services provide different ways for you to set up your machine: by declaring a static network configuration, by running a Dynamic Host Configuration Protocol (DHCP) client, or by running daemons such as NetworkManager and Connman that automate the whole process, automatically adapt to connectivity changes, and provide a high-level user interface.
+</p>
+
+<p>
+On a laptop, NetworkManager and Connman are by far the most convenient options, which is why the default desktop services include NetworkManager (see <a href="docs/guix--Desktop-Services.html"><code>%desktop-services</code></a>). For a server, or for a virtual machine or a container, static network configuration or a simple DHCP client are often more appropriate.
+</p>
+
+<p>
+This section describes the various network setup services available, starting with static network configuration.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: static-networking-service-type </dt><dd><p>
+This is the type for statically-configured network interfaces. Its value must be a list of <code>static-networking</code> records. Each of them declares a set of <i>addresses</i>, <i>routes</i>, and <i>links</i>, as shown below.
+</p>
+
+<p>
+<a id="index-network-interface-controller-_0028NIC_0029"></a> <a id="index-NIC_002c-networking-interface-controller"></a>
+</p>
+
+<p>
+Here is the simplest configuration, with only one network interface controller (NIC) and only IPv4 connectivity:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Static networking for one NIC, IPv4-only.
+(service static-networking-service-type
+         (list (static-networking
+                (addresses
+                 (list (network-address
+                        (device "eno1")
+                        (value "10.0.2.15/24"))))
+                (routes
+                 (list (network-route
+                        (destination "default")
+                        (gateway "10.0.2.2"))))
+                (name-servers '("10.0.2.3")))))
+</pre>
+</div>
+
+<p>
+The snippet above can be added to the <code>services</code> field of your operating system configuration (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>). It will configure your machine to have 10.0.2.15 as its IP address, with a 24-bit netmask for the local network&#x2014;meaning that any 10.0.2.=x= address is on the local area network (LAN). Traffic to addresses outside the local network is routed <i>via</i> 10.0.2.2. Host names are resolved by sending domain name system (DNS) queries to 10.0.2.3.
+</p></dd>
+
+<dt>Data Type: static-networking </dt><dd><p>
+This is the data type representing a static network configuration.
+</p>
+
+<p>
+As an example, here is how you would declare the configuration of a machine with a single network interface controller (NIC) available as <code>eno1</code>, and with one IPv4 and one IPv6 address:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Network configuration for one NIC, IPv4 + IPv6.
+(static-networking
+ (addresses (list (network-address
+                   (device "eno1")
+                   (value "10.0.2.15/24"))
+                  (network-address
+                   (device "eno1")
+                   (value "2001:123:4567:101::1/64"))))
+ (routes (list (network-route
+                (destination "default")
+                (gateway "10.0.2.2"))
+               (network-route
+                (destination "default")
+                (gateway "2020:321:4567:42::1"))))
+ (name-servers '("10.0.2.3")))
+</pre>
+</div>
+
+<p>
+If you are familiar with the <code>ip</code> command of the <a href="https://wiki.linuxfoundation.org/networking/iproute2"><code>iproute2</code> package</a> found on Linux-based systems, the declaration above is equivalent to typing:
+</p>
+
+<pre class="example" id="org8b669f4">
+ip address add 10.0.2.15/24 dev eno1
+ip address add 2001:123:4567:101::1/64 dev eno1
+ip route add default via inet 10.0.2.2
+ip route add default via inet6 2020:321:4567:42::1
+</pre>
+
+<p>
+Run <code>man 8 ip</code> for more info. Venerable GNU/Linux users will certainly know how to do it with <code>ifconfig</code> and <code>route</code>, but we'll spare you that.
+</p>
+
+<p>
+The available fields of this data type are as follows:
+</p>
+
+<ul class="org-ul">
+<li><code>addresses</code><br />
+<code>links</code> (default: <code>'()</code>)<br />
+<code>routes</code> (default: <code>'()</code>) :: The list of <code>network-address</code>, <code>network-link</code>, and <code>network-route</code> records for this network (see below).</li>
+
+<li id="<code>name-servers</code> (default: <code>'()</code>)">The list of IP addresses (strings) of domain name servers. These IP addresses go to <code>/etc/resolv.conf</code>.</li>
+
+<li id="<code>provision</code> (default: <code>'(networking)</code>)">If true, this should be a list of symbols for the Shepherd service corresponding to this network configuration.</li>
+
+<li id="<code>requirement</code> (default <code>'()</code>)">The list of Shepherd services depended on.</li>
+</ul></dd>
+
+<dt>Data Type: network-address </dt><dd>This is the data type representing the IP address of a network interface.
+
+<dl class="org-dl">
+<dt><code>device</code></dt><dd>The name of the network interface for this address&#x2014;e.g., <code>"eno1"</code>.</dd>
+
+<dt><code>value</code></dt><dd><p>
+The actual IP address and network mask, in <a href="https://en.wikipedia.org/wiki/CIDR#CIDR_notation">CIDR (Classless Inter-Domain Routing) notation</a>, as a string.
+</p>
+
+<p>
+For example, <code>"10.0.2.15/24"</code> denotes IPv4 address 10.0.2.15 on a 24-bit sub-network&#x2014;all 10.0.2.=x= addresses are on the same local network.
+</p></dd>
+
+<dt><code>ipv6?</code></dt><dd>Whether <code>value</code> denotes an IPv6 address. By default this is automatically determined.</dd>
+</dl></dd>
+
+<dt>Data Type: network-route </dt><dd>This is the data type representing a network route.
+
+<dl class="org-dl">
+<dt><code>destination</code></dt><dd>The route destination (a string), either an IP address and network mask or <code>"default"</code> to denote the default route.</dd>
+
+<dt><code>source</code> (default: <code>#f</code>)</dt><dd>The route source.</dd>
+
+<dt><code>device</code> (default: <code>#f</code>)</dt><dd>The device used for this route&#x2014;e.g., <code>"eno2"</code>.</dd>
+
+<dt><code>ipv6?</code> (default: auto)</dt><dd>Whether this is an IPv6 route. By default this is automatically determined based on <code>destination</code> or <code>gateway</code>.</dd>
+
+<dt><code>gateway</code> (default: <code>#f</code>)</dt><dd>IP address (a string) through which traffic is routed.</dd>
+</dl></dd>
+
+<dt>Data Type: network-link </dt><dd>Data type for a network link (see <a href="https://git.lepiller.eu/guile-netlink/manual/manual.html#Link">Link</a> in Guile-Netlink Manual). During startup, network links are employed to construct or modify existing or virtual ethernet links. These ethernet links can be identified by their <code>name</code> or <code>mac-address</code>. If there is a need to create virtual interface, <code>name</code> and <code>type</code> fields are required.
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The name of the link&#x2014;e.g., <code>"v0p0"</code> (default: <code>#f</code>).</dd>
+
+<dt><code>type</code></dt><dd>A symbol denoting the type of the link&#x2014;e.g., <code>'veth</code> (default: <code>#f</code>).</dd>
+
+<dt><code>mac-address</code></dt><dd>The mac-address of the link&#x2014;e.g., <code>"98:11:22:33:44:55"</code> (default: <code>#f</code>).</dd>
+
+<dt><code>arguments</code></dt><dd>List of arguments for this type of link.</dd>
+</dl></dd>
+</dl>
+
+<p>
+Consider a scenario where a server equipped with a network interface which has multiple ports. These ports are connected to a switch, which supports <a href="https://en.wikipedia.org/wiki/Link_aggregation">link aggregation</a> (also known as bonding or NIC teaming). The switch uses port channels to consolidate multiple physical interfaces into one logical interface to provide higher bandwidth, load balancing, and link redundancy. When a port is added to a LAG (or link aggregation group), it inherits the properties of the port-channel. Some of these properties are VLAN membership, trunk status, and so on.
+</p>
+
+<p>
+<a href="https://en.wikipedia.org/wiki/Virtual_LAN">VLAN</a> (or virtual local area network) is a logical network that is isolated from other VLANs on the same physical network. This can be used to segregate traffic, improve security, and simplify network management.
+</p>
+
+<p>
+With all that in mind let's configure our static network for the server. We will bond two existing interfaces together using 802.3ad schema and on top of it, build a VLAN interface with id 1055. We assign a static ip to our new VLAN interface.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(static-networking
+ (links (list (network-link
+               (name "bond0")
+               (type 'bond)
+               (arguments '((mode . "802.3ad")
+                            (miimon . 100)
+                            (lacp-active . "on")
+                            (lacp-rate . "fast"))))
+
+              (network-link
+               (mac-address "98:11:22:33:44:55")
+               (arguments '((master . "bond0"))))
+
+              (network-link
+               (mac-address "98:11:22:33:44:56")
+               (arguments '((master . "bond0"))))
+
+              (network-link
+               (name "bond0.1055")
+               (type 'vlan)
+               (arguments '((id . 1055)
+                            (link . "bond0"))))))
+ (addresses (list (network-address
+                   (value "192.168.1.4/24")
+                   (device "bond0.1055")))))
+</pre>
+</div>
+
+<p>
+<a id="index-loopback-device"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: %loopback-static-networking </dt><dd>This is the <code>static-networking</code> record representing the “loopback device”, <code>lo</code>, for IP addresses 127.0.0.1 and ::1, and providing the <code>loopback</code> Shepherd service.</dd>
+</dl>
+
+<p>
+<a id="index-networking_002c-with-QEMU"></a> <a id="index-QEMU_002c-networking"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: %qemu-static-networking </dt><dd>This is the <code>static-networking</code> record representing network setup when using QEMU's user-mode network stack on <code>eth0</code> (see <a href="../qemu/Using-the-user-mode-network-stack.html#Using-the-user-mode-network-stack">Using the user mode network stack</a> in QEMU Documentation).</dd>
+</dl>
+
+<p>
+<a id="index-DHCP_002c-networking-service"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: dhcp-client-service-type </dt><dd>This is the type of services that run <code>dhclient</code>, the ISC Dynamic Host Configuration Protocol (DHCP) client.</dd>
+
+<dt>Data Type: dhcp-client-configuration </dt><dd>Data type representing the configuration of the ISC DHCP client service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>isc-dhcp</code>)</dt><dd>The ISC DHCP client package to use.</dd>
+
+<dt><code>interfaces</code> (default: <code>'all</code>)</dt><dd><p>
+Either <code>'all</code> or the list of interface names that the ISC DHCP client should listen on&#x2014;e.g., <code>'("eno1")</code>.
+</p>
+
+<p>
+When set to <code>'all</code>, the ISC DHCP client listens on all the available non-loopback interfaces that can be activated. Otherwise the ISC DHCP client listens only on the specified interfaces.
+</p></dd>
+
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd>The configuration file for the ISC DHCP client.</dd>
+
+<dt><code>version</code> (default: <code>"4"</code>)</dt><dd>The DHCP protocol version to use, as a string. Accepted values are <code>"4"</code> or <code>"6"</code> for DHCPv4 or DHCPv6, respectively, as well as <code>"4o6"</code>, for DHCPv4 over DHCPv6 (as specified by RFC 7341).</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>shepherd-requirement</code> (default: <code>'()</code>)<br />
+<code>shepherd-provision</code> (default: <code>'(networking)</code>) :: This option can be used to provide a list of symbols naming Shepherd services that this service will depend on, such as <code>'wpa-supplicant</code> or <code>'iwd</code> if you require authenticated access for encrypted WiFi or Ethernet networks.
+</p>
+
+<p>
+Likewise, <code>shepherd-provision</code> is a list of Shepherd service names (symbols) provided by this service. You might want to change the default value if you intend to run several ISC DHCP clients, only one of which provides the <code>networking</code> Shepherd service.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-DHCPCD_002c-networking-service"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: dhcpcd-service-type </dt><dd><p>
+This the type for a service running <code>dhcpcd</code>, a DHCP (Dynamic Host Configuration Protocol) client that can be used as a replacement for the historical ISC client supported by <code>dhcp-client-service-type</code>.
+</p>
+
+<p>
+Its value must be a <code>dhcpcd-configuration</code> record, as described below. As an example, consider the following setup which runs <code>dhcpcd</code> with a local DNS (Domain Name System) resolver:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service dhcpcd-service-type
+  (dhcpcd-configuration
+    (option '("rapid_commit" "interface_mtu"))
+    (no-option '("nd_rdnss"
+                 "dhcp6_name_servers"
+                 "domain_name_servers"
+                 "domain_name"
+                 "domain_search"))
+    (static '("domain_name_servers=127.0.0.1"))
+    (no-hook '("hostname"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: dhcpcd-configuration </dt><dd>Available <code>dhcpcd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>interfaces</code> (default: <code>()</code>) (type: list)</dt><dd>List of networking interfaces&#x2014;e.g., <code>"eth0"</code>&#x2014;to start a DHCP client for. If no interface is specified (i.e., the list is empty) then <code>dhcpcd</code> discovers available Ethernet interfaces, that can be configured, automatically.</dd>
+
+<dt><code>command-arguments</code> (default: <code>("-q" "-q")</code>) (type: list)</dt><dd>List of additional command-line options.</dd>
+
+<dt><code>host-name</code> (default: <code>""</code>) (type: maybe-string)</dt><dd>Host name to send via DHCP, defaults to the current system host name.</dd>
+
+<dt><code>duid</code> (default: <code>""</code>) (type: maybe-string)</dt><dd>DHCPv4 clients require a unique client identifier, this option uses the DHCPv6 Unique Identifier as a DHCPv4 client identifier as well. For more information, refer to <a href="https://www.rfc-editor.org/rfc/rfc4361">RFC 4361</a> and <code>dhcpcd.conf(5)</code>.</dd>
+
+<dt><code>persistent?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>When true, automatically de-configure the interface when <code>dhcpcd</code> exits.</dd>
+
+<dt><code>option</code> (default: <code>("rapid_commit" "domain_name_servers" "domain_name" "domain_search" "host_name" "classless_static_routes" "interface_mtu")</code>) (type: list-of-strings)</dt><dd>List of options to request from the server.</dd>
+
+<dt><code>require</code> (default: <code>("dhcp_server_identifier")</code>) (type: list-of-strings)</dt><dd>List of options to require in responses.</dd>
+
+<dt><code>slaac</code> (default: <code>"private"</code>) (type: maybe-string)</dt><dd>Interface identifier used for SLAAC generated IPv6 addresses.</dd>
+
+<dt><code>no-option</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>List of options to remove from the message before it's processed.</dd>
+
+<dt><code>no-hook</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>List of hook script which should not be invoked.</dd>
+
+<dt><code>static</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>DHCP client can request different options from a DHCP server, through <code>static</code> it is possible to configure static values for selected options. For example, <code>"domain_name_servers=127.0.0.1"</code>.</dd>
+
+<dt><code>vendor-class-id</code> (type: maybe-string)</dt><dd>Set the DHCP Vendor Class (e.g., <code>MSFT</code>). For more information, refer to <a href="https://www.rfc-editor.org/rfc/rfc2132#section-9.13">RFC 2132</a>.</dd>
+
+<dt><code>client-id</code> (type: maybe-string)</dt><dd>Use the interface hardware address or the given string as a client identifier, this is mutually exclusive with the <code>duid</code> option.</dd>
+
+<dt><code>extra-content</code> (type: maybe-string)</dt><dd>Extra content to append to the configuration as-is.</dd>
+
+<dt><code>shepherd-provision</code> (default: <code>(networking)</code>) (type: list-of-symbols)</dt><dd>This is a list of symbols naming Shepherd services provided by this service.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>()</code>) (type: list-of-symbols)</dt><dd>This is a list of symbols naming Shepherd services that this service will depend on.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-NetworkManager"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: network-manager-service-type </dt><dd><p>
+This is the service type for the <a href="https://wiki.gnome.org/Projects/NetworkManager">NetworkManager</a> service. The value for this service type is a <code>network-manager-configuration</code> record.
+</p>
+
+<p>
+This service is part of <code>%desktop-services</code> (see <a href="docs/guix--Desktop-Services.html">Desktop Services</a>).
+</p></dd>
+
+<dt>Data Type: network-manager-configuration </dt><dd>Data type representing the configuration of NetworkManager.
+
+<dl class="org-dl">
+<dt><code>network-manager</code> (default: <code>network-manager</code>)</dt><dd>The NetworkManager package to use.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'(wireless-daemon)</code>)</dt><dd>This option can be used to provide a list of symbols naming Shepherd services that this service will depend on. The default <code>'wireless-daemon</code> is provided by <code>'wpa-supplicant-service-type</code> and <code>'iwd-service-type</code>. Make sure you have one of these configured. Note, that <code>%desktop-services</code> already include <code>wpa-supplicant-service-type</code>.</dd>
+
+<dt><code>dns</code> (default: <code>"default"</code>)</dt><dd>Processing mode for DNS, which affects how NetworkManager uses the <code>resolv.conf</code> configuration file.
+
+<dl class="org-dl">
+<dt>‘=default='</dt><dd>NetworkManager will update <code>resolv.conf</code> to reflect the nameservers provided by currently active connections.</dd>
+
+<dt>‘=dnsmasq='</dt><dd><p>
+NetworkManager will run <code>dnsmasq</code> as a local caching nameserver, using a <i>conditional forwarding</i> configuration if you are connected to a VPN, and then update <code>resolv.conf</code> to point to the local nameserver.
+</p>
+
+<p>
+With this setting, you can share your network connection. For example when you want to share your network connection to another laptop <i>via</i> an Ethernet cable, you can open <code>nm-connection-editor</code> and configure the Wired connection's method for IPv4 and IPv6 to be “Shared to other computers” and reestablish the connection (or reboot).
+</p>
+
+<p>
+You can also set up a <i>host-to-guest connection</i> to QEMU VMs (see <a href="docs/guix--Installing-Guix-in-a-VM.html">Installing Guix in a Virtual Machine</a>). With a host-to-guest connection, you can e.g. access a Web server running on the VM (see <a href="docs/guix--Web-Services.html">Web Services</a>) from a Web browser on your host system, or connect to the VM <i>via</i> SSH (see <a href="docs/guix--Networking-Services.html"><code>openssh-service-type</code></a>). To set up a host-to-guest connection, run this command once:
+</p>
+
+<pre class="example" id="org08b48d7">
+nmcli connection add type tun \
+ connection.interface-name tap0 \
+ tun.mode tap tun.owner $(id -u) \
+ ipv4.method shared \
+ ipv4.addresses 172.28.112.1/24
+</pre>
+
+<p>
+Then each time you launch your QEMU VM (see <a href="docs/guix--Running-Guix-in-a-VM.html">Running Guix in a Virtual Machine</a>), pass <code>-nic tap,ifname=tap0,script=no,downscript=no</code> to <code>qemu-system-...</code>.
+</p></dd>
+
+<dt>‘=none='</dt><dd>NetworkManager will not modify <code>resolv.conf</code>.</dd>
+</dl></dd>
+
+<dt><code>vpn-plugins</code> (default: <code>'()</code>)</dt><dd>This is the list of available plugins for virtual private networks (VPNs). An example of this is the <code>network-manager-openvpn</code> package, which allows NetworkManager to manage VPNs <i>via</i> OpenVPN.</dd>
+
+<dt><code>extra-configuration-files</code> (default: <code>'()</code>)</dt><dd><p>
+A list of two-element lists; the first element of each list is a file name (as a string), and the second is a file-like object. Used to specify configuration files which will be added to the <code>/etc/NetworkManager/conf.d</code>. NetworkManager will read additional configuration from this directory. For details on configuration file precedence and the configuration file format, see ‘=man 5 NetworkManager.conf='.
+</p>
+
+<p>
+For example, to add two files named <code>001-basic.conf</code> and <code>002-unmanaged.conf</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service network-manager-service-type
+         (network-manager-configuration
+          (extra-configuration-files
+           `(("001-basic.conf" ,(local-file "basic.conf"))
+             ("002-unmanaged.conf" ,(plain-file "constructed-unmanaged.conf"
+                                                "\
+[keyfile]
+unmanaged-devices=interface-name:wlo1_ap\n"))))))
+</pre>
+</div></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-Connman"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: connman-service-type </dt><dd><p>
+This is the service type to run <a href="https://01.org/connman">Connman</a>, a network connection manager.
+</p>
+
+<p>
+Its value must be a <code>connman-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service connman-service-type
+         (connman-configuration
+           (disable-vpn? #t)))
+</pre>
+</div>
+
+<p>
+See below for details about <code>connman-configuration</code>.
+</p></dd>
+
+<dt>Data Type: connman-configuration </dt><dd>Data Type representing the configuration of connman.
+
+<dl class="org-dl">
+<dt><code>connman</code> (default: <code>connman</code>)</dt><dd>The connman package to use.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>)</dt><dd>This option can be used to provide a list of symbols naming Shepherd services that this service will depend on, such as <code>'wpa-supplicant</code> or <code>'iwd</code> if you require authenticated access for encrypted WiFi or Ethernet networks.</dd>
+
+<dt><code>disable-vpn?</code> (default: <code>#f</code>)</dt><dd>When true, disable connman's vpn plugin.</dd>
+
+<dt><code>general-configuration</code> (default: <code>(connman-general-configuration)</code>)</dt><dd>Configuration serialized to <code>main.conf</code> and passed as <code>--config</code> to <code>connmand</code>.</dd>
+</dl></dd>
+
+<dt>Data Type: connman-general-configuration </dt><dd>Available <code>connman-general-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>input-request-timeout</code> (type: maybe-number)</dt><dd>Set input request timeout. Default is 120 seconds. The request for inputs like passphrase will timeout after certain amount of time. Use this setting to increase the value in case of different user interface designs.</dd>
+
+<dt><code>browser-launch-timeout</code> (type: maybe-number)</dt><dd>Set browser launch timeout. Default is 300 seconds. The request for launching a browser for portal pages will timeout after certain amount of time. Use this setting to increase the value in case of different user interface designs.</dd>
+
+<dt><code>background-scanning?</code> (type: maybe-boolean)</dt><dd>Enable background scanning. Default is true. If wifi is disconnected, the background scanning will follow a simple back off mechanism from 3s up to 5 minutes. Then, it will stay in 5 minutes unless user specifically asks for scanning through a D-Bus call. If so, the mechanism will start again from 3s. This feature activates also the background scanning while being connected, which is required for roaming on wifi. When <code>background-scanning?</code> is false, ConnMan will not perform any scan regardless of wifi is connected or not, unless it is requested by the user through a D-Bus call.</dd>
+
+<dt><code>use-gateways-as-timeservers?</code> (type: maybe-boolean)</dt><dd>Assume that service gateways also function as timeservers. Default is false.</dd>
+
+<dt><code>fallback-timeservers</code> (type: maybe-list)</dt><dd>List of Fallback timeservers. These timeservers are used for NTP sync when there are no timeservers set by the user or by the service, and when <code>use-gateways-as-timeservers?</code> is <code>#f</code>. These can contain a mixed combination of fully qualified domain names, IPv4 and IPv6 addresses.</dd>
+
+<dt><code>fallback-nameservers</code> (type: maybe-list)</dt><dd>List of fallback nameservers appended to the list of nameservers given by the service. The nameserver entries must be in numeric format, host names are ignored.</dd>
+
+<dt><code>default-auto-connect-technologies</code> (type: maybe-list)</dt><dd>List of technologies that are marked autoconnectable by default. The default value for this entry when empty is <code>"ethernet"</code>, <code>"wifi"</code>, <code>"cellular"</code>. Services that are automatically connected must have been set up and saved to storage beforehand.</dd>
+
+<dt><code>default-favourite-technologies</code> (type: maybe-list)</dt><dd>List of technologies that are marked favorite by default. The default value for this entry when empty is <code>"ethernet"</code>. Connects to services from this technology even if not setup and saved to storage.</dd>
+
+<dt><code>always-connected-technologies</code> (type: maybe-list)</dt><dd>List of technologies which are always connected regardless of preferred-technologies setting (<code>auto-connect?</code> <code>#t</code>). The default value is empty and this feature is disabled unless explicitly enabled.</dd>
+
+<dt><code>preferred-technologies</code> (type: maybe-list)</dt><dd>List of preferred technologies from the most preferred one to the least preferred one. Services of the listed technology type will be tried one by one in the order given, until one of them gets connected or they are all tried. A service of a preferred technology type in state 'ready' will get the default route when compared to another preferred type further down the list with state 'ready' or with a non-preferred type; a service of a preferred technology type in state 'online' will get the default route when compared to either a non-preferred type or a preferred type further down in the list.</dd>
+
+<dt><code>network-interface-blacklist</code> (type: maybe-list)</dt><dd>List of blacklisted network interfaces. Found interfaces will be compared to the list and will not be handled by ConnMan, if their first characters match any of the list entries. Default value is <code>"vmnet"</code>, <code>"vboxnet"</code>, <code>"virbr"</code>, <code>"ifb"</code>.</dd>
+
+<dt><code>allow-hostname-updates?</code> (type: maybe-boolean)</dt><dd>Allow ConnMan to change the system hostname. This can happen for example if we receive DHCP hostname option. Default value is <code>#t</code>.</dd>
+
+<dt><code>allow-domainname-updates?</code> (type: maybe-boolean)</dt><dd>Allow connman to change the system domainname. This can happen for example if we receive DHCP domainname option. Default value is <code>#t</code>.</dd>
+
+<dt><code>single-connected-technology?</code> (type: maybe-boolean)</dt><dd>Keep only a single connected technology at any time. When a new service is connected by the user or a better one is found according to preferred-technologies, the new service is kept connected and all the other previously connected services are disconnected. With this setting it does not matter whether the previously connected services are in 'online' or 'ready' states, the newly connected service is the only one that will be kept connected. A service connected by the user will be used until going out of network coverage. With this setting enabled applications will notice more network breaks than normal. Note this options can't be used with VPNs. Default value is <code>#f</code>.</dd>
+
+<dt><code>tethering-technologies</code> (type: maybe-list)</dt><dd>List of technologies that are allowed to enable tethering. The default value is <code>"wifi"</code>, <code>"bluetooth"</code>, <code>"gadget"</code>. Only those technologies listed here are used for tethering. If one wants to tether ethernet, then add <code>"ethernet"</code> in the list. Note that if ethernet tethering is enabled, then a DHCP server is started on all ethernet interfaces. Tethered ethernet should never be connected to corporate or home network as it will disrupt normal operation of these networks. Due to this ethernet is not tethered by default. Do not activate ethernet tethering unless you really know what you are doing.</dd>
+
+<dt><code>persistent-tethering-mode?</code> (type: maybe-boolean)</dt><dd>Restore earlier tethering status when returning from offline mode, re-enabling a technology, and after restarts and reboots. Default value is <code>#f</code>.</dd>
+
+<dt><code>enable-6to4?</code> (type: maybe-boolean)</dt><dd>Automatically enable anycast 6to4 if possible. This is not recommended, as the use of 6to4 will generally lead to a severe degradation of connection quality. See RFC6343. Default value is <code>#f</code> (as recommended by RFC6343 section 4.1).</dd>
+
+<dt><code>vendor-class-id</code> (type: maybe-string)</dt><dd>Set DHCP option 60 (Vendor Class ID) to the given string. This option can be used by DHCP servers to identify specific clients without having to rely on MAC address ranges, etc.</dd>
+
+<dt><code>enable-online-check?</code> (type: maybe-boolean)</dt><dd>Enable or disable use of HTTP GET as an online status check. When a service is in a READY state, and is selected as default, ConnMan will issue an HTTP GET request to verify that end-to-end connectivity is successful. Only then the service will be transitioned to ONLINE state. If this setting is false, the default service will remain in READY state. Default value is <code>#t</code>.</dd>
+
+<dt><code>online-check-ipv4-url</code> (type: maybe-string)</dt><dd>IPv4 URL used during the online status check. Please refer to the README for more detailed information. Default value is <a href="http://ipv4.connman.net/online/status.html">http://ipv4.connman.net/online/status.html</a>.</dd>
+
+<dt><code>online-check-ipv6-url</code> (type: maybe-string)</dt><dd>IPv6 URL used during the online status check. Please refer to the README for more detailed information. Default value is <a href="http://ipv6.connman.net/online/status.html">http://ipv6.connman.net/online/status.html</a>.</dd>
+
+<dt><code>online-check-initial-interval</code> (type: maybe-number)</dt><dd>Range of intervals between two online check requests. Please refer to the README for more detailed information. Default value is ‘=1='.</dd>
+
+<dt><code>online-check-max-interval</code> (type: maybe-number)</dt><dd>Range of intervals between two online check requests. Please refer to the README for more detailed information. Default value is ‘=1='.</dd>
+
+<dt><code>enable-online-to-ready-transition?</code> (type: maybe-boolean)</dt><dd>WARNING: This is an experimental feature. In addition to <code>enable-online-check</code> setting, enable or disable use of HTTP GET to detect the loss of end-to-end connectivity. If this setting is <code>#f</code>, when the default service transitions to ONLINE state, the HTTP GET request is no more called until next cycle, initiated by a transition of the default service to DISCONNECT state. If this setting is <code>#t</code>, the HTTP GET request keeps being called to guarantee that end-to-end connectivity is still successful. If not, the default service will transition to READY state, enabling another service to become the default one, in replacement. Default value is <code>#f</code>.</dd>
+
+<dt><code>auto-connect-roaming-services?</code> (type: maybe-boolean)</dt><dd>Automatically connect roaming services. This is not recommended unless you know you won't have any billing problem. Default value is <code>#f</code>.</dd>
+
+<dt><code>address-conflict-detection?</code> (type: maybe-boolean)</dt><dd>Enable or disable the implementation of IPv4 address conflict detection according to RFC5227. ConnMan will send probe ARP packets to see if an IPv4 address is already in use before assigning the address to an interface. If an address conflict occurs for a statically configured address, an IPv4LL address will be chosen instead (according to RFC3927). If an address conflict occurs for an address offered via DHCP, ConnMan sends a DHCP DECLINE once and for the second conflict resorts to finding an IPv4LL address. Default value is <code>#f</code>.</dd>
+
+<dt><code>localtime</code> (type: maybe-string)</dt><dd>Path to localtime file. Defaults to <code>/etc/localtime</code>.</dd>
+
+<dt><code>regulatory-domain-follows-timezone?</code> (type: maybe-boolean)</dt><dd>Enable regulatory domain to be changed along timezone changes. With this option set to true each time the timezone changes the first present ISO3166 country code is read from <code>/usr/share/zoneinfo/zone1970.tab</code> and set as regulatory domain value. Default value is <code>#f</code>.</dd>
+
+<dt><code>resolv-conf</code> (type: maybe-string)</dt><dd>Path to resolv.conf file. If the file does not exist, but intermediate directories exist, it will be created. If this option is not set, it tries to write into <code>/var/run/connman/resolv.conf</code> if it fails (<code>/var/run/connman</code> does not exist or is not writeable). If you do not want to update resolv.conf, you can set <code>/dev/null</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-WPA-Supplicant"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: wpa-supplicant-service-type </dt><dd>This is the service type to run <a href="https://w1.fi/wpa_supplicant/">WPA supplicant</a>, an authentication daemon required to authenticate against encrypted WiFi or ethernet networks.</dd>
+
+<dt>Data Type: wpa-supplicant-configuration </dt><dd><p>
+Data type representing the configuration of WPA Supplicant.
+</p>
+
+<p>
+It takes the following parameters:
+</p>
+
+<dl class="org-dl">
+<dt><code>wpa-supplicant</code> (default: <code>wpa-supplicant</code>)</dt><dd>The WPA Supplicant package to use.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>(user-processes loopback syslogd)</code></dt><dd>List of services that should be started before WPA Supplicant starts.</dd>
+
+<dt><code>shepherd-provision</code> (default: <code>(wpa-supplicant wireless-daemon)</code>) (type: list-of-symbols)</dt><dd>The name(s) of the service.</dd>
+
+<dt><code>dbus?</code> (default: <code>#t</code>)</dt><dd>Whether to listen for requests on D-Bus.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/wpa_supplicant.pid"</code>)</dt><dd>Where to store the PID file.</dd>
+
+<dt><code>interface</code> (default: <code>#f</code>)</dt><dd>If this is set, it must specify the name of a network interface that WPA supplicant will control.</dd>
+
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd>Optional configuration file to use.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>List of additional command-line arguments to pass to the daemon.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-iwd_002c-iNet-Wireless-Daemon"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: iwd-service-type </dt><dd>This is the service type to run iwd, the <a href="https://iwd.wiki.kernel.org/">iNet Wireless Daemon</a>, a daemon required to authenticate against encrypted WiFi networks.</dd>
+</dl>
+
+<blockquote>
+<p>
+<b>Warning:</b> By default <code>iwd</code> removes and re-creates interfaces it manages. It doesn't play nicely with <code>dhcp-client-service-type</code> that enumerates wireless interfaces before starting the Shepherd service. Use either <code>dhcpcd-service-type</code> or the <code>iwd</code>'s built-in DHCP client (see <code>enable-network-configuration</code> option below).
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Warning:</b> <code>iwd-service-type</code> conflicts with <code>wpa-supplicant-service-type</code>. Make sure only one is configured.
+</p>
+</blockquote>
+
+<dl class="org-dl">
+<dt>Data Type: iwd-configuration </dt><dd>Available <code>iwd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>iwd</code> (default: <code>iwd</code>) (type: file-like)</dt><dd>The IWD package to use.</dd>
+
+<dt><code>interfaces</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>If this is set, it must specify <i>glob patterns</i> matching network interfaces that IWD will control.</dd>
+
+<dt><code>ignored-interfaces</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>If this is set, it must specify <i>glob patterns</i> matching network interfaces that IWD will not manage.</dd>
+
+<dt><code>phys</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>If this is set, it must specify <i>glob patterns</i> matching network PHYs names that IWD will control.</dd>
+
+<dt><code>ignored-phys</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>If this is set, it must specify <i>glob patterns</i> matching network PHYs names that IWD will not manage.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>()</code>) (type: list-of-symbols)</dt><dd>Shepherd requirements the service should depend on.</dd>
+
+<dt><code>shepherd-provision</code> (default: <code>(iwd wireless-daemon)</code>) (type: list-of-symbols)</dt><dd>The name(s) of the service.</dd>
+
+<dt><code>config</code> (type: iwd-settings)</dt><dd>Configuration settings.</dd>
+</dl></dd>
+
+<dt>Data Type: iwd-settings </dt><dd>Available <code>iwd-settings</code> fields are:
+
+<dl class="org-dl">
+<dt><code>general</code> (type: iwd-general-settings)</dt><dd>General settings.</dd>
+
+<dt><code>network</code> (default: <code>(iwd-network-settings)</code>) (type: maybe-iwd-network-settings)</dt><dd>Network settings.</dd>
+
+<dt><code>scan</code> (type: maybe-iwd-scan-settings)</dt><dd>Scan settings.</dd>
+
+<dt><code>extra-config</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>Extra configuration values to append to the IWD configuration file.</dd>
+</dl></dd>
+
+<dt>Data Type: iwd-general-settings </dt><dd>Available <code>iwd-general-settings</code> fields are:
+
+<dl class="org-dl">
+<dt><code>enable-network-configuration?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Setting this option to true enables <code>iwd</code> to configure the network interfaces with the IP addresses.</dd>
+
+<dt><code>extra-options</code> (default: <code>()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the General settings group.</dd>
+</dl></dd>
+
+<dt>Data Type: iwd-network-settings </dt><dd>Available <code>iwd-network-settings</code> fields are:
+
+<dl class="org-dl">
+<dt><code>enable-ipv6?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Sets the global default that tells <code>iwd</code> whether it should configure IPv6 addresses and routes</dd>
+
+<dt><code>name-resolving-service</code> (default: <code>none</code>) (type: resolving-service)</dt><dd>Configures a DNS resolution method used by the system.</dd>
+
+<dt><code>extra-options</code> (default: <code>()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the Network settings group.</dd>
+</dl></dd>
+
+<dt>Data Type: iwd-scan-settings </dt><dd>Available <code>iwd-scan-settings</code> fields are:
+
+<dl class="org-dl">
+<dt><code>disable-periodic-scan?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Setting this option to <code>#t</code> will prevent <code>iwd</code> from issuing the periodic scans for the available networks while disconnected.</dd>
+
+<dt><code>initial-periodic-scan-interval</code> (default: <code>10</code>) (type: number)</dt><dd>The initial periodic scan interval upon disconnect (in seconds).</dd>
+
+<dt><code>maximum-periodic-scan-interval</code> (default: <code>300</code>) (type: number)</dt><dd>The maximum periodic scan interval (in seconds).</dd>
+
+<dt><code>disable-roaming-scan?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Setting this option to <code>#t</code> will prevent <code>iwd</code> from trying to scan when roaming decisions are activated.</dd>
+
+<dt><code>extra-options</code> (default: <code>()</code>) (type: alist)</dt><dd>An association list of option symbols/strings to string values to be appended to the Scan settings group.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-ModemManager"></a>
+Some networking devices such as modems require special care, and this is what the services below focus on.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: modem-manager-service-type </dt><dd><p>
+This is the service type for the <a href="https://wiki.gnome.org/Projects/ModemManager">ModemManager</a> service. The value for this service type is a <code>modem-manager-configuration</code> record.
+</p>
+
+<p>
+This service is part of <code>%desktop-services</code> (see <a href="docs/guix--Desktop-Services.html">Desktop Services</a>).
+</p></dd>
+
+<dt>Data Type: modem-manager-configuration </dt><dd>Data type representing the configuration of ModemManager.
+
+<dl class="org-dl">
+<dt><code>modem-manager</code> (default: <code>modem-manager</code>)</dt><dd>The ModemManager package to use.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-USB_005fModeSwitch"></a> <a id="index-Modeswitching"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: usb-modeswitch-service-type </dt><dd><p>
+This is the service type for the <a href="https://www.draisberghof.de/usb_modeswitch/">USB<sub>ModeSwitch</sub></a> service. The value for this service type is a <code>usb-modeswitch-configuration</code> record.
+</p>
+
+<p>
+When plugged in, some USB modems (and other USB devices) initially present themselves as a read-only storage medium and not as a modem. They need to be <i>modeswitched</i> before they are usable. The USB<sub>ModeSwitch</sub> service type installs udev rules to automatically modeswitch these devices when they are plugged in.
+</p>
+
+<p>
+This service is part of <code>%desktop-services</code> (see <a href="docs/guix--Desktop-Services.html">Desktop Services</a>).
+</p></dd>
+
+<dt>Data Type: usb-modeswitch-configuration </dt><dd>Data type representing the configuration of USB<sub>ModeSwitch</sub>.
+
+<dl class="org-dl">
+<dt><code>usb-modeswitch</code> (default: <code>usb-modeswitch</code>)</dt><dd>The USB<sub>ModeSwitch</sub> package providing the binaries for modeswitching.</dd>
+
+<dt><code>usb-modeswitch-data</code> (default: <code>usb-modeswitch-data</code>)</dt><dd>The package providing the device data and udev rules file used by USB<sub>ModeSwitch</sub>.</dd>
+
+<dt><code>config-file</code> (default: <code>#~(string-append #$usb-modeswitch:dispatcher "/etc/usb_modeswitch.conf")</code>)</dt><dd>Which config file to use for the USB<sub>ModeSwitch</sub> dispatcher. By default the config file shipped with USB<sub>ModeSwitch</sub> is used which disables logging to <code>/var/log</code> among other default settings. If set to <code>#f</code>, no config file is used.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Networking-Services.html">Networking Services</a>, Previous: <a href="docs/guix--Log-Rotation.html">Log Rotation</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

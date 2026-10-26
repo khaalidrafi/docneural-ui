@@ -1,0 +1,92 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Diary-Entries-Using-non_002dGregorian-Calendars">1. 33.13.7 Diary Entries Using non-Gregorian Calendars ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Diary-Display.html">Diary Display</a>   Previous: <a href="docs/emacs--Diary-Customizing.html">Customizing the Diary</a>   Up: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>
+</p>
+
+<p>
+<a id="Non_002dGregorian-Diary"></a>
+</p>
+
+<hr />
+<div id="outline-container-Diary-Entries-Using-non_002dGregorian-Calendars" class="outline-2">
+<h2 id="Diary-Entries-Using-non_002dGregorian-Calendars"><span class="section-number-2">1.</span> 33.13.7 Diary Entries Using non-Gregorian Calendars <a href="#Diary-Entries-Using-non_002dGregorian-Calendars">¶</a></h2>
+<div class="outline-text-2" id="text-Diary-Entries-Using-non_002dGregorian-Calendars">
+<p>
+As well as entries based on the standard Gregorian calendar, your diary can have entries based on Bahá'í, Chinese, Hebrew, or Islamic dates. Recognition of such entries can be time-consuming, however, and since most people don't use them, you must explicitly enable their use. If you want the diary to recognize Hebrew-date diary entries, for example, you must do this:
+</p>
+
+<pre class="example" id="org8b5fcb2">
+(add-hook 'diary-nongregorian-listing-hook 'diary-hebrew-list-entries)
+(add-hook 'diary-nongregorian-marking-hook 'diary-hebrew-mark-entries)
+</pre>
+
+<p>
+Similarly, for Islamic, Bahá'í and Chinese entries, add <code>diary-islamic-list-entries</code> and <code>diary-islamic-mark-entries</code>, <code>diary-bahai-list-entries</code> and <code>diary-bahai-mark-entries</code>, or <code>diary-chinese-list-entries</code> and <code>diary-chinese-mark-entries</code>.
+</p>
+
+<p>
+These diary entries have the same formats as Gregorian-date diary entries; except that <code>diary-bahai-entry-symbol</code> (default ‘=B=') must precede a Bahá'í date, <code>diary-chinese-entry-symbol</code> (default ‘=C=') a Chinese date, <code>diary-hebrew-entry-symbol</code> (default ‘=H=') a Hebrew date, and <code>diary-islamic-entry-symbol</code> (default ‘=I=') an Islamic date. Moreover, non-Gregorian month names may not be abbreviated (because the first three letters are often not unique). (Note also that you must use “Adar I” if you want Adar of a common Hebrew year.) For example, a diary entry for the Hebrew date Heshvan 25 could look like this:
+</p>
+
+<pre class="example" id="orgb4d1ff6">
+HHeshvan 25 Happy Hebrew birthday!
+</pre>
+
+<p>
+and would appear in the diary for any date that corresponds to Heshvan 25 on the Hebrew calendar. And here is an Islamic-date diary entry that matches Dhu al-Qada 25:
+</p>
+
+<pre class="example" id="org7863702">
+IDhu al-Qada 25 Happy Islamic birthday!
+</pre>
+
+<p>
+As with Gregorian-date diary entries, non-Gregorian entries are nonmarking if preceded by <code>diary-nonmarking-symbol</code> (default ‘=&amp;=').
+</p>
+
+<p>
+Here is a table of commands used in the calendar to create diary entries that match the selected date and other dates that are similar in the Bahá'í, Chinese, Hebrew, or Islamic calendars:
+</p>
+
+<dl class="org-dl">
+<dt>i h d</dt><dd><code>diary-hebrew-insert-entry</code></dd>
+
+<dt>i h m</dt><dd><code>diary-hebrew-insert-monthly-entry</code></dd>
+
+<dt>i h y</dt><dd><code>diary-hebrew-insert-yearly-entry</code></dd>
+
+<dt>i i d</dt><dd><code>diary-islamic-insert-entry</code></dd>
+
+<dt>i i m</dt><dd><code>diary-islamic-insert-monthly-entry</code></dd>
+
+<dt>i i y</dt><dd><code>diary-islamic-insert-yearly-entry</code></dd>
+
+<dt>i B d</dt><dd><code>diary-bahai-insert-entry</code></dd>
+
+<dt>i B m</dt><dd><code>diary-bahai-insert-monthly-entry</code></dd>
+
+<dt>i B y</dt><dd><code>diary-bahai-insert-yearly-entry</code></dd>
+
+<dt>i C d</dt><dd><code>diary-chinese-insert-entry</code></dd>
+
+<dt>i C m</dt><dd><code>diary-chinese-insert-monthly-entry</code></dd>
+
+<dt>i C y</dt><dd><code>diary-chinese-insert-yearly-entry</code></dd>
+
+<dt>i C a</dt><dd><code>diary-chinese-insert-anniversary-entry</code></dd>
+</dl>
+
+<p>
+These commands work much like the corresponding commands for ordinary diary entries: they apply to the date that point is on in the calendar window, and what they do is insert just the date portion of a diary entry at the end of your diary file. You must then insert the rest of the diary entry. The basic commands add an entry for the specific non-Gregorian date, the ‘=monthly=' commands for the given non-Gregorian day-within-month in every month, and the ‘=yearly=' commands for the given non-Gregorian day and month in every year.
+</p>
+
+<hr />
+</div>
+</div>

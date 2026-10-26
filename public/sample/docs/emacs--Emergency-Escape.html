@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emergency-Escape-1">1. 53.7 Emergency Escape ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--DEL-Does-Not-Delete.html">If DEL Fails to Delete</a>   Previous: <a href="docs/emacs--After-a-Crash.html">Recovery After a Crash</a>   Up: <a href="docs/emacs--Lossage.html">Dealing with Emacs Trouble</a>
+</p>
+
+<p>
+<a id="Emergency-Escape"></a>
+</p>
+
+<hr />
+<div id="outline-container-Emergency-Escape-1" class="outline-2">
+<h2 id="Emergency-Escape-1"><span class="section-number-2">1.</span> 53.7 Emergency Escape <a href="#Emergency-Escape-1">¶</a></h2>
+<div class="outline-text-2" id="text-Emergency-Escape-1">
+<p>
+On text terminals, the <i>emergency escape</i> feature suspends Emacs immediately if you type C-g a second time before Emacs can actually respond to the first one by quitting. This is so you can always get out of GNU Emacs no matter how badly it might be hung. When things are working properly, Emacs recognizes and handles the first C-g so fast that the second one won't trigger emergency escape. However, if some problem prevents Emacs from handling the first C-g properly, then the second one will get you back to the shell.
+</p>
+
+<p>
+When you resume Emacs after a suspension caused by emergency escape, it reports the resumption and asks a question or two before going back to what it had been doing:
+</p>
+
+<pre class="example" id="org44d7d76">
+Emacs is resuming after an emergency escape.
+Auto-save? (y or n)
+Abort (and dump core)? (y or n)
+</pre>
+
+<p>
+Answer each question with y or n followed by RET.
+</p>
+
+<p>
+Saying y to ‘=Auto-save?=' causes immediate auto-saving of all modified buffers in which auto-saving is enabled. Saying n skips this. This question is omitted if Emacs is in a state where auto-saving cannot be done safely.
+</p>
+
+<p>
+Saying y to ‘=Abort (and dump core)?=' causes Emacs to crash, dumping core. This is to enable a wizard to figure out why Emacs was failing to quit in the first place. Execution does not continue after a core dump.
+</p>
+
+<p>
+If you answer this question n, Emacs execution resumes. With luck, Emacs will ultimately do the requested quit. If not, each subsequent C-g invokes emergency escape again.
+</p>
+
+<p>
+If Emacs is not really hung, just slow, you may invoke the double C-g feature without really meaning to. Then just resume and answer n to both questions, and you will get back to the former state. The quit you requested will happen by and by.
+</p>
+
+<p>
+Emergency escape is active only for text terminals. On graphical displays, you can use the mouse to kill Emacs or switch to another program.
+</p>
+
+<p>
+On MS-DOS, you must type C-Break (twice) to cause emergency escape&#x2014;but there are cases where it won't work, when a system call hangs or when Emacs is stuck in a tight loop in C code.
+</p>
+
+<hr />
+</div>
+</div>

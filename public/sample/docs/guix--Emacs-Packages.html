@@ -1,0 +1,97 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Emacs-Packages"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Python-Modules.html">Python Modules</a>, Previous: <a href="docs/guix--Bulk-Updates.html">Bulk Updates</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Emacs-Packages-2"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="emacs-packages"></a>22.8.8 Emacs Packages<br />
+<div class="outline-text-5" id="text-emacs-packages">
+<p>
+<a id="index-emacs_002c-packaging"></a> <a id="index-elisp_002c-packaging"></a>
+Emacs packages should preferably use the Emacs build system (see <a href="docs/guix--Build-Systems.html#emacs_002dbuild_002dsystem">emacs-build-system</a>), for uniformity and the benefits provided by its build phases, such as the auto-generation of the autoloads file and the byte compilation of the sources. Because there is no standardized way to run a test suite for Emacs packages, tests are disabled by default. When a test suite is available, it should be enabled by setting the <code>#:tests?</code> argument to <code>#true</code>. By default, the command to run the test is <code>make check</code>, but any command can be specified via the <code>#:test-command</code> argument. The <code>#:test-command</code> argument expects a list containing a command and its arguments, to be invoked during the <code>check</code> phase.
+</p>
+
+<p>
+The Elisp dependencies of Emacs packages are typically provided as <code>propagated-inputs</code> when required at run time. As for other packages, build or test dependencies should be specified as <code>native-inputs</code>.
+</p>
+
+<p>
+Emacs packages sometimes depend on resources directories that should be installed along the Elisp files. The <code>#:include</code> argument can be used for that purpose, by specifying a list of regexps to match. The best practice when using the <code>#:include</code> argument is to extend rather than override its default value (accessible via the <code>%default-include</code> variable). As an example, a yasnippet extension package typically include a <code>snippets</code> directory, which could be copied to the installation directory using:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">#:include (cons "^snippets/" %default-include)
+</pre>
+</div>
+
+<p>
+When encountering problems, it is wise to check for the presence of the <code>Package-Requires</code> extension header in the package main source file, and whether any dependencies and their versions listed therein are satisfied.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Python-Modules.html">Python Modules</a>, Previous: <a href="docs/guix--Bulk-Updates.html">Bulk Updates</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

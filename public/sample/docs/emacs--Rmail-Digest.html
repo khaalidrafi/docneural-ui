@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Digest-Messages">1. 35.16 Digest Messages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Rot13.html">Reading Rot13 Messages</a>   Previous: <a href="docs/emacs--Rmail-Editing.html">Editing Within a Message</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Digest"></a>
+</p>
+
+<hr />
+<div id="outline-container-Digest-Messages" class="outline-2">
+<h2 id="Digest-Messages"><span class="section-number-2">1.</span> 35.16 Digest Messages <a href="#Digest-Messages">¶</a></h2>
+<div class="outline-text-2" id="text-Digest-Messages">
+<p>
+A <i>digest message</i> is a message which exists to contain and carry several other messages. Digests are used on some mailing lists; all the messages that arrive for the list during a period of time such as one day are put inside a single digest which is then sent to the subscribers. Transmitting the single digest uses less computer time than transmitting the individual messages even though the total size is the same, because of the per-message overhead in network mail transmission.
+</p>
+
+<p>
+When you receive a digest message, the most convenient way to read it is to <i>undigestify</i> it: to turn it back into many individual messages. Then you can read and delete the individual messages as it suits you. To do this, select the digest message and type the command M-x undigestify-rmail-message. This extracts the submessages as separate Rmail messages, and inserts them following the digest. The digest message itself is flagged as deleted.
+</p>
+</div>
+</div>

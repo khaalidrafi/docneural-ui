@@ -1,0 +1,38 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Texinfo-file-header-1">1. 13.14.3 Texinfo file header ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Texinfo-file-header"></a>
+Next: <a href="docs/org--Texinfo-title-and-copyright-page.html">Texinfo title and copyright page</a>, Previous: <a href="docs/org--Texinfo-specific-export-settings.html">Texinfo specific export settings</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Texinfo-file-header-1" class="outline-2">
+<h2 id="Texinfo-file-header-1"><span class="section-number-2">1.</span> 13.14.3 Texinfo file header <a href="#Texinfo-file-header-1">¶</a></h2>
+<div class="outline-text-2" id="text-Texinfo-file-header-1">
+<p>
+After creating the header for a Texinfo file, the Texinfo backend automatically generates a name and destination path for the Info file. To override this default with a more sensible path and name, specify the ‘=TEXINFO<sub>FILENAME</sub>=' keyword.
+</p>
+
+<p>
+Along with the output's file name, the Texinfo header also contains language details (see <a href="docs/org--Export-Settings.html">Export Settings</a>) and encoding system as set in the <code>org-texinfo-coding-system</code> variable. Insert ‘=TEXINFO<sub>HEADER</sub>=' keywords for each additional command in the header, for example:
+</p>
+
+<pre class="example" id="orgfe30048">
+#+TEXINFO_HEADER: @synindex
+</pre>
+
+<p>
+Instead of repeatedly installing the same set of commands, define a class in <code>org-texinfo-classes</code> once, and then activate it in the document by setting the ‘=TEXINFO<sub>CLASS</sub>=' keyword to that class.
+</p>
+</div>
+</div>

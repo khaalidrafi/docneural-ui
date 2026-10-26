@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Hiding-Subdirectories-1">1. 32.15 Hiding Subdirectories ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Dired-Updating.html">Updating the Dired Buffer</a>   Previous: <a href="docs/emacs--Subdirectory-Motion.html">Moving Over Subdirectories</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Hiding-Subdirectories"></a>
+</p>
+
+<hr />
+<div id="outline-container-Hiding-Subdirectories-1" class="outline-2">
+<h2 id="Hiding-Subdirectories-1"><span class="section-number-2">1.</span> 32.15 Hiding Subdirectories <a href="#Hiding-Subdirectories-1">¶</a></h2>
+<div class="outline-text-2" id="text-Hiding-Subdirectories-1">
+<p>
+<i>Hiding</i> a subdirectory means to make it invisible, except for its header line.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-dired_002dhide_002dsubdir"></a>$ </dt><dd>Hide or show the subdirectory that point is in, and move point to the next subdirectory (<code>dired-hide-subdir</code>). This is a toggle. A numeric argument serves as a repeat count.</dd>
+
+<dt><a id="index-dired_002dhide_002dall"></a>M-$ </dt><dd>Hide all subdirectories in this Dired buffer, leaving only their header lines (<code>dired-hide-all</code>). Or, if any subdirectory is currently hidden, make all subdirectories visible again. You can use this command to get an overview in very deep directory trees or to move quickly to subdirectories far away.</dd>
+</dl>
+
+<p>
+Ordinary Dired commands never consider files inside a hidden subdirectory. For example, the commands to operate on marked files ignore files in hidden directories even if they are marked. Thus you can use hiding to temporarily exclude subdirectories from operations without having to remove the Dired marks on files in those subdirectories.
+</p>
+
+<p>
+See <a href="docs/emacs--Subdirectories-in-Dired.html">Subdirectories in Dired</a>, for how to insert a subdirectory listing, and see <a href="docs/emacs--Dired-Updating.html">Updating the Dired Buffer</a>, for how to delete it.
+</p>
+</div>
+</div>

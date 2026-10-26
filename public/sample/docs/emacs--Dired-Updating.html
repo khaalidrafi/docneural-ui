@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Updating-the-Dired-Buffer">1. 32.16 Updating the Dired Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Dired-and-Find.html">Dired and find</a>   Previous: <a href="docs/emacs--Hiding-Subdirectories.html">Hiding Subdirectories</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Dired-Updating"></a>
+</p>
+
+<hr />
+<div id="outline-container-Updating-the-Dired-Buffer" class="outline-2">
+<h2 id="Updating-the-Dired-Buffer"><span class="section-number-2">1.</span> 32.16 Updating the Dired Buffer <a href="#Updating-the-Dired-Buffer">¶</a></h2>
+<div class="outline-text-2" id="text-Updating-the-Dired-Buffer">
+<p>
+This section describes commands to update the Dired buffer to reflect outside (non-Dired) changes in the directories and files, and to delete part of the Dired buffer.
+</p>
+
+<dl class="org-dl">
+<dt>g</dt><dd>Update the entire contents of the Dired buffer (<code>revert-buffer</code>).</dd>
+
+<dt>l</dt><dd>Update the specified files (<code>dired-do-redisplay</code>). You specify the files for l in the same way as for file operations.</dd>
+
+<dt>k</dt><dd>Delete the specified <i>file lines</i>&#x2014;not the files, just the lines (<code>dired-do-kill-lines</code>).</dd>
+
+<dt>s</dt><dd>Toggle between alphabetical order and date/time order (<code>dired-sort-toggle-or-edit</code>).</dd>
+
+<dt>C-u s <code>switches</code> RET</dt><dd>Refresh the Dired buffer using <code>switches</code> as <code>dired-listing-switches</code>.</dd>
+</dl>
+
+<p>
+Type g (<code>revert-buffer</code>) to update the contents of the Dired buffer, based on changes in the files and directories listed. This preserves all marks except for those on files that have vanished. Hidden subdirectories are updated but remain hidden.
+</p>
+
+<p>
+To update only some of the files, type l (<code>dired-do-redisplay</code>). Like the Dired file-operating commands, this command operates on the next <code>n</code> files (or previous −=n= files), or on the marked files if any, or on the current file. Updating the files means reading their current status, then updating their lines in the buffer to indicate that status.
+</p>
+
+<p>
+If you use l on a subdirectory header line, it updates the contents of the corresponding subdirectory.
+</p>
+
+<p>
+If you use C-x d or some other Dired command to visit a directory that is already being shown in a Dired buffer, Dired switches to that buffer but does not update it. If the buffer is not up-to-date, Dired displays a warning telling you to type g to update it. You can also tell Emacs to revert each Dired buffer automatically when you revisit it, by setting the variable <code>dired-auto-revert-buffer</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+To delete <i>file lines</i> from the buffer&#x2014;without actually deleting the files&#x2014;type k (<code>dired-do-kill-lines</code>). Like the file-operating commands, this command operates on the next <code>n</code> files, or on the marked files if any. However, it does not operate on the current file, since otherwise mistyping k could be annoying.
+</p>
+
+<p>
+If you use k to kill the line for a directory file which you had inserted in the Dired buffer as a subdirectory (see <a href="docs/emacs--Subdirectories-in-Dired.html">Subdirectories in Dired</a>), it removes the subdirectory listing as well. Typing C-u k on the header line for a subdirectory also removes the subdirectory line from the Dired buffer.
+</p>
+
+<p>
+The g command brings back any individual lines that you have killed in this way, but not subdirectories&#x2014;you must use i to reinsert a subdirectory.
+</p>
+
+<p>
+The files in a Dired buffers are normally listed in alphabetical order by file names. Alternatively Dired can sort them by date/time. The Dired command s (<code>dired-sort-toggle-or-edit</code>) switches between these two sorting modes. The mode line in a Dired buffer indicates which way it is currently sorted&#x2014;by name, or by date.
+</p>
+
+<p>
+C-u s <code>switches</code> RET lets you specify a new value for <code>dired-listing-switches</code>.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,99 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Hooks-1">1. 51.2.2 Hooks ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Locals.html">Local Variables</a>   Previous: <a href="docs/emacs--Examining.html">Examining and Setting Variables</a>   Up: <a href="docs/emacs--Variables.html">Variables</a>
+</p>
+
+<p>
+<a id="Hooks"></a>
+</p>
+
+<hr />
+<div id="outline-container-Hooks-1" class="outline-2">
+<h2 id="Hooks-1"><span class="section-number-2">1.</span> 51.2.2 Hooks <a href="#Hooks-1">¶</a></h2>
+<div class="outline-text-2" id="text-Hooks-1">
+<p>
+<i>Hooks</i> are an important mechanism for customizing Emacs. A hook is a Lisp variable which holds a list of functions, to be called on some well-defined occasion. (This is called <i>running the hook</i>.) The individual functions in the list are called the <i>hook functions</i> of the hook. For example, the hook <code>kill-emacs-hook</code> runs just before exiting Emacs (see <a href="docs/emacs--Exiting.html">Exiting Emacs</a>).
+</p>
+
+<p>
+Most hooks are <i>normal hooks</i>. This means that when Emacs runs the hook, it calls each hook function in turn, with no arguments. We have made an effort to keep most hooks normal, so that you can use them in a uniform way. Every variable whose name ends in ‘=-hook=' is a normal hook.
+</p>
+
+<p>
+A few hooks are <i>abnormal hooks</i>. Their names end in ‘=-functions=', instead of ‘=-hook=' (some old code may also use the deprecated suffix ‘=-hooks='). What makes these hooks abnormal is the way its functions are called&#x2014;perhaps they are given arguments, or perhaps the values they return are used in some way. For example, <code>find-file-not-found-functions</code> is abnormal because as soon as one hook function returns a non-<code>nil</code> value, the rest are not called at all (see <a href="docs/emacs--Visiting.html">Visiting Files</a>). The documentation of each abnormal hook variable explains how its functions are used.
+</p>
+
+<p>
+You can set a hook variable with <code>setq</code> like any other Lisp variable, but the recommended way to add a function to a hook (either normal or abnormal) is to use <code>add-hook</code>, as shown by the following examples. See <a href="../elisp_html/Hooks.html#Hooks">Hooks</a> in The Emacs Lisp Reference Manual, for details.
+</p>
+
+<p>
+Most major modes run one or more <i>mode hooks</i> as the last step of initialization. Mode hooks are a convenient way to customize the behavior of individual modes; they are always normal. For example, here's how to set up a hook to turn on Auto Fill mode in Text mode and other modes based on Text mode:
+</p>
+
+<pre class="example" id="orgaadab8b">
+(add-hook 'text-mode-hook 'auto-fill-mode)
+</pre>
+
+<p>
+This works by calling <code>auto-fill-mode</code>, which enables the minor mode when no argument is supplied (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>). Next, suppose you don't want Auto Fill mode turned on in LaTeX mode, which is one of the modes based on Text mode. You can do this with the following additional line:
+</p>
+
+<pre class="example" id="org9fb50ca">
+(add-hook 'latex-mode-hook (lambda () (auto-fill-mode -1)))
+</pre>
+
+<p>
+Here we have used the special macro <code>lambda</code> to construct an anonymous function (see <a href="../elisp_html/Lambda-Expressions.html#Lambda-Expressions">Lambda Expressions</a> in The Emacs Lisp Reference Manual), which calls <code>auto-fill-mode</code> with an argument of <code>-1</code> to disable the minor mode. Because LaTeX mode runs <code>latex-mode-hook</code> after running <code>text-mode-hook</code>, the result leaves Auto Fill mode disabled.
+</p>
+
+<p>
+Here is a more complex example, showing how to use a hook to customize the indentation of C code:
+</p>
+
+<pre class="example" id="orgf611d23">
+(setq my-c-style
+  '((c-comment-only-line-offset . 4)
+</pre>
+
+<pre class="example" id="org4e02020">
+(c-cleanup-list . (scope-operator
+                   empty-defun-braces
+                   defun-close-semi))))
+</pre>
+
+<pre class="example" id="org6739897">
+
+</pre>
+
+<pre class="example" id="orge4854f8">
+(add-hook 'c-mode-common-hook
+  (lambda () (c-add-style "my-style" my-c-style t)))
+</pre>
+
+<p>
+Major mode hooks also apply to other major modes <i>derived</i> from the original mode (see <a href="../elisp_html/Derived-Modes.html#Derived-Modes">Derived Modes</a> in The Emacs Lisp Reference Manual). For instance, HTML mode is derived from Text mode (see <a href="docs/emacs--HTML-Mode.html">SGML and HTML Modes</a>); when HTML mode is enabled, it runs <code>text-mode-hook</code> before running <code>html-mode-hook</code>. This provides a convenient way to use a single hook to affect several related modes. In particular, if you want to apply a hook function to any programming language mode, add it to <code>prog-mode-hook</code>; Prog mode is a major mode that does little else than to let other major modes inherit from it, exactly for this purpose.
+</p>
+
+<p>
+It is best to design your hook functions so that the order in which they are executed does not matter. Any dependence on the order is asking for trouble. However, the order is predictable: the hook functions are executed in the order they appear in the hook.
+</p>
+
+<p>
+If you play with adding various different versions of a hook function by calling <code>add-hook</code> over and over, remember that all the versions you added will remain in the hook variable together. You can clear out individual functions by calling <code>remove-hook</code>, or do <code>(setq ==hook-variable=</code> nil)= to remove everything.
+</p>
+
+<p>
+If the hook variable is buffer-local, the buffer-local variable will be used instead of the global variable. However, if the buffer-local variable contains the element <code>t</code>, the global hook variable will be run as well.
+</p>
+
+<hr />
+</div>
+</div>

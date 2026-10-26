@@ -1,0 +1,125 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="High-Availability-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Certificate-Services.html">Certificate Services</a>, Previous: <a href="docs/guix--Web-Services.html">Web Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="High-Availability-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="high-availability-services"></a>11.10.21 High Availability Services<br />
+<div class="outline-text-5" id="text-high-availability-services">
+<p>
+<a id="index-Message-broker"></a> <a id="index-Message-streaming"></a>
+The <code>(gnu services high-availability)</code> module provides RabbitMQ message broker service.
+</p>
+
+<p>
+<a id="RabbitMQ"></a><a id="RabbitMQ-1"></a>
+</p>
+</div>
+</li>
+<li><a id="rabbitmq"></a>RabbitMQ<br />
+<div class="outline-text-5" id="text-rabbitmq">
+<dl class="org-dl">
+<dt>Variable: rabbitmq-service-type </dt><dd><p>
+Service type for the <a href="https://www.rabbitmq.com/">RabbitMQ</a> web server. The value for this service type is a <code>&lt;rabbitmq-configuration&gt;</code> record.
+</p>
+
+<p>
+A simple example configuration is given below.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service rabbitmq-service-type
+         (rabbitmq-configuration
+           (rabbitmq-configuration
+             (plugins '("rabbitmq_stream"
+                        "rabbitmq_management"
+                        "rabbitmq_prometheus")))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+At startup, RabbitMQ broker logs its initialization messages into <code>/var/log/messages</code> file. Once running, the logging messages can be found in a logging file of a RabbitMQ node in <code>/var/log/rabbitmq</code> directory.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The default configuration of the RabbitMQ service enables the RabbitMQ broker to accept connections only on loopback interfaces. However, enabling certain plugins may open ports on all network interfaces. See also <a href="https://www.rabbitmq.com/docs/networking#ports">RabbitMQ Port Access</a>.
+</p>
+</blockquote>
+
+<dl class="org-dl">
+<dt>Data Type: rabbitmq-configuration </dt><dd>This data type represents the configuration for RabbitMQ.
+
+<dl class="org-dl">
+<dt><code>rabbitmq</code> (default: <code>rabbitmq</code>)</dt><dd>The RabbitMQ package to use.</dd>
+
+<dt><code>config-file</code> (default: <code>%default-rabbitmq-config-file</code>)</dt><dd>Configuration file for the RabbitMQ broker. See also <a href="https://www.rabbitmq.com/docs/configure">RabbitMQ Configuration</a>.</dd>
+
+<dt><code>data-directory</code> (default: <code>"/var/lib/rabbitmq/data"</code>)</dt><dd>Directory with RabbitMQ broker data - a schema database, message stores, cluster member information, and other persistent node state.</dd>
+
+<dt><code>plugins</code> (default: <code>'()</code>)</dt><dd>A list of RabbitMQ plugins to enable. View all available plugins using the <code>rabbitmq-plugins list</code> command.</dd>
+</dl></dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>

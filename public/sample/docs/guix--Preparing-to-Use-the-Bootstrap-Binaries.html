@@ -1,0 +1,216 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#preparing-to-use-the-bootstrap-binaries">1.0.1. 20.2 Preparing to Use the Bootstrap Binaries</a></li>
+<li><a href="#building-the-build-tools">1.0.2. Building the Build Tools</a></li>
+<li><a href="#building-the-bootstrap-binaries">1.0.3. Building the Bootstrap Binaries</a></li>
+<li><a href="#reducing-the-set-of-bootstrap-binaries">1.0.4. Reducing the Set of Bootstrap Binaries</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Preparing-to-Use-the-Bootstrap-Binaries"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Full_002dSource-Bootstrap.html">The Full-Source Bootstrap</a>, Up: <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Preparing-to-Use-the-Bootstrap-Binaries-1"></a>
+</p>
+</div>
+<div id="outline-container-preparing-to-use-the-bootstrap-binaries" class="outline-4">
+<h4 id="preparing-to-use-the-bootstrap-binaries"><span class="section-number-4">1.0.1.</span> 20.2 Preparing to Use the Bootstrap Binaries</h4>
+<div class="outline-text-4" id="text-preparing-to-use-the-bootstrap-binaries">
+<p>
+The figure above shows the very beginning of the dependency graph of the distribution, corresponding to the package definitions of the <code>(gnu packages bootstrap)</code> module. A similar figure can be generated with <code>guix graph</code> (see <a href="docs/guix--Invoking-guix-graph.html">Invoking <code>guix graph</code></a>), along the lines of:
+</p>
+
+<pre class="example" id="org13849e5">
+guix graph -t derivation \
+  -e '(@@ (gnu packages bootstrap) %bootstrap-gcc)' \
+  | dot -Tps &gt; gcc.ps
+</pre>
+
+<p>
+or, for the further Reduced Binary Seed bootstrap
+</p>
+
+<pre class="example" id="orgdc4b800">
+guix graph -t derivation \
+  -e '(@@ (gnu packages bootstrap) %bootstrap-mes)' \
+  | dot -Tps &gt; mes.ps
+</pre>
+
+<p>
+At this level of detail, things are slightly complex. First, Guile itself consists of an ELF executable, along with many source and compiled Scheme files that are dynamically loaded when it runs. This gets stored in the <code>guile-2.0.7.tar.xz</code> tarball shown in this graph. This tarball is part of Guix's “source” distribution, and gets inserted into the store with <code>add-to-store</code> (see <a href="docs/guix--The-Store.html">The Store</a>).
+</p>
+
+<p>
+But how do we write a derivation that unpacks this tarball and adds it to the store? To solve this problem, the <code>guile-bootstrap-2.0.drv</code> derivation&#x2014;the first one that gets built&#x2014;uses <code>bash</code> as its builder, which runs <code>build-bootstrap-guile.sh</code>, which in turn calls <code>tar</code> to unpack the tarball. Thus, <code>bash</code>, <code>tar</code>, <code>xz</code>, and <code>mkdir</code> are statically-linked binaries, also part of the Guix source distribution, whose sole purpose is to allow the Guile tarball to be unpacked.
+</p>
+
+<p>
+Once <code>guile-bootstrap-2.0.drv</code> is built, we have a functioning Guile that can be used to run subsequent build programs. Its first task is to download tarballs containing the other pre-built binaries&#x2014;this is what the <code>.tar.xz.drv</code> derivations do. Guix modules such as <code>ftp-client.scm</code> are used for this purpose. The <code>module-import.drv</code> derivations import those modules in a directory in the store, using the original layout. The <code>module-import-compiled.drv</code> derivations compile those modules, and write them in an output directory with the right layout. This corresponds to the <code>#:modules</code> argument of <code>build-expression-&gt;derivation</code> (see <a href="docs/guix--Derivations.html">Derivations</a>).
+</p>
+
+<p>
+Finally, the various tarballs are unpacked by the derivations <code>gcc-bootstrap-0.drv</code>, <code>glibc-bootstrap-0.drv</code>, or <code>bootstrap-mes-0.drv</code> and <code>bootstrap-mescc-tools-0.drv</code>, at which point we have a working C tool chain.
+</p>
+
+<p>
+<a id="Building-the-Build-Tools"></a>
+</p>
+</div>
+</div>
+<div id="outline-container-building-the-build-tools" class="outline-4">
+<h4 id="building-the-build-tools"><span class="section-number-4">1.0.2.</span> Building the Build Tools</h4>
+<div class="outline-text-4" id="text-building-the-build-tools">
+<p>
+Bootstrapping is complete when we have a full tool chain that does not depend on the pre-built bootstrap tools discussed above. This no-dependency requirement is verified by checking whether the files of the final tool chain contain references to the <code>/gnu/store</code> directories of the bootstrap inputs. The process that leads to this “final” tool chain is described by the package definitions found in the <code>(gnu packages commencement)</code> module.
+</p>
+
+<p>
+The <code>guix graph</code> command allows us to “zoom out” compared to the graph above, by looking at the level of package objects instead of individual derivations&#x2014;remember that a package may translate to several derivations, typically one derivation to download its source, one to build the Guile modules it needs, and one to actually build the package from source. The command:
+</p>
+
+<pre class="example" id="orgb74e64e">
+guix graph -t bag \
+  -e '(@@ (gnu packages commencement)
+          glibc-final-with-bootstrap-bash)' | xdot -
+</pre>
+
+<p>
+displays the dependency graph leading to the “final” C library, depicted below.
+</p>
+
+<p>
+The first tool that gets built with the bootstrap binaries is GNU Make&#x2014;noted <code>make-boot0</code> above&#x2014;which is a prerequisite for all the following packages. From there Findutils and Diffutils get built.
+</p>
+
+<p>
+Then come the first-stage Binutils and GCC, built as pseudo cross tools&#x2014;i.e., with <code>--target</code> equal to <code>--host</code>. They are used to build libc. Thanks to this cross-build trick, this libc is guaranteed not to hold any reference to the initial tool chain.
+</p>
+
+<p>
+From there the final Binutils and GCC (not shown above) are built. GCC uses <code>ld</code> from the final Binutils, and links programs against the just-built libc. This tool chain is used to build the other packages used by Guix and by the GNU Build System: Guile, Bash, Coreutils, etc.
+</p>
+
+<p>
+And voilà! At this point we have the complete set of build tools that the GNU Build System expects. These are in the <code>%final-inputs</code> variable of the <code>(gnu packages commencement)</code> module, and are implicitly used by any package that uses <code>gnu-build-system</code> (see <a href="docs/guix--Build-Systems.html"><code>gnu-build-system</code></a>).
+</p>
+
+<p>
+<a id="Building-the-Bootstrap-Binaries"></a>
+</p>
+</div>
+</div>
+<div id="outline-container-building-the-bootstrap-binaries" class="outline-4">
+<h4 id="building-the-bootstrap-binaries"><span class="section-number-4">1.0.3.</span> Building the Bootstrap Binaries</h4>
+<div class="outline-text-4" id="text-building-the-bootstrap-binaries">
+<p>
+<a id="index-bootstrap-binaries-1"></a>
+Because the final tool chain does not depend on the bootstrap binaries, those rarely need to be updated. Nevertheless, it is useful to have an automated way to produce them, should an update occur, and this is what the <code>(gnu packages make-bootstrap)</code> module provides.
+</p>
+
+<p>
+The following command builds the tarballs containing the bootstrap binaries (Binutils, GCC, glibc, for the traditional bootstrap and linux-libre-headers, bootstrap-mescc-tools, bootstrap-mes for the Reduced Binary Seed bootstrap, and Guile, and a tarball containing a mixture of Coreutils and other basic command-line tools):
+</p>
+
+<pre class="example" id="org87e7f7b">
+guix build bootstrap-tarballs
+</pre>
+
+<p>
+The generated tarballs are those that should be referred to in the <code>(gnu packages bootstrap)</code> module mentioned at the beginning of this section.
+</p>
+
+<p>
+Still here? Then perhaps by now you've started to wonder: when do we reach a fixed point? That is an interesting question! The answer is unknown, but if you would like to investigate further (and have significant computational and storage resources to do so), then let us know.
+</p>
+
+<p>
+<a id="Reducing-the-Set-of-Bootstrap-Binaries"></a>
+</p>
+</div>
+</div>
+<div id="outline-container-reducing-the-set-of-bootstrap-binaries" class="outline-4">
+<h4 id="reducing-the-set-of-bootstrap-binaries"><span class="section-number-4">1.0.4.</span> Reducing the Set of Bootstrap Binaries</h4>
+<div class="outline-text-4" id="text-reducing-the-set-of-bootstrap-binaries">
+<p>
+Our traditional bootstrap includes GCC, GNU Libc, Guile, etc. That's a lot of binary code! Why is that a problem? It's a problem because these big chunks of binary code are practically non-auditable, which makes it hard to establish what source code produced them. Every unauditable binary also leaves us vulnerable to compiler backdoors as described by Ken Thompson in the 1984 paper <i>Reflections on Trusting Trust</i>.
+</p>
+
+<p>
+This is mitigated by the fact that our bootstrap binaries were generated from an earlier Guix revision. Nevertheless it lacks the level of transparency that we get in the rest of the package dependency graph, where Guix always gives us a source-to-binary mapping. Thus, our goal is to reduce the set of bootstrap binaries to the bare minimum.
+</p>
+
+<p>
+The <a href="https://bootstrappable.org">Bootstrappable.org web site</a> lists on-going projects to do that. One of these is about replacing the bootstrap GCC with a sequence of assemblers, interpreters, and compilers of increasing complexity, which could be built from source starting from a simple and auditable assembler.
+</p>
+
+<p>
+Our first major achievement is the replacement of GCC, the GNU C Library and Binutils by MesCC-Tools (a simple hex linker and macro assembler) and Mes (see <a href="https://www.gnu.org/software/mes/manual/html_node/index.html#Top">GNU Mes Reference Manual</a> in GNU Mes, a Scheme interpreter and C compiler in Scheme). Neither MesCC-Tools nor Mes can be fully bootstrapped yet and thus we inject them as binary seeds. We call this the Reduced Binary Seed bootstrap, as it has halved the size of our bootstrap binaries! Also, it has eliminated the C compiler binary; i686-linux and x86<sub>64</sub>-linux Guix packages are now bootstrapped without any binary C compiler.
+</p>
+
+<p>
+Work is ongoing to make MesCC-Tools and Mes fully bootstrappable and we are also looking at any other bootstrap binaries. Your help is welcome!
+</p>
+
+<hr />
+</div>
+</div>
+</div>

@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Reading-Rot13-Messages">1. 35.17 Reading Rot13 Messages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Movemail.html">movemail program</a>   Previous: <a href="docs/emacs--Rmail-Digest.html">Digest Messages</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Rot13"></a>
+</p>
+
+<hr />
+<div id="outline-container-Reading-Rot13-Messages" class="outline-2">
+<h2 id="Reading-Rot13-Messages"><span class="section-number-2">1.</span> 35.17 Reading Rot13 Messages <a href="#Reading-Rot13-Messages">¶</a></h2>
+<div class="outline-text-2" id="text-Reading-Rot13-Messages">
+<p>
+Mailing list messages that might offend or annoy some readers are sometimes encoded in a simple code called <i>rot13</i>&#x2014;so named because it rotates the alphabet by 13 letters. This code is not for secrecy, as it provides none; rather, it enables those who wish to avoid seeing the real text of the message. For example, a review of a film might use rot13 to hide important plot points.
+</p>
+
+<p>
+To view a buffer that uses the rot13 code, use the command M-x rot13-other-window. This displays the current buffer in another window which applies the code when displaying the text.
+</p>
+
+<p>
+If you are only interested in a region, the command M-x rot13-region might be preferable. This will encrypt/decrypt the active region in-place. If the buffer is read-only, it will attempt to display the plain text in the echo area. If the text is too long for the echo area, the command will pop up a temporary buffer with the encrypted/decrypted text.
+</p>
+</div>
+</div>

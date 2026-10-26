@@ -1,0 +1,574 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Summary-of-In_002dBuffer-Settings">1. 17.8 Summary of In-Buffer Settings ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (166)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="In_002dbuffer-Settings"></a>
+Next: <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>, Previous: <a href="docs/org--The-Very-Busy-C_002dc-C_002dc-Key.html">The Very Busy C-c C-c Key</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Summary-of-In_002dBuffer-Settings" class="outline-2">
+<h2 id="Summary-of-In_002dBuffer-Settings"><span class="section-number-2">1.</span> 17.8 Summary of In-Buffer Settings <a href="#Summary-of-In_002dBuffer-Settings">¶</a></h2>
+<div class="outline-text-2" id="text-Summary-of-In_002dBuffer-Settings">
+<p>
+In-buffer settings start with ‘=#+=', followed by a keyword, a colon, one or more spaces, and then a word for each setting. Org accepts multiple settings on the same line. Org also accepts multiple lines for a keyword. This manual describes these settings throughout. A summary follows here.
+</p>
+
+<p>
+C-c C-c activates any changes to the in-buffer settings. Closing and reopening the Org file in Emacs also activates the changes.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-ARCHIVE_002c-keyword-1"></a>‘=#+ARCHIVE: %s<sub>done</sub>::=' </dt><dd>Sets the archive location of the agenda file. The corresponding variable is <code>org-archive-location</code>.</dd>
+
+<dt><a id="index-CATEGORY_002c-keyword-1"></a>‘=#+CATEGORY=' </dt><dd>Sets the category of the agenda file, which applies to the entire document.</dd>
+
+<dt><a id="index-COLUMNS_002c-property-1"></a>‘=#+COLUMNS: %25ITEM &#x2026;=' </dt><dd>Set the default format for columns view. This format applies when columns view is invoked in locations where no ‘=COLUMNS=' property applies.</dd>
+
+<dt><a id="index-CONSTANTS_002c-keyword-1"></a>‘=#+CONSTANTS: name1=value1 &#x2026;=' </dt><dd>Set file-local values for constants that table formulas can use. This line sets the local variable <code>org-table-formula-constants-local</code>. The global version of this variable is <code>org-table-formula-constants</code>.</dd>
+
+<dt><a id="index-FILETAGS_002c-keyword-1"></a>‘=#+FILETAGS: :tag1:tag2:tag3:=' </dt><dd>Set tags that all entries in the file inherit from, including the top-level entries.</dd>
+
+<dt><a id="index-LINK_002c-keyword-1"></a>‘=#+LINK: linkword replace=' </dt><dd>Each line specifies one abbreviation for one link. Use multiple ‘=LINK=' keywords for more, see <a href="docs/org--Link-Abbreviations.html">Link Abbreviations</a>. The corresponding variable is <code>org-link-abbrev-alist</code>.</dd>
+
+<dt><a id="index-PRIORITIES_002c-keyword-1"></a>‘=#+PRIORITIES: highest lowest default=' </dt><dd>This line sets the limits and the default for the priorities. All three must be either letters A&#x2013;Z or numbers 0&#x2013;64. The highest priority must have a lower ASCII number than the lowest priority.</dd>
+
+<dt><a id="index-PROPERTY_002c-keyword-1"></a>‘=#+PROPERTY: Property<sub>Name</sub> Value=' </dt><dd>This line sets a default inheritance value for entries in the current buffer, most useful for specifying the allowed values of a property.</dd>
+
+<dt><a id="index-SETUPFILE_002c-keyword-1"></a>‘=#+SETUPFILE: file=' </dt><dd><p>
+The setup file or a URL pointing to such file is for additional in-buffer settings. Org loads this file and parses it for any settings in it when Org opens the main file. If URL is specified, the contents are downloaded and stored in a temporary file cache. C-c C-c on the settings line re-parses and re-loads the file, and also resets the temporary file cache.
+</p>
+
+<p>
+Org also parses and loads <i>in-buffer settings</i> from the setup file during normal exporting process. Org parses the <i>in-buffer settings</i> as if it was included in the containing Org buffer. The rest of the contents of setup file is ignored.
+</p>
+
+<p>
+To visit the setup file&#x2014;not a URL&#x2014;use C-c ' while point is on the line with the setup file name.
+</p></dd>
+
+<dt><a id="index-STARTUP_002c-keyword-2"></a>‘=#+STARTUP:=' </dt><dd><p>
+Startup options Org uses when first visiting a file.
+</p>
+
+<p>
+The first set of options deals with the initial visibility of the outline tree. The corresponding variable for global default settings is <code>org-startup-folded</code> with a default value of <code>showeverything</code>.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=overview='</td>
+<td class="org-left">Top-level headlines only.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=content='</td>
+<td class="org-left">All headlines.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=showall='</td>
+<td class="org-left">No folding on any entry.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=show2levels='</td>
+<td class="org-left">Headline levels 1-2.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=show3levels='</td>
+<td class="org-left">Headline levels 1-3.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=show4levels='</td>
+<td class="org-left">Headline levels 1-4.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=show5levels='</td>
+<td class="org-left">Headline levels 1-5.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=showeverything='</td>
+<td class="org-left">Show even drawer contents.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Dynamic virtual indentation is controlled by the variable <code>org-startup-indented</code>.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=indent='</td>
+<td class="org-left">Start with Org Indent mode turned on.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=noindent='</td>
+<td class="org-left">Start with Org Indent mode turned off.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Dynamic virtual numeration of headlines is controlled by the variable <code>org-startup-numerated</code>.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=num='</td>
+<td class="org-left">Start with Org num mode turned on.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nonum='</td>
+<td class="org-left">Start with Org num mode turned off.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Aligns tables consistently upon visiting a file. The corresponding variable is <code>org-startup-align-all-tables</code> with <code>nil</code> as default value.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=align='</td>
+<td class="org-left">Align all tables.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=noalign='</td>
+<td class="org-left">Do not align tables on startup.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Shrink table columns with a width cookie. The corresponding variable is <code>org-startup-shrink-all-tables</code> with <code>nil</code> as default value.
+</p>
+
+<p>
+When visiting a file, inline images can be automatically displayed. The corresponding variable is <code>org-startup-with-inline-images</code>, with a default value <code>nil</code> to avoid delays when visiting a file.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=inlineimages='</td>
+<td class="org-left">Show inline images.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=noinlineimages='</td>
+<td class="org-left">Do not show inline images on startup.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Bracket links in Org buffers are displayed hiding the link path and brackets. For example, ‘=<a href="https://orgmode.org">Org Website</a>=' is, by default, displayed as “Org Website”, hiding the link itself and just displaying its description. Alternatively, the links can be displayed in full. The corresponding variable is <code>org-link-descriptive</code>.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=descriptivelinks='</td>
+<td class="org-left">Hide path and brackets in links.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=literallinks='</td>
+<td class="org-left">Do not hide anything.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Logging the closing and reopening of TODO items and clock intervals can be configured using these options (see variables <code>org-log-done</code>, <code>org-log-note-clock-out</code>, and <code>org-log-repeat</code>).
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=logdone='</td>
+<td class="org-left">Record a timestamp when an item is marked as done.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=lognotedone='</td>
+<td class="org-left">Record timestamp and a note when DONE.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nologdone='</td>
+<td class="org-left">Do not record when items are marked as done.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=logrepeat='</td>
+<td class="org-left">Record a time when reinstating a repeating item.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=lognoterepeat='</td>
+<td class="org-left">Record a note when reinstating a repeating item.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nologrepeat='</td>
+<td class="org-left">Do not record when reinstating repeating item.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=lognoteclock-out='</td>
+<td class="org-left">Record a note when clocking out.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nolognoteclock-out='</td>
+<td class="org-left">Do not record a note when clocking out.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=logreschedule='</td>
+<td class="org-left">Record a timestamp when scheduling time changes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=lognotereschedule='</td>
+<td class="org-left">Record a note when scheduling time changes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nologreschedule='</td>
+<td class="org-left">Do not record when a scheduling date changes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=logredeadline='</td>
+<td class="org-left">Record a timestamp when deadline changes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=lognoteredeadline='</td>
+<td class="org-left">Record a note when deadline changes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nologredeadline='</td>
+<td class="org-left">Do not record when a deadline date changes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=logrefile='</td>
+<td class="org-left">Record a timestamp when refiling.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=lognoterefile='</td>
+<td class="org-left">Record a note when refiling.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nologrefile='</td>
+<td class="org-left">Do not record when refiling.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Here are the options for hiding leading stars in outline headings, and for indenting outlines. The corresponding variables are <code>org-hide-leading-stars</code> and <code>org-odd-levels-only</code>, both with a default setting <code>nil</code> (meaning ‘=showstars=' and ‘=oddeven=').
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=hidestars='</td>
+<td class="org-left">Make all but one of the stars starting a headline invisible.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=showstars='</td>
+<td class="org-left">Show all stars starting a headline.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=indent='</td>
+<td class="org-left">Virtual indentation according to outline level.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=noindent='</td>
+<td class="org-left">No virtual indentation according to outline level.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=odd='</td>
+<td class="org-left">Allow only odd outline levels (1, 3, &#x2026;).</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=oddeven='</td>
+<td class="org-left">Allow all outline levels.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+To turn on custom format overlays over timestamps (variables <code>org-display-custom-times</code> and <code>org-timestamp-custom-formats</code>), use:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=customtime='</td>
+<td class="org-left">Overlay custom time format.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+The following options influence the table spreadsheet (variable <code>constants-unit-system</code>).
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=constcgs='</td>
+<td class="org-left">‘=constants.el=' should use the c-g-s unit system.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=constSI='</td>
+<td class="org-left">‘=constants.el=' should use the SI unit system.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+To influence footnote settings, use the following keywords. The corresponding variables are <code>org-footnote-define-inline</code>, <code>org-footnote-auto-label</code>, and <code>org-footnote-auto-adjust</code>.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=fninline='</td>
+<td class="org-left">Define footnotes inline.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnnoinline='</td>
+<td class="org-left">Define footnotes in separate section.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnlocal='</td>
+<td class="org-left">Define footnotes near first reference, but not inline.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnprompt='</td>
+<td class="org-left">Prompt for footnote labels.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnauto='</td>
+<td class="org-left">Create ‘=='-like labels automatically (default).</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnconfirm='</td>
+<td class="org-left">Offer automatic label for editing or confirmation.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnadjust='</td>
+<td class="org-left">Automatically renumber and sort footnotes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nofnadjust='</td>
+<td class="org-left">Do not renumber and sort automatically.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=fnanon='</td>
+<td class="org-left">Create anonymous footnotes with <code>org-footnote-new</code>.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+To hide blocks or drawers on startup, use these keywords. The corresponding variables are <code>org-hide-block-startup</code> and <code>org-hide-drawer-startup</code>.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=hideblocks='</td>
+<td class="org-left">Hide all begin/end blocks on startup.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nohideblocks='</td>
+<td class="org-left">Do not hide blocks on startup.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=hidedrawers='</td>
+<td class="org-left">Hide all begin/end blocks on startup.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=nohidedrawers='</td>
+<td class="org-left">Do not hide blocks on startup.</td>
+</tr>
+</tbody>
+</table></dd>
+</dl>
+
+<p>
+The display of entities as UTF-8 characters is governed by the variable <code>org-pretty-entities</code> and the keywords
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=entitiespretty='</td>
+<td class="org-left">Show entities as UTF-8 characters where possible.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=entitiesplain='</td>
+<td class="org-left">Leave entities plain.</td>
+</tr>
+</tbody>
+</table>
+
+<dl class="org-dl">
+<dt><a id="index-TAGS_002c-keyword-1"></a>‘=#+TAGS: TAG1(c1) TAG2(c2)=' </dt><dd>These lines (several such lines are allowed) specify the valid tags in this file, and (potentially) the corresponding <i>fast tag selection</i> keys. The corresponding variable is <code>org-tag-alist</code>.</dd>
+
+<dt><a id="index-SEQ_005fTODO_002c-keyword-1"></a>‘=#+TODO:=', ‘=#+SEQ<sub>TODO</sub>:=', ‘=#+TYP<sub>TODO</sub>:=' </dt><dd>These lines set the TODO keywords and their interpretation in the current file. The corresponding variable is <code>org-todo-keywords</code>.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Shadowing-Files">1. 20.3.5 Shadowing Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Time-Stamps.html">Updating Time Stamps Automatically</a>   Previous: <a href="docs/emacs--Interlocking.html">Protection against Simultaneous Editing</a>   Up: <a href="docs/emacs--Saving.html">Saving Files</a>
+</p>
+
+<p>
+<a id="File-Shadowing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Shadowing-Files" class="outline-2">
+<h2 id="Shadowing-Files"><span class="section-number-2">1.</span> 20.3.5 Shadowing Files <a href="#Shadowing-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Shadowing-Files">
+<p>
+You can arrange to keep identical <i>shadow</i> copies of certain files in more than one place&#x2014;possibly on different machines. To do this, first you must set up a <i>shadow file group</i>, which is a set of identically-named files shared between a list of sites. The file group is permanent and applies to further Emacs sessions as well as the current one. Once the group is set up, every time you exit Emacs, it will copy the file you edited to the other files in its group. You can also do the copying without exiting Emacs, by typing M-x shadow-copy-files.
+</p>
+
+<p>
+A <i>shadow cluster</i> is a group of hosts that share directories, so that copying to or from one of them is sufficient to update the file on all of them. Each shadow cluster has a name, and specifies the network address of a primary host (the one we copy files to), and a regular expression that matches the host names of all the other hosts in the cluster. You can define a shadow cluster with M-x shadow-define-cluster.
+</p>
+
+<dl class="org-dl">
+<dt>M-x shadow-initialize</dt><dd>Set up file shadowing.</dd>
+
+<dt>M-x shadow-define-literal-group</dt><dd>Declare a single file to be shared between sites.</dd>
+
+<dt>M-x shadow-define-regexp-group</dt><dd>Make all files that match each of a group of files be shared between hosts.</dd>
+
+<dt>M-x shadow-define-cluster RET <code>name</code> RET</dt><dd>Define a shadow file cluster <code>name</code>.</dd>
+
+<dt>M-x shadow-copy-files</dt><dd>Copy all pending shadow files.</dd>
+
+<dt>M-x shadow-cancel</dt><dd>Cancel the instruction to shadow some files.</dd>
+</dl>
+
+<p>
+To set up a shadow file group, use M-x shadow-define-literal-group or M-x shadow-define-regexp-group. See their documentation strings for further information.
+</p>
+
+<p>
+Before copying a file to its shadows, Emacs asks for confirmation. You can answer “no” to bypass copying of this file, this time. If you want to cancel the shadowing permanently for a certain file, use M-x shadow-cancel to eliminate or change the shadow file group.
+</p>
+
+<p>
+File Shadowing is not available on MS Windows.
+</p>
+
+<hr />
+</div>
+</div>

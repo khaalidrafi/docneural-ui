@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Running-Shell-Commands-from-Emacs">1. 40 Running Shell Commands from Emacs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>   Previous: <a href="docs/emacs--Document-View.html">Document Viewing</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Shell"></a>
+</p>
+
+<hr />
+<div id="outline-container-Running-Shell-Commands-from-Emacs" class="outline-2">
+<h2 id="Running-Shell-Commands-from-Emacs"><span class="section-number-2">1.</span> 40 Running Shell Commands from Emacs <a href="#Running-Shell-Commands-from-Emacs">¶</a></h2>
+<div class="outline-text-2" id="text-Running-Shell-Commands-from-Emacs">
+<p>
+Emacs has commands for passing single command lines to shell subprocesses, and for running a shell interactively with input and output to an Emacs buffer, and for running a shell in a terminal emulator window.
+</p>
+
+<dl class="org-dl">
+<dt>M-! <code>cmd</code> RET</dt><dd>Run the shell command <code>cmd</code> and display the output (<code>shell-command</code>).</dd>
+
+<dt>M-| <code>cmd</code> RET</dt><dd>Run the shell command <code>cmd</code> with region contents as input; optionally replace the region with the output (<code>shell-command-on-region</code>).</dd>
+
+<dt>M-&amp; <code>cmd</code> RET</dt><dd>Run the shell command <code>cmd</code> asynchronously, and display the output (<code>async-shell-command</code>).</dd>
+
+<dt>M-x shell</dt><dd>Run a subshell with input and output through an Emacs buffer. You can then give commands interactively.</dd>
+
+<dt>M-x term</dt><dd>Run a subshell with input and output through an Emacs buffer. You can then give commands interactively. Full terminal emulation is available.</dd>
+</dl>
+
+<p>
+Whenever you specify a relative file name for an executable program (either in the <code>cmd</code> argument to one of the above commands, or in other contexts), Emacs searches for the program in the directories specified by the variable <code>exec-path</code>. The value of this variable must be a list of directories; the default value is initialized from the environment variable <code>PATH</code> when Emacs is started (see <a href="docs/emacs--General-Variables.html">General Variables</a>).
+</p>
+
+<p>
+M-x eshell invokes a shell implemented entirely in Emacs. It is documented in its own manual. See <a href="../eshell_html/index.html#Top">Eshell</a> in Eshell: The Emacs Shell.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Single-Shell.html">Single Shell Commands</a></li>
+<li><a href="docs/emacs--Interactive-Shell.html">Interactive Subshell</a></li>
+<li><a href="docs/emacs--Shell-Mode.html">Shell Mode</a></li>
+<li><a href="docs/emacs--Shell-Prompts.html">Shell Prompts</a></li>
+<li><a href="docs/emacs--Shell-History.html">Shell Command History</a></li>
+<li><a href="docs/emacs--Directory-Tracking.html">Directory Tracking</a></li>
+<li><a href="docs/emacs--Shell-Options.html">Shell Mode Options</a></li>
+<li><a href="docs/emacs--Terminal-emulator.html">Emacs Terminal Emulator</a></li>
+<li><a href="docs/emacs--Term-Mode.html">Term Mode</a></li>
+<li><a href="docs/emacs--Remote-Host.html">Remote Host Shell</a></li>
+<li><a href="docs/emacs--Serial-Terminal.html">Serial Terminal</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

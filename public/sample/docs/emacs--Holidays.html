@@ -1,0 +1,70 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Holidays-1">1. 33.6 Holidays ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Sunrise_002fSunset.html">Times of Sunrise and Sunset</a>   Previous: <a href="docs/emacs--Writing-Calendar-Files.html">Writing Calendar Files</a>   Up: <a href="docs/emacs--Calendar_002fDiary.html">The Calendar and the Diary</a>
+</p>
+
+<p>
+<a id="Holidays"></a>
+</p>
+
+<hr />
+<div id="outline-container-Holidays-1" class="outline-2">
+<h2 id="Holidays-1"><span class="section-number-2">1.</span> 33.6 Holidays <a href="#Holidays-1">¶</a></h2>
+<div class="outline-text-2" id="text-Holidays-1">
+<p>
+The Emacs calendar knows about many major and minor holidays, and can display them. You can add your own holidays to the default list.
+</p>
+
+<ul class="org-ul">
+<li>mouse-3 Holidays<br />
+h :: Display holidays for the selected date (<code>calendar-cursor-holidays</code>).</li>
+
+<li id="x">Mark holidays in the calendar window (<code>calendar-mark-holidays</code>).</li>
+
+<li id="u">Unmark calendar window (<code>calendar-unmark</code>).</li>
+
+<li id="a">List all holidays for the displayed three months in another window (<code>calendar-list-holidays</code>).</li>
+
+<li id="M-x holidays">List all holidays for three months around today's date in another window.</li>
+
+<li id="M-x list-holidays">List holidays in another window for a specified range of years.</li>
+</ul>
+
+<p>
+To see if any holidays fall on a given date, position point on that date in the calendar window and use the h (<code>calendar-cursor-holidays</code>) command. Alternatively, click on that date with mouse-3 and then choose Holidays from the menu that appears. Either way, this displays the holidays for that date, in the echo area if they fit there, otherwise in a separate window.
+</p>
+
+<p>
+To view the distribution of holidays for all the dates shown in the calendar, use the x (<code>calendar-mark-holidays</code>) command. This displays the dates that are holidays in a different face. See <a href="docs/emacs--Calendar-Customizing.html">calendar-holiday-marker</a>. The command applies both to the currently visible months and to other months that subsequently become visible by scrolling. To turn marking off and erase the current marks, type u (<code>calendar-unmark</code>), which also erases any diary marks (see <a href="docs/emacs--Diary.html">The Diary</a>). If the variable <code>calendar-mark-holidays-flag</code> is non-<code>nil</code>, creating or updating the calendar marks holidays automatically.
+</p>
+
+<p>
+To get even more detailed information, use the a (<code>calendar-list-holidays</code>) command, which displays a separate buffer containing a list of all holidays in the current three-month range. You can use SPC and DEL in the calendar window to scroll that list up and down, respectively.
+</p>
+
+<p>
+The command M-x holidays displays the list of holidays for the current month and the preceding and succeeding months; this works even if you don't have a calendar window. If the variable <code>calendar-view-holidays-initially-flag</code> is non-<code>nil</code>, creating the calendar displays holidays in this way. If you want the list of holidays centered around a different month, use C-u M-x holidays, which prompts for the month and year.
+</p>
+
+<p>
+The holidays known to Emacs include United States holidays and the major Bahá'í, Chinese, Christian, Islamic, and Jewish holidays; also the solstices and equinoxes.
+</p>
+
+<p>
+The command M-x holiday-list displays the list of holidays for a range of years. This function asks you for the starting and stopping years, and allows you to choose all the holidays or one of several categories of holidays. You can use this command even if you don't have a calendar window.
+</p>
+
+<p>
+The dates used by Emacs for holidays are based on <i>current practice</i>, not historical fact. For example Veteran's Day began in 1919, but is shown in earlier years.
+</p>
+
+<hr />
+</div>
+</div>

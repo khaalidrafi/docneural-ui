@@ -1,0 +1,172 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Property-Syntax-1">0.0.1. 7.1 Property Syntax ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org29c0f85">1. CD collection</a>
+<ul>
+<li><a href="#orgd917a04">1.1. Classic</a>
+<ul>
+<li><a href="#org6840ef1">1.1.1. Goldberg Variations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgeb1fabc">2. CD collection</a></li>
+<li><a href="#org20cceb6">3. CD collection</a>
+<ul>
+<li><a href="#orgf87a072">3.1. Classic</a>
+<ul>
+<li><a href="#orgc04c629">3.1.1. Goldberg Variations</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Property-Syntax"></a>
+Next: <a href="docs/org--Special-Properties.html">Special Properties</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Property-Syntax-1" class="outline-4">
+<h4 id="Property-Syntax-1"><span class="section-number-4">0.0.1.</span> 7.1 Property Syntax <a href="#Property-Syntax-1">¶</a></h4>
+<div class="outline-text-4" id="text-Property-Syntax-1">
+<p>
+Properties are key&#x2013;value pairs. When they are associated with a single entry or with a tree they need to be inserted into a special drawer (see <a href="docs/org--Drawers.html">Drawers</a>) with the name ‘=PROPERTIES=', which has to be located right below a headline, and its planning line (see <a href="docs/org--Deadlines-and-Scheduling.html">Deadlines and Scheduling</a>) when applicable. Each property is specified on a single line, with the key&#x2014;surrounded by colons&#x2014;first, and the value after it. Keys are case-insensitive. Here is an example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org29c0f85" class="outline-2">
+<h2 id="org29c0f85"><span class="section-number-2">1.</span> CD collection</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgd917a04" class="outline-3">
+<h3 id="orgd917a04"><span class="section-number-3">1.1.</span> Classic</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org6840ef1" class="outline-4">
+<h4 id="org6840ef1"><span class="section-number-4">1.1.1.</span> Goldberg Variations</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+Depending on the value of <code>org-use-property-inheritance</code>, a property set this way is associated either with a single entry, or with the subtree defined by the entry, see <a href="docs/org--Property-Inheritance.html">Property Inheritance</a>.
+</p>
+
+<p>
+You may define the allowed values for a particular property ‘=Xyz=' by setting a property ‘=Xyz<sub>ALL</sub>='. This special property is <i>inherited</i>, so if you set it in a level 1 entry, it applies to the entire tree. When allowed values are defined, setting the corresponding property becomes easier and is less prone to typing errors. For the example with the CD collection, we can pre-define publishers and the number of disks in a box like this:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgeb1fabc" class="outline-2">
+<h2 id="orgeb1fabc"><span class="section-number-2">2.</span> CD collection</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+Properties can be inserted at the buffer level. That means they apply before the first headline and can be inherited by all entries in a file. Property blocks defined before the first headline must be at the top of the buffer with only comments above them.
+</p>
+
+<p>
+Properties can also be defined using lines like:
+</p>
+
+<pre class="example" id="org617c8f9">
+#+PROPERTY: NDisks_ALL 1 2 3 4
+</pre>
+
+<p>
+If you want to add to the value of an existing property, append a ‘=+=' to the property name. The following results in the property ‘=var=' having the values ‘=foo=' and ‘=bar='.
+</p>
+
+<pre class="example" id="org7281307">
+#+PROPERTY: var  foo
+#+PROPERTY: var+ bar
+</pre>
+
+<p>
+Using the appended ‘=+=', it is also possible to add to the values of inherited properties. The following results in the ‘=Genres=' property having the values ‘=Classic=', ‘=Baroque=', and ‘=Keyboard music=' under the ‘=Goldberg Variations=' subtree.
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org20cceb6" class="outline-2">
+<h2 id="org20cceb6"><span class="section-number-2">3.</span> CD collection</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgf87a072" class="outline-3">
+<h3 id="orgf87a072"><span class="section-number-3">3.1.</span> Classic</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+<div id="outline-container-orgc04c629" class="outline-4">
+<h4 id="orgc04c629"><span class="section-number-4">3.1.1.</span> Goldberg Variations</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+Note that a property can only have multiple entries per drawer when used with the appended ‘=+='. When a property has multiple entries without ‘=+=', the result is undefined.
+</p>
+
+<p>
+Property values set with the global variable <code>org-global-properties</code> can be inherited by all entries in all Org files.
+</p>
+
+<p>
+The following commands help to work with properties:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-M_002dTAB-3"></a>M-TAB (<code>pcomplete</code>) </dt><dd>After an initial colon in a line, complete property keys. All keys used in the current file are offered as possible completions.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-p"></a>C-c C-x p (<code>org-set-property</code>) </dt><dd>Set a property. This prompts for a property name and a value. If necessary, the property drawer is created as well.</dd>
+
+<dt><a id="index-org_002dinsert_002ddrawer-1"></a>C-u M-x org-insert-drawer </dt><dd>Insert a property drawer into the current entry. The drawer is inserted early in the entry, but after the lines with planning information like deadlines. If before first headline the drawer is inserted at the top of the drawer after any potential comments.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-9"></a>C-c C-c (<code>org-property-action</code>) </dt><dd>With point in a property drawer, this executes property commands.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-s"></a>C-c C-c s (<code>org-set-property</code>) </dt><dd>Set a property in the current entry. Both the property and the value can be inserted using completion.</dd>
+
+<dt><a id="index-S_002dRIGHT-5"></a>S-RIGHT (<code>org-property-next-allowed-value</code>), S-LEFT (<code>org-property-previous-allowed-value</code>) </dt><dd>Switch property at point to the next/previous allowed value.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-d"></a>C-c C-c d (<code>org-delete-property</code>) </dt><dd>Remove a property from the current entry.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-D"></a>C-c C-c D (<code>org-delete-property-globally</code>) </dt><dd>Globally remove a property, from all entries in the current file.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-c"></a>C-c C-c c (<code>org-compute-property-at-point</code>) </dt><dd>Compute the property at point, using the operator and scope from the nearest column format definition.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Special-Properties.html">Special Properties</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>
+</div>

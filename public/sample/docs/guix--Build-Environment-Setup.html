@@ -1,0 +1,293 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Build-Environment-Setup"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>, Up: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Build-Environment-Setup-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="build-environment-setup"></a>2.2.1 Build Environment Setup<br />
+<div class="outline-text-5" id="text-build-environment-setup">
+<p>
+<a id="index-build-environment"></a>
+In a standard multi-user setup, Guix and its daemon&#x2014;the <code>guix-daemon</code> program&#x2014;are installed by the system administrator. Unprivileged users may use Guix tools to build packages or otherwise access the store, and the daemon will do it on their behalf, ensuring that the store is kept in a consistent state, and allowing built packages to be shared among users.
+</p>
+
+<p>
+There are currently two ways to set up and run the build daemon:
+</p>
+
+<ol class="org-ol">
+<li>running <code>guix-daemon</code> as “root”, letting it run build processes as unprivileged users taken from a pool of build users&#x2014;this is the historical approach;</li>
+<li>running <code>guix-daemon</code> as a separate unprivileged user, relying on Linux's <i>unprivileged user namespace</i> functionality to set up isolated environments&#x2014;this is the option chosen when installing Guix on a systemd-based distribution with the installation script (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>).</li>
+</ol>
+
+<p>
+The sections below describe each of these two configurations in more detail and summarize the kind of build isolation they provide.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Daemon-Running-as-Root"></a>
+</p>
+</div>
+</li>
+<li><a id="daemon-running-as-root"></a>Daemon Running as Root<br />
+<div class="outline-text-5" id="text-daemon-running-as-root">
+<p>
+<a id="index-build-users"></a>
+When <code>guix-daemon</code> runs as <code>root</code>, you may not want package build processes themselves to run as <code>root</code> too, for obvious security reasons. To avoid that, a special pool of <i>build users</i> should be created for use by build processes started by the daemon. Having several such users allows the daemon to launch distinct build processes under separate UIDs, which guarantees that they do not interfere with each other&#x2014;an essential feature since builds are regarded as pure functions (see <a href="docs/guix--Introduction.html">Introduction</a>).
+</p>
+
+<p>
+On a GNU/Linux system, a build user pool may be created like this (using Bash syntax and the <code>shadow</code> commands):
+</p>
+
+<pre class="example" id="org3258bcf">
+# groupadd --system guixbuild
+# for i in $(seq -w 1 10);
+  do
+    useradd -g guixbuild -G guixbuild           \
+            -d /var/empty -s $(which nologin)   \
+            -c "Guix build user $i" --system    \
+            guixbuilder$i;
+  done
+</pre>
+
+<p>
+The number of build users determines how many build jobs may run in parallel, as specified by the <code>--max-jobs</code> option (see <a href="docs/guix--Invoking-guix_002ddaemon.html"><code>--max-jobs</code></a>). To use <code>guix system vm</code> and related commands, you may need to add the build users to the <code>kvm</code> group so they can access <code>/dev/kvm</code>, using <code>-G guixbuild,kvm</code> instead of <code>-G guixbuild</code> (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>).
+</p>
+
+<p>
+The <code>guix-daemon</code> program may then be run as <code>root</code> with the following command:
+</p>
+
+<pre class="example" id="org1d2829d">
+# guix-daemon --build-users-group=guixbuild
+</pre>
+
+<p>
+In this setup, <code>/gnu/store</code> is owned by <code>root</code>.
+</p>
+
+<p>
+<a id="Daemon-Running-Without-Privileges"></a>
+</p>
+</div>
+</li>
+<li><a id="daemon-running-without-privileges"></a>Daemon Running Without Privileges<br />
+<div class="outline-text-5" id="text-daemon-running-without-privileges">
+<p>
+<a id="index-rootless-build-daemon"></a> <a id="index-unprivileged-build-daemon"></a> <a id="index-build-daemon_002c-unprivileged"></a>
+The second and preferred option is to run <code>guix-daemon</code> <i>as an unprivileged user</i>. It has the advantage of reducing the harm that can be done should a build process manage to exploit a vulnerability in the daemon. This option requires the use of Linux's unprivileged user namespace mechanism; today it is available and enabled by most GNU/Linux distributions but can still be disabled. The installation script automatically determines whether this option is available on your system (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>).
+</p>
+
+<p>
+When using this option, you only need to create one user account, and <code>guix-daemon</code> will run with the authority of that account:
+</p>
+
+<pre class="example" id="org5df682d">
+# groupadd --system guix-daemon
+# useradd -g guix-daemon -G guix-daemon              \
+          -d /var/empty -s $(which nologin)          \
+          -c "Guix daemon privilege separation user" \
+          --system guix-daemon
+</pre>
+
+<blockquote>
+<p>
+<b>Warning:</b> If the <code>nologin</code> binary is not found by <code>which nologin</code>, you may need to specify its path manually. This will usually be <code>/sbin/nologin</code> or <code>/usr/sbin/nologin</code>.
+</p>
+</blockquote>
+
+<p>
+In this configuration, <code>/gnu/store</code> is owned by the <code>guix-daemon</code> user.
+</p>
+
+<p>
+<a id="unprivileged_002ddaemon_002dmigration"></a>
+</p>
+
+<p>
+<a id="Migrating-to-the-Unprivileged-Daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="migrating-to-the-unprivileged-daemon"></a>Migrating to the Unprivileged Daemon<br />
+<div class="outline-text-5" id="text-migrating-to-the-unprivileged-daemon">
+<p>
+<a id="index-unprivileged-daemon_002c-migration"></a> <a id="index-rootless-daemon_002c-migration"></a>
+To switch an existing installation to the unprivileged execution mode, a number of steps must be taken: creating a new dedicated <code>guix-daemon</code> user account, changing ownership of the relevant files to <code>guix-daemon</code>, and ensuring that the <code>guix-daemon</code> program runs as <code>guix-daemon</code>.
+</p>
+
+<p>
+On Guix System, these steps are carried out automatically when you set the <code>privileged?</code> field of the <code>guix-configuration</code> record to <code>#f</code> and reconfigure (see <a href="docs/guix--Base-Services.html#guix_002dconfiguration_002dtype"><code>guix-configuration</code></a>).
+</p>
+
+<p>
+However, on a foreign distribution, the process is manual. The following paragraphs describe what you need to do.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> Follow the instructions below only after making sure you have a recent version of <code>guix-daemon</code> with support for unprivileged execution.
+</p>
+</blockquote>
+
+<p>
+File ownership can be changed, after stopping the daemon, by running the following commands as root (the <code>chown</code> can take a while if there are many files in <code>/gnu/store</code>):
+</p>
+
+<pre class="example" id="org92dc471">
+groupadd --system guix-daemon
+useradd -g guix-daemon -G guix-daemon,kvm               \
+        -d /var/empty -s $(which nologin)               \
+        -c "Guix daemon privilege separation user"      \
+        --system guix-daemon
+
+# Make the store writable, in case the systemd 'gnu-store.mount'
+# unit made it read-only.
+mount -o remount,rw /gnu/store
+
+chown -R guix-daemon:guix-daemon                        \
+  /gnu                                                  \
+  /var/guix/{gc.lock,daemon-socket,db,discover}         \
+  /var/guix/{gcroots,offload,substitute,temproots}      \
+  /var/log/guix                                         \
+  /etc/guix
+</pre>
+
+<p>
+If your system uses the systemd service manager, running the daemon as <code>guix-daemon</code> will be a matter of copying the relevant configuration files&#x2014;make sure to review any changes you might have made in your own <code>.service</code> files before overwriting them:
+</p>
+
+<pre class="example" id="org800c52c">
+cp /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/*.service \
+   /etc/systemd/system
+systemctl daemon-reload
+systemctl start guix-daemon
+</pre>
+
+<p>
+If your system has AppArmor enabled, see <a href="docs/guix--AppArmor-Support.html">AppArmor Support</a>.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> The commands above assume that <code>guix pull</code> was run for the root user. You can check whether this is the case by running this command:
+</p>
+
+<pre class="example" id="orgee295c3">
+grep User=guix-daemon \
+  /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/guix-daemon.service
+</pre>
+
+<p>
+If that command does not show the <code>User=guix-daemon</code> line, then run <code>guix pull</code> as the root user.
+</p>
+</blockquote>
+
+<p>
+<a id="The-Isolated-Build-Environment"></a>
+</p>
+</div>
+</li>
+<li><a id="the-isolated-build-environment"></a>The Isolated Build Environment<br />
+<div class="outline-text-5" id="text-the-isolated-build-environment">
+<p>
+<a id="index-chroot"></a> <a id="index-build-environment-isolation"></a> <a id="index-isolated-build-environment"></a> <a id="index-hermetic-build-environment"></a>
+In both cases, privileged and unprivileged, the daemon starts build processes without privileges in an <i>isolated</i> or <i>hermetic</i> build environment&#x2014;a “chroot”. On GNU/Linux, by default, the build environment contains nothing but:
+</p>
+
+<ul class="org-ul">
+<li>a minimal <code>/dev</code> directory, created mostly independently from the host <code>/dev</code>;</li>
+<li>the <code>/proc</code> directory; it only shows the processes of the container since a separate PID name space is used;</li>
+<li><code>/etc/passwd</code> with an entry for the current user and an entry for user <code>nobody</code>;</li>
+<li><code>/etc/group</code> with an entry for the user's group;</li>
+<li><code>/etc/hosts</code> with an entry that maps <code>localhost</code> to <code>127.0.0.1</code>;</li>
+<li>a writable <code>/tmp</code> directory.</li>
+</ul>
+
+<p>
+The chroot does not contain a <code>/home</code> directory, and the <code>HOME</code> environment variable is set to the non-existent <code>/homeless-shelter</code>. This helps to highlight inappropriate uses of <code>HOME</code> in the build scripts of packages.
+</p>
+
+<p>
+All this is usually enough to ensure details of the environment do not influence build processes. In some exceptional cases where more control is needed&#x2014;typically over the date, kernel, or CPU&#x2014;you can resort to a virtual build machine (see <a href="docs/guix--Virtualization-Services.html#build_002dvm">virtual build machines</a>).
+</p>
+
+<p>
+You can influence the directory where the daemon stores build trees <i>via</i> the <code>TMPDIR</code> environment variable. However, the build tree within the chroot is always called <code>/tmp/guix-build-==name=</code>.drv-0=, where <code>name</code> is the derivation name&#x2014;e.g., <code>coreutils-8.24</code>. This way, the value of <code>TMPDIR</code> does not leak inside build environments, which avoids discrepancies in cases where build processes capture the name of their build tree.
+</p>
+
+<p>
+<a id="index-http_005fproxy"></a> <a id="index-https_005fproxy"></a>
+The daemon also honors the <code>http_proxy</code> and <code>https_proxy</code> environment variables for HTTP and HTTPS downloads it performs, be it for fixed-output derivations (see <a href="docs/guix--Derivations.html">Derivations</a>) or for substitutes (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<hr />
+</div>
+</li>
+</div>

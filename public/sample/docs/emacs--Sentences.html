@@ -1,0 +1,73 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Sentences-1">1. 27.2 Sentences ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Paragraphs.html">Paragraphs</a>   Previous: <a href="docs/emacs--Words.html">Words</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Sentences"></a>
+</p>
+
+<hr />
+<div id="outline-container-Sentences-1" class="outline-2">
+<h2 id="Sentences-1"><span class="section-number-2">1.</span> 27.2 Sentences <a href="#Sentences-1">¶</a></h2>
+<div class="outline-text-2" id="text-Sentences-1">
+<p>
+The Emacs commands for manipulating sentences and paragraphs are mostly on Meta keys, like the word-handling commands.
+</p>
+
+<dl class="org-dl">
+<dt>M-a</dt><dd>Move back to the beginning of the sentence (<code>backward-sentence</code>).</dd>
+
+<dt>M-e</dt><dd>Move forward to the end of the sentence (<code>forward-sentence</code>).</dd>
+
+<dt>M-k</dt><dd>Kill forward to the end of the sentence (<code>kill-sentence</code>).</dd>
+
+<dt>C-x DEL</dt><dd>Kill back to the beginning of the sentence (<code>backward-kill-sentence</code>).</dd>
+</dl>
+
+<p>
+The commands M-a (<code>backward-sentence</code>) and M-e (<code>forward-sentence</code>) move to the beginning and end of the current sentence, respectively. Their bindings were chosen to resemble C-a and C-e, which move to the beginning and end of a line. Unlike them, M-a and M-e move over successive sentences if repeated.
+</p>
+
+<p>
+Moving backward over a sentence places point just before the first character of the sentence; moving forward places point right after the punctuation that ends the sentence. Neither one moves over the whitespace at the sentence boundary.
+</p>
+
+<p>
+Just as C-a and C-e have a kill command, C-k, to go with them, M-a and M-e have a corresponding kill command: M-k (<code>kill-sentence</code>) kills from point to the end of the sentence. With a positive numeric argument <code>n</code>, it kills the next <code>n</code> sentences; with a negative argument −=n=, it kills back to the beginning of the =n=th preceding sentence.
+</p>
+
+<p>
+The C-x DEL (<code>backward-kill-sentence</code>) kills back to the beginning of a sentence.
+</p>
+
+<p>
+The sentence commands assume that you follow the American typist's convention of putting two spaces at the end of a sentence. That is, a sentence ends wherever there is a ‘=.=', ‘=?=' or ‘=!=' followed by the end of a line or two spaces, with any number of ‘=)=', ‘=]=', ‘='<code>', or ‘</code>"=' characters allowed in between. A sentence also begins or ends wherever a paragraph begins or ends. It is useful to follow this convention, because it allows the Emacs sentence commands to distinguish between periods that end a sentence and periods that indicate abbreviations.
+</p>
+
+<p>
+If you want to use just one space between sentences, you can set the variable <code>sentence-end-double-space</code> to <code>nil</code> to make the sentence commands stop for single spaces. However, this has a drawback: there is no way to distinguish between periods that end sentences and those that indicate abbreviations. For convenient and reliable editing, we therefore recommend you follow the two-space convention. The variable <code>sentence-end-double-space</code> also affects filling (see <a href="docs/emacs--Fill-Commands.html">Explicit Fill Commands</a>).
+</p>
+
+<p>
+The variable <code>sentence-end</code> controls how to recognize the end of a sentence. If non-<code>nil</code>, its value should be a regular expression, which is used to match the last few characters of a sentence, together with the whitespace following the sentence (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). If the value is <code>nil</code>, the default, then Emacs computes sentence ends according to various criteria such as the value of <code>sentence-end-double-space</code>.
+</p>
+
+<p>
+Some languages, such as Thai, do not use periods to indicate the end of a sentence. Set the variable <code>sentence-end-without-period</code> to <code>t</code> in such cases.
+</p>
+
+<p>
+Even though the above mentioned sentence movement commands are based on human languages, other Emacs modes can set these command to get similar functionality (see <a href="docs/emacs--Moving-by-Sentences.html">Moving by Sentences</a>).
+</p>
+
+<hr />
+</div>
+</div>

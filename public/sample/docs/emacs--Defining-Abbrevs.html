@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Defining-Abbrevs-1">1. 31.2 Defining Abbrevs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Expanding-Abbrevs.html">Controlling Abbrev Expansion</a>   Previous: <a href="docs/emacs--Abbrev-Concepts.html">Abbrev Concepts</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Defining-Abbrevs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Defining-Abbrevs-1" class="outline-2">
+<h2 id="Defining-Abbrevs-1"><span class="section-number-2">1.</span> 31.2 Defining Abbrevs <a href="#Defining-Abbrevs-1">¶</a></h2>
+<div class="outline-text-2" id="text-Defining-Abbrevs-1">
+<dl class="org-dl">
+<dt>C-x a g</dt><dd>Define an abbrev, using one or more words before point as its expansion (<code>add-global-abbrev</code>).</dd>
+
+<dt>C-x a l</dt><dd>Similar, but define an abbrev specific to the current major mode (<code>add-mode-abbrev</code>).</dd>
+
+<dt>C-x a i g</dt><dd>Define a word in the buffer as an abbrev (<code>inverse-add-global-abbrev</code>).</dd>
+
+<dt>C-x a i l</dt><dd>Define a word in the buffer as a mode-specific abbrev (<code>inverse-add-mode-abbrev</code>).</dd>
+
+<dt>M-x define-global-abbrev RET <code>abbrev</code> RET <code>exp</code> RET</dt><dd>Define <code>abbrev</code> as an abbrev expanding into <code>exp</code>.</dd>
+
+<dt>M-x define-mode-abbrev RET <code>abbrev</code> RET <code>exp</code> RET</dt><dd>Define <code>abbrev</code> as a mode-specific abbrev expanding into <code>exp</code>.</dd>
+
+<dt>M-x kill-all-abbrevs</dt><dd>Discard all abbrev definitions, leaving a blank slate.</dd>
+</dl>
+
+<p>
+The usual way to define an abbrev is to enter the text you want the abbrev to expand to, position point after it, and type C-x a g (<code>add-global-abbrev</code>). This reads the abbrev itself using the minibuffer, and then defines it as an abbrev for one or more words before point. Use a numeric argument to say how many words before point should be taken as the expansion. For example, to define the abbrev ‘=foo=' as mentioned above, insert the text ‘=find outer otter=' and then type C-u 3 C-x a g f o o RET.
+</p>
+
+<p>
+If you're using <code>transient-mark-mode</code> (which is the default), the active region will be used as the expansion of the abbrev being defined. If not, an argument of zero to C-x a g means to use the contents of the region.
+</p>
+
+<p>
+The command C-x a l (<code>add-mode-abbrev</code>) is similar, but defines a mode-specific abbrev for the current major mode. The arguments work the same as for C-x a g.
+</p>
+
+<p>
+C-x a i g (<code>inverse-add-global-abbrev</code>) and C-x a i l (<code>inverse-add-mode-abbrev</code>) perform the opposite task: if the abbrev text is already in the buffer, you use these commands to define an abbrev by specifying the expansion in the minibuffer. These commands will expand the abbrev text used for the definition.
+</p>
+
+<p>
+You can define an abbrev without inserting either the abbrev or its expansion in the buffer using the command <code>define-global-abbrev</code>. It reads two arguments&#x2014;the abbrev, and its expansion. The command <code>define-mode-abbrev</code> does likewise for a mode-specific abbrev.
+</p>
+
+<p>
+To change the definition of an abbrev, just make a new definition. When an abbrev has a prior definition, the abbrev definition commands ask for confirmation before replacing it.
+</p>
+
+<p>
+To remove an abbrev definition, give a negative argument to the abbrev definition command: C-u - C-x a g or C-u - C-x a l. The former removes a global definition, while the latter removes a mode-specific definition. M-x kill-all-abbrevs removes all abbrev definitions, both global and local.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,126 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Installation-1">1. 1.2 Installation ¶</a>
+<ul>
+<li><a href="#Using-Emacs-packaging-system-1">1.1. Using Emacs packaging system ¶</a></li>
+<li><a href="#Using-Org_0027s-Git-repository-1">1.2. Using Org's Git repository ¶</a></li>
+<li><a href="#Installing-Org_0027s-contributed-packages-1">1.3. Installing Org's contributed packages ¶</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Installation"></a>
+Next: <a href="docs/org--Activation.html">Activation</a>, Previous: <a href="docs/org--Summary.html">Summary</a>, Up: <a href="docs/org--Introduction.html">Introduction</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Installation-1" class="outline-2">
+<h2 id="Installation-1"><span class="section-number-2">1.</span> 1.2 Installation <a href="#Installation-1">¶</a></h2>
+<div class="outline-text-2" id="text-Installation-1">
+<p>
+Org is included in distributions of GNU Emacs, so you probably do not need to install it. Most users will simply activate Org and begin exploring its features.
+</p>
+
+<p>
+If, for one reason or another, you want to install Org on top of the pre-packaged version, you can use the Emacs package system or clone Org's Git repository. We <b>strongly recommend</b> sticking to a single installation method.
+</p>
+
+<p>
+When installing Org on top of the pre-packaged version, please note that Org stable versions are meant to be fully compatible with the last three stable versions of Emacs but not with older Emacsen.
+</p>
+
+<p>
+Some Org components also depend on third-party packages available through package archives. Org is only guaranteed to be compatible with the latest stable versions of these third-party packages.
+</p>
+</div>
+<div id="outline-container-Using-Emacs-packaging-system-1" class="outline-3">
+<h3 id="Using-Emacs-packaging-system-1"><span class="section-number-3">1.1.</span> Using Emacs packaging system <a href="#Using-Emacs-packaging-system-1">¶</a></h3>
+<div class="outline-text-3" id="text-Using-Emacs-packaging-system-1">
+<p>
+Recent Emacs distributions include a packaging system which lets you install Elisp libraries. You can install Org from the “package menu”, with M-x list-packages. See <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Menu.html#Package-Menu">Package Menu</a>.
+</p>
+
+<blockquote>
+<p>
+<b>Important:</b> You need to do this in a session where no ‘=.org=' file has been visited, i.e., where no Org built-in functions have been loaded. Otherwise, autoloaded Org functions will mess up the installation.
+</p>
+</blockquote>
+
+<p>
+To avoid interference with the built-in Org mode, you can use the command line (you need Emacs 30 or later):
+</p>
+
+<pre class="example" id="orgbc84e8d">
+emacs -Q -batch -eval "(progn (package-refresh-contents) (package-upgrade 'org))"
+</pre>
+
+<p>
+This approach has the advantage of isolating the upgrade process from a running Emacs session, ensuring that version conflicts cannot arise.
+</p>
+</div>
+</div>
+<div id="outline-container-Using-Org_0027s-Git-repository-1" class="outline-3">
+<h3 id="Using-Org_0027s-Git-repository-1"><span class="section-number-3">1.2.</span> Using Org's Git repository <a href="#Using-Org_0027s-Git-repository-1">¶</a></h3>
+<div class="outline-text-3" id="text-Using-Org_0027s-Git-repository-1">
+<p>
+You can clone Org's repository and install Org like this:
+</p>
+
+<pre class="example" id="org2abc50b">
+$ cd ~/src/
+$ git clone https://https.git.savannah.nongnu.org/git/org-mode.git
+$ # alternatively, you can use mirror
+$ # git clone https://git.sr.ht/~bzg/org-mode
+$ cd org-mode/
+$ make autoloads
+</pre>
+
+<p>
+Note that in this case, ‘=make autoloads=' is mandatory: it defines Org's version in ‘=org-version.el=' and Org's autoloads in ‘=org-loaddefs.el='.
+</p>
+
+<p>
+Make sure you set the load path correctly in your Emacs init file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(add-to-list 'load-path "~/src/org-mode/lisp")
+</pre>
+</div>
+
+<p>
+You can also compile with ‘=make=', generate the documentation with ‘=make doc=', create a local configuration with ‘=make config=', and install Org with ‘=make install='. Please run ‘=make help=' to get the list of compilation/installation options.
+</p>
+
+<p>
+For more detailed explanations on Org's build system, please check the Org Build System page on <a href="https://orgmode.org/worg/dev/org-build-system.html">Worg</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-Installing-Org_0027s-contributed-packages-1" class="outline-3">
+<h3 id="Installing-Org_0027s-contributed-packages-1"><span class="section-number-3">1.3.</span> Installing Org's contributed packages <a href="#Installing-Org_0027s-contributed-packages-1">¶</a></h3>
+<div class="outline-text-3" id="text-Installing-Org_0027s-contributed-packages-1">
+<p>
+Org's repository used to contain the ‘=contrib/=' directory for add-ons contributed by others. As of Org 9.5, the directory has been moved to the dedicated org-contrib <a href="https://git.sr.ht/~bzg/org-contrib">repository</a>, which you can install separately as a <a href="https://elpa.nongnu.org/nongnu/org-contrib.html">package</a> from NonGNU ELPA.
+</p>
+
+<p>
+There are many valuable packages maintained outside the Org repository. Worg has a list of <a href="https://orgmode.org/worg/org-contrib/index.html">org-contrib and external packages</a>; it is certainly not exhaustive.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Activation.html">Activation</a>, Previous: <a href="docs/org--Summary.html">Summary</a>, Up: <a href="docs/org--Introduction.html">Introduction</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

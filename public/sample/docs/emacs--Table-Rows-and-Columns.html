@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Table-Rows-and-Columns-1">1. 27.15.6 Table Rows and Columns ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Table-Conversion.html">Converting Between Plain Text and Tables</a>   Previous: <a href="docs/emacs--Cell-Justification.html">Cell Justification</a>   Up: <a href="docs/emacs--Text-Based-Tables.html">Editing Text-based Tables</a>
+</p>
+
+<p>
+<a id="Table-Rows-and-Columns"></a>
+</p>
+
+<hr />
+<div id="outline-container-Table-Rows-and-Columns-1" class="outline-2">
+<h2 id="Table-Rows-and-Columns-1"><span class="section-number-2">1.</span> 27.15.6 Table Rows and Columns <a href="#Table-Rows-and-Columns-1">¶</a></h2>
+<div class="outline-text-2" id="text-Table-Rows-and-Columns-1">
+<p>
+M-x table-insert-row inserts a row of cells before the current table row. The current row, together with point, is pushed down past the new row. To insert a row after the last row at the bottom of a table, invoke this command with point below the table, just below the bottom edge. You can insert more than one row at a time by using a numeric prefix argument.
+</p>
+
+<p>
+Similarly, M-x table-insert-column inserts a column of cells to the left of the current table column. To insert a column to the right side of the rightmost column, invoke this command with point to the right of the rightmost column, outside the table. A numeric prefix argument specifies the number of columns to insert.
+</p>
+
+<p>
+M-x table-delete-column deletes the column of cells at point. Similarly, M-x table-delete-row deletes the row of cells at point. A numeric prefix argument to either command specifies the number of columns or rows to delete.
+</p>
+</div>
+</div>

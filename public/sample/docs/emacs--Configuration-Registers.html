@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Saving-Window-and-Frame-Configurations-in-Registers">1. 15.4 Saving Window and Frame Configurations in Registers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Number-Registers.html">Keeping Numbers in Registers</a>   Previous: <a href="docs/emacs--Rectangle-Registers.html">Saving Rectangles in Registers</a>   Up: <a href="docs/emacs--Registers.html">Registers</a>
+</p>
+
+<p>
+<a id="Configuration-Registers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Saving-Window-and-Frame-Configurations-in-Registers" class="outline-2">
+<h2 id="Saving-Window-and-Frame-Configurations-in-Registers"><span class="section-number-2">1.</span> 15.4 Saving Window and Frame Configurations in Registers <a href="#Saving-Window-and-Frame-Configurations-in-Registers">¶</a></h2>
+<div class="outline-text-2" id="text-Saving-Window-and-Frame-Configurations-in-Registers">
+<p>
+You can save the window configuration of the selected frame in a register, or even the configuration of all windows in all frames, and restore the configuration later. See <a href="docs/emacs--Window-Convenience.html">Convenience Features for Window Handling</a>, for information about window configurations.
+</p>
+
+<dl class="org-dl">
+<dt>C-x r w <code>r</code></dt><dd>Save the state of the selected frame's windows in register <code>r</code> (<code>window-configuration-to-register</code>).</dd>
+
+<dt>C-x r f <code>r</code></dt><dd>Save the state of all frames, including all their windows (a.k.a. <i>frameset</i>), in register <code>r</code> (<code>frameset-to-register</code>).</dd>
+</dl>
+
+<p>
+Use C-x r j <code>r</code> to restore a window or frame configuration. This is the same command used to restore a cursor position. When you restore a frame configuration, any existing frames not included in the configuration become invisible. If you wish to delete these frames instead, use C-u C-x r j <code>r</code>.
+</p>
+</div>
+</div>

@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Miscellaneous-Windows_002dspecific-features">1. I.11 Miscellaneous Windows-specific features ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>   Previous: <a href="docs/emacs--Windows-Fonts.html">Specifying Fonts on MS-Windows</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="Windows-Misc"></a>
+</p>
+
+<hr />
+<div id="outline-container-Miscellaneous-Windows_002dspecific-features" class="outline-2">
+<h2 id="Miscellaneous-Windows_002dspecific-features"><span class="section-number-2">1.</span> I.11 Miscellaneous Windows-specific features <a href="#Miscellaneous-Windows_002dspecific-features">¶</a></h2>
+<div class="outline-text-2" id="text-Miscellaneous-Windows_002dspecific-features">
+<p>
+This section describes Windows-specific features that don't fit anywhere else.
+</p>
+
+<p>
+The variable <code>w32-use-visible-system-caret</code> is a flag that determines whether to make the system caret visible. The default when no screen reader software is in use is <code>nil</code>, which means Emacs draws its own cursor to indicate the position of point. A non-<code>nil</code> value means Emacs will indicate point location with the system caret; this facilitates use of screen reader software, and is the default when such software is detected when running Emacs. When this variable is non-<code>nil</code>, other variables affecting the cursor display have no effect.
+</p>
+
+<p>
+The variable <code>w32-grab-focus-on-raise</code>, if set to a non-<code>nil</code> value causes a frame to grab focus when it is raised. The default is <code>t</code>, which fits well with the Windows default click-to-focus policy.
+</p>
+
+<p>
+On Windows 10 (version 1809 and higher) and Windows 11, Emacs title bars and scroll bars by default follow the system's Light or Dark mode, similar to other programs such as Explorer and Command Prompt. To change the color mode, select <code>Personalization</code> from <code>Windows Settings</code>, then <code>Colors-&gt;Choose your color</code> (or <code>Choose your default app mode</code> or <code>Choose your mode</code>); then restart Emacs. On Windows 11, you can select separate default modes for Windows and for applications.
+</p>
+
+<p>
+If you don't want Emacs to follow the system's Dark mode setting, customize the variable <code>w32-follow-system-dark-mode</code> to a <code>nil</code> value; then Emacs will use the default Light mode regardless of system-wide settings. Changing the value of this variable affects only the Emacs frames created after the change, so you should set its value in your init file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>), either directly or via M-x customize-variable, which lets you save the customized value, see <a href="docs/emacs--Saving-Customizations.html">Saving Customizations</a>.
+</p>
+
+<hr />
+</div>
+</div>

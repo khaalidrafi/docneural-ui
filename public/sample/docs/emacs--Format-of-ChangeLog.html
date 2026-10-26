@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Format-of-ChangeLog-1">1. 30.3.2 Format of ChangeLog ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Change-Log-Commands.html">Change Log Commands</a>   Up: <a href="docs/emacs--Change-Log.html">Change Logs</a>
+</p>
+
+<p>
+<a id="Format-of-ChangeLog"></a>
+</p>
+
+<hr />
+<div id="outline-container-Format-of-ChangeLog-1" class="outline-2">
+<h2 id="Format-of-ChangeLog-1"><span class="section-number-2">1.</span> 30.3.2 Format of ChangeLog <a href="#Format-of-ChangeLog-1">¶</a></h2>
+<div class="outline-text-2" id="text-Format-of-ChangeLog-1">
+<p>
+A change log entry starts with a header line that contains the current date, your name (taken from the variable <code>add-log-full-name</code>), and your email address (taken from the variable <code>add-log-mailing-address</code>). Aside from these header lines, every line in the change log starts with a space or a tab. The bulk of the entry consists of <i>items</i>, each of which starts with a line starting with whitespace and a star. Here are two entries, both dated in May 1993, with two items and one item respectively.
+</p>
+
+<pre class="example" id="orgdd258b8">
+1993-05-25  Richard Stallman  &lt;rms@gnu.org&gt;
+
+        * man.el: Rename symbols 'man-*' to 'Man-*'.
+        (manual-entry): Make prompt string clearer.
+
+        * simple.el (blink-matching-paren-distance):
+        Change default to 12,000.
+
+1993-05-24  Richard Stallman  &lt;rms@gnu.org&gt;
+
+        * vc.el (minor-mode-map-alist): Don't use it if it's void.
+        (vc-cancel-version): Doc fix.
+</pre>
+
+<p>
+One entry can describe several changes; each change should have its own item, or its own line in an item. Normally there should be a blank line between items. When items are related (parts of the same change, in different places), group them by leaving no blank line between them.
+</p>
+
+<p>
+You should put a copyright notice and permission notice at the end of the change log file. Here is an example:
+</p>
+
+<pre class="example" id="org727bcec">
+Copyright 1997--1998, 2025 Free Software Foundation, Inc.
+Copying and distribution of this file, with or without modification, are
+permitted provided the copyright notice and this notice are preserved.
+</pre>
+
+<p>
+Of course, you should substitute the proper years and copyright holder.
+</p>
+</div>
+</div>

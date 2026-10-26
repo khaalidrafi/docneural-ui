@@ -1,0 +1,29 @@
+:PROPERTIES:
+:ID: emacs--Advanced-Calendar_002fDiary-Usage
+:END:
+#+filetags: :emacs:
+#+title: Advanced Calendar/Diary Usage
+
+Next:   Previous: [[id:emacs--Time-Intervals][Summing Time Intervals]]   Up: [[id:emacs--Calendar_002fDiary][The Calendar and the Diary]]
+
+<<Advanced-Calendar_002fDiary-Usage>>
+
+--------------
+
+*** 33.13 More advanced features of the Calendar and Diary [[#More-advanced-features-of-the-Calendar-and-Diary][¶]]
+:PROPERTIES:
+:CUSTOM_ID: More-advanced-features-of-the-Calendar-and-Diary
+:CLASS: section
+:END:
+This section describes some of the more advanced/specialized features of the calendar and diary. It starts with some of the many ways in which you can customize the calendar and diary to suit your personal tastes.
+
+- [[id:emacs--Calendar-Customizing][Customizing the Calendar]]
+- [[id:emacs--Holiday-Customizing][Customizing the Holidays]]
+- [[id:emacs--Mayan-Calendar][Converting from the Mayan Calendar]]
+- [[id:emacs--Date-Display-Format][Date Display Format]]
+- [[id:emacs--Time-Display-Format][Time Display Format]]
+- [[id:emacs--Diary-Customizing][Customizing the Diary]]
+- [[id:emacs--Non_002dGregorian-Diary][Diary Entries Using non-Gregorian Calendars]]
+- [[id:emacs--Diary-Display][Diary Display]]
+- [[id:emacs--Fancy-Diary-Display][Fancy Diary Display]]
+- [[id:emacs--Sexp-Diary-Entries][Sexp Entries and the Fancy Diary Display]]

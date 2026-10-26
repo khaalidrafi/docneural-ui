@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Citing-Mail-1">1. 34.4.3 Citing Mail ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mail-Misc.html">Mail Miscellany</a>   Previous: <a href="docs/emacs--Header-Editing.html">Mail Header Editing</a>   Up: <a href="docs/emacs--Mail-Commands.html">Mail Commands</a>
+</p>
+
+<p>
+<a id="Citing-Mail"></a>
+</p>
+
+<hr />
+<div id="outline-container-Citing-Mail-1" class="outline-2">
+<h2 id="Citing-Mail-1"><span class="section-number-2">1.</span> 34.4.3 Citing Mail <a href="#Citing-Mail-1">¶</a></h2>
+<div class="outline-text-2" id="text-Citing-Mail-1">
+<dl class="org-dl">
+<dt>C-c C-y</dt><dd>Yank the selected message from the mail reader, as a citation (<code>message-yank-original</code>).</dd>
+
+<dt>C-c C-q</dt><dd>Fill each paragraph cited from another message (<code>message-fill-yanked-message</code>).</dd>
+</dl>
+
+<p>
+You can use the command C-c C-y (<code>message-yank-original</code>) to <i>cite</i> a message that you are replying to. This inserts the text of that message into the mail buffer. This command works only if the mail buffer is invoked from a mail reader running in Emacs, such as Rmail.
+</p>
+
+<p>
+By default, Emacs inserts the string ‘=&gt;=' in front of each line of the cited text; this prefix string is specified by the variable <code>message-yank-prefix</code>. If you call <code>message-yank-original</code> with a prefix argument, the citation prefix is not inserted.
+</p>
+
+<p>
+After using C-c C-y, you can type C-c C-q (<code>message-fill-yanked-message</code>) to fill the paragraphs of the cited message. One use of C-c C-q fills all such paragraphs, each one individually. To fill a single paragraph of the quoted message, use M-q. If filling does not automatically handle the type of citation prefix you use, try setting the fill prefix explicitly. See <a href="docs/emacs--Filling.html">Filling Text</a>.
+</p>
+
+<p>
+You can customize mail citation through the hook <code>mail-citation-hook</code>. For example, you can use the Supercite package, which provides more flexible citation (see <a href="../sc_html/Introduction.html#Introduction">Introduction</a> in Supercite).
+</p>
+</div>
+</div>

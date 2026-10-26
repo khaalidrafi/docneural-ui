@@ -1,0 +1,97 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Org-Syntax-1">1. 17.10 Org Syntax ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Org-Syntax"></a>
+Next: <a href="docs/org--Documentation-Access.html">Context Dependent Documentation</a>, Previous: <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Org-Syntax-1" class="outline-2">
+<h2 id="Org-Syntax-1"><span class="section-number-2">1.</span> 17.10 Org Syntax <a href="#Org-Syntax-1">¶</a></h2>
+<div class="outline-text-2" id="text-Org-Syntax-1">
+<p>
+A reference document providing a formal description of Org's syntax is available as <a href="https://orgmode.org/worg/org-syntax.html">a draft on Worg</a>, initially written by Nicolas Goaziou. It defines Org's core internal concepts such as “headlines”, “sections”, “affiliated keywords”, “(greater) elements” and “objects”. Each part of an Org document belongs to one of the previous categories.
+</p>
+
+<p>
+To explore the abstract structure of an Org buffer, run this in a buffer:
+</p>
+
+<pre class="example" id="orgde5c0e7">
+M-: (org-element-parse-buffer) &lt;RET&gt;
+</pre>
+
+<p>
+It outputs a list containing the buffer's content represented as an abstract structure. The export engine relies on the information stored in this list. Most interactive commands&#x2014;e.g., for structure editing&#x2014;also rely on the syntactic meaning of the surrounding context.
+</p>
+
+<p>
+You can probe the syntax of your documents with the command
+</p>
+
+<pre class="example" id="orgd62d7b2">
+M-x org-lint &lt;RET&gt;
+</pre>
+
+<p>
+It runs a number of checks to find common mistakes. It then displays their location in a dedicated buffer, along with a description and a “trust level”, since false-positive are possible. From there, you can operate on the reports with the following keys:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">C-j, TAB</td>
+<td class="org-left">Display the offending line</td>
+</tr>
+
+<tr>
+<td class="org-left">RET</td>
+<td class="org-left">Move point to the offending line</td>
+</tr>
+
+<tr>
+<td class="org-left">g</td>
+<td class="org-left">Check the document again</td>
+</tr>
+
+<tr>
+<td class="org-left">h</td>
+<td class="org-left">Hide all reports from the same checker</td>
+</tr>
+
+<tr>
+<td class="org-left">i</td>
+<td class="org-left">Also remove them from all subsequent checks</td>
+</tr>
+
+<tr>
+<td class="org-left">S</td>
+<td class="org-left">Sort reports by the column at point</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Documentation-Access.html">Context Dependent Documentation</a>, Previous: <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

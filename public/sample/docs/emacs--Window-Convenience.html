@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Convenience-Features-for-Window-Handling">1. 22.7 Convenience Features for Window Handling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Tab-Line.html">Window Tab Line</a>   Previous: <a href="docs/emacs--Displaying-Buffers.html">Displaying a Buffer in a Window</a>   Up: <a href="docs/emacs--Windows.html">Multiple Windows</a>
+</p>
+
+<p>
+<a id="Window-Convenience"></a>
+</p>
+
+<hr />
+<div id="outline-container-Convenience-Features-for-Window-Handling" class="outline-2">
+<h2 id="Convenience-Features-for-Window-Handling"><span class="section-number-2">1.</span> 22.7 Convenience Features for Window Handling <a href="#Convenience-Features-for-Window-Handling">¶</a></h2>
+<div class="outline-text-2" id="text-Convenience-Features-for-Window-Handling">
+<p>
+Winner mode is a global minor mode that records the changes in the window configuration (i.e., how the frames are partitioned into windows), so that you can undo them. You can toggle Winner mode with M-x winner-mode, or by customizing the variable <code>winner-mode</code>. When the mode is enabled, C-c left (<code>winner-undo</code>) undoes the last window configuration change. If you change your mind while undoing, you can redo the changes you had undone using C-c right (<code>M-x winner-redo</code>). To prevent Winner mode from binding C-c left and C-c right, you can customize the variable <code>winner-dont-bind-my-keys</code> to a non-<code>nil</code> value. By default, Winner mode stores a maximum of 200 window configurations per frame, but you can change that by modifying the variable <code>winner-ring-size</code>. If there are some buffers whose windows you wouldn't want Winner mode to restore, add their names to the list variable <code>winner-boring-buffers</code> or to the regexp <code>winner-boring-buffers-regexp</code>.
+</p>
+
+<p>
+Follow mode (M-x follow-mode) synchronizes several windows on the same buffer so that they always display adjacent sections of that buffer. See <a href="docs/emacs--Follow-Mode.html">Follow Mode</a>.
+</p>
+
+<p>
+The Windmove package defines commands for moving directionally between neighboring windows in a frame. M-x windmove-right selects the window immediately to the right of the currently selected one, and similarly for the left, up, and down counterparts. <code>windmove-default-keybindings</code> binds these commands to S-right etc.; doing so disables shift selection for those keys (see <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>). In the same way as key bindings can be defined for commands that select windows directionally, you can use <code>windmove-display-default-keybindings</code> to define keybindings for commands that specify in what direction to display the window for the buffer that the next command is going to display. Also there is <code>windmove-delete-default-keybindings</code> to define keybindings for commands that delete windows directionally, and <code>windmove-swap-states-default-keybindings</code> that defines key bindings for commands that swap the window contents of the selected window with the window in the specified direction.
+</p>
+
+<p>
+The command M-x compare-windows lets you compare the text shown in different windows. See <a href="docs/emacs--Comparing-Files.html">Comparing Files</a>.
+</p>
+
+<p>
+Scroll All mode (M-x scroll-all-mode) is a global minor mode that causes scrolling commands and point motion commands to apply to every single window.
+</p>
+
+<hr />
+</div>
+</div>

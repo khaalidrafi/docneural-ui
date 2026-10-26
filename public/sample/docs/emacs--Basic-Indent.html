@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Basic-Program-Indentation-Commands">1. 28.3.1 Basic Program Indentation Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Multi_002dline-Indent.html">Indenting Several Lines</a>   Up: <a href="docs/emacs--Program-Indent.html">Indentation for Programs</a>
+</p>
+
+<p>
+<a id="Basic-Indent"></a>
+</p>
+
+<hr />
+<div id="outline-container-Basic-Program-Indentation-Commands" class="outline-2">
+<h2 id="Basic-Program-Indentation-Commands"><span class="section-number-2">1.</span> 28.3.1 Basic Program Indentation Commands <a href="#Basic-Program-Indentation-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Basic-Program-Indentation-Commands">
+<dl class="org-dl">
+<dt>TAB</dt><dd>Adjust indentation of current line (<code>indent-for-tab-command</code>).</dd>
+
+<dt>RET</dt><dd>Insert a newline, then adjust indentation of following line (<code>newline</code>).</dd>
+</dl>
+
+<p>
+The basic indentation command is TAB (<code>indent-for-tab-command</code>), which was documented in <a href="docs/emacs--Indentation.html">Indentation</a>. In programming language modes, TAB indents the current line, based on the indentation and syntactic content of the preceding lines; if the region is active, TAB indents each line within the region, not just the current line.
+</p>
+
+<p>
+The command RET (<code>newline</code>), which was documented in <a href="docs/emacs--Inserting-Text.html">Inserting Text</a>, does the same as C-j followed by TAB: it inserts a new line, then adjusts the line's indentation.
+</p>
+
+<p>
+When indenting a line that starts within a parenthetical grouping, Emacs usually places the start of the line under the preceding line within the group, or under the text after the parenthesis. If you manually give one of these lines a nonstandard indentation (e.g., for aesthetic purposes), the lines below will follow it.
+</p>
+
+<p>
+The indentation commands for most programming language modes assume that an open-parenthesis, open-brace or other opening delimiter at the left margin is the start of a function. If the code you are editing violates this assumption&#x2014;even if the delimiters occur in strings or comments&#x2014;you must set <code>open-paren-in-column-0-is-defun-start</code> to <code>nil</code> for indentation to work properly. See <a href="docs/emacs--Left-Margin-Paren.html">Left Margin Convention</a>.
+</p>
+</div>
+</div>

@@ -1,0 +1,126 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Managing-Patches-and-Branches"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Debbugs-User-Interfaces.html">Debbugs User Interfaces</a>, Previous: <a href="docs/guix--The-Issue-Tracker.html">The Issue Tracker</a>, Up: <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Managing-Patches-and-Branches-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="managing-patches-and-branches"></a>22.11.2 Managing Patches and Branches<br />
+<div class="outline-text-5" id="text-managing-patches-and-branches">
+<p>
+<a id="index-branching-strategy"></a> <a id="index-rebuild-scheduling-strategy"></a>
+Submitted patches are picked up and tested by the quality assurance service; the result of that testing eventually shows up on the dashboard at ‘=<a href="https://qa.guix.gnu.org/issue/==ISSUE_NUMBER">https://qa.guix.gnu.org/issue/==ISSUE_NUMBER</a>=', where <code>ISSUE_NUMBER</code> is the number assigned by the issue tracker, currently Debbugs (work is in progress to support Codeberg pull requests). Leave time for a review, without committing anything.
+</p>
+
+<p>
+As an exception, some changes considered “trivial” or “obvious” may be pushed directly to the <code>master</code> branch. This includes changes to fix typos and reverting commits that caused immediate problems. This is subject to being adjusted, allowing individuals to commit directly on non-controversial changes on parts they're familiar with.
+</p>
+
+<p>
+Changes which affect more than 300 dependent packages (see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>) should first be pushed to a topic branch other than <code>master</code>; the set of changes should be consistent&#x2014;e.g., “GNOME update”, “NumPy update”, etc. This allows for testing: the branch will automatically show up at ‘=<a href="https://qa.guix.gnu.org/branch/==branch">https://qa.guix.gnu.org/branch/==branch</a>=', with an indication of its build status on various platforms.
+</p>
+
+<p>
+<a id="index-feature-branches_002c-coordination"></a>
+To help coordinate the merging of branches, you must create a new guix-patches issue each time you create a branch (see <a href="docs/guix--The-Issue-Tracker.html">The Issue Tracker</a>). The title of the issue requesting to merge a branch should have the following format:
+</p>
+
+<p>
+<a id="index-merge-requests_002c-template"></a>
+</p>
+
+<pre class="example" id="org4d65bc5">
+Request for merging "name" branch
+</pre>
+
+<p>
+The <a href="https://qa.guix.gnu.org/">QA infrastructure</a> recognizes such issues and lists the merge requests on its main page. The following points apply to managing these branches:
+</p>
+
+<ol class="org-ol">
+<li>The commits on the branch should be a combination of the patches relevant to the branch. Patches not related to the topic of the branch should go elsewhere.</li>
+<li>Any changes that can be made on the master branch, should be made on the master branch. If a commit can be split to apply part of the changes on master, this is good to do.</li>
+<li>It should be possible to re-create the branch by starting from master and applying the relevant patches.</li>
+<li>Avoid merging master in to the branch. Prefer rebasing or re-creating the branch on top of an updated master revision.</li>
+<li>Minimise the changes on master that are missing on the branch prior to merging the branch in to master. This means that the state of the branch better reflects the state of master should the branch be merged.</li>
+<li>If you don't have commit access, create the “Request for merging” issue and request that someone creates the branch. Include a list of issues/patches to include on the branch.</li>
+</ol>
+
+<p>
+Normally branches will be merged in a “first come, first merged” manner, tracked through the guix-patches issues. If you agree on a different order with those involved, you can track this by updating which issues block which other issues. Therefore, to know which branch is at the front of the queue, look for the oldest issue, or the issue that isn't <i>blocked</i> by any other branch merges. An ordered list of branches with the open issues is available at <a href="https://qa.guix.gnu.org">https://qa.guix.gnu.org</a>.
+</p>
+
+<p>
+Once a branch is at the front of the queue, wait until sufficient time has passed for the build farms to have processed the changes, and for the necessary testing to have happened. For example, you can check ‘=<a href="https://qa.guix.gnu.org/branch/==branch">https://qa.guix.gnu.org/branch/==branch</a>=' to see information on some builds and substitute availability.
+</p>
+
+<p>
+Once the branch has been merged, the issue should be closed and the branch deleted.
+</p>
+
+<p>
+<a id="index-work_002din_002dprogress-branches_002c-wip"></a> <a id="index-wip-branches"></a>
+Sometimes, a branch may be a work in progress, for example for larger efforts such as updating the GNOME desktop. In these cases, the branch name should reflect this by having the ‘=wip-<code>' prefix. The QA infrastructure will avoid building work-in-progress branches, so that the available resources can be better focused on building the branches that are ready to be merged. When the branch is no longer a work in progress, it should be renamed, with the ‘=wip-</code>' prefix removed, and only then should the merge requests be created, as documented earlier.
+</p>
+
+<hr />
+</div>
+</li>
+</div>

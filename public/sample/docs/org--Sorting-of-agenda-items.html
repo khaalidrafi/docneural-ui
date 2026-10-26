@@ -1,0 +1,42 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Sorting-of-agenda-items-1">1. 11.4.3 Sorting of agenda items ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Sorting-of-agenda-items"></a>
+Next: <a href="docs/org--Filtering_002flimiting-agenda-items.html">Filtering/limiting agenda items</a>, Previous: <a href="docs/org--Time_002dof_002dday-specifications.html">Time-of-day specifications</a>, Up: <a href="docs/org--Presentation-and-Sorting.html">Presentation and Sorting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Sorting-of-agenda-items-1" class="outline-2">
+<h2 id="Sorting-of-agenda-items-1"><span class="section-number-2">1.</span> 11.4.3 Sorting of agenda items <a href="#Sorting-of-agenda-items-1">¶</a></h2>
+<div class="outline-text-2" id="text-Sorting-of-agenda-items-1">
+<p>
+Before being inserted into a view, the items are sorted. How this is done depends on the type of view.
+</p>
+
+<ul class="org-ul">
+<li>For the daily/weekly agenda, the items for each day are sorted. The default order is to first collect all items containing an explicit time-of-day specification. These entries are shown at the beginning of the list, as a <i>schedule</i> for the day. After that, items remain grouped in categories, in the sequence given by <code>org-agenda-files</code>. Within each category, items are sorted by urgency, which is derived from the priority (see <a href="docs/org--Priorities.html">Priorities</a>), plus additional increments for overdue scheduled or deadline items. The lowest priority is scored as 0, the next as 1000, and continues in steps of 1000 until reaching the highest priority, e.g., ‘=C=', ‘=B=', ‘=A=' are scored as 0, 1000, and 2000, respectively.</li>
+<li>For the TODO list, items remain in the order of categories, but within each category, sorting takes place according to urgency. The urgency used for sorting derives from the priority cookie, with additions depending on how close an item is to its due or scheduled date.</li>
+<li>For tags matches, items are not sorted at all, but just appear in the sequence in which they are found in the agenda files.</li>
+</ul>
+
+<p>
+Sorting can be customized using the variable <code>org-agenda-sorting-strategy</code>, and may also include criteria based on the estimated effort of an entry (see <a href="docs/org--Effort-Estimates.html">Effort Estimates</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Filtering_002flimiting-agenda-items.html">Filtering/limiting agenda items</a>, Previous: <a href="docs/org--Time_002dof_002dday-specifications.html">Time-of-day specifications</a>, Up: <a href="docs/org--Presentation-and-Sorting.html">Presentation and Sorting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

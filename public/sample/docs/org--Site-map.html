@@ -1,0 +1,52 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Generating-a-sitemap">1. 14.1.7 Generating a sitemap ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Site-map"></a>
+Next: <a href="docs/org--Generating-an-index.html">Generating an index</a>, Previous: <a href="docs/org--Publishing-links.html">Publishing links</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Generating-a-sitemap" class="outline-2">
+<h2 id="Generating-a-sitemap"><span class="section-number-2">1.</span> 14.1.7 Generating a sitemap <a href="#Generating-a-sitemap">¶</a></h2>
+<div class="outline-text-2" id="text-Generating-a-sitemap">
+<p>
+The following properties may be used to control publishing of a map of files for a given project.
+</p>
+
+<dl class="org-dl">
+<dt><code>:auto-sitemap</code></dt><dd>When non-<code>nil</code>, publish a sitemap during <code>org-publish-current-project</code> or <code>org-publish-all</code>.</dd>
+
+<dt><code>:sitemap-filename</code></dt><dd>Filename for output of sitemap. Defaults to ‘=sitemap.org=', which becomes ‘=sitemap.html='.</dd>
+
+<dt><code>:sitemap-title</code></dt><dd>Title of sitemap page. Defaults to name of file.</dd>
+
+<dt><code>:sitemap-style</code></dt><dd>Can be <code>list</code> (site-map is just an itemized list of the titles of the files involved) or <code>tree</code> (the directory structure of the source files is reflected in the site-map). Defaults to <code>tree</code>.</dd>
+
+<dt><a id="index-org_002dpublish_002dfind_002ddate"></a>=:sitemap-format-entry= </dt><dd>With this option one can tell how a site-map entry is formatted in the site-map. It is a function called with three arguments: the file or directory name relative to base directory of the project, the site-map style and the current project. It is expected to return a string. Default value turns file names into links and use document titles as descriptions. For specific formatting needs, one can use <code>org-publish-find-date</code>, <code>org-publish-find-title</code> and <code>org-publish-find-property</code>, to retrieve additional information about published documents.</dd>
+
+<dt><code>:sitemap-function</code></dt><dd>Plug-in function to use for generation of the sitemap. It is called with two arguments: the title of the site-map and a representation of the files and directories involved in the project as a nested list, which can further be transformed using <code>org-list-to-generic</code>, <code>org-list-to-subtree</code> and alike. Default value generates a plain list of links to all files in the project.</dd>
+
+<dt><code>:sitemap-sort-folders</code></dt><dd>Where folders should appear in the sitemap. Set this to <code>first</code> (default) or <code>last</code> to display folders first or last, respectively. When set to <code>ignore</code>, folders are ignored altogether. Any other value mixes files and folders. This variable has no effect when site-map style is <code>tree</code>.</dd>
+
+<dt><code>:sitemap-sort-files</code></dt><dd>How the files are sorted in the site map. Set this to <code>alphabetically</code> (default), <code>chronologically</code> or <code>anti-chronologically</code>. <code>chronologically</code> sorts the files with older date first while <code>anti-chronologically</code> sorts the files with newer date first. <code>alphabetically</code> sorts the files alphabetically. The date of a file is retrieved with <code>org-publish-find-date</code>.</dd>
+
+<dt><code>:sitemap-ignore-case</code></dt><dd>Should sorting be case-sensitive? Default <code>nil</code>.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Generating-an-index.html">Generating an index</a>, Previous: <a href="docs/org--Publishing-links.html">Publishing links</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

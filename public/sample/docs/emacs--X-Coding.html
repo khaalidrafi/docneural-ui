@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Coding-Systems-for-X-Keyboard-Input">1. 24.12 Coding Systems for X Keyboard Input ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Terminal-Coding.html">Coding Systems for Terminal I/O</a>   Previous: <a href="docs/emacs--File-Name-Coding.html">Coding Systems for File Names</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="X-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Coding-Systems-for-X-Keyboard-Input" class="outline-2">
+<h2 id="Coding-Systems-for-X-Keyboard-Input"><span class="section-number-2">1.</span> 24.12 Coding Systems for X Keyboard Input <a href="#Coding-Systems-for-X-Keyboard-Input">¶</a></h2>
+<div class="outline-text-2" id="text-Coding-Systems-for-X-Keyboard-Input">
+<p>
+Input methods under the X Window System specify their own coding systems that must be used to decode keyboard input. By default, Emacs determines the coding system used for each input method automatically upon establishing the connection to the input method server, and uses that specific coding system to decode keyboard input. However, that determination can sometimes fail; in that situation, the locale coding system (see <a href="docs/emacs--Communication-Coding.html">Coding Systems for Interprocess Communication</a>) is used instead.
+</p>
+
+<p>
+If the input method does not correctly announce the coding system it uses to encode text, then the coding system used by Emacs to decode text from input methods must be manually specified. The value of the variable <code>x-input-coding-system</code>, when set to a symbol, is unconditionally used as the coding system used to decode keyboard input from input methods.
+</p>
+</div>
+</div>

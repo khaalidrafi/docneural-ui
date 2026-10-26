@@ -1,0 +1,68 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Drawers-1">0.1. 2.7 Drawers ¶</a></li>
+</ul>
+</li>
+<li><a href="#orgebd3893">1. This is a headline</a></div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Drawers"></a>
+Next: <a href="docs/org--Blocks.html">Blocks</a>, Previous: <a href="docs/org--Plain-Lists.html">Plain Lists</a>, Up: <a href="docs/org--Document-Structure.html">Document Structure</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Drawers-1" class="outline-3">
+<h3 id="Drawers-1"><span class="section-number-3">0.1.</span> 2.7 Drawers <a href="#Drawers-1">¶</a></h3>
+<div class="outline-text-3" id="text-Drawers-1">
+<p>
+Sometimes you want to keep information associated with an entry, but you do not normally want to see it. For this, Org mode has <i>drawers</i>. They can contain anything but a headline and another drawer. Drawers look like this:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-orgebd3893" class="outline-2">
+<h2 id="orgebd3893"><span class="section-number-2">1.</span> This is a headline</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Still outside the drawer
+</p>
+<p>
+This is inside the drawer.
+</p>
+<p>
+After the drawer.
+#+end<sub>src</sub>
+</p>
+
+<p>
+You can interactively insert a drawer at point by calling <code>org-insert-drawer</code>, which is bound to C-c C-x d. With an active region, this command puts the region inside the drawer. With a prefix argument, this command calls non-interactive function <code>org-insert-property-drawer</code>, which creates a ‘=PROPERTIES=' drawer right below the current headline. Org mode uses this special drawer for storing properties (see <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>). You cannot use it for anything else.
+</p>
+
+<p>
+Completion over drawer keywords is also possible using M-TAB.
+</p>
+
+<p>
+Visibility cycling (see <a href="docs/org--Visibility-Cycling.html">Visibility Cycling</a>) on the headline hides and shows the entry, but keeps the drawer collapsed to a single line. In order to look inside the drawer, you need to move point to the drawer line and press TAB there.
+</p>
+
+<p>
+You can also arrange for state change notes (see <a href="docs/org--Tracking-TODO-state-changes.html">Tracking TODO state changes</a>) and clock times (see <a href="docs/org--Clocking-Work-Time.html">Clocking Work Time</a>) to be stored in a ‘=LOGBOOK=' drawer. If you want to store a quick note there, similarly to state changes, use
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dz"></a>C-c C-z </dt><dd>Add a time-stamped note to the ‘=LOGBOOK=' drawer.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

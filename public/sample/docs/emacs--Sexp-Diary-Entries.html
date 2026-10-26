@@ -1,0 +1,221 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Sexp-Entries-and-the-Fancy-Diary-Display">1. 33.13.10 Sexp Entries and the Fancy Diary Display ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Fancy-Diary-Display.html">Fancy Diary Display</a>   Up: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>
+</p>
+
+<p>
+<a id="Sexp-Diary-Entries"></a>
+</p>
+
+<hr />
+<div id="outline-container-Sexp-Entries-and-the-Fancy-Diary-Display" class="outline-2">
+<h2 id="Sexp-Entries-and-the-Fancy-Diary-Display"><span class="section-number-2">1.</span> 33.13.10 Sexp Entries and the Fancy Diary Display <a href="#Sexp-Entries-and-the-Fancy-Diary-Display">¶</a></h2>
+<div class="outline-text-2" id="text-Sexp-Entries-and-the-Fancy-Diary-Display">
+<p>
+Sexp diary entries allow you to do more than just have complicated conditions under which a diary entry applies. Sexp entries should be preceded by <code>diary-sexp-entry-symbol</code> (default ‘=%%=') in the diary file. With the fancy diary display, sexp entries can generate the text of the entry depending on the date itself.
+</p>
+
+<p>
+For example, an anniversary diary entry can insert the number of years since the anniversary date into the text of the diary entry. Thus the ‘=%d=' in this diary entry:
+</p>
+
+<pre class="example" id="org475d7bf">
+%%(diary-anniversary 10 31 1948) Arthur's birthday (%d years old)
+</pre>
+
+<p>
+gets replaced by the age, so on October 31, 1990 the entry appears in the fancy diary buffer like this:
+</p>
+
+<pre class="example" id="org31741de">
+Arthur's birthday (42 years old)
+</pre>
+
+<p>
+If the diary file instead contains this entry:
+</p>
+
+<pre class="example" id="orgea8522e">
+%%(diary-anniversary 10 31 1948) Arthur's %d%s birthday
+</pre>
+
+<p>
+the entry in the fancy diary buffer for October 31, 1990 appears like this:
+</p>
+
+<pre class="example" id="orgf0865e0">
+Arthur's 42nd birthday
+</pre>
+
+<p>
+Similarly, cyclic diary entries can interpolate the number of repetitions that have occurred:
+</p>
+
+<pre class="example" id="org2fb8762">
+%%(diary-cyclic 50 1 1 2012) Renew medication (%d%s time)
+</pre>
+
+<p>
+looks like this:
+</p>
+
+<pre class="example" id="orgc03149e">
+Renew medication (5th time)
+</pre>
+
+<p>
+in the fancy diary display on September 7, 2012.
+</p>
+
+<p>
+There is an early-reminder diary sexp that includes its entry in the diary not only on the date of occurrence, but also on earlier dates. For example, if you want a reminder a week before your anniversary, you can use
+</p>
+
+<pre class="example" id="org12a3e1d">
+%%(diary-remind '(diary-anniversary 12 22 1968) 7) Ed's anniversary
+</pre>
+
+<p>
+and the fancy diary will show ‘=Ed's anniversary=' both on December 15 and on December 22.
+</p>
+
+<p>
+The function <code>diary-date</code> applies to dates described by a month, day, year combination, each of which can be an integer, a list of integers, or <code>t</code> (meaning all values). For example,
+</p>
+
+<pre class="example" id="org8095e6b">
+%%(diary-date '(10 11 12) 22 t) Rake leaves
+</pre>
+
+<p>
+causes the fancy diary to show
+</p>
+
+<pre class="example" id="org36d854c">
+Rake leaves
+</pre>
+
+<p>
+on October 22, November 22, and December 22 of every year.
+</p>
+
+<p>
+The function <code>diary-float</code> allows you to describe diary entries that apply to dates like the third Friday of November, or the last Tuesday in April. The parameters are the <code>month</code>, <code>dayname</code>, and an index <code>n</code>. The entry appears on the <code>n=th =dayname</code> after the first day of <code>month</code>, where <code>dayname==0 means Sunday, 1 means Monday, and so on. If =n</code> is negative it counts backward from the end of <code>month</code>. The value of <code>month</code> can be a list of months, a single month, or <code>t</code> to specify all months. You can also use an optional parameter <code>day</code> to specify the <code>n=th =dayname</code> on or after/before <code>day</code> of <code>month</code>; the value of <code>day</code> defaults to 1 if <code>n</code> is positive and to the last day of <code>month</code> if <code>n</code> is negative. For example,
+</p>
+
+<pre class="example" id="org346bdba">
+%%(diary-float t 1 -1) Pay rent
+</pre>
+
+<p>
+causes the fancy diary to show
+</p>
+
+<pre class="example" id="org8f3d230">
+Pay rent
+</pre>
+
+<p>
+on the last Monday of every month.
+</p>
+
+<p>
+The generality of sexp diary entries lets you specify any diary entry that you can describe algorithmically. A sexp diary entry contains an expression that computes whether the entry applies to any given date. If its value is non-<code>nil</code>, the entry applies to that date; otherwise, it does not. The expression can use the variable <code>date</code> to find the date being considered; its value is a list (<code>month</code> <code>day</code> <code>year</code>) that refers to the Gregorian calendar.
+</p>
+
+<p>
+The sexp diary entry applies to a date when the expression's value is non-<code>nil</code>, but some values have more specific meanings. If the value is a string, that string is a description of the event which occurs on that date. The value can also have the form <code>(==mark=</code> . <code>=string=</code>)=; then <code>mark</code> specifies how to mark the date in the calendar, and <code>string</code> is the description of the event. If <code>mark</code> is a single-character string, that character appears next to the date in the calendar. If <code>mark</code> is a face name, the date is displayed in that face. If <code>mark</code> is <code>nil</code>, that specifies no particular highlighting for the date.
+</p>
+
+<p>
+Suppose you get paid on the 21st of the month if it is a weekday, and on the Friday before if the 21st is on a weekend. Here is how to write a sexp diary entry that matches those dates:
+</p>
+
+<pre class="example" id="orgcc57ca6">
+&amp;%%(let ((dayname (calendar-day-of-week date))
+         (day (cadr date)))
+      (or (and (= day 21) (memq dayname '(1 2 3 4 5)))
+          (and (memq day '(19 20)) (= dayname 5)))
+         ) Pay check deposited
+</pre>
+
+<p>
+The following sexp diary entries take advantage of the ability (in the fancy diary display) to concoct diary entries whose text varies based on the date:
+</p>
+
+<dl class="org-dl">
+<dt><code>%%(diary-sunrise-sunset)</code></dt><dd>Make a diary entry for today's local times of sunrise and sunset.</dd>
+
+<dt><code>%%(diary-lunar-phases)</code></dt><dd>Make a diary entry for the phases (quarters) of the moon.</dd>
+
+<dt><code>%%(diary-day-of-year)</code></dt><dd>Make a diary entry with today's day number in the current year and the number of days remaining in the current year.</dd>
+
+<dt><code>%%(diary-iso-date)</code></dt><dd>Make a diary entry with today's equivalent ISO commercial date.</dd>
+
+<dt><code>%%(diary-julian-date)</code></dt><dd>Make a diary entry with today's equivalent Julian calendar date.</dd>
+
+<dt><code>%%(diary-astro-day-number)</code></dt><dd>Make a diary entry with today's equivalent astronomical (Julian) day number.</dd>
+
+<dt><code>%%(diary-bahai-date)</code></dt><dd>Make a diary entry with today's equivalent Bahá'í calendar date.</dd>
+
+<dt><code>%%(diary-chinese-date)</code></dt><dd>Make a diary entry with today's equivalent Chinese calendar date.</dd>
+
+<dt><code>%%(diary-coptic-date)</code></dt><dd>Make a diary entry with today's equivalent Coptic calendar date.</dd>
+
+<dt><code>%%(diary-ethiopic-date)</code></dt><dd>Make a diary entry with today's equivalent Ethiopic calendar date.</dd>
+
+<dt><code>%%(diary-french-date)</code></dt><dd>Make a diary entry with today's equivalent date on the French Revolutionary calendar.</dd>
+
+<dt><code>%%(diary-hebrew-date)</code></dt><dd>Make a diary entry with today's equivalent Hebrew calendar date.</dd>
+
+<dt><code>%%(diary-islamic-date)</code></dt><dd>Make a diary entry with today's equivalent Islamic calendar date.</dd>
+
+<dt><code>%%(diary-mayan-date)</code></dt><dd>Make a diary entry with today's equivalent Mayan calendar date.</dd>
+
+<dt><code>%%(diary-persian-date)</code></dt><dd>Make a diary entry with today's equivalent Persian calendar date.</dd>
+</dl>
+
+<p>
+For example, including the diary entry
+</p>
+
+<pre class="example" id="org7629e65">
+&amp;%%(diary-hebrew-date)
+</pre>
+
+<p>
+causes every day's diary display to contain the equivalent date on the Hebrew calendar, if you are using the fancy diary display. (With simple diary display, the literal line ‘=&amp;%%(diary-hebrew-date)=' appears in the diary for any date.)
+</p>
+
+<p>
+This function has been used to construct certain standard Hebrew sexp diary entries:
+</p>
+
+<dl class="org-dl">
+<dt><code>%%(diary-hebrew-rosh-hodesh)</code></dt><dd>Make a diary entry that tells the occurrence and ritual announcement of each new Hebrew month.</dd>
+
+<dt><code>%%(diary-hebrew-parasha)</code></dt><dd>Make a Saturday diary entry that tells the weekly synagogue scripture reading.</dd>
+
+<dt><code>%%(diary-hebrew-sabbath-candles)</code></dt><dd>Make a Friday diary entry that tells the <i>local time</i> of Sabbath candle lighting.</dd>
+
+<dt><code>%%(diary-hebrew-omer)</code></dt><dd>Make a diary entry that gives the omer count, when appropriate.</dd>
+
+<dt><code>%%(diary-hebrew-yahrzeit ==month=</code> <code>=day=</code> <code>=year=</code>) <code>=name</code></dt><dd>Make a diary entry marking the anniversary of a date of death. The date is the <i>Gregorian</i> (civil) date of death. The diary entry appears on the proper Hebrew calendar anniversary and on the day before. (The order of the parameters changes according to the calendar date style; for example in the European style to <code>day</code>, <code>month</code>, <code>year</code>.)</dd>
+
+<dt><code>%%(diary-hebrew-birthday ==month=</code> <code>=day=</code> <code>=year=</code>)=</dt><dd>Make a diary entry for a birthday on the Hebrew calendar.</dd>
+</dl>
+
+<p>
+All the functions documented above take an optional argument <code>mark</code> which specifies how to mark the date in the calendar display. If one of these functions decides that it applies to a certain date, it returns a value that contains <code>mark</code>, as described above.
+</p>
+
+<hr />
+</div>
+</div>

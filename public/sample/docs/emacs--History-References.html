@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Shell-History-References">1. 40.5.3 Shell History References ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Shell-History-Copying.html">Shell History Copying</a>   Up: <a href="docs/emacs--Shell-History.html">Shell Command History</a>
+</p>
+
+<p>
+<a id="History-References"></a>
+</p>
+
+<hr />
+<div id="outline-container-Shell-History-References" class="outline-2">
+<h2 id="Shell-History-References"><span class="section-number-2">1.</span> 40.5.3 Shell History References <a href="#Shell-History-References">¶</a></h2>
+<div class="outline-text-2" id="text-Shell-History-References">
+<p>
+Various shells, including csh and bash, support <i>history references</i> that begin with ‘=!=' and ‘=^='. Shell mode recognizes these constructs, and can perform the history substitution for you.
+</p>
+
+<p>
+If you insert a history reference and type TAB, this searches the input history for a matching command, performs substitution if necessary, and places the result in the buffer in place of the history reference. For example, you can fetch the most recent command beginning with ‘=mv=' with ! m v TAB. You can edit the command if you wish, and then resubmit the command to the shell by typing RET.
+</p>
+
+<p>
+Shell mode can optionally expand history references in the buffer when you send them to the shell. To request this, set the variable <code>comint-input-autoexpand</code> to <code>input</code>. You can make SPC perform history expansion by binding SPC to the command <code>comint-magic-space</code>. See <a href="docs/emacs--Rebinding.html">Changing Key Bindings Interactively</a>.
+</p>
+
+<p>
+Shell mode recognizes history references when they follow a prompt. See <a href="docs/emacs--Shell-Prompts.html">Shell Prompts</a>, for how Shell mode recognizes prompts.
+</p>
+</div>
+</div>

@@ -1,0 +1,46 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Property-Inheritance-1">1. 7.4 Property Inheritance ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Property-Inheritance"></a>
+Next: <a href="docs/org--Column-View.html">Column View</a>, Previous: <a href="docs/org--Property-Searches.html">Property Searches</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Property-Inheritance-1" class="outline-2">
+<h2 id="Property-Inheritance-1"><span class="section-number-2">1.</span> 7.4 Property Inheritance <a href="#Property-Inheritance-1">¶</a></h2>
+<div class="outline-text-2" id="text-Property-Inheritance-1">
+<p>
+The outline structure of Org documents lends itself to an inheritance model of properties: if the parent in a tree has a certain property, the children can inherit this property. Org mode does not turn this on by default, because it can slow down property searches significantly and is often not needed. However, if you find inheritance useful, you can turn it on by setting the variable <code>org-use-property-inheritance</code>. It may be set to <code>t</code> to make all properties inherited from the parent, to a list of properties that should be inherited, or to a regular expression that matches inherited properties. If a property has the value <code>nil</code>, this is interpreted as an explicit un-define of the property, so that inheritance search stops at this value and returns <code>nil</code>.
+</p>
+
+<p>
+Org mode has a few properties for which inheritance is hard-coded, at least for the special applications for which they are used:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-COLUMNS_002c-property"></a>=COLUMNS= </dt><dd>The ‘=COLUMNS=' property defines the format of column view (see <a href="docs/org--Column-View.html">Column View</a>). It is inherited in the sense that the level where a ‘=COLUMNS=' property is defined is used as the starting point for a column view table, independently of the location in the subtree from where columns view is turned on.</dd>
+
+<dt><a id="index-CATEGORY_002c-property"></a>=CATEGORY= </dt><dd>For agenda view, a category set through a ‘=CATEGORY=' property applies to the entire subtree.</dd>
+
+<dt><a id="index-ARCHIVE_002c-property"></a>=ARCHIVE= </dt><dd>For archiving, the ‘=ARCHIVE=' property may define the archive location for the entire subtree (see <a href="docs/org--Moving-subtrees.html">Moving a tree to an archive file</a>).</dd>
+
+<dt><a id="index-LOGGING_002c-property-1"></a>=LOGGING= </dt><dd>The ‘=LOGGING=' property may define logging settings for an entry or a subtree (see <a href="docs/org--Tracking-TODO-state-changes.html">Tracking TODO state changes</a>).</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Column-View.html">Column View</a>, Previous: <a href="docs/org--Property-Searches.html">Property Searches</a>, Up: <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

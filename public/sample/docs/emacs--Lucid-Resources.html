@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Lucid-Menu-And-Dialog-X-Resources">1. D.3 Lucid Menu And Dialog X Resources ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Motif-Resources.html">Motif Menu X Resources</a>   Previous: <a href="docs/emacs--Table-of-Resources.html">Table of X Resources for Emacs</a>   Up: <a href="docs/emacs--X-Resources.html">X Options and Resources</a>
+</p>
+
+<p>
+<a id="Lucid-Resources"></a>
+</p>
+
+<hr />
+<div id="outline-container-Lucid-Menu-And-Dialog-X-Resources" class="outline-2">
+<h2 id="Lucid-Menu-And-Dialog-X-Resources"><span class="section-number-2">1.</span> D.3 Lucid Menu And Dialog X Resources <a href="#Lucid-Menu-And-Dialog-X-Resources">¶</a></h2>
+<div class="outline-text-2" id="text-Lucid-Menu-And-Dialog-X-Resources">
+<p>
+If Emacs is compiled with the X toolkit support using Lucid widgets, you can use X resources to customize the appearance of the menu bar (see <a href="docs/emacs--Menu-Bar.html">The Menu Bar</a>), pop-up menus, and dialog boxes (see <a href="docs/emacs--Dialog-Boxes.html">Using Dialog Boxes</a>). The resources for the menu bar fall in the ‘=pane.menubar=' class (following, as always, either the name of the Emacs executable or ‘=Emacs=' for all Emacs invocations). The resources for the pop-up menu are in the ‘=menu*=' class. The resources for dialog boxes are in the ‘=dialog*=' class.
+</p>
+
+<p>
+For example, to display menu bar entries with the ‘=Courier-12=' font (see <a href="docs/emacs--Fonts.html">Fonts</a>), write this:
+</p>
+
+<pre class="example" id="orgf85f006">
+Emacs.pane.menubar.font: Courier-12
+</pre>
+
+<p>
+Lucid widgets can display multilingual text in your locale. To enable this, specify a <code>fontSet</code> resource instead of a <code>font</code> resource. See <a href="docs/emacs--Fontsets.html">Fontsets</a>. If both <code>font</code> and <code>fontSet</code> resources are specified, the <code>fontSet</code> resource is used.
+</p>
+
+<p>
+Here is a list of resources for menu bars, pop-up menus, and dialogs:
+</p>
+
+<dl class="org-dl">
+<dt><code>font</code></dt><dd>Font for menu item text.</dd>
+
+<dt><code>fontSet</code></dt><dd>Fontset for menu item text.</dd>
+
+<dt><code>background</code></dt><dd>Background color.</dd>
+
+<dt><code>buttonForeground</code></dt><dd>Foreground color for a selected item.</dd>
+
+<dt><code>foreground</code></dt><dd>Foreground color.</dd>
+
+<dt><code>disabledForeground</code></dt><dd>Foreground color for a disabled menu item.</dd>
+
+<dt><code>highlightForeground</code></dt><dd>Foreground color for a menu item highlighted by the mouse or key navigation.</dd>
+
+<dt><code>highlightBackground</code></dt><dd>Background color for a menu item highlighted by the mouse or key navigation.</dd>
+
+<dt><code>horizontalSpacing</code></dt><dd>Horizontal spacing in pixels between items. Default is 3.</dd>
+
+<dt><code>verticalSpacing</code></dt><dd>Vertical spacing in pixels between items. Default is 2.</dd>
+
+<dt><code>arrowSpacing</code></dt><dd>Horizontal spacing between the arrow (which indicates a submenu) and the associated text. Default is 10.</dd>
+
+<dt><code>shadowThickness</code></dt><dd>Thickness of shadow lines for 3D buttons, arrows, and other graphical elements. Default is 1.</dd>
+
+<dt><code>borderThickness</code></dt><dd>Thickness of the external borders of the menu bars and pop-up menus. Default is 1.</dd>
+
+<dt><code>cursor</code></dt><dd>Name of the cursor to use in the menu bars and pop-up menus. Default is <code>"right_ptr"</code>.</dd>
+
+<dt><code>margin</code></dt><dd>Margin of the menu bar, in characters. Default is 1.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

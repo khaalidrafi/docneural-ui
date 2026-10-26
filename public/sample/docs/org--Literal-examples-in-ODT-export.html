@@ -1,0 +1,34 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Literal-examples-in-ODT-export-1">1. 13.12.11 Literal examples in ODT export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Literal-examples-in-ODT-export"></a>
+Next: <a href="docs/org--Advanced-topics-in-ODT-export.html">Advanced topics in ODT export</a>, Previous: <a href="docs/org--Labels-and-captions-in-ODT-export.html">Labels and captions in ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Literal-examples-in-ODT-export-1" class="outline-2">
+<h2 id="Literal-examples-in-ODT-export-1"><span class="section-number-2">1.</span> 13.12.11 Literal examples in ODT export <a href="#Literal-examples-in-ODT-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Literal-examples-in-ODT-export-1">
+<p>
+The ODT export backend supports literal examples (see <a href="docs/org--Literal-Examples.html">Literal Examples</a>) with full fontification. Internally, the ODT export backend relies on ‘=htmlfontify.el=' to generate the style definitions needed for fancy listings. The auto-generated styles get ‘=OrgSrc=' prefix and inherit colors from the faces used by Emacs Font Lock library for that source language.
+</p>
+
+<p>
+For custom fontification styles, customize the <code>org-odt-create-custom-styles-for-srcblocks</code> option.
+</p>
+
+<p>
+To turn off fontification of literal examples, customize the <code>org-odt-fontify-srcblocks</code> option.
+</p>
+</div>
+</div>

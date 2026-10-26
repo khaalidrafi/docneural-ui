@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Indentation-1">1. 26 Indentation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Text.html">Commands for Human Languages</a>   Previous: <a href="docs/emacs--Modes.html">Major and Minor Modes</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Indentation"></a>
+</p>
+
+<hr />
+<div id="outline-container-Indentation-1" class="outline-2">
+<h2 id="Indentation-1"><span class="section-number-2">1.</span> 26 Indentation <a href="#Indentation-1">¶</a></h2>
+<div class="outline-text-2" id="text-Indentation-1">
+<p>
+<i>Indentation</i> refers to inserting or adjusting <i>whitespace characters</i> (space and/or tab characters) at the beginning of a line of text. This chapter documents indentation commands and options which are common to Text mode and related modes, as well as programming language modes. See <a href="docs/emacs--Program-Indent.html">Indentation for Programs</a>, for additional documentation about indenting in programming modes.
+</p>
+
+<p>
+The simplest way to perform indentation is the TAB key. In most major modes, this runs the command <code>indent-for-tab-command</code>. (In C and related modes, TAB runs the command <code>c-indent-line-or-region</code>, which behaves similarly, see <a href="docs/emacs--C-Indent.html">Commands for C Indentation</a>).
+</p>
+
+<dl class="org-dl">
+<dt>TAB</dt><dd>Insert whitespace, or indent the current line, in a mode-appropriate way (<code>indent-for-tab-command</code>). If the region is active, indent all the lines within it.</dd>
+</dl>
+
+<p>
+The exact behavior of TAB depends on the major mode. In Text mode and related major modes, TAB normally inserts some combination of space and tab characters to advance point to the next tab stop (see <a href="docs/emacs--Tab-Stops.html">Tab Stops</a>). For this purpose, the position of the first non-whitespace character on the preceding line is treated as an additional tab stop, so you can use TAB to align point with the preceding line. If the region is active (see <a href="docs/emacs--Using-Region.html">Operating on the Region</a>), TAB acts specially: it indents each line in the region so that its first non-whitespace character is aligned with the preceding line.
+</p>
+
+<p>
+In programming modes, TAB indents the current line of code in a way that makes sense given the code in the preceding lines. If the region is active, all the lines in the region are indented this way. If point was initially within the current line's indentation, it is repositioned to the first non-whitespace character on the line.
+</p>
+
+<p>
+If you just want to insert a tab character in the buffer, type C-q TAB (see <a href="docs/emacs--Inserting-Text.html">Inserting Text</a>).
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Indentation-Commands.html">Indentation Commands</a></li>
+<li><a href="docs/emacs--Tab-Stops.html">Tab Stops</a></li>
+<li><a href="docs/emacs--Just-Spaces.html">Tabs vs. Spaces</a></li>
+<li><a href="docs/emacs--Indent-Convenience.html">Convenience Features for Indentation</a></li>
+<li><a href="docs/emacs--Code-Alignment.html">Code Alignment</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,22 @@
+:PROPERTIES:
+:ID: emacs--Shell-History
+:END:
+#+filetags: :emacs:
+#+title: Shell History
+
+Next: [[id:emacs--Directory-Tracking][Directory Tracking]]   Previous: [[id:emacs--Shell-Prompts][Shell Prompts]]   Up: [[id:emacs--Shell][Running Shell Commands from Emacs]]
+
+<<Shell-History>>
+
+--------------
+
+*** 40.5 Shell Command History [[#Shell-Command-History][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Shell-Command-History
+:CLASS: section subsection-level-set-section
+:END:
+Shell buffers support three ways of repeating earlier commands. You can use keys like those used for the minibuffer history; these work much as they do in the minibuffer, inserting text from prior commands while point remains always at the end of the buffer. You can move through the buffer to previous inputs in their original place, then resubmit them or copy them to the end. Or you can use a ‘=!='-style history reference.
+
+- [[id:emacs--Shell-Ring][Shell History Ring]]
+- [[id:emacs--Shell-History-Copying][Shell History Copying]]
+- [[id:emacs--History-References][Shell History References]]

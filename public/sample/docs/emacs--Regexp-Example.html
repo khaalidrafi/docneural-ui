@@ -1,0 +1,34 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Regular-Expression-Example">1. 17.8 Regular Expression Example ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Lax-Search.html">Lax Matching During Searching</a>   Previous: <a href="docs/emacs--Regexp-Backslash.html">Backslash in Regular Expressions</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Regexp-Example"></a>
+</p>
+
+<hr />
+<div id="outline-container-Regular-Expression-Example" class="outline-2">
+<h2 id="Regular-Expression-Example"><span class="section-number-2">1.</span> 17.8 Regular Expression Example <a href="#Regular-Expression-Example">¶</a></h2>
+<div class="outline-text-2" id="text-Regular-Expression-Example">
+<p>
+Here is an example of a regexp&#x2014;similar to the regexp that Emacs uses, by default, to recognize the end of a sentence, not including the following space (i.e., the variable <code>sentence-end-base</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-verbatim">[.?!][]\"')}]*
+</pre>
+</div>
+
+<p>
+This contains two parts in succession: a character set matching period, ‘=?=', or ‘=!=', and a character set matching close-brackets, quotes, or parentheses, repeated zero or more times.
+</p>
+</div>
+</div>

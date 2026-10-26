@@ -1,0 +1,79 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Deleting-and-Resizing-Windows">1. 22.5 Deleting and Resizing Windows ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Displaying-Buffers.html">Displaying a Buffer in a Window</a>   Previous: <a href="docs/emacs--Pop-Up-Window.html">Displaying in Another Window</a>   Up: <a href="docs/emacs--Windows.html">Multiple Windows</a>
+</p>
+
+<p>
+<a id="Change-Window"></a>
+</p>
+
+<hr />
+<div id="outline-container-Deleting-and-Resizing-Windows" class="outline-2">
+<h2 id="Deleting-and-Resizing-Windows"><span class="section-number-2">1.</span> 22.5 Deleting and Resizing Windows <a href="#Deleting-and-Resizing-Windows">¶</a></h2>
+<div class="outline-text-2" id="text-Deleting-and-Resizing-Windows">
+<dl class="org-dl">
+<dt>C-x 0</dt><dd>Delete the selected window (<code>delete-window</code>).</dd>
+
+<dt>C-x 1</dt><dd>Delete all windows in the selected frame except the selected window (<code>delete-other-windows</code>).</dd>
+
+<dt>C-x 4 0</dt><dd>Delete the selected window and kill the buffer that was showing in it (<code>kill-buffer-and-window</code>). The last character in this key sequence is a zero.</dd>
+
+<dt>C-x w 0 RET <code>buffer</code> RET</dt><dd>Delete windows showing the specified <code>buffer</code>.</dd>
+
+<dt>C-x ^</dt><dd>Make selected window taller (<code>enlarge-window</code>).</dd>
+
+<dt>C-x }</dt><dd>Make selected window wider (<code>enlarge-window-horizontally</code>).</dd>
+
+<dt>C-x {</dt><dd>Make selected window narrower (<code>shrink-window-horizontally</code>).</dd>
+
+<dt>C-x -</dt><dd>Shrink this window if its buffer doesn't need so many lines (<code>shrink-window-if-larger-than-buffer</code>).</dd>
+
+<dt>C-x +</dt><dd>Balance the sizes of all the windows of the selected frame (<code>balance-windows</code>).</dd>
+</dl>
+
+<p>
+To delete the selected window, type C-x 0 (<code>delete-window</code>). (That is a zero.) Once a window is deleted, the space that it occupied is given to an adjacent window (but not the minibuffer window, even if that is active at the time). Deleting the window has no effect on the buffer it used to display; the buffer continues to exist, and you can still switch to it with C-x b. The option <code>delete-window-choose-selected</code> controls which window is chosen as the new selected window instead (see <a href="../elisp_html/Deleting-Windows.html#Deleting-Windows">Deleting Windows</a> in The Emacs Lisp Reference Manual).
+</p>
+
+<p>
+C-x 4 0 (<code>kill-buffer-and-window</code>) is a stronger command than C-x 0; it kills the current buffer and then deletes the selected window.
+</p>
+
+<p>
+C-x 1 (<code>delete-other-windows</code>) deletes all the windows, <i>except</i> the selected one; the selected window expands to use the whole frame. (This command cannot be used while the minibuffer window is active; attempting to do so signals an error.)
+</p>
+
+<p>
+M-x delete-windows-on deletes windows that show a specific buffer. It prompts for the buffer, defaulting to the current buffer. With prefix argument of zero, C-u 0, this command deletes windows only on the current display's frames.
+</p>
+
+<p>
+The command C-x ^ (<code>enlarge-window</code>) makes the selected window one line taller, taking space from a vertically adjacent window without changing the height of the frame. With a positive numeric argument, this command increases the window height by that many lines; with a negative argument, it reduces the height by that many lines. If there are no vertically adjacent windows (i.e., the window is at the full frame height), that signals an error. The command also signals an error if you attempt to reduce the height of any window below a certain minimum number of lines, specified by the variable <code>window-min-height</code> (the default is 4).
+</p>
+
+<p>
+Similarly, C-x } (<code>enlarge-window-horizontally</code>) makes the selected window wider, and C-x { (<code>shrink-window-horizontally</code>) makes it narrower. These commands signal an error if you attempt to reduce the width of any window below a certain minimum number of columns, specified by the variable <code>window-min-width</code> (the default is 10).
+</p>
+
+<p>
+Mouse clicks on the mode line (see <a href="docs/emacs--Mode-Line-Mouse.html">Mode Line Mouse Commands</a>) or on window dividers (see <a href="docs/emacs--Window-Dividers.html">Window Dividers</a>) provide another way to change window heights and to split or delete windows.
+</p>
+
+<p>
+C-x - (<code>shrink-window-if-larger-than-buffer</code>) reduces the height of the selected window, if it is taller than necessary to show the whole text of the buffer it is displaying. It gives the extra lines to other windows in the frame.
+</p>
+
+<p>
+You can also use C-x + (<code>balance-windows</code>) to balance the sizes of all the windows of the selected frame (with the exception of the minibuffer window, see <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>). This command makes each horizontal pair of adjacent windows the same height, and each vertical pair of adjacent windows the same width.
+</p>
+
+<hr />
+</div>
+</div>

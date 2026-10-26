@@ -1,0 +1,24 @@
+:PROPERTIES:
+:ID: emacs--Cut-and-Paste
+:END:
+#+filetags: :emacs:
+#+title: Cut and Paste
+
+Next: [[id:emacs--Accumulating-Text][Accumulating Text]]   Previous: [[id:emacs--Yanking][Yanking]]   Up: [[id:emacs--Killing][Killing and Moving Text]]
+
+<<Cut-and-Paste>>
+
+--------------
+
+*** 14.3 “Cut and Paste” Operations on Graphical Displays [[#g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays][¶]]
+:PROPERTIES:
+:CUSTOM_ID: g_t_0060_0060Cut-and-Paste_0027_0027-Operations-on-Graphical-Displays
+:CLASS: section
+:END:
+In most graphical desktop environments, you can transfer data (usually text) between different applications using a system facility called the /clipboard/. On X, two other similar facilities are available: the primary selection and the secondary selection. When Emacs is run on a graphical display, its kill and yank commands integrate with these facilities, so that you can easily transfer text between Emacs and other graphical applications.
+
+By default, Emacs uses UTF-8 as the coding system for inter-program text transfers. If you find that the pasted text is not what you expected, you can specify another coding system by typing C-x RET x or C-x RET X. You can also request a different data type by customizing =x-select-request-type=. See [[id:emacs--Communication-Coding][Coding Systems for Interprocess Communication]].
+
+- [[id:emacs--Clipboard][Using the Clipboard]]
+- [[id:emacs--Primary-Selection][Cut and Paste with Other Window Applications]]
+- [[id:emacs--Secondary-Selection][Secondary Selection]]

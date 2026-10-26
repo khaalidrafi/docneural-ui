@@ -1,0 +1,190 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Extracting-Agenda-Information-1">1. A.10 Extracting Agenda Information ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Extracting-Agenda-Information"></a>
+Next: <a href="docs/org--Using-the-Property-API.html">Using the Property API</a>, Previous: <a href="docs/org--Speeding-Up-Your-Agendas.html">Speeding Up Your Agendas</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Extracting-Agenda-Information-1" class="outline-2">
+<h2 id="Extracting-Agenda-Information-1"><span class="section-number-2">1.</span> A.10 Extracting Agenda Information <a href="#Extracting-Agenda-Information-1">¶</a></h2>
+<div class="outline-text-2" id="text-Extracting-Agenda-Information-1">
+<p>
+Org provides commands to access agendas through Emacs batch mode. Through this command-line interface, agendas are automated for further processing or printing.
+</p>
+
+<p>
+<code>org-batch-agenda</code> creates an agenda view in ASCII and outputs to standard output. This command takes one string parameter. When string consists of a single character, Org uses it as a key to <code>org-agenda-custom-commands</code>. These are the same ones available through the agenda dispatcher (see <a href="docs/org--Agenda-Dispatcher.html">The Agenda Dispatcher</a>).
+</p>
+
+<p>
+This example command line directly prints the TODO list to the printer:
+</p>
+
+<pre class="example" id="org4e4b52f">
+emacs -batch -l ~/.emacs -eval '(org-batch-agenda "t")' | lpr
+</pre>
+
+<p>
+When the string parameter length is two or more characters, Org matches it with tags/TODO strings. For example, this example command line prints items tagged with ‘=shop=', but excludes items tagged with ‘=NewYork=':
+</p>
+
+<pre class="example" id="org817be9f">
+emacs -batch -l ~/.emacs                                      \
+      -eval '(org-batch-agenda "+shop-NewYork")' | lpr
+</pre>
+
+<p>
+An example showing on-the-fly parameter modifications:
+</p>
+
+<pre class="example" id="org2f4527e">
+emacs -batch -l ~/.emacs                                      \
+   -eval '(org-batch-agenda "a"                               \
+           org-agenda-span (quote month)                      \
+           org-agenda-include-diary nil                       \
+           org-agenda-files (quote ("~/org/project.org")))'   \
+   | lpr
+</pre>
+
+<p>
+which produces an agenda for the next 30 days from just the ‘=~/org/projects.org=' file.
+</p>
+
+<p>
+For structured processing of agenda output, use <code>org-batch-agenda-csv</code> with the following fields:
+</p>
+
+<dl class="org-dl">
+<dt>category</dt><dd>The category of the item</dd>
+
+<dt>head</dt><dd>The headline, without TODO keyword, TAGS and PRIORITY</dd>
+
+<dt>type</dt><dd><p>
+The type of the agenda entry, can be
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>todo</code></td>
+<td class="org-left">selected in TODO match</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>tagsmatch</code></td>
+<td class="org-left">selected in tags match</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>diary</code></td>
+<td class="org-left">imported from diary</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>deadline</code></td>
+<td class="org-left">a deadline</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>scheduled</code></td>
+<td class="org-left">scheduled</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>timestamp</code></td>
+<td class="org-left">appointment, selected by timestamp</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>closed</code></td>
+<td class="org-left">entry was closed on date</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>upcoming-deadline</code></td>
+<td class="org-left">warning about nearing deadline</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>past-scheduled</code></td>
+<td class="org-left">forwarded scheduled item</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>block</code></td>
+<td class="org-left">entry has date block including date</td>
+</tr>
+</tbody>
+</table></dd>
+
+<dt>todo</dt><dd>The TODO keyword, if any</dd>
+
+<dt>tags</dt><dd>All tags including inherited ones, separated by colons</dd>
+
+<dt>date</dt><dd>The relevant date, like ‘=2007-2-14='</dd>
+
+<dt>time</dt><dd>The time, like ‘=15:00-16:50='</dd>
+
+<dt>extra</dt><dd>String with extra planning info</dd>
+
+<dt>priority-l</dt><dd>The priority letter if any was given</dd>
+
+<dt>priority-n</dt><dd>The computed numerical priority</dd>
+</dl>
+
+<p>
+If the selection of the agenda item was based on a timestamp, including those items with ‘=DEADLINE=' and ‘=SCHEDULED=' keywords, then Org includes date and time in the output.
+</p>
+
+<p>
+If the selection of the agenda item was based on a timestamp (or deadline/scheduled), then Org includes date and time in the output.
+</p>
+
+<p>
+Here is an example of a post-processing script in Perl. It takes the CSV output from Emacs and prints with a checkbox:
+</p>
+
+<pre class="example" id="org016fed2">
+#!/usr/bin/perl
+
+# define the Emacs command to run
+$cmd = "emacs -batch -l ~/.emacs -eval '(org-batch-agenda-csv \"t\")'";
+
+# run it and capture the output
+$agenda = qx{$cmd 2&gt;/dev/null};
+
+# loop over all lines
+foreach $line (split(/\n/,$agenda)) {
+    # get the individual values
+    ($category,$head,$type,$todo,$tags,$date,$time,$extra,
+     $priority_l,$priority_n) = split(/,/,$line);
+    # process and print
+    print "[ ] $head\n";
+}
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Using-the-Property-API.html">Using the Property API</a>, Previous: <a href="docs/org--Speeding-Up-Your-Agendas.html">Speeding Up Your Agendas</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

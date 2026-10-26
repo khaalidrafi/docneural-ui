@@ -1,0 +1,42 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tables-in-Arbitrary-Syntax-1">1. A.6 Tables in Arbitrary Syntax ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tables-in-Arbitrary-Syntax"></a>
+Next: <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>, Previous: <a href="docs/org--Adding-Export-Backends.html">Adding Export Backends</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tables-in-Arbitrary-Syntax-1" class="outline-2">
+<h2 id="Tables-in-Arbitrary-Syntax-1"><span class="section-number-2">1.</span> A.6 Tables in Arbitrary Syntax <a href="#Tables-in-Arbitrary-Syntax-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tables-in-Arbitrary-Syntax-1">
+<p>
+Due to Org's success in handling tables with Orgtbl, a frequently requested feature is the use of Org's table functions in other modes, e.g., LaTeX. This would be hard to do in a general way without complicated customization nightmares. Moreover, that would take Org away from its simplicity roots that Orgtbl has proven. There is, however, an alternate approach to accomplishing the same.
+</p>
+
+<p>
+This approach involves implementing a custom <i>translate</i> function that operates on a native Org <i>source table</i> to produce a table in another format. This strategy would keep the excellently working Orgtbl simple and isolate complications, if any, confined to the translate function. To add more alien table formats, we just add more translate functions. Also the burden of developing custom translate functions for new table formats is in the hands of those who know those formats best.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/org--Radio-tables.html">Radio tables</a></li>
+<li><a href="docs/org--A-LaTeX-example.html">A LaTeX example of radio tables</a></li>
+<li><a href="docs/org--Translator-functions.html">Translator functions</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>, Previous: <a href="docs/org--Adding-Export-Backends.html">Adding Export Backends</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

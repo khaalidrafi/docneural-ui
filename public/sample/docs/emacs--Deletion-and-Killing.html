@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Deletion-and-Killing-1">1. 14.1 Deletion and Killing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Yanking.html">Yanking</a>   Up: <a href="docs/emacs--Killing.html">Killing and Moving Text</a>
+</p>
+
+<p>
+<a id="Deletion-and-Killing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Deletion-and-Killing-1" class="outline-2">
+<h2 id="Deletion-and-Killing-1"><span class="section-number-2">1.</span> 14.1 Deletion and Killing <a href="#Deletion-and-Killing-1">¶</a></h2>
+<div class="outline-text-2" id="text-Deletion-and-Killing-1">
+<p>
+Most commands which erase text from the buffer save it in the kill ring (see <a href="docs/emacs--Kill-Ring.html">The Kill Ring</a>). These are known as <i>kill</i> commands, and their names normally contain the word ‘=kill=' (e.g., <code>kill-line</code>). The kill ring stores several recent kills, not just the last one, so killing is a very safe operation: you don't have to worry much about losing text that you previously killed. The kill ring is shared by all buffers, so text that is killed in one buffer can be yanked into another buffer.
+</p>
+
+<p>
+When you use C-/ (<code>undo</code>) to undo a kill command (see <a href="docs/emacs--Undo.html">Undo</a>), that brings the killed text back into the buffer, but does not remove it from the kill ring.
+</p>
+
+<p>
+On graphical displays, killing text also copies it to the system clipboard. See <a href="docs/emacs--Cut-and-Paste.html">“Cut and Paste” Operations on Graphical Displays</a>.
+</p>
+
+<p>
+Commands that erase text but do not save it in the kill ring are known as <i>delete</i> commands; their names usually contain the word ‘=delete='. These include C-d (<code>delete-char</code>) and DEL (<code>delete-backward-char</code>), which delete only one character at a time, and those commands that delete only spaces or newlines. Commands that can erase significant amounts of nontrivial data generally do a kill operation instead.
+</p>
+
+<p>
+You can also use the mouse to kill and yank. See <a href="docs/emacs--Cut-and-Paste.html">“Cut and Paste” Operations on Graphical Displays</a>.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Deletion.html">Deletion</a></li>
+<li><a href="docs/emacs--Killing-by-Lines.html">Killing by Lines</a></li>
+<li><a href="docs/emacs--Other-Kill-Commands.html">Other Kill Commands</a></li>
+<li><a href="docs/emacs--Kill-Options.html">Options for Killing</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

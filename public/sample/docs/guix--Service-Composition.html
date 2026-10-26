@@ -1,0 +1,103 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Service-Composition"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Service-Composition-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="service-composition"></a>11.19.1 Service Composition<br />
+<div class="outline-text-5" id="text-service-composition">
+<p>
+<a id="index-services-1"></a> <a id="index-daemons"></a>
+Here we define a <i>service</i> as, broadly, something that extends the functionality of the operating system. Often a service is a process&#x2014;a <i>daemon</i>&#x2014;started when the system boots: a secure shell server, a Web server, the Guix build daemon, etc. Sometimes a service is a daemon whose execution can be triggered by another daemon&#x2014;e.g., an FTP server started by <code>inetd</code> or a D-Bus service activated by <code>dbus-daemon</code>. Occasionally, a service does not map to a daemon. For instance, the “account” service collects user accounts and makes sure they exist when the system runs; the “udev” service collects device management rules and makes them available to the eudev daemon; the <code>/etc</code> service populates the <code>/etc</code> directory of the system.
+</p>
+
+<p>
+<a id="index-service-extensions"></a>
+Guix system services are connected by <i>extensions</i>. For instance, the secure shell service <i>extends</i> the Shepherd&#x2014;the initialization system, running as PID 1&#x2014;by giving it the command lines to start and stop the secure shell daemon (see <a href="docs/guix--Networking-Services.html"><code>openssh-service-type</code></a>); the UPower service extends the D-Bus service by passing it its <code>.service</code> specification, and extends the udev service by passing it device management rules (see <a href="docs/guix--Desktop-Services.html"><code>upower-service</code></a>); the Guix daemon service extends the Shepherd by passing it the command lines to start and stop the daemon, and extends the account service by passing it a list of required build user accounts (see <a href="docs/guix--Base-Services.html">Base Services</a>).
+</p>
+
+<p>
+All in all, services and their “extends” relations form a directed acyclic graph (DAG). If we represent services as boxes and extensions as arrows, a typical system might provide something like this:
+</p>
+
+<p>
+<a id="index-system-service"></a>
+At the bottom, we see the <i>system service</i>, which produces the directory containing everything to run and boot the system, as returned by the <code>guix system build</code> command. See <a href="docs/guix--Service-Reference.html">Service Reference</a>, to learn about the other service types shown here. See <a href="docs/guix--Invoking-guix-system.html#system_002dextension_002dgraph">the <code>guix system extension-graph</code> command</a>, for information on how to generate this representation for a particular operating system definition.
+</p>
+
+<p>
+<a id="index-service-types"></a>
+Technically, developers can define <i>service types</i> to express these relations. There can be any number of services of a given type on the system, for instance when running two instances with different parameters.
+</p>
+
+<p>
+The following section describes the programming interface for service types and services.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

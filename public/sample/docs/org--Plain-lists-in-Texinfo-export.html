@@ -1,0 +1,151 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Plain-lists-in-Texinfo-export-1">1. 13.14.9 Plain lists in Texinfo export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Plain-lists-in-Texinfo-export"></a>
+Next: <a href="docs/org--Tables-in-Texinfo-export.html">Tables in Texinfo export</a>, Previous: <a href="docs/org--Quoting-Texinfo-code.html">Quoting Texinfo code</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Plain-lists-in-Texinfo-export-1" class="outline-2">
+<h2 id="Plain-lists-in-Texinfo-export-1"><span class="section-number-2">1.</span> 13.14.9 Plain lists in Texinfo export <a href="#Plain-lists-in-Texinfo-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Plain-lists-in-Texinfo-export-1">
+<p>
+The Texinfo export backend converts unordered and ordered lists in the Org file using the default command ‘=@itemize='.
+</p>
+
+<p>
+Ordered lists are numbered when exported to Texinfo format. Such numbering obeys any counter (see <a href="docs/org--Plain-Lists.html">Plain Lists</a>) in the first item of the list. The ‘=:enum=' attribute also let you start the list at a specific number, or switch to a lettered list, as illustrated here:
+</p>
+
+<pre class="example" id="orgbff4a7b">
+#+ATTR_TEXINFO: :enum A
+1. Alpha
+2. Bravo
+3. Charlie
+</pre>
+
+<p>
+The Texinfo export backend by default converts description lists in the Org file using the default command ‘=@table=', which results in a table with two columns. To change this behavior, set ‘=:table-type=' attribute to either ‘=ftable=' or ‘=vtable=' value. For more information, see <a href="https://www.gnu.org/software/texinfo/manual/texinfo/html_node/Two_002dcolumn-Tables.html#Two_002dcolumn-Tables">(texinfo)Two-column Tables</a>.
+</p>
+
+<p>
+The Texinfo export backend by default also applies a text highlight based on the defaults stored in <code>org-texinfo-table-default-markup</code>. To override the default highlight command, specify another one with the ‘=:indic=' attribute.
+</p>
+
+<p>
+Org syntax is limited to one entry per list item. Nevertheless, the Texinfo export backend can split that entry according to any text provided through the ‘=:sep=' attribute. Each part then becomes a new entry in the first column of the table.
+</p>
+
+<p>
+The following example illustrates all the attributes above:
+</p>
+
+<pre class="example" id="org6bc5a5a">
+#+ATTR_TEXINFO: :table-type vtable :sep , :indic asis
+- foo, bar :: This is the common text for variables foo and bar.
+</pre>
+
+<p>
+becomes
+</p>
+
+<pre class="example" id="org4705903">
+@vtable @asis
+@item foo
+@itemx bar
+This is the common text for variables foo and bar.
+@end table
+</pre>
+
+<p>
+The ‘=:compact=' attribute is an alternative to the ‘=:sep=' attribute, which allows writing each entry on its own line. If this attribute is non-<code>nil</code> and an item in a description list has no body but is followed by another item, then the second item is transcoded to ‘=@itemx='. This example is transcoded to the same output as above.
+</p>
+
+<pre class="example" id="orga92aa27">
+#+ATTR_TEXINFO: :table-type vtable :indic asis :compact t
+- foo ::
+- bar ::
+  This is the common text for variables foo and bar.
+</pre>
+
+<p>
+Support for this compact syntax can also be enabled for all lists in a file using the ‘=compact-itemx=' export option, or globally using the variable <code>org-texinfo-compact-itemx</code>.
+</p>
+
+<p>
+The Texinfo export backend also supports two approaches to writing Texinfo definition commands (see <a href="https://www.gnu.org/software/texinfo/manual/texinfo/html_node/Definition-Commands.html#Definition-Commands">(texinfo)Definition Commands</a>). One of them uses description lists and is described below, the other relies on special blocks (see <a href="docs/org--Special-blocks-in-Texinfo-export.html">Special blocks in Texinfo export</a>).
+</p>
+
+<p>
+Items in a description list in an Org file that begin with ‘=Function:=' or certain other prefixes are converted using Texinfo definition commands. This works even if other items in the same list do not have such a prefix; if necessary a single description list is converted using multiple tables (such as ‘=@vtable=') and definition commands (such as ‘=@defun=').
+</p>
+
+<pre class="example" id="orga6ad150">
+- Function: org-texinfo-drawer drawer contents info ::
+  Transcode a DRAWER element from Org to Texinfo.
+</pre>
+
+<p>
+becomes
+</p>
+
+<pre class="example" id="org6377000">
+@defun org-texinfo-drawer drawer contents info ::
+  Transcode a DRAWER element from Org to Texinfo.
+@end defun
+</pre>
+
+<p>
+The recognized prefixes are ‘=Command:=', ‘=Function:=', ‘=Macro:=', ‘=Special Form:=', ‘=Variable:=' and ‘=User Option:='. These are the same prefixes that appear in the Info file for the respective definition commands. For example a ‘=Function:=' item in the Org file is converted to a ‘=@defun=' command in the Texinfo file, which in turn is converted to a definition prefixed with ‘=&#x2013; Function:=' in the Info file.
+</p>
+
+<p>
+As a special case the prefix ‘=Key:=' is also recognized. No Texinfo definition command exists for key bindings and the output in Info files also lacks the ‘=Key:=' prefix. Even so this special case is supported because it provides a convenient shorthand, as illustrated here:
+</p>
+
+<pre class="example" id="orga7674c7">
+- Key: C-c C-c (do-something) ::
+  This command does something.
+
+- User Option: do-something-somehow ::
+  This option controls how exactly ~do-something~ does its thing.
+</pre>
+
+<p>
+becomes
+</p>
+
+<pre class="example" id="org054ec88">
+@table @asis
+@item @kbd{C-c C-c} (@code{do-something})
+@kindex C-c C-c
+@findex do-something
+This command does something.
+@end table
+
+@defopt do-something-somehow
+This option controls how exactly @code{do-something} does its thing.
+@end defopt
+</pre>
+
+<p>
+Command in parentheses, as done above, is optional.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Tables-in-Texinfo-export.html">Tables in Texinfo export</a>, Previous: <a href="docs/org--Quoting-Texinfo-code.html">Quoting Texinfo code</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

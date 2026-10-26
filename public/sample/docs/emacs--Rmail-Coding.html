@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Rmail-and-Coding-Systems">1. 35.14 Rmail and Coding Systems ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Editing.html">Editing Within a Message</a>   Previous: <a href="docs/emacs--Rmail-Display.html">Display of Messages</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Rmail-and-Coding-Systems" class="outline-2">
+<h2 id="Rmail-and-Coding-Systems"><span class="section-number-2">1.</span> 35.14 Rmail and Coding Systems <a href="#Rmail-and-Coding-Systems">¶</a></h2>
+<div class="outline-text-2" id="text-Rmail-and-Coding-Systems">
+<p>
+Rmail automatically decodes messages which contain non-ASCII characters, just as Emacs does with files you visit and with subprocess output. Rmail uses the standard ‘=charset===charset=' header in the message, if any, to determine how the message was encoded by the sender. It maps <code>charset</code> into the corresponding Emacs coding system (see <a href="docs/emacs--Coding-Systems.html">Coding Systems</a>), and uses that coding system to decode message text. If the message header doesn't have the ‘=charset=' specification, or if <code>charset</code> is not recognized, Rmail chooses the coding system with the usual Emacs heuristics and defaults (see <a href="docs/emacs--Recognize-Coding.html">Recognizing Coding Systems</a>).
+</p>
+
+<p>
+Occasionally, a message is decoded incorrectly, either because Emacs guessed the wrong coding system in the absence of the ‘=charset=' specification, or because the specification was inaccurate. For example, a misconfigured mailer could send a message with a ‘=charset=iso-8859-1=' header when the message is actually encoded in <code>koi8-r</code>. When you see the message text garbled, or some of its characters displayed as hex codes or empty boxes, this may have happened.
+</p>
+
+<p>
+You can correct the problem by decoding the message again using the right coding system, if you can figure out or guess which one is right. To do this, invoke the M-x rmail-redecode-body command. It reads the name of a coding system, and then redecodes the message using the coding system you specified. If you specified the right coding system, the result should be readable.
+</p>
+
+<p>
+When you get new mail in Rmail, each message is translated automatically from the coding system it is written in, as if it were a separate file. This uses the priority list of coding systems that you have specified. If a MIME message specifies a character set, Rmail obeys that specification. For reading and saving Rmail files themselves, Emacs uses the coding system specified by the variable <code>rmail-file-coding-system</code>. The default value is <code>nil</code>, which means that Rmail files are not translated (they are read and written in the Emacs internal character code).
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,393 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Database-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Mail-Services.html">Mail Services</a>, Previous: <a href="docs/guix--File-Search-Services.html">File Search Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Database-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="database-services"></a>11.10.12 Database Services<br />
+<div class="outline-text-5" id="text-database-services">
+<p>
+<a id="index-database"></a> <a id="index-SQL"></a>
+The <code>(gnu services databases)</code> module provides the following services.
+</p>
+
+<p>
+<a id="PostgreSQL"></a>
+</p>
+</div>
+</li>
+<li><a id="postgresql"></a>PostgreSQL<br />
+<div class="outline-text-5" id="text-postgresql">
+<dl class="org-dl">
+<dt>Variable: postgresql-service-type </dt><dd><p>
+The service type for the PostgreSQL database server. Its value should be a valid <code>postgresql-configuration</code> object, documented below. The following example describes a PostgreSQL service with the default configuration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service postgresql-service-type
+         (postgresql-configuration
+          (postgresql postgresql)))
+</pre>
+</div>
+
+<p>
+If the services fails to start, it may be due to an incompatible cluster already present in <code>data-directory</code>. Adjust it (or, if you don't need the cluster anymore, delete <code>data-directory</code>), then restart the service.
+</p>
+
+<p>
+Peer authentication is used by default and the <code>postgres</code> user account has no shell (unless <code>allow-login?</code> is <code>#t</code>), which prevents the direct execution of <code>psql</code> commands as this user. To use <code>psql</code>, you can temporarily log in as <code>postgres</code> using a shell, create a PostgreSQL superuser with the same name as one of the system users and then create the associated database.
+</p>
+
+<pre class="example" id="org1fe9c92">
+sudo -u postgres -s /bin/sh
+createuser --interactive
+createdb $MY_USER_LOGIN      # Replace appropriately.
+</pre></dd>
+
+<dt>Data Type: postgresql-configuration </dt><dd>Data type representing the configuration for the <code>postgresql-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>postgresql</code></dt><dd>PostgreSQL package to use for the service.</dd>
+
+<dt><code>port</code> (default: <code>5432</code>)</dt><dd>Port on which PostgreSQL should listen.</dd>
+
+<dt><code>locale</code> (default: <code>"en_US.utf8"</code>)</dt><dd>Locale to use as the default when creating the database cluster.</dd>
+
+<dt><code>config-file</code> (default: <code>(postgresql-config-file)</code>)</dt><dd>The configuration file to use when running PostgreSQL. The default behaviour uses the postgresql-config-file record with the default values for the fields.</dd>
+
+<dt><code>log-directory</code> (default: <code>"/var/log/postgresql"</code>)</dt><dd>The directory where <code>pg_ctl</code> output will be written in a file named <code>"pg_ctl.log"</code>. This file can be useful to debug PostgreSQL configuration errors for instance.</dd>
+
+<dt><code>data-directory</code> (default: <code>"/var/lib/postgresql/data"</code>)</dt><dd>Directory in which to store the data.</dd>
+
+<dt><code>extension-packages</code> (default: <code>'()</code>) </dt><dd><p>
+Additional extensions are loaded from packages listed in <code>extension-packages</code>. Extensions are available at runtime. For instance, to create a geographic database using the <code>postgis</code> extension, a user can configure the postgresql-service as in this example:
+</p>
+
+<p>
+<a id="index-postgis"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-package-modules databases geo)
+
+(operating-system
+  ...
+  ;; postgresql is required to run `psql' but postgis is not required for
+  ;; proper operation.
+  (packages (cons* postgresql %base-packages))
+  (services
+    (cons*
+      (service postgresql-service-type
+               (postgresql-configuration
+                (postgresql postgresql)
+                (extension-packages (list postgis))))
+      %base-services)))
+</pre>
+</div>
+
+<p>
+Then the extension becomes visible and you can initialise an empty geographic database in this way:
+</p>
+
+<pre class="example" id="orga223b60">
+psql -U postgres
+&gt; create database postgistest;
+&gt; \connect postgistest;
+&gt; create extension postgis;
+&gt; create extension postgis_topology;
+</pre>
+
+<p>
+There is no need to add this field for contrib extensions such as hstore or dblink as they are already loadable by postgresql. This field is only required to add extensions provided by other packages.
+</p></dd>
+
+<dt><code>create-account?</code> (default: <code>#t</code>)</dt><dd>Whether or not the <code>postgres</code> user and group should be created.</dd>
+
+<dt><code>allow-login?</code> (default: <code>#f</code>)</dt><dd>Whether or not to allow login into the created account.</dd>
+
+<dt><code>home-directory</code> (default: <code>"/var/empty"</code>)</dt><dd>The home directory of the user. It is strongly advised to change this if you set <code>allow-login?</code> to <code>#t</code>.</dd>
+
+<dt><code>uid</code> (default: <code>#f</code>)</dt><dd><p>
+Explicitly specify the UID of the <code>postgres</code> daemon account. You normally do not need to specify this, in which case a free UID will be automatically assigned.
+</p>
+
+<p>
+One situation where this option might be useful is if the <code>data-directory</code> is located on a mounted network share.
+</p></dd>
+
+<dt><code>gid</code> (default: <code>#f</code>)</dt><dd>Explicitly specify the GID of the <code>postgres</code> group.</dd>
+</dl></dd>
+
+<dt>Data Type: postgresql-config-file </dt><dd><p>
+Data type representing the PostgreSQL configuration file. As shown in the following example, this can be used to customize the configuration of PostgreSQL. Note that you can use any G-expression or filename in place of this record, if you already have a configuration file you'd like to use for example.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service postgresql-service-type
+         (postgresql-configuration
+          (config-file
+           (postgresql-config-file
+            (log-destination "stderr")
+            (hba-file
+             (plain-file "pg_hba.conf"
+                         "
+local   all all         trust
+host    all all 127.0.0.1/32    md5
+host    all all ::1/128     md5"))
+            (extra-config
+             '(("session_preload_libraries"     "auto_explain")
+               ("random_page_cost"              2)
+               ("auto_explain.log_min_duration" "100 ms")
+               ("work_mem"                      "500 MB")
+               ("logging_collector"             #t)
+               ("log_directory"                 "/var/log/postgresql")))))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><code>log-destination</code> (default: <code>"syslog"</code>)</dt><dd>The logging method to use for PostgreSQL. Multiple values are accepted, separated by commas.</dd>
+
+<dt><code>hba-file</code> (default: <code>%default-postgres-hba</code>)</dt><dd>Filename or G-expression for the host-based authentication configuration.</dd>
+
+<dt><code>ident-file</code> (default: <code>%default-postgres-ident</code>)</dt><dd>Filename or G-expression for the user name mapping configuration.</dd>
+
+<dt><code>socket-directory</code> (default: <code>"/var/run/postgresql"</code>)</dt><dd><p>
+Specifies the directory of the Unix-domain socket(s) on which PostgreSQL is to listen for connections from client applications. If set to <code>""</code> PostgreSQL does not listen on any Unix-domain sockets, in which case only TCP/IP sockets can be used to connect to the server.
+</p>
+
+<p>
+By default, the <code>#false</code> value means the PostgreSQL default value will be used, which is currently ‘=/tmp='.
+</p></dd>
+
+<dt><code>extra-config</code> (default: <code>'()</code>)</dt><dd><p>
+List of additional keys and values to include in the PostgreSQL config file. Each entry in the list should be a list where the first element is the key, and the remaining elements are the values.
+</p>
+
+<p>
+The values can be numbers, booleans or strings and will be mapped to PostgreSQL parameters types <code>Boolean</code>, <code>String</code>, <code>Numeric</code>, <code>Numeric with Unit</code> and <code>Enumerated</code> described <a href="https://www.postgresql.org/docs/current/config-setting.html">here</a>.
+</p></dd>
+</dl></dd>
+
+<dt>Variable: postgresql-role-service-type </dt><dd><p>
+This service allows to create PostgreSQL roles and databases after PostgreSQL service start. Here is an example of its use.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service postgresql-role-service-type
+            (postgresql-role-configuration
+             (roles
+              (list (postgresql-role
+                     (name "test")
+                     (create-database? #t))))))
+</pre>
+</div>
+
+<p>
+This service can be extended with extra roles, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service-extension postgresql-role-service-type
+                   (const (list
+                           (postgresql-role
+                            (name "alice")
+                            (create-database? #t)))))
+</pre>
+</div></dd>
+
+<dt>Data Type: postgresql-role </dt><dd>PostgreSQL manages database access permissions using the concept of roles. A role can be thought of as either a database user, or a group of database users, depending on how the role is set up. Roles can own database objects (for example, tables) and can assign privileges on those objects to other roles to control who has access to which objects.
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The role name.</dd>
+
+<dt><code>permissions</code> (default: <code>'(createdb login)</code>)</dt><dd>The role permissions list. Supported permissions are <code>bypassrls</code>, <code>createdb</code>, <code>createrole</code>, <code>login</code>, <code>replication</code> and <code>superuser</code>.</dd>
+
+<dt><code>create-database?</code> (default: <code>#f</code>)</dt><dd>whether to create a database with the same name as the role.</dd>
+
+<dt><code>password-file</code> (default: <code>#f</code>)</dt><dd>A string representing the path of a file that contains the password to be set for the role.</dd>
+
+<dt><code>encoding</code> (default: <code>"UTF8"</code>)</dt><dd>The character set to use for storing text in the database.</dd>
+
+<dt><code>collation</code> (default: <code>"en_US.utf8"</code>)</dt><dd>The string sort order locale setting.</dd>
+
+<dt><code>ctype</code> (default: <code>"en_US.utf8"</code>)</dt><dd>The character classification locale setting.</dd>
+
+<dt><code>template</code> (default: <code>"template1"</code>)</dt><dd>The default template to copy the new database from when creating it. Use <code>"template0"</code> for a pristine database with no system-local modifications.</dd>
+</dl></dd>
+
+<dt>Data Type: postgresql-role-configuration </dt><dd>Data type representing the configuration of <code>postgresql-role-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>host</code> (default: <code>"/var/run/postgresql"</code>)</dt><dd>The PostgreSQL host to connect to.</dd>
+
+<dt><code>log</code> (default: <code>"/var/log/postgresql_roles.log"</code>)</dt><dd>File name of the log file.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'(user-processes postgres)</code>)</dt><dd>The Shepherd services dependencies to use. Add extra dependencies to <code>%default-postgresql-role-shepherd-requirement</code> to extend its value.</dd>
+
+<dt><code>roles</code> (default: <code>'()</code>)</dt><dd>The initial PostgreSQL roles to create.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="MariaDB_002fMySQL"></a>
+</p>
+</div>
+</li>
+<li><a id="mariadbmysql"></a>MariaDB/MySQL<br />
+<div class="outline-text-5" id="text-mariadbmysql">
+<dl class="org-dl">
+<dt>Variable: mysql-service-type </dt><dd>This is the service type for a MySQL or MariaDB database server. Its value is a <code>mysql-configuration</code> object that specifies which package to use, as well as various settings for the <code>mysqld</code> daemon.</dd>
+
+<dt>Data Type: mysql-configuration </dt><dd>Data type representing the configuration of <code>mysql-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>mysql</code> (default: <code>mariadb</code>)</dt><dd><p>
+Package object of the MySQL database server, can be either <code>mariadb</code> or <code>mysql</code>.
+</p>
+
+<p>
+For MySQL, a temporary root password will be displayed at activation time. For MariaDB, the root password is empty.
+</p></dd>
+
+<dt><code>bind-address</code> (default: <code>"127.0.0.1"</code>)</dt><dd>The IP on which to listen for network connections. Use <code>"0.0.0.0"</code> to bind to all available network interfaces.</dd>
+
+<dt><code>port</code> (default: <code>3306</code>)</dt><dd>TCP port on which the database server listens for incoming connections.</dd>
+
+<dt><code>socket</code> (default: <code>"/run/mysqld/mysqld.sock"</code>)</dt><dd>Socket file to use for local (non-network) connections.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>)</dt><dd>Additional settings for the <code>my.cnf</code> configuration file.</dd>
+
+<dt><code>extra-environment</code> (default: <code>#~'()</code>)</dt><dd>List of environment variables passed to the <code>mysqld</code> process.</dd>
+
+<dt><code>auto-upgrade?</code> (default: <code>#t</code>)</dt><dd>Whether to automatically run <code>mysql_upgrade</code> after starting the service. This is necessary to upgrade the <i>system schema</i> after “major” updates (such as switching from MariaDB 10.4 to 10.5), but can be disabled if you would rather do that manually.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Memcached"></a>
+</p>
+</div>
+</li>
+<li><a id="memcached"></a>Memcached<br />
+<div class="outline-text-5" id="text-memcached">
+<dl class="org-dl">
+<dt>Variable: memcached-service-type </dt><dd>This is the service type for the <a href="https://memcached.org/">Memcached</a> service, which provides a distributed in memory cache. The value for the service type is a <code>memcached-configuration</code> object.</dd>
+</dl>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service memcached-service-type)
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Data Type: memcached-configuration </dt><dd>Data type representing the configuration of memcached.
+
+<dl class="org-dl">
+<dt><code>memcached</code> (default: <code>memcached</code>)</dt><dd>The Memcached package to use.</dd>
+
+<dt><code>interfaces</code> (default: <code>'("0.0.0.0")</code>)</dt><dd>Network interfaces on which to listen.</dd>
+
+<dt><code>tcp-port</code> (default: <code>11211</code>)</dt><dd>Port on which to accept connections.</dd>
+
+<dt><code>udp-port</code> (default: <code>11211</code>)</dt><dd>Port on which to accept UDP connections on, a value of 0 will disable listening on a UDP socket.</dd>
+
+<dt><code>additional-options</code> (default: <code>'()</code>)</dt><dd>Additional command line options to pass to <code>memcached</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Redis"></a>
+</p>
+</div>
+</li>
+<li><a id="redis"></a>Redis<br />
+<div class="outline-text-5" id="text-redis">
+<p>
+<a href="https://redis.io/">Redis</a> is an in-memory data store used by millions of developers as a cache, vector database, document database, streaming engine, and message broker. Redis has built-in replication and different levels of on-disk persistence. It supports complex data types (for example, strings, hashes, lists, sets, sorted sets, and JSON), with atomic operations defined on those data types.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: redis-service-type </dt><dd>Type of the service that runs <code>redis</code>, an in-memory data store. The value for this service is a <code>&lt;redis-configuration&gt;</code> object.</dd>
+
+<dt>Data Type: redis-configuration </dt><dd>Available <code>redis-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>redis</code> (default: <code>redis</code>) (type: package)</dt><dd>The Redis package to use.</dd>
+
+<dt><code>bind</code> (default: <code>"127.0.0.1"</code>) (type: string)</dt><dd>Network interface on which to listen.</dd>
+
+<dt><code>port</code> (default: <code>6379</code>) (type: number)</dt><dd>Port on which to accept connections on, a value of 0 will disable listening on a TCP socket.</dd>
+
+<dt><code>working-directory</code> (default: <code>"/var/lib/redis"</code>) (type: string)</dt><dd>Directory in which to store the database and related files.</dd>
+
+<dt><code>config-file</code> (type: maybe-string)</dt><dd>Default location for config file.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Mail-Services.html">Mail Services</a>, Previous: <a href="docs/guix--File-Search-Services.html">File Search Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

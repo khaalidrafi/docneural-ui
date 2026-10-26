@@ -1,0 +1,106 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Completion-Commands-1">1. 10.4.2 Completion Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Completion-Exit.html">Completion Exit</a>   Previous: <a href="docs/emacs--Completion-Example.html">Completion Example</a>   Up: <a href="docs/emacs--Completion.html">Completion</a>
+</p>
+
+<p>
+<a id="Completion-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Completion-Commands-1" class="outline-2">
+<h2 id="Completion-Commands-1"><span class="section-number-2">1.</span> 10.4.2 Completion Commands <a href="#Completion-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-Completion-Commands-1">
+<p>
+Here is a list of the completion commands defined in the minibuffer when completion is allowed.
+</p>
+
+<dl class="org-dl">
+<dt>TAB</dt><dd>Complete the text in the minibuffer as much as possible; if unable to complete, display a list of possible completions.</dd>
+
+<dt>SPC</dt><dd>Complete up to one word from the minibuffer text before point.</dd>
+
+<dt>C-x UP</dt><dd>Complete the text in the minibuffer using minibuffer history.</dd>
+
+<dt>C-x DOWN</dt><dd>Complete the text in the minibuffer using minibuffer defaults.</dd>
+
+<dt>RET</dt><dd>Submit the text in the minibuffer as the argument, possibly completing first. See <a href="docs/emacs--Completion-Exit.html">Completion Exit</a>.</dd>
+
+<dt>?</dt><dd>Display a list of completions and a few useful key bindings (<code>minibuffer-completion-help</code>).</dd>
+
+<dt>(no term)</dt><dd>M-DOWN<br />
+M-UP :: Navigate through list of completions.</dd>
+
+<dt>(no term)</dt><dd>M-v<br />
+M-g M-c<br />
+PageUp<br />
+prior :: While in the minibuffer, select the window showing the completion list.</dd>
+
+<dt>RET</dt><dd>In the completions buffer, choose the completion at point.</dd>
+
+<dt>(no term)</dt><dd>mouse-1<br />
+mouse-2 :: In the completions buffer, choose the completion at mouse click.</dd>
+
+<dt>(no term)</dt><dd>TAB<br />
+RIGHT<br />
+n :: In the completions buffer, move to the following completion candidate.</dd>
+
+<dt>(no term)</dt><dd>S-TAB<br />
+LEFT<br />
+p :: In the completions buffer, move to the previous completion candidate.</dd>
+
+<dt>q</dt><dd>Quit the completions window and switch to the minibuffer window.</dd>
+
+<dt>z</dt><dd>Kill the completions buffer and delete the window showing it.</dd>
+</dl>
+
+<p>
+TAB (<code>minibuffer-complete</code>) is the most fundamental completion command. It searches for all possible completions that match the existing minibuffer text, and attempts to complete as much as it can. See <a href="docs/emacs--Completion-Styles.html">How Completion Alternatives Are Chosen</a>, for how completion alternatives are chosen.
+</p>
+
+<p>
+SPC (<code>minibuffer-complete-word</code>) completes like TAB, but only up to the next hyphen or space. If you have ‘=auto-f=' in the minibuffer and type SPC, it finds that the completion is ‘=auto-fill-mode=', but it only inserts ‘=ill-<code>', giving ‘=auto-fill-</code>'. Another SPC at this point completes all the way to ‘=auto-fill-mode='. This command is not available for arguments that often include spaces, such as file names.
+</p>
+
+<p>
+If TAB or SPC is unable to complete, it displays in another window a list of matching completion alternatives (if there are any) and a few useful commands to select a completion candidate. You can display the same completion list and help with ? (<code>minibuffer-completion-help</code>). The following commands can be used with the completion list:
+</p>
+
+<p>
+While in the minibuffer or in the completion list buffer, M-DOWN (<code>minibuffer-next-completion</code> and M-UP (<code>minibuffer-previous-completion</code>) navigate through the completions displayed in the completions buffer. When <code>minibuffer-completion-auto-choose</code> is non-<code>nil</code> (which is the default), using these commands also inserts the current completion candidate into the minibuffer. If <code>minibuffer-completion-auto-choose</code> is <code>nil</code>, you can use the M-RET command (<code>minibuffer-choose-completion</code>) to insert the completion candidates into the minibuffer. By default, that exits the minibuffer, but with a prefix argument, C-u M-RET inserts the currently active candidate without exiting the minibuffer.
+</p>
+
+<p>
+Typing M-v, while in the minibuffer, selects the window showing the completion list (<code>switch-to-completions</code>). This paves the way for using the commands below. PageUp, prior and M-g M-c do the same. You can also select the window in other ways (see <a href="docs/emacs--Windows.html">Multiple Windows</a>).
+</p>
+
+<p>
+While in the completion list buffer, RET chooses the completion candidate at point (<code>choose-completion</code>) and mouse-1 and mouse-2 choose the completion at mouse click. With a prefix argument, C-u RET inserts the completion at point into the minibuffer, but doesn't exit the minibuffer&#x2014;thus, you can change your mind and choose another candidate.
+</p>
+
+<p>
+While in the completion list buffer, you can use TAB, RIGHT, or n to move point to the following completion candidate (<code>next-completion</code>). You can also use S-TAB, LEFT, and p to move point to the previous completion alternative (<code>previous-completion</code>).
+</p>
+
+<p>
+You can also complete using the history of minibuffer inputs for the command which prompted you. C-x UP (<code>minibuffer-complete-history</code>) works like TAB, but completes using minibuffer history instead of the usual completion candidates. A similar command C-x DOWN (<code>minibuffer-complete-defaults</code>) completes using the default input items provided by the prompting command.
+</p>
+
+<p>
+Finally, q quits the window showing it and selects the window showing the minibuffer (<code>quit-window</code>), and z kills the completion buffer and delete the window showing it (<code>kill-current-buffer</code>).
+</p>
+
+<p>
+If the variable <code>minibuffer-visible-completions</code> is customized to a non-<code>nil</code> value, it changes the commands bound to the arrow keys: instead of moving in the minibuffer, they move between completion candidates, like meta-arrow keys do by default. Similarly, RET selects the current candidate, like M-RET does normally. <code>C-g</code> hides the completion window, but leaves the minibuffer active, so you can continue typing at the prompt.
+</p>
+
+<hr />
+</div>
+</div>

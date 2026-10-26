@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Examining-and-Editing-Abbrevs">1. 31.5 Examining and Editing Abbrevs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Saving-Abbrevs.html">Saving Abbrevs</a>   Previous: <a href="docs/emacs--Abbrevs-Suggestions.html">Abbrevs Suggestions</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Editing-Abbrevs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Examining-and-Editing-Abbrevs" class="outline-2">
+<h2 id="Examining-and-Editing-Abbrevs"><span class="section-number-2">1.</span> 31.5 Examining and Editing Abbrevs <a href="#Examining-and-Editing-Abbrevs">¶</a></h2>
+<div class="outline-text-2" id="text-Examining-and-Editing-Abbrevs">
+<dl class="org-dl">
+<dt>M-x list-abbrevs</dt><dd>Display a list of all abbrev definitions. With a numeric argument, list only local abbrevs.</dd>
+
+<dt>M-x edit-abbrevs</dt><dd>Edit a list of abbrevs; you can add, alter or remove definitions.</dd>
+</dl>
+
+<p>
+The output from M-x list-abbrevs looks like this:
+</p>
+
+<pre class="example" id="orgd907f41">
+various other tables...
+(python-mode-skeleton-abbrev-table)
+"class" (sys)     0 "" python-skeleton-class
+(lisp-mode-abbrev-table)
+"ks"          0    "keymap-set"
+(global-abbrev-table)
+"dfn"         0    "definition"
+</pre>
+
+<p>
+(Some blank lines of no semantic significance, and some other abbrev tables, have been omitted.)
+</p>
+
+<p>
+A line containing a name in parentheses is the header for abbrevs in a particular abbrev table; <code>global-abbrev-table</code> contains all the global abbrevs, and the other abbrev tables that are named after major modes contain the mode-specific abbrevs.
+</p>
+
+<p>
+Within each abbrev table, each nonblank line defines one abbrev. The word at the beginning of the line is the abbrev. The number that follows is the number of times the abbrev has been expanded. Emacs keeps track of this to help you see which abbrevs you actually use, so that you can eliminate those that you don't use often. The string at the end of the line is the expansion.
+</p>
+
+<p>
+Some abbrevs are marked with ‘=(sys)='. These <i>system abbrevs</i> (see <a href="../elisp_html/Abbrevs.html#Abbrevs">Abbrevs</a> in The Emacs Lisp Reference Manual) are pre-defined by various modes, and are not saved to your abbrev file. To disable a system abbrev, define an abbrev of the same name that expands to itself, and save it to your abbrev file. The system abbrevs have an associated hook function, which is called to perform the abbrev expansion; the name of that function follows the abbrev expansion in the buffer shown by <code>list-abbrevs</code>.
+</p>
+
+<p>
+M-x edit-abbrevs allows you to add, change or kill abbrev definitions by editing a list of them in an Emacs buffer. The list has the same format described above. The buffer of abbrevs is called <code>*Abbrevs*</code>, and is in Edit-Abbrevs mode. Type C-c C-c in this buffer to install the abbrev definitions as specified in the buffer&#x2014;and delete any abbrev definitions not listed.
+</p>
+
+<p>
+The command <code>edit-abbrevs</code> is actually the same as <code>list-abbrevs</code> except that it selects the buffer <code>*Abbrevs*</code> whereas <code>list-abbrevs</code> merely displays it in another window.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,48 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Updating-the-table-1">1. 3.5.9 Updating the table ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Updating-the-table"></a>
+Next: <a href="docs/org--Advanced-features.html">Advanced features</a>, Previous: <a href="docs/org--Editing-and-debugging-formulas.html">Editing and debugging formulas</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Updating-the-table-1" class="outline-2">
+<h2 id="Updating-the-table-1"><span class="section-number-2">1.</span> 3.5.9 Updating the table <a href="#Updating-the-table-1">¶</a></h2>
+<div class="outline-text-2" id="text-Updating-the-table-1">
+<p>
+Recalculation of a table is normally not automatic, but needs to be triggered by a command. To make recalculation at least semi-automatic, see <a href="docs/org--Advanced-features.html">Advanced features</a>.
+</p>
+
+<p>
+In order to recalculate a line of a table or the entire table, use the following commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_002a-2"></a>C-c * (<code>org-table-recalculate</code>) </dt><dd>Recalculate the current row by first applying the stored column formulas from left to right, and all field/range formulas in the current row.</dd>
+
+<dt><a id="index-C_002du-C_002dc-_002a"></a>C-u C-c * or C-u C-c C-c </dt><dd>Recompute the entire table, line by line. Any lines before the first hline are left alone, assuming that these are part of the table header.</dd>
+
+<dt><a id="index-C_002du-C_002du-C_002dc-_002a"></a>C-u C-u C-c * or C-u C-u C-c C-c (<code>org-table-iterate</code>) </dt><dd>Iterate the table by recomputing it until no further changes occur. This may be necessary if some computed fields use the value of other fields that are computed <i>later</i> in the calculation sequence.</dd>
+
+<dt><a id="index-org_002dtable_002drecalculate_002dbuffer_002dtables"></a>M-x org-table-recalculate-buffer-tables </dt><dd>Recompute all tables in the current buffer.</dd>
+
+<dt><a id="index-org_002dtable_002diterate_002dbuffer_002dtables"></a>M-x org-table-iterate-buffer-tables </dt><dd>Iterate all tables in the current buffer, in order to converge table-to-table dependencies.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Advanced-features.html">Advanced features</a>, Previous: <a href="docs/org--Editing-and-debugging-formulas.html">Editing and debugging formulas</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

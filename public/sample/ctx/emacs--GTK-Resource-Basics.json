@@ -1,0 +1,1 @@
+{"emacs--GTK-Resource-Basics>emacs--Fonts":"Note that in this case the font name must be supplied as a GTK font pattern (also called a /Pango font name/), not as a Fontconfig-style font name or XLFD. See","emacs--GTK-resources>emacs--GTK-Resource-Basics":"- GTK+ Resource Basics","emacs--index>emacs--GTK-Resource-Basics":"- D.5.1 GTK+ Resource Basics"}

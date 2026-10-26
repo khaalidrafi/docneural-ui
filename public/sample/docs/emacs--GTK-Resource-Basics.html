@@ -1,0 +1,74 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#GTK_002b-Resource-Basics">1. D.5.1 GTK+ Resource Basics ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--GTK-Widget-Names.html">GTK+ widget names</a>   Up: <a href="docs/emacs--GTK-resources.html">GTK+ resources</a>
+</p>
+
+<p>
+<a id="GTK-Resource-Basics"></a>
+</p>
+
+<hr />
+<div id="outline-container-GTK_002b-Resource-Basics" class="outline-2">
+<h2 id="GTK_002b-Resource-Basics"><span class="section-number-2">1.</span> D.5.1 GTK+ Resource Basics <a href="#GTK_002b-Resource-Basics">¶</a></h2>
+<div class="outline-text-2" id="text-GTK_002b-Resource-Basics">
+<p>
+In a GTK+ 2 resource file (usually <code>~/.emacs.d/gtkrc</code>), the simplest kind of a resource setting simply assigns a value to a variable. For example, putting the following line in the resource file changes the font on all GTK+ widgets to ‘=courier-12=':
+</p>
+
+<pre class="example" id="orgb4d20c3">
+gtk-font-name = "courier 12"
+</pre>
+
+<p>
+Note that in this case the font name must be supplied as a GTK font pattern (also called a <i>Pango font name</i>), not as a Fontconfig-style font name or XLFD. See <a href="docs/emacs--Fonts.html">Fonts</a>.
+</p>
+
+<p>
+To customize widgets you first define a <i>style</i>, and then apply the style to the widgets. Here is an example that sets the font for menus (‘=#=' characters indicate comments):
+</p>
+
+<pre class="example" id="org6fdddb2">
+# Define the style ‘my_style’.
+style "my_style"
+{
+  font_name = "helvetica bold 14"
+}
+
+# Specify that widget type ‘*emacs-menuitem*’ uses ‘my_style’.
+widget "*emacs-menuitem*" style "my_style"
+</pre>
+
+<p>
+The widget name in this example contains wildcards, so the style is applied to all widgets matching ‘=*emacs-menuitem*='. The widgets are named by the way they are contained, from the outer widget to the inner widget. Here is another example that applies ‘=my<sub>style</sub>=' specifically to the Emacs menu bar:
+</p>
+
+<pre class="example" id="org8b64a14">
+widget "Emacs.pane.menubar.*" style "my_style"
+</pre>
+
+<p>
+Here is a more elaborate example, showing how to change the parts of the scroll bar:
+</p>
+
+<pre class="example" id="orgb86a566">
+style "scroll"
+{
+  fg[NORMAL] = "red"     # Arrow color.
+  bg[NORMAL] = "yellow"  # Thumb and background around arrow.
+  bg[ACTIVE] = "blue"    # Trough color.
+  bg[PRELIGHT] = "white" # Thumb color when the mouse is over it.
+}
+
+widget "*verticalScrollBar*" style "scroll"
+</pre>
+
+<hr />
+</div>
+</div>

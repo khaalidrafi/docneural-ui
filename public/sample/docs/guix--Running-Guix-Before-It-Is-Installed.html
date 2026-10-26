@@ -1,0 +1,153 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#running-guix-before-it-is-installed">1.0.1. 22.4 Running Guix Before It Is Installed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Running-Guix-Before-It-Is-Installed"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--The-Perfect-Setup.html">The Perfect Setup</a>, Previous: <a href="docs/guix--Running-the-Test-Suite.html">Running the Test Suite</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Running-Guix-Before-It-Is-Installed-1"></a>
+</p>
+</div>
+<div id="outline-container-running-guix-before-it-is-installed" class="outline-4">
+<h4 id="running-guix-before-it-is-installed"><span class="section-number-4">1.0.1.</span> 22.4 Running Guix Before It Is Installed</h4>
+<div class="outline-text-4" id="text-running-guix-before-it-is-installed">
+<p>
+In order to keep a sane working environment, you will find it useful to test the changes made in your local source tree checkout without actually installing them. So that you can distinguish between your “end-user” hat and your “motley” costume.
+</p>
+
+<p>
+To that end, all the command-line tools can be used even if you have not run <code>make install</code>. To do that, you first need to have an environment with all the dependencies available (see <a href="docs/guix--Building-from-Git.html">Building from Git</a>), and then simply prefix each command with <code>./pre-inst-env</code> (the <code>pre-inst-env</code> script lives in the top build tree of Guix; see <a href="docs/guix--Building-from-Git.html">Building from Git</a> to generate it). As an example, here is how you would build the <code>hello</code> package as defined in your working tree (this assumes <code>guix-daemon</code> is already running on your system; it's OK if it's a different version):
+</p>
+
+<pre class="example" id="org1922bfb">
+$ ./pre-inst-env guix build hello
+</pre>
+
+<p>
+Similarly, an example for a Guile session using the Guix modules:
+</p>
+
+<pre class="example" id="orgc7982fc">
+$ ./pre-inst-env guile -c '(use-modules (guix utils)) (pk (%current-system))'
+
+;;; ("x86_64-linux")
+</pre>
+
+<p>
+<a id="index-REPL"></a> <a id="index-read_002deval_002dprint-loop"></a> &#x2026; and for a REPL (see <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>):
+</p>
+
+<pre class="example" id="org32c1833">
+$ ./pre-inst-env guile
+scheme@(guile-user)&gt; ,use(guix)
+scheme@(guile-user)&gt; ,use(gnu)
+scheme@(guile-user)&gt; (define snakes
+                       (fold-packages
+                         (lambda (package lst)
+                           (if (string-prefix? "python"
+                                               (package-name package))
+                               (cons package lst)
+                               lst))
+                         '()))
+scheme@(guile-user)&gt; (length snakes)
+$1 = 361
+</pre>
+
+<p>
+If you are hacking on the daemon and its supporting code or if <code>guix-daemon</code> is not already running on your system, you can launch it straight from the build tree:
+</p>
+
+<pre class="example" id="org2e34f26">
+$ sudo -E ./pre-inst-env guix-daemon --build-users-group=guixbuild
+</pre>
+
+<p>
+The <code>pre-inst-env</code> script sets up all the environment variables necessary to support this, including <code>PATH</code> and <code>GUILE_LOAD_PATH</code>.
+</p>
+
+<p>
+Note that <code>./pre-inst-env guix pull</code> does <i>not</i> upgrade the local source tree; it simply updates the <code>~/.config/guix/current</code> symlink (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>). Run <code>git pull</code> instead if you want to upgrade your local source tree.
+</p>
+
+<p>
+Sometimes, especially if you have recently updated your repository, running <code>./pre-inst-env</code> will print a message similar to the following example:
+</p>
+
+<pre class="example" id="orgcb1ec26">
+;;; note: source file /home/user/projects/guix/guix/progress.scm
+;;;       newer than compiled /home/user/projects/guix/guix/progress.go
+</pre>
+
+<p>
+This is only a note and you can safely ignore it. You can get rid of the message by running <code>make -j4</code>. Until you do, Guile will run slightly slower because it will interpret the code instead of using prepared Guile object (<code>.go</code>) files.
+</p>
+
+<p>
+You can run <code>make</code> automatically as you work using <code>watchexec</code> from the <code>watchexec</code> package. For example, to build again each time you update a package file, run ‘=watchexec -w gnu/packages &#x2013; make -j4='.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

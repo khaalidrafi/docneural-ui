@@ -1,0 +1,107 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#system-configuration">1.1. 11 System Configuration</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="System-Configuration"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--System-Troubleshooting-Tips.html">System Troubleshooting Tips</a>, Previous: <a href="docs/guix--Foreign-Architectures.html">Foreign Architectures</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="System-Configuration-1"></a>
+</p>
+</div>
+<div id="outline-container-system-configuration" class="outline-3">
+<h3 id="system-configuration"><span class="section-number-3">1.1.</span> 11 System Configuration</h3>
+<div class="outline-text-3" id="text-system-configuration">
+<p>
+<a id="index-system-configuration"></a>
+Guix System supports a consistent whole-system configuration mechanism. By that we mean that all aspects of the global system configuration&#x2014;such as the available system services, timezone and locale settings, user accounts&#x2014;are declared in a single place. Such a <i>system configuration</i> can be <i>instantiated</i>&#x2014;i.e., effected.
+</p>
+
+<p>
+One of the advantages of putting all the system configuration under the control of Guix is that it supports transactional system upgrades, and makes it possible to roll back to a previous system instantiation, should something go wrong with the new one (see <a href="docs/guix--Features.html">Features</a>). Another advantage is that it makes it easy to replicate the exact same configuration across different machines, or at different points in time, without having to resort to additional administration tools layered on top of the own tools of the system.
+</p>
+
+<p>
+This section describes this mechanism. First we focus on the system administrator's viewpoint&#x2014;explaining how the system is configured and instantiated. Then we show how this mechanism can be extended, for instance to support new system services.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Getting-Started-with-the-System.html">Getting Started</a></li>
+<li><a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a></li>
+<li><a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a></li>
+<li><a href="docs/guix--File-Systems.html">File Systems</a></li>
+<li><a href="docs/guix--Mapped-Devices.html">Mapped Devices</a></li>
+<li><a href="docs/guix--Swap-Space.html">Swap Space</a></li>
+<li><a href="docs/guix--User-Accounts.html">User Accounts</a></li>
+<li><a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a></li>
+<li><a href="docs/guix--Locales.html">Locales</a></li>
+<li><a href="docs/guix--Services.html">Services</a></li>
+<li><a href="docs/guix--Privileged-Programs.html">Privileged Programs</a></li>
+<li><a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a></li>
+<li><a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a></li>
+<li><a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a></li>
+<li><a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a></li>
+<li><a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a></li>
+<li><a href="docs/guix--Invoking-guix-deploy.html">Invoking <code>guix deploy</code></a></li>
+<li><a href="docs/guix--Running-Guix-in-a-VM.html">Running Guix in a Virtual Machine</a></li>
+<li><a href="docs/guix--Defining-Services.html">Defining Services</a></li>
+</ul>
+</div>
+</div>
+</div>

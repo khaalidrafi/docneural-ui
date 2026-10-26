@@ -1,0 +1,264 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Sound-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--File-Search-Services.html">File Search Services</a>, Previous: <a href="docs/guix--Desktop-Services.html">Desktop Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Sound-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="sound-services"></a>11.10.10 Sound Services<br />
+<div class="outline-text-5" id="text-sound-services">
+<p>
+<a id="index-sound-support"></a> <a id="index-ALSA"></a> <a id="index-PulseAudio_002c-sound-support"></a>
+The <code>(gnu services sound)</code> module provides a service to configure the Advanced Linux Sound Architecture (ALSA) system, which makes PulseAudio the preferred ALSA output driver.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: alsa-service-type </dt><dd><p>
+This is the type for the <a href="https://alsa-project.org/">Advanced Linux Sound Architecture</a> (ALSA) system, which generates the <code>/etc/asound.conf</code> configuration file. The value for this type is a <code>alsa-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service alsa-service-type)
+</pre>
+</div>
+
+<p>
+See below for details about <code>alsa-configuration</code>.
+</p></dd>
+
+<dt>Data Type: alsa-configuration </dt><dd>Data type representing the configuration for <code>alsa-service</code>.
+
+<dl class="org-dl">
+<dt><code>alsa-plugins</code> (default: <code>alsa-plugins</code>)</dt><dd><code>alsa-plugins</code> package to use.</dd>
+
+<dt><code>pulseaudio?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether ALSA applications should transparently be made to use the <a href="https://www.pulseaudio.org/">PulseAudio</a> sound server.
+</p>
+
+<p>
+Using PulseAudio allows you to run several sound-producing applications at the same time and to individual control them <i>via</i> <code>pavucontrol</code>, among other things.
+</p></dd>
+
+<dt><code>extra-options</code> (default: <code>""</code>)</dt><dd>String to append to the <code>/etc/asound.conf</code> file.</dd>
+</dl></dd>
+</dl>
+
+<p>
+Individual users who want to override the system configuration of ALSA can do it with the <code>~/.asoundrc</code> file:
+</p>
+
+<pre class="example" id="org52f7b1f">
+# In guix, we have to specify the absolute path for plugins.
+pcm_type.jack {
+  lib "/home/alice/.guix-profile/lib/alsa-lib/libasound_module_pcm_jack.so"
+}
+
+# Routing ALSA to jack:
+# &lt;http://jackaudio.org/faq/routing_alsa.html&gt;.
+pcm.rawjack {
+  type jack
+  playback_ports {
+    0 system:playback_1
+    1 system:playback_2
+  }
+
+  capture_ports {
+    0 system:capture_1
+    1 system:capture_2
+  }
+}
+
+pcm.!default {
+  type plug
+  slave {
+    pcm "rawjack"
+  }
+}
+</pre>
+
+<p>
+See <a href="https://www.alsa-project.org/main/index.php/Asoundrc">https://www.alsa-project.org/main/index.php/Asoundrc</a> for the details.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: pulseaudio-service-type </dt><dd><p>
+This is the type for the <a href="https://www.pulseaudio.org/">PulseAudio</a> sound server. It exists to allow system overrides of the default settings via <code>pulseaudio-configuration</code>, see below.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> This service overrides per-user configuration files. If you want PulseAudio to honor configuration files in <code>~/.config/pulse</code>, you have to unset the environment variables <code>PULSE_CONFIG</code> and <code>PULSE_CLIENTCONFIG</code> in your <code>~/.bash_profile</code>.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Warning:</b> This service on its own does not ensure, that the <code>pulseaudio</code> package exists on your machine. It merely adds configuration files for it, as detailed below. In the (admittedly unlikely) case, that you find yourself without a <code>pulseaudio</code> package, consider enabling it through the <code>alsa-service-type</code> above.
+</p>
+</blockquote></dd>
+
+<dt>Data Type: pulseaudio-configuration </dt><dd><p>
+Data type representing the configuration for <code>pulseaudio-service</code>.
+</p>
+
+<dl class="org-dl">
+<dt><code>client-conf</code> (default: <code>'()</code>)</dt><dd>List of settings to set in <code>client.conf</code>. Accepts a list of strings or symbol-value pairs. A string will be inserted as-is with a newline added. A pair will be formatted as “key = value”, again with a newline added.</dd>
+
+<dt><code>daemon-conf</code> (default: <code>'((flat-volumes . no))</code>)</dt><dd>List of settings to set in <code>daemon.conf</code>, formatted just like <code>client-conf</code>.</dd>
+
+<dt><code>script-file</code> (default: <code>(file-append pulseaudio "/etc/pulse/default.pa")</code>)</dt><dd>Script file to use as <code>default.pa</code>. In case the <code>extra-script-files</code> field below is used, an <code>.include</code> directive pointing to <code>/etc/pulse/default.pa.d</code> is appended to the provided script.</dd>
+
+<dt><code>extra-script-files</code> (default: <code>'()</code>)</dt><dd>A list of file-like objects defining extra PulseAudio scripts to run at the initialization of the <code>pulseaudio</code> daemon, after the main <code>script-file</code>. The scripts are deployed to the <code>/etc/pulse/default.pa.d</code> directory; they should have the ‘=.pa=' file name extension. For a reference of the available commands, refer to <code>man pulse-cli-syntax</code>.</dd>
+
+<dt><code>system-script-file</code> (default: <code>(file-append pulseaudio "/etc/pulse/system.pa")</code>)</dt><dd>Script file to use as <code>system.pa</code>.</dd>
+</dl>
+
+<p>
+The example below sets the default PulseAudio card profile, the default sink and the default source to use for a old SoundBlaster Audigy sound card:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(pulseaudio-configuration
+ (extra-script-files
+  (list (plain-file "audigy.pa"
+                    (string-append "\
+set-card-profile alsa_card.pci-0000_01_01.0 \
+  output:analog-surround-40+input:analog-mono
+set-default-source alsa_input.pci-0000_01_01.0.analog-mono
+set-default-sink alsa_output.pci-0000_01_01.0.analog-surround-40\n")))))
+</pre>
+</div>
+
+<p>
+Note that <code>pulseaudio-service-type</code> is part of <code>%desktop-services</code>; if your operating system declaration was derived from one of the desktop templates, you'll want to adjust the above example to modify the existing <code>pulseaudio-service-type</code> via <code>modify-services</code> (see <a href="docs/guix--Service-Reference.html"><code>modify-services</code></a>), instead of defining a new one.
+</p></dd>
+
+<dt>Variable: ladspa-service-type </dt><dd><p>
+This service sets the <code>LADSPA_PATH</code> variable, so that programs, which respect it, e.g. PulseAudio, can load LADSPA plugins.
+</p>
+
+<p>
+The following example will setup the service to enable modules from the <code>swh-plugins</code> package:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service ladspa-service-type
+         (ladspa-configuration (plugins (list swh-plugins))))
+</pre>
+</div>
+
+<p>
+See <a href="http://plugin.org.uk/ladspa-swh/docs/ladspa-swh.html">http://plugin.org.uk/ladspa-swh/docs/ladspa-swh.html</a> for the details.
+</p></dd>
+</dl>
+
+<p>
+<a id="Speaker-Safety-Daemon-System-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="speaker-safety-daemon-system-service"></a>Speaker Safety Daemon System Service<br />
+<div class="outline-text-5" id="text-speaker-safety-daemon-system-service">
+<p>
+<a href="https://github.com/AsahiLinux/speakersafetyd">Speaker Safety Daemon</a> is a user-space daemon that implements an analogue of the Texas Instruments Smart Amp speaker protection model. It can be used to protect the speakers on Apple Silicon devices.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: speakersafetyd-service-type </dt><dd><p>
+This is the type for the <code>speakersafetyd</code> system service, whose value is a <code>speakersafetyd-configuration</code> record.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service speakersafetyd-service-type)
+</pre>
+</div>
+
+<p>
+See below for details about <code>speakersafetyd-configuration</code>.
+</p></dd>
+
+<dt>Data Type: speakersafetyd-configuration </dt><dd>Available <code>speakersafetyd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>blackbox-directory</code> (default: <code>"/var/lib/speakersafetyd/blackbox"</code>) (type: string)</dt><dd>The directory to which blackbox files are written when the speakers are getting too hot. The blackbox files contain audio and debug information which the developers of <code>speakersafetyd</code> might ask for when reporting bugs.</dd>
+
+<dt><code>configuration-directory</code> (type: file-like)</dt><dd>The base directory as a G-expression (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>) that contains the configuration files of the speaker models.</dd>
+
+<dt><code>group</code> (default: <code>"speakersafetyd"</code>) (type: string)</dt><dd>The group to run the Speaker Safety Daemon as.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/speakersafetyd.log"</code>) (type: string)</dt><dd>The file name to the Speaker Safety Daemon log file.</dd>
+
+<dt><code>maximum-gain-reduction</code> (default: <code>7</code>) (type: integer)</dt><dd>Maximum gain reduction before panicking, useful for debugging.</dd>
+
+<dt><code>speakersafetyd</code> (default: <code>speakersafetyd</code>) (type: file-like)</dt><dd>The Speaker Safety Daemon package to use.</dd>
+
+<dt><code>user</code> (default: <code>"speakersafetyd"</code>) (type: string)</dt><dd>The user to run the Speaker Safety Daemon as.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--File-Search-Services.html">File Search Services</a>, Previous: <a href="docs/guix--Desktop-Services.html">Desktop Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

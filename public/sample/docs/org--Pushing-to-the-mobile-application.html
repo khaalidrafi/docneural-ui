@@ -1,0 +1,42 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Pushing-to-the-mobile-application-1">1. 17.18.2 Pushing to the mobile application ¶</a>
+<ul>
+<li><a href="#section">1.1. (169)</a></li>
+<li><a href="#section-1">1.2. (170)</a></li>
+<li><a href="#section-2">1.3. (171)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Pushing-to-the-mobile-application"></a>
+Next: <a href="docs/org--Pulling-from-the-mobile-application.html">Pulling from the mobile application</a>, Previous: <a href="docs/org--Setting-up-the-staging-area.html">Setting up the staging area</a>, Up: <a href="docs/org--Org-Mobile.html">Org Mobile</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Pushing-to-the-mobile-application-1" class="outline-2">
+<h2 id="Pushing-to-the-mobile-application-1"><span class="section-number-2">1.</span> 17.18.2 Pushing to the mobile application <a href="#Pushing-to-the-mobile-application-1">¶</a></h2>
+<div class="outline-text-2" id="text-Pushing-to-the-mobile-application-1">
+<p>
+The command <code>org-mobile-push</code> copies files listed in <code>org-mobile-files</code> into the staging area. Files include agenda files (as listed in <code>org-agenda-files</code>). Customize <code>org-mobile-files</code> to add other files. File names are staged with paths relative to <code>org-directory</code>, so all files should be inside this directory.
+</p>
+
+<p>
+Push creates a special Org file ‘=agendas.org=' with custom agenda views defined by the user.
+</p>
+
+<p>
+Finally, Org writes the file ‘=index.org=', containing links to other files. The mobile application reads this file first from the server to determine what other files to download for agendas. For faster downloads, it is expected to only read files whose checksums have changed.
+</p>
+
+<hr />
+</div>
+</div>

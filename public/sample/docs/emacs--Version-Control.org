@@ -1,0 +1,42 @@
+:PROPERTIES:
+:ID: emacs--Version-Control
+:END:
+#+filetags: :emacs:
+#+title: Version Control
+
+Next: [[id:emacs--Projects][Working with Projects]]   Up: [[id:emacs--Maintaining][Maintaining Large Programs]]
+
+<<Version-Control>>
+
+--------------
+
+*** 30.1 Version Control [[#Version-Control-1][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Version-Control-1
+:CLASS: section
+:END:
+A /version control system/ is a program that can record multiple versions of a source file, storing information such as the creation time of each version, who made it, and a description of what was changed.
+
+The Emacs version control interface is called /VC/. VC commands work with several different version control systems; currently, it supports Bazaar, CVS, Git, Mercurial, Monotone, RCS, SRC, SCCS/CSSC, and Subversion. Of these, the GNU project distributes CVS, RCS, and Bazaar.
+
+VC is enabled automatically whenever you visit a file governed by a version control system. To disable VC entirely, set the customizable variable =vc-handled-backends= to =nil= (see [[id:emacs--Customizing-VC][Customizing VC]]).
+
+To update the VC state information for the file visited in the current buffer, use the command =vc-refresh-state=. This command is useful when you perform version control commands outside Emacs (e.g., from the shell prompt), or if you put the buffer's file under a different version control system, or remove it from version control entirely.
+
+VC is also enabled automatically in Dired buffers (see [[id:emacs--Dired][Dired, the Directory Editor]]) showing directories whose files are controlled by a VCS. All VC commands described in this section can be invoked from any Dired buffer showing a directory with VC-controlled files; any files that are marked in a Dired buffer (see [[id:emacs--Marks-vs-Flags][Dired Marks vs. Flags]]) are considered to belong to the current fileset, and VC commands operate on the files in this fileset. This allows you to construct VC filesets including any files you want, regardless of their VC state. (If no files are marked when a VC command is invoked from a Dired buffer, the file shown on the current line in the buffer is considered the only file in the fileset.)
+
+- [[id:emacs--Introduction-to-VC][Introduction to Version Control]]
+- [[id:emacs--VC-Mode-Line][Version Control and the Mode Line]]
+- [[id:emacs--Basic-VC-Editing][Basic Editing under Version Control]]
+- [[id:emacs--Log-Buffer][Features of the Log Entry Buffer]]
+- [[id:emacs--Registering][Registering a File for Version Control]]
+- [[id:emacs--Old-Revisions][Examining And Comparing Old Revisions]]
+- [[id:emacs--VC-Change-Log][VC Change Log]]
+- [[id:emacs--VC-Undo][Undoing Version Control Actions]]
+- [[id:emacs--VC-Ignore][Ignore Version Control Files]]
+- [[id:emacs--VC-Directory-Mode][VC Directory Mode]]
+- [[id:emacs--Branches][Version Control Branches]]
+- [[id:emacs--Miscellaneous-VC][Miscellaneous Commands and Features of VC]]
+- [[id:emacs--Customizing-VC][Customizing VC]]
+
+--------------

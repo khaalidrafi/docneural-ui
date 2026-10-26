@@ -1,0 +1,87 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#movemail-program">1. 35.18 <code>movemail</code> program ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Remote-Mailboxes.html">Retrieving Mail from Remote Mailboxes</a>   Previous: <a href="docs/emacs--Rmail-Rot13.html">Reading Rot13 Messages</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Movemail"></a>
+</p>
+
+<hr />
+<div id="outline-container-movemail-program" class="outline-2">
+<h2 id="movemail-program"><span class="section-number-2">1.</span> 35.18 <code>movemail</code> program <a href="#movemail-program">¶</a></h2>
+<div class="outline-text-2" id="text-movemail-program">
+<p>
+Rmail uses the <code>movemail</code> program to move mail from your inbox to your Rmail file (see <a href="docs/emacs--Rmail-Inbox.html">Rmail Files and Inboxes</a>). When loaded for the first time, Rmail attempts to locate the <code>movemail</code> program and determine its version. There are two versions of the <code>movemail</code> program: the GNU Mailutils version (see <a href="../mailutils_html/movemail.html#movemail">movemail</a> in GNU Mailutils Manual), and an Emacs-specific version that is built and installed unless Emacs was configured <code>--with-mailutils</code> in effect. The two <code>movemail</code> versions support the same command line syntax and the same basic subset of options. However, the Mailutils version offers additional features and is more secure.
+</p>
+
+<p>
+The Emacs version of <code>movemail</code> can retrieve mail from the usual Unix mailbox formats. <b>Warning</b>: Although it can also use the POP3 protocol, this is not recommended because it does not support POP3 via encrypted TLS channels.
+</p>
+
+<p>
+The Mailutils version is able to handle a wide set of mailbox formats, such as plain Unix mailboxes, <code>maildir</code> and <code>MH</code> mailboxes, etc. It is able to access remote mailboxes using the POP3 or IMAP4 protocol, and can retrieve mail from them using a TLS encrypted channel. It also accepts mailbox arguments in URL form. The detailed description of mailbox URLs can be found in <a href="../mailutils_html/Mailbox.html#Mailbox">Mailbox</a> in GNU Mailutils Manual. In short, a URL is:
+</p>
+
+<pre class="example" id="orgd74c8ec">
+proto://[user[:password]@]host-or-file-name[:port]
+</pre>
+
+<p>
+where square brackets denote optional elements.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-mailbox-protocol_002c-movemail"></a>=proto= </dt><dd>Specifies the <i>mailbox protocol</i>, or <i>format</i> to use. The exact semantics of the rest of URL elements depends on the actual value of <code>proto</code> (see below).</dd>
+
+<dt><code>user</code></dt><dd>User name to access the remote mailbox.</dd>
+
+<dt><code>password</code></dt><dd>User password to access the remote mailbox.</dd>
+
+<dt><code>host-or-file-name</code></dt><dd>Hostname of the remote server for remote mailboxes or file name of a local mailbox.</dd>
+
+<dt><code>port</code></dt><dd>Optional port number, if not the default for that protocol.</dd>
+</dl>
+
+<p>
+<code>proto</code> can be one of:
+</p>
+
+<dl class="org-dl">
+<dt><code>mbox</code></dt><dd>Usual Unix mailbox format. In this case, <code>user</code>, <code>pass</code> and <code>port</code> are not used, and <code>host-or-file-name</code> denotes the file name of the mailbox file, e.g., <code>mbox:///var/spool/mail/smith</code>.</dd>
+
+<dt><code>mh</code></dt><dd>A local mailbox in the MH format. <code>user</code>, <code>pass</code> and <code>port</code> are not used. <code>host-or-file-name</code> denotes the name of MH folder, e.g., <code>mh:///Mail/inbox</code>.</dd>
+
+<dt><code>maildir</code></dt><dd>A local mailbox in the maildir format. <code>user</code>, <code>pass</code> and <code>port</code> are not used, and <code>host-or-file-name</code> denotes the name of <code>maildir</code> mailbox, e.g., <code>maildir:///mail/inbox</code>.</dd>
+
+<dt><code>file</code></dt><dd>Any local file in mailbox format. Its actual format is detected automatically by <code>movemail</code>.</dd>
+
+<dt>(no term)</dt><dd><code>pop</code><br />
+<code>pops</code> :: A remote mailbox to be accessed via POP3 protocol. See <a href="docs/emacs--Remote-Mailboxes.html">Retrieving Mail from Remote Mailboxes</a>, for details.</dd>
+
+<dt>(no term)</dt><dd><code>imap</code><br />
+<code>imaps</code> :: A remote mailbox to be accessed via IMAP4 protocol. See <a href="docs/emacs--Remote-Mailboxes.html">Retrieving Mail from Remote Mailboxes</a>, for details.</dd>
+</dl>
+
+<p>
+Alternatively, you can specify the file name of the mailbox to use. This is equivalent to specifying the ‘=file=' protocol:
+</p>
+
+<pre class="example" id="orgf2f51c4">
+/var/spool/mail/user ≡ file:///var/spool/mail/user
+</pre>
+
+<p>
+The variable <code>rmail-movemail-program</code> controls which version of <code>movemail</code> to use. If that is a string, it specifies the absolute file name of the <code>movemail</code> executable. If it is <code>nil</code>, Rmail searches for <code>movemail</code> in the directories listed in <code>rmail-movemail-search-path</code>, then in <code>exec-path</code> (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>), then in <code>exec-directory</code>.
+</p>
+
+<hr />
+</div>
+</div>

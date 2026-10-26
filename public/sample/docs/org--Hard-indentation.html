@@ -1,0 +1,66 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Hard-indentation-1">1. 17.4.2 Hard indentation ¶</a>
+<ul>
+<li><a href="#section">1.1. (164)</a></li>
+<li><a href="#section-1">1.2. (165)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Hard-indentation"></a>
+Previous: <a href="docs/org--Org-Indent-Mode.html">Org Indent Mode</a>, Up: <a href="docs/org--Clean-View.html">A Cleaner Outline View</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Hard-indentation-1" class="outline-2">
+<h2 id="Hard-indentation-1"><span class="section-number-2">1.</span> 17.4.2 Hard indentation <a href="#Hard-indentation-1">¶</a></h2>
+<div class="outline-text-2" id="text-Hard-indentation-1">
+<p>
+It is possible to use hard spaces to achieve the indentation instead, if the bare ASCII file should have the indented look also outside Emacs. With Org's support, you have to indent all lines to line up with the outline headers. You would use these settings:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-adapt-indentation t
+      org-hide-leading-stars t
+      org-odd-levels-only t)
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dadapt_002dindentation"></a>/Indentation of text below headlines/ (<code>org-adapt-indentation</code>) </dt><dd>The first setting modifies paragraph filling, line wrapping, and structure editing commands to preserving or adapting the indentation as appropriate.</dd>
+
+<dt><a id="index-org_002dhide_002dleading_002dstars"></a>/Hiding leading stars/ (<code>org-hide-leading-stars</code>) </dt><dd><p>
+The second setting makes leading stars invisible by applying the face <code>org-hide</code> to them. For per-file preference, use these file ‘=STARTUP=' options:
+</p>
+
+<pre class="example" id="org6cb0fcb">
+#+STARTUP: hidestars
+#+STARTUP: showstars
+</pre></dd>
+
+<dt><a id="index-org_002dodd_002dlevels_002donly-1"></a>/Odd levels/ (<code>org-odd-levels-only</code>) </dt><dd><p>
+The third setting makes Org use only odd levels, 1, 3, 5, &#x2026;, in the outline to create more indentation. On a per-file level, control this with:
+</p>
+
+<pre class="example" id="org43c459e">
+#+STARTUP: odd
+#+STARTUP: oddeven
+</pre>
+
+<p>
+To convert a file between single and double stars layouts, use M-x org-convert-to-odd-levels and M-x org-convert-to-oddeven-levels.
+</p></dd>
+</dl>
+
+<hr />
+</div>
+</div>

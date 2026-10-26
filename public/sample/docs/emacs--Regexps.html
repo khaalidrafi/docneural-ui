@@ -1,0 +1,147 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Syntax-of-Regular-Expressions">1. 17.6 Syntax of Regular Expressions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Regexp-Backslash.html">Backslash in Regular Expressions</a>   Previous: <a href="docs/emacs--Regexp-Search.html">Regular Expression Search</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Regexps"></a>
+</p>
+
+<hr />
+<div id="outline-container-Syntax-of-Regular-Expressions" class="outline-2">
+<h2 id="Syntax-of-Regular-Expressions"><span class="section-number-2">1.</span> 17.6 Syntax of Regular Expressions <a href="#Syntax-of-Regular-Expressions">¶</a></h2>
+<div class="outline-text-2" id="text-Syntax-of-Regular-Expressions">
+<p>
+This section (and this manual in general) describes regular expression features that users typically use. See <a href="../elisp_html/Regular-Expressions.html#Regular-Expressions">Regular Expressions</a> in The Emacs Lisp Reference Manual, for additional features used mainly in Lisp programs.
+</p>
+
+<p>
+Regular expressions have a syntax in which a few characters are <i>special constructs</i> and the rest are <i>ordinary</i>. An ordinary character matches that same character and nothing else. The special characters are ‘=$^.*+?[\='. The character ‘=]=' is special if it ends a bracket expression (see below). The character ‘=-<code>' is special inside a bracket expression. Any other character appearing in a regular expression is ordinary, unless a ‘</code>\=' precedes it. (When you use regular expressions in a Lisp program, each ‘=\=' must be doubled, see the example near the end of this section.)
+</p>
+
+<p>
+For example, ‘=f=' is not a special character, so it is ordinary, and therefore ‘=f=' is a regular expression that matches the string ‘=f=' and no other string. (It does <i>not</i> match the string ‘=ff='.) Likewise, ‘=o=' is a regular expression that matches only ‘=o='. (When case distinctions are being ignored, these regexps also match ‘=F=' and ‘=O=', but we consider this a generalization of “the same string”, rather than an exception.)
+</p>
+
+<p>
+Any two regular expressions <code>a</code> and <code>b</code> can be concatenated. The result is a regular expression which matches a string if <code>a</code> matches some amount of the beginning of that string and <code>b</code> matches the rest of the string. As a trivial example, concatenating the regular expressions ‘=f=' and ‘=o=' gives the regular expression ‘=fo=', which matches only the string ‘=fo='. To do something less trivial, you need to use one of the special characters. Here is a list of them.
+</p>
+
+<dl class="org-dl">
+<dt>. (Period)</dt><dd>is a special character that matches any single character except a newline. For example, the regular expressions ‘=a.b=' matches any three-character string that begins with ‘=a=' and ends with ‘=b='.</dd>
+
+<dt>*</dt><dd><p>
+is not a construct by itself; it is a postfix operator that means to match the preceding regular expression repetitively any number of times, as many times as possible. Thus, ‘=o*=' matches any number of ‘=o='s, including no ‘=o='s.
+</p>
+
+<p>
+‘=*=' always applies to the <i>smallest</i> possible preceding expression. Thus, ‘=fo*=' has a repeating ‘=o=', not a repeating ‘=fo='. It matches ‘=f=', ‘=fo=', ‘=foo=', and so on.
+</p>
+
+<p>
+The matcher processes a ‘=*=' construct by matching, immediately, as many repetitions as can be found. Then it continues with the rest of the pattern. If that fails, backtracking occurs, discarding some of the matches of the ‘=*='-modified construct in case that makes it possible to match the rest of the pattern. For example, in matching ‘=ca*ar=' against the string ‘=caaar=', the ‘=a*=' first tries to match all three ‘=a='s; but the rest of the pattern is ‘=ar=' and there is only ‘=r=' left to match, so this try fails. The next alternative is for ‘=a*=' to match only two ‘=a='s. With this choice, the rest of the regexp matches successfully.
+</p></dd>
+
+<dt>+</dt><dd>is a postfix operator, similar to ‘=*=' except that it must match the preceding expression at least once. Thus, ‘=ca+r=' matches the strings ‘=car=' and ‘=caaaar=' but not the string ‘=cr=', whereas ‘=ca*r=' matches all three strings.</dd>
+
+<dt>?</dt><dd>is a postfix operator, similar to ‘=*=' except that it can match the preceding expression either once or not at all. Thus, ‘=ca?r=' matches ‘=car=' or ‘=cr=', and nothing else.</dd>
+
+<dt><a id="index-non_002dgreedy-regexp-matching"></a>*?, +?, ?? </dt><dd><p>
+are non-<i>greedy</i> variants of the operators above. The normal operators ‘=*=', ‘=+=', ‘=?=' match as much as they can, as long as the overall regexp can still match. With a following ‘=?=', they will match as little as possible.
+</p>
+
+<p>
+Thus, both ‘=ab*=' and ‘=ab*?=' can match the string ‘=a=' and the string ‘=abbbb='; but if you try to match them both against the text ‘=abbb=', ‘=ab*=' will match it all (the longest valid match), while ‘=ab*?=' will match just ‘=a=' (the shortest valid match).
+</p>
+
+<p>
+Non-greedy operators match the shortest possible string starting at a given starting point; in a forward search, though, the earliest possible starting point for match is always the one chosen. Thus, if you search for ‘=a.*?$=' against the text ‘=abbab=' followed by a newline, it matches the whole string. Since it <i>can</i> match starting at the first ‘=a=', it does.
+</p></dd>
+
+<dt><a id="index-bracket-expression"></a>[ &#x2026; ] </dt><dd><p>
+is a <i>bracket expression</i> (a.k.a. <i>set of alternative characters</i>), which matches one of a set of characters.
+</p>
+
+<p>
+In the simplest case, the characters between the two brackets are what this set can match. Thus, ‘=[ad]=' matches either one ‘=a=' or one ‘=d=', and ‘=[ad]*=' matches any string composed of just ‘=a='s and ‘=d='s (including the empty string). It follows that ‘=c[ad]*r=' matches ‘=cr=', ‘=car=', ‘=cdr=', ‘=caddaar=', etc.
+</p>
+
+<p>
+You can also include character ranges in a character set, by writing the starting and ending characters with a ‘=-<code>' between them. Thus, ‘</code>[a-z]=' matches any lower-case ASCII letter. Ranges may be intermixed freely with individual characters, as in ‘=[a-z$%.]=', which matches any lower-case ASCII letter or ‘=$=', ‘=%=' or period. As another example, ‘=[α-ωί]=' matches all lower-case Greek letters.
+</p>
+
+<p>
+You can also include certain special <i>character classes</i> in a character set. A ‘=[:=' and balancing ‘=:]=' enclose a character class inside a bracket expression. For instance, ‘==' matches any letter or digit. See <a href="../elisp_html/Char-Classes.html#Char-Classes">Char Classes</a> in The Emacs Lisp Reference Manual, for a list of character classes.
+</p>
+
+<p>
+To include a ‘=]=' in a character set, you must make it the first character. For example, ‘=[]a]=' matches ‘=]=' or ‘=a='. To include a ‘=-<code>', write ‘</code>-<code>' as the last character of the set, tho you can also put it first or after a range. Thus, ‘</code>[]-]=' matches both ‘=]=' and ‘=-='.
+</p>
+
+<p>
+To include ‘=^=' in a set, put it anywhere but at the beginning of the set. (At the beginning, it complements the set&#x2014;see below.)
+</p>
+
+<p>
+When you use a range in case-insensitive search, you should write both ends of the range in upper case, or both in lower case, or both should be non-letters. The behavior of a mixed-case range such as ‘=A-z=' is somewhat ill-defined, and it may change in future Emacs versions.
+</p></dd>
+
+<dt>[^ &#x2026; ]</dt><dd><p>
+‘=[^=' begins a <i>complemented character set</i>, which matches any character except the ones specified. Thus, ‘=[<sup>a</sup>-z0-9A-Z]=' matches all characters <i>except</i> ASCII letters and digits.
+</p>
+
+<p>
+‘=^=' is not special in a character set unless it is the first character. The character following the ‘=^=' is treated as if it were first (in other words, ‘=-<code>' and ‘=]</code>' are not special there).
+</p>
+
+<p>
+A complemented character set can match a newline, unless newline is mentioned as one of the characters not to match. This is in contrast to the handling of regexps in programs such as <code>grep</code>.
+</p></dd>
+
+<dt>^</dt><dd><p>
+is a special character that matches the empty string, but only at the beginning of a line in the text being matched. Otherwise it fails to match anything. Thus, ‘=<sup>foo</sup>=' matches a ‘=foo=' that occurs at the beginning of a line.
+</p>
+
+<p>
+For historical compatibility reasons, ‘=^=' can be used with this meaning only at the beginning of the regular expression, or after ‘=\(<code>' or ‘</code>\|='.
+</p></dd>
+
+<dt>$</dt><dd><p>
+is similar to ‘=^=' but matches only at the end of a line. Thus, ‘=x+$=' matches a string of one ‘=x=' or more at the end of a line.
+</p>
+
+<p>
+For historical compatibility reasons, ‘=$=' can be used with this meaning only at the end of the regular expression, or before ‘=\)=' or ‘=\|='.
+</p></dd>
+
+<dt>\</dt><dd><p>
+has two functions: it quotes the special characters (including ‘=\='), and it introduces additional special constructs.
+</p>
+
+<p>
+Because ‘=\=' quotes special characters, ‘=\$=' is a regular expression that matches only ‘=$=', and ‘=\[=' is a regular expression that matches only ‘=[=', and so on.
+</p>
+
+<p>
+See the following section for the special constructs that begin with ‘=\='.
+</p></dd>
+</dl>
+
+<p>
+Note: for historical compatibility, special characters are treated as ordinary ones if they are in contexts where their special meanings make no sense. For example, ‘=*foo=' treats ‘=*=' as ordinary since there is no preceding expression on which the ‘=*=' can act. It is poor practice to depend on this behavior; it is better to quote the special character anyway, regardless of where it appears.
+</p>
+
+<p>
+As a ‘=\=' is not special inside a bracket expression, it can never remove the special meaning of ‘=-<code>', ‘=^</code>' or ‘=]='. You should not quote these characters when they have no special meaning. This would not clarify anything, since backslashes can legitimately precede these characters where they <i>have</i> special meaning, as in ‘=[^\]=' (<code>"[^\\]"</code> for Lisp string syntax), which matches any single character except a backslash.
+</p>
+
+<hr />
+</div>
+</div>

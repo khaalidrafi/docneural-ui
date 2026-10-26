@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Org-as-an-authoring-system">1. 27.10.2 Org as an authoring system ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Org-Organizer.html">Org as an organizer</a>   Up: <a href="docs/emacs--Org-Mode.html">Org Mode</a>
+</p>
+
+<p>
+<a id="Org-Authoring"></a>
+</p>
+
+<hr />
+<div id="outline-container-Org-as-an-authoring-system" class="outline-2">
+<h2 id="Org-as-an-authoring-system"><span class="section-number-2">1.</span> 27.10.2 Org as an authoring system <a href="#Org-as-an-authoring-system">¶</a></h2>
+<div class="outline-text-2" id="text-Org-as-an-authoring-system">
+<p>
+You may want to format your Org notes nicely and to prepare them for export and publication. To export the current buffer, type C-c C-e (<code>org-export-dispatch</code>) anywhere in an Org buffer. This command prompts for an export format; currently supported formats include HTML, LaTeX, Texinfo, OpenDocument (<code>.odt</code>), iCalendar, Markdown, man-page, and PDF. Some formats, such as PDF, require certain system tools to be installed.
+</p>
+
+<p>
+To export several files at once to a specific directory, either locally or over the network, you must define a list of projects through the variable <code>org-publish-project-alist</code>. See its documentation for details.
+</p>
+
+<p>
+Org supports a simple markup scheme for applying text formatting to exported documents:
+</p>
+
+<pre class="example" id="org5b94961">
+- This text is /emphasized/
+- This text is *in bold*
+- This text is _underlined_
+- This text uses =a teletype font=
+
+#+begin_quote
+``This is a quote.''
+#+end_quote
+
+#+begin_example
+This is an example.
+</pre>
+<p>
+#+end<sub>example</sub>
+</p>
+
+<p>
+For further details, <a href="../org_html/Exporting.html#Exporting">Exporting</a> in The Org Manual, and <a href="../org_html/Publishing.html#Publishing">Publishing</a> in The Org Manual.
+</p>
+</div>
+</div>

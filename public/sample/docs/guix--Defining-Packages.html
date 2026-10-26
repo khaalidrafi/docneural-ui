@@ -1,0 +1,263 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#defining-packages">1.0.1. 8.2 Defining Packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Defining-Packages"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Defining-Package-Variants.html">Defining Package Variants</a>, Previous: <a href="docs/guix--Package-Modules.html">Package Modules</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Defining-Packages-1"></a>
+</p>
+</div>
+<div id="outline-container-defining-packages" class="outline-4">
+<h4 id="defining-packages"><span class="section-number-4">1.0.1.</span> 8.2 Defining Packages</h4>
+<div class="outline-text-4" id="text-defining-packages">
+<p>
+The high-level interface to package definitions is implemented in the <code>(guix packages)</code> and <code>(guix build-system)</code> modules. As an example, the package definition, or <i>recipe</i>, for the GNU Hello package looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-module (gnu packages hello)
+  #:use-module (guix packages)
+  #:use-module (guix download)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix licenses)
+  #:use-module (gnu packages gawk))
+
+(define-public hello
+  (package
+    (name "hello")
+    (version "2.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/hello/hello-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--enable-silent-rules")))
+    (inputs (list gawk))
+    (synopsis "Hello, GNU world: An example GNU package")
+    (description "Guess what GNU Hello prints!")
+    (home-page "https://www.gnu.org/software/hello/")
+    (license gpl3+)))
+</pre>
+</div>
+
+<p>
+Without being a Scheme expert, the reader may have guessed the meaning of the various fields here. This expression binds the variable <code>hello</code> to a <code>&lt;package&gt;</code> record (see <a href="https://www.gnu.org/software/guile/manual/html_node/SRFI_002d9.html#SRFI_002d9">Scheme records</a> in GNU Guile Reference Manual). This package object can be inspected using procedures found in the <code>(guix packages)</code> module; for instance, <code>(package-name hello)</code> returns&#x2014;surprise!---<code>"hello"</code>.
+</p>
+
+<blockquote>
+<p>
+<b>Quick start:</b> Impatient? With luck, you may be able to import part or all of the definition of the package you are interested in from another repository, using the <code>guix import</code> command (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>).
+</p>
+
+<p>
+Alternatively, try out the <a href="https://guix-hpc.gitlabpages.inria.fr/guix-packager/">Guix-Packager interface</a> in your web browser to produce a preliminary package definition.
+</p>
+</blockquote>
+
+<p>
+In the example above, <code>hello</code> is defined in a module of its own, <code>(gnu packages hello)</code>. Technically, this is not strictly necessary, but it is convenient to do so: all the packages defined in modules under <code>(gnu packages …)</code> are automatically known to the command-line tools (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+There are a few points worth noting in the above package definition:
+</p>
+
+<ul class="org-ul">
+<li><p>
+The <code>source</code> field of the package is an <code>&lt;origin&gt;</code> object (see <a href="docs/guix--origin-Reference.html"><code>origin</code> Reference</a>, for the complete reference). Here, the <code>url-fetch</code> method from <code>(guix download)</code> is used, meaning that the source is a file to be downloaded over FTP or HTTP.
+</p>
+
+<p>
+The <code>mirror://gnu</code> prefix instructs <code>url-fetch</code> to use one of the GNU mirrors defined in <code>(guix download)</code>.
+</p>
+
+<p>
+The <code>sha256</code> field specifies the expected SHA256 hash of the file being downloaded. It is mandatory, and allows Guix to check the integrity of the file. The <code>(base32 …)</code> form introduces the base32 representation of the hash. You can obtain this information with <code>guix download</code> (see <a href="docs/guix--Invoking-guix-download.html">Invoking <code>guix download</code></a>) and <code>guix hash</code> (see <a href="docs/guix--Invoking-guix-hash.html">Invoking <code>guix hash</code></a>).
+</p>
+
+<p>
+<a id="index-patches"></a>
+</p>
+
+<p>
+When needed, the <code>origin</code> form can also have a <code>patches</code> field listing patches to be applied, and a <code>snippet</code> field giving a Scheme expression to modify the source code.
+</p></li>
+
+<li><p>
+<a id="index-GNU-Build-System"></a> The <code>build-system</code> field specifies the procedure to build the package (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Here, <code>gnu-build-system</code> represents the familiar GNU Build System, where packages may be configured, built, and installed with the usual <code>./configure &amp;&amp; make &amp;&amp; make check &amp;&amp; make install</code> command sequence.
+</p>
+
+<p>
+When you start packaging non-trivial software, you may need tools to manipulate those build phases, manipulate files, and so on. See <a href="docs/guix--Build-Utilities.html">Build Utilities</a>, for more on this.
+</p></li>
+
+<li><p>
+The <code>arguments</code> field specifies options for the build system (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Here it is interpreted by <code>gnu-build-system</code> as a request run <code>configure</code> with the <code>--enable-silent-rules</code> flag.
+</p>
+
+<p>
+The value of the <code>arguments</code> field is a list of arguments passed to the build system and that end up being applied, as with <code>apply</code> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Fly-Evaluation.html#Fly-Evaluation"><code>apply</code></a> in GNU Guile Reference Manual).
+</p>
+
+<p>
+<a id="index-keyword-arguments_002c-for-build-systems"></a>
+</p>
+
+<p>
+The hash-colon (<code>#:</code>) sequence defines a Scheme <i>keyword</i> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Keywords.html#Keywords">Keywords</a> in GNU Guile Reference Manual), and <code>#:configure-flags</code> is a keyword used to pass a keyword argument to the build system (see <a href="https://www.gnu.org/software/guile/manual/html_node/Coding-With-Keywords.html#Coding-With-Keywords">Coding With Keywords</a> in GNU Guile Reference Manual).
+</p>
+
+<p>
+<a id="index-_0023_007e"></a> <a id="index-gexp"></a> <a id="index-staging_002c-for-build-system-arguments"></a> <a id="index-code-staging_002c-in-package-definitions"></a>
+</p>
+
+<p>
+What about these hash-tilde (<code>#~</code>) characters? This is Guix-specific syntax introducing a so-called <i>G-expression</i> (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>), which denotes code that is <i>staged</i> for eventual evaluation: this staged code is only evaluated if and when attempting to build the package, by the build daemon. In this example, the staged code is the <code>(list …)</code> expression, which builds a list of one element, the configure flag.
+</p></li>
+
+<li><p>
+The <code>inputs</code> field specifies inputs to the build process&#x2014;i.e., build-time or run-time dependencies of the package. Here, we add an input, a reference to the <code>gawk</code> variable; <code>gawk</code> is itself bound to a <code>&lt;package&gt;</code> object.
+</p>
+
+<p>
+Note that GCC, Coreutils, Bash, and other essential tools do not need to be specified as inputs here. Instead, <code>gnu-build-system</code> takes care of ensuring that they are present (see <a href="docs/guix--Build-Systems.html">Build Systems</a>).
+</p>
+
+<p>
+However, any other dependencies need to be specified in the <code>inputs</code> field. Any dependency not specified here will simply be unavailable to the build process, possibly leading to a build failure.
+</p></li>
+</ul>
+
+<p>
+See <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>, for a full description of possible fields.
+</p>
+
+<blockquote>
+<p>
+<a id="index-Scheme-programming-language_002c-getting-started"></a>
+</p>
+
+<p>
+<b>Going further:</b> Intimidated by the Scheme language or curious about it? The Cookbook has a short section to get started that recaps some of the things shown above and explains the fundamentals. See <a href="https://guix.gnu.org/cookbook/en/html_node/A-Scheme-Crash-Course.html#A-Scheme-Crash-Course">A Scheme Crash Course</a> in GNU Guix Cookbook, for more information.
+</p>
+</blockquote>
+
+<p>
+Once a package definition is in place, the package may actually be built using the <code>guix build</code> command-line tool (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>), troubleshooting any build failures you encounter (see <a href="docs/guix--Debugging-Build-Failures.html">Debugging Build Failures</a>). You can easily jump back to the package definition using the <code>guix edit</code> command (see <a href="docs/guix--Invoking-guix-edit.html">Invoking <code>guix edit</code></a>). See <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>, for more information on how to test package definitions, and <a href="docs/guix--Invoking-guix-lint.html">Invoking <code>guix lint</code></a>, for information on how to check a definition for style conformance. <a id="index-GUIX_005fPACKAGE_005fPATH-1"></a> Lastly, see <a href="docs/guix--Channels.html">Channels</a>, for information on how to extend the distribution by adding your own package definitions in a “channel”.
+</p>
+
+<p>
+Finally, updating the package definition to a new upstream version can be partly automated by the <code>guix refresh</code> command (see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>).
+</p>
+
+<p>
+Behind the scenes, a derivation corresponding to the <code>&lt;package&gt;</code> object is first computed by the <code>package-derivation</code> procedure. That derivation is stored in a <code>.drv</code> file under <code>/gnu/store</code>. The build actions it prescribes may then be realized by using the <code>build-derivations</code> procedure (see <a href="docs/guix--The-Store.html">The Store</a>).
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: package-derivation store package [system]</dt><dd><p>
+Return the <code>&lt;derivation&gt;</code> object of <code>package</code> for <code>system</code> (see <a href="docs/guix--Derivations.html">Derivations</a>).
+</p>
+
+<p>
+<code>package</code> must be a valid <code>&lt;package&gt;</code> object, and <code>system</code> must be a string denoting the target system type&#x2014;e.g., <code>"x86_64-linux"</code> for an x86<sub>64</sub> Linux-based GNU system. <code>store</code> must be a connection to the daemon, which operates on the store (see <a href="docs/guix--The-Store.html">The Store</a>).
+</p></dd>
+</dl>
+
+<p>
+<a id="index-cross_002dcompilation-1"></a> Similarly, it is possible to compute a derivation that cross-builds a package for some other system:
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: package-cross-derivation store package target [system]</dt><dd><p>
+Return the <code>&lt;derivation&gt;</code> object of <code>package</code> cross-built from <code>system</code> to <code>target</code>.
+</p>
+
+<p>
+<code>target</code> must be a valid GNU triplet denoting the target hardware and operating system, such as <code>"aarch64-linux-gnu"</code> (see <a href="https://www.gnu.org/software/autoconf/manual/html_node/Specifying-Target-Triplets.html#Specifying-Target-Triplets">Specifying Target Triplets</a> in Autoconf).
+</p></dd>
+</dl>
+
+<p>
+Once you have package definitions, you can easily define <i>variants</i> of those packages. See <a href="docs/guix--Defining-Package-Variants.html">Defining Package Variants</a>, for more on that.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--package-Reference.html"><code>package</code> Reference</a></li>
+<li><a href="docs/guix--origin-Reference.html"><code>origin</code> Reference</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Defining-Package-Variants.html">Defining Package Variants</a>, Previous: <a href="docs/guix--Package-Modules.html">Package Modules</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

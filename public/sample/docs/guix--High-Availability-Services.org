@@ -1,0 +1,87 @@
+:PROPERTIES:
+:ID: guix--High-Availability-Services
+:END:
+#+filetags: :guix:
+#+title: High Availability Services
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<High-Availability-Services>>
+
+Next: [[id:guix--Certificate-Services][Certificate Services]], Previous: [[id:guix--Web-Services][Web Services]], Up: [[id:guix--Services][Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<High-Availability-Services-1>>
+**** 11.10.21 High Availability Services
+:PROPERTIES:
+:CUSTOM_ID: high-availability-services
+:CLASS: subsection
+:END:
+<<index-Message-broker>> <<index-Message-streaming>>
+The =(gnu services high-availability)= module provides RabbitMQ message broker service.
+
+<<RabbitMQ>><<RabbitMQ-1>>
+**** RabbitMQ
+:PROPERTIES:
+:CUSTOM_ID: rabbitmq
+:CLASS: subsubheading
+:END:
+- Variable: rabbitmq-service-type  :: Service type for the [[https://www.rabbitmq.com/][RabbitMQ]] web server. The value for this service type is a =<rabbitmq-configuration>= record.
+
+  A simple example configuration is given below.
+
+  #+begin_src lisp
+  (service rabbitmq-service-type
+           (rabbitmq-configuration
+             (rabbitmq-configuration
+               (plugins '("rabbitmq_stream"
+                          "rabbitmq_management"
+                          "rabbitmq_prometheus")))))
+  #+end_src
+
+At startup, RabbitMQ broker logs its initialization messages into =/var/log/messages= file. Once running, the logging messages can be found in a logging file of a RabbitMQ node in =/var/log/rabbitmq= directory.
+
+#+begin_quote
+*Note:* The default configuration of the RabbitMQ service enables the RabbitMQ broker to accept connections only on loopback interfaces. However, enabling certain plugins may open ports on all network interfaces. See also [[https://www.rabbitmq.com/docs/networking#ports][RabbitMQ Port Access]].
+
+#+end_quote
+
+- Data Type: rabbitmq-configuration  :: This data type represents the configuration for RabbitMQ.
+
+  - =rabbitmq= (default: =rabbitmq=) :: The RabbitMQ package to use.
+
+  - =config-file= (default: =%default-rabbitmq-config-file=) :: Configuration file for the RabbitMQ broker. See also [[https://www.rabbitmq.com/docs/configure][RabbitMQ Configuration]].
+
+  - =data-directory= (default: ="/var/lib/rabbitmq/data"=) :: Directory with RabbitMQ broker data - a schema database, message stores, cluster member information, and other persistent node state.
+
+  - =plugins= (default: ='()=) :: A list of RabbitMQ plugins to enable. View all available plugins using the =rabbitmq-plugins list= command.

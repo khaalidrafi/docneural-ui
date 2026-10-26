@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Stepwise-Editing-a-Keyboard-Macro">1. 19.7 Stepwise Editing a Keyboard Macro ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Kmacro-Menu.html">Listing and Editing Keyboard Macros</a>   Previous: <a href="docs/emacs--Edit-Keyboard-Macro.html">Editing a Keyboard Macro</a>   Up: <a href="docs/emacs--Keyboard-Macros.html">Keyboard Macros</a>
+</p>
+
+<p>
+<a id="Keyboard-Macro-Step_002dEdit"></a>
+</p>
+
+<hr />
+<div id="outline-container-Stepwise-Editing-a-Keyboard-Macro" class="outline-2">
+<h2 id="Stepwise-Editing-a-Keyboard-Macro"><span class="section-number-2">1.</span> 19.7 Stepwise Editing a Keyboard Macro <a href="#Stepwise-Editing-a-Keyboard-Macro">¶</a></h2>
+<div class="outline-text-2" id="text-Stepwise-Editing-a-Keyboard-Macro">
+<p>
+You can interactively replay and edit the last keyboard macro, one command at a time, by typing C-x C-k SPC (<code>kmacro-step-edit-macro</code>). Unless you quit the macro using q or C-g, the edited macro replaces the last macro on the macro ring.
+</p>
+
+<p>
+This macro editing feature shows the last macro in the minibuffer together with the first (or next) command to be executed, and prompts you for an action. You can enter ? to get a summary of your options. These actions are available:
+</p>
+
+<ul class="org-ul">
+<li>SPC and y execute the current command, and advance to the next command in the keyboard macro.</li>
+<li>n, d, and DEL skip and delete the current command.</li>
+<li>f skips the current command in this execution of the keyboard macro, but doesn't delete it from the macro.</li>
+<li>TAB executes the current command, as well as all similar commands immediately following the current command; for example, TAB may be used to insert a sequence of characters (corresponding to a sequence of <code>self-insert-command</code> commands).</li>
+<li>c continues execution (without further editing) until the end of the keyboard macro. If execution terminates normally, the edited macro replaces the original keyboard macro.</li>
+<li>C-k skips and deletes the rest of the keyboard macro, terminates step-editing, and replaces the original keyboard macro with the edited macro.</li>
+<li>q and C-g cancels the step-editing of the keyboard macro; discarding any changes made to the keyboard macro.</li>
+<li>i <code>key</code>&#x2026; C-j reads and executes a series of key sequences (not including the final C-j), and inserts them before the current command in the keyboard macro, without advancing over the current command.</li>
+<li>I <code>key</code>&#x2026; reads one key sequence, executes it, and inserts it before the current command in the keyboard macro, without advancing over the current command.</li>
+<li>r <code>key</code>&#x2026; C-j reads and executes a series of key sequences (not including the final C-j), and replaces the current command in the keyboard macro with them, advancing over the inserted key sequences.</li>
+<li>R <code>key</code>&#x2026; reads one key sequence, executes it, and replaces the current command in the keyboard macro with that key sequence, advancing over the inserted key sequence.</li>
+<li>a <code>key</code>&#x2026; C-j executes the current command, then reads and executes a series of key sequences (not including the final C-j), and inserts them after the current command in the keyboard macro; it then advances over the current command and the inserted key sequences.</li>
+<li>A <code>key</code>&#x2026; C-j executes the rest of the commands in the keyboard macro, then reads and executes a series of key sequences (not including the final C-j), and appends them at the end of the keyboard macro; it then terminates the step-editing and replaces the original keyboard macro with the edited macro.</li>
+</ul>
+
+<hr />
+</div>
+</div>

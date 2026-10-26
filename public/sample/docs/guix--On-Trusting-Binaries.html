@@ -1,0 +1,88 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="On-Trusting-Binaries"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Substitution-Failure.html">Substitution Failure</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="On-Trusting-Binaries-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="on-trusting-binaries"></a>5.3.7 On Trusting Binaries<br />
+<div class="outline-text-5" id="text-on-trusting-binaries">
+<p>
+<a id="index-trust_002c-of-pre_002dbuilt-binaries"></a>
+Today, each individual's control over their own computing is at the mercy of institutions, corporations, and groups with enough power and determination to subvert the computing infrastructure and exploit its weaknesses. While using substitutes can be convenient, we encourage users to also build on their own, or even run their own build farm, such that the project run substitute servers are less of an interesting target. One way to help is by publishing the software you build using <code>guix publish</code> so that others have one more choice of server to download substitutes from (see <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>).
+</p>
+
+<p>
+Guix has the foundations to maximize build reproducibility (see <a href="docs/guix--Features.html">Features</a>). In most cases, independent builds of a given package or derivation should yield bit-identical results. Thus, through a diverse set of independent package builds, we can strengthen the integrity of our systems. The <code>guix challenge</code> command aims to help users assess substitute servers, and to assist developers in finding out about non-deterministic package builds (see <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>). Similarly, the <code>--check</code> option of <code>guix build</code> allows users to check whether previously-installed substitutes are genuine by rebuilding them locally (see <a href="docs/guix--Additional-Build-Options.html#build_002dcheck"><code>guix build --check</code></a>). To force a full rebuild of a package (ignoring security updates via grafts (see <a href="docs/guix--Security-Updates.html">Security Updates</a>), if any grafts exist&#x2014;which is not always the case), use <code>--check</code> together with <code>--no-grafts</code> (see <a href="docs/guix--Common-Build-Options.html"><code>--no-grafts</code></a>). Because grafts are built as their own derivation, if the package you want to rebuild is subject to being grafted, merely using <code>--check</code> will only rebuild the grafting derivation, and not actually recompile the package.
+</p>
+
+<p>
+In the future, we want Guix to have support to publish and retrieve binaries to/from other users, in a peer-to-peer fashion. If you would like to discuss this project, join us on <a href="mailto:guix-devel@gnu.org">guix-devel@gnu.org</a>.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Substitution-Failure.html">Substitution Failure</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

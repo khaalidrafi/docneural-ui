@@ -1,0 +1,23 @@
+:PROPERTIES:
+:ID: emacs--Filling
+:END:
+#+filetags: :emacs:
+#+title: Filling
+
+Next: [[id:emacs--Case][Case Conversion Commands]]   Previous: [[id:emacs--Quotation-Marks][Quotation Marks]]   Up: [[id:emacs--Text][Commands for Human Languages]]
+
+<<Filling>>
+
+--------------
+
+*** 27.6 Filling Text [[#Filling-Text][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Filling-Text
+:CLASS: section
+:END:
+/Filling/ text means breaking it up into lines that fit a specified width. Emacs does filling in two ways. In Auto Fill mode, inserting text with self-inserting characters also automatically fills it. There are also explicit fill commands that you can use when editing text.
+
+- [[id:emacs--Auto-Fill][Auto Fill Mode]]
+- [[id:emacs--Fill-Commands][Explicit Fill Commands]]
+- [[id:emacs--Fill-Prefix][The Fill Prefix]]
+- [[id:emacs--Adaptive-Fill][Adaptive Filling]]

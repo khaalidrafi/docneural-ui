@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Stack-Buffer-1">1. 29.6.5.5 Stack Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Other-GDB-Buffers.html">Other GDB Buffers</a>   Previous: <a href="docs/emacs--Threads-Buffer.html">Threads Buffer</a>   Up: <a href="docs/emacs--GDB-Graphical-Interface.html">GDB Graphical Interface</a>
+</p>
+
+<p>
+<a id="Stack-Buffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Stack-Buffer-1" class="outline-2">
+<h2 id="Stack-Buffer-1"><span class="section-number-2">1.</span> 29.6.5.5 Stack Buffer <a href="#Stack-Buffer-1">¶</a></h2>
+<div class="outline-text-2" id="text-Stack-Buffer-1">
+<p>
+The GDB Stack buffer displays a <i>call stack</i>, with one line for each of the nested subroutine calls (<i>stack frames</i>) in the debugger session. See <a href="../gdb_html/Backtrace.html#Backtrace">Backtraces</a> in The GNU debugger.
+</p>
+
+<p>
+On graphical displays, the selected stack frame is indicated by an arrow in the fringe. On text terminals, or when fringes are disabled, the selected stack frame is displayed in reverse contrast. To select a stack frame, move point in its line and type RET (<code>gdb-frames-select</code>), or click mouse-2 on it. Doing so also updates the Locals buffer (see <a href="docs/emacs--Other-GDB-Buffers.html">Other GDB Buffers</a>).
+</p>
+
+<p>
+If you want the frame address to be shown each stack frame, customize the variable <code>gdb-stack-buffer-addresses</code> to a non-<code>nil</code> value.
+</p>
+</div>
+</div>

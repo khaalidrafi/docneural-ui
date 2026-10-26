@@ -1,0 +1,109 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Project-Commands-That-Operate-on-Files">1. 30.2.1 Project Commands That Operate on Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Project-Buffer-Commands.html">Project Commands That Operate on Buffers</a>   Up: <a href="docs/emacs--Projects.html">Working with Projects</a>
+</p>
+
+<p>
+<a id="Project-File-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Project-Commands-That-Operate-on-Files" class="outline-2">
+<h2 id="Project-Commands-That-Operate-on-Files"><span class="section-number-2">1.</span> 30.2.1 Project Commands That Operate on Files <a href="#Project-Commands-That-Operate-on-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Project-Commands-That-Operate-on-Files">
+<dl class="org-dl">
+<dt>C-x p f</dt><dd>Visit a file that belongs to the current project (<code>project-find-file</code>).</dd>
+
+<dt>C-x p g</dt><dd>Find matches for a regexp in all files that belong to the current project (<code>project-find-regexp</code>).</dd>
+
+<dt>M-x project-search</dt><dd>Interactively search for regexp matches in all files that belong to the current project.</dd>
+
+<dt>C-x p r</dt><dd>Perform query-replace for a regexp in all files that belong to the current project (<code>project-query-replace-regexp</code>).</dd>
+
+<dt>C-x p D</dt><dd>Run Dired in the current project's root directory (<code>project-dired</code>).</dd>
+
+<dt>C-x p v</dt><dd>Run <code>vc-dir</code> in the current project's root directory (<code>project-vc-dir</code>).</dd>
+
+<dt>C-x p s</dt><dd>Start an inferior shell in the current project's root directory (<code>project-shell</code>).</dd>
+
+<dt>C-x p e</dt><dd>Start Eshell in the current project's root directory (<code>project-eshell</code>).</dd>
+
+<dt>C-x p c</dt><dd>Run compilation in the current project's root directory (<code>project-compile</code>).</dd>
+
+<dt>C-x p !</dt><dd>Run shell command in the current project's root directory (<code>project-shell-command</code>).</dd>
+
+<dt>C-x p &amp;</dt><dd>Run shell command asynchronously in the current project's root directory (<code>project-async-shell-command</code>).</dd>
+
+<dt>C-x p o</dt><dd>Run the next command in the current project (<code>project-any-command</code>).</dd>
+</dl>
+
+<p>
+Emacs provides commands for handling project files conveniently. This subsection describes these commands.
+</p>
+
+<p>
+All of the commands described here share the notion of the <i>current project</i>. The current project is determined by the <code>default-directory</code> (see <a href="docs/emacs--File-Names.html">File Names</a>) of the buffer that is the current buffer when the command is invoked. If that directory doesn't seem to belong to a recognizable project, these commands prompt you for the project directory.
+</p>
+
+<p>
+The command C-x p f (<code>project-find-file</code>) is a convenient way of visiting files (see <a href="docs/emacs--Visiting.html">Visiting Files</a>) that belong to the current project. Unlike C-x C-f, this command doesn't require typing the full file name of the file to visit, you can type only the file's base name (i.e., omit the leading directories). In addition, the completion candidates considered by the command include only the files belonging to the current project, and nothing else. If there's a file name at point, this command offers that file as the first element of the “future history”. If given a prefix, include all files under the project root, except for VCS directories listed in <code>vc-directory-exclusion-list</code>.
+</p>
+
+<p>
+The command C-x p g (<code>project-find-regexp</code>) is similar to <code>rgrep</code> (see <a href="docs/emacs--Grep-Searching.html">Searching with Grep under Emacs</a>), but it searches only the files that belong to the current project. The command prompts for the regular expression to search, and pops up an Xref mode buffer with the search results, where you can select a match using the Xref mode commands (see <a href="docs/emacs--Xref-Commands.html">Commands Available in the <code>*xref*</code> Buffer</a>). When invoked with a prefix argument, this command additionally prompts for the base directory from which to start the search; this allows, for example, to limit the search only to project files under a certain subdirectory of the project root. The way this command displays the matches is affected by the value of <code>xref-auto-jump-to-first-xref</code> (see <a href="docs/emacs--Identifier-Search.html">Searching and Replacing with Identifiers</a>).
+</p>
+
+<p>
+M-x project-search is a sequential variant of <code>project-find-regexp</code>. It prompts for a regular expression to search in the current project's files, but instead of finding all the matches and displaying them, it stops when it finds a match and visits the matched file at the locus of the match, allowing you to edit the matched file. To find the rest of the matches, type M-x fileloop-continue RET.
+</p>
+
+<p>
+C-x p r (<code>project-query-replace-regexp</code>) is similar to <code>project-search</code>, but it prompts you for whether to replace each match it finds, like <code>query-replace</code> does (see <a href="docs/emacs--Query-Replace.html">Query Replace</a>), and continues to the next match after you respond. If your response causes Emacs to exit the query-replace loop, you can later continue with M-x fileloop-continue RET.
+</p>
+
+<p>
+The command C-x p d (<code>project-find-dir</code>) prompts you to choose a directory inside the current project, with completion. And opens a Dired buffer (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>) listing the files in it.
+</p>
+
+<p>
+The command C-x p D (<code>project-dired</code>) opens a Dired buffer (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>) listing the files in the current project's root directory.
+</p>
+
+<p>
+The command C-x p v (<code>project-vc-dir</code>) opens a VC Directory buffer (see <a href="docs/emacs--VC-Directory-Mode.html">VC Directory Mode</a>) listing the version control statuses of the files in a directory tree under the current project's root directory.
+</p>
+
+<p>
+The command C-x p s (<code>project-shell</code>) starts a shell session (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>) in a new buffer with the current project's root as the working directory.
+</p>
+
+<p>
+The command C-x p e (<code>project-eshell</code>) starts an Eshell session in a new buffer with the current project's root as the working directory. See <a href="../eshell_html/index.html#Top">Eshell</a> in Eshell: The Emacs Shell.
+</p>
+
+<p>
+The command C-x p c (<code>project-compile</code>) runs compilation (see <a href="docs/emacs--Compilation.html">Running Compilations under Emacs</a>) in the current project's root directory.
+</p>
+
+<p>
+The command C-x p ! (<code>project-shell-command</code>) runs <code>shell-command</code> in the current project's root directory.
+</p>
+
+<p>
+The command C-x p &amp; (<code>project-async-shell-command</code>) runs <code>async-shell-command</code> in the current project's root directory.
+</p>
+
+<p>
+Finally, the command C-x p o (<code>project-any-command</code>) will run the next command you type, whether related to files or not, in the current project.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,78 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Applying-custom-styles-1">1. 13.12.5 Applying custom styles ¶</a></li>
+<li><a href="#Applying-custom-styles_003a-the-easy-way">2. Applying custom styles: the easy way ¶</a></li>
+<li><a href="#Using-third_002dparty-styles-and-templates-1">3. Using third-party styles and templates ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Applying-custom-styles"></a>
+Next: <a href="docs/org--Links-in-ODT-export.html">Links in ODT export</a>, Previous: <a href="docs/org--Extending-ODT-export.html">Extending ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Applying-custom-styles-1" class="outline-2">
+<h2 id="Applying-custom-styles-1"><span class="section-number-2">1.</span> 13.12.5 Applying custom styles <a href="#Applying-custom-styles-1">¶</a></h2>
+<div class="outline-text-2" id="text-Applying-custom-styles-1">
+<p>
+The ODT export backend comes with many OpenDocument styles (see <a href="docs/org--Advanced-topics-in-ODT-export.html#Working-with-OpenDocument-style-files">Working with OpenDocument style files</a>). To expand or further customize these built-in style sheets, either edit the style sheets directly or generate them using an application such as LibreOffice. The example here shows creating a style using LibreOffice.
+</p>
+</div>
+</div>
+<div id="outline-container-Applying-custom-styles_003a-the-easy-way" class="outline-2">
+<h2 id="Applying-custom-styles_003a-the-easy-way"><span class="section-number-2">2.</span> Applying custom styles: the easy way <a href="#Applying-custom-styles_003a-the-easy-way">¶</a></h2>
+<div class="outline-text-2" id="text-Applying-custom-styles_003a-the-easy-way">
+<ol class="org-ol">
+<li><p>
+Create a sample ‘=example.org=' file with settings as shown below, and export it to ODT format.
+</p>
+
+<pre class="example" id="orgde38c08">
+#+OPTIONS: H:10 num:t
+</pre></li>
+
+<li>Open the above ‘=example.odt=' using LibreOffice. Use the <i>Stylist</i> to locate the target styles, which typically have the “Org” prefix. Open one, modify, and save as either OpenDocument Text (ODT) or OpenDocument Template (OTT) file.</li>
+
+<li><p>
+Customize the variable <code>org-odt-styles-file</code> and point it to the newly created file. For additional configuration options, see <a href="docs/org--Advanced-topics-in-ODT-export.html#x_002doverriding_002dfactory_002dstyles">Overriding factory styles</a>.
+</p>
+
+<p>
+To apply an ODT style to a particular file, use the ‘=ODT<sub>STYLES</sub><sub>FILE</sub>=' keyword as shown in the example below:
+</p>
+
+<pre class="example" id="orgb3abf59">
+#+ODT_STYLES_FILE: "/path/to/example.ott"
+</pre>
+
+<p>
+or
+</p>
+
+<pre class="example" id="org5660f68">
+#+ODT_STYLES_FILE: ("/path/to/file.ott" ("styles.xml" "image/hdr.png"))
+</pre></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-Using-third_002dparty-styles-and-templates-1" class="outline-2">
+<h2 id="Using-third_002dparty-styles-and-templates-1"><span class="section-number-2">3.</span> Using third-party styles and templates <a href="#Using-third_002dparty-styles-and-templates-1">¶</a></h2>
+<div class="outline-text-2" id="text-Using-third_002dparty-styles-and-templates-1">
+<p>
+The ODT export backend relies on many templates and style names. Using third-party styles and templates can lead to mismatches. Templates derived from built-in ODT templates and styles seem to have fewer problems.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Links-in-ODT-export.html">Links in ODT export</a>, Previous: <a href="docs/org--Extending-ODT-export.html">Extending ODT export</a>, Up: <a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

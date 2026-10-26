@@ -1,0 +1,141 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Changing-a-Variable-1">1. 51.1.3 Changing a Variable ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Saving-Customizations.html">Saving Customizations</a>   Previous: <a href="docs/emacs--Browsing-Custom.html">Browsing and Searching for Settings</a>   Up: <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>
+</p>
+
+<p>
+<a id="Changing-a-Variable"></a>
+</p>
+
+<hr />
+<div id="outline-container-Changing-a-Variable-1" class="outline-2">
+<h2 id="Changing-a-Variable-1"><span class="section-number-2">1.</span> 51.1.3 Changing a Variable <a href="#Changing-a-Variable-1">¶</a></h2>
+<div class="outline-text-2" id="text-Changing-a-Variable-1">
+<p>
+Here is an example of what a variable, or user option, looks like in the customization buffer:
+</p>
+
+<pre class="example" id="orga7c8242">
+[Hide] Kill Ring Max: Integer (positive or zero): 120
+   [State]: STANDARD.
+   Maximum length of kill ring before oldest elements are thrown away.
+</pre>
+
+<p>
+The first line shows that the variable is named <code>kill-ring-max</code>, formatted as ‘=Kill Ring Max=' for easier viewing, and also shows its expected type: a positive integer or zero. The default value is ‘=120='. The button labeled ‘=[Hide]=', if activated, hides the variable's value and state; this is useful to avoid cluttering up the customization buffer with very long values (for this reason, variables that have very long values may start out hidden). If you use the ‘=[Hide]=' button, it changes to ‘=[Show Value]=', which you can activate to reveal the value and state. On a graphical display, the ‘=[Hide]=' and ‘=[Show Value]=' buttons are replaced with graphical triangles pointing downwards and rightwards respectively.
+</p>
+
+<p>
+The line after the variable name indicates the <i>customization state</i> of the variable: in this example, ‘=STANDARD=' means you have not changed the variable, so its value is the default one. The ‘=[State]=' button gives a menu of operations for customizing the variable.
+</p>
+
+<p>
+Below the customization state is the documentation for the variable. This is the same documentation that would be shown by the C-h v command (see <a href="docs/emacs--Examining.html">Examining and Setting Variables</a>). If the documentation is more than one line long, only one line may be shown. If so, that line ends with a ‘=[More]=' button; activate this to see the full documentation.
+</p>
+
+<p>
+To enter a new value for ‘=Kill Ring Max=', just move point to the value and edit it. For example, type M-d to delete the ‘=60=' and type in another number. As you begin to alter the text, the ‘=[State]=' line will change:
+</p>
+
+<pre class="example" id="org69704b2">
+[State]: EDITED, shown value does not take effect until you
+         set or save it.
+</pre>
+
+<p>
+Editing the value does not make it take effect right away. To do that, you must <i>set</i> the variable by activating the ‘=[State]=' button and choosing ‘=Set for Current Session='. Then the variable's state becomes:
+</p>
+
+<pre class="example" id="org86a6969">
+[State]: SET for current session only.
+</pre>
+
+<p>
+You don't have to worry about specifying a value that is not valid; the ‘=Set for Current Session=' operation checks for validity and will not install an unacceptable value.
+</p>
+
+<p>
+While editing certain kinds of values, such as file names, directory names, and Emacs command names, you can perform completion with C-M-i (<code>widget-complete</code>), or the equivalent keys M-TAB or ESC TAB. This behaves much like minibuffer completion (see <a href="docs/emacs--Completion.html">Completion</a>).
+</p>
+
+<p>
+Typing RET on an editable value field moves point forward to the next field or button, like TAB. You can thus type RET when you are finished editing a field, to move on to the next button or field. To insert a newline within an editable field, use C-o or C-q C-j.
+</p>
+
+<p>
+For some variables, there is only a fixed set of legitimate values, and you are not allowed to edit the value directly. Instead, a ‘=[Value Menu]=' button appears before the value; activating this button presents a choice of values. For a boolean “on or off” value, the button says ‘=[Toggle]=', and flips the value. After using the ‘=[Value Menu]=' or ‘=[Toggle]=' button, you must again set the variable to make the chosen value take effect.
+</p>
+
+<p>
+Some variables have values with complex structure. For example, the value of <code>minibuffer-frame-alist</code> is an association list. Here is how it appears in the customization buffer:
+</p>
+
+<pre class="example" id="org5984add">
+[Hide] Minibuffer Frame Alist:
+[INS] [DEL] Parameter: width
+            Value: 80
+[INS] [DEL] Parameter: height
+            Value: 2
+[INS]
+   [ State ]: STANDARD.
+   Alist of parameters for the initial minibuffer frame. [Hide]
+   [...more lines of documentation...]
+</pre>
+
+<p>
+In this case, each association in the list consists of two items, one labeled ‘=Parameter=' and one labeled ‘=Value='; both are editable fields. You can delete an association from the list with the ‘=[DEL]=' button next to it. To add an association, use the ‘=[INS]=' button at the position where you want to insert it; the very last ‘=[INS]=' button inserts at the end of the list.
+</p>
+
+<p>
+When you set a variable, the new value takes effect only in the current Emacs session. To <i>save</i> the value for future sessions, use the ‘=[State]=' button and select the ‘=Save for Future Sessions=' operation. See <a href="docs/emacs--Saving-Customizations.html">Saving Customizations</a>.
+</p>
+
+<p>
+You can also restore the variable to its standard value by using the ‘=[State]=' button and selecting the ‘=Erase Customization=' operation. There are actually four reset operations:
+</p>
+
+<dl class="org-dl">
+<dt>‘=Undo Edits='</dt><dd>If you have modified but not yet set the variable, this restores the text in the customization buffer to match the actual value.</dd>
+
+<dt>‘=Revert This Session's Customizations='</dt><dd>This restores the value of the variable to the last saved value, if there was one. Otherwise it restores the standard value. It updates the text accordingly.</dd>
+
+<dt>‘=Erase Customization='</dt><dd>This sets the variable to its standard value. Any saved value that you have is also eliminated.</dd>
+
+<dt>‘=Set to Backup Value='</dt><dd>This sets the variable to a previous value that was set in the customization buffer in this session. If you customize a variable and then reset it, which discards the customized value, you can get the discarded value back again with this operation.</dd>
+</dl>
+
+<p>
+Sometimes it is useful to record a comment about a specific customization. Use the ‘=Add Comment=' item from the ‘=[State]=' menu to create a field for entering the comment.
+</p>
+
+<p>
+Near the top of the customization buffer are two lines of buttons:
+</p>
+
+<pre class="example" id="orgb56b693">
+Operate on all settings in this buffer:
+[Revert...] [Apply] [Apply and Save]
+</pre>
+
+<p>
+The ‘=[Revert&#x2026;]=' button drops a menu with the first 3 reset operations described above. The ‘=[Apply]=' button applies the settings for the current session. The ‘=[Apply and Save]=' button applies the settings and saves them for future sessions; this button does not appear if Emacs was started with the <code>-q</code> or <code>-Q</code> option (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>).
+</p>
+
+<p>
+The command C-c C-c (<code>Custom-set</code>) is equivalent to using the ‘=[Set for Current Session]=' button. The command C-x C-s (<code>Custom-save</code>) is like using the ‘=[Save for Future Sessions]=' button.
+</p>
+
+<p>
+The ‘=[Exit]=' button switches out of the customization buffer, and buries the buffer at the bottom of the buffer list. To make it kill the customization buffer instead, change the variable <code>custom-buffer-done-kill</code> to <code>t</code>.
+</p>
+
+<hr />
+</div>
+</div>

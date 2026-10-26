@@ -1,0 +1,53 @@
+:PROPERTIES:
+:ID: guix--Making-Decisions
+:END:
+#+filetags: :guix:
+#+title: Making Decisions
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Making-Decisions>>
+
+Next: [[id:guix--Commit-Access][Commit Access]], Previous: [[id:guix--Teams][Teams]], Up: [[id:guix--Contributing][Contributing]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Making-Decisions-1>>
+*** 22.13 Making Decisions
+:PROPERTIES:
+:CUSTOM_ID: making-decisions
+:CLASS: section
+:END:
+<<index-decision-making>> <<index-consensus-seeking>>
+It is expected from all contributors, and even more so from committers, to help build consensus and make decisions based on consensus. By using consensus, we are committed to finding solutions that everyone can live with. It implies that no decision is made against significant concerns and these concerns are actively resolved with proposals that work for everyone.
+
+A contributor (who may or may not have commit access) wishing to block a proposal bears a special responsibility for finding alternatives, proposing ideas/code or explain the rationale for the status quo to resolve the deadlock. To learn what consensus decision making means and understand its finer details, you are encouraged to read [[https://www.seedsforchange.org.uk/consensus]].

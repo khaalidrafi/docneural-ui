@@ -83,6 +83,49 @@
     return m
   })
 
+  /* The terminal status line: a slow typewriter cycling REAL corpus facts.
+     It types only after the data is live (a boot line that lies is worse
+     than none), it is aria-hidden (the same facts are in the stats block
+     below it), and reduced-motion visitors get a static line, no loop. */
+  const feedLines = $derived([
+    `// ${sources.length} corpora indexed · ${pageCount} pages live`,
+    `// ${synCount} synapses primed — ego lens armed`,
+    `// drop into ⌁ SYNAPSES to watch the wires fire`
+  ])
+  let feedText = $state('')
+  let feedTimer: ReturnType<typeof setTimeout> | 0 = 0
+  $effect(() => {
+    if (!store.ready) return
+    const lines = feedLines
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      feedText = lines[1] ?? ''
+      return
+    }
+    let li = 0
+    let ci = 0
+    let cancelled = false
+    const step = (): void => {
+      if (cancelled) return
+      const line = lines[li % lines.length]
+      if (ci <= line.length) {
+        feedText = line.slice(0, ci)
+        ci++
+        feedTimer = setTimeout(step, 24)
+      } else {
+        feedTimer = setTimeout(() => {
+          li++
+          ci = 0
+          step()
+        }, 3200)
+      }
+    }
+    step()
+    return () => {
+      cancelled = true
+      clearTimeout(feedTimer)
+    }
+  })
+
   // A source card: open that corpus and land its first chapter (showManual
   // alone only retargets the TOC; here there is no selection, so we do it).
   function openManual(m: string): void {
@@ -108,6 +151,7 @@
       <span class="dn-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
     </div>
     <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
+    <p class="feed dn-mono" aria-hidden="true">{feedText}<span class="feed-caret">▌</span></p>
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual
       split per section, exported from Org by Emacs, and wired into an org-roam
@@ -127,10 +171,10 @@
       </div>
       <div class="dn-kv">
         <span>sources</span><span>{sources.length} · {sourceList}</span>
-        <span>pages</span><span use:countup={pageCount}>{pageCount}</span>
-        <span>neurons</span><span use:countup={docCount}>{docCount}</span>
-        <span>synapses</span><span><b use:countup={synCount}>{synCount}</b> firing</span>
-        <span>artifacts</span><span>graph.json · llms.txt · *.org</span>
+        <span>pages</span><span class="num" use:countup={pageCount}>{pageCount}</span>
+        <span>neurons</span><span class="num" use:countup={docCount}>{docCount}</span>
+        <span>synapses</span><span class="num"><b use:countup={synCount}>{synCount}</b> <em>firing</em></span>
+        <span>artifacts</span><span class="files">graph.json · llms.txt · *.org</span>
       </div>
       <p class="note">indexed at build time — no database, no server</p>
       <!-- Resume, straight off the front door: the last page you were on, at
@@ -312,7 +356,8 @@
   }
   .wordmark {
     font-family: var(--dn-font-display);
-    font-size: clamp(2.4rem, 8vw, 4.4rem);
+    /* SIGNAL pass: bigger, tighter — the front door announces itself. */
+    font-size: clamp(2.7rem, 9vw, 5.2rem);
     /* Electrolize is single-weight; asking for 700 here only gets the
        browser's fake bold, which is ugly at display size. */
     font-weight: 400;
@@ -321,7 +366,9 @@
        carry the same string from data-text. */
     letter-spacing: 0.02em;
     color: var(--dn-fg);
-    text-shadow: 0 0 30px color-mix(in srgb, var(--dn-accent) 26%, transparent);
+    text-shadow:
+      0 0 18px color-mix(in srgb, var(--dn-accent) 32%, transparent),
+      0 0 60px color-mix(in srgb, var(--dn-accent) 16%, transparent);
     display: inline-flex;
     align-items: center;
     gap: 0.4em;
@@ -332,24 +379,49 @@
     letter-spacing: 0.14em;
     font-size: 0.75rem;
     text-transform: lowercase;
-    margin: 0.5rem 0 1.2rem;
+    margin: 0.5rem 0 0.35rem;
+  }
+  /* The terminal status line: types real corpus facts, caret blinking.
+     aria-hidden in the markup; its facts are duplicated in the stats. */
+  .feed {
+    min-height: 1.3em;
+    margin: 0 0 1.1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--dn-accent);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 35%, transparent);
+  }
+  .feed-caret {
+    color: var(--dn-hot);
+    text-shadow: 0 0 9px color-mix(in srgb, var(--dn-hot) 70%, transparent);
+    animation: dn-blink 1.1s steps(1, end) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feed-caret { animation: none; }
   }
   .lede { color: var(--dn-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
   .lede strong { color: var(--dn-fg); }
   .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2); }
   /* The hero readout: a bordered panel of real numbers, left-aligned inside a
-     centered hero and wide enough that the columns never wrap on a laptop. */
+     centered hero and wide enough that the columns never wrap on a laptop.
+     SIGNAL pass: darker glass, accent edge — and the numbers are the hero's
+     second voice: big mono digits with a neon keyline, not a data table. */
   .stats {
     width: min(46rem, 100%);
     margin-top: 1.4rem;
     text-align: left;
     display: grid;
-    gap: 0.7rem;
+    gap: 0.55rem;
     padding: 1.1rem 1.3rem 1.2rem;
-    background: var(--dn-bg-raise);
-    border: 1px solid var(--dn-border);
-    border-left: 2px solid var(--dn-src, var(--dn-accent));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--dn-accent) 4%, transparent), transparent 46%),
+      color-mix(in srgb, var(--dn-bg-raise) 94%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 42%, var(--dn-border-strong));
+    border-left: 3px solid var(--dn-src, var(--dn-accent));
     border-radius: 3px;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 14%, transparent),
+      0 14px 40px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
   }
   .stats-hd {
     display: flex;
@@ -361,7 +433,39 @@
   .stats .note { margin: 0; font-size: 0.78rem; color: var(--dn-fg-muted); }
   /* The readout is monospace: digits that do not shift width between builds are
      the difference between a machine's count and a sentence about a count. */
-  .stats .dn-kv { font-family: var(--dn-font-mono); font-size: 0.84rem; }
+  .stats .dn-kv {
+    font-family: var(--dn-font-mono);
+    font-size: 0.84rem;
+    align-items: baseline;
+    row-gap: 0.35rem;
+  }
+  .stats .dn-kv > span:nth-child(odd) {
+    text-transform: uppercase;
+    letter-spacing: var(--dn-track);
+    font-size: 0.66rem;
+    padding-top: 0.45em;
+  }
+  /* Big neon count-up numbers: the corpus size IS the pitch. */
+  .stats .dn-kv .num {
+    font-size: 1.6rem;
+    line-height: 1.05;
+    color: var(--dn-fg);
+    text-shadow: 0 0 16px color-mix(in srgb, var(--dn-accent) 26%, transparent);
+  }
+  .stats .dn-kv .num b {
+    font-weight: 600;
+    color: var(--dn-hot);
+    text-shadow: 0 0 16px color-mix(in srgb, var(--dn-hot) 42%, transparent);
+  }
+  .stats .dn-kv .num em {
+    font-style: normal;
+    font-size: 0.66rem;
+    letter-spacing: var(--dn-track);
+    text-transform: uppercase;
+    color: var(--dn-fg-muted);
+    text-shadow: none;
+  }
+  .stats .dn-kv .files { font-size: 0.84rem; }
   /* Resume: a labelled row, not a command line. The label says what it does,
      the value says where it goes. */
   .resume {
@@ -449,16 +553,20 @@
     text-align: left;
     color: var(--dn-fg);
     background: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent);
-    border-left: 2px solid var(--dn-src, var(--dn-accent));
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 32%, transparent);
+    border-left: 3px solid var(--dn-src, var(--dn-accent));
     border-radius: 2px;
     padding: 0.7em 0.8em;
     cursor: pointer;
-    transition: border-color 120ms, box-shadow 120ms, background 120ms;
+    transition: border-color 120ms, box-shadow 120ms, background 120ms, transform 120ms;
   }
   .src-card:hover {
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 9%, transparent);
-    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent);
+    box-shadow:
+      0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
+      0 6px 18px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
+    transform: translateY(-2px);
   }
   .src-name { font-size: 0.85rem; font-weight: 600; color: var(--dn-src, var(--dn-fg)); letter-spacing: 0.03em; }
   .src-meta { font-size: 0.68rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
@@ -560,10 +668,10 @@
     color: var(--dn-fg);
     background:
       linear-gradient(180deg,
-        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 9%, transparent),
+        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 11%, transparent),
         transparent 55%),
       var(--dn-bg-raise);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 34%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 42%, transparent);
     padding: 0.9em 1.1em;
     cursor: pointer;
     overflow: hidden;
@@ -587,7 +695,9 @@
   .cta:hover {
     transform: translateY(-2px);
     border-color: var(--dn-src, var(--dn-accent));
-    box-shadow: 0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 20%, transparent);
+    box-shadow:
+      0 0 26px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
+      0 8px 22px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
   }
   .cta-k { font-size: 1.1rem; color: var(--dn-src, var(--dn-accent-2)); }
   .cta-k.spark { color: var(--dn-hot); }
@@ -637,9 +747,10 @@
     transition: height 160ms ease;
   }
   .card:hover {
-    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, transparent);
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent);
-    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, transparent);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--dn-bg-sunken) 65%, transparent);
+    transform: translateY(-2px);
   }
   .card:hover::before { height: 72%; }
   .show-all {

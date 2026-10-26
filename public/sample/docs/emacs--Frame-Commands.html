@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Frame-Commands-1">1. 23.7 Frame Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fonts.html">Fonts</a>   Previous: <a href="docs/emacs--Creating-Frames.html">Creating Frames</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Frame-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Frame-Commands-1" class="outline-2">
+<h2 id="Frame-Commands-1"><span class="section-number-2">1.</span> 23.7 Frame Commands <a href="#Frame-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-Frame-Commands-1">
+<p>
+The following commands are used to delete and operate on frames:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-5-0"></a>C-x 5 0 </dt><dd>Delete the selected frame (<code>delete-frame</code>). This signals an error if there is only one frame.</dd>
+
+<dt><a id="index-C_002dx-5-u"></a>C-x 5 u </dt><dd>When <code>undelete-frame-mode</code> is enabled, undelete one of the 16 most recently deleted frames. Without a prefix argument, undelete the most recently deleted frame. With a numerical prefix argument between 1 and 16, where 1 is the most recently deleted frame, undelete the corresponding deleted frame.</dd>
+
+<dt><a id="index-C_002dz-_0028X-windows_0029"></a>C-z </dt><dd>Minimize (or iconify) the selected Emacs frame (<code>suspend-frame</code>). See <a href="docs/emacs--Exiting.html">Exiting Emacs</a>.</dd>
+
+<dt><a id="index-C_002dx-5-o"></a>C-x 5 o </dt><dd>Select another frame, and raise it. If you repeat this command, it cycles through all the frames on your terminal.</dd>
+
+<dt><a id="index-C_002dx-5-1"></a>C-x 5 1 </dt><dd>Delete all frames on the current terminal, except the selected one.</dd>
+
+<dt><a id="index-M_002dF10"></a>M-F10 </dt><dd>Toggle the maximization state of the current frame. When a frame is maximized, it fills the screen.</dd>
+
+<dt><a id="index-F11"></a>F11 </dt><dd>Toggle full-screen mode for the current frame. (The difference between full-screen and maximized is normally that the former hides window manager decorations, giving slightly more screen space to Emacs itself.)</dd>
+</dl>
+
+<p>
+Note that with some window managers you may have to customize the variable <code>frame-resize-pixelwise</code> to a non-<code>nil</code> value in order to make a frame truly maximized or full-screen. This variable, when set to a non-<code>nil</code> value, in general allows resizing frames at pixel resolution, rather than in integral multiples of lines and columns.
+</p>
+
+<p>
+The C-x 5 0 (<code>delete-frame</code>) command deletes the selected frame. However, it will refuse to delete the last frame in an Emacs session, to prevent you from losing the ability to interact with the Emacs session. Note that when Emacs is run as a daemon (see <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>), there is always a virtual frame that remains after all the ordinary, interactive frames are deleted. In this case, C-x 5 0 can delete the last interactive frame; you can use <code>emacsclient</code> to reconnect to the Emacs session.
+</p>
+
+<p>
+The C-x 5 1 (<code>delete-other-frames</code>) command deletes all other frames on the current terminal (this terminal refers to either a graphical display, or a text terminal; see <a href="docs/emacs--Text-Terminals.html">Text Terminals</a>). If the Emacs session has frames open on other graphical displays or text terminals, those are not deleted.
+</p>
+
+<p>
+The C-x 5 o (<code>other-frame</code>) command selects the next frame on the current terminal. If you are using Emacs on the X Window System with a window manager that selects (or <i>gives focus to</i>) whatever frame the mouse cursor is over, you have to change the variable <code>focus-follows-mouse</code> to <code>t</code> in order for this command to work properly. Then invoking C-x 5 o will also warp the mouse cursor to the chosen frame.
+</p>
+
+<hr />
+</div>
+</div>

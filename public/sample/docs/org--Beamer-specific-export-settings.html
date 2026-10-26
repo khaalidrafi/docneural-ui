@@ -1,0 +1,56 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Beamer-specific-export-settings-1">1. 13.8.2 Beamer specific export settings ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Beamer-specific-export-settings"></a>
+Next: <a href="docs/org--Frames-and-Blocks-in-Beamer.html">Frames and Blocks in Beamer</a>, Previous: <a href="docs/org--Beamer-export-commands.html">Beamer export commands</a>, Up: <a href="docs/org--Beamer-Export.html">Beamer Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Beamer-specific-export-settings-1" class="outline-2">
+<h2 id="Beamer-specific-export-settings-1"><span class="section-number-2">1.</span> 13.8.2 Beamer specific export settings <a href="#Beamer-specific-export-settings-1">¶</a></h2>
+<div class="outline-text-2" id="text-Beamer-specific-export-settings-1">
+<p>
+Beamer export backend has several additional keywords for customizing Beamer output. These keywords work similar to the general options settings (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-BEAMER_005fTHEME_002c-keyword"></a>‘=BEAMER<sub>THEME</sub>=' </dt><dd><p>
+The Beamer layout theme (<code>org-beamer-theme</code>). Use square brackets for options. For example:
+</p>
+
+<pre class="example" id="org2d87269">
+#+BEAMER_THEME: Rochester [height=20pt]
+</pre></dd>
+
+<dt><a id="index-BEAMER_005fFONT_005fTHEME_002c-keyword"></a>‘=BEAMER<sub>FONT</sub><sub>THEME</sub>=' </dt><dd>The Beamer font theme.</dd>
+
+<dt><a id="index-BEAMER_005fINNER_005fTHEME_002c-keyword"></a>‘=BEAMER<sub>INNER</sub><sub>THEME</sub>=' </dt><dd>The Beamer inner theme.</dd>
+
+<dt><a id="index-BEAMER_005fOUTER_005fTHEME_002c-keyword"></a>‘=BEAMER<sub>OUTER</sub><sub>THEME</sub>=' </dt><dd>The Beamer outer theme.</dd>
+
+<dt><a id="index-BEAMER_005fHEADER_002c-keyword"></a>‘=BEAMER<sub>HEADER</sub>=' </dt><dd>Arbitrary lines inserted in the preamble, just before the ‘=hyperref=' settings.</dd>
+
+<dt><a id="index-DESCRIPTION_002c-keyword"></a>‘=DESCRIPTION=' </dt><dd>The document description. For long descriptions, use multiple ‘=DESCRIPTION=' keywords. By default, ‘=hyperref=' inserts ‘=DESCRIPTION=' as metadata. Use <code>org-latex-hyperref-template</code> to configure document metadata. Use <code>org-latex-title-command</code> to configure typesetting of description as part of front matter.</dd>
+
+<dt><a id="index-KEYWORDS_002c-keyword"></a>‘=KEYWORDS=' </dt><dd>The keywords for defining the contents of the document. Use multiple ‘=KEYWORDS=' lines if necessary. By default, ‘=hyperref=' inserts ‘=KEYWORDS=' as metadata. Use <code>org-latex-hyperref-template</code> to configure document metadata. Use <code>org-latex-title-command</code> to configure typesetting of keywords as part of front matter.</dd>
+
+<dt><a id="index-SUBTITLE_002c-keyword-1"></a>‘=SUBTITLE=' </dt><dd>Document's subtitle. For typesetting, use <code>org-beamer-subtitle-format</code> string. Use <code>org-latex-hyperref-template</code> to configure document metadata. Use <code>org-latex-title-command</code> to configure typesetting of subtitle as part of front matter.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Frames-and-Blocks-in-Beamer.html">Frames and Blocks in Beamer</a>, Previous: <a href="docs/org--Beamer-export-commands.html">Beamer export commands</a>, Up: <a href="docs/org--Beamer-Export.html">Beamer Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

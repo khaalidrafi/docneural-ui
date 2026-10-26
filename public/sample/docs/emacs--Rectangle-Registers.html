@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Saving-Rectangles-in-Registers">1. 15.3 Saving Rectangles in Registers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Configuration-Registers.html">Saving Window and Frame Configurations in Registers</a>   Previous: <a href="docs/emacs--Text-Registers.html">Saving Text in Registers</a>   Up: <a href="docs/emacs--Registers.html">Registers</a>
+</p>
+
+<p>
+<a id="Rectangle-Registers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Saving-Rectangles-in-Registers" class="outline-2">
+<h2 id="Saving-Rectangles-in-Registers"><span class="section-number-2">1.</span> 15.3 Saving Rectangles in Registers <a href="#Saving-Rectangles-in-Registers">¶</a></h2>
+<div class="outline-text-2" id="text-Saving-Rectangles-in-Registers">
+<p>
+A register can contain a rectangle instead of linear text. See <a href="docs/emacs--Rectangles.html">Rectangles</a>, for basic information on how to specify a rectangle in the buffer.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-copy_002drectangle_002dto_002dregister"></a>C-x r r <code>r</code> </dt><dd>Copy the region-rectangle into register <code>r</code> (<code>copy-rectangle-to-register</code>). With prefix argument, delete it as well.</dd>
+
+<dt>C-x r i <code>r</code></dt><dd>Insert the rectangle stored in register <code>r</code> (if it contains a rectangle) (<code>insert-register</code>).</dd>
+</dl>
+
+<p>
+The C-x r i <code>r</code> (<code>insert-register</code>) command, previously documented in <a href="docs/emacs--Text-Registers.html">Saving Text in Registers</a>, inserts a rectangle rather than a text string, if the register contains a rectangle.
+</p>
+</div>
+</div>

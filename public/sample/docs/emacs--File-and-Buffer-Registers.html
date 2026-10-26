@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keeping-File-and-Buffer-Names-in-Registers">1. 15.6 Keeping File and Buffer Names in Registers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Keyboard-Macro-Registers.html">Keyboard Macro Registers</a>   Previous: <a href="docs/emacs--Number-Registers.html">Keeping Numbers in Registers</a>   Up: <a href="docs/emacs--Registers.html">Registers</a>
+</p>
+
+<p>
+<a id="File-and-Buffer-Registers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keeping-File-and-Buffer-Names-in-Registers" class="outline-2">
+<h2 id="Keeping-File-and-Buffer-Names-in-Registers"><span class="section-number-2">1.</span> 15.6 Keeping File and Buffer Names in Registers <a href="#Keeping-File-and-Buffer-Names-in-Registers">¶</a></h2>
+<div class="outline-text-2" id="text-Keeping-File-and-Buffer-Names-in-Registers">
+<p>
+If you visit certain file names frequently, you can visit them more conveniently if you put their names in registers. Here's the Lisp code used to put a file <code>name</code> into register <code>r</code>:
+</p>
+
+<pre class="example" id="orgd8c893e">
+(set-register r '(file . name))
+</pre>
+
+<p>
+For example,
+</p>
+
+<pre class="example" id="orgcdfdc75">
+(set-register ?z '(file . "/gd/gnu/emacs/19.0/src/ChangeLog"))
+</pre>
+
+<p>
+puts the file name shown in register ‘=z='.
+</p>
+
+<p>
+To visit the file whose name is in register <code>r</code>, type C-x r j <code>r</code>. (This is the same command used to jump to a position or restore a frame configuration.)
+</p>
+
+<p>
+Similarly, if there are certain buffers you visit frequently, you can put their names in registers. For instance, if you visit the ‘=*Messages*=' buffer often, you can use the following snippet to put that buffer into the ‘=m=' register:
+</p>
+
+<pre class="example" id="orgf3bb5a1">
+(set-register ?m '(buffer . "*Messages*"))
+</pre>
+
+<p>
+To switch to the buffer whose name is in register <code>r</code>, type C-x r j <code>r</code>.
+</p>
+</div>
+</div>

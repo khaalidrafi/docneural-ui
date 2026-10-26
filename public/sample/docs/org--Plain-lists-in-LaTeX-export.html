@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Plain-lists-in-LaTeX-export-1">1. 13.10.7 Plain lists in LaTeX export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Plain-lists-in-LaTeX-export"></a>
+Next: <a href="docs/org--Source-blocks-in-LaTeX-export.html">Source blocks in LaTeX export</a>, Previous: <a href="docs/org--Images-in-LaTeX-export.html">Images in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Plain-lists-in-LaTeX-export-1" class="outline-2">
+<h2 id="Plain-lists-in-LaTeX-export-1"><span class="section-number-2">1.</span> 13.10.7 Plain lists in LaTeX export <a href="#Plain-lists-in-LaTeX-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Plain-lists-in-LaTeX-export-1">
+<p>
+The LaTeX export backend accepts the ‘=environment=' and ‘=options=' attributes for plain lists. Both attributes work together for customizing lists, as shown in the examples:
+</p>
+
+<pre class="example" id="orgef5fda6">
+#+LATEX_HEADER: \usepackage[inline]{enumitem}
+Some ways to say "Hello":
+#+ATTR_LATEX: :environment itemize*
+#+ATTR_LATEX: :options [label={}, itemjoin={,}, itemjoin*={, and}]
+- Hola
+- Bonjour
+- Guten Tag.
+</pre>
+
+<p>
+Since LaTeX supports only four levels of nesting for lists, use an external package, such as ‘=enumitem=' in LaTeX, for levels deeper than four:
+</p>
+
+<pre class="example" id="org1402942">
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \renewlist{itemize}{itemize}{9}
+#+LATEX_HEADER: \setlist[itemize]{label=$\circ$}
+- One
+  - Two
+    - Three
+      - Four
+        - Five
+</pre>
+</div>
+</div>

@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emacs-Terminal-Emulator">1. 40.8 Emacs Terminal Emulator ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Term-Mode.html">Term Mode</a>   Previous: <a href="docs/emacs--Shell-Options.html">Shell Mode Options</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Terminal-emulator"></a>
+</p>
+
+<hr />
+<div id="outline-container-Emacs-Terminal-Emulator" class="outline-2">
+<h2 id="Emacs-Terminal-Emulator"><span class="section-number-2">1.</span> 40.8 Emacs Terminal Emulator <a href="#Emacs-Terminal-Emulator">¶</a></h2>
+<div class="outline-text-2" id="text-Emacs-Terminal-Emulator">
+<p>
+To run a subshell in a text terminal emulator, use M-x term. This creates (or reuses) a buffer named <code>*terminal*</code>, and runs a subshell with input coming from your keyboard, and output going to that buffer.
+</p>
+
+<p>
+The terminal emulator uses Term mode, which has two input modes. In <i>line mode</i>, Term basically acts like Shell mode (see <a href="docs/emacs--Shell-Mode.html">Shell Mode</a>). In <i>char mode</i>, each character is sent directly to the subshell, as terminal input; the sole exception is the terminal escape character, which by default is C-c (see <a href="docs/emacs--Term-Mode.html">Term Mode</a>). Any echoing of your input is the responsibility of the subshell; any terminal output from the subshell goes into the buffer, advancing point.
+</p>
+
+<p>
+Some programs (such as Emacs itself) need to control the appearance of the terminal screen in detail. They do this by emitting special control codes. Term mode recognizes and handles ANSI-standard VT100-style escape sequences, which are accepted by most modern terminals, including <code>xterm</code>. (Hence, you can actually run Emacs inside an Emacs Term window.)
+</p>
+
+<p>
+The <code>term</code> face specifies the default appearance of text in the terminal emulator (the default is the same appearance as the <code>default</code> face). When terminal control codes are used to change the appearance of text, these are represented in the terminal emulator by the faces <code>term-color-black</code>, <code>term-color-red</code>, <code>term-color-green</code>, <code>term-color-yellow</code> <code>term-color-blue</code>, <code>term-color-magenta</code>, <code>term-color-cyan</code>, <code>term-color-white</code>, <code>term-color-underline</code>, and <code>term-color-bold</code>. See <a href="docs/emacs--Faces.html">Text Faces</a>.
+</p>
+
+<p>
+You can also use Term mode to communicate with a device connected to a serial port. See <a href="docs/emacs--Serial-Terminal.html">Serial Terminal</a>.
+</p>
+
+<p>
+The file name used to load the subshell is determined the same way as for Shell mode. To make multiple terminal emulators, rename the buffer <code>*terminal*</code> to something different using M-x rename-uniquely, just as with Shell mode.
+</p>
+
+<p>
+Unlike Shell mode, Term mode does not track the current directory by examining your input. But some shells can tell Term what the current directory is. This is done automatically by <code>bash</code> version 1.15 and later.
+</p>
+
+<hr />
+</div>
+</div>

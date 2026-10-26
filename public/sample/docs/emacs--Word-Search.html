@@ -1,0 +1,73 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Word-Search-1">1. 17.3 Word Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Symbol-Search.html">Symbol Search</a>   Previous: <a href="docs/emacs--Nonincremental-Search.html">Nonincremental Search</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Word-Search"></a>
+</p>
+
+<hr />
+<div id="outline-container-Word-Search-1" class="outline-2">
+<h2 id="Word-Search-1"><span class="section-number-2">1.</span> 17.3 Word Search <a href="#Word-Search-1">¶</a></h2>
+<div class="outline-text-2" id="text-Word-Search-1">
+<p>
+A <i>word search</i> finds a sequence of words without regard to the type of punctuation between them. For instance, if you enter a search string that consists of two words separated by a single space, the search matches any sequence of those two words separated by one or more spaces, newlines, or other punctuation characters. This is particularly useful for searching text documents, because you don't have to worry whether the words you are looking for are separated by newlines or spaces. Note that major modes for programming languages or other specialized modes can modify the definition of a word to suit their syntactic needs.
+</p>
+
+<dl class="org-dl">
+<dt>M-s w</dt><dd>If incremental search is active, toggle word search mode (<code>isearch-toggle-word</code>); otherwise, begin an incremental forward word search (<code>isearch-forward-word</code>).</dd>
+
+<dt>M-s w RET <code>words</code> RET</dt><dd>Search for <code>words</code>, using a forward nonincremental word search.</dd>
+
+<dt>M-s w C-r RET <code>words</code> RET</dt><dd>Search backward for <code>words</code>, using a nonincremental word search.</dd>
+
+<dt>M-s M-w</dt><dd>Search the Web for the text in region.</dd>
+</dl>
+
+<p>
+To begin a forward incremental word search, type M-s w. If incremental search is not already active, this runs the command <code>isearch-forward-word</code>. If incremental search is already active (whether a forward or backward search), M-s w runs the command <code>isearch-toggle-word</code>, which switches to a word search while keeping the direction of the search and the current search string unchanged. You can toggle word search back off by typing M-s w again.
+</p>
+
+<p>
+To begin a nonincremental word search, type M-s w RET for a forward search, or M-s w C-r RET for a backward search. These run the commands <code>word-search-forward</code> and <code>word-search-backward</code> respectively.
+</p>
+
+<p>
+Incremental and nonincremental word searches differ slightly in the way they find a match. In a nonincremental word search, each word in the search string must exactly match a whole word. In an incremental word search, the matching is more lax: while you are typing the search string, its first and last words need not match whole words. This is so that the matching can proceed incrementally as you type. This additional laxity does not apply to the lazy highlight (see <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>), which always matches whole words. While you are typing the search string, ‘=Pending=' appears in the search prompt until you use a search repeating key like C-s.
+</p>
+
+<p>
+The word search commands don't perform character folding, and toggling lax whitespace matching (see <a href="docs/emacs--Lax-Search.html">lax space matching</a>) has no effect on them.
+</p>
+
+<p>
+To search the Web for the text in region, type M-s M-w. This command performs an Internet search for the words in region using the search engine whose URL is specified by the variable <code>eww-search-prefix</code> (see <a href="../eww_html/Basics.html#Basics">EWW</a> in The Emacs Web Wowser Manual). If the region is not active, or doesn't contain any words, this command prompts the user for a URL or keywords to search.
+</p>
+
+<p>
+You can also search for definitions of a word by querying dictionary servers via the DICT protocol defined by RFC 2229. Emacs includes a client for this protocol. Type M-x dictionary-search RET to connect to a DICT server and ask it to provide the available definitions of a word. This command prompts for the word to look up, using the word at point as the default, then asks the DICT server to provide the definitions of that word in one or more dictionaries. By default, the command first tries to connect to the DICT server installed on the local host, and if that fails, it tries <code>dict.org</code> after asking for confirmation; customize the variable <code>dictionary-server</code> to specify, as a string, the URL of a single server to use (use ‘=localhost=' if you want to query only the local server). Normally, <code>dictionary-search</code> tells the server to look up the word in all the dictionaries available to the server, but if you invoke the command with a prefix argument, it will prompt for a single dictionary to use. The list of dictionaries available to a server can be displayed by pressing the ‘=Select dictionary=' button shown in the <code>*Dictionary*</code> buffer, described below.
+</p>
+
+<p>
+The first time you use <code>dictionary-search</code>, it creates a new <code>*Dictionary*</code> buffer and turns on a special mode in it. The buffer shows buttons for selecting a dictionary, searching a definition of another word, etc. Subsequent <code>dictionary-search</code> commands reuse this buffer. To create another such buffer (e.g., to look up other words, perhaps in another dictionary), type M-x dictionary RET.
+</p>
+
+<p>
+If you turn on <code>dictionary-tooltip-mode</code> in a buffer, Emacs will look up the definitions of the word at mouse pointer and show those definitions in a tool tip. This is handy when you are reading text with many words about whose meaning you are unsure.
+</p>
+
+<p>
+For other options of dictionary-search, see the <code>dictionary</code> customization group (see <a href="docs/emacs--Specific-Customization.html">Customizing Specific Items</a>).
+</p>
+
+<hr />
+</div>
+</div>

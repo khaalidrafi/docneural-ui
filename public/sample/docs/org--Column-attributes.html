@@ -1,0 +1,239 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Column-attributes-1">1. 7.5.1.2 Column attributes ¶</a>
+<ul>
+<li><a href="#section">1.1. (56)</a></li>
+<li><a href="#section-1">1.2. (57)</a></li>
+<li><a href="#section-2">1.3. (58)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Column-attributes"></a>
+Previous: <a href="docs/org--Scope-of-column-definitions.html">Scope of column definitions</a>, Up: <a href="docs/org--Defining-columns.html">Defining columns</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Column-attributes-1" class="outline-2">
+<h2 id="Column-attributes-1"><span class="section-number-2">1.</span> 7.5.1.2 Column attributes <a href="#Column-attributes-1">¶</a></h2>
+<div class="outline-text-2" id="text-Column-attributes-1">
+<p>
+A column definition sets the attributes of a column. The general definition looks like this:
+</p>
+
+<pre class="example" id="org0fb0b58">
+%[WIDTH]PROPERTY[(TITLE)][{SUMMARY-TYPE}]
+</pre>
+
+<p>
+Except for the percent sign and the property name, all items are optional. The individual parts have the following meaning:
+</p>
+
+<dl class="org-dl">
+<dt><code>WIDTH</code></dt><dd>An integer specifying the width of the column in characters. If omitted, the width is determined automatically.</dd>
+
+<dt><code>PROPERTY</code></dt><dd>The property that should be edited in this column. Special properties representing metadata are allowed here as well (see <a href="docs/org--Special-Properties.html">Special Properties</a>).</dd>
+
+<dt><code>TITLE</code></dt><dd>The header text for the column. If omitted, the property name is used.</dd>
+
+<dt><code>SUMMARY-TYPE</code></dt><dd><p>
+The summary type. If specified, the column values for parent headings are computed from the direct children. If there is any existing property defined for the parent nodes, it is not used in the calculations.
+</p>
+
+<p>
+When there is an existing property in parent heading, Org does not only overlay the computed value in the column view, but also overwrites the property value in parent's property drawer.
+</p>
+
+<p>
+Summary type is ignored for special properties.
+</p>
+
+<p>
+Supported summary types are:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=+='</td>
+<td class="org-left">Sum numbers in this column.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=+;%.1f='</td>
+<td class="org-left">Like ‘=+=', but format result with ‘=%.1f='.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=$='</td>
+<td class="org-left">Currency, short for ‘=+;%.2f='.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=min='</td>
+<td class="org-left">Smallest number in column.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=max='</td>
+<td class="org-left">Largest number.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=mean='</td>
+<td class="org-left">Arithmetic mean of numbers.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=X='</td>
+<td class="org-left">Checkbox status, ‘=[X]=' if all children are ‘=[X]='.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=X/='</td>
+<td class="org-left">Checkbox status, ‘=[n/m]='.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=X%='</td>
+<td class="org-left">Checkbox status, ‘=[n%]='.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=:='</td>
+<td class="org-left">Sum times, HH:MM, plain numbers are minutes.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=:min='</td>
+<td class="org-left">Smallest time value in column.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=:max='</td>
+<td class="org-left">Largest time value.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=:mean='</td>
+<td class="org-left">Arithmetic mean of time values.</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=@min='</td>
+<td class="org-left">Minimum age (in days/hours/mins/seconds).</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=@max='</td>
+<td class="org-left">Maximum age (in days/hours/mins/seconds).</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=@mean='</td>
+<td class="org-left">Arithmetic mean of ages (in days/hours/mins/seconds).</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=est+='</td>
+<td class="org-left">Add low-high estimates.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+You can also define custom summary types by setting <code>org-columns-summary-types</code>.
+</p></dd>
+</dl>
+
+<p>
+The ‘=est+=' summary type requires further explanation. It is used for combining estimates, expressed as low-high ranges. For example, instead of estimating a particular task will take 5 days, you might estimate it as 5&#x2013;6 days if you're fairly confident you know how much work is required, or 1&#x2013;10 days if you do not really know what needs to be done. Both ranges average at 5.5 days, but the first represents a more predictable delivery.
+</p>
+
+<p>
+When combining a set of such estimates, simply adding the lows and highs produces an unrealistically wide result. Instead, ‘=est+=' adds the statistical mean and variance of the subtasks, generating a final estimate from the sum. For example, suppose you had ten tasks, each of which was estimated at 0.5 to 2 days of work. Straight addition produces an estimate of 5 to 20 days, representing what to expect if everything goes either extremely well or extremely poorly. In contrast, ‘=est+=' estimates the full job more realistically, at 10&#x2013;15 days.
+</p>
+
+<p>
+Here is an example for a complete columns definition, along with allowed values.
+</p>
+
+<pre class="example" id="org37ea66f">
+:COLUMNS:  %25ITEM %9Approved(Approved?){X} %Owner %11Status \
+                   %10Time_Estimate{:}
+:Owner_ALL:    Tammy Mark Karl Lisa Don
+:Status_ALL:   "In progress" "Not started yet" "Finished" ""
+:Approved_ALL: "[ ]" "[X]"
+</pre>
+
+<p>
+The first column, ‘=%25ITEM=', means the first 25 characters of the item itself, i.e., of the headline. You probably always should start the column definition with the ‘=ITEM=' specifier. The other specifiers create columns ‘=Owner=' with a list of names as allowed values, for ‘=Status=' with four different possible values, and for a checkbox field ‘=Approved='. When no width is given after the ‘=%=' character, the column is exactly as wide as it needs to be in order to fully display all values. The ‘=Approved=' column does have a modified title (‘=Approved?=', with a question mark). Summaries are created for the ‘=Time<sub>Estimate</sub>=' column by adding time duration expressions like HH:MM, and for the ‘=Approved=' column, by providing an ‘=[X]=' status if all children have been checked.
+</p>
+
+<p>
+The ‘=CLOCKSUM=' and ‘=CLOCKSUM<sub>T</sub>=' column properties are special, they list the sums of ‘=CLOCK:=' intervals in the subtree, either for all clocks (‘=CLOCKSUM=') or just for today (‘=CLOCKSUM<sub>T</sub>='). Unlike ‘=:=' summary type that ignores property values in parent headings, all the ‘=CLOCK:=' intervals are summed up, including ‘=CLOCK:=' lines within parent headings.
+</p>
+
+<ol class="org-ol">
+<li><p>
+Summaries in deeply nested hierarchy
+</p>
+
+<p>
+When computing summaries of deeply nested headings, the summaries are computed recursively, from the deepest level to the shallowest. Here is an example:
+</p>
+
+<pre class="example" id="orgb49b570">
+#+BEGIN: columnview :indent t :format "%ITEM %EFFORT{:mean}" :id global
+| ITEM               | EFFORT  |
+|--------------------+---------|
+| Top level          | 3h 0min |
+| \_  Intermediate 1 | 1h 0min |
+| \_        Leaf 1   | 1h      |
+| \_    Leaf 2       | 1h      |
+| \_    Leaf 3       | 1h      |
+| \_  Intermediate 2 | 5h      |
+#+END:
+
+* Top level
+** Intermediate 1
+:PROPERTIES:
+:EFFORT:   *unused*, will be set to 1h 0min (mean of the leaf nodes)
+:END:
+***** Leaf 1
+:PROPERTIES:
+:EFFORT: 1h
+:END:
+*** Leaf 2
+:PROPERTIES:
+:EFFORT: 1h
+:END:
+*** Leaf 3
+:PROPERTIES:
+:EFFORT: 1h
+:END:
+** Intermediate 2
+:PROPERTIES:
+:EFFORT: 5h
+:END:
+</pre></li>
+</ol>
+
+<hr />
+</div>
+</div>

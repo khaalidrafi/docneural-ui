@@ -1,0 +1,100 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emacs-Lisp-forms-as-formulas">1. 3.5.3 Emacs Lisp forms as formulas ¶</a>
+<ul>
+<li><a href="#section">1.1. (22)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Formula-syntax-for-Lisp"></a>
+Next: <a href="docs/org--Durations-and-time-values.html">Durations and time values</a>, Previous: <a href="docs/org--Formula-syntax-for-Calc.html">Formula syntax for Calc</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Emacs-Lisp-forms-as-formulas" class="outline-2">
+<h2 id="Emacs-Lisp-forms-as-formulas"><span class="section-number-2">1.</span> 3.5.3 Emacs Lisp forms as formulas <a href="#Emacs-Lisp-forms-as-formulas">¶</a></h2>
+<div class="outline-text-2" id="text-Emacs-Lisp-forms-as-formulas">
+<p>
+It is also possible to write a formula in Emacs Lisp. This can be useful for string manipulation and control structures, if Calc's functionality is not enough.
+</p>
+
+<p>
+A formula is evaluated as a Lisp form when it starts with a single-quote followed by an opening parenthesis. Cell table references are interpolated into the Lisp form before execution. The evaluation should return either a string or a number. Evaluation modes and a <code>format</code> string (similar to <code>printf</code>) used to render the returned values can be specified after a semicolon.
+</p>
+
+<p>
+By default, references are interpolated as literal Lisp strings: the field content is replaced in the Lisp form stripped of leading and trailing white space and surrounded in double-quotes. For example:
+</p>
+
+<pre class="example" id="org521172f">
+'(concat $1 $2)
+</pre>
+
+<p>
+concatenates the content of columns 1 and column 2.
+</p>
+
+<p>
+When the ‘=N=' flag is used, all referenced elements are parsed as numbers and interpolated as Lisp numbers, without quotes. Fields that cannot be parsed as numbers are interpolated as zeros. For example:
+</p>
+
+<pre class="example" id="org2120b65">
+'(+ $1 $2);N
+</pre>
+
+<p>
+adds columns 1 and 2, equivalent to Calc's ‘=$1+$2='. Ranges are inserted as space-separated fields, so they can be embedded in list or vector syntax. For example:
+</p>
+
+<pre class="example" id="org6828569">
+'(apply '+ '($1..$4));N
+</pre>
+
+<p>
+computes the sum of columns 1 to 4, like Calc's ‘=vsum($1..$4)='.
+</p>
+
+<p>
+When the ‘=L=' flag is used, all fields are interpolated literally: the cell content is replaced in the Lisp form stripped of leading and trailing white space and without quotes. If a reference is intended to be interpreted as a string by the Lisp form, the reference operator itself should be enclosed in double-quotes, like ‘="$3"<code>'. The ‘=L</code>' flag is useful when strings and numbers are used in the same Lisp form. For example:
+</p>
+
+<pre class="example" id="org79adc48">
+'(substring "$1" $2 $3);L
+</pre>
+
+<p>
+extracts the part of the string in column 1 between the character positions specified in the integers in column 2 and 3, and it is easier to read than the equivalent:
+</p>
+
+<pre class="example" id="org3937d93">
+'(substring $1 (string-to-number $2) (string-to-number $3))
+</pre>
+
+<p>
+When the formula itself contains ‘=;=' symbol, Org mode may incorrectly interpret everything past ‘=;=' as format specifier:
+</p>
+
+<pre class="example" id="org8429b49">
+'(concat $1 ";")
+</pre>
+
+<p>
+You can put an extra trailing ‘=;=' to indicate that all the earlier instances of ‘=;=' belong to the formula itself:
+</p>
+
+<pre class="example" id="orgdadef09">
+'(concat $1 ";");
+</pre>
+
+<hr />
+</div>
+</div>

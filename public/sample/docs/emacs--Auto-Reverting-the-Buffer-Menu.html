@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Auto-Reverting-the-Buffer-Menu-1">1. 20.5.1.1 Auto Reverting the Buffer Menu ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Auto-Reverting-Dired.html">Auto Reverting Dired buffers</a>   Up: <a href="docs/emacs--Non_002dFile-Buffers.html">Auto Reverting Non-File Buffers</a>
+</p>
+
+<p>
+<a id="Auto-Reverting-the-Buffer-Menu"></a>
+</p>
+
+<hr />
+<div id="outline-container-Auto-Reverting-the-Buffer-Menu-1" class="outline-2">
+<h2 id="Auto-Reverting-the-Buffer-Menu-1"><span class="section-number-2">1.</span> 20.5.1.1 Auto Reverting the Buffer Menu <a href="#Auto-Reverting-the-Buffer-Menu-1">¶</a></h2>
+<div class="outline-text-2" id="text-Auto-Reverting-the-Buffer-Menu-1">
+<p>
+If auto-reverting of non-file buffers is enabled, the Buffer Menu (see <a href="docs/emacs--Several-Buffers.html">Operating on Several Buffers</a>) automatically reverts every <code>auto-revert-interval</code> seconds, whether there is a need for it or not. (It would probably take longer to check whether there is a need than to actually revert.)
+</p>
+
+<p>
+If the Buffer Menu inappropriately gets marked modified, just revert it manually using g and auto-reverting will resume. However, if you marked certain buffers to get deleted or to be displayed, you have to be careful, because reverting erases all marks. The fact that adding marks sets the buffer's modified flag prevents Auto Revert from automatically erasing the marks.
+</p>
+</div>
+</div>

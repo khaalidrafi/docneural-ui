@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Following-References-with-the-Mouse">1. 23.3 Following References with the Mouse ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Menu-Mouse-Clicks.html">Mouse Clicks for Menus</a>   Previous: <a href="docs/emacs--Word-and-Line-Mouse.html">Mouse Commands for Words and Lines</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Mouse-References"></a>
+</p>
+
+<hr />
+<div id="outline-container-Following-References-with-the-Mouse" class="outline-2">
+<h2 id="Following-References-with-the-Mouse"><span class="section-number-2">1.</span> 23.3 Following References with the Mouse <a href="#Following-References-with-the-Mouse">¶</a></h2>
+<div class="outline-text-2" id="text-Following-References-with-the-Mouse">
+<p>
+Some Emacs buffers include <i>buttons</i>, or <i>hyperlinks</i>: pieces of text that perform some action (e.g., following a reference) when activated (e.g., by clicking on them). Usually, a button's text is visually highlighted: it is underlined, or a box is drawn around it. If you move the mouse over a button, the shape of the mouse cursor changes and the button lights up. If you change the variable <code>mouse-highlight</code> to <code>nil</code>, Emacs disables this highlighting.
+</p>
+
+<p>
+You can activate a button by moving point to it and typing RET, or by clicking either mouse-1 or mouse-2 on the button. For example, in a Dired buffer, each file name is a button; activating it causes Emacs to visit that file (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>). In a <code>*Compilation*</code> buffer, each error message is a button, and activating it visits the source code for that error (see <a href="docs/emacs--Compilation.html">Running Compilations under Emacs</a>).
+</p>
+
+<p>
+Although clicking mouse-1 on a button usually activates the button, if you hold the mouse button down for a period of time before releasing it (specifically, for more than 450 milliseconds), then Emacs moves point where you clicked, without activating the button. In this way, you can use the mouse to move point over a button without activating it. Dragging the mouse over or onto a button has its usual behavior of setting the region, and does not activate the button.
+</p>
+
+<p>
+You can change how mouse-1 applies to buttons by customizing the variable <code>mouse-1-click-follows-link</code>. If the value is a positive integer, that determines how long you need to hold the mouse button down for, in milliseconds, to cancel button activation; the default is 450, as described in the previous paragraph. If the value is <code>nil</code>, mouse-1 just sets point where you clicked, and does not activate buttons. If the value is <code>double</code>, double clicks activate buttons but single clicks just set point.
+</p>
+
+<p>
+Normally, mouse-1 on a button activates the button even if it is in a non-selected window. If you change the variable <code>mouse-1-click-in-non-selected-windows</code> to <code>nil</code>, mouse-1 on a button in an unselected window moves point to the clicked position and selects that window, without activating the button.
+</p>
+
+<hr />
+</div>
+</div>

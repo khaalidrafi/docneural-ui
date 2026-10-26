@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Exiting-Emacs">1. 8 Exiting Emacs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>   Previous: <a href="docs/emacs--Entering-Emacs.html">Entering Emacs</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Exiting"></a>
+</p>
+
+<hr />
+<div id="outline-container-Exiting-Emacs" class="outline-2">
+<h2 id="Exiting-Emacs"><span class="section-number-2">1.</span> 8 Exiting Emacs <a href="#Exiting-Emacs">¶</a></h2>
+<div class="outline-text-2" id="text-Exiting-Emacs">
+<dl class="org-dl">
+<dt>C-x C-c</dt><dd>Kill Emacs (<code>save-buffers-kill-terminal</code>).</dd>
+
+<dt>C-z</dt><dd>On a text terminal, suspend Emacs; on a graphical display, iconify (or “minimize”) the selected frame (<code>suspend-frame</code>).</dd>
+</dl>
+
+<p>
+<i>Killing</i> Emacs means terminating the Emacs program. To do this, type C-x C-c (<code>save-buffers-kill-terminal</code>). A two-character key sequence is used to make it harder to type by accident. If there are any modified file-visiting buffers when you type C-x C-c, Emacs first offers to save these buffers. If you do not save them all, it asks for confirmation again, since the unsaved changes will be lost. Emacs also asks for confirmation if any subprocesses are still running, since killing Emacs will also kill the subprocesses (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>).
+</p>
+
+<p>
+C-x C-c behaves specially if you are using Emacs as a server. If you type it from a client frame, it closes the client connection. See <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>.
+</p>
+
+<p>
+Emacs can, optionally, record certain session information when you kill it, such as the files you were visiting at the time. This information is then available the next time you start Emacs. See <a href="docs/emacs--Saving-Emacs-Sessions.html">Saving Emacs Sessions</a>.
+</p>
+
+<p>
+If the value of the variable <code>confirm-kill-emacs</code> is non-<code>nil</code>, C-x C-c assumes that its value is a predicate function, and calls that function. If the result of the function call is non-<code>nil</code>, the session is killed, otherwise Emacs continues to run. One convenient function to use as the value of <code>confirm-kill-emacs</code> is the function <code>yes-or-no-p</code>. The default value of <code>confirm-kill-emacs</code> is <code>nil</code>.
+</p>
+
+<p>
+If the value of the variable <code>confirm-kill-processes</code> is <code>nil</code>, C-x C-c does not ask for confirmation before killing subprocesses started by Emacs. The value is <code>t</code> by default.
+</p>
+
+<p>
+To further customize what happens when Emacs is exiting, see <a href="../elisp_html/Killing-Emacs.html#Killing-Emacs">Killing Emacs</a> in The GNU Emacs Lisp Reference Manual.
+</p>
+
+<p>
+To kill Emacs without being prompted about saving, type M-x kill-emacs.
+</p>
+
+<p>
+C-z runs the command <code>suspend-frame</code>. On a graphical display, this command <i>minimizes</i> (or <i>iconifies</i>) the selected Emacs frame, hiding it in a way that lets you bring it back later (exactly how this hiding occurs depends on the window system). On a text terminal, the C-z command <i>suspends</i> Emacs, stopping the program temporarily and returning control to the parent process (usually a shell); in most shells, you can resume Emacs after suspending it with the shell command <code>%emacs</code>.
+</p>
+
+<p>
+Text terminals usually listen for certain special characters whose meaning is to kill or suspend the program you are running. <b>This terminal feature is turned off while you are in Emacs.</b> The meanings of C-z and C-x C-c as keys in Emacs were inspired by the use of C-z and C-c on several operating systems as the characters for stopping or killing a program, but that is their only relationship with the operating system. You can customize these keys to run any commands of your choice (see <a href="docs/emacs--Keymaps.html">Keymaps</a>).
+</p>
+
+<hr />
+</div>
+</div>

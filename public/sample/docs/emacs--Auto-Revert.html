@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Auto-Revert_003a-Keeping-buffers-automatically-up_002dto_002ddate">1. 20.5 Auto Revert: Keeping buffers automatically up-to-date ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Auto-Save.html">Auto-Saving: Protection Against Disasters</a>   Previous: <a href="docs/emacs--Reverting.html">Reverting a Buffer</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Auto-Revert"></a>
+</p>
+
+<hr />
+<div id="outline-container-Auto-Revert_003a-Keeping-buffers-automatically-up_002dto_002ddate" class="outline-2">
+<h2 id="Auto-Revert_003a-Keeping-buffers-automatically-up_002dto_002ddate"><span class="section-number-2">1.</span> 20.5 Auto Revert: Keeping buffers automatically up-to-date <a href="#Auto-Revert_003a-Keeping-buffers-automatically-up_002dto_002ddate">¶</a></h2>
+<div class="outline-text-2" id="text-Auto-Revert_003a-Keeping-buffers-automatically-up_002dto_002ddate">
+<p>
+A buffer can get out of sync with respect to its visited file on disk if that file is changed by another program. To keep it up to date, you can enable Auto Revert mode by typing M-x auto-revert-mode. This automatically reverts the buffer when its visited file changes on disk. To do the same for all file buffers, type M-x global-auto-revert-mode to enable Global Auto Revert mode.
+</p>
+
+<p>
+Auto Revert will not revert a buffer if it has unsaved changes, or if its file on disk is deleted or renamed.
+</p>
+
+<p>
+One use of Auto Revert mode is to “tail” a file such as a system log, so that changes made to that file by other programs are continuously displayed. To do this, just move the point to the end of the buffer, and it will stay there as the file contents change. However, if you are sure that the file will only change by growing at the end, use Auto Revert Tail mode instead (<code>auto-revert-tail-mode</code>). It is more efficient for this. Auto Revert Tail mode also works for remote files.
+</p>
+
+<p>
+When a buffer is auto-reverted, a message is generated. This can be suppressed by setting <code>auto-revert-verbose</code> to <code>nil</code>.
+</p>
+
+<p>
+The Auto Revert modes do not check or revert remote files, because that is usually too slow. This behavior can be changed by setting the variable <code>auto-revert-remote-files</code> to non-<code>nil</code>.
+</p>
+
+<p>
+By default, Auto Revert mode works using <i>file notifications</i>, whereby changes in the filesystem are reported to Emacs by the OS. You can disable use of file notifications by customizing the variable <code>auto-revert-use-notify</code> to a <code>nil</code> value, then Emacs will check for file changes by polling every five seconds. You can change the polling interval through the variable <code>auto-revert-interval</code>.
+</p>
+
+<p>
+Not all systems support file notifications; where they are not supported, <code>auto-revert-use-notify</code> will be <code>nil</code> by default.
+</p>
+
+<p>
+By default, Auto Revert mode will poll files for changes periodically even when file notifications are used. Polling is unnecessary in many cases, and turning it off may save power by relying on notifications only. To do so, set the variable <code>auto-revert-avoid-polling</code> to non-<code>nil</code>. However, notification is ineffective on certain file systems; mainly network file system on Unix-like machines, where files can be altered from other machines. For such file systems, polling may be necessary. To force polling when <code>auto-revert-avoid-polling</code> is non-<code>nil</code>, set <code>auto-revert-notify-exclude-dir-regexp</code> to match files that should be excluded from using notification.
+</p>
+
+<p>
+In Dired buffers (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>), Auto Revert mode refreshes the buffer when a file is created or deleted in the buffer's directory.
+</p>
+
+<p>
+See <a href="docs/emacs--VC-Undo.html">Undoing Version Control Actions</a>, for commands to revert to earlier versions of files under version control. See <a href="docs/emacs--VC-Mode-Line.html">Version Control and the Mode Line</a>, for Auto Revert peculiarities when visiting files under version control.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Non_002dFile-Buffers.html">Auto Reverting Non-File Buffers</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,85 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Beamer-specific-syntax-1">1. 13.8.4 Beamer specific syntax ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Beamer-specific-syntax"></a>
+Next: <a href="docs/org--Editing-support.html">Editing support</a>, Previous: <a href="docs/org--Frames-and-Blocks-in-Beamer.html">Frames and Blocks in Beamer</a>, Up: <a href="docs/org--Beamer-Export.html">Beamer Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Beamer-specific-syntax-1" class="outline-2">
+<h2 id="Beamer-specific-syntax-1"><span class="section-number-2">1.</span> 13.8.4 Beamer specific syntax <a href="#Beamer-specific-syntax-1">¶</a></h2>
+<div class="outline-text-2" id="text-Beamer-specific-syntax-1">
+<p>
+Since Org's Beamer export backend is an extension of the LaTeX backend, it recognizes other LaTeX specific syntax&#x2014;for example, ‘=#+LATEX:=' or ‘=#+ATTR<sub>LATEX</sub>:='. See <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>, for details.
+</p>
+
+<p>
+Beamer export wraps the table of contents generated with ‘=toc:t=' ‘=OPTION=' keyword in a ‘=frame=' environment. Beamer export does not wrap the table of contents generated with ‘=TOC=' keyword (see <a href="docs/org--Table-of-Contents.html">Table of Contents</a>). Use square brackets for specifying options.
+</p>
+
+<pre class="example" id="orgce666fa">
+#+TOC: headlines [currentsection]
+</pre>
+
+<p>
+Insert Beamer-specific code using the following constructs:
+</p>
+
+<pre class="example" id="orgf9b68a4">
+#+BEAMER: \pause
+
+#+BEGIN_EXPORT beamer
+  Only Beamer export backend exports this.
+#+END_EXPORT
+
+Text @@beamer:some code@@ within a paragraph.
+</pre>
+
+<p>
+Inline constructs, such as the last one above, are useful for adding overlay specifications to objects with <code>bold</code>, <code>item</code>, <code>link</code>, <code>radio-target</code> and <code>target</code> types. Enclose the value in angular brackets and place the specification at the beginning of the object as shown in this example:
+</p>
+
+<pre class="example" id="org96a8d60">
+A *@@beamer:&lt;2-&gt;@@useful* feature
+</pre>
+
+<p>
+Beamer export recognizes the ‘=ATTR<sub>BEAMER</sub>=' keyword with the following attributes from Beamer configurations: ‘=:environment=' for changing local Beamer environment, ‘=:overlay=' for specifying Beamer overlays in angular or square brackets, and ‘=:options=' for inserting optional arguments.
+</p>
+
+<pre class="example" id="orgf0b8cf2">
+#+ATTR_BEAMER: :environment nonindentlist
+- item 1, not indented
+- item 2, not indented
+- item 3, not indented
+</pre>
+
+<pre class="example" id="orge6000bb">
+#+ATTR_BEAMER: :overlay &lt;+-&gt;
+- item 1
+- item 2
+</pre>
+
+<pre class="example" id="orge399a2b">
+#+ATTR_BEAMER: :options [Lagrange]
+Let $G$ be a finite group, and let $H$ be
+a subgroup of $G$.  Then the order of $H$ divides the order of $G$.
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Editing-support.html">Editing support</a>, Previous: <a href="docs/org--Frames-and-Blocks-in-Beamer.html">Frames and Blocks in Beamer</a>, Up: <a href="docs/org--Beamer-Export.html">Beamer Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

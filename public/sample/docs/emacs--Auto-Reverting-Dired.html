@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Auto-Reverting-Dired-buffers">1. 20.5.1.2 Auto Reverting Dired buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Auto-Reverting-the-Buffer-Menu.html">Auto Reverting the Buffer Menu</a>   Up: <a href="docs/emacs--Non_002dFile-Buffers.html">Auto Reverting Non-File Buffers</a>
+</p>
+
+<p>
+<a id="Auto-Reverting-Dired"></a>
+</p>
+
+<hr />
+<div id="outline-container-Auto-Reverting-Dired-buffers" class="outline-2">
+<h2 id="Auto-Reverting-Dired-buffers"><span class="section-number-2">1.</span> 20.5.1.2 Auto Reverting Dired buffers <a href="#Auto-Reverting-Dired-buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Auto-Reverting-Dired-buffers">
+<p>
+Dired buffers only auto-revert when the file list of the buffer's main directory changes (e.g., when a new file is added or deleted). They do not auto-revert when information about a particular file changes (e.g., when the size changes) or when inserted subdirectories change. To be sure that <i>all</i> listed information is up to date, you have to manually revert using g, <i>even</i> if auto-reverting is enabled in the Dired buffer. Sometimes, you might get the impression that modifying or saving files listed in the main directory actually does cause auto-reverting. This is because making changes to a file, or saving it, very often causes changes in the directory itself; for instance, through backup files or auto-save files. However, this is not guaranteed.
+</p>
+
+<p>
+If the Dired buffer is marked modified and there are no changes you want to protect, then most of the time you can make auto-reverting resume by manually reverting the buffer using g. There is one exception. If you flag or mark files, you can safely revert the buffer. This will not erase the flags or marks (unless the marked file has been deleted, of course). However, the buffer will stay modified, even after reverting, and auto-reverting will not resume. This is because, if you flag or mark files, you may be working on the buffer and you might not want the buffer to change without warning. If you want auto-reverting to resume in the presence of marks and flags, mark the buffer non-modified using M-~. However, adding, deleting or changing marks or flags will mark it modified again.
+</p>
+
+<p>
+Remote Dired buffers are currently not auto-reverted. Neither are Dired buffers for which you used shell wildcards or file arguments to list only some of the files. <code>*Find*</code> and <code>*Locate*</code> buffers do not auto-revert either.
+</p>
+
+<p>
+Note that auto-reverting Dired buffers may not work satisfactorily on some systems.
+</p>
+
+<hr />
+</div>
+</div>

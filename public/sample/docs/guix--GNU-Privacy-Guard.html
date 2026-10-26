@@ -1,0 +1,126 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="GNU-Privacy-Guard"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Desktop-Home-Services.html">Desktop Home Services</a>, Previous: <a href="docs/guix--Secure-Shell.html">Secure Shell</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="GNU-Privacy-Guard-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="gnu-privacy-guard"></a>13.3.7 GNU Privacy Guard<br />
+<div class="outline-text-5" id="text-gnu-privacy-guard">
+<p>
+<a id="index-GNU-Privacy-Guard_002c-Home-service"></a> <a id="index-GPG_002c-Home-service"></a>
+The <code>(gnu home services gnupg)</code> module provides services that help you set up the GNU Privacy Guard, also known as GnuPG or GPG, in your home environment.
+</p>
+
+<p>
+<a id="index-gpg_002dagent_002c-Home-service"></a> <a id="index-SSH-agent_002c-with-gpg_002dagent"></a>
+The <code>gpg-agent</code> service configures and sets up GPG's agent, the program that is responsible for managing OpenPGP private keys and, optionally, OpenSSH (secure shell) private keys (see <a href="https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html#Invoking-GPG_002dAGENT">Invoking GPG-AGENT</a> in Using the GNU Privacy Guard).
+</p>
+
+<p>
+As an example, here is how you would configure <code>gpg-agent</code> with SSH support such that it uses the Emacs-based Pinentry interface when prompting for a passphrase:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-gpg-agent-service-type
+         (home-gpg-agent-configuration
+          (pinentry-program
+           (file-append pinentry-emacs "/bin/pinentry-emacs"))
+          (ssh-support? #t)))
+</pre>
+</div>
+
+<p>
+The service reference is given below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-gpg-agent-service-type </dt><dd>This is the service type for <code>gpg-agent</code> (see <a href="https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html#Invoking-GPG_002dAGENT">Invoking GPG-AGENT</a> in Using the GNU Privacy Guard). Its value must be a <code>home-gpg-agent-configuration</code>, as shown below.</dd>
+
+<dt>Data Type: home-gpg-agent-configuration </dt><dd>Available <code>home-gpg-agent-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>gnupg</code> (default: <code>gnupg</code>) (type: file-like)</dt><dd>The GnuPG package to use.</dd>
+
+<dt><code>pinentry-program</code> (type: file-like)</dt><dd>Pinentry program to use. Pinentry is a small user interface that <code>gpg-agent</code> delegates to anytime it needs user input for a passphrase or PIN (personal identification number) (see <a href="../pinentry/index.html#Top">Using the PIN-Entry</a>).</dd>
+
+<dt><code>ssh-support?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to enable SSH (secure shell) support. When true, <code>gpg-agent</code> acts as a drop-in replacement for OpenSSH's <code>ssh-agent</code> program, taking care of OpenSSH secret keys and directing passphrase requests to the chosen Pinentry program.</dd>
+
+<dt><code>default-cache-ttl</code> (default: <code>600</code>) (type: integer)</dt><dd>Time a cache entry is valid, in seconds.</dd>
+
+<dt><code>max-cache-ttl</code> (default: <code>7200</code>) (type: integer)</dt><dd>Maximum time a cache entry is valid, in seconds. After this time a cache entry will be expired even if it has been accessed recently.</dd>
+
+<dt><code>default-cache-ttl-ssh</code> (default: <code>1800</code>) (type: integer)</dt><dd>Time a cache entry for SSH keys is valid, in seconds.</dd>
+
+<dt><code>max-cache-ttl-ssh</code> (default: <code>7200</code>) (type: integer)</dt><dd>Maximum time a cache entry for SSH keys is valid, in seconds.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: raw-configuration-string)</dt><dd>Raw content to add to the end of <code>~/.gnupg/gpg-agent.conf</code>.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Desktop-Home-Services.html">Desktop Home Services</a>, Previous: <a href="docs/guix--Secure-Shell.html">Secure Shell</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,82 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Data-Types-and-Pattern-Matching"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Formatting-Code.html">Formatting Code</a>, Previous: <a href="docs/guix--Modules.html">Modules</a>, Up: <a href="docs/guix--Coding-Style.html">Coding Style</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Data-Types-and-Pattern-Matching-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="data-types-and-pattern-matching"></a>22.9.3 Data Types and Pattern Matching<br />
+<div class="outline-text-5" id="text-data-types-and-pattern-matching">
+<p>
+The tendency in classical Lisp is to use lists to represent everything, and then to browse them “by hand” using <code>car</code>, <code>cdr</code>, <code>cadr</code>, and co. There are several problems with that style, notably the fact that it is hard to read, error-prone, and a hindrance to proper type error reports.
+</p>
+
+<p>
+<a id="index-define_002drecord_002dtype_002a"></a> <a id="index-match_002drecord"></a> <a id="index-pattern-matching"></a>
+Guix code should define appropriate data types (for instance, using <code>define-record-type*</code>) rather than abuse lists. In addition, it should use pattern matching, via Guile's <code>(ice-9 match)</code> module, especially when matching lists (see <a href="https://www.gnu.org/software/guile/manual/html_node/Pattern-Matching.html#Pattern-Matching">Pattern Matching</a> in GNU Guile Reference Manual); pattern matching for records is better done using <code>match-record</code> from <code>(guix records)</code>, which, unlike <code>match</code>, verifies field names at macro-expansion time.
+</p>
+
+<p>
+When defining a new record type, keep the <i>record type descriptor</i> (RTD) private (see <a href="https://www.gnu.org/software/guile/manual/html_node/Records.html#Records">Records</a> in GNU Guile Reference Manual, for more on records and RTDs). As an example, the <code>(guix packages)</code> module defines <code>&lt;package&gt;</code> as the RTD for package records but it does not export it; instead, it exports a type predicate, a constructor, and field accessors. Exporting RTDs would make it harder to change the application binary interface (because code in other modules might be matching fields by position) and would make it trivial for users to forge records of that type, bypassing any checks we may have in the official constructor (such as “field sanitizers”).
+</p>
+</div>
+</li>
+</ol>
+</div>

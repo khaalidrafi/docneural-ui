@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Batch-Execution-1">1. 16.14 Batch Execution ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Batch-Execution"></a>
+Previous: <a href="docs/org--Key-bindings-and-Useful-Functions.html">Key bindings and Useful Functions</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Batch-Execution-1" class="outline-2">
+<h2 id="Batch-Execution-1"><span class="section-number-2">1.</span> 16.14 Batch Execution <a href="#Batch-Execution-1">¶</a></h2>
+<div class="outline-text-2" id="text-Batch-Execution-1">
+<p>
+Org mode features, including working with source code facilities can be invoked from the command line. This enables building shell scripts for batch processing, running automated system tasks, and expanding Org mode's usefulness.
+</p>
+
+<p>
+The sample script shows batch processing of multiple files using <code>org-babel-tangle</code>.
+</p>
+
+<pre class="example" id="org48029b8">
+#!/bin/sh
+# Tangle files with Org mode
+#
+emacs -Q --batch --eval "
+    (progn
+      (require 'ob-tangle)
+      (dolist (file command-line-args-left)
+        (with-current-buffer (find-file-noselect file)
+          (org-babel-tangle))))
+  " "$@"
+</pre>
+</div>
+</div>

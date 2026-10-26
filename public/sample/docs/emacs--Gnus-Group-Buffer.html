@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-the-Gnus-Group-Buffer">1. 36.3 Using the Gnus Group Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Gnus-Summary-Buffer.html">Using the Gnus Summary Buffer</a>   Previous: <a href="docs/emacs--Gnus-Startup.html">When Gnus Starts Up</a>   Up: <a href="docs/emacs--Gnus.html">Email and Usenet News with Gnus</a>
+</p>
+
+<p>
+<a id="Gnus-Group-Buffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Using-the-Gnus-Group-Buffer" class="outline-2">
+<h2 id="Using-the-Gnus-Group-Buffer"><span class="section-number-2">1.</span> 36.3 Using the Gnus Group Buffer <a href="#Using-the-Gnus-Group-Buffer">¶</a></h2>
+<div class="outline-text-2" id="text-Using-the-Gnus-Group-Buffer">
+<p>
+The following commands are available in the Gnus group buffer:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-SPC-_0028Gnus-Group-mode_0029"></a>SPC </dt><dd>Switch to the summary buffer for the group on the current line (<code>gnus-group-read-group</code>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-l-_0028Gnus-Group-mode_0029"></a>l <br />
+A s :: In the group buffer, list only the groups to which you subscribe and which contain unread articles (<code>gnus-group-list-groups</code>; this is the default listing).</dd>
+
+<dt>(no term)</dt><dd><a id="index-L-_0028Gnus-Group-mode_0029"></a>L <br />
+A u :: List all subscribed and unsubscribed groups, but not killed or zombie groups (<code>gnus-group-list-all-groups</code>).</dd>
+
+<dt><a id="index-A-k-_0028Gnus-Group-mode_0029"></a>A k </dt><dd>List killed groups (<code>gnus-group-list-killed</code>).</dd>
+
+<dt><a id="index-A-z-_0028Gnus-Group-mode_0029"></a>A z </dt><dd>List zombie groups (<code>gnus-group-list-zombies</code>).</dd>
+
+<dt><a id="index-u-_0028Gnus-Group-mode_0029"></a>u </dt><dd>Toggle the subscription status of the group (<code>gnus-group-toggle-subscription-at-point</code>) on the current line. Invoking this on a killed or zombie group turns it into an unsubscribed group.</dd>
+
+<dt><a id="index-C_002dk-_0028Gnus-Group-mode_0029"></a>C-k </dt><dd>Kill the group on the current line (<code>gnus-group-kill-group</code>). Killed groups are not recorded in the <code>.newsrc</code> file, and they are not shown in the l or L listings.</dd>
+
+<dt><a id="index-DEL-_0028Gnus-Group-mode_0029"></a>DEL </dt><dd>Move point to the previous group containing unread articles (<code>gnus-group-prev-unread-group</code>).</dd>
+
+<dt><a id="index-n-_0028Gnus-Group-mode_0029"></a>n </dt><dd>Move point to the next unread group (<code>gnus-group-next-unread-group</code>).</dd>
+
+<dt><a id="index-p-_0028Gnus-Group-mode_0029"></a>p </dt><dd>Move point to the previous unread group (<code>gnus-group-prev-unread-group</code>).</dd>
+
+<dt><a id="index-q-_0028Gnus-Group-mode_0029"></a>q </dt><dd>Update your Gnus settings, and quit Gnus (<code>gnus-group-exit</code>).</dd>
+</dl>
+
+<hr />
+</div>
+</div>

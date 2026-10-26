@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Input-1">1. 4 Mouse Input ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Commands.html">Keys and Commands</a>   Previous: <a href="docs/emacs--Keys.html">Keys</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Mouse-Input"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Input-1" class="outline-2">
+<h2 id="Mouse-Input-1"><span class="section-number-2">1.</span> 4 Mouse Input <a href="#Mouse-Input-1">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Input-1">
+<p>
+By default, Emacs supports all the normal mouse actions like setting the cursor by clicking on the left mouse button, and selecting an area by dragging the mouse pointer. All mouse actions can be used to bind commands in the same way you bind them to keyboard events (see <a href="docs/emacs--Keys.html">Keys</a>). This section provides a general overview of using the mouse in Emacs; see <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>, and the sections that follow it, for more details about mouse commands in Emacs.
+</p>
+
+<p>
+When you click the left mouse button, Emacs receives a <code>mouse-1</code> event. To see what command is bound to that event, you can type C-h c and then press the left mouse button. Similarly, the middle mouse button is <code>mouse-2</code> and the right mouse button is <code>mouse-3</code>. If you have a mouse with a wheel, the wheel events are commonly bound to either <code>wheel-down</code> or <code>wheel-up</code>, or <code>mouse-4</code> and <code>mouse-5</code>, but that depends on the operating system configuration.
+</p>
+
+<p>
+In general, legacy X systems and terminals (see <a href="docs/emacs--Text_002dOnly-Mouse.html">Using a Mouse in Text Terminals</a>) will report <code>mouse-4</code> and <code>mouse-5</code>, while all other systems will report <code>wheel-down</code> and <code>wheel-up</code>.
+</p>
+
+<p>
+Some mice also have a horizontal scroll wheel, and touchpads usually support scrolling horizontally as well. These events are reported as <code>wheel-left</code> and <code>wheel-right</code> on all systems other than terminals and legacy X systems, where they are <code>mouse-6</code> and <code>mouse-7</code>.
+</p>
+
+<p>
+You can also combine keyboard modifiers with mouse events, so you can bind a special command that triggers when you, for instance, holds down the Meta key and then uses the middle mouse button. In that case, the event name will be <code>M-mouse-2</code>.
+</p>
+
+<p>
+On some systems, you can also bind commands for handling touch screen events. In that case, the events are called <code>touchscreen-update</code> and <code>touchscreen-end</code>.
+</p>
+
+<hr />
+</div>
+</div>

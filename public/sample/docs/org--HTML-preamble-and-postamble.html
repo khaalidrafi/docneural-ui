@@ -1,0 +1,40 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#HTML-preamble-and-postamble-1">1. 13.9.4 HTML preamble and postamble ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="HTML-preamble-and-postamble"></a>
+Next: <a href="docs/org--Bare-HTML.html">Exporting to minimal HTML</a>, Previous: <a href="docs/org--HTML-doctypes.html">HTML doctypes</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-HTML-preamble-and-postamble-1" class="outline-2">
+<h2 id="HTML-preamble-and-postamble-1"><span class="section-number-2">1.</span> 13.9.4 HTML preamble and postamble <a href="#HTML-preamble-and-postamble-1">¶</a></h2>
+<div class="outline-text-2" id="text-HTML-preamble-and-postamble-1">
+<p>
+The HTML exporter has delineations for preamble and postamble. The default value for <code>org-html-preamble</code> is <code>t</code>, which makes the HTML exporter insert the preamble. See the variable <code>org-html-preamble-format</code> for the format string.
+</p>
+
+<p>
+Set <code>org-html-preamble</code> to a string to override the default format string. If set to a function, the HTML exporter expects the function to return a string upon execution. The HTML exporter inserts this string in the preamble. The HTML exporter does not insert a preamble if <code>org-html-preamble</code> is set <code>nil</code>.
+</p>
+
+<p>
+The above also applies to <code>org-html-postamble</code> and <code>org-html-postamble-format</code>. In addition, <code>org-html-postamble</code> can be set to <code>auto</code> (its default value), which makes the HTML exporter build a postamble from looking up author's name, email address, creator's name, and date.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Bare-HTML.html">Exporting to minimal HTML</a>, Previous: <a href="docs/org--HTML-doctypes.html">HTML doctypes</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fortran-Indentation-and-Filling-Commands">1. 28.14.2.1 Fortran Indentation and Filling Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--ForIndent-Cont.html">Continuation Lines</a>   Up: <a href="docs/emacs--Fortran-Indent.html">Fortran Indentation</a>
+</p>
+
+<p>
+<a id="ForIndent-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fortran-Indentation-and-Filling-Commands" class="outline-2">
+<h2 id="Fortran-Indentation-and-Filling-Commands"><span class="section-number-2">1.</span> 28.14.2.1 Fortran Indentation and Filling Commands <a href="#Fortran-Indentation-and-Filling-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Fortran-Indentation-and-Filling-Commands">
+<dl class="org-dl">
+<dt>C-M-j</dt><dd>Break the current line at point and set up a continuation line (<code>fortran-split-line</code>).</dd>
+
+<dt>M-^</dt><dd>Join this line to the previous line (<code>fortran-join-line</code>).</dd>
+
+<dt>C-M-q</dt><dd>Indent all the lines of the subprogram that point is in (<code>fortran-indent-subprogram</code>).</dd>
+
+<dt>M-q</dt><dd>Fill a comment block or statement (using <code>fortran-fill-paragraph</code> or <code>fortran-fill-statement</code>).</dd>
+</dl>
+
+<p>
+The key C-M-q runs <code>fortran-indent-subprogram</code>, a command to reindent all the lines of the Fortran subprogram (function or subroutine) containing point.
+</p>
+
+<p>
+The key C-M-j runs <code>fortran-split-line</code>, which splits a line in the appropriate fashion for Fortran. In a non-comment line, the second half becomes a continuation line and is indented accordingly. In a comment line, both halves become separate comment lines.
+</p>
+
+<p>
+M-^ or C-c C-d run the command <code>fortran-join-line</code>, which joins a continuation line back to the previous line, roughly as the inverse of <code>fortran-split-line</code>. The point must be on a continuation line when this command is invoked.
+</p>
+
+<p>
+M-q in Fortran mode fills the comment block or statement that point is in. This removes any excess statement continuations.
+</p>
+</div>
+</div>

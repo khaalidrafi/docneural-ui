@@ -1,0 +1,107 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Input-Methods-1">1. 24.3 Input Methods ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Select-Input-Method.html">Selecting an Input Method</a>   Previous: <a href="docs/emacs--Language-Environments.html">Language Environments</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Input-Methods"></a>
+</p>
+
+<hr />
+<div id="outline-container-Input-Methods-1" class="outline-2">
+<h2 id="Input-Methods-1"><span class="section-number-2">1.</span> 24.3 Input Methods <a href="#Input-Methods-1">¶</a></h2>
+<div class="outline-text-2" id="text-Input-Methods-1">
+<p>
+An <i>input method</i> is a kind of character conversion designed specifically for interactive input. This section describes input methods that come with Emacs; for native input methods provided by the underlying OS, see <a href="docs/emacs--Unibyte-Mode.html">Unibyte Editing Mode</a>.
+</p>
+
+<p>
+In Emacs, typically each language has its own input method; sometimes several languages that use the same characters can share one input method. A few languages support several input methods.
+</p>
+
+<p>
+The simplest kind of input method works by mapping ASCII letters into another alphabet; this allows you to use one other alphabet instead of ASCII. The Greek and Russian input methods work this way.
+</p>
+
+<p>
+A more powerful technique is composition: converting sequences of characters into one letter. Many European input methods use composition to produce a single non-ASCII letter from a sequence that consists of a letter followed by accent characters (or vice versa). For example, some methods convert the sequence o ^ into a single accented letter. These input methods have no special commands of their own; all they do is compose sequences of printing characters.
+</p>
+
+<p>
+The input methods for syllabic scripts typically use mapping followed by composition. The input methods for Thai and Korean work this way. First, letters are mapped into symbols for particular sounds or tone marks; then, sequences of these that make up a whole syllable are mapped into one syllable sign.
+</p>
+
+<p>
+Chinese and Japanese require more complex methods. In Chinese input methods, first you enter the phonetic spelling of a Chinese word (in input method <code>chinese-py</code>, among others), or a sequence of portions of the character (input methods <code>chinese-4corner</code> and <code>chinese-sw</code>, and others). One input sequence typically corresponds to many possible Chinese characters. You select the one you mean using keys such as C-f, C-b, C-n, C-p (or the arrow keys), and digits, which have special meanings in this situation.
+</p>
+
+<p>
+The possible characters are conceptually arranged in several rows, with each row holding up to 10 alternatives. Normally, Emacs displays just one row at a time, in the echo area; <code>(==i==/==j=</code>)= appears at the beginning, to indicate that this is the <code>i=th row out of a total of =j</code> rows. Type C-n or C-p to display the next row or the previous row.
+</p>
+
+<p>
+Type C-f and C-b to move forward and backward among the alternatives in the current row. As you do this, Emacs highlights the current alternative with a special color; type C-SPC to select the current alternative and use it as input. The alternatives in the row are also numbered; the number appears before the alternative. Typing a number selects the associated alternative of the current row and uses it as input.
+</p>
+
+<p>
+TAB in these Chinese input methods displays a buffer showing all the possible characters at once; then clicking mouse-2 on one of them selects that alternative. The keys C-f, C-b, C-n, C-p, and digits continue to work as usual, but they do the highlighting in the buffer showing the possible characters, rather than in the echo area.
+</p>
+
+<p>
+To enter characters according to the <i>pīnyīn</i> transliteration method instead, use the <code>chinese-sisheng</code> input method. This is a composition based method, where, for example, pi1 results in ‘=pī='.
+</p>
+
+<p>
+In Japanese input methods, first you input a whole word using phonetic spelling; then, after the word is in the buffer, Emacs converts it into one or more characters using a large dictionary. One phonetic spelling corresponds to a number of different Japanese words; to select one of them, use C-n and C-p to cycle through the alternatives.
+</p>
+
+<p>
+Sometimes it is useful to cut off input method processing so that the characters you have just entered will not combine with subsequent characters. For example, in input method <code>latin-1-postfix</code>, the sequence o ^ combines to form an ‘=o=' with an accent. What if you want to enter them as separate characters?
+</p>
+
+<p>
+One way is to type the accent twice; this is a special feature for entering the separate letter and accent. For example, o ^ ^ gives you the two characters ‘=o^='. Another way is to type another letter after the o&#x2014;something that won't combine with that&#x2014;and immediately delete it. For example, you could type o o DEL ^ to get separate ‘=o=' and ‘=^='. Another method, more general but not quite as easy to type, is to use C-\ C-\ between two characters to stop them from combining. This is the command C-\ (<code>toggle-input-method</code>) used twice. See <a href="docs/emacs--Select-Input-Method.html">Selecting an Input Method</a>.
+</p>
+
+<p>
+C-\ C-\ is especially useful inside an incremental search, because it stops waiting for more characters to combine, and starts searching for what you have already entered.
+</p>
+
+<p>
+To find out how to input the character after point using the current input method, type C-u C-x =. See <a href="docs/emacs--Position-Info.html">Cursor Position Information</a>.
+</p>
+
+<p>
+The variables <code>input-method-highlight-flag</code> and <code>input-method-verbose-flag</code> control how input methods explain what is happening. If <code>input-method-highlight-flag</code> is non-<code>nil</code>, the partial sequence is highlighted in the buffer (for most input methods&#x2014;some disable this feature). If <code>input-method-verbose-flag</code> is non-<code>nil</code>, the list of possible characters to type next is displayed in the echo area (but not when you are in the minibuffer).
+</p>
+
+<p>
+You can modify how an input method works by making your changes in a function that you add to the hook variable <code>quail-activate-hook</code>. See <a href="docs/emacs--Hooks.html">Hooks</a>. For example, you can redefine some of the input method's keys by defining key bindings in the keymap returned by the function <code>quail-translation-keymap</code>, using <code>define-key</code>. See <a href="docs/emacs--Init-Rebinding.html">Rebinding Keys in Your Init File</a>.
+</p>
+
+<p>
+Input methods are inhibited when the text in the buffer is read-only for some reason. This is so single-character key bindings work in modes that make buffer text or parts of it read-only, such as <code>read-only-mode</code> and <code>image-mode</code>, even when an input method is active.
+</p>
+
+<p>
+Another facility for typing characters not on your keyboard is by using C-x 8 RET (<code>insert-char</code>) to insert a single character based on its Unicode name or code-point; see <a href="docs/emacs--Inserting-Text.html">Inserting Text</a>.
+</p>
+
+<p>
+There are specialized commands for inserting Emoji, and these can be found on the C-x 8 e keymap. C-x 8 e e (<code>emoji-insert</code>) will let you navigate through different Emoji categories and then choose one. C-x 8 e l (<code>emoji-list</code>) will pop up a new buffer and list all the Emoji; clicking (or using RET) on an emoji character will insert it in the current buffer. Finally, C-x 8 e s (<code>emoji-search</code>) will allow you to search for Emoji based on their names.
+</p>
+
+<p>
+<code>describe-char</code> displays a lot of information about the character/glyphs under point (including emojis). It's sometimes useful to get a quick description of the name, and you can use the C-x 8 e d (<code>emoji-describe</code>) command to do that. It's meant primarily to help distinguish between different Emoji variants (which can look very similar), but it will also tell you the names of non-Emoji characters.
+</p>
+
+<hr />
+</div>
+</div>

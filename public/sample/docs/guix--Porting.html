@@ -1,0 +1,102 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#porting-to-a-new-platform">1.1. 21 Porting to a New Platform</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Porting"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Contributing.html">Contributing</a>, Previous: <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Porting-to-a-New-Platform"></a>
+</p>
+</div>
+<div id="outline-container-porting-to-a-new-platform" class="outline-3">
+<h3 id="porting-to-a-new-platform"><span class="section-number-3">1.1.</span> 21 Porting to a New Platform</h3>
+<div class="outline-text-3" id="text-porting-to-a-new-platform">
+<p>
+As discussed above, the GNU distribution is self-contained, and self-containment is achieved by relying on pre-built “bootstrap binaries” (see <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>). These binaries are specific to an operating system kernel, CPU architecture, and application binary interface (ABI). Thus, to port the distribution to a platform that is not yet supported, one must build those bootstrap binaries, and update the <code>(gnu packages bootstrap)</code> module to use them on that platform.
+</p>
+
+<p>
+Fortunately, Guix can <i>cross compile</i> those bootstrap binaries. When everything goes well, and assuming the GNU tool chain supports the target platform, this can be as simple as running a command like this one:
+</p>
+
+<pre class="example" id="orgc15def6">
+guix build --target=armv5tel-linux-gnueabi bootstrap-tarballs
+</pre>
+
+<p>
+For this to work, it is first required to register a new platform as defined in the <code>(guix platform)</code> module. A platform is making the connection between a GNU triplet (see <a href="https://www.gnu.org/software/autoconf/manual/html_node/Specifying-Target-Triplets.html#Specifying-Target-Triplets">GNU configuration triplets</a> in Autoconf), the equivalent <code>system</code> in Nix notation, the name of the <code>glibc-dynamic-linker</code>, and the corresponding Linux architecture name if applicable (see <a href="docs/guix--Platforms.html">Platforms</a>).
+</p>
+
+<p>
+Once the bootstrap tarball are built, the <code>(gnu packages bootstrap)</code> module needs to be updated to refer to these binaries on the target platform. That is, the hashes and URLs of the bootstrap tarballs for the new platform must be added alongside those of the currently supported platforms. The bootstrap Guile tarball is treated specially: it is expected to be available locally, and <code>gnu/local.mk</code> has rules to download it for the supported architectures; a rule for the new platform must be added as well.
+</p>
+
+<p>
+In practice, there may be some complications. First, it may be that the extended GNU triplet that specifies an ABI (like the <code>eabi</code> suffix above) is not recognized by all the GNU tools. Typically, glibc recognizes some of these, whereas GCC uses an extra <code>--with-abi</code> configure flag (see <code>gcc.scm</code> for examples of how to handle this). Second, some of the required packages could fail to build for that platform. Lastly, the generated binaries could be broken for some reason.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Contributing.html">Contributing</a>, Previous: <a href="docs/guix--Bootstrapping.html">Bootstrapping</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

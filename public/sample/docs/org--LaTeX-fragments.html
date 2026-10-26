@@ -1,0 +1,91 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#LaTeX-fragments-1">1. 12.5.1 LaTeX fragments ¶</a>
+<ul>
+<li><a href="#section">1.1. (114)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="LaTeX-fragments"></a>
+Next: <a href="docs/org--Previewing-LaTeX-fragments.html">Previewing LaTeX fragments</a>, Up: <a href="docs/org--Embedded-LaTeX.html">Embedded LaTeX</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-LaTeX-fragments-1" class="outline-2">
+<h2 id="LaTeX-fragments-1"><span class="section-number-2">1.</span> 12.5.1 LaTeX fragments <a href="#LaTeX-fragments-1">¶</a></h2>
+<div class="outline-text-2" id="text-LaTeX-fragments-1">
+<p>
+Org mode can contain LaTeX math fragments, and it supports ways to process these for several export backends. When exporting to LaTeX, the code is left as it is. When exporting to HTML, Org can use either <a href="https://www.mathjax.org">MathJax</a> (see <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>) or transcode the math into images (see <a href="docs/org--Previewing-LaTeX-fragments.html">Previewing LaTeX fragments</a>).
+</p>
+
+<p>
+LaTeX fragments do not need any special marking at all. The following snippets are identified as LaTeX source code:
+</p>
+
+<ul class="org-ul">
+<li>Environments of any kind. The only requirement is that the ‘=\begin=' statement appears on a new line, preceded by only whitespace.</li>
+
+<li><p>
+Text within the usual LaTeX math delimiters. Prefer ‘=\(...\)=' for inline fragments. The ‘=$&#x2026;$=' alternative has some restrictions and may be a source of confusion. To avoid conflicts with currency specifications, single ‘=$=' characters are only recognized as math delimiters if the enclosed text contains at most two line breaks, is directly attached to the ‘=$=' characters with no whitespace in between, and if the closing ‘=$=' is followed by whitespace or punctuation (but not a dash).
+</p>
+
+<p>
+Sometimes, it may be necessary to have a literal dollar symbol even when it is recognized as LaTeX math delimiter. Org provides ‘=$=' and ‘=$=' entities (see <a href="docs/org--Special-Symbols.html">Special Symbols</a>) that are rendered as ‘=$=' for such scenarios. Also, see <a href="docs/org--Escape-Character.html">Escape Character</a>.
+</p></li>
+</ul>
+
+<p>
+For example:
+</p>
+
+<pre class="example" id="orgdf477ed">
+\begin{equation}                        % arbitrary environments,
+x=\sqrt{b}                              % even tables, figures, etc
+\end{equation}
+
+If $a^2=b$ and \( b=2 \), then the solution must be
+either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
+</pre>
+
+<p>
+LaTeX processing can be configured with the variable <code>org-export-with-latex</code>. The default setting is <code>t</code> which means MathJax for HTML, and no processing for ASCII and LaTeX backends. You can also set this variable on a per-file basis using one of these lines:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=#+OPTIONS: tex:t='</td>
+<td class="org-left">Do the right thing automatically (MathJax)</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=#+OPTIONS: tex:nil='</td>
+<td class="org-left">Do not process LaTeX fragments at all</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=#+OPTIONS: tex:verbatim='</td>
+<td class="org-left">Verbatim export, for jsMath or so</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>

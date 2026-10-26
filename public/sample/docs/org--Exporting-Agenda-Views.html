@@ -1,0 +1,140 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Exporting-Agenda-Views-1">1. 11.7 Exporting Agenda Views ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (105)</a></li>
+<li><a href="#section-1">1.0.2. (106)</a></li>
+<li><a href="#section-2">1.0.3. (107)</a></li>
+<li><a href="#section-3">1.0.4. (108)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Exporting-Agenda-Views"></a>
+Next: <a href="docs/org--Agenda-Column-View.html">Using Column View in the Agenda</a>, Previous: <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>, Up: <a href="docs/org--Agenda-Views.html">Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Exporting-Agenda-Views-1" class="outline-2">
+<h2 id="Exporting-Agenda-Views-1"><span class="section-number-2">1.</span> 11.7 Exporting Agenda Views <a href="#Exporting-Agenda-Views-1">¶</a></h2>
+<div class="outline-text-2" id="text-Exporting-Agenda-Views-1">
+<p>
+If you are away from your computer, it can be very useful to have a printed version of some agenda views to carry around. Org mode can export custom agenda views as plain text, HTML, Postscript, PDF, and iCalendar files. If you want to do this only occasionally, use the following command:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-C_002dw"></a>C-x C-w (<code>org-agenda-write</code>) </dt><dd>Write the agenda view to a file.</dd>
+</dl>
+
+<p>
+If you need to export certain agenda views frequently, you can associate any custom agenda command with a list of output file names. Here is an example that first defines custom commands for the agenda and the global TODO list, together with a number of files to which to export them. Then we define two block agenda commands and specify file names for them as well. File names can be relative to the current working directory, or absolute.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands
+      '(("X" agenda "" nil ("agenda.html" "agenda.ps"))
+        ("Y" alltodo "" nil ("todo.html" "todo.txt" "todo.ps"))
+        ("h" "Agenda and Home-related tasks"
+         ((agenda "")
+          (tags-todo "home")
+          (tags "garden"))
+         nil
+         ("~/views/home.html"))
+        ("o" "Agenda and Office-related tasks"
+         ((agenda)
+          (tags-todo "work")
+          (tags "office"))
+         nil
+         ("~/views/office.ps" "~/calendars/office.ics"))))
+</pre>
+</div>
+
+<p>
+The extension of the file name determines the type of export. If it is ‘=.html=', Org mode uses the htmlize package to convert the buffer to HTML and save it to this file name. If the extension is ‘=.ps=', <code>ps-print-buffer-with-faces</code> is used to produce Postscript output. If the extension is ‘=.ics=', iCalendar export is run export over all files that were used to construct the agenda, and limit the export to entries listed in the agenda. Any other extension produces a plain ASCII file.
+</p>
+
+<p>
+The export files are <i>not</i> created when you use one of those commands interactively because this might use too much overhead. Instead, there is a special command to produce <i>all</i> specified files in one step:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-e-_0028Agenda-dispatcher_0029"></a>e (<code>org-store-agenda-views</code>) </dt><dd>Export all agenda views that have export file names associated with them.</dd>
+</dl>
+
+<p>
+You can use the options section of the custom agenda commands to also set options for the export commands. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands
+      '(("X" agenda ""
+         ((ps-number-of-columns 2)
+          (ps-landscape-mode t)
+          (org-agenda-prefix-format " [ ] ")
+          (org-agenda-with-colors nil)
+          (org-agenda-remove-tags t))
+         ("theagenda.ps"))))
+</pre>
+</div>
+
+<p>
+This command sets two options for the Postscript exporter, to make it print in two columns in landscape format&#x2014;the resulting page can be cut in two and then used in a paper agenda. The remaining settings modify the agenda prefix to omit category and scheduling information, and instead include a checkbox to check off items. We also remove the tags to make the lines compact, and we do not want to use colors for the black-and-white printer. Settings specified in <code>org-agenda-exporter-settings</code> also apply, e.g.,
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-exporter-settings
+      '((ps-number-of-columns 2)
+        (ps-landscape-mode t)
+        (org-agenda-add-entry-text-maxlines 5)
+        (htmlize-output-type 'css)))
+</pre>
+</div>
+
+<p>
+but the settings in <code>org-agenda-custom-commands</code> take precedence.
+</p>
+
+<p>
+From the command line you may also use:
+</p>
+
+<pre class="example" id="orga435969">
+emacs -eval (org-batch-store-agenda-views) -kill
+</pre>
+
+<p>
+or, if you need to modify some parameters
+</p>
+
+<pre class="example" id="orgeba5dba">
+emacs -eval '(org-batch-store-agenda-views                      \
+              org-agenda-span (quote month)                     \
+              org-agenda-start-day "2007-11-01"                 \
+              org-agenda-include-diary nil                      \
+              org-agenda-files (quote ("~/org/project.org")))'  \
+      -kill
+</pre>
+
+<p>
+which creates the agenda views restricted to the file ‘=~/org/project.org=', without diary entries and with a 30-day extent.
+</p>
+
+<p>
+You can also extract agenda information in a way that allows further processing by other programs. See <a href="docs/org--Extracting-Agenda-Information.html">Extracting Agenda Information</a>, for more information.
+</p>
+
+<hr />
+</div>
+</div>

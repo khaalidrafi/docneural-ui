@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Continuation-Lines-2">1. 28.14.2.2 Continuation Lines ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--ForIndent-Num.html">Line Numbers</a>   Previous: <a href="docs/emacs--ForIndent-Commands.html">Fortran Indentation and Filling Commands</a>   Up: <a href="docs/emacs--Fortran-Indent.html">Fortran Indentation</a>
+</p>
+
+<p>
+<a id="ForIndent-Cont"></a>
+</p>
+
+<hr />
+<div id="outline-container-Continuation-Lines-2" class="outline-2">
+<h2 id="Continuation-Lines-2"><span class="section-number-2">1.</span> 28.14.2.2 Continuation Lines <a href="#Continuation-Lines-2">¶</a></h2>
+<div class="outline-text-2" id="text-Continuation-Lines-2">
+<p>
+Most Fortran 77 compilers allow two ways of writing continuation lines. If the first non-space character on a line is in column 5, then that line is a continuation of the previous line. We call this <i>fixed form</i>. (In GNU Emacs we always count columns from 0; but note that the Fortran standard counts from 1. You can customize the variable <code>column-number-indicator-zero-based</code> to make the column display Fortran-like; see <a href="docs/emacs--Optional-Mode-Line.html">Optional Mode Line Features</a>.) The variable <code>fortran-continuation-string</code> specifies what character to put in column 5. A line that starts with a tab character followed by any digit except ‘=0=' is also a continuation line. We call this style of continuation <i>tab format</i>. (Fortran 90 introduced free-form continuation lines.)
+</p>
+
+<p>
+Fortran mode can use either style of continuation line. When you enter Fortran mode, it tries to deduce the proper continuation style automatically from the buffer contents. It does this by scanning up to <code>fortran-analyze-depth</code> (default 100) lines from the start of the buffer. The first line that begins with either a tab character or six spaces determines the choice. If the scan fails (for example, if the buffer is new and therefore empty), the value of <code>fortran-tab-mode-default</code> (<code>nil</code> for fixed form, and non-<code>nil</code> for tab format) is used. ‘=/t=' (<code>fortran-tab-mode-string</code>) in the mode line indicates tab format is selected. Fortran mode sets the value of <code>indent-tabs-mode</code> accordingly.
+</p>
+
+<p>
+If the text on a line starts with the Fortran continuation marker ‘=$=', or if it begins with any non-whitespace character in column 5, Fortran mode treats it as a continuation line. When you indent a continuation line with TAB, it converts the line to the current continuation style. When you split a Fortran statement with C-M-j, the continuation marker on the newline is created according to the continuation style.
+</p>
+
+<p>
+The setting of continuation style affects several other aspects of editing in Fortran mode. In fixed form mode, the minimum column number for the body of a statement is 6. Lines inside of Fortran blocks that are indented to larger column numbers must use only the space character for whitespace. In tab format mode, the minimum column number for the statement body is 8, and the whitespace before column 8 must consist of one tab character.
+</p>
+
+<hr />
+</div>
+</div>

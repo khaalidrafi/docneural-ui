@@ -1,0 +1,223 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#submitting-patches">1.0.1. 22.10 Submitting Patches</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Submitting-Patches"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>, Previous: <a href="docs/guix--Coding-Style.html">Coding Style</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Submitting-Patches-1"></a>
+</p>
+</div>
+<div id="outline-container-submitting-patches" class="outline-4">
+<h4 id="submitting-patches"><span class="section-number-4">1.0.1.</span> 22.10 Submitting Patches</h4>
+<div class="outline-text-4" id="text-submitting-patches">
+<p>
+Development is done using the Git distributed version control system. Thus, access to the repository is not strictly necessary. We welcome contributions in one of the following forms:
+</p>
+
+<ul class="org-ul">
+<li><a id="index-pull-request_002c-for-contributions"></a> As a <i>pull request</i> (PR) at <a href="https://codeberg.org/guix/guix/pulls/">https://codeberg.org/guix/guix/pulls/</a>. This is now the preferred form.</li>
+
+<li><p>
+Until December 31st, 2025, you may also send patches as produced by <code>git format-patch</code> to the <a href="mailto:guix-patches@gnu.org">guix-patches@gnu.org</a> mailing list (see <a href="https://git-scm.com/docs/user-manual#Submitting-patches-to-a-project">Submitting patches to a project</a> in Git User Manual).
+</p>
+
+<p>
+This mailing list is backed by a Debbugs instance, which allows us to keep track of submissions (see <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>). Each message sent to that mailing list gets a new tracking number assigned; people can then follow up on the submission by sending email to <code>ISSUE_NUMBER==@debbugs.gnu.org</code>, where <code>ISSUE_NUMBER</code> is the tracking number (see <a href="docs/guix--Sending-a-Patch-Series.html">Sending a Patch Series</a>).
+</p></li>
+</ul>
+
+<p>
+Either way, contributors are encouraged to take a moment to set some Git repository options (see <a href="docs/guix--Configuring-Git.html">Configuring Git</a>) first, which can improve the readability of patches. Seasoned Guix developers may also want to look at the section on commit access (see <a href="docs/guix--Commit-Access.html">Commit Access</a>).
+</p>
+
+<p>
+Please write commit logs in the ChangeLog format (see <a href="https://www.gnu.org/prep/standards/html_node/Change-Logs.html#Change-Logs">Change Logs</a> in GNU Coding Standards); you can check the commit history for examples.
+</p>
+
+<p>
+You can help make the review process more efficient, and increase the chance that your patch will be reviewed quickly, by describing the context of your patch and the impact you expect it to have. For example, if your patch is fixing something that is broken, describe the problem and how your patch fixes it. Tell us how you have tested your patch. Will users of the code changed by your patch have to adjust their workflow at all? If so, tell us how. In general, try to imagine what questions a reviewer will ask, and answer those questions in advance.
+</p>
+
+<p>
+Before submitting a patch that adds or modifies a package definition, please run through this check list:
+</p>
+
+<ol class="org-ol">
+<li>If the authors of the packaged software provide a cryptographic signature for the release tarball, make an effort to verify the authenticity of the archive. For a detached GPG signature file this would be done with the <code>gpg --verify</code> command.</li>
+
+<li>Take some time to provide an adequate synopsis and description for the package. See <a href="docs/guix--Synopses-and-Descriptions.html">Synopses and Descriptions</a>, for some guidelines.</li>
+
+<li>Run <code>guix lint ==package</code>, where <code>package</code> is the name of the new or modified package, and fix any errors it reports (see <a href="docs/guix--Invoking-guix-lint.html">Invoking <code>guix lint</code></a>).</li>
+
+<li>Run <code>guix style ==package</code> to format the new package definition according to the project's conventions (see <a href="docs/guix--Invoking-guix-style.html">Invoking <code>guix style</code></a>).</li>
+
+<li>Make sure the package builds on your platform, using <code>guix build ==package</code>. Also build at least its direct dependents with <code>guix build --dependents=1 ==package</code> (see <a href="docs/guix--Additional-Build-Options.html#build_002ddependents"><code>guix build</code></a>).</li>
+
+<li><p>
+We recommend you also try building the package on other supported platforms. As you may not have access to actual hardware platforms, we recommend using the <code>qemu-binfmt-service-type</code> to emulate them. In order to enable it, add the <code>virtualization</code> service module and the following service to the list of services in your <code>operating-system</code> configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service qemu-binfmt-service-type
+ (qemu-binfmt-configuration
+   (platforms (lookup-qemu-platforms "arm" "aarch64"))))
+</pre>
+</div>
+
+<p>
+Then reconfigure your system.
+</p>
+
+<p>
+You can then build packages for different platforms by specifying the <code>--system</code> option. For example, to build the "hello" package for the armhf or aarch64 architectures, you would run the following commands, respectively:
+</p>
+
+<pre class="example" id="org6670688">
+guix build --system=armhf-linux --rounds=2 hello
+guix build --system=aarch64-linux --rounds=2 hello
+</pre></li>
+
+<li><p>
+<a id="index-bundling"></a> Make sure the package does not use bundled copies of software already available as separate packages.
+</p>
+
+<p>
+Sometimes, packages include copies of the source code of their dependencies as a convenience for users. However, as a distribution, we want to make sure that such packages end up using the copy we already have in the distribution, if there is one. This improves resource usage (the dependency is built and stored only once), and allows the distribution to make transverse changes such as applying security updates for a given software package in a single place and have them affect the whole system&#x2014;something that bundled copies prevent.
+</p></li>
+
+<li>Take a look at the profile reported by <code>guix size</code> (see <a href="docs/guix--Invoking-guix-size.html">Invoking <code>guix size</code></a>). This will allow you to notice references to other packages unwillingly retained. It may also help determine whether to split the package (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>), and which optional dependencies should be used. In particular, avoid adding <code>texlive</code> as a dependency: because of its extreme size, use <code>texlive-local-tree</code> procedure instead.</li>
+
+<li>Check that dependent packages (if applicable) are not affected by the change; <code>guix refresh --list-dependent ==package</code> will help you do that (see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>).</li>
+
+<li><p>
+<a id="index-determinism_002c-of-build-processes"></a> <a id="index-reproducible-builds_002c-checking"></a> Check whether the package's build process is deterministic. This typically means checking whether an independent build of the package yields the exact same result that you obtained, bit for bit.
+</p>
+
+<p>
+A simple way to do that is by building the same package several times in a row on your machine (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>):
+</p>
+
+<pre class="example" id="orgf395d3c">
+guix build --rounds=2 my-package
+</pre>
+
+<p>
+This is enough to catch a class of common non-determinism issues, such as timestamps or randomly-generated output in the build result.
+</p>
+
+<p>
+Another option is to use <code>guix challenge</code> (see <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>). You may run it once the package has been committed and built by <code>bordeaux.guix.gnu.org</code> to check whether it obtains the same result as you did. Better yet: Find another machine that can build it and run <code>guix publish</code>. Since the remote build machine is likely different from yours, this can catch non-determinism issues related to the hardware&#x2014;e.g., use of different instruction set extensions&#x2014;or to the operating system kernel&#x2014;e.g., reliance on <code>uname</code> or <code>/proc</code> files.
+</p></li>
+
+<li>When writing documentation, please use gender-neutral wording when referring to people, such as <a href="https://en.wikipedia.org/wiki/Singular_they">singular “they”, “their”, “them”</a>, and so forth.</li>
+
+<li><p>
+Verify that your patch contains only one set of related changes. Bundling unrelated changes together makes reviewing harder and slower.
+</p>
+
+<p>
+Examples of unrelated changes include the addition of several packages, or a package update along with fixes to that package.
+</p></li>
+
+<li>Please follow our code formatting rules, possibly running <code>guix style</code> script to do that automatically for you (see <a href="docs/guix--Formatting-Code.html">Formatting Code</a>).</li>
+
+<li>When possible, use mirrors in the source URL (see <a href="docs/guix--Invoking-guix-download.html">Invoking <code>guix download</code></a>). Use reliable URLs, not generated ones. For instance, GitHub archives are not necessarily identical from one generation to the next, so in this case it's often better to clone the repository. Don't use the <code>name</code> field in the URL: it is not very useful and if the name changes, the URL will probably be wrong.</li>
+
+<li>Check if Guix builds (see <a href="docs/guix--Building-from-Git.html">Building from Git</a>) and address the warnings, especially those about use of undefined symbols.</li>
+
+<li><p>
+Make sure your changes do not break Guix and simulate a <code>guix pull</code> with:
+</p>
+
+<pre class="example" id="org9ad5f63">
+guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master --disable-authentication
+</pre></li>
+</ol>
+
+<p>
+When posting a patch to the mailing list, use ‘=[PATCH] …=' as a subject, if your patch is to be applied on a branch other than <code>master</code>, say <code>core-updates</code>, specify it in the subject like ‘=[PATCH core-updates] …='.
+</p>
+
+<p>
+You may use your email client, the <code>git send-email</code> command (see <a href="docs/guix--Sending-a-Patch-Series.html">Sending a Patch Series</a>) or the <code>mumi send-email</code> command (see <a href="docs/guix--Debbugs-User-Interfaces.html">Debbugs User Interfaces</a>). We prefer to get patches in plain text messages, either inline or as MIME attachments. You are advised to pay attention if your email client changes anything like line breaks or indentation which could potentially break the patches.
+</p>
+
+<p>
+Expect some delay when you submit your very first patch to <a href="mailto:guix-patches@gnu.org">guix-patches@gnu.org</a>. You have to wait until you get an acknowledgement with the assigned tracking number. Future acknowledgements should not be delayed.
+</p>
+
+<p>
+When a bug is resolved, please close the thread by sending an email to <a href="mailto:ISSUE_NUMBER-done@debbugs.gnu.org"><code>ISSUE_NUMBER</code>-done@debbugs.gnu.org</a>.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Configuring-Git.html">Configuring Git</a></li>
+<li><a href="docs/guix--Sending-a-Patch-Series.html">Sending a Patch Series</a></li>
+</ul>
+
+<hr />
+</div>
+</div>
+</div>

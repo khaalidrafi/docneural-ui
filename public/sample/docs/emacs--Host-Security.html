@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Host-Security-1">1. 37 Host Security ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Network-Security.html">Network Security</a>   Previous: <a href="docs/emacs--Gnus.html">Email and Usenet News with Gnus</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Host-Security"></a>
+</p>
+
+<hr />
+<div id="outline-container-Host-Security-1" class="outline-2">
+<h2 id="Host-Security-1"><span class="section-number-2">1.</span> 37 Host Security <a href="#Host-Security-1">¶</a></h2>
+<div class="outline-text-2" id="text-Host-Security-1">
+<p>
+Emacs runs inside an operating system such as GNU/Linux, and relies on the operating system to check security constraints such as accesses to files. The default settings for Emacs are designed for typical use; they may require some tailoring in environments where security is more of a concern, or less of a concern, than usual. For example, file-local variables can be risky, and you can set the variable <code>enable-local-variables</code> to <code>:safe</code> or (even more conservatively) to <code>nil</code>; conversely, if your files can all be trusted and the default checking for these variables is irritating, you can set <code>enable-local-variables</code> to <code>:all</code>. See <a href="docs/emacs--Safe-File-Variables.html">Safety of File Variables</a>.
+</p>
+
+<p>
+Loading a file of Emacs Lisp code with <code>load-file</code> or <code>load-library</code> (see <a href="docs/emacs--Lisp-Libraries.html">Libraries of Lisp Code for Emacs</a>) can execute some of the Lisp code in the file being loaded, so you should only load Lisp files whose source you trust. However, some Emacs features can in certain situations execute Lisp code even without your explicit command or request. For example, Flymake, the on-the-fly syntax checker for Emacs (see <a href="../flymake_html/index.html#Top">GNU Flymake</a>), if it is enabled, can automatically execute some of the code in a Lisp file you visit as part of its syntax-checking job. Similarly, some completion commands (see <a href="docs/emacs--Completion.html">Completion</a>) in buffers visiting Lisp files sometimes need to expand Lisp macros for best results. In these cases, just visiting a Lisp file and performing some editing in it could trigger execution of Lisp code. If the visited file came from an untrusted source, it could include dangerous or even malicious code that Emacs would execute in those situations.
+</p>
+
+<p>
+To protect against this, Emacs disables execution of Lisp code by Flymake, completion, and some other features, unless the visited file is <i>trusted</i>. It is up to you to specify which files on your system should be trusted, by customizing the user option <code>trusted-content</code>.
+</p>
+
+<dl class="org-dl">
+<dt>User Option: <b>trusted-content</b> </dt><dd>The value of this option is <code>nil</code> by default, which means no file is trusted. You can customize the variable to be a list of one or more names of trusted files and directories. A file name that ends in a slash <code>/</code> is interpreted as a directory, which means all its files and subdirectories are also trusted. A special value <code>:all</code> means <i>all</i> the files and directories on your system should be trusted; <b>this is not recommended</b>, as it opens a gaping security hole.</dd>
+</dl>
+
+<p>
+See <a href="../elisp_html/Security-Considerations.html#Security-Considerations">Security Considerations</a> in The Emacs Lisp Reference Manual, for more information about security considerations when using Emacs as part of a larger application.
+</p>
+
+<hr />
+</div>
+</div>

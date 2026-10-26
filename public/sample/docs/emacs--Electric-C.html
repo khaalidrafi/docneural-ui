@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Electric-C-Characters">1. 28.12.2 Electric C Characters ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Hungry-Delete.html">Hungry Delete Feature in C</a>   Previous: <a href="docs/emacs--Motion-in-C.html">C Mode Motion Commands</a>   Up: <a href="docs/emacs--C-Modes.html">C and Related Modes</a>
+</p>
+
+<p>
+<a id="Electric-C"></a>
+</p>
+
+<hr />
+<div id="outline-container-Electric-C-Characters" class="outline-2">
+<h2 id="Electric-C-Characters"><span class="section-number-2">1.</span> 28.12.2 Electric C Characters <a href="#Electric-C-Characters">¶</a></h2>
+<div class="outline-text-2" id="text-Electric-C-Characters">
+<p>
+In C mode and related modes, certain printing characters are <i>electric</i>&#x2014;in addition to inserting themselves, they also reindent the current line, and optionally also insert newlines. The electric characters are {, }, :, #, ;, ,, &lt;, &gt;, /, *, (, and ).
+</p>
+
+<p>
+You might find electric indentation inconvenient if you are editing chaotically indented code. If you are new to CC Mode, you might find it disconcerting. You can toggle electric action with the command C-c C-l; when it is enabled, ‘=/==c==l=' appears in the mode line after the mode name (where <code>c</code>, if present, is ‘=*=' or ‘=/=', depending on whether the comment style is block or line). See <a href="../ccmode_html/Minor-Modes.html#Minor-Modes">Minor Modes</a> in The CC Mode Manual, for more about mode-line indicators in CC Mode.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dl-_0028C-mode_0029"></a>C-c C-l </dt><dd>Toggle electric action (<code>c-toggle-electric-state</code>). With a positive prefix argument, this command enables electric action, with a negative one it disables it.</dd>
+</dl>
+
+<p>
+Electric characters insert newlines only when, in addition to the electric state, the <i>auto-newline</i> feature is enabled (indicated by ‘=/==c==la=' in the mode line after the mode name). You can turn this feature on or off with the command C-c C-a:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002da-_0028C-mode_0029"></a>C-c C-a </dt><dd>Toggle the auto-newline feature (<code>c-toggle-auto-newline</code>). With a prefix argument, this command turns the auto-newline feature on if the argument is positive, and off if it is negative.</dd>
+</dl>
+
+<p>
+Usually the CC Mode style configures the exact circumstances in which Emacs inserts auto-newlines. You can also configure this directly. See <a href="../ccmode_html/Custom-Auto_002dnewlines.html#Custom-Auto_002dnewlines">Custom Auto-newlines</a> in The CC Mode Manual.
+</p>
+
+<hr />
+</div>
+</div>

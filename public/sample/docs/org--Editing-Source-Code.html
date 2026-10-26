@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-Source-Code-1">1. 16.10 Editing Source Code ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Editing-Source-Code"></a>
+Next: <a href="docs/org--Noweb-Reference-Syntax.html">Noweb Reference Syntax</a>, Previous: <a href="docs/org--Languages.html">Languages</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Editing-Source-Code-1" class="outline-2">
+<h2 id="Editing-Source-Code-1"><span class="section-number-2">1.</span> 16.10 Editing Source Code <a href="#Editing-Source-Code-1">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-Source-Code-1">
+<p>
+Use C-c ' to edit the current code block. It opens a new major mode edit buffer containing the body of the source code block, ready for any edits. Use C-c ' again to close the buffer and return to the Org buffer.
+</p>
+
+<p>
+C-x C-s saves the buffer and updates the contents of the Org buffer. Set <code>org-edit-src-auto-save-idle-delay</code> to save the base buffer after a certain idle delay time. Set <code>org-edit-src-turn-on-auto-save</code> to auto-save this buffer into a separate file using Auto-save mode.
+</p>
+
+<p>
+While editing the source code in the major mode, the Org Src minor mode remains active. It provides these customization variables as described below. For even more variables, look in the customization group <code>org-edit-structure</code>.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dsrc_002dlang_002dmodes"></a>=org-src-lang-modes= </dt><dd>If an Emacs major mode named <code>&lt;LANG&gt;-mode</code> exists, where <code>&lt;LANG&gt;</code> is the language identifier from code block's header line, then the edit buffer uses that major mode. If the major mode does not exist, or the language identifier is omitted, then the edit buffer falls back to Fundamental mode. Use this variable to arbitrarily map language identifiers to major modes.</dd>
+
+<dt><a id="index-org_002dsrc_002dwindow_002dsetup"></a>=org-src-window-setup= </dt><dd>For specifying Emacs window arrangement when the new edit buffer is created.</dd>
+
+<dt><a id="index-indentation_002c-in-code-blocks"></a>=org-src-preserve-indentation= </dt><dd>Default is <code>nil</code>. Source code is indented. This indentation applies during export or tangling, and depending on the context, may alter leading spaces and tabs. When non-<code>nil</code>, source code is aligned with the leftmost column. No lines are modified during export or tangling, which is very useful for white-space sensitive languages, such as Python.</dd>
+
+<dt><a id="index-org_002dsrc_002dask_002dbefore_002dreturning_002dto_002dedit_002dbuffer"></a>=org-src-ask-before-returning-to-edit-buffer= </dt><dd>When <code>nil</code>, Org returns to the edit buffer without further prompts. The default prompts for a confirmation.</dd>
+</dl>
+
+<p>
+Fontification of code blocks can give visual separation of text and code on the display page. Set <code>org-src-fontify-natively</code> to non-<code>nil</code> to turn on native code fontification in the <i>Org</i> buffer. The fontification follows the major mode used to edit the code block (see <code>org-src-lang-modes</code> above).
+</p>
+
+<p>
+To further customize the appearance of <code>org-block</code> for specific languages, customize <code>org-src-block-faces</code>. The following example shades the background of regular blocks, and colors source blocks only for Python and Emacs Lisp languages.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(require 'color)
+(set-face-attribute 'org-block nil :background
+                    (color-darken-name
+                     (face-attribute 'default :background) 3))
+
+(setq org-src-block-faces '(("emacs-lisp" (:background "#EEE2FF"))
+                            ("python" (:background "#E5FFB8"))))
+</pre>
+</div>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Noweb-Reference-Syntax.html">Noweb Reference Syntax</a>, Previous: <a href="docs/org--Languages.html">Languages</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

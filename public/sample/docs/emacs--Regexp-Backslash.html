@@ -1,0 +1,128 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Backslash-in-Regular-Expressions">1. 17.7 Backslash in Regular Expressions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Regexp-Example.html">Regular Expression Example</a>   Previous: <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Regexp-Backslash"></a>
+</p>
+
+<hr />
+<div id="outline-container-Backslash-in-Regular-Expressions" class="outline-2">
+<h2 id="Backslash-in-Regular-Expressions"><span class="section-number-2">1.</span> 17.7 Backslash in Regular Expressions <a href="#Backslash-in-Regular-Expressions">¶</a></h2>
+<div class="outline-text-2" id="text-Backslash-in-Regular-Expressions">
+<p>
+For the most part, ‘=\=' followed by any character matches only that character. However, there are several exceptions: two-character sequences starting with ‘=\=' that have special meanings. The second character in the sequence is always an ordinary character when used on its own. Here is a table of ‘=\=' constructs.
+</p>
+
+<dl class="org-dl">
+<dt>\|</dt><dd><p>
+specifies an alternative. Two regular expressions <code>a</code> and <code>b</code> with ‘=\|=' in between form an expression that matches some text if either <code>a</code> matches it or <code>b</code> matches it. It works by trying to match <code>a</code>, and if that fails, by trying to match <code>b</code>.
+</p>
+
+<p>
+Thus, ‘=foo\|bar=' matches either ‘=foo=' or ‘=bar=' but no other string.
+</p>
+
+<p>
+‘=\|=' applies to the largest possible surrounding expressions. Only a surrounding ‘=\( … \)=' grouping can limit the grouping power of ‘=\|='.
+</p>
+
+<p>
+Full backtracking capability exists to handle multiple uses of ‘=\|='.
+</p></dd>
+
+<dt><a id="index-sub_002dexpressions_002c-in-regular-expressions"></a>\( ... \) </dt><dd><p>
+is a grouping construct that serves three purposes:
+</p>
+
+<ol class="org-ol">
+<li>To enclose a set of ‘=\|=' alternatives for other operations. Thus, ‘=\(foo\|bar\)x=' matches either ‘=foox=' or ‘=barx='.</li>
+<li>To enclose a complicated expression for the postfix operators ‘=*=', ‘=+=' and ‘=?=' to operate on. Thus, ‘=ba\(na\)*=' matches ‘=bananana=', etc., with any (zero or more) number of ‘=na=' strings.</li>
+<li>To record a matched substring for future reference.</li>
+</ol>
+
+<p>
+This last application is not a consequence of the idea of a parenthetical grouping; it is a separate feature that is assigned as a second meaning to the same ‘=\( … \)=' construct. In practice there is usually no conflict between the two meanings; when there is a conflict, you can use a shy group, described below.
+</p></dd>
+
+<dt><a id="index-shy-group_002c-in-regexp"></a>\(?: ... \) </dt><dd>specifies a <i>shy group</i> that does not record the matched substring; you can't refer back to it with ‘=\==d=' (see below). This is useful in mechanically combining regular expressions, so that you can add groups for syntactic purposes without interfering with the numbering of the groups that are meant to be referred to.</dd>
+
+<dt><a id="index-back-reference_002c-in-regexp"></a>\=d= </dt><dd><p>
+matches the same text that matched the <code>d=th occurrence of a ‘</code>\( … \)=' construct. This is called a <i>back reference</i>.
+</p>
+
+<p>
+After the end of a ‘=\( … \)=' construct, the matcher remembers the beginning and end of the text matched by that construct. Then, later on in the regular expression, you can use ‘=\=' followed by the digit <code>d</code> to mean “match the same text matched the <code>d=th ‘</code>\( … \)=' construct”.
+</p>
+
+<p>
+The strings matching the first nine ‘=\( … \)=' constructs appearing in a regular expression are assigned numbers 1 through 9 in the order that the open-parentheses appear in the regular expression. So you can use ‘=\1=' through ‘=\9=' to refer to the text matched by the corresponding ‘=\( … \)=' constructs.
+</p>
+
+<p>
+For example, ‘=\(.*\)\1=' matches any newline-free string that is composed of two identical halves. The ‘=\(.*\)=' matches the first half, which may be anything, but the ‘=\1=' that follows must match the same exact text.
+</p>
+
+<p>
+If a particular ‘=\( … \)=' construct matches more than once (which can easily happen if it is followed by ‘=*='), only the last match is recorded.
+</p></dd>
+
+<dt>\{<code>m</code>\}</dt><dd>is a postfix operator specifying <code>m</code> repetitions&#x2014;that is, the preceding regular expression must match exactly <code>m</code> times in a row. For example, ‘=x\{4\}=' matches the string ‘=xxxx=' and nothing else.</dd>
+
+<dt>\{<code>m</code>,=n=\}</dt><dd>is a postfix operator specifying between <code>m</code> and <code>n</code> repetitions&#x2014;that is, the preceding regular expression must match at least <code>m</code> times, but no more than <code>n</code> times. If <code>n</code> is omitted, then there is no upper limit, but the preceding regular expression must match at least <code>m</code> times.<br />
+‘=\{0,1\}=' is equivalent to ‘=?='.<br />
+‘=\{0,\}=' is equivalent to ‘=*='.<br />
+‘=\{1,\}=' is equivalent to ‘=+='.</dd>
+
+<dt>\`</dt><dd>matches the empty string, but only at the beginning of the string or buffer (or its accessible portion) being matched against.</dd>
+
+<dt>\'</dt><dd>matches the empty string, but only at the end of the string or buffer (or its accessible portion) being matched against.</dd>
+
+<dt>\=</dt><dd>matches the empty string, but only at point.</dd>
+
+<dt>\b</dt><dd><p>
+matches the empty string, but only at the beginning or end of a word. Thus, ‘=\bfoo\b=' matches any occurrence of ‘=foo=' as a separate word. ‘=\bballs?\b=' matches ‘=ball=' or ‘=balls=' as a separate word.
+</p>
+
+<p>
+‘=\b=' matches at the beginning or end of the buffer regardless of what text appears next to it.
+</p></dd>
+
+<dt>\B</dt><dd>matches the empty string, but <i>not</i> at the beginning or end of a word.</dd>
+
+<dt>\&lt;</dt><dd>matches the empty string, but only at the beginning of a word. ‘=\&lt;=' matches at the beginning of the buffer only if a word-constituent character follows.</dd>
+
+<dt>\&gt;</dt><dd>matches the empty string, but only at the end of a word. ‘=\&gt;=' matches at the end of the buffer only if the contents end with a word-constituent character.</dd>
+
+<dt>\w</dt><dd>matches any word-constituent character. The syntax table determines which characters these are. See <a href="../elisp_html/Syntax-Tables.html#Syntax-Tables">Syntax Tables</a> in The Emacs Lisp Reference Manual.</dd>
+
+<dt>\W</dt><dd>matches any character that is not a word-constituent.</dd>
+
+<dt>\_&lt;</dt><dd>matches the empty string, but only at the beginning of a symbol. A symbol is a sequence of one or more symbol-constituent characters. A symbol-constituent character is a character whose syntax is either ‘=w=' or ‘=_='. ‘=\_&lt;=' matches at the beginning of the buffer only if a symbol-constituent character follows. As with words, the syntax table determines which characters are symbol-constituent.</dd>
+
+<dt>\_&gt;</dt><dd>matches the empty string, but only at the end of a symbol. ‘=\_&gt;=' matches at the end of the buffer only if the contents end with a symbol-constituent character.</dd>
+
+<dt>\s=c=</dt><dd>matches any character whose syntax is <code>c</code>. Here <code>c</code> is a character that designates a particular syntax class: thus, ‘=w=' for word constituent, ‘=-<code>' or ‘</code> <code>' for whitespace, ‘</code>.=' for ordinary punctuation, etc. See <a href="../elisp_html/Syntax-Class-Table.html#Syntax-Class-Table">Syntax Class Table</a> in The Emacs Lisp Reference Manual.</dd>
+
+<dt>&sect;=c=</dt><dd>matches any character whose syntax is not <code>c</code>.</dd>
+
+<dt><a id="index-categories-of-characters"></a>\c=c= </dt><dd>matches any character that belongs to the category <code>c</code>. For example, ‘=\cc=' matches Chinese characters, ‘=\cg=' matches Greek characters, etc. For the description of the known categories, type M-x describe-categories RET.</dd>
+
+<dt>\C=c=</dt><dd>matches any character that does <i>not</i> belong to category <code>c</code>.</dd>
+</dl>
+
+<p>
+The constructs that pertain to words and syntax are controlled by the setting of the syntax table. See <a href="../elisp_html/Syntax-Tables.html#Syntax-Tables">Syntax Tables</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<hr />
+</div>
+</div>

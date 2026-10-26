@@ -1,0 +1,46 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Templates-in-contexts-1">1. 10.1.3.3 Templates in contexts ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Templates-in-contexts"></a>
+Previous: <a href="docs/org--Template-expansion.html">Template expansion</a>, Up: <a href="docs/org--Capture-templates.html">Capture templates</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Templates-in-contexts-1" class="outline-2">
+<h2 id="Templates-in-contexts-1"><span class="section-number-2">1.</span> 10.1.3.3 Templates in contexts <a href="#Templates-in-contexts-1">¶</a></h2>
+<div class="outline-text-2" id="text-Templates-in-contexts-1">
+<p>
+To control whether a capture template should be accessible from a specific context, you can customize <code>org-capture-templates-contexts</code>. Let's say, for example, that you have a capture template “p” for storing Gnus emails containing patches. Then you would configure this option like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-capture-templates-contexts
+      '(("p" ((in-mode . "message-mode")))))
+</pre>
+</div>
+
+<p>
+You can also tell that the command key p should refer to another template. In that case, add this command key like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-capture-templates-contexts
+      '(("p" "q" ((in-mode . "message-mode")))))
+</pre>
+</div>
+
+<p>
+See the docstring of the variable for more information.
+</p>
+</div>
+</div>

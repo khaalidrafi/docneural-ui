@@ -1,0 +1,46 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Triggering-Publication-1">1. 14.4 Triggering Publication ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Triggering-Publication"></a>
+Previous: <a href="docs/org--Sample-Configuration.html">Sample Configuration</a>, Up: <a href="docs/org--Publishing.html">Publishing</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Triggering-Publication-1" class="outline-2">
+<h2 id="Triggering-Publication-1"><span class="section-number-2">1.</span> 14.4 Triggering Publication <a href="#Triggering-Publication-1">¶</a></h2>
+<div class="outline-text-2" id="text-Triggering-Publication-1">
+<p>
+Once properly configured, Org can publish with the following commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002de-P-x"></a>C-c C-e P x (<code>org-publish</code>) </dt><dd>Prompt for a specific project and publish all files that belong to it.</dd>
+
+<dt><a id="index-C_002dc-C_002de-P-p"></a>C-c C-e P p (<code>org-publish-current-project</code>) </dt><dd>Publish the project containing the current file.</dd>
+
+<dt><a id="index-C_002dc-C_002de-P-f"></a>C-c C-e P f (<code>org-publish-current-file</code>) </dt><dd>Publish only the current file.</dd>
+
+<dt><a id="index-C_002dc-C_002de-P-a"></a>C-c C-e P a (<code>org-publish-all</code>) </dt><dd>Publish every project.</dd>
+</dl>
+
+<p>
+Org uses timestamps to track when a file has changed. The above functions normally only publish changed files. You can override this and force publishing of all files by giving a prefix argument to any of the commands above, or by customizing the variable <code>org-publish-use-timestamps-flag</code>. This may be necessary in particular if files include other files via ‘=SETUPFILE=' or ‘=INCLUDE=' keywords.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Sample-Configuration.html">Sample Configuration</a>, Up: <a href="docs/org--Publishing.html">Publishing</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

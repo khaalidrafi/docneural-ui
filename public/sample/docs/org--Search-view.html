@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Search-view-1">1. 11.3.4 Search view ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Search-view"></a>
+Next: <a href="docs/org--Stuck-projects.html">Stuck projects</a>, Previous: <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a>, Up: <a href="docs/org--Built_002din-Agenda-Views.html">The Built-in Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Search-view-1" class="outline-2">
+<h2 id="Search-view-1"><span class="section-number-2">1.</span> 11.3.4 Search view <a href="#Search-view-1">¶</a></h2>
+<div class="outline-text-2" id="text-Search-view-1">
+<p>
+This agenda view is a general text search facility for Org mode entries. It is particularly useful to find notes.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-s-_0028Agenda-dispatcher_0029-1"></a>M-x org-agenda s (<code>org-search-view</code>) </dt><dd>This is a special search that lets you select entries by matching a substring or specific words using a boolean logic.</dd>
+</dl>
+
+<p>
+For example, the search string ‘=computer equipment=' matches entries that contain ‘=computer equipment=' as a substring, even if the two words are separated by more space or a line break.
+</p>
+
+<p>
+Search view can also search for specific keywords in the entry, using Boolean logic. The search string ‘=+computer +wifi -ethernet -{8\.11[bg]}=' matches note entries that contain the keywords ‘=computer=' and ‘=wifi=', but not the keyword ‘=ethernet=', and which are also not matched by the regular expression ‘=8\.11[bg]=', meaning to exclude both ‘=8.11b=' and ‘=8.11g='. The first ‘=+=' is necessary to turn on boolean search, other ‘=+=' characters are optional. For more details, see the docstring of the command <code>org-search-view</code>.
+</p>
+
+<p>
+You can incrementally and conveniently adjust a boolean search from the agenda search view with the following keys
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">[</td>
+<td class="org-left">Add a positive search word</td>
+</tr>
+
+<tr>
+<td class="org-left">]</td>
+<td class="org-left">Add a negative search word</td>
+</tr>
+
+<tr>
+<td class="org-left">{</td>
+<td class="org-left">Add a positive regular expression</td>
+</tr>
+
+<tr>
+<td class="org-left">}</td>
+<td class="org-left">Add a negative regular expression</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Note that in addition to the agenda files, this command also searches the files listed in <code>org-agenda-text-search-extra-files</code>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Stuck-projects.html">Stuck projects</a>, Previous: <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a>, Up: <a href="docs/org--Built_002din-Agenda-Views.html">The Built-in Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

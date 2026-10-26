@@ -1,0 +1,287 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Debbugs-User-Interfaces"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Debbugs-Usertags.html">Debbugs Usertags</a>, Previous: <a href="docs/guix--Managing-Patches-and-Branches.html">Managing Patches and Branches</a>, Up: <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Debbugs-User-Interfaces-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="debbugs-user-interfaces"></a>22.11.3 Debbugs User Interfaces<br />
+<div class="outline-text-5" id="text-debbugs-user-interfaces">
+<blockquote>
+<p>
+<b>Warning:</b> This section is about bug reports and patches sent by email to <a href="https://issues.guix.gnu.org">Debbugs</a>. This option is supported until December 31st, 2025, after which <a href="https://codeberg.org/guix/guix">Codeberg</a> will be the only interface for submitting bug reports and changes. See <a href="docs/guix--Submitting-Patches.html">Submitting Patches</a>, for more info.
+</p>
+</blockquote>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Web-interface"></a>
+</p>
+</div>
+</li>
+<li><a id="web-interface"></a>22.11.3.1 Web interface<br />
+<div class="outline-text-5" id="text-web-interface">
+<p>
+<a id="index-mumi_002c-web-interface-for-issues"></a>
+A web interface (actually <i>two</i> web interfaces!) are available to browse issues:
+</p>
+
+<ul class="org-ul">
+<li><a href="https://issues.guix.gnu.org">https://issues.guix.gnu.org</a> provides a pleasant interface powered by mumi to browse bug reports and patches, and to participate in discussions; mumi also has a command-line interface as we will see below;</li>
+<li><a href="https://bugs.gnu.org/guix">https://bugs.gnu.org/guix</a> lists bug reports;</li>
+<li><a href="https://bugs.gnu.org/guix-patches">https://bugs.gnu.org/guix-patches</a> lists patch submissions.</li>
+</ul>
+
+<p>
+To view discussions related to issue number <code>n</code>, go to ‘=<a href="https://issues.guix.gnu.org/==n">https://issues.guix.gnu.org/==n</a>=' or ‘=<a href="https://bugs.gnu.org/==n">https://bugs.gnu.org/==n</a>='.
+</p>
+
+<p>
+<a id="Command_002dLine-Interface"></a>
+</p>
+</div>
+</li>
+<li><a id="command-line-interface"></a>22.11.3.2 Command-Line Interface<br />
+<div class="outline-text-5" id="text-command-line-interface">
+<p>
+<a id="index-mumi-command_002dline-interface"></a> <a id="index-mumi-am"></a> <a id="index-mumi-compose"></a> <a id="index-mumi-send_002demail"></a> <a id="index-mumi-www"></a>
+Mumi also comes with a command-line interface that can be used to search existing issues, open new issues, compose replies, apply and send patches. You do not need to use Emacs to use the mumi command-line client. You interact with it only on the command-line.
+</p>
+
+<p>
+To use the mumi command-line interface, navigate to a local clone of the Guix git repository, and drop into a shell with mumi, git and git:send-email installed.
+</p>
+
+<pre class="example" id="org0431713">
+$ cd guix
+~/guix$ guix shell mumi git git:send-email
+</pre>
+
+<p>
+To search for issues, say all open issues about "zig", run
+</p>
+
+<pre class="example" id="org721a878">
+~/guix [env]$ mumi search zig is:open
+
+#60889 Add zig-build-system
+opened on 17 Jan 17:37 Z by Ekaitz Zarraga
+#61036 [PATCH 0/3] Update zig to 0.10.1
+opened on 24 Jan 09:42 Z by Efraim Flashner
+#39136 [PATCH] gnu: services: Add endlessh.
+opened on 14 Jan 2020 21:21 by Nicol? Balzarotti
+#60424 [PATCH] gnu: Add python-online-judge-tools
+opened on 30 Dec 2022 07:03 by gemmaro
+#45601 [PATCH 0/6] vlang 0.2 update
+opened on  1 Jan 2021 19:23 by Ryan Prior
+</pre>
+
+<p>
+Pick an issue and make it the "current" issue.
+</p>
+
+<pre class="example" id="orgfdfbbe8">
+~/guix [env]$ mumi current 61036
+
+#61036 [PATCH 0/3] Update zig to 0.10.1
+opened on 24 Jan 09:42 Z by Efraim Flashner
+</pre>
+
+<p>
+Once an issue is the current issue, you can open the issue in a web browser, compose replies, apply patches, send patches, etc. with short succinct commands.
+</p>
+
+<p>
+Open the issue in your web browser using
+</p>
+
+<pre class="example" id="org099dde7">
+~/guix [env]$ mumi www
+</pre>
+
+<p>
+Compose a reply using
+</p>
+
+<pre class="example" id="orgadff75a">
+~/guix [env]$ mumi compose
+</pre>
+
+<p>
+Compose a reply and close the issue using
+</p>
+
+<pre class="example" id="orgf4059d9">
+~/guix [env]$ mumi compose --close
+</pre>
+
+<p>
+<code>mumi compose</code> opens your mail client by passing ‘=mailto:=' URIs to <code>xdg-open</code>. So, you need to have <code>xdg-open</code> set up to open your mail client correctly.
+</p>
+
+<p>
+Apply the latest patchset from the issue using
+</p>
+
+<pre class="example" id="orge9467e3">
+~/guix [env]$ mumi am
+</pre>
+
+<p>
+You may also apply a patchset of a specific version (say, v3) using
+</p>
+
+<pre class="example" id="orgbb1e7d6">
+~/guix [env]$ mumi am v3
+</pre>
+
+<p>
+Or, you may apply a patch from a specific e-mail message. For example, to apply the patch from the 4th message (message index starts from 0), run
+</p>
+
+<pre class="example" id="orgecdb786">
+~/guix [env]$ mumi am @4
+</pre>
+
+<p>
+<code>mumi am</code> is a wrapper around <code>git am</code>. You can pass <code>git am</code> arguments to it after a ‘=&#x2013;='. For example, to add a Signed-off-by trailer, run
+</p>
+
+<pre class="example" id="org19359c2">
+~/guix [env]$ mumi am -- -s
+</pre>
+
+<p>
+Create and send patches to the issue using
+</p>
+
+<pre class="example" id="orgcbb704e">
+~/guix [env]$ git format-patch origin/master
+~/guix [env]$ mumi send-email foo.patch bar.patch
+</pre>
+
+<p>
+Note that you do not have to pass in ‘=&#x2013;to=' or ‘=&#x2013;cc=' arguments to <code>git format-patch</code>. <code>mumi send-email</code> will put them in correctly when sending the patches.
+</p>
+
+<p>
+To open a new issue, run
+</p>
+
+<pre class="example" id="org6da7b84">
+~/guix [env]$ mumi new
+</pre>
+
+<p>
+and send an email (using <code>mumi compose</code>) or patches (using <code>mumi send-email</code>).
+</p>
+
+<p>
+<code>mumi send-email</code> is really a wrapper around <code>git send-email</code> that automates away all the nitty-gritty of sending patches. It uses the current issue state to automatically figure out the correct ‘=To=' address to send to, other participants to ‘=Cc=', headers to add, etc.
+</p>
+
+<p>
+Also note that, unlike <code>git send-email</code>, <code>mumi send-email</code> works perfectly well with single and multiple patches alike. It automates away the debbugs dance of sending the first patch, waiting for a response from debbugs and sending the remaining patches. It does so by sending the first patch, polling the server for a response, and then sending the remaining patches. This polling can unfortunately take a few minutes. So, please be patient.
+</p>
+
+<p>
+<a id="Emacs-Interface"></a>
+</p>
+</div>
+</li>
+<li><a id="emacs-interface"></a>22.11.3.3 Emacs Interface<br />
+<div class="outline-text-5" id="text-emacs-interface">
+<p>
+If you use Emacs, you may find it more convenient to interact with issues using <code>debbugs.el</code>, which you can install with:
+</p>
+
+<pre class="example" id="org6666fa5">
+guix install emacs-debbugs
+</pre>
+
+<p>
+For example, to list all open issues on <code>guix-patches</code>, hit:
+</p>
+
+<pre class="example" id="org162c175">
+C-u M-x debbugs-gnu RET RET guix-patches RET n y
+</pre>
+
+<p>
+For a more convenient (shorter) way to access both the bugs and patches submissions, you may want to configure the <code>debbugs-gnu-default-packages</code> and <code>debbugs-gnu-default-severities</code> Emacs variables (see <a href="docs/guix--Viewing-Bugs-within-Emacs.html">Viewing Bugs within Emacs</a>).
+</p>
+
+<p>
+To search for bugs, ‘=M-x== debbugs-gnu-guix-search=' can be used.
+</p>
+
+<p>
+See <a href="https://elpa.gnu.org/packages/doc/debbugs-ug.html#Top">Debbugs User Guide</a>, for more information on this nifty tool!
+</p>
+
+<hr />
+</div>
+</li>
+</div>

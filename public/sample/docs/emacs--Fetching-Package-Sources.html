@@ -1,0 +1,106 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fetching-Package-Sources-1">1. 50.5 Fetching Package Sources ¶</a>
+<ul>
+<li><a href="#specifying-package-sources">1.1. 50.5.1 Specifying Package Sources ¶</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Package-Files.html">Package Files and Directory Layout</a>   Up: <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>
+</p>
+
+<p>
+<a id="Fetching-Package-Sources"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fetching-Package-Sources-1" class="outline-2">
+<h2 id="Fetching-Package-Sources-1"><span class="section-number-2">1.</span> 50.5 Fetching Package Sources <a href="#Fetching-Package-Sources-1">¶</a></h2>
+<div class="outline-text-2" id="text-Fetching-Package-Sources-1">
+<p>
+By default <code>package-install</code> downloads a Tarball from a package archive and installs its files. This might be inadequate if you wish to hack on the package sources and share your changes with others. In that case, you may prefer to directly fetch and work on the upstream source. This often makes it easier to develop patches and report bugs.
+</p>
+
+<p>
+One way to do this is to use <code>package-vc-install</code>, to fetch the source code for a package directly from source. The command will also automatically ensure that all files are byte-compiled and auto-loaded, just like with a regular package. Packages installed this way behave just like any other package. You can upgrade them using <code>package-upgrade</code> or <code>package-upgrade-all</code> and delete them again using <code>package-delete</code>. They are even displayed in the regular package listing. If you just wish to clone the source of a package, without adding it to the package list, use <code>package-vc-checkout</code>.
+</p>
+
+<p>
+Note that currently, built-in packages cannot be upgraded using <code>package-vc-install</code>.
+</p>
+
+<p>
+With the source checkout, you might want to reproduce a bug against the current development head or implement a new feature to scratch an itch. If the package metadata indicates how to contact the maintainer, you can use the command <code>package-report-bug</code> to report a bug via Email. This report will include all the user options that you have customized. If you have made a change you wish to share with the maintainers, first commit your changes then use the command <code>package-vc-prepare-patch</code> to share it. See <a href="docs/emacs--Preparing-Patches.html">Preparing Patches</a>.
+</p>
+
+<p>
+If you maintain your own packages you might want to use a local checkout instead of cloning a remote repository. You can do this by using <code>package-vc-install-from-checkout</code>, which creates a symbolic link from the package directory (see <a href="docs/emacs--Package-Files.html">Package Files and Directory Layout</a>) to your checkout and initializes the code. Note that you might have to use <code>package-vc-rebuild</code> to repeat the initialization and update the autoloads.
+</p>
+
+<ul class="org-ul">
+<li></li>
+</ul>
+
+<p>
+<a id="Specifying-Package-Sources"></a>
+</p>
+</div>
+<div id="outline-container-specifying-package-sources" class="outline-3">
+<h3 id="specifying-package-sources"><span class="section-number-3">1.1.</span> 50.5.1 Specifying Package Sources </h3>
+<div class="outline-text-3" id="text-specifying-package-sources">
+<p>
+To install a package from source, Emacs must know where to get the package's source code (such as a code repository) and basic information about the structure of the code (such as the main file in a multi-file package). A <i>package specification</i> describes these properties.
+</p>
+
+<p>
+When supported by a package archive (see <a href="../elisp_html/Package-Archives.html#Package-Archives">Package Archives</a> in The Emacs Lisp Reference Manual), Emacs can automatically download a package's specification from said archive. If the first argument passed to <code>package-vc-install</code> is a symbol naming a package, then Emacs will use the specification provided by the archive for that package.
+</p>
+
+<pre class="example" id="org011542d">
+;; Emacs will download BBDB's specification from GNU ELPA:
+(package-vc-install 'bbdb)
+</pre>
+
+<p>
+The first argument to <code>package-vc-install</code> may also be a package specification. This allows you to install source packages from locations other than the known archives listed in the user option <code>package-archives</code>. A package specification is a list of the form <code>(==name=</code> . <code>=spec=</code>)=, in which <code>spec</code> should be a property list using any of the keys in the table below.
+</p>
+
+<p>
+For definitions of basic terms for working with code repositories and version control systems, see <a href="../emacs_html/VCS-Concepts.html#VCS-Concepts">VCS Concepts</a> in The GNU Emacs Manual.
+</p>
+
+<dl class="org-dl">
+<dt><code>:url</code></dt><dd>A string providing the URL that specifies the repository from which to fetch the package's source code.</dd>
+
+<dt><code>:branch</code></dt><dd>A string providing the revision of the code to install. Do not confuse this with a package's version number.</dd>
+
+<dt><code>:lisp-dir</code></dt><dd>A string providing the repository-relative name of the directory to use for loading the Lisp sources, which defaults to the root directory of the repository.</dd>
+
+<dt><code>:main-file</code></dt><dd>A string providing the main file of the project, from which to gather package metadata. If not given, the default is the package name with ".el" appended to it.</dd>
+
+<dt><code>:doc</code></dt><dd>A string providing the repository-relative name of the documentation file from which to build an Info file. This can be a Texinfo file or an Org file.</dd>
+
+<dt><code>:make</code></dt><dd>A string or list of strings providing the target or targets defined in the repository Makefile which should run before building the Info file. Only takes effect when <code>package-vc-allow-build-commands</code> is non-<code>nil</code>.</dd>
+
+<dt><code>:shell-command</code></dt><dd>A string providing the shell command to run before building the Info file. Only takes effect when <code>package-vc-allow-build-commands</code> is non-<code>nil</code>.</dd>
+
+<dt><code>:vc-backend</code></dt><dd>A symbol naming the VC backend to use for downloading a copy of the package's repository (see <a href="../emacs_html/Version-Control-Systems.html#Version-Control-Systems">Version Control Systems</a> in The GNU Emacs Manual). If omitted, Emacs will attempt to make a guess based on the provided URL, or, failing that, the process will fall back onto the value of <code>package-vc-default-backend</code>.</dd>
+</dl>
+
+<pre class="example" id="orga6244eb">
+;; Specifying information manually:
+(package-vc-install
+  '(bbdb :url "https://git.savannah.nongnu.org/git/bbdb.git"
+         :lisp-dir "lisp"
+         :doc "doc/bbdb.texi"))
+</pre>
+
+<hr />
+</div>
+</div>
+</div>

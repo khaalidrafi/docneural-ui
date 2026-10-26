@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#When-Gnus-Starts-Up">1. 36.2 When Gnus Starts Up ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Gnus-Group-Buffer.html">Using the Gnus Group Buffer</a>   Previous: <a href="docs/emacs--Buffers-of-Gnus.html">Gnus Buffers</a>   Up: <a href="docs/emacs--Gnus.html">Email and Usenet News with Gnus</a>
+</p>
+
+<p>
+<a id="Gnus-Startup"></a>
+</p>
+
+<hr />
+<div id="outline-container-When-Gnus-Starts-Up" class="outline-2">
+<h2 id="When-Gnus-Starts-Up"><span class="section-number-2">1.</span> 36.2 When Gnus Starts Up <a href="#When-Gnus-Starts-Up">¶</a></h2>
+<div class="outline-text-2" id="text-When-Gnus-Starts-Up">
+<p>
+If your system has been set up for reading Usenet news, getting started with Gnus is easy&#x2014;just type M-x gnus.
+</p>
+
+<p>
+On starting up, Gnus reads your <i>news initialization file</i>: a file named <code>.newsrc</code> in your home directory which lists your Usenet newsgroups and subscriptions (this file is not unique to Gnus; it is used by many other newsreader programs). It then tries to contact the system's default news server, which is typically specified by the <code>NNTPSERVER</code> environment variable.
+</p>
+
+<p>
+If your system does not have a default news server, or if you wish to use Gnus for reading email, then before invoking M-x gnus you need to tell Gnus where to get news and/or mail. To do this, customize the variables <code>gnus-select-method</code> and/or <code>gnus-secondary-select-methods</code>. See <a href="../gnus_html/Finding-the-News.html#Finding-the-News">Finding the News</a> in The Gnus Manual.
+</p>
+
+<p>
+Once Gnus has started up, it displays the group buffer. By default, the group buffer shows only a small number of <i>subscribed groups</i>. Groups with other statuses---<i>unsubscribed</i>, <i>killed</i>, or <i>zombie</i>&#x2014;are hidden. The first time you start Gnus, any group to which you are not subscribed is made into a killed group; any group that subsequently appears on the news server becomes a zombie group.
+</p>
+
+<p>
+To proceed, you must select a group in the group buffer to open the summary buffer for that group; then, select an article in the summary buffer to view its article buffer in a separate window. The following sections explain how to use the group and summary buffers to do this.
+</p>
+
+<p>
+To quit Gnus, type q in the group buffer. This automatically records your group statuses in the files <code>.newsrc</code> and <code>.newsrc.eld</code>, so that they take effect in subsequent Gnus sessions.
+</p>
+
+<hr />
+</div>
+</div>

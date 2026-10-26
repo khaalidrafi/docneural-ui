@@ -1,0 +1,130 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tag-Hierarchy-1">1. 6.3 Tag Hierarchy ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tag-Hierarchy"></a>
+Next: <a href="docs/org--Tag-Searches.html">Tag Searches</a>, Previous: <a href="docs/org--Setting-Tags.html">Setting Tags</a>, Up: <a href="docs/org--Tags.html">Tags</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tag-Hierarchy-1" class="outline-2">
+<h2 id="Tag-Hierarchy-1"><span class="section-number-2">1.</span> 6.3 Tag Hierarchy <a href="#Tag-Hierarchy-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tag-Hierarchy-1">
+<p>
+Tags can be defined in hierarchies. A tag can be defined as a <i>group tag</i> for a set of other tags. The group tag can be seen as the “broader term” for its set of tags. Defining multiple group tags and nesting them creates a tag hierarchy.
+</p>
+
+<p>
+One use-case is to create a taxonomy of terms (tags) that can be used to classify nodes in a document or set of documents.
+</p>
+
+<p>
+When you search for a group tag, it returns matches for all members in the group and its subgroups. In an agenda view, filtering by a group tag displays or hides headlines tagged with at least one of the members of the group or any of its subgroups. This makes tag searches and filters even more flexible.
+</p>
+
+<p>
+You can set group tags by using brackets and inserting a colon between the group tag and its related tags&#x2014;beware that all whitespaces are mandatory so that Org can parse this line correctly:
+</p>
+
+<pre class="example" id="orgffaadcc">
+#+TAGS: [ GTD : Control Persp ]
+</pre>
+
+<p>
+In this example, ‘=GTD=' is the group tag, and it is related to two other tags: ‘=Control=', ‘=Persp='. Defining ‘=Control=' and ‘=Persp=' as group tags creates a hierarchy of tags:
+</p>
+
+<pre class="example" id="org3348761">
+#+TAGS: [ Control : Context Task ]
+#+TAGS: [ Persp : Vision Goal AOF Project ]
+</pre>
+
+<p>
+That can conceptually be seen as a hierarchy of tags:
+</p>
+
+<ul class="org-ul">
+<li>‘=GTD='
+<ul class="org-ul">
+<li>‘=Persp='
+<ul class="org-ul">
+<li>‘=Vision='</li>
+<li>‘=Goal='</li>
+<li>‘=AOF='</li>
+<li>‘=Project='</li>
+</ul></li>
+<li>‘=Control='
+<ul class="org-ul">
+<li>‘=Context='</li>
+<li>‘=Task='</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>
+You can use the <code>:startgrouptag</code>, <code>:grouptags</code> and <code>:endgrouptag</code> keyword directly when setting <code>org-tag-alist</code> directly:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-tag-alist '((:startgrouptag)
+                      ("GTD")
+                      (:grouptags)
+                      ("Control")
+                      ("Persp")
+                      (:endgrouptag)
+                      (:startgrouptag)
+                      ("Control")
+                      (:grouptags)
+                      ("Context")
+                      ("Task")
+                      (:endgrouptag)))
+</pre>
+</div>
+
+<p>
+The tags in a group can be mutually exclusive if using the same group syntax as is used for grouping mutually exclusive tags together; using curly brackets.
+</p>
+
+<pre class="example" id="org49573a5">
+#+TAGS: { Context : @Home @Work @Call }
+</pre>
+
+<p>
+When setting <code>org-tag-alist</code> you can use <code>:startgroup</code> and <code>:endgroup</code> instead of <code>:startgrouptag</code> and <code>:endgrouptag</code> to make the tags mutually exclusive.
+</p>
+
+<p>
+Furthermore, the members of a group tag can also be regular expressions, creating the possibility of a more dynamic and rule-based tag structure (see <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>). The regular expressions in the group must be specified within curly brackets. Here is an expanded example:
+</p>
+
+<pre class="example" id="org4c802e7">
+#+TAGS: [ Vision : {V@.+} ]
+#+TAGS: [ Goal : {G@.+} ]
+#+TAGS: [ AOF : {AOF@.+} ]
+#+TAGS: [ Project : {P@.+} ]
+</pre>
+
+<p>
+Searching for the tag ‘=Project=' now lists all tags also including regular expression matches for ‘=P@.+=', and similarly for tag searches on ‘=Vision=', ‘=Goal=' and ‘=AOF='. For example, this would work well for a project tagged with a common project-identifier, e.g., ‘=P@2014<sub>OrgTags</sub>='.
+</p>
+
+<p>
+If you want to ignore group tags temporarily, toggle group tags support with <code>org-toggle-tags-groups</code>, bound to C-c C-x q. If you want to disable tag groups completely, set <code>org-group-tags</code> to <code>nil</code>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Tag-Searches.html">Tag Searches</a>, Previous: <a href="docs/org--Setting-Tags.html">Setting Tags</a>, Up: <a href="docs/org--Tags.html">Tags</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

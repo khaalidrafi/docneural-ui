@@ -1,0 +1,170 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Version-Numbers"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Synopses-and-Descriptions.html">Synopses and Descriptions</a>, Previous: <a href="docs/guix--Package-Naming.html">Package Naming</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Version-Numbers-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="version-numbers"></a>22.8.3 Version Numbers<br />
+<div class="outline-text-5" id="text-version-numbers">
+<p>
+<a id="index-package-version"></a>
+We usually package only the latest version of a given free software project. But sometimes, for instance for incompatible library versions, two (or more) versions of the same package are needed. These require different Scheme variable names. We use the name as defined in <a href="docs/guix--Package-Naming.html">Package Naming</a> for the most recent version; previous versions use the same name, suffixed by <code>-</code> and the smallest prefix of the version number that may distinguish the two versions.
+</p>
+
+<p>
+The name inside the package definition is the same for all versions of a package and does not contain any version number.
+</p>
+
+<p>
+For instance, the versions 2.24.20 and 3.9.12 of GTK+ may be packaged as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-public gtk+
+  (package
+    (name "gtk+")
+    (version "3.9.12")
+    ...))
+(define-public gtk+-2
+  (package
+    (name "gtk+")
+    (version "2.24.20")
+    ...))
+</pre>
+</div>
+
+<p>
+If we also wanted GTK+ 3.8.2, this would be packaged as
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-public gtk+-3.8
+  (package
+    (name "gtk+")
+    (version "3.8.2")
+    ...))
+</pre>
+</div>
+
+<p>
+<a id="index-version-number_002c-for-VCS-snapshots"></a>
+Occasionally, we package snapshots of upstream's version control system (VCS) instead of formal releases. This should remain exceptional, because it is up to upstream developers to clarify what the stable release is. Yet, it is sometimes necessary. So, what should we put in the <code>version</code> field?
+</p>
+
+<p>
+Clearly, we need to make the commit identifier of the VCS snapshot visible in the version string, but we also need to make sure that the version string is monotonically increasing so that <code>guix package --upgrade</code> can determine which version is newer. Since commit identifiers, notably with Git, are not monotonically increasing, we add a revision number that we increase each time we upgrade to a newer snapshot. The resulting version string looks like this:
+</p>
+
+<pre class="example" id="orgd1772e0">
+2.0.11-3.cabba9e
+  ^    ^    ^
+  |    |    `-- upstream commit ID
+  |    |
+  |    `--- Guix package revision
+  |
+latest upstream version
+</pre>
+
+<p>
+It is a good idea to strip commit identifiers in the <code>version</code> field to, say, 7 digits. It avoids an aesthetic annoyance (assuming aesthetics have a role to play here) as well as problems related to OS limits such as the maximum shebang length (127 bytes for the Linux kernel). There are helper functions for doing this for packages using <code>git-fetch</code> or <code>hg-fetch</code> (see below). It is best to use the full commit identifiers in =origin=s, though, to avoid ambiguities. A typical package definition may look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define my-package
+  (let ((commit "c3f29bc928d5900971f65965feaae59e1272a3f7")
+        (revision "1"))          ;Guix package revision
+    (package
+      (version (git-version "0.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://example.org/my-package.git")
+                      (commit commit)))
+                (sha256 (base32 "1mbikn…"))
+                (file-name (git-file-name name version))))
+      ;; …
+      )))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Procedure: git-version <code>VERSION</code> <code>REVISION</code> <code>COMMIT</code></dt><dd><p>
+Return the version string for packages using <code>git-fetch</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(git-version "0.2.3" "0" "93818c936ee7e2f1ba1b315578bde363a7d43d05")
+⇒ "0.2.3-0.93818c9"
+</pre>
+</div></dd>
+
+<dt>Procedure: hg-version <code>VERSION</code> <code>REVISION</code> <code>CHANGESET</code></dt><dd>Return the version string for packages using <code>hg-fetch</code>. It works in the same way as <code>git-version</code>.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Synopses-and-Descriptions.html">Synopses and Descriptions</a>, Previous: <a href="docs/guix--Package-Naming.html">Package Naming</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

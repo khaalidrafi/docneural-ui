@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Explicit-Fill-Commands">1. 27.6.2 Explicit Fill Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fill-Prefix.html">The Fill Prefix</a>   Previous: <a href="docs/emacs--Auto-Fill.html">Auto Fill Mode</a>   Up: <a href="docs/emacs--Filling.html">Filling Text</a>
+</p>
+
+<p>
+<a id="Fill-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Explicit-Fill-Commands" class="outline-2">
+<h2 id="Explicit-Fill-Commands"><span class="section-number-2">1.</span> 27.6.2 Explicit Fill Commands <a href="#Explicit-Fill-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Explicit-Fill-Commands">
+<dl class="org-dl">
+<dt>M-q</dt><dd>Fill current paragraph (<code>fill-paragraph</code>).</dd>
+
+<dt>C-x f</dt><dd>Set the fill column (<code>set-fill-column</code>).</dd>
+
+<dt>M-x fill-region</dt><dd>Fill each paragraph in the region (<code>fill-region</code>).</dd>
+
+<dt>M-x fill-region-as-paragraph</dt><dd>Fill the region, considering it as one paragraph.</dd>
+
+<dt>M-x center-line</dt><dd>Center a line.</dd>
+</dl>
+
+<p>
+The command M-q (<code>fill-paragraph</code>) <i>fills</i> the current paragraph. It redistributes the line breaks within the paragraph, and deletes any excess space and tab characters occurring within the paragraph, in such a way that the lines end up fitting within a certain maximum width. Like Auto Fill mode, this and other filling commands usually break lines at space characters, but for CJK characters these commands can break a line between almost any two characters, and they can also obey the kinsoku rules. See <a href="docs/emacs--Auto-Fill.html">Auto Fill Mode</a>.
+</p>
+
+<p>
+Normally, M-q acts on the paragraph where point is, but if point is between paragraphs, it acts on the paragraph after point. If the region is active, it acts instead on the text in the region. You can also call M-x fill-region to specifically fill the text in the region.
+</p>
+
+<p>
+M-q and <code>fill-region</code> use the usual Emacs criteria for finding paragraph boundaries (see <a href="docs/emacs--Paragraphs.html">Paragraphs</a>). For more control, you can use M-x fill-region-as-paragraph, which refills everything between point and mark as a single paragraph. This command deletes any blank lines within the region, so separate blocks of text end up combined into one block.
+</p>
+
+<p>
+A numeric argument to M-q tells it to <i>justify</i> the text as well as filling it. This means that extra spaces are inserted to make the right margin line up exactly at the fill column. To remove the extra spaces, use M-q with no argument. (Likewise for <code>fill-region</code>.)
+</p>
+
+<p>
+The maximum line width for filling is specified by the buffer-local variable <code>fill-column</code>. The default value (see <a href="docs/emacs--Locals.html">Local Variables</a>) is 70. The easiest way to set <code>fill-column</code> in the current buffer is to use the command C-x f (<code>set-fill-column</code>). With a numeric argument, it uses that as the new fill column. With just C-u as argument, it sets <code>fill-column</code> to the current horizontal position of point. Note that, by its very nature, <code>fill-column</code> is measured in column units; the actual position of that column on a graphical display depends on the font being used. In particular, using variable-pitch fonts will cause the <code>fill-column</code> occupy different horizontal positions on display in different lines.
+</p>
+
+<p>
+The command M-x center-line centers the current line within the current fill column. With an argument <code>n</code>, it centers <code>n</code> lines individually and moves past them. This binding is made by Text mode and is available only in that and related modes (see <a href="docs/emacs--Text-Mode.html">Text Mode</a>).
+</p>
+
+<p>
+By default, Emacs considers a period followed by two spaces or by a newline as the end of a sentence; a period followed by just one space indicates an abbreviation, not the end of a sentence. Accordingly, the fill commands will not break a line after a period followed by just one space. If you set the variable <code>sentence-end-double-space</code> to <code>nil</code>, the fill commands will break a line after a period followed by one space, and put just one space after each period. See <a href="docs/emacs--Sentences.html">Sentences</a>, for other effects and possible drawbacks of this.
+</p>
+
+<p>
+If the variable <code>colon-double-space</code> is non-<code>nil</code>, the fill commands put two spaces after a colon.
+</p>
+
+<p>
+To specify additional conditions where line-breaking is not allowed, customize the abnormal hook variable <code>fill-nobreak-predicate</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>). Each function in this hook is called with no arguments, with point positioned where Emacs is considering breaking a line. If a function returns a non-<code>nil</code> value, Emacs will not break the line there. Functions you can use there include: <code>fill-single-word-nobreak-p</code> (don't break after the first word of a sentence or before the last); <code>fill-single-char-nobreak-p</code> (don't break after a one-letter word preceded by a whitespace character); <code>fill-french-nobreak-p</code> (don't break after ‘=(<code>' or before ‘</code>)=', ‘=:=' or ‘=?='); and <code>fill-polish-nobreak-p</code> (don't break after a one letter word, even if preceded by a non-whitespace character).
+</p>
+
+<p>
+Emacs can display an indicator in the <code>fill-column</code> position using the Display fill column indicator mode (see <a href="docs/emacs--Displaying-Boundaries.html">display-fill-column-indicator</a>).
+</p>
+
+<hr />
+</div>
+</div>

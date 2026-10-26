@@ -1,0 +1,161 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#chrooting-into-an-existing-system">1.0.1. 12.1 Chrooting into an existing system</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Chrooting-into-an-existing-system"></a>
+</p>
+
+<p>
+Up: <a href="docs/guix--System-Troubleshooting-Tips.html">System Troubleshooting Tips</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Chrooting-into-an-existing-system-1"></a>
+</p>
+</div>
+<div id="outline-container-chrooting-into-an-existing-system" class="outline-4">
+<h4 id="chrooting-into-an-existing-system"><span class="section-number-4">1.0.1.</span> 12.1 Chrooting into an existing system</h4>
+<div class="outline-text-4" id="text-chrooting-into-an-existing-system">
+<p>
+This section details how to <i>chroot</i> to an already installed Guix System with the aim of reconfiguring it, for example to fix a broken GRUB installation. The process is similar to how it would be done on other GNU/Linux systems, but there are some Guix System particularities such as the daemon and profiles that make it worthy of explaining here.
+</p>
+
+<ol class="org-ol">
+<li>Obtain a bootable image of Guix System. It is recommended the latest development snapshot so the kernel and the tools used are at least as as new as those of your installed system; it can be retrieved from the <a href="https://ci.guix.gnu.org/search/latest/ISO-9660?query=spec:images+status:success+system:x86_64-linux+image.iso">https://ci.guix.gnu.org</a> URL. Follow the see <a href="docs/guix--USB-Stick-and-DVD-Installation.html">USB Stick and DVD Installation</a> section for copying it to a bootable media.</li>
+
+<li>Boot the image, and proceed with the graphical text-based installer until your network is configured. Alternatively, you could configure the network manually by following the <a href="docs/guix--Keyboard-Layout-and-Networking-and-Partitioning.html#manual_002dinstallation_002dnetworking">manual-installation-networking</a> section. If you get the error ‘=RTNETLINK answers: Operation not possible due to RF-kill=', try ‘=rfkill list=' followed by ‘=rfkill unblock 0=', where ‘=0=' is your device identifier (ID).</li>
+
+<li><p>
+Switch to a virtual console (tty) if you haven't already by pressing simultaneously the Control + Alt + F4 keys. Mount your file system at <code>/mnt</code>. Assuming your root partition is <code>/dev/sda2</code>, you would do:
+</p>
+
+<pre class="example" id="orgc64bcd4">
+mount /dev/sda2 /mnt
+</pre></li>
+
+<li><p>
+Mount special block devices and Linux-specific directories:
+</p>
+
+<pre class="example" id="orgb71206b">
+mount --rbind /proc /mnt/proc
+mount --rbind /sys /mnt/sys
+mount --rbind /dev /mnt/dev
+</pre>
+
+<p>
+If your system is EFI-based, you must also mount the ESP partition. Assuming it is <code>/dev/sda1</code>, you can do so with:
+</p>
+
+<pre class="example" id="orgb823078">
+mount /dev/sda1 /mnt/boot/efi
+</pre></li>
+
+<li><p>
+Enter your system via chroot:
+</p>
+
+<pre class="example" id="org98068ab">
+chroot /mnt /bin/sh
+</pre></li>
+
+<li><p>
+Source the system profile as well as your <code>user</code> profile to setup the environment, where <code>user</code> is the user name used for the Guix System you are attempting to repair:
+</p>
+
+<pre class="example" id="orgfd11e5f">
+source /var/guix/profiles/system/profile/etc/profile
+source /home/user/.guix-profile/etc/profile
+</pre>
+
+<p>
+To ensure you are working with the Guix revision you normally would as your normal user, also source your current Guix profile:
+</p>
+
+<pre class="example" id="org03b680d">
+source /home/user/.config/guix/current/etc/profile
+</pre></li>
+
+<li><p>
+Start a minimal <code>guix-daemon</code> in the background:
+</p>
+
+<pre class="example" id="orgeac6d34">
+guix-daemon --build-users-group=guixbuild --disable-chroot &amp;
+</pre></li>
+
+<li><p>
+Edit your Guix System configuration if needed, then reconfigure with:
+</p>
+
+<pre class="example" id="orgf53ad94">
+guix system reconfigure your-config.scm
+</pre></li>
+
+<li>Finally, you should be good to reboot the system to test your fix.</li>
+</ol>
+
+<hr />
+
+<p>
+Up: <a href="docs/guix--System-Troubleshooting-Tips.html">System Troubleshooting Tips</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

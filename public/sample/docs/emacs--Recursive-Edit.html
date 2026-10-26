@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Recursive-Editing-Levels">1. 47 Recursive Editing Levels ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Hyperlinking.html">Hyperlinking and Web Navigation Features</a>   Previous: <a href="docs/emacs--Saving-Emacs-Sessions.html">Saving Emacs Sessions</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Recursive-Edit"></a>
+</p>
+
+<hr />
+<div id="outline-container-Recursive-Editing-Levels" class="outline-2">
+<h2 id="Recursive-Editing-Levels"><span class="section-number-2">1.</span> 47 Recursive Editing Levels <a href="#Recursive-Editing-Levels">¶</a></h2>
+<div class="outline-text-2" id="text-Recursive-Editing-Levels">
+<p>
+A <i>recursive edit</i> is a situation in which you are using Emacs commands to perform arbitrary editing while in the middle of another Emacs command. For example, when you type C-r inside of a <code>query-replace</code>, you enter a recursive edit in which you can change the current buffer. On exiting from the recursive edit, you go back to the <code>query-replace</code>. See <a href="docs/emacs--Query-Replace.html">Query Replace</a>.
+</p>
+
+<p>
+<i>Exiting</i> the recursive edit means returning to the unfinished command, which continues execution. The command to exit is C-M-c (<code>exit-recursive-edit</code>).
+</p>
+
+<p>
+You can also <i>abort</i> the recursive edit. This is like exiting, but also quits the unfinished command immediately. Use the command C-] (<code>abort-recursive-edit</code>) to do this. See <a href="docs/emacs--Quitting.html">Quitting and Aborting</a>.
+</p>
+
+<p>
+The mode line shows you when you are in a recursive edit by displaying square brackets around the parentheses that always surround the major and minor mode names. Every window's mode line shows this in the same way, since being in a recursive edit is true of Emacs as a whole rather than any particular window or buffer.
+</p>
+
+<p>
+It is possible to be in recursive edits within recursive edits. For example, after typing C-r in a <code>query-replace</code>, you may type a command that enters the debugger. This begins a recursive editing level for the debugger, within the recursive editing level for C-r. Mode lines display a pair of square brackets for each recursive editing level currently in progress.
+</p>
+
+<p>
+Exiting the inner recursive edit (such as with the debugger c command) resumes the command running in the next level up. When that command finishes, you can then use C-M-c to exit another recursive editing level, and so on. Exiting applies to the innermost level only. Aborting also gets out of only one level of recursive edit; it returns immediately to the command level of the previous recursive edit. If you wish, you can then abort the next recursive editing level.
+</p>
+
+<p>
+Alternatively, the command M-x top-level aborts all levels of recursive edits, returning immediately to the top-level command reader. It also exits the minibuffer, if it is active.
+</p>
+
+<p>
+The text being edited inside the recursive edit need not be the same text that you were editing at top level. It depends on what the recursive edit is for. If the command that invokes the recursive edit selects a different buffer first, that is the buffer you will edit recursively. In any case, you can switch buffers within the recursive edit in the normal manner (as long as the buffer-switching keys have not been rebound). You could probably do all the rest of your editing inside the recursive edit, visiting files and all. But this could have surprising effects (such as stack overflow) from time to time. So remember to exit or abort the recursive edit when you no longer need it.
+</p>
+
+<p>
+In general, we try to minimize the use of recursive editing levels in GNU Emacs. This is because they constrain you to go back in a particular order&#x2014;from the innermost level toward the top level. When possible, we present different activities in separate buffers so that you can switch between them as you please. Some commands switch to a new major mode which provides a command to switch back. These approaches give you more flexibility to go back to unfinished tasks in the order you choose.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Protocols-for-External-Access">1. 17.16 Protocols for External Access ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Protocols"></a>
+Next: <a href="docs/org--Org-Crypt.html">Org Crypt</a>, Previous: <a href="docs/org--TTY-Keys.html">Using Org on a TTY</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Protocols-for-External-Access" class="outline-2">
+<h2 id="Protocols-for-External-Access"><span class="section-number-2">1.</span> 17.16 Protocols for External Access <a href="#Protocols-for-External-Access">¶</a></h2>
+<div class="outline-text-2" id="text-Protocols-for-External-Access">
+<p>
+Org protocol is a tool to trigger custom actions in Emacs from external applications. Any application that supports calling external programs with an URL as argument may be used with this functionality. For example, you can configure bookmarks in your web browser to send a link to the current page to Org and create a note from it using capture (see <a href="docs/org--Capture.html">Capture</a>). You can also create a bookmark that tells Emacs to open the local source file of a remote website you are browsing.
+</p>
+
+<p>
+In order to use Org protocol from an application, you need to register ‘=org-protocol://=' as a valid scheme-handler. External calls are passed to Emacs through the ‘=emacsclient=' command, so you also need to ensure an Emacs server is running. More precisely, when the application calls
+</p>
+
+<pre class="example" id="orgaa2f5b8">
+emacsclient "org-protocol://PROTOCOL?key1=val1&amp;key2=val2"
+</pre>
+
+<p>
+Emacs calls the handler associated to <code>PROTOCOL</code> with argument ‘=(:key1 val1 :key2 val2)='.
+</p>
+
+<p>
+Org protocol comes with three predefined protocols, detailed in the following sections. Configure <code>org-protocol-protocol-alist</code> to define your own.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/org--The-store_002dlink-protocol.html">The <code>store-link</code> protocol</a></li>
+<li><a href="docs/org--The-capture-protocol.html">The <code>capture</code> protocol</a></li>
+<li><a href="docs/org--The-open_002dsource-protocol.html">The <code>open-source</code> protocol</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Org-Crypt.html">Org Crypt</a>, Previous: <a href="docs/org--TTY-Keys.html">Using Org on a TTY</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,875 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Messaging-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Telephony-Services.html">Telephony Services</a>, Previous: <a href="docs/guix--Mail-Services.html">Mail Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Messaging-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="messaging-services"></a>11.10.14 Messaging Services<br />
+<div class="outline-text-5" id="text-messaging-services">
+<p>
+<a id="index-messaging"></a> <a id="index-jabber"></a> <a id="index-XMPP"></a>
+The <code>(gnu services messaging)</code> module provides Guix service definitions for messaging services. Currently it provides the following services:
+</p>
+
+<p>
+<a id="Prosody-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="prosody-service"></a>Prosody Service<br />
+<div class="outline-text-5" id="text-prosody-service">
+<dl class="org-dl">
+<dt>Variable: prosody-service-type </dt><dd><p>
+This is the type for the <a href="https://prosody.im">Prosody XMPP communication server</a>. Its value must be a <code>prosody-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service prosody-service-type
+         (prosody-configuration
+          (modules-enabled (cons* "groups" "mam" %default-modules-enabled))
+          (int-components
+           (list
+            (int-component-configuration
+             (hostname "conference.example.net")
+             (plugin "muc")
+             (mod-muc (mod-muc-configuration)))))
+          (virtualhosts
+           (list
+            (virtualhost-configuration
+             (domain "example.net"))))))
+</pre>
+</div>
+
+<p>
+See below for details about <code>prosody-configuration</code>.
+</p></dd>
+</dl>
+
+<p>
+By default, Prosody does not need much configuration. Only one <code>virtualhosts</code> field is needed: it specifies the domain you wish Prosody to serve.
+</p>
+
+<p>
+You can perform various sanity checks on the generated configuration with the <code>prosodyctl check</code> command.
+</p>
+
+<p>
+Prosodyctl will also help you to import certificates from the <code>letsencrypt</code> directory so that the <code>prosody</code> user can access them. See <a href="https://prosody.im/doc/letsencrypt">https://prosody.im/doc/letsencrypt</a>.
+</p>
+
+<pre class="example" id="org9b474af">
+prosodyctl --root cert import /etc/certs
+</pre>
+
+<p>
+The available configuration parameters follow. Each parameter definition is preceded by its type; for example, ‘=string-list foo=' indicates that the <code>foo</code> parameter should be specified as a list of strings. Types starting with <code>maybe-</code> denote parameters that won't show up in <code>prosody.cfg.lua</code> when their value is left unspecified.
+</p>
+
+<p>
+There is also a way to specify the configuration as a string, if you have an old <code>prosody.cfg.lua</code> file that you want to port over from some other system; see the end for more details.
+</p>
+
+<p>
+The <code>file-object</code> type designates either a file-like object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>) or a file name.
+</p>
+
+<p>
+Available <code>prosody-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>prosody-configuration</code> parameter: <i>package</i> <b>prosody</b> </dt><dd>The Prosody package.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>file-name</i> <b>data-path</b> </dt><dd>Location of the Prosody data storage directory. See <a href="https://prosody.im/doc/configure">https://prosody.im/doc/configure</a>. Defaults to ‘="/var/lib/prosody"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>file-object-list</i> <b>plugin-paths</b> </dt><dd>Additional plugin directories. They are searched in all the specified paths in order. See <a href="https://prosody.im/doc/plugins_directory">https://prosody.im/doc/plugins_directory</a>. Defaults to ‘='()='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>file-name</i> <b>certificates</b> </dt><dd>Every virtual host and component needs a certificate so that clients and servers can securely verify its identity. Prosody will automatically load certificates/keys from the directory specified here. Defaults to ‘="/etc/prosody/certs"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string-list</i> <b>admins</b> </dt><dd>This is a list of accounts that are admins for the server. Note that you must create the accounts separately. See <a href="https://prosody.im/doc/admins">https://prosody.im/doc/admins</a> and <a href="https://prosody.im/doc/creating_accounts">https://prosody.im/doc/creating_accounts</a>. Example: <code>(admins '("user1@example.com" "user2@example.net"))</code> Defaults to ‘='()='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>boolean</i> <b>use-libevent?</b> </dt><dd>Enable use of libevent for better performance under high load. See <a href="https://prosody.im/doc/libevent">https://prosody.im/doc/libevent</a>. Defaults to ‘=#f='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>module-list</i> <b>modules-enabled</b> </dt><dd>This is the list of modules Prosody will load on startup. It looks for <code>mod_modulename.lua</code> in the plugins folder, so make sure that exists too. Documentation on modules can be found at: <a href="https://prosody.im/doc/modules">https://prosody.im/doc/modules</a>. Defaults to ‘='("roster" "saslauth" "tls" "dialback" "disco" "carbons" "private" "blocklist" "vcard" "version" "uptime" "time" "ping" "pep" "register" "admin<sub>adhoc</sub>")='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string-list</i> <b>modules-disabled</b> </dt><dd>‘="offline"<code>', ‘</code>"c2s"<code>' and ‘</code>"s2s"<code>' are auto-loaded, but should you want to disable them then add them to this list. Defaults to ‘</code>'()='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>file-object</i> <b>groups-file</b> </dt><dd>Path to a text file where the shared groups are defined. If this path is empty then ‘=mod<sub>groups</sub>=' does nothing. See <a href="https://prosody.im/doc/modules/mod_groups">https://prosody.im/doc/modules/mod_groups</a>. Defaults to ‘="/var/lib/prosody/sharedgroups.txt"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>boolean</i> <b>allow-registration?</b> </dt><dd>Disable account creation by default, for security. See <a href="https://prosody.im/doc/creating_accounts">https://prosody.im/doc/creating_accounts</a>. Defaults to ‘=#f='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>maybe-ssl-configuration</i> <b>ssl</b> </dt><dd><p>
+These are the SSL/TLS-related settings. Most of them are disabled so to use Prosody's defaults. If you do not completely understand these options, do not add them to your config, it is easy to lower the security of your server using them. See <a href="https://prosody.im/doc/advanced_ssl_config">https://prosody.im/doc/advanced_ssl_config</a>.
+</p>
+
+<p>
+Available <code>ssl-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string</i> <b>protocol</b> </dt><dd>This determines what handshake to use.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-file-name</i> <b>key</b> </dt><dd>Path to your private key file.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-file-name</i> <b>certificate</b> </dt><dd>Path to your certificate file.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>file-object</i> <b>capath</b> </dt><dd>Path to directory containing root certificates that you wish Prosody to trust when verifying the certificates of remote servers. Defaults to ‘="/etc/ssl/certs"='.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-file-object</i> <b>cafile</b> </dt><dd>Path to a file containing root certificates that you wish Prosody to trust. Similar to <code>capath</code> but with all certificates concatenated together.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string-list</i> <b>verify</b> </dt><dd>A list of verification options (these mostly map to OpenSSL's <code>set_verify()</code> flags).</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string-list</i> <b>options</b> </dt><dd>A list of general options relating to SSL/TLS. These map to OpenSSL's <code>set_options()</code>. For a full list of options available in LuaSec, see the LuaSec source.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>depth</b> </dt><dd>How long a chain of certificate authorities to check when looking for a trusted root certificate.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string</i> <b>ciphers</b> </dt><dd>An OpenSSL cipher string. This selects what ciphers Prosody will offer to clients, and in what order.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-file-name</i> <b>dhparam</b> </dt><dd>A path to a file containing parameters for Diffie-Hellman key exchange. You can create such a file with: <code>openssl dhparam -out /etc/prosody/certs/dh-2048.pem 2048</code></dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string</i> <b>curve</b> </dt><dd>Curve for Elliptic curve Diffie-Hellman. Prosody's default is ‘="secp384r1"='.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string-list</i> <b>verifyext</b> </dt><dd>A list of “extra” verification options.</dd>
+
+<dt><code>ssl-configuration</code> parameter: <i>maybe-string</i> <b>password</b> </dt><dd>Password for encrypted private keys.</dd>
+</dl></dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>boolean</i> <b>c2s-require-encryption?</b> </dt><dd>Whether to force all client-to-server connections to be encrypted or not. See <a href="https://prosody.im/doc/modules/mod_tls">https://prosody.im/doc/modules/mod_tls</a>. Defaults to ‘=#f='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string-list</i> <b>disable-sasl-mechanisms</b> </dt><dd>Set of mechanisms that will never be offered. See <a href="https://prosody.im/doc/modules/mod_saslauth">https://prosody.im/doc/modules/mod_saslauth</a>. Defaults to ‘='("DIGEST-MD5")='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string-list</i> <b>insecure-sasl-mechanisms</b> </dt><dd>Set of mechanisms that will not be offered on unencrypted connections. See <a href="https://prosody.im/doc/modules/mod_saslauth">https://prosody.im/doc/modules/mod_saslauth</a>. Defaults to ‘='("PLAIN" "LOGIN")='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>boolean</i> <b>s2s-require-encryption?</b> </dt><dd>Whether to force all server-to-server connections to be encrypted or not. See <a href="https://prosody.im/doc/modules/mod_tls">https://prosody.im/doc/modules/mod_tls</a>. Defaults to ‘=#f='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>boolean</i> <b>s2s-secure-auth?</b> </dt><dd>Whether to require encryption and certificate authentication. This provides ideal security, but requires servers you communicate with to support encryption AND present valid, trusted certificates. See <a href="https://prosody.im/doc/s2s#security">https://prosody.im/doc/s2s#security</a>. Defaults to ‘=#f='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string-list</i> <b>s2s-insecure-domains</b> </dt><dd>Many servers don't support encryption or have invalid or self-signed certificates. You can list domains here that will not be required to authenticate using certificates. They will be authenticated using DNS. See <a href="https://prosody.im/doc/s2s#security">https://prosody.im/doc/s2s#security</a>. Defaults to ‘='()='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string-list</i> <b>s2s-secure-domains</b> </dt><dd>Even if you leave <code>s2s-secure-auth?</code> disabled, you can still require valid certificates for some domains by specifying a list here. See <a href="https://prosody.im/doc/s2s#security">https://prosody.im/doc/s2s#security</a>. Defaults to ‘='()='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string</i> <b>authentication</b> </dt><dd>Select the authentication backend to use. The default provider stores passwords in plaintext and uses Prosody's configured data storage to store the authentication data. If you do not trust your server please see <a href="https://prosody.im/doc/modules/mod_auth_internal_hashed">https://prosody.im/doc/modules/mod_auth_internal_hashed</a> for information about using the hashed backend. See also <a href="https://prosody.im/doc/authentication">https://prosody.im/doc/authentication</a> Defaults to ‘="internal<sub>plain</sub>"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>maybe-string</i> <b>log</b> </dt><dd>Set logging options. Advanced logging configuration is not yet supported by the Prosody service. See <a href="https://prosody.im/doc/logging">https://prosody.im/doc/logging</a>. Defaults to ‘="*syslog"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>file-name</i> <b>pidfile</b> </dt><dd>File to write pid in. See <a href="https://prosody.im/doc/modules/mod_posix">https://prosody.im/doc/modules/mod_posix</a>. Defaults to ‘="/var/run/prosody/prosody.pid"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>maybe-non-negative-integer</i> <b>http-max-content-size</b> </dt><dd>Maximum allowed size of the HTTP body (in bytes).</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>maybe-string</i> <b>http-external-url</b> </dt><dd>Some modules expose their own URL in various ways. This URL is built from the protocol, host and port used. If Prosody sits behind a proxy, the public URL will be <code>http-external-url</code> instead. See <a href="https://prosody.im/doc/http#external_url">https://prosody.im/doc/http#external_url</a>.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>virtualhost-configuration-list</i> <b>virtualhosts</b> </dt><dd><p>
+A host in Prosody is a domain on which user accounts can be created. For example if you want your users to have addresses like ‘="john.smith@example.com"<code>' then you need to add a host ‘</code>"example.com"='. All options in this list will apply only to this host.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The name <i>virtual</i> host is used in configuration to avoid confusion with the actual physical host that Prosody is installed on. A single Prosody instance can serve many domains, each one defined as a VirtualHost entry in Prosody's configuration. Conversely a server that hosts a single domain would have just one VirtualHost entry.
+</p>
+
+<p>
+See <a href="https://prosody.im/doc/configure#virtual_host_settings">https://prosody.im/doc/configure#virtual_host_settings</a>.
+</p>
+</blockquote>
+
+<p>
+Available <code>virtualhost-configuration</code> fields are:
+</p>
+
+<p>
+all these <code>prosody-configuration</code> fields: <code>admins</code>, <code>use-libevent?</code>, <code>modules-enabled</code>, <code>modules-disabled</code>, <code>groups-file</code>, <code>allow-registration?</code>, <code>ssl</code>, <code>c2s-require-encryption?</code>, <code>disable-sasl-mechanisms</code>, <code>insecure-sasl-mechanisms</code>, <code>s2s-require-encryption?</code>, <code>s2s-secure-auth?</code>, <code>s2s-insecure-domains</code>, <code>s2s-secure-domains</code>, <code>authentication</code>, <code>log</code>, <code>http-max-content-size</code>, <code>http-external-url</code>, <code>raw-content</code>, plus:
+</p>
+
+<dl class="org-dl">
+<dt><code>virtualhost-configuration</code> parameter: <i>string</i> <b>domain</b> </dt><dd>Domain you wish Prosody to serve.</dd>
+</dl></dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>int-component-configuration-list</i> <b>int-components</b> </dt><dd><p>
+Components are extra services on a server which are available to clients, usually on a subdomain of the main server (such as ‘="mycomponent.example.com"='). Example components might be chatroom servers, user directories, or gateways to other protocols.
+</p>
+
+<p>
+Internal components are implemented with Prosody-specific plugins. To add an internal component, you simply fill the hostname field, and the plugin you wish to use for the component.
+</p>
+
+<p>
+See <a href="https://prosody.im/doc/components">https://prosody.im/doc/components</a>. Defaults to ‘='()='.
+</p>
+
+<p>
+Available <code>int-component-configuration</code> fields are:
+</p>
+
+<p>
+all these <code>prosody-configuration</code> fields: <code>admins</code>, <code>use-libevent?</code>, <code>modules-enabled</code>, <code>modules-disabled</code>, <code>groups-file</code>, <code>allow-registration?</code>, <code>ssl</code>, <code>c2s-require-encryption?</code>, <code>disable-sasl-mechanisms</code>, <code>insecure-sasl-mechanisms</code>, <code>s2s-require-encryption?</code>, <code>s2s-secure-auth?</code>, <code>s2s-insecure-domains</code>, <code>s2s-secure-domains</code>, <code>authentication</code>, <code>log</code>, <code>http-max-content-size</code>, <code>http-external-url</code>, <code>raw-content</code>, plus:
+</p>
+
+<dl class="org-dl">
+<dt><code>int-component-configuration</code> parameter: <i>string</i> <b>hostname</b> </dt><dd>Hostname of the component.</dd>
+
+<dt><code>int-component-configuration</code> parameter: <i>string</i> <b>plugin</b> </dt><dd>Plugin you wish to use for the component.</dd>
+
+<dt><code>int-component-configuration</code> parameter: <i>maybe-mod-muc-configuration</i> <b>mod-muc</b> </dt><dd><p>
+Multi-user chat (MUC) is Prosody's module for allowing you to create hosted chatrooms/conferences for XMPP users.
+</p>
+
+<p>
+General information on setting up and using multi-user chatrooms can be found in the “Chatrooms” documentation (<a href="https://prosody.im/doc/chatrooms">https://prosody.im/doc/chatrooms</a>), which you should read if you are new to XMPP chatrooms.
+</p>
+
+<p>
+See also <a href="https://prosody.im/doc/modules/mod_muc">https://prosody.im/doc/modules/mod_muc</a>.
+</p>
+
+<p>
+Available <code>mod-muc-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>mod-muc-configuration</code> parameter: <i>string</i> <b>name</b> </dt><dd>The name to return in service discovery responses. Defaults to ‘="Prosody Chatrooms"='.</dd>
+
+<dt><code>mod-muc-configuration</code> parameter: <i>string-or-boolean</i> <b>restrict-room-creation</b> </dt><dd>If ‘=#t=', this will only allow admins to create new chatrooms. Otherwise anyone can create a room. The value ‘="local"<code>' restricts room creation to users on the service's parent domain. E.g. ‘=user@example.com</code>' can create rooms on ‘=rooms.example.com='. The value ‘="admin"<code>' restricts to service administrators only. Defaults to ‘=#f</code>'.</dd>
+
+<dt><code>mod-muc-configuration</code> parameter: <i>non-negative-integer</i> <b>max-history-messages</b> </dt><dd>Maximum number of history messages that will be sent to the member that has just joined the room. Defaults to ‘=20='.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>ext-component-configuration-list</i> <b>ext-components</b> </dt><dd><p>
+External components use XEP-0114, which most standalone components support. To add an external component, you simply fill the hostname field. See <a href="https://prosody.im/doc/components">https://prosody.im/doc/components</a>. Defaults to ‘='()='.
+</p>
+
+<p>
+Available <code>ext-component-configuration</code> fields are:
+</p>
+
+<p>
+all these <code>prosody-configuration</code> fields: <code>admins</code>, <code>use-libevent?</code>, <code>modules-enabled</code>, <code>modules-disabled</code>, <code>groups-file</code>, <code>allow-registration?</code>, <code>ssl</code>, <code>c2s-require-encryption?</code>, <code>disable-sasl-mechanisms</code>, <code>insecure-sasl-mechanisms</code>, <code>s2s-require-encryption?</code>, <code>s2s-secure-auth?</code>, <code>s2s-insecure-domains</code>, <code>s2s-secure-domains</code>, <code>authentication</code>, <code>log</code>, <code>http-max-content-size</code>, <code>http-external-url</code>, <code>raw-content</code>, plus:
+</p>
+
+<dl class="org-dl">
+<dt><code>ext-component-configuration</code> parameter: <i>string</i> <b>component-secret</b> </dt><dd>Password which the component will use to log in.</dd>
+
+<dt><code>ext-component-configuration</code> parameter: <i>string</i> <b>hostname</b> </dt><dd>Hostname of the component.</dd>
+</dl></dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>non-negative-integer-list</i> <b>component-ports</b> </dt><dd>Port(s) Prosody listens on for component connections. Defaults to ‘='(5347)='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>string</i> <b>component-interface</b> </dt><dd>Interface Prosody listens on for component connections. Defaults to ‘="127.0.0.1"='.</dd>
+
+<dt><code>prosody-configuration</code> parameter: <i>maybe-raw-content</i> <b>raw-content</b> </dt><dd>Raw content that will be added to the configuration file.</dd>
+</dl>
+
+<p>
+It could be that you just want to get a <code>prosody.cfg.lua</code> up and running. In that case, you can pass an <code>opaque-prosody-configuration</code> record as the value of <code>prosody-service-type</code>. As its name indicates, an opaque configuration does not have easy reflective capabilities. Available <code>opaque-prosody-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>opaque-prosody-configuration</code> parameter: <i>package</i> <b>prosody</b> </dt><dd>The prosody package.</dd>
+
+<dt><code>opaque-prosody-configuration</code> parameter: <i>string</i> <b>prosody.cfg.lua</b> </dt><dd>The contents of the <code>prosody.cfg.lua</code> to use.</dd>
+</dl>
+
+<p>
+For example, if your <code>prosody.cfg.lua</code> is just the empty string, you could instantiate a prosody service like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service prosody-service-type
+         (opaque-prosody-configuration
+          (prosody.cfg.lua "")))
+</pre>
+</div>
+
+<p>
+<a id="BitlBee-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="bitlbee-service"></a>BitlBee Service<br />
+<div class="outline-text-5" id="text-bitlbee-service">
+<p>
+<a id="index-IRC-_0028Internet-Relay-Chat_0029"></a> <a id="index-IRC-gateway"></a>
+<a href="https://bitlbee.org">BitlBee</a> is a gateway that provides an IRC interface to a variety of messaging protocols such as XMPP.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: bitlbee-service-type </dt><dd><p>
+This is the service type for the <a href="https://bitlbee.org">BitlBee</a> IRC gateway daemon. Its value is a <code>bitlbee-configuration</code> (see below).
+</p>
+
+<p>
+To have BitlBee listen on port 6667 on localhost, add this line to your services:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service bitlbee-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: bitlbee-configuration </dt><dd>This is the configuration for BitlBee, with the following fields:
+
+<ul class="org-ul">
+<li><p>
+<code>interface</code> (default: <code>"127.0.0.1"</code>)<br />
+<code>port</code> (default: <code>6667</code>) :: Listen on the network interface corresponding to the IP address specified in <code>interface</code>, on <code>port</code>.
+</p>
+
+<p>
+When <code>interface</code> is <code>127.0.0.1</code>, only local clients can connect; when it is <code>0.0.0.0</code>, connections can come from any networking interface.
+</p></li>
+
+<li id="<code>bitlbee</code> (default: <code>bitlbee</code>)">The BitlBee package to use.</li>
+
+<li id="<code>plugins</code> (default: <code>'()</code>)">List of plugin packages to use&#x2014;e.g., <code>bitlbee-discord</code>.</li>
+
+<li id="<code>extra-settings</code> (default: <code>""</code>)">Configuration snippet added as-is to the BitlBee configuration file.</li>
+</ul></dd>
+</dl>
+
+<p>
+<a id="ngIRCd-service"></a>
+</p>
+</div>
+</li>
+<li><a id="ngircd-service"></a>ngIRCd service<br />
+<div class="outline-text-5" id="text-ngircd-service">
+<p>
+<a id="index-IRCd_002c-Internet-Relay-Chat-daemon"></a> <a id="index-IRC-daemon-service"></a> <a id="index-IRC-server-service"></a> <a id="index-IRC-_0028Internet-Relay-Chat_0029-1"></a>
+<a href="https://ngircd.barton.de/">ngIRCd</a>, is a lightweight IRCd (Internet Relay Chat daemon), which can be used to host your own IRC server.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: ngircd-service-type </dt><dd><p>
+The service type for ngIRCd. Its value is a <code>ngircd-configuration</code> object, documented below.
+</p>
+
+<p>
+In its most simple form, the service can be used with its default configuration, like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service ngircd-service-type)
+</pre>
+</div>
+
+<p>
+A slightly more complex example configuration could look like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service ngircd-service-type
+         (ngircd-configuration
+          (channels
+           (list (ngircd-channel
+                  (name "#fruits")
+                  (topic "All things fruits -- veggies are off-topic"))))
+          (operators
+           (list (ngircd-operator
+                  (name "mikan")
+                  (password "tomatoes-are-fruits/carrots-are-not"))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: ngircd-configuration </dt><dd>Available <code>ngircd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>ngircd</code> (default: <code>ngircd</code>) (type: file-like)</dt><dd>The <code>ngircd</code> package to use.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Turn on debugging messages.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>(user-processes networking)</code>) (type: list-of-symbols)</dt><dd>Shepherd requirements the service should depend on.</dd>
+
+<dt><code>global</code> (type: ngircd-global)</dt><dd>A ngircd-global record object used to specify global options.</dd>
+
+<dt><code>limits</code> (type: maybe-ngircd-limits)</dt><dd>The ngircd-limits record object used to specify limits options.</dd>
+
+<dt><code>options</code> (type: ngircd-options)</dt><dd>The ngircd-options record object used to specify optional features and configuration options.</dd>
+
+<dt><code>ssl</code> (type: maybe-ngircd-ssl)</dt><dd>The ngircd-ssl record object used to specify the SSL-related options.</dd>
+
+<dt><code>operators</code> (type: maybe-list-of-ngircd-operators)</dt><dd>A list of ngircd-operator record objects used to specify the operators.</dd>
+
+<dt><code>servers</code> (type: maybe-list-of-ngircd-servers)</dt><dd>A list of ngircd-server record objects used to specify other remote servers to connect to.</dd>
+
+<dt><code>channels</code> (type: maybe-list-of-ngircd-channels)</dt><dd>A list of ngircd-channels record objects specifying pre-defined channels to be created by the server when starting up.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-global </dt><dd>Available <code>ngircd-global</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: maybe-string)</dt><dd>Server name in the IRC network. This is an individual name of the IRC server, it is not related to the DNS host name. It must be unique in the IRC network and must contain at least one dot (‘=.=') character. When not set, ngIRCd tries to deduce a valid IRC server name from the local host name.</dd>
+
+<dt><code>admin-info-1</code> (type: maybe-string)</dt><dd>First administrator information.</dd>
+
+<dt><code>admin-info-2</code> (type: maybe-string)</dt><dd>Second administrator information.</dd>
+
+<dt><code>admin-email</code> (type: maybe-string)</dt><dd>Email to reach administrators.</dd>
+
+<dt><code>help-file</code> (type: maybe-file-like)</dt><dd>File-like containing the ngIRCd help text.</dd>
+
+<dt><code>info</code> (type: maybe-string)</dt><dd>Info text of the server. This will be shown by WHOIS and LINKS requests for example.</dd>
+
+<dt><code>listen</code> (default: <code>("::" "0.0.0.0")</code>) (type: list-of-strings)</dt><dd>A list of IP address on which the server should listen. By default it listens on all configured IP addresses and interfaces.</dd>
+
+<dt><code>motd-file</code> (type: file-like)</dt><dd>Text file with the <i>message of the day</i> (MOTD). This message will be shown to all users connecting to the server.</dd>
+
+<dt><code>motd-phrase</code> (type: maybe-string)</dt><dd>A simple phrase (&lt;127 chars) to use if you don't want to use a MOTD file.</dd>
+
+<dt><code>network</code> (type: maybe-string)</dt><dd>The name of the IRC network to which this server belongs. This name is optional, should only contain ASCII characters, and can't contain spaces. It is only used to inform clients.</dd>
+
+<dt><code>password</code> (type: maybe-string)</dt><dd>Global password or all users needed to connect to the server. By default, no password is required. PAM must be disabled for this option to have an effect.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/run/ngircd/ngircd.pid"</code>) (type: string)</dt><dd>The file name where the PID of ngIRCd should be written after it starts.</dd>
+
+<dt><code>ports</code> (default: <code>(6667)</code>) (type: list-of-ports)</dt><dd>Port number(s) on which the server should listen for <i>unencrypted</i> connections.</dd>
+
+<dt><code>server-uid</code> (default: <code>"ngircd"</code>) (type: string-or-number)</dt><dd>The user that the <code>ngircd</code> command should run as.</dd>
+
+<dt><code>server-gid</code> (default: <code>"ngircd"</code>) (type: string-or-number)</dt><dd>The group that the <code>ngircd</code> command should run as.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-limits </dt><dd>Available <code>ngircd-limits</code> fields are:
+
+<dl class="org-dl">
+<dt><code>connect-retry</code> (default: <code>60</code>) (type: maybe-number)</dt><dd>The number of seconds the server should wait before re-attempting to establish a link to not yet (or no longer) connected servers.</dd>
+
+<dt><code>max-connections</code> (default: <code>0</code>) (type: maybe-number)</dt><dd>Maximum number of simultaneous in- and outbound connections the server is allowed to accept. There is no limit by default.</dd>
+
+<dt><code>max-connections-ip</code> (default: <code>5</code>) (type: maybe-number)</dt><dd>Maximum number of simultaneous connections from a single IP address that the server will accept. This configuration options lowers the risk of denial of service attacks (DoS). Set to 0 to remove the limit.</dd>
+
+<dt><code>max-joins</code> (default: <code>10</code>) (type: maybe-number)</dt><dd>Maximum number of channels a user can be member of. Set to 0 to remove the limit.</dd>
+
+<dt><code>max-list-size</code> (default: <code>100</code>) (type: maybe-number)</dt><dd>Maximum number of channels returned in response to a LIST command.</dd>
+
+<dt><code>ping-timeout</code> (default: <code>120</code>) (type: maybe-number)</dt><dd>Number of seconds of inactivity after which the server will send a PING to the peer to test whether it is alive or not.</dd>
+
+<dt><code>pong-timeout</code> (default: <code>20</code>) (type: maybe-number)</dt><dd>If a client fails to answer a PING with a PONG within this amount of seconds, it will be disconnected by the server.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-options </dt><dd>Available <code>ngircd-options</code> fields are:
+
+<dl class="org-dl">
+<dt><code>allowed-channel-types</code> (default: <code>"#&amp;+"</code>) (type: maybe-string)</dt><dd>List of allowed channel types (channel prefixes) for newly created channels on the local server. By default, all supported channel types are allowed.</dd>
+
+<dt><code>allow-remote-oper?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>If this option is active, IRC operators connected to remote servers are allowed to control this local server using administrative commands, for example like CONNECT, DIE, SQUIT, etc.</dd>
+
+<dt><code>connect-ipv4?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Set to <code>#f</code> to prevent ngIRCd from connecting to other IRC servers using the IPv4 protocol, allowed by default.</dd>
+
+<dt><code>connect-ipv6?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Set to <code>#f</code> to prevent ngIRCd from connecting to other IRC servers using the IPv6 protocol, allowed by default.</dd>
+
+<dt><code>dns?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Set to <code>#f</code> to disable DNS lookups when clients connect. If you configure the daemon to connect to other servers, ngIRCd may still perform a DNS lookup if required.</dd>
+
+<dt><code>more-privacy?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Set this to <code>#t</code> to have ngIRCd censor user idle time, logon time as well as the PART/QUIT messages (that sometimes used to inform everyone about which client software is being used). WHOWAS requests are also silently ignored, and NAMES output doesn't list any clients for non-members. This option is most useful when ngIRCd is being used together with anonymizing software such as TOR or I2P and one does not wish to make it too easy to collect statistics on the users.</dd>
+
+<dt><code>notice-before-registration?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Normally ngIRCd doesn't send any messages to a client until it is registered. Enable this option to let the daemon send ‘=NOTICE *=' messages to clients while connecting.</dd>
+
+<dt><code>oper-can-use-mode?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Should IRC Operators be allowed to use the MODE command even if they are not(!) channel-operators?</dd>
+
+<dt><code>oper-chan-p-auto-op?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Should IRC Operators get AutoOp (+o) in persistent (+P) channels?</dd>
+
+<dt><code>oper-server-mode?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>If <code>open-can-use-mode?</code> is <code>#t</code>, this may lead the compatibility problems with servers that run the ircd-irc2 software. This option masks mode requests by non-chanops as if they were coming from the server. Only enable this if you have ircd-irc2 servers in your IRC network.</dd>
+
+<dt><code>pam?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Set to <code>#t</code> to enable calls to the PAM library at runtime; all users connecting without password are allowed to connect, all passwords given will fail. Users identified without PAM are registered with a tilde (‘=~=') prepended to their user name. This defaults to <code>#f</code> in Guix because the service runs as an unprivileged user and thus cannot authenticate other users via the <code>pam_unix</code> PAM module.</dd>
+
+<dt><code>pam-is-optional?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Set to <code>#t</code> to make PAM authentication optional, causing clients not sending a password to still be able to connect, but won't become identified and keep the tilder (‘=~=') character prepended to their supplied user name.</dd>
+
+<dt><code>require-auth-ping?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Set to <code>#t</code> to have ngIRCd send an authentication PING when a new client connects, and register this client only after receiving the corresponding PONG reply.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-ssl </dt><dd>Available <code>ngircd-ssl</code> fields are:
+
+<dl class="org-dl">
+<dt><code>cert-file</code> (type: maybe-string)</dt><dd>SSL certificate file of the private server key.</dd>
+
+<dt><code>key-file</code> (type: maybe-string)</dt><dd>File name of the SSL Server Key to be used for SSL connections, which is required for SSL/TLS support.</dd>
+
+<dt><code>ca-file</code> (default: <code>"/etc/ssl/certs/ca-certificates.crt"</code>) (type: maybe-string)</dt><dd>A file listing all the certificates of the trusted Certificate Authorities.</dd>
+
+<dt><code>ports</code> (type: maybe-list-of-ports)</dt><dd>Like the global configuration's <code>port</code> option, except that ngIRCd will expect incoming connections to be SSL/TLS encrypted. Common port numbers for SSL-encrypted IRC are 6669 and 6697.</dd>
+
+<dt><code>cipher-list</code> (type: maybe-string)</dt><dd>The GnuTLS cipher suites allowed for SSL/TLS connections, a value such as <code>"SECURE128:-VERS-SSL3.0"</code>. Refer to ‘=man 3 gnutls<sub>priority</sub><sub>init</sub>=' for details.</dd>
+
+<dt><code>dh-file</code> (type: maybe-file-like)</dt><dd>A file-like containing the Diffie-Hellman parameters, which can be created with GnuTLS via ‘=certtool &#x2013;generate-dh-params='. If this file is not present, the Diffie-Hellman parameters will be computed on startup, which may take some time.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-operator </dt><dd>Available <code>ngircd-operator</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>ID of the operator (may be different of the nickname).</dd>
+
+<dt><code>password</code> (type: string)</dt><dd>Password of the IRC operator.</dd>
+
+<dt><code>mask</code> (type: maybe-string)</dt><dd>Mask that is to be checked before an /OPER for this account is accepted, for example: <code>"nick!ident@*.example.com"</code>.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-server </dt><dd>Available <code>ngircd-server</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>IRC name of the remote server.</dd>
+
+<dt><code>host</code> (type: string)</dt><dd>Internet host name (or IP address) of the peer.</dd>
+
+<dt><code>my-password</code> (type: string)</dt><dd>Own password for this connection. This password has to be configured as <code>peer-password</code> on the other server and must not have ‘=:=' as first character.</dd>
+
+<dt><code>peer-password</code> (type: string)</dt><dd>Foreign password for this connection. This password has to be configured as <code>my-password</code> on the other server.</dd>
+
+<dt><code>bind</code> (type: maybe-string)</dt><dd>IP address to use as source IP for the outgoing connection. The default is to let the operating system decide.</dd>
+
+<dt><code>port</code> (type: maybe-port)</dt><dd>Port of the remote server to which ngIRCd should connect (active). If no port is assigned to a configured server, the daemon only waits for incoming connections (passive, which is the default).</dd>
+
+<dt><code>group</code> (type: maybe-number)</dt><dd>Group of this server.</dd>
+
+<dt><code>passive?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Set to <code>#t</code> to disable automatic connection even if the port value is specified.</dd>
+
+<dt><code>ssl-connect?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Set to <code>#t</code> to enforce the use of TLS to connect to the remote server.</dd>
+
+<dt><code>ssl-verify?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Set to <code>#f</code> to disable the verification of the TLS certificate presented by the remote server. This can be useful if the remote server uses a self-signed certificate. Beware that this degrades security by enabling man-in-the-middle attacks, as the <i>remote site is not verified at all</i>.</dd>
+</dl></dd>
+
+<dt>Data Type: ngircd-channel </dt><dd>Available <code>ngircd-channel</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>Name of the channel, including channel prefix ("#" or "&amp;").</dd>
+
+<dt><code>topic</code> (type: maybe-string)</dt><dd>Topic for this channel.</dd>
+
+<dt><code>modes</code> (type: maybe-list-of-strings)</dt><dd>Initial channel modes, as used in MODE commands. Modifying lists (ban list, invite list, exception list) is supported. If multiple MODE strings are specified, they are evaluated in the order listed (left to right).</dd>
+
+<dt><code>key-file</code> (type: maybe-file-like)</dt><dd>Path and file name of a ngIRCd key file containing individual channel keys for different users. Refer to ‘=man 5 ngircd.conf=' for more details.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Pounce-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="pounce-service"></a>Pounce Service<br />
+<div class="outline-text-5" id="text-pounce-service">
+<p>
+<a id="index-IRC-_0028Internet-Relay-Chat_0029-2"></a> <a id="index-bouncer_002c-IRC"></a> <a id="index-Bounced-Network-Connection_002c-BNC"></a>
+<a href="https://git.causal.agency/pounce/about/">pounce</a> is a multi-client, TLS-only IRC bouncer. It maintains a persistent connection to an IRC server, acting as a proxy and buffer for a number of clients.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: pounce-service-type </dt><dd><p>
+This is the service type for the pounce IRC bouncer. Its value is a <code>pounce-configuration</code> configuration instance, which is documented below.
+</p>
+
+<p>
+<a id="index-IRC-bouncer-configuration-for-Libera_002eChat"></a> <a id="index-Libera_002eChat_002c-IRC-bouncer-configuration"></a>
+</p>
+
+<p>
+The following example configures pounce to act as an IRC bouncer for the <a href="https://libera.chat">Libera.Chat</a> server, using CertFP (client certificate fingerprint) authentication to avoid leaking a sensitive password to the publicly readable store. The equally sensitive TLS certificate file should be created in-place or transferred using a secure means such as SSH, prior to deploying the service. The service activation will ensure the ownership and permissions of the certificate/key files are set correctly. In the below example, it is placed at <code>/etc/pounce/libera.pem</code> on the target machine. Pounce itself can be used to generate a TLS certificate, using the ‘=pounce -g libera.pem=' command, which concatenates both the private key and the public certificate in the specified file name. For more information regarding CertFP authentication, refer to ‘=man pounce=' or the Libera.Chat guide at <a href="https://libera.chat/guides/certfp">https://libera.chat/guides/certfp</a>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service pounce-service-type
+         (pounce-configuration
+          (host "irc.libera.chat")
+          (client-cert "/etc/pounce/libera.pem")
+          (nick "hannah")
+          (join (list "#gnu" "#guix" "#guile" "#hurd"))))
+</pre>
+</div>
+
+<p>
+Once deployed on the target machine, pounce will act as an IRC server listening for TLS connections on the 6697 TCP port of the ‘=localhost=' address of that machine. By default, a self-signed certificate for pounce is created at <code>/var/lib/pounce/.config/pounce/localhost.cert</code>. If you plan to expose the bouncer to the public Internet, it is advisable to use a CA (Certificate Authority)-signed certificate, as can be obtained using a certificate service (see <a href="docs/guix--Certificate-Services.html">Certificate Services</a>), so that IRC clients can verify the certificate out of the box. If you instead plan to connect to the bouncer strictly via a secure connection, for example using a VPN (Virtual Private Network) or SSH (Secure Shell), then it is acceptable to simply let your IRC client trust the auto-generated, self-signed pounce certificate or even disable TLS certificate verification in your client.
+</p>
+
+<p>
+<a id="index-IRC-bouncer-configuration-for-OFTC"></a> <a id="index-OFTC_002c-IRC-bouncer-configuration"></a>
+</p>
+
+<p>
+To connect to a second server, a second pounce instance is needed, taking care to specify the <code>provision</code> field of its <code>pounce-configuration</code> to avoid a name clash with the previous service, along with a distinct <code>local-port</code> and <code>log-file</code>. The following example shows how to configure another bouncer, this time for the <a href="https://www.oftc.net">OFTC</a> IRC server. Like in the previous example, CertFP authentication is used, which can be configured similarly. For more details about using CertFP with the OFTC IRC server, refer to <a href="https://www.oftc.net/NickServ/CertFP/">https://www.oftc.net/NickServ/CertFP/</a>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service pounce-service-type
+         (pounce-configuration
+          (shepherd-provision '(pounce-oftc))
+          (local-port 6698)
+          (log-file "/var/log/pounce-oftc.log")
+          (host "irc.oftc.net")
+          (client-cert "/etc/pounce/oftc.pem")
+          (nick "sena")
+          (join (list "#gcc" "#glibc"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: pounce-configuration </dt><dd>Available <code>pounce-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>pounce</code> (default: <code>pounce</code>) (type: file-like)</dt><dd>The <code>pounce</code> package to use.</dd>
+
+<dt><code>shepherd-provision</code> (default: <code>(pounce)</code>) (type: list-of-symbols)</dt><dd>The name(s) of the service.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>(user-processes networking)</code>) (type: list-of-symbols)</dt><dd>Shepherd requirements the service should depend on.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/pounce.log"</code>) (type: string)</dt><dd>The log file name to use.</dd>
+
+<dt><code>verbose?</code> (type: maybe-boolean)</dt><dd>When true, log IRC messages to standard output.</dd>
+
+<dt><code>local-host</code> (default: <code>"localhost"</code>) (type: maybe-string)</dt><dd>The host to bind to.</dd>
+
+<dt><code>local-port</code> (default: <code>6697</code>) (type: maybe-port)</dt><dd>The port to bind to.</dd>
+
+<dt><code>local-ca</code> (type: maybe-string)</dt><dd>Require clients to authenticate using a TLS client certificate either contained in or signed by a certificate in the file loaded from <code>local-ca</code>, a file name. The file is reloaded when the SIGUSR1 signal is received.</dd>
+
+<dt><code>local-cert</code> (type: maybe-string)</dt><dd>File name of the TLS certificate to load. The file is reloaded when the SIGUSR1 signal is received. Unless specified, a self-signed certificate is generated at <code>/var/lib/pounce/.config/pounce/==host=</code>.pem=, where <code>host</code> corresponds to the value of the <code>local-host</code> field.</dd>
+
+<dt><code>local-priv</code> (type: maybe-string)</dt><dd>File name of the private TLS key to load. Unless specified, a key is generated at <code>/var/lib/pounce/.config/pounce/==host=</code>.key=, where <code>host</code> corresponds to the value of the <code>local-host</code> field.</dd>
+
+<dt><code>local-pass</code> (type: maybe-string)</dt><dd>Require the server password pass for clients to connect. The pass string must be hashed using ‘=pounce -x='.</dd>
+
+<dt><code>size</code> (default: <code>4096</code>) (type: maybe-power-of-two)</dt><dd>Set the number of messages contained in the buffer to <code>size</code>. This sets the maximum number of recent messages which can be relayed to a reconnecting client. The size must be a power of two.</dd>
+
+<dt><code>bind</code> (type: maybe-string)</dt><dd>Host to bind the <i>source</i> address to when connecting to the server. To connect from any address over IPv4 only, use ‘=0.0.0.0='. To connect from any address over IPv6 only, use ‘=::='.</dd>
+
+<dt><code>host</code> (type: string)</dt><dd>The host name to connect to.</dd>
+
+<dt><code>port</code> (type: maybe-port)</dt><dd>The port number to connect to.</dd>
+
+<dt><code>pass</code> (type: maybe-string)</dt><dd>Password to use to log in with the server. The password must have been hashed via the ‘=pounce -x=' command.</dd>
+
+<dt><code>join</code> (type: maybe-list-of-strings)</dt><dd>The list of channels to join.</dd>
+
+<dt><code>mode</code> (type: maybe-string)</dt><dd>The user mode.</dd>
+
+<dt><code>user</code> (type: maybe-string)</dt><dd>To set the username. The default username is the same as the nickname.</dd>
+
+<dt><code>nick</code> (default: <code>"pounce"</code>) (type: maybe-string)</dt><dd>Set nickname to <code>nick</code>.</dd>
+
+<dt><code>real</code> (type: maybe-string)</dt><dd>Set the real name. The default is <code>nick</code>.</dd>
+
+<dt><code>away</code> (type: maybe-string)</dt><dd>The away status to use when no clients are connected and no other away status has been set.</dd>
+
+<dt><code>quit</code> (type: maybe-string)</dt><dd>The message to use when quitting.</dd>
+
+<dt><code>no-names?</code> (type: maybe-boolean)</dt><dd>Do not request ‘=NAMES=' for each channel when a client connects. This avoids already connected clients receiving unsolicited responses but prevents new clients from populating user lists.</dd>
+
+<dt><code>queue-interval</code> (default: <code>200</code>) (type: maybe-number)</dt><dd>Set the server send queue interval in milliseconds. The queue is used to send automated messages from pounce to the server. Messages from clients are sent to the server directly.</dd>
+
+<dt><code>trust</code> (type: maybe-string)</dt><dd>File name of a certificate to trust. When used, server name verification is disabled.</dd>
+
+<dt><code>client-cert</code> (type: maybe-string)</dt><dd>The file name of the TLS client. If the private key is in a separate file, it is loaded with <code>client-priv</code>. With <code>sasl-external?</code>, authenticate using SASL EXTERNAL. Certificates can be generated with ‘=pounce -g='. For more details, refer to “Generating Client Certificates” in ‘=man 1 pounce='.</dd>
+
+<dt><code>client-priv</code> (type: maybe-string)</dt><dd>The file name of the TLS client private key.</dd>
+
+<dt><code>sasl-plain</code> (type: maybe-pair)</dt><dd>A pair of the username and password in plain text to authenticate using SASL PLAIN. Since this method requires the account password in plain text, it is recommended to use CertFP instead with <code>sasl-external</code>.</dd>
+
+<dt><code>sasl-external?</code> (type: maybe-boolean)</dt><dd>Authenticate using SASL EXTERNAL, also known as CertFP. The TLS client certificate is loaded from <code>client-cert</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Quassel-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="quassel-service"></a>Quassel Service<br />
+<div class="outline-text-5" id="text-quassel-service">
+<p>
+<a id="index-IRC-_0028Internet-Relay-Chat_0029-3"></a>
+<a href="https://quassel-irc.org/">Quassel</a> is a distributed IRC client, meaning that one or more clients can attach to and detach from the central core.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: quassel-service-type </dt><dd>This is the service type for the <a href="https://quassel-irc.org/">Quassel</a> IRC backend daemon. Its value is a <code>quassel-configuration</code> (see below).</dd>
+
+<dt>Data Type: quassel-configuration </dt><dd>This is the configuration for Quassel, with the following fields:
+
+<dl class="org-dl">
+<dt><code>quassel</code> (default: <code>quassel</code>)</dt><dd>The Quassel package to use.</dd>
+
+<dt>(no term)</dt><dd><code>interface</code> (default: <code>"::,0.0.0.0"</code>)<br />
+<code>port</code> (default: <code>4242</code>) :: Listen on the network interface(s) corresponding to the IPv4 or IPv6 interfaces specified in the comma delimited <code>interface</code>, on <code>port</code>.</dd>
+
+<dt><code>loglevel</code> (default: <code>"Info"</code>)</dt><dd>The level of logging desired. Accepted values are Debug, Info, Warning and Error.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Snuik-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="snuik-service"></a>Snuik Service<br />
+<div class="outline-text-5" id="text-snuik-service">
+<p>
+<a id="index-irc_002dbot"></a> <a id="index-snuik"></a>
+The <a href="https://gitlab.com/janneke/snuik">Snuik IRC bot</a> can be run as a daemon to aid talking to users that are currently offline. With the <code>(gnu services messaging)</code> service, you can configure it by adding a <code>snuik-service-type</code> service to the <code>services</code> field of your operating system declaration.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: snuik-service-type </dt><dd>This is the type of the Snuik service, whose value is a <code>snuik-configuration</code> object.</dd>
+</dl>
+
+<p>
+Here is an example of a service and its configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service snuik-service-type
+         (snuik-configuration
+          (password-file "/var/run/snuik/.password.snuik")
+          (channels '("#bootstrappable"
+                      "#dezyne"
+                      "#guix-risc-v"
+                      "#lilypond"))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Data Type: snuik-configuration </dt><dd>Available <code>snuik-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>snuik</code> (default: <code>snuik</code>) (type: package)</dt><dd>The Snuik package to use.</dd>
+
+<dt><code>server</code> (default: <code>"irc.libera.chat"</code>)</dt><dd>The IRC server to connect to.</dd>
+
+<dt><code>port</code> (default: <code>6665</code>) (type: integer)</dt><dd>Port number used by the IRC server.</dd>
+
+<dt><code>nick</code> (default: <code>"snuik"</code>) (type: string)</dt><dd>The nickname for snuik to use.</dd>
+
+<dt><code>password</code> (default: <code>#f</code>) (type: string)</dt><dd>The password to use when logging in.</dd>
+
+<dt><code>password-file</code> (default: <code>".password.&lt;nick&gt;</code>)</dt><dd>The file to read the password from to use when logging in.</dd>
+
+<dt><code>channels</code> (default: <code>'("##botchat")</code>)</dt><dd>The channels for snuik to join, a list of strings.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options will be passed to <code>snuik</code>, please run =snuik &#x2013;help = for more information.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Mosquitto-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="mosquitto-service"></a>Mosquitto Service<br />
+<div class="outline-text-5" id="text-mosquitto-service">
+<p>
+<a href="https://mosquitto.org/">Mosquitto</a> is a lightweight message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. It is suitable for use on all devices from low power single board computers to full servers.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: mosquitto-service-type </dt><dd>This is the service type for the <a href="https://mosquitto.org/">Mosquitto</a> MQTT broker. Its value is a <code>mosquitto-configuration</code> (see below).</dd>
+
+<dt>Data Type: mosquitto-configuration </dt><dd>This is the configuration for Mosquitto, with the following fields:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>mosquitto</code>)</dt><dd>The Mosquitto package to use.</dd>
+
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd>The Mosquitto configuration file as a file-like object or the value <code>#f</code> to use the default configuration.</dd>
+
+<dt><code>user</code> (default: <code>"mosquitto"</code>)</dt><dd>Owner of the broker process.</dd>
+
+<dt><code>group</code> (default: <code>"mosquitto"</code>)</dt><dd>Owner's group of the broker process.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Mollysocket-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="mollysocket-service"></a>Mollysocket Service<br />
+<div class="outline-text-5" id="text-mollysocket-service">
+<p>
+<a href="https://github.com/mollyim/mollysocket">Mollysocket</a> is a UnifiedPush provider for the messaging app <a href="https://molly.im">Molly</a>, a fork of Signal.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: mollysocket-service-type </dt><dd>The Mollysocket service. Takes <code>mollysocket-configuration</code> as its value. By default, this service listens on port 8020 for any Molly client.</dd>
+
+<dt>Data Type: mollysocket-configuration </dt><dd>The configuration for Mollysocket, with the following fields:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>mollysocket</code>)</dt><dd>The Mollysocket package to use.</dd>
+
+<dt><code>host</code> (default: <code>"0.0.0.0"</code>)</dt><dd>Address for the webserver to listen on. It is recommended that this be set to localhost, and instead configure a TLS-supporting reverse proxy in front of it.</dd>
+
+<dt><code>port</code> (default: <code>8020</code>)</dt><dd>Port for the webserver to listen on.</dd>
+
+<dt><code>webserver</code> (default: <code>#t</code>)</dt><dd>Whether the webserver sould be enabled. If disabled, the server is considered to be in airgapped mode, and clients must be configured likewise.</dd>
+
+<dt><code>allowed-endpoints</code> (default: <code>'("*")</code>)</dt><dd>Allowlist of UnifiedPush distributor endpoints, represented as IP addresses or domain names. Addresses on the local network must be specified explicitly.</dd>
+
+<dt><code>allowed-uuids</code> (default: <code>'("*")</code>)</dt><dd>Allowlist of Signal account UUIDs.</dd>
+
+<dt><code>db</code> (default: <code>"/var/lib/mollysocket/db.sqlite"</code>)</dt><dd>Path to the Mollysocket database. Will be created if it doesn't exist.</dd>
+
+<dt><code>vapid-key-file</code> (default: <code>"/var/lib/mollysocket/vapid.key"</code>)</dt><dd>Path to the VAPID key used to authorize requests to the UnifiedPush distributor. Will be created if it doesn't exist.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Telephony-Services.html">Telephony Services</a>, Previous: <a href="docs/guix--Mail-Services.html">Mail Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

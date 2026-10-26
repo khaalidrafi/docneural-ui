@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Programming-Language-Documentation-Lookup">1. 28.6.3 Programming Language Documentation Lookup ¶</a>
+<ul>
+<li><a href="#section">1.1. (15)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Man-Page.html">Man Page Lookup</a>   Up: <a href="docs/emacs--Documentation.html">Documentation Lookup</a>
+</p>
+
+<p>
+<a id="Programming-Language-Doc"></a>
+</p>
+
+<hr />
+<div id="outline-container-Programming-Language-Documentation-Lookup" class="outline-2">
+<h2 id="Programming-Language-Documentation-Lookup"><span class="section-number-2">1.</span> 28.6.3 Programming Language Documentation Lookup <a href="#Programming-Language-Documentation-Lookup">¶</a></h2>
+<div class="outline-text-2" id="text-Programming-Language-Documentation-Lookup">
+<p>
+When editing Emacs Lisp code, you can use the commands C-h f (<code>describe-function</code>) and C-h v (<code>describe-variable</code>) to view the built-in documentation for the Lisp functions and variables that you want to use. See <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>.
+</p>
+
+<p>
+ElDoc is a buffer-local minor mode that helps with looking up documentation of symbols (functions, methods, classes, variables, etc.) in your program. When this mode is enabled, the echo area displays useful information whenever there is a documented symbol at point. For example, in buffers under the Emacs Lisp mode, it shows the argument list of a function at point, and for a Lisp variable it shows the first line of the variable's documentation string.
+</p>
+
+<p>
+To toggle ElDoc mode, type M-x eldoc-mode. There's also a Global ElDoc mode, which is turned on by default, and turns on the ElDoc mode in buffers whose major mode sets the variables described below. Use M-x global-eldoc-mode to turn it off globally.
+</p>
+
+<p>
+Various major modes configure the Global ElDoc mode to use their documentation functions. Examples include Emacs Lisp mode, Python mode, and Cfengine mode. In addition, Emacs features that provide support for several major modes configure ElDoc to use their facilities for retrieving the documentation. Examples include Eglot (see <a href="../eglot_html/Eglot-Features.html#Eglot-Features">Eglot Features</a> in Eglot: The Emacs LSP Client), which provides documentation based on information from language servers; Semantic's Idle Summary mode (see <a href="../semantic_html/Idle-Summary-Mode.html#Idle-Summary-Mode">Idle Summary Mode</a> in Semantic Manual); and Flymake, which uses ElDoc to show diagnostics at point (see <a href="../flymake_html/Finding-diagnostics.html#Finding-diagnostics">Finding diagnostics</a> in GNU Flymake manual).
+</p>
+
+<p>
+The ElDoc mode works by scheduling the display of the available documentation for the symbol at point after Emacs has been idle for some short time. This avoids annoying flickering of documentation messages in the echo area or the mode line when you type quickly and without delay.
+</p>
+
+<p>
+You can also trigger the display of documentation for a symbol at point by using the command M-x eldoc-print-current-symbol-info.
+</p>
+
+<p>
+The following variables can be used to configure ElDoc mode:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-eldoc_002didle_002ddelay"></a>=eldoc-idle-delay= </dt><dd>The value of this user option controls the amount of idle time before the at-point documentation is displayed. It should be set to the number of seconds to wait; the value of zero means to display without any delay. The default is 0.5 sec.</dd>
+
+<dt><a id="index-eldoc_002dprint_002dafter_002dedit"></a>=eldoc-print-after-edit= </dt><dd>If this user option is non-<code>nil</code>, ElDoc will show documentation only after some editing command, like inserting or deleting some text. This comes in handy if you want Emacs to display documentation only about symbols that you type, but not about symbols that are already in the buffer (so just reading the source code will not show documentation). The default value is <code>nil</code>. If you change the value, you need to toggle <code>eldoc-mode</code> off and on again.</dd>
+
+<dt><a id="index-eldoc_002decho_002darea_002duse_002dmultiline_002dp"></a>=eldoc-echo-area-use-multiline-p= </dt><dd>This user option controls whether and how to truncate documentation text if it is longer than the echo-area can display as a single screen line. If the value is a positive number, it specifies the number of screen lines that ElDoc is allowed to display in the echo area without truncating the documentation. A positive integer specifies the absolute maximum number of screen lines to use; a floating-point number specifies the number of screen lines as a fraction of the frame's height. The value of <code>t</code> means never truncate the documentation (the echo-area will be resized up to the height allowed by <code>max-mini-window-height</code>, see <a href="docs/emacs--Minibuffer-Edit.html">Editing in the Minibuffer</a>), whereas the value of <code>nil</code> means truncate if the documentation is longer than a single screen line. Finally, the special value <code>truncate-sym-name-if-fit</code> (the default) means to truncate the part of the documentation that represents a symbol's name if doing that will allow the documentation to fit on a single screen line.</dd>
+
+<dt><a id="index-eldoc_002decho_002darea_002ddisplay_002dtruncation_002dmessage"></a>=eldoc-echo-area-display-truncation-message= </dt><dd>If non-<code>nil</code> (the default), and documentation shown in the echo area is truncated because it's too long, follow the documentation by instructions about how to view the complete documentation text. If <code>nil</code>, just indicate with ‘=…=' that the documentation was truncated.</dd>
+
+<dt><a id="index-eldoc_002decho_002darea_002dprefer_002ddoc_002dbuffer"></a>=eldoc-echo-area-prefer-doc-buffer= </dt><dd>If the value of this user option is <code>t</code>, ElDoc will not show the documentation in the echo area if the ElDoc buffer with the documentation is already displayed in some window. (You can use the command M-x eldoc-doc-buffer any time to show the ElDoc buffer.) If the value of this option is the symbol <code>maybe</code>, the documentation will not be displayed in the echo area if the ElDoc buffer is shown in some window, and the documentation text has to be truncated if displayed in the echo area. Finally, the value of <code>nil</code> (the default) means always show the documentation in the echo area.</dd>
+
+<dt><a id="index-eldoc_002ddocumentation_002dstrategy"></a>=eldoc-documentation-strategy= </dt><dd>This customizable variable's value is the function which is used to retrieve and display documentation for the symbol at point. The documentation is produced by the functions in the hook <code>eldoc-documentation-functions</code>. The default value of <code>eldoc-documentation-strategy</code> specifies that ElDoc should display the first documentation text produced by functions in the <code>eldoc-documentation-functions</code> hook, but you can customize <code>eldoc-documentation-strategy</code> to work in other ways, such as displaying all of the documentation texts concatenated together.</dd>
+
+<dt><a id="index-eldoc_002ddocumentation_002dfunctions"></a>=eldoc-documentation-functions= </dt><dd>This abnormal hook's value is a list of functions that can produce documentation for the symbol at point as appropriate for the current buffer's major-mode. These functions act as a collection of backends for ElDoc. Major modes register their documentation lookup functions with ElDoc by adding their functions to the buffer-local value of this variable.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

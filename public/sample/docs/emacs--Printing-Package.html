@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Printing-Package-1">1. 42.3 Printing Package ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--PostScript-Variables.html">Variables for PostScript Hardcopy</a>   Up: <a href="docs/emacs--Printing.html">Printing Hard Copies</a>
+</p>
+
+<p>
+<a id="Printing-Package"></a>
+</p>
+
+<hr />
+<div id="outline-container-Printing-Package-1" class="outline-2">
+<h2 id="Printing-Package-1"><span class="section-number-2">1.</span> 42.3 Printing Package <a href="#Printing-Package-1">¶</a></h2>
+<div class="outline-text-2" id="text-Printing-Package-1">
+<p>
+The basic Emacs facilities for printing hardcopy can be extended using the Printing package. This provides an easy-to-use interface for choosing what to print, previewing PostScript files before printing, and setting various printing options such as print headers, landscape or portrait modes, duplex modes, and so forth. On GNU/Linux or Unix systems, the Printing package relies on the <code>gs</code> and <code>gv</code> utilities, which are distributed as part of the GhostScript program. On MS-Windows, the <code>gstools</code> port of Ghostscript can be used.
+</p>
+
+<p>
+To use the Printing package, add <code>(require 'printing)</code> to your init file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>), followed by <code>(pr-update-menus)</code>. This function replaces the usual printing commands in the menu bar with a ‘=Printing=' submenu that contains various printing options. You can also type M-x pr-interface RET; this creates a <code>*Printing Interface*</code> buffer, similar to a customization buffer, where you can set the printing options. After selecting what and how to print, you start the print job using the ‘=Print=' button (click mouse-2 on it, or move point over it and type RET). For further information on the various options, use the ‘=Interface Help=' button.
+</p>
+</div>
+</div>

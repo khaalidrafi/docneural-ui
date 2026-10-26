@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Orgtbl-Minor-Mode">1. 3.4 The Orgtbl Minor Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Orgtbl-Mode"></a>
+Next: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>, Previous: <a href="docs/org--Column-Groups.html">Column Groups</a>, Up: <a href="docs/org--Tables.html">Tables</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-Orgtbl-Minor-Mode" class="outline-2">
+<h2 id="The-Orgtbl-Minor-Mode"><span class="section-number-2">1.</span> 3.4 The Orgtbl Minor Mode <a href="#The-Orgtbl-Minor-Mode">¶</a></h2>
+<div class="outline-text-2" id="text-The-Orgtbl-Minor-Mode">
+<p>
+If you like the intuitive way the Org table editor works, you might also want to use it in other modes like Text mode or Mail mode. The minor mode Orgtbl mode makes this possible. You can always toggle the mode with M-x orgtbl-mode. To turn it on by default, for example in Message mode, use
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(add-hook 'message-mode-hook #'turn-on-orgtbl)
+</pre>
+</div>
+
+<p>
+Furthermore, with some special setup, it is possible to maintain tables in arbitrary syntax with Orgtbl mode. For example, it is possible to construct LaTeX tables with the underlying ease and power of Orgtbl mode, including spreadsheet capabilities. For details, see <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>.
+</p>
+</div>
+</div>

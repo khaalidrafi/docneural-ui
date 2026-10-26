@@ -1,0 +1,103 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#home-configuration">1.1. 13 Home Configuration</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Home-Configuration"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Documentation.html">Documentation</a>, Previous: <a href="docs/guix--System-Troubleshooting-Tips.html">System Troubleshooting Tips</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Home-Configuration-1"></a>
+</p>
+</div>
+<div id="outline-container-home-configuration" class="outline-3">
+<h3 id="home-configuration"><span class="section-number-3">1.1.</span> 13 Home Configuration</h3>
+<div class="outline-text-3" id="text-home-configuration">
+<p>
+<a id="index-home-configuration"></a>
+Guix supports declarative configuration of <i>home environments</i> by utilizing the configuration mechanism described in the previous chapter (see <a href="docs/guix--Defining-Services.html">Defining Services</a>), but for user's dotfiles and packages. It works both on Guix System and foreign distros and allows users to declare all the packages and services that should be installed and configured for the user. Once a user has written a file containing a <code>home-environment</code> record, such a configuration can be <i>instantiated</i> by an unprivileged user with the <code>guix home</code> command (see <a href="docs/guix--Invoking-guix-home.html">Invoking <code>guix home</code></a>).
+</p>
+
+<p>
+The user's home environment usually consists of three basic parts: software, configuration, and state. Software in mainstream distros are usually installed system-wide, but with GNU Guix most software packages can be installed on a per-user basis without needing root privileges, and are thus considered part of the user's <i>home environment</i>. Packages on their own are not very useful in many cases, because often they require some additional configuration, usually config files that reside in <code>XDG_CONFIG_HOME</code> (<code>~/.config</code> by default) or other directories. Everything else can be considered state, like media files, application databases, and logs.
+</p>
+
+<p>
+Using Guix for managing home environments provides a number of advantages:
+</p>
+
+<ul class="org-ul">
+<li>All software can be configured in one language (Guile Scheme), this gives users the ability to share values between configurations of different programs.</li>
+<li>A well-defined home environment is self-contained and can be created in a declarative and reproducible way&#x2014;there is no need to grab external binaries or manually edit some configuration file.</li>
+<li>After every <code>guix home reconfigure</code> invocation, a new home environment generation will be created. This means that users can rollback to a previous home environment generation so they don't have to worry about breaking their configuration.</li>
+<li>It is possible to manage stateful data with Guix Home, this includes the ability to automatically clone Git repositories on the initial setup of the machine, and periodically running commands like <code>rsync</code> to sync data with another host. This functionality is still in an experimental stage, though.</li>
+
+<li><a href="docs/guix--Declaring-the-Home-Environment.html">Declaring the Home Environment</a></li>
+<li><a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a></li>
+<li><a href="docs/guix--Home-Services.html">Home Services</a></li>
+<li><a href="docs/guix--Invoking-guix-home.html">Invoking <code>guix home</code></a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Documentation.html">Documentation</a>, Previous: <a href="docs/guix--System-Troubleshooting-Tips.html">System Troubleshooting Tips</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

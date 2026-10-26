@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Folding-Editing">1. 27.9.6 Folding Editing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Outline-Views.html">Viewing One Outline in Multiple Views</a>   Up: <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>
+</p>
+
+<p>
+<a id="Foldout"></a>
+</p>
+
+<hr />
+<div id="outline-container-Folding-Editing" class="outline-2">
+<h2 id="Folding-Editing"><span class="section-number-2">1.</span> 27.9.6 Folding Editing <a href="#Folding-Editing">¶</a></h2>
+<div class="outline-text-2" id="text-Folding-Editing">
+<p>
+The Foldout package extends Outline mode and Outline minor mode with folding commands. The idea of folding is that you zoom in on a nested portion of the outline, while hiding its relatives at higher levels.
+</p>
+
+<p>
+Consider an Outline mode buffer with all the text and subheadings under level-1 headings hidden. To look at what is hidden under one of these headings, you could use C-c C-e (M-x outline-show-entry) to expose the body, or C-c C-i to expose the child (level-2) headings.
+</p>
+
+<p>
+With Foldout, you use C-c C-z (M-x foldout-zoom-subtree). This exposes the body and child subheadings, and narrows the buffer so that only the level-1 heading, the body and the level-2 headings are visible. Now to look under one of the level-2 headings, position the cursor on it and use C-c C-z again. This exposes the level-2 body and its level-3 child subheadings and narrows the buffer again. Zooming in on successive subheadings can be done as much as you like. A string in the mode line shows how deep you've gone.
+</p>
+
+<p>
+When zooming in on a heading, to see only the child subheadings specify a numeric argument: C-u C-c C-z. The number of levels of children can be specified too (compare M-x outline-show-children), e.g., M-2 C-c C-z exposes two levels of child subheadings. Alternatively, the body can be specified with a negative argument: M&#x2013; C-c C-z. The whole subtree can be expanded, similarly to C-c C-s (M-x outline-show-subtree), by specifying a zero argument: M-0 C-c C-z.
+</p>
+
+<p>
+While you're zoomed in, you can still use Outline mode's exposure and hiding functions without disturbing Foldout. Also, since the buffer is narrowed, global editing actions will only affect text under the zoomed-in heading. This is useful for restricting changes to a particular chapter or section of your document.
+</p>
+
+<p>
+To unzoom (exit) a fold, use C-c C-x (M-x foldout-exit-fold). This hides all the text and subheadings under the top-level heading and returns you to the previous view of the buffer. Specifying a numeric argument exits that many levels of folds. Specifying a zero argument exits all folds.
+</p>
+
+<p>
+To cancel the narrowing of a fold without hiding the text and subheadings, specify a negative argument. For example, M&#x2013;2 C-c C-x exits two folds and leaves the text and subheadings exposed.
+</p>
+
+<p>
+Foldout mode also provides mouse commands for entering and exiting folds, and for showing and hiding text:
+</p>
+
+<dl class="org-dl">
+<dt>C-M-mouse-1 zooms in on the heading clicked on</dt><dd>- single click: expose body.
+<ul class="org-ul">
+<li>double click: expose subheadings.</li>
+<li>triple click: expose body and subheadings.</li>
+<li>quad click: expose entire subtree.</li>
+</ul></dd>
+<dt>C-M-mouse-2 exposes text under the heading clicked on</dt><dd>- single click: expose body.
+<ul class="org-ul">
+<li>double click: expose subheadings.</li>
+<li>triple click: expose body and subheadings.</li>
+<li>quad click: expose entire subtree.</li>
+</ul></dd>
+<dt>C-M-mouse-3 hides text under the heading clicked on or exits fold</dt><dd>- single click: hide subtree.
+<ul class="org-ul">
+<li>double click: exit fold and hide text.</li>
+<li>triple click: exit fold without hiding text.</li>
+<li>quad click: exit all folds and hide text.</li>
+</ul></dd>
+</dl>
+
+<p>
+You can specify different modifier keys (instead of Ctrl-Meta-) by setting <code>foldout-mouse-modifiers</code>; but if you have already loaded the <code>foldout.el</code> library, you must reload it in order for this to take effect.
+</p>
+
+<p>
+To use the Foldout package, you can type M-x load-library RET foldout RET; or you can arrange for to do that automatically by putting the following in your init file:
+</p>
+
+<pre class="example" id="org6d07fde">
+(with-eval-after-load "outline"
+  (require 'foldout))
+</pre>
+
+<hr />
+</div>
+</div>

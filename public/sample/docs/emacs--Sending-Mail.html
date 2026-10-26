@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Sending-Mail-1">1. 34 Sending Mail ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>   Previous: <a href="docs/emacs--Calendar_002fDiary.html">The Calendar and the Diary</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Sending-Mail"></a>
+</p>
+
+<hr />
+<div id="outline-container-Sending-Mail-1" class="outline-2">
+<h2 id="Sending-Mail-1"><span class="section-number-2">1.</span> 34 Sending Mail <a href="#Sending-Mail-1">¶</a></h2>
+<div class="outline-text-2" id="text-Sending-Mail-1">
+<p>
+To send an email message from Emacs, type C-x m. This switches to a buffer named <code>*unsent mail*</code>, where you can edit the text and headers of the message. When done, type C-c C-s or C-c C-c to send it.
+</p>
+
+<dl class="org-dl">
+<dt>C-x m</dt><dd>Begin composing mail (<code>compose-mail</code>).</dd>
+
+<dt>C-x 4 m</dt><dd>Likewise, in another window (<code>compose-mail-other-window</code>).</dd>
+
+<dt>C-x 5 m</dt><dd>Likewise, but in a new frame (<code>compose-mail-other-frame</code>).</dd>
+
+<dt>C-c C-s</dt><dd>In the mail buffer, send the message (<code>message-send</code>).</dd>
+
+<dt>C-c C-c</dt><dd>In the mail buffer, send the message and bury the buffer (<code>message-send-and-exit</code>).</dd>
+</dl>
+
+<p>
+The mail buffer is an ordinary Emacs buffer, so you can switch to other buffers while composing the mail. If you want to send another message before finishing the current one, type C-x m again to open a new mail buffer whose name has a different numeric suffix (see <a href="docs/emacs--Misc-Buffer.html">Miscellaneous Buffer Operations</a>). (This only works if you use the default Message mode to compose email; see <a href="docs/emacs--Mail-Commands.html">Mail Commands</a>.) If you know that you'd like to continue composing the unsent message you were editing, invoke this command with a prefix argument, C-u C-x m, and Emacs will switch to the last mail buffer you used and let you pick up editing the message where you left off.
+</p>
+
+<p>
+The command C-x 4 m (<code>compose-mail-other-window</code>) does the same as C-x m, except it displays the mail buffer in a different window. The command C-x 5 m (<code>compose-mail-other-frame</code>) does it in a new frame.
+</p>
+
+<p>
+When you type C-c C-c or C-c C-s to send the mail, Emacs may ask you how it should deliver the mail&#x2014;either directly via SMTP, or using some other method. See <a href="docs/emacs--Mail-Sending.html">Mail Sending</a>, for details.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Mail-Format.html">The Format of the Mail Buffer</a></li>
+<li><a href="docs/emacs--Mail-Headers.html">Mail Header Fields</a></li>
+<li><a href="docs/emacs--Mail-Aliases.html">Mail Aliases</a></li>
+<li><a href="docs/emacs--Mail-Commands.html">Mail Commands</a></li>
+<li><a href="docs/emacs--Mail-Signature.html">Mail Signature</a></li>
+<li><a href="docs/emacs--Mail-Amusements.html">Mail Amusements</a></li>
+<li><a href="docs/emacs--Mail-Methods.html">Mail-Composition Methods</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

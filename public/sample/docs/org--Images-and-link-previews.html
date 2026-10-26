@@ -1,0 +1,72 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Images-and-link-previews-1">1. 12.7 Images and link previews ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (123)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Images-and-link-previews"></a>
+Next: <a href="docs/org--Captions.html">Captions</a>, Previous: <a href="docs/org--Literal-Examples.html">Literal Examples</a>, Up: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Images-and-link-previews-1" class="outline-2">
+<h2 id="Images-and-link-previews-1"><span class="section-number-2">1.</span> 12.7 Images and link previews <a href="#Images-and-link-previews-1">¶</a></h2>
+<div class="outline-text-2" id="text-Images-and-link-previews-1">
+<p>
+Org mode can display previews of hyperlinks (see <a href="docs/org--Hyperlinks.html">Hyperlinks</a>) inside Org buffers. By default, only image links can be previewed inline, where the images are displayed in place of the link path.
+</p>
+
+<p>
+You can customize the previews as described in <a href="docs/org--Adding-Hyperlink-preview.html">Adding Hyperlink preview</a>. Link previews do not have to display images &#x2013; any kind of display decoration (see <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Overlay-Properties.html#Overlay-Properties">(elisp)Overlay Properties</a>) can be used.
+</p>
+
+<p>
+You can preview the supported link types in the whole buffer, in the current section, active region or at point with the following commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002dv"></a>C-c C-x C-v (<code>org-link-preview</code>) </dt><dd><p>
+Create inline previews for external links in the active region, if any; the link at point, if there is such; or in the current section otherwise. With a prefix argument, clear link previews at point or in the current entry. With a double prefix argument, preview all links in the buffer. With triple prefix argument, hide previews for all links in the buffer.
+</p>
+
+<p>
+By default, only links without descriptions are previewed. You can force displaying previews for all supported links (including links with descriptions) using a numeric argument of <code>1</code>. This will toggle all previews in the active region, the link at point or the current section. A numeric prefix argument of <code>11</code> will toggle previews in the whole buffer instead.
+</p>
+
+<p>
+Org mode can display link previews automatically when opening buffers. Either customize <code>org-startup-with-link-previews</code> or use the ‘=#+STARTUP: linkpreviews=' keyword to enable previews for that specific buffer when opening it. ‘=#+STARTUP: nolinkpreviews=' will disable previews on startup in the buffer.
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002dx-C_002dM_002dv"></a>C-c C-x C-M-v (<code>org-link-preview-refresh</code>) </dt><dd>Assure inline display of external link previews in the whole buffer and refresh them.</dd>
+
+<dt><a id="index-org_002dlink_002dpreview_002dregion"></a>M-x org-link-preview-region </dt><dd>Create inline previews for external links in the active region, or the buffer. With a prefix argument, also preview links with a text description part.</dd>
+
+<dt><a id="index-org_002dlink_002dpreview_002dclear"></a>M-x org-link-preview-clear </dt><dd>Clear external link previews in the active region, or the buffer.</dd>
+</dl>
+
+<p>
+Link previews can also be displayed when cycling the folding state. When the custom option <code>org-cycle-link-previews-display</code> is set, supported link types under the subtree (including images) will be displayed automatically.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/org--Images.html">Images</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

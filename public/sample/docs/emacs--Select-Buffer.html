@@ -1,0 +1,78 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-and-Selecting-Buffers">1. 21.1 Creating and Selecting Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--List-Buffers.html">Listing Existing Buffers</a>   Up: <a href="docs/emacs--Buffers.html">Using Multiple Buffers</a>
+</p>
+
+<p>
+<a id="Select-Buffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Creating-and-Selecting-Buffers" class="outline-2">
+<h2 id="Creating-and-Selecting-Buffers"><span class="section-number-2">1.</span> 21.1 Creating and Selecting Buffers <a href="#Creating-and-Selecting-Buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-and-Selecting-Buffers">
+<dl class="org-dl">
+<dt>C-x b <code>buffer</code> RET</dt><dd>Select or create a buffer named <code>buffer</code> (<code>switch-to-buffer</code>).</dd>
+
+<dt>C-x 4 b <code>buffer</code> RET</dt><dd>Similar, but select <code>buffer</code> in another window (<code>switch-to-buffer-other-window</code>).</dd>
+
+<dt>C-x 5 b <code>buffer</code> RET</dt><dd>Similar, but select <code>buffer</code> in a separate frame (<code>switch-to-buffer-other-frame</code>).</dd>
+
+<dt>C-x LEFT</dt><dd>Select the previous buffer in the buffer list (<code>previous-buffer</code>).</dd>
+
+<dt>C-x RIGHT</dt><dd>Select the next buffer in the buffer list (<code>next-buffer</code>).</dd>
+
+<dt>(no term)</dt><dd>C-u M-g M-g<br />
+C-u M-g g :: Read a number <code>n</code> and move to line <code>n</code> in the most recently selected buffer other than the current buffer, in another window.</dd>
+</dl>
+
+<p>
+The C-x b (<code>switch-to-buffer</code>) command reads a buffer name using the minibuffer. Then it makes that buffer current, and displays it in the currently-selected window. An empty input specifies the buffer that was current most recently among those not now displayed in any window.
+</p>
+
+<p>
+While entering the buffer name, you can use the usual completion and history commands (see <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>). Note that C-x b, and related commands, use <i>permissive completion with confirmation</i> for minibuffer completion: if you type RET when the minibuffer text names a nonexistent buffer, Emacs prints ‘=[Confirm]=' and you must type a second RET to submit that buffer name. See <a href="docs/emacs--Completion-Exit.html">Completion Exit</a>, for details. For other completion options and features, see <a href="docs/emacs--Completion-Options.html">Completion Options</a>.
+</p>
+
+<p>
+If you specify a buffer that does not exist, C-x b creates a new, empty buffer that is not visiting any file, and selects it for editing. The default value of the variable <code>major-mode</code> determines the new buffer's major mode; the default value is Fundamental mode. See <a href="docs/emacs--Major-Modes.html">Major Modes</a>. One reason to create a new buffer is to use it for making temporary notes. If you try to save it, Emacs asks for the file name to use, and the buffer's major mode is re-established taking that file name into account (see <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>).
+</p>
+
+<p>
+For conveniently switching between a few buffers, use the commands C-x LEFT and C-x RIGHT. C-x LEFT (<code>previous-buffer</code>) selects the previous buffer (following the order of most recent selection in the current frame), while C-x RIGHT (<code>next-buffer</code>) moves through buffers in the reverse direction. Both commands support a numeric prefix argument that serves as a repeat count.
+</p>
+
+<p>
+To select a buffer in a window other than the current one (see <a href="docs/emacs--Windows.html">Multiple Windows</a>), type C-x 4 b (<code>switch-to-buffer-other-window</code>). This prompts for a buffer name using the minibuffer, displays that buffer in another window, and selects that window.
+</p>
+
+<p>
+Similarly, C-x 5 b (<code>switch-to-buffer-other-frame</code>) prompts for a buffer name, displays that buffer in another frame (see <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>), and selects that frame. If the buffer is already being shown in a window on another frame, Emacs selects that window and frame instead of creating a new frame.
+</p>
+
+<p>
+See <a href="docs/emacs--Displaying-Buffers.html">Displaying a Buffer in a Window</a>, for how the C-x 4 b and C-x 5 b commands get the window and/or frame to display in.
+</p>
+
+<p>
+In addition, C-x C-f, and any other command for visiting a file, can also be used to switch to an existing file-visiting buffer. See <a href="docs/emacs--Visiting.html">Visiting Files</a>.
+</p>
+
+<p>
+C-u M-g M-g, that is <code>goto-line</code> with a plain prefix argument, reads a number <code>n</code> using the minibuffer, selects the most recently selected buffer other than the current buffer in another window, and then moves point to the beginning of line number <code>n</code> in that buffer. This is mainly useful in a buffer that refers to line numbers in another buffer: if point is on or just after a number, <code>goto-line</code> uses that number as the default for <code>n</code>. Note that prefix arguments other than just C-u behave differently. C-u 4 M-g M-g goes to line 4 in the <i>current</i> buffer, without reading a number from the minibuffer. (Remember that M-g M-g without prefix argument reads a number <code>n</code> and then moves to line number <code>n</code> in the current buffer. See <a href="docs/emacs--Moving-Point.html">Changing the Location of Point</a>.)
+</p>
+
+<p>
+Emacs uses buffer names that start with a space for internal purposes. It treats these buffers specially in minor ways&#x2014;for example, by default they do not record undo information. It is best to avoid using such buffer names yourself.
+</p>
+
+<hr />
+</div>
+</div>
