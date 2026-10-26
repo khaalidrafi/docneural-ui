@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fast-minibuffer-selection">1. 21.7.2 Fast minibuffer selection ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Buffer-Menus.html">Customizing Buffer Menus</a>   Previous: <a href="docs/emacs--Uniquify.html">Making Buffer Names Unique</a>   Up: <a href="docs/emacs--Buffer-Convenience.html">Convenience Features and Customization of Buffer Handling</a>
+</p>
+
+<p>
+<a id="Icomplete"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fast-minibuffer-selection" class="outline-2">
+<h2 id="Fast-minibuffer-selection"><span class="section-number-2">1.</span> 21.7.2 Fast minibuffer selection <a href="#Fast-minibuffer-selection">¶</a></h2>
+<div class="outline-text-2" id="text-Fast-minibuffer-selection">
+<p>
+Icomplete mode provides a convenient way to quickly select an element among the possible completions in a minibuffer. When enabled, typing in the minibuffer continuously displays a list of possible completions that match the string you have typed.
+</p>
+
+<p>
+At any time, you can type C-j to select the first completion in the list. So the way to select a particular completion is to make it the first in the list. There are two ways to do this. You can type more of the completion name and thus narrow down the list, excluding unwanted completions above the desired one. Alternatively, you can use C-. and C-, to rotate the list until the desired buffer is first.
+</p>
+
+<p>
+M-TAB will select the first completion in the list, like C-j but without exiting the minibuffer, so you can edit it further. This is typically used when entering a file name, where M-TAB can be used a few times to descend in the hierarchy of directories.
+</p>
+
+<p>
+To enable Icomplete mode for the minibuffer, type M-x icomplete-mode, or customize the variable <code>icomplete-mode</code> to <code>t</code> (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>).
+</p>
+
+<p>
+You can also additionally enable Icomplete mode for C-M-i (the command <code>completion-at-point</code>) by customizing the variable <code>icomplete-in-buffer</code> to <code>t</code>. For in-buffer completion, the <code>completion-auto-help</code> variable controls when Icomplete mode's display of possible completions appears. The default value of <code>t</code> means that the display of possible completions appears when you first type C-M-i.
+</p>
+
+<p>
+By default, when you press C-M-i, both Icomplete mode's in-buffer display of possible completions and the <code>*Completions*</code> buffer appear. If you are using <code>icomplete-in-buffer</code>, then you may wish to suppress this appearance of the <code>*Completions*</code> buffer. To do that, add the following to your initialization file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>):
+</p>
+
+<pre class="example" id="org3c119b2">
+(advice-add 'completion-at-point :after #'minibuffer-hide-completions)
+</pre>
+
+<p>
+An alternative to Icomplete mode is Fido mode. This is very similar to Icomplete mode, but retains some functionality from a popular extension called Ido mode (in fact the name is derived from “Fake Ido”). Among other things, in Fido mode, C-s and C-r are also used to rotate the completions list, C-k can be used to delete files and kill buffers in-list. Another noteworthy aspect is that <code>flex</code> is used as the default completion style (see <a href="docs/emacs--Completion-Styles.html">How Completion Alternatives Are Chosen</a>). To change this, add the following to your initialization file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>):
+</p>
+
+<pre class="example" id="org0702086">
+(defun my-icomplete-styles ()
+  (setq-local completion-styles '(initials flex)))
+(add-hook 'icomplete-minibuffer-setup-hook 'my-icomplete-styles)
+</pre>
+
+<p>
+To enable Fido mode, type M-x fido-mode, or customize the variable <code>fido-mode</code> to <code>t</code> (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>).
+</p>
+
+<p>
+Icomplete mode and Fido mode display the possible completions on the same line as the prompt by default. To display the completion candidates vertically under the prompt, type M-x icomplete-vertical-mode, or customize the variable <code>icomplete-vertical-mode</code> to <code>t</code> (see <a href="docs/emacs--Easy-Customization.html">Easy Customization Interface</a>).
+</p>
+
+<hr />
+</div>
+</div>

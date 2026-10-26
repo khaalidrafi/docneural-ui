@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#DocView-Slicing-1">1. 39.3 DocView Slicing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--DocView-Conversion.html">DocView Conversion</a>   Previous: <a href="docs/emacs--DocView-Searching.html">DocView Searching</a>   Up: <a href="docs/emacs--Document-View.html">Document Viewing</a>
+</p>
+
+<p>
+<a id="DocView-Slicing"></a>
+</p>
+
+<hr />
+<div id="outline-container-DocView-Slicing-1" class="outline-2">
+<h2 id="DocView-Slicing-1"><span class="section-number-2">1.</span> 39.3 DocView Slicing <a href="#DocView-Slicing-1">¶</a></h2>
+<div class="outline-text-2" id="text-DocView-Slicing-1">
+<p>
+Documents often have wide margins for printing. They are annoying when reading the document on the screen, because they use up screen space and can cause inconvenient scrolling.
+</p>
+
+<p>
+With DocView you can hide these margins by selecting a <i>slice</i> of pages to display. A slice is a rectangle within the page area; once you specify a slice in DocView, it applies to whichever page you look at.
+</p>
+
+<p>
+To specify the slice numerically, type c s (<code>doc-view-set-slice</code>); then enter the top left pixel position and the slice's width and height.
+</p>
+
+<p>
+A more convenient graphical way to specify the slice is with c m (<code>doc-view-set-slice-using-mouse</code>), where you use the mouse to select the slice. Simply press and hold the left mouse button at the upper-left corner of the region you want to have in the slice, then move the mouse pointer to the lower-right corner and release the button.
+</p>
+
+<p>
+The most convenient way is to set the optimal slice by using BoundingBox information automatically determined from the document by typing c b (<code>doc-view-set-slice-from-bounding-box</code>).
+</p>
+
+<p>
+To cancel the selected slice, type c r (<code>doc-view-reset-slice</code>). Then DocView shows the entire page including its entire margins.
+</p>
+</div>
+</div>

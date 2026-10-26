@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Repeating-Minibuffer-Commands">1. 10.6 Repeating Minibuffer Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Passwords.html">Entering passwords</a>   Previous: <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>   Up: <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>
+</p>
+
+<p>
+<a id="Repetition"></a>
+</p>
+
+<hr />
+<div id="outline-container-Repeating-Minibuffer-Commands" class="outline-2">
+<h2 id="Repeating-Minibuffer-Commands"><span class="section-number-2">1.</span> 10.6 Repeating Minibuffer Commands <a href="#Repeating-Minibuffer-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Repeating-Minibuffer-Commands">
+<p>
+Every command that uses the minibuffer once is recorded on a special history list, the <i>command history</i>, together with the values of its arguments, so that you can repeat the entire command. In particular, every use of M-x is recorded there, since M-x uses the minibuffer to read the command name.
+</p>
+
+<dl class="org-dl">
+<dt>C-x ESC ESC</dt><dd>Re-execute a recent minibuffer command from the command history (<code>repeat-complex-command</code>).</dd>
+
+<dt>M-x list-command-history</dt><dd>Display the entire command history, showing all the commands C-x ESC ESC can repeat, most recent first.</dd>
+</dl>
+
+<p>
+C-x ESC ESC re-executes a recent command that used the minibuffer. With no argument, it repeats the last such command. A numeric argument specifies which command to repeat; 1 means the last one, 2 the previous, and so on.
+</p>
+
+<p>
+C-x ESC ESC works by turning the previous command into a Lisp expression and then entering a minibuffer initialized with the text for that expression. Even if you don't know Lisp, it will probably be obvious which command is displayed for repetition. If you type just RET, that repeats the command unchanged. You can also change the command by editing the Lisp expression before you execute it. The executed command is added to the front of the command history unless it is identical to the most recent item.
+</p>
+
+<p>
+Once inside the minibuffer for C-x ESC ESC, you can use the usual minibuffer history commands (see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>) to move through the history list. After finding the desired previous command, you can edit its expression as usual and then execute it by typing RET.
+</p>
+
+<p>
+Incremental search does not, strictly speaking, use the minibuffer. Therefore, although it behaves like a complex command, it normally does not appear in the history list for C-x ESC ESC. You can make incremental search commands appear in the history by setting <code>isearch-resume-in-command-history</code> to a non-<code>nil</code> value. See <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>.
+</p>
+
+<p>
+The list of previous minibuffer-using commands is stored as a Lisp list in the variable <code>command-history</code>. Each element is a Lisp expression that describes one command and its arguments. Lisp programs can re-execute a command by calling <code>eval</code> with the <code>command-history</code> element.
+</p>
+
+<hr />
+</div>
+</div>

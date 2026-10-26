@@ -1,0 +1,109 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Structure-Templates-1">1. 17.2 Structure Templates ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (162)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Structure-Templates"></a>
+Next: <a href="docs/org--Speed-Keys.html">Speed Keys</a>, Previous: <a href="docs/org--Completion.html">Completion</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Structure-Templates-1" class="outline-2">
+<h2 id="Structure-Templates-1"><span class="section-number-2">1.</span> 17.2 Structure Templates <a href="#Structure-Templates-1">¶</a></h2>
+<div class="outline-text-2" id="text-Structure-Templates-1">
+<p>
+With just a few keystrokes, it is possible to insert empty structural blocks, such as ‘=#+BEGIN<sub>SRC</sub>=' &#x2026; ‘=#+END<sub>SRC</sub>=', or to wrap existing text in such a block.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dinsert_002dstructure_002dtemplate"></a>C-c C-, (<code>org-insert-structure-template</code>) </dt><dd>Prompt for a type of block structure, and insert the block at point. If the region is active, it is wrapped in the block. First prompts the user for keys, which are used to look up a structure type from the variable below. If the key is TAB, RET, or SPC, the user is prompted to enter a block type.</dd>
+</dl>
+
+<p>
+Available structure types are defined in <code>org-structure-template-alist</code>, see the docstring for adding or changing values.
+</p>
+
+<p>
+Org Tempo expands snippets to structures defined in <code>org-structure-template-alist</code> and <code>org-tempo-keywords-alist</code>. For example, &lt; s TAB creates a code block. Enable it by customizing <code>org-modules</code> or add ‘=(require 'org-tempo)=' to your Emacs init file.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">a</td>
+<td class="org-left">‘=#+BEGIN<sub>EXPORT</sub> ascii=' &#x2026; ‘=#+END<sub>EXPORT</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">c</td>
+<td class="org-left">‘=#+BEGIN<sub>CENTER</sub>=' &#x2026; ‘=#+END<sub>CENTER</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">C</td>
+<td class="org-left">‘=#+BEGIN<sub>COMMENT</sub>=' &#x2026; ‘=#+END<sub>COMMENT</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">e</td>
+<td class="org-left">‘=#+BEGIN<sub>EXAMPLE</sub>=' &#x2026; ‘=#+END<sub>EXAMPLE</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">E</td>
+<td class="org-left">‘=#+BEGIN<sub>EXPORT</sub>=' &#x2026; ‘=#+END<sub>EXPORT</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">h</td>
+<td class="org-left">‘=#+BEGIN<sub>EXPORT</sub> html=' &#x2026; ‘=#+END<sub>EXPORT</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">l</td>
+<td class="org-left">‘=#+BEGIN<sub>EXPORT</sub> latex=' &#x2026; ‘=#+END<sub>EXPORT</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">q</td>
+<td class="org-left">‘=#+BEGIN<sub>QUOTE</sub>=' &#x2026; ‘=#+END<sub>QUOTE</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">s</td>
+<td class="org-left">‘=#+BEGIN<sub>SRC</sub>=' &#x2026; ‘=#+END<sub>SRC</sub>='</td>
+</tr>
+
+<tr>
+<td class="org-left">v</td>
+<td class="org-left">‘=#+BEGIN<sub>VERSE</sub>=' &#x2026; ‘=#+END<sub>VERSE</sub>='</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Exporting-1">1. 13 Exporting ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Exporting"></a>
+Next: <a href="docs/org--Publishing.html">Publishing</a>, Previous: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>, Up: <a href="docs/org--index.html">The Org Manual</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Exporting-1" class="outline-2">
+<h2 id="Exporting-1"><span class="section-number-2">1.</span> 13 Exporting <a href="#Exporting-1">¶</a></h2>
+<div class="outline-text-2" id="text-Exporting-1">
+<p>
+At some point you might want to print your notes, publish them on the web, or share them with people not using Org. Org can convert and export documents to a variety of other formats while retaining as much structure (see <a href="docs/org--Document-Structure.html">Document Structure</a>) and markup (see <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>) as possible.
+</p>
+
+<p>
+The libraries responsible for translating Org files to other formats are called <i>backends</i>. Org ships with support for the following backends:
+</p>
+
+<ul class="org-ul">
+<li><i>ascii</i> (ASCII format)</li>
+<li><i>beamer</i> (LaTeX Beamer format)</li>
+<li><i>html</i> (HTML format)</li>
+<li><i>icalendar</i> (iCalendar format)</li>
+<li><i>latex</i> (LaTeX format)</li>
+<li><i>md</i> (Markdown format)</li>
+<li><i>odt</i> (OpenDocument Text format)</li>
+<li><i>org</i> (Org format)</li>
+<li><i>texinfo</i> (Texinfo format)</li>
+<li><i>man</i> (Man page format)</li>
+</ul>
+
+<p>
+Users can install libraries for additional formats from the Emacs packaging system. For easy discovery, these packages have a common naming scheme: <code>ox-NAME</code>, where <code>NAME</code> is a format. For example, <code>ox-koma-letter</code> for <i>koma-letter</i> backend. More libraries can be found in the ‘=org-contrib=' repository (see <a href="docs/org--Installation.html">Installation</a>).
+</p>
+
+<p>
+Org only loads backends for the following formats by default: ASCII, HTML, iCalendar, LaTeX, and ODT. Additional backends can be loaded in either of two ways: by configuring the <code>org-export-backends</code> variable, or by requiring libraries in the Emacs init file. For example, to load the Markdown backend, add this to your Emacs config:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(require 'ox-md)
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="docs/org--The-Export-Dispatcher.html">The Export Dispatcher</a></li>
+<li><a href="docs/org--Export-Settings.html">Export Settings</a></li>
+<li><a href="docs/org--Table-of-Contents.html">Table of Contents</a></li>
+<li><a href="docs/org--Include-Files.html">Include Files</a></li>
+<li><a href="docs/org--Macro-Replacement.html">Macro Replacement</a></li>
+<li><a href="docs/org--Comment-Lines.html">Comment Lines</a></li>
+<li><a href="docs/org--ASCII_002fLatin_002d1_002fUTF_002d8-export.html">ASCII/Latin-1/UTF-8 export</a></li>
+<li><a href="docs/org--Beamer-Export.html">Beamer Export</a></li>
+<li><a href="docs/org--HTML-Export.html">HTML Export</a></li>
+<li><a href="docs/org--LaTeX-Export.html">LaTeX Export</a></li>
+<li><a href="docs/org--Markdown-Export.html">Markdown Export</a></li>
+<li><a href="docs/org--OpenDocument-Text-Export.html">OpenDocument Text Export</a></li>
+<li><a href="docs/org--Org-Export.html">Org Export</a></li>
+<li><a href="docs/org--Texinfo-Export.html">Texinfo Export</a></li>
+<li><a href="docs/org--iCalendar-Export.html">iCalendar Export</a></li>
+<li><a href="docs/org--Other-Built_002din-Backends.html">Other Built-in Backends</a></li>
+<li><a href="docs/org--Advanced-Export-Configuration.html">Advanced Export Configuration</a></li>
+<li><a href="docs/org--Export-Region.html">Export Region</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Publishing.html">Publishing</a>, Previous: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>, Up: <a href="docs/org--index.html">The Org Manual</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keyboard-Usage-on-MS_002dDOS">1. I.12.1 Keyboard Usage on MS-DOS ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--MS_002dDOS-Mouse.html">Mouse Usage on MS-DOS</a>   Up: <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>
+</p>
+
+<p>
+<a id="MS_002dDOS-Keyboard"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keyboard-Usage-on-MS_002dDOS" class="outline-2">
+<h2 id="Keyboard-Usage-on-MS_002dDOS"><span class="section-number-2">1.</span> I.12.1 Keyboard Usage on MS-DOS <a href="#Keyboard-Usage-on-MS_002dDOS">¶</a></h2>
+<div class="outline-text-2" id="text-Keyboard-Usage-on-MS_002dDOS">
+<p>
+The key that is called DEL in Emacs (because that's how it is designated on most workstations) is known as BS (backspace) on a PC. That is why the PC-specific terminal initialization remaps the BS key to act as DEL; the Delete key is remapped to act as C-d for the same reasons.
+</p>
+
+<p>
+Emacs built for MS-DOS recognizes C-Break as a quit character, just like C-g. This is because Emacs cannot detect that you have typed C-g until it is ready for more input. As a consequence, you cannot use C-g to stop a running command (see <a href="docs/emacs--Quitting.html">Quitting and Aborting</a>). By contrast, C-Break <i>is</i> detected as soon as you type it (as C-g is on other systems), so it can be used to stop a running command and for emergency escape (see <a href="docs/emacs--Emergency-Escape.html">Emergency Escape</a>).
+</p>
+
+<p>
+The PC keyboard maps use the left Alt key as the Meta key. You have two choices for emulating the SUPER and Hyper keys: choose either the right Ctrl key or the right Alt key by setting the variables <code>dos-hyper-key</code> and <code>dos-super-key</code> to 1 or 2 respectively. If neither <code>dos-super-key</code> nor <code>dos-hyper-key</code> is 1, then by default the right Alt key is also mapped to the Meta key. However, if the MS-DOS international keyboard support program <code>KEYB.COM</code> is installed, Emacs will <i>not</i> map the right Alt to Meta, since it is used for accessing characters like ~ and @ on non-US keyboard layouts; in this case, you may only use the left Alt as Meta key.
+</p>
+
+<p>
+The variable <code>dos-keypad-mode</code> is a flag variable that controls what key codes are returned by keys in the numeric keypad. You can also define the keypad ENTER key to act like C-j, by putting the following line into your <code>_emacs</code> file:
+</p>
+
+<pre class="example" id="org2d99bd4">
+;; Make the ENTER key from the numeric keypad act as C-j.
+(keymap-set function-key-map "&lt;kp-enter&gt;" "C-j")
+</pre>
+
+<hr />
+</div>
+</div>

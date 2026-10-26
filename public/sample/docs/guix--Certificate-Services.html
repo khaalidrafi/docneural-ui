@@ -1,0 +1,210 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Certificate-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--DNS-Services.html">DNS Services</a>, Previous: <a href="docs/guix--High-Availability-Services.html">High Availability Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Certificate-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="certificate-services"></a>11.10.22 Certificate Services<br />
+<div class="outline-text-5" id="text-certificate-services">
+<p>
+<a id="index-Web"></a> <a id="index-HTTP_002c-HTTPS"></a> <a id="index-Let_0027s-Encrypt"></a> <a id="index-TLS-certificates"></a>
+The <code>(gnu services certbot)</code> module provides a service to automatically obtain a valid TLS certificate from the Let's Encrypt certificate authority. These certificates can then be used to serve content securely over HTTPS or other TLS-based protocols, with the knowledge that the client will be able to verify the server's authenticity.
+</p>
+
+<p>
+<a href="https://letsencrypt.org/">Let's Encrypt</a> provides the <code>certbot</code> tool to automate the certification process. This tool first securely generates a key on the server. It then makes a request to the Let's Encrypt certificate authority (CA) to sign the key. The CA checks that the request originates from the host in question by using a challenge-response protocol, requiring the server to provide its response over HTTP. If that protocol completes successfully, the CA signs the key, resulting in a certificate. That certificate is valid for a limited period of time, and therefore to continue to provide TLS services, the server needs to periodically ask the CA to renew its signature.
+</p>
+
+<p>
+The certbot service automates this process: the initial key generation, the initial certification request to the Let's Encrypt service, the web server challenge/response integration, writing the certificate to disk, the automated periodic renewals, and the deployment tasks associated with the renewal (e.g. reloading services, copying keys with different permissions).
+</p>
+
+<p>
+Certbot is run twice a day, at a random minute within the hour. It won't do anything until your certificates are due for renewal or revoked, but running it regularly would give your service a chance of staying online in case a Let's Encrypt-initiated revocation happened for some reason.
+</p>
+
+<p>
+By using this service, you agree to the ACME Subscriber Agreement, which can be found there: <a href="https://acme-v02.api.letsencrypt.org/directory">https://acme-v02.api.letsencrypt.org/directory</a>.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: certbot-service-type </dt><dd><p>
+A service type for the <code>certbot</code> Let's Encrypt client. Its value must be a <code>certbot-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service certbot-service-type
+         (certbot-configuration
+          (email "foo@example.net")
+          (certificates
+           (list
+            (certificate-configuration
+             (domains '("example.net" "www.example.net")))
+            (certificate-configuration
+             (domains '("bar.example.net")))))))
+</pre>
+</div>
+
+<p>
+See below for details about <code>certbot-configuration</code>.
+</p></dd>
+
+<dt>Data Type: certbot-configuration </dt><dd>Data type representing the configuration of the <code>certbot</code> service. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>certbot</code>)</dt><dd>The certbot package to use.</dd>
+
+<dt><code>webroot</code> (default: <code>/var/www</code>)</dt><dd>The directory from which to serve the Let's Encrypt challenge/response files.</dd>
+
+<dt><code>certificates</code> (default: <code>'()</code>)</dt><dd>A list of <code>certificates-configuration=s for which to generate certificates and request signatures. Each certificate has a =name</code> and several <code>domains</code>.</dd>
+
+<dt><code>email</code> (default: <code>#f</code>)</dt><dd>Optional email address used for registration and recovery contact. Setting this is encouraged as it allows you to receive important notifications about the account and issued certificates.</dd>
+
+<dt><code>server</code> (default: <code>#f</code>)</dt><dd>Optional URL of ACME server. Setting this overrides certbot's default, which is the Let's Encrypt server.</dd>
+
+<dt><code>rsa-key-size</code> (default: <code>2048</code>)</dt><dd>Size of the RSA key.</dd>
+
+<dt><code>default-location</code> (default: <i>see below</i>)</dt><dd><p>
+The default <code>nginx-location-configuration</code>. Because <code>certbot</code> needs to be able to serve challenges and responses, it needs to be able to run a web server. It does so by extending the <code>nginx</code> web service with an <code>nginx-server-configuration</code> listening on the <code>domains</code> on port 80, and which has a <code>nginx-location-configuration</code> for the <code>/.well-known/</code> URI path subspace used by Let's Encrypt. See <a href="docs/guix--Web-Services.html">Web Services</a>, for more on these nginx configuration data types.
+</p>
+
+<p>
+Requests to other URL paths will be matched by the <code>default-location</code>, which if present is added to all =nginx-server-configuration=s.
+</p>
+
+<p>
+By default, the <code>default-location</code> will issue a redirect from <code>http://==domain==/...</code> to <code>https://==domain==/...</code>, leaving you to define what to serve on your site via <code>https</code>.
+</p>
+
+<p>
+Pass <code>#f</code> to not issue a default location.
+</p></dd>
+</dl></dd>
+
+<dt>Data Type: certificate-configuration </dt><dd>Data type representing the configuration of a certificate. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <i>see below</i>)</dt><dd><p>
+This name is used by Certbot for housekeeping and in file paths; it doesn't affect the content of the certificate itself. To see certificate names, run <code>certbot certificates</code>.
+</p>
+
+<p>
+Its default is the first provided domain.
+</p></dd>
+
+<dt><code>domains</code> (default: <code>'()</code>)</dt><dd>The first domain provided will be the subject CN of the certificate, and all domains will be Subject Alternative Names on the certificate.</dd>
+
+<dt><code>challenge</code> (default: <code>#f</code>)</dt><dd>The challenge type that has to be run by certbot. If <code>#f</code> is specified, default to the HTTP challenge. If a value is specified, defaults to the manual plugin (see <code>authentication-hook</code>, <code>cleanup-hook</code> and the documentation at <a href="https://certbot.eff.org/docs/using.html#hooks">https://certbot.eff.org/docs/using.html#hooks</a>), and gives Let's Encrypt permission to log the public IP address of the requesting machine.</dd>
+
+<dt><code>csr</code> (default: <code>#f</code>)</dt><dd>File name of Certificate Signing Request (CSR) in DER or PEM format. If <code>#f</code> is specified, this argument will not be passed to certbot. If a value is specified, certbot will use it to obtain a certificate, instead of using a self-generated CSR. The domain-name(s) mentioned in <code>domains</code>, must be consistent with the domain-name(s) mentioned in CSR file.</dd>
+
+<dt><code>authentication-hook</code> (default: <code>#f</code>)</dt><dd>Command to be run in a shell once for each certificate challenge to be answered. For this command, the shell variable <code>$CERTBOT_DOMAIN</code> will contain the domain being authenticated, <code>$CERTBOT_VALIDATION</code> contains the validation string and <code>$CERTBOT_TOKEN</code> contains the file name of the resource requested when performing an HTTP-01 challenge.</dd>
+
+<dt><code>cleanup-hook</code> (default: <code>#f</code>)</dt><dd>Command to be run in a shell once for each certificate challenge that have been answered by the <code>authentication-hook</code>. For this command, the shell variables available in the <code>authentication-hook</code> script are still available, and additionally <code>$CERTBOT_AUTH_OUTPUT</code> will contain the standard output of the <code>authentication-hook</code> script.</dd>
+
+<dt><code>deploy-hook</code> (default: <code>#f</code>)</dt><dd>Command to be run in a shell once for each successfully issued certificate. For this command, the shell variable <code>$RENEWED_LINEAGE</code> will point to the config live subdirectory (for example, ‘="/etc/letsencrypt/live/example.com"<code>') containing the new certificates and keys; the shell variable =$RENEWED_DOMAINS</code> will contain a space-delimited list of renewed certificate domains (for example, ‘="example.com www.example.com"='.</dd>
+
+<dt><code>dry-run?</code> (default: <code>#f</code>)</dt><dd><p>
+Communicate with the ACME server but do not update certificates nor trigger <code>deploy-hook</code>. This is useful as a temporary setting to test the challenge procedure, especially the <code>authentication-hook</code> and <code>cleanup-hook</code> while working on them. It's also a good idea to use the Let's Encrypt staging server at <a href="https://acme-staging-v02.api.letsencrypt.org/directory">https://acme-staging-v02.api.letsencrypt.org/directory</a> while testing, which allows for higher rate limits, but with which <code>certbot</code> will helpfully refuse to update certificates and recommend the <code>dry-run?</code> option. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define %authentication-hook
+  (program-file "authentication-hook"
+    #~(let ((domain (getenv "CERTBOT_DOMAIN"))
+            (token (getenv "CERTBOT_TOKEN")))
+        (format #t "Hey, can you authenticate ~a with ~a for me?"
+                domain token))))
+
+(define %cleanup-hook
+  (program-file "authentication-hook"
+    #~(display "Bye")))
+
+(service certbot-service-type
+         (certbot-configuration
+          (server "https://acme-staging-v02.api.letsencrypt.org/directory")
+          (certificates
+           (list
+            (certificate-configuration
+              (dry-run? #t)
+              (authentication-hook %authentication-hook)
+              (cleanup-hook %cleanup-hook)
+              (domains '("example.net" "www.example.net")))))))
+</pre>
+</div></dd>
+
+<dt><code>start-self-signed?</code> (default: <code>#t</code>)</dt><dd>Whether to generate an initial self-signed certificate during system activation. This option is particularly useful to allow <code>nginx</code> to start before <code>certbot</code> has run, because <code>certbot</code> relies on <code>nginx</code> running to perform HTTP challenges.</dd>
+</dl></dd>
+</dl>
+
+<p>
+For each <code>certificate-configuration</code>, the certificate is saved to <code>/etc/certs/==name==/fullchain.pem</code> and the key is saved to <code>/etc/certs/==name==/privkey.pem</code>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--DNS-Services.html">DNS Services</a>, Previous: <a href="docs/guix--High-Availability-Services.html">High Availability Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

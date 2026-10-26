@@ -33,8 +33,12 @@ export class DocneuralStore {
   base: string
 
   /** Extra-lite tier (org-roam-lite-ui's): no canvas, no filters, reader
-   *  only. Set from ?lite=1 or low deviceMemory; components check this
-   *  BEFORE touching GraphView so the force-graph chunk is never fetched. */
+   *  only. Explicit opt-in ONLY — the `lite` prop, ?lite=1, or the FULL/FAST
+   *  header toggle. There is no deviceMemory auto-downgrade: it silently
+   *  removed the SYNAPSES tab on low-memory Android phones, which is where
+   *  the graph view was wanted most. Components check this BEFORE touching
+   *  GraphView so a requested lite session never fetches the force-graph
+   *  chunk. */
   lite: boolean
 
   data = $state<GraphData>({ nodes: [], links: [] })

@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Images-in-HTML-export-1">1. 13.9.10 Images in HTML export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Images-in-HTML-export"></a>
+Next: <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>, Previous: <a href="docs/org--Tables-in-HTML-export.html">Tables in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Images-in-HTML-export-1" class="outline-2">
+<h2 id="Images-in-HTML-export-1"><span class="section-number-2">1.</span> 13.9.10 Images in HTML export <a href="#Images-in-HTML-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Images-in-HTML-export-1">
+<p>
+The HTML export backend has features to convert Org image links to HTML inline images and HTML clickable image links.
+</p>
+
+<p>
+When the link in the Org file has no description, the HTML export backend by default in-lines that image. For example: ‘=<img src="myimg.jpg" alt="myimg.jpg" />=' is in-lined, while ‘=<a href="myimg.jpg">the image</a>=' links to the text, ‘=the image='. For more details, see the variable <code>org-html-inline-images</code>.
+</p>
+
+<p>
+On the other hand, if the description part of the Org link is itself another link, such as ‘=file:=' or ‘=https:=' URL pointing to an image (the exact rule is defined in <code>org-html-inline-image-rules</code>), the HTML export backend in-lines this image and links to the main image. This Org syntax enables the backend to link low-resolution thumbnail to the high-resolution version of the image, as shown in this example:
+</p>
+
+<pre class="example" id="orgeb8514f">
+[[file:highres.jpg][file:thumb.jpg]]
+</pre>
+
+<p>
+To change attributes of in-lined images, use ‘=#+ATTR<sub>HTML</sub>=' lines in the Org file. This example shows realignment to right, and adds <code>alt</code> and <code>title</code> attributes in support of text viewers and modern web accessibility standards.
+</p>
+
+<pre class="example" id="orgf4f78fc">
+#+CAPTION: A black cat stalking a spider
+#+ATTR_HTML: :alt cat/spider image :title Action! :align right
+[[./img/a.jpg]]
+</pre>
+
+<p>
+The HTML export backend copies the ‘=http=' links from the Org file as-is.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>, Previous: <a href="docs/org--Tables-in-HTML-export.html">Tables in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

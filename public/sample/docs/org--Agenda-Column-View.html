@@ -1,0 +1,56 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-Column-View-in-the-Agenda">1. 11.8 Using Column View in the Agenda ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Agenda-Column-View"></a>
+Previous: <a href="docs/org--Exporting-Agenda-Views.html">Exporting Agenda Views</a>, Up: <a href="docs/org--Agenda-Views.html">Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Using-Column-View-in-the-Agenda" class="outline-2">
+<h2 id="Using-Column-View-in-the-Agenda"><span class="section-number-2">1.</span> 11.8 Using Column View in the Agenda <a href="#Using-Column-View-in-the-Agenda">¶</a></h2>
+<div class="outline-text-2" id="text-Using-Column-View-in-the-Agenda">
+<p>
+Column view (see <a href="docs/org--Column-View.html">Column View</a>) is normally used to view and edit properties embedded in the hierarchical structure of an Org file. It can be quite useful to use column view also from the agenda, where entries are collected by certain criteria.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002dc-2"></a>C-c C-x C-c (<code>org-agenda-columns</code>) </dt><dd>Turn on column view in the agenda.</dd>
+</dl>
+
+<p>
+To understand how to use this properly, it is important to realize that the entries in the agenda are no longer in their proper outline environment. This causes the following issues:
+</p>
+
+<ol class="org-ol">
+<li>Org needs to make a decision which columns format to use. Since the entries in the agenda are collected from different files, and different files may have different columns formats, this is a non-trivial problem. Org first checks if <code>org-overriding-columns-format</code> is currently set, and if so, takes the format from there. You should set this variable only in the <i>local settings section</i> of a custom agenda command (see <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>) to make it valid for that specific agenda view. If no such binding exists, it checks, in sequence, <code>org-columns-default-format-for-agenda</code>, the format associated with the first item in the agenda (through a property or a ‘=#+COLUMNS=' setting in that buffer) and finally <code>org-columns-default-format</code>.</li>
+
+<li><p>
+If any of the columns has a summary type defined (see <a href="docs/org--Column-attributes.html">Column attributes</a>), turning on column view in the agenda visits all relevant agenda files and make sure that the computations of this property are up-to-date. This is also true for the special ‘=CLOCKSUM=' property. Org then sums the values displayed in the agenda. In the daily/weekly agenda, the sums cover a single day; in all other views they cover the entire block.
+</p>
+
+<p>
+It is important to realize that the agenda may show the same entry <i>twice</i>&#x2014;for example as scheduled and as a deadline&#x2014;and it may show two entries from the same hierarchy (for example a <i>parent</i> and its <i>child</i>). In these cases, the summation in the agenda leads to incorrect results because some values count double.
+</p></li>
+
+<li>When the column view in the agenda shows the ‘=CLOCKSUM=' property, that is always the entire clocked time for this item. So even in the daily/weekly agenda, the clocksum listed in column view may originate from times outside the current view. This has the advantage that you can compare these values with a column listing the planned total effort for a task&#x2014;one of the major applications for column view in the agenda. If you want information about clocked time in the displayed period use clock table mode (press R in the agenda).</li>
+
+<li>When the column view in the agenda shows the ‘=CLOCKSUM<sub>T</sub>=' property, that is always today's clocked time for this item. So even in the weekly agenda, the clocksum listed in column view only originates from today. This lets you compare the time you spent on a task for today, with the time already spent&#x2014;via ‘=CLOCKSUM='&#x2014;and with the planned total effort for it.</li>
+</ol>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Exporting-Agenda-Views.html">Exporting Agenda Views</a>, Up: <a href="docs/org--Agenda-Views.html">Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

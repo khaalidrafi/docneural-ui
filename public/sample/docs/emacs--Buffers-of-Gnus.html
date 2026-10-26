@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Gnus-Buffers">1. 36.1 Gnus Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Gnus-Startup.html">When Gnus Starts Up</a>   Up: <a href="docs/emacs--Gnus.html">Email and Usenet News with Gnus</a>
+</p>
+
+<p>
+<a id="Buffers-of-Gnus"></a>
+</p>
+
+<hr />
+<div id="outline-container-Gnus-Buffers" class="outline-2">
+<h2 id="Gnus-Buffers"><span class="section-number-2">1.</span> 36.1 Gnus Buffers <a href="#Gnus-Buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Gnus-Buffers">
+<p>
+Gnus uses several buffers to display information and to receive commands. The three most commonly-used Gnus buffers are the <i>group buffer</i>, the <i>summary buffer</i> and the <i>article buffer</i>.
+</p>
+
+<p>
+The <i>group buffer</i> contains a list of article sources (e.g., newsgroups and email inboxes), which are collectively referred to as <i>groups</i>. This is the first buffer Gnus displays when it starts up. It normally displays only the groups to which you subscribe and that contain unread articles. From this buffer, you can select a group to read.
+</p>
+
+<p>
+The <i>summary buffer</i> lists the articles in a single group, showing one article per line. By default, it displays each article's author, subject, and line number, but this is customizable; See <a href="../gnus_html/Summary-Buffer-Format.html#Summary-Buffer-Format">Summary Buffer Format</a> in The Gnus Manual. The summary buffer is created when you select a group in the group buffer, and is killed when you exit the group.
+</p>
+
+<p>
+From the summary buffer, you can choose an article to view. The article is displayed in the <i>article buffer</i>. In normal Gnus usage, you view this buffer but do not select it&#x2014;all useful Gnus commands can be invoked from the summary buffer. But you can select the article buffer, and execute Gnus commands from it, if you wish.
+</p>
+</div>
+</div>

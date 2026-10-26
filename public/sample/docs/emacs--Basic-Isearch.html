@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Basics-of-Incremental-Search">1. 17.1.1 Basics of Incremental Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Repeat-Isearch.html">Repeating Incremental Search</a>   Up: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>
+</p>
+
+<p>
+<a id="Basic-Isearch"></a>
+</p>
+
+<hr />
+<div id="outline-container-Basics-of-Incremental-Search" class="outline-2">
+<h2 id="Basics-of-Incremental-Search"><span class="section-number-2">1.</span> 17.1.1 Basics of Incremental Search <a href="#Basics-of-Incremental-Search">¶</a></h2>
+<div class="outline-text-2" id="text-Basics-of-Incremental-Search">
+<dl class="org-dl">
+<dt>C-s</dt><dd>Begin incremental search (<code>isearch-forward</code>).</dd>
+
+<dt>C-r</dt><dd>Begin reverse incremental search (<code>isearch-backward</code>).</dd>
+</dl>
+
+<p>
+C-s (<code>isearch-forward</code>) starts a forward incremental search. It reads characters from the keyboard, and moves point just past the end of the next occurrence of those characters in the buffer.
+</p>
+
+<p>
+For instance, if you type C-s and then F, that puts the cursor after the first ‘=F=' that occurs in the buffer after the starting point. If you then type O, the cursor moves to just after the first ‘=FO='; the ‘=F=' in that ‘=FO=' might not be the first ‘=F=' previously found. After another O, the cursor moves to just after the first ‘=FOO='.
+</p>
+
+<p>
+At each step, Emacs highlights the <i>current match</i>&#x2014;the buffer text that matches the search string&#x2014;using the <code>isearch</code> face (see <a href="docs/emacs--Faces.html">Text Faces</a>). See <a href="docs/emacs--Search-Customizations.html">Tailoring Search to Your Needs</a>, for various options that customize this highlighting. The current search string is also displayed in the echo area.
+</p>
+
+<p>
+If you make a mistake typing the search string, type DEL (<code>isearch-delete-char</code>). Each DEL cancels the last input item entered during the search. Emacs records a new <i>input item</i> whenever you type a command that changes the search string, the position of point, the success or failure of the search, the direction of the search, the position of the other end of the current search result, or the “wrappedness” of the search. See <a href="docs/emacs--Error-in-Isearch.html">Errors in Incremental Search</a>, for more about dealing with unsuccessful search.
+</p>
+
+<p>
+When you are satisfied with the place you have reached, type RET (<code>isearch-exit</code>). This stops searching, leaving the cursor where the search brought it. Also, any command not specially meaningful in searches stops the searching and is then executed. Thus, typing C-a exits the search and then moves to the beginning of the line; typing one of the arrow keys exits the search and performs the respective movement command; etc. RET is necessary only if the next command you want to type is a printing character, DEL, RET, or another character that is special within searches (C-q, C-w, C-r, C-s, C-y, M-y, M-r, M-c, M-e, and some others described below). You can fine-tune the commands that exit the search; see <a href="docs/emacs--Not-Exiting-Isearch.html">Not Exiting Incremental Search</a>.
+</p>
+
+<p>
+As a special exception, entering RET when the search string is empty launches nonincremental search (see <a href="docs/emacs--Nonincremental-Search.html">Nonincremental Search</a>). (This can be customized; see <a href="docs/emacs--Search-Customizations.html">Tailoring Search to Your Needs</a>.)
+</p>
+
+<p>
+To abandon the search and return to the place where you started, type ESC ESC ESC (<code>isearch-cancel</code>) or C-g C-g (<code>isearch-abort</code>).
+</p>
+
+<p>
+When you exit the incremental search, it adds the original value of point to the mark ring, without activating the mark; you can thus use C-u C-SPC or C-x C-x to return to where you were before beginning the search. See <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>. (Emacs only does this if the mark was not already active; if the mark was active when you started the search, both C-u C-SPC and C-x C-x will go to the mark.)
+</p>
+
+<p>
+To search backwards, use C-r (<code>isearch-backward</code>) instead of C-s to start the search. A backward search finds matches that end before the starting point, just as a forward search finds matches that begin after it.
+</p>
+
+<hr />
+</div>
+</div>

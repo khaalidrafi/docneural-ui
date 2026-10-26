@@ -1,0 +1,262 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#operating-system-reference">1.0.1. 11.3 <code>operating-system</code> Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="operating_002dsystem-Reference"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--File-Systems.html">File Systems</a>, Previous: <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="operating_002dsystem-Reference-1"></a>
+</p>
+</div>
+<div id="outline-container-operating-system-reference" class="outline-4">
+<h4 id="operating-system-reference"><span class="section-number-4">1.0.1.</span> 11.3 <code>operating-system</code> Reference</h4>
+<div class="outline-text-4" id="text-operating-system-reference">
+<p>
+This section summarizes all the options available in <code>operating-system</code> declarations (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>).
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: operating-system </dt><dd>This is the data type representing an operating system configuration. By that, we mean all the global system configuration, not per-user configuration (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>).
+
+<dl class="org-dl">
+<dt><code>kernel</code> (default: <code>linux-libre</code>)</dt><dd><p>
+The package object of the operating system kernel to use.
+</p>
+
+<p>
+<a id="index-hurd"></a>
+</p></dd>
+
+<dt><code>hurd</code> (default: <code>#f</code>)</dt><dd><p>
+The package object of the Hurd to be started by the kernel. When this field is set, produce a GNU/Hurd operating system. In that case, <code>kernel</code> must also be set to the <code>gnumach</code> package&#x2014;the microkernel the Hurd runs on.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> This feature is experimental and only supported for disk images.
+</p>
+</blockquote></dd>
+
+<dt><code>kernel-loadable-modules</code> (default: '())</dt><dd>A list of objects (usually packages) to collect loadable kernel modules from&#x2013;e.g. <code>(list ddcci-driver-linux)</code>.</dd>
+
+<dt><code>kernel-arguments</code> (default: <code>%default-kernel-arguments</code>)</dt><dd>List of strings or gexps representing additional arguments to pass on the command-line of the kernel&#x2014;e.g., <code>("console=ttyS0")</code>.</dd>
+
+<dt><code>bootloader</code></dt><dd>The system bootloader configuration object. See <a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a>.</dd>
+
+<dt><code>label</code></dt><dd>This is the label (a string) as it appears in the bootloader's menu entry. The default label includes the kernel name and version.</dd>
+
+<dt><code>keyboard-layout</code> (default: <code>#f</code>)</dt><dd><p>
+This field specifies the keyboard layout to use in the console. It can be either <code>#f</code>, in which case the default keyboard layout is used (usually US English), or a <code>&lt;keyboard-layout&gt;</code> record. See <a href="docs/guix--Keyboard-Layout.html">Keyboard Layout</a>, for more information.
+</p>
+
+<p>
+This keyboard layout is in effect as soon as the kernel has booted. For instance, it is the keyboard layout in effect when you type a passphrase if your root file system is on a <code>luks-device-mapping</code> mapped device (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> This does <i>not</i> specify the keyboard layout used by the bootloader, nor that used by the graphical display server. See <a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a>, for information on how to specify the bootloader's keyboard layout. See <a href="docs/guix--X-Window.html">X Window</a>, for information on how to specify the keyboard layout used by the X Window System.
+</p>
+</blockquote></dd>
+
+<dt><code>initrd-modules</code> (default: <code>%base-initrd-modules</code>) </dt><dd><p>
+<a id="index-initial-RAM-disk"></a>
+</p>
+
+<p>
+The list of Linux kernel modules that need to be available in the initial RAM disk. See <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>.
+</p></dd>
+
+<dt><code>initrd</code> (default: <code>base-initrd</code>)</dt><dd>A procedure that returns an initial RAM disk for the Linux kernel. This field is provided to support low-level customization and should rarely be needed for casual use. See <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>.</dd>
+
+<dt><code>firmware</code> (default: <code>%base-firmware</code>) </dt><dd><p>
+List of firmware packages loadable by the operating system kernel.
+</p>
+
+<p>
+The default includes firmware needed for Atheros- and Broadcom-based WiFi devices (Linux-libre modules <code>ath9k</code> and <code>b43-open</code>, respectively). See <a href="docs/guix--Hardware-Considerations.html">Hardware Considerations</a>, for more info on supported hardware.
+</p></dd>
+
+<dt><code>host-name</code></dt><dd>The host name.</dd>
+
+<dt><code>mapped-devices</code> (default: <code>'()</code>)</dt><dd>A list of mapped devices. See <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>.</dd>
+
+<dt><code>file-systems</code></dt><dd>A list of file systems. See <a href="docs/guix--File-Systems.html">File Systems</a>.</dd>
+
+<dt><code>swap-devices</code> (default: <code>'()</code>) </dt><dd>A list of swap spaces. See <a href="docs/guix--Swap-Space.html">Swap Space</a>.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>users</code> (default: <code>%base-user-accounts</code>)<br />
+<code>groups</code> (default: <code>%base-groups</code>) :: List of user accounts and groups. See <a href="docs/guix--User-Accounts.html">User Accounts</a>.
+</p>
+
+<p>
+If the <code>users</code> list lacks a user account with UID 0, a “root” account with UID 0 is automatically added.
+</p></dd>
+
+<dt><code>skeletons</code> (default: <code>(default-skeletons)</code>)</dt><dd><p>
+A list of target file name/file-like object tuples (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>). These are the skeleton files that will be added to the home directory of newly-created user accounts.
+</p>
+
+<p>
+For instance, a valid value may look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`((".bashrc" ,(plain-file "bashrc" "echo Hello\n"))
+  (".guile" ,(plain-file "guile"
+                         "(use-modules (ice-9 readline))
+                          (activate-readline)")))
+</pre>
+</div></dd>
+
+<dt><code>issue</code> (default: <code>%default-issue</code>)</dt><dd>A string denoting the contents of the <code>/etc/issue</code> file, which is displayed when users log in on a text console.</dd>
+
+<dt><code>packages</code> (default: <code>%base-packages</code>)</dt><dd><p>
+A list of packages to be installed in the global profile, which is accessible at <code>/run/current-system/profile</code>. Each element is either a package variable or a package/output tuple. Here's a simple example of both:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(cons* git                     ; the default "out" output
+       (list git "send-email") ; another output of git
+       %base-packages)         ; the default set
+</pre>
+</div>
+
+<p>
+The default set includes core utilities and it is good practice to install non-core utilities in user profiles (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p></dd>
+
+<dt><code>timezone</code> (default: <code>"Etc/UTC"</code>)</dt><dd><p>
+A timezone identifying string&#x2014;e.g., <code>"Europe/Paris"</code>.
+</p>
+
+<p>
+You can run the <code>tzselect</code> command to find out which timezone string corresponds to your region. Choosing an invalid timezone name causes <code>guix system</code> to fail.
+</p></dd>
+
+<dt><code>locale</code> (default: <code>"en_US.utf8"</code>)</dt><dd>The name of the default locale (see <a href="https://www.gnu.org/software/libc/manual/html_node/Locale-Names.html#Locale-Names">Locale Names</a> in The GNU C Library Reference Manual). See <a href="docs/guix--Locales.html">Locales</a>, for more information.</dd>
+
+<dt><code>locale-definitions</code> (default: <code>%default-locale-definitions</code>)</dt><dd>The list of locale definitions to be compiled and that may be used at run time. See <a href="docs/guix--Locales.html">Locales</a>.</dd>
+
+<dt><code>locale-libcs</code> (default: <code>(list ==glibc=</code>)=)</dt><dd>The list of GNU libc packages whose locale data and tools are used to build the locale definitions. See <a href="docs/guix--Locales.html">Locales</a>, for compatibility considerations that justify this option.</dd>
+
+<dt><code>name-service-switch</code> (default: <code>%default-nss</code>)</dt><dd>Configuration of the libc name service switch (NSS)&#x2014;a <code>&lt;name-service-switch&gt;</code> object. See <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a>, for details.</dd>
+
+<dt><code>services</code> (default: <code>%base-services</code>)</dt><dd><p>
+A list of service objects denoting system services. See <a href="docs/guix--Services.html">Services</a>.
+</p>
+
+<p>
+<a id="operating_002dsystem_002dessential_002dservices"></a><a id="index-essential-services"></a>
+</p></dd>
+
+<dt><code>essential-services</code> (default: &#x2026;)</dt><dd>The list of “essential services”&#x2014;i.e., things like instances of <code>system-service-type</code> (see <a href="docs/guix--Service-Reference.html">Service Reference</a>) and <code>host-name-service-type</code>, which are derived from the operating system definition itself. As a user you should <i>never</i> need to touch this field.</dd>
+
+<dt><code>pam-services</code> (default: <code>(base-pam-services)</code>) </dt><dd><p>
+<a id="index-pluggable-authentication-modules"></a>
+</p>
+
+<p>
+Linux <i>pluggable authentication module</i> (PAM) services.
+</p></dd>
+
+<dt><code>privileged-programs</code> (default: <code>%default-privileged-programs</code>)</dt><dd>List of <code>&lt;privileged-program&gt;</code>. See <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>, for more information.</dd>
+
+<dt><code>sudoers-file</code> (default: <code>%sudoers-specification</code>) </dt><dd><p>
+The contents of the <code>/etc/sudoers</code> file as a file-like object (see <a href="docs/guix--G_002dExpressions.html"><code>local-file</code> and <code>plain-file</code></a>).
+</p>
+
+<p>
+This file specifies which users can use the <code>sudo</code> command, what they are allowed to do, and what privileges they may gain. The default is that only <code>root</code> and members of the <code>wheel</code> group may use <code>sudo</code>.
+</p></dd>
+
+<dt>Macro: this-operating-system </dt><dd><p>
+When used in the <i>lexical scope</i> of an operating system field definition, this identifier resolves to the operating system being defined.
+</p>
+
+<p>
+The example below shows how to refer to the operating system being defined in the definition of the <code>label</code> field:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu) (guix))
+
+(operating-system
+  ;; ...
+  (label (package-full-name
+          (operating-system-kernel this-operating-system))))
+</pre>
+</div>
+
+<p>
+It is an error to refer to <code>this-operating-system</code> outside an operating system definition.
+</p></dd>
+</dl></dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

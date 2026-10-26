@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Rmail-Attributes-1">1. 35.9 Rmail Attributes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Reply.html">Sending Replies</a>   Previous: <a href="docs/emacs--Rmail-Labels.html">Labels</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Attributes"></a>
+</p>
+
+<hr />
+<div id="outline-container-Rmail-Attributes-1" class="outline-2">
+<h2 id="Rmail-Attributes-1"><span class="section-number-2">1.</span> 35.9 Rmail Attributes <a href="#Rmail-Attributes-1">¶</a></h2>
+<div class="outline-text-2" id="text-Rmail-Attributes-1">
+<p>
+Some labels such as ‘=deleted=' and ‘=filed=' have built-in meanings, and Rmail assigns them to messages automatically at appropriate times; these labels are called <i>attributes</i>. Here is a list of Rmail attributes:
+</p>
+
+<dl class="org-dl">
+<dt>‘=unseen='</dt><dd>Means the message has never been current. Assigned to messages when they come from an inbox file, and removed when a message is made current. When you start Rmail, it initially shows the first message that has this attribute.</dd>
+
+<dt>‘=deleted='</dt><dd>Means the message is deleted. Assigned by deletion commands and removed by undeletion commands (see <a href="docs/emacs--Rmail-Deletion.html">Deleting Messages</a>).</dd>
+
+<dt>‘=filed='</dt><dd>Means the message has been copied to some other file. Assigned by the o and C-o file output commands (see <a href="docs/emacs--Rmail-Output.html">Copying Messages Out to Files</a>).</dd>
+
+<dt>‘=answered='</dt><dd>Means you have mailed an answer to the message. Assigned by the r command (<code>rmail-reply</code>). See <a href="docs/emacs--Rmail-Reply.html">Sending Replies</a>.</dd>
+
+<dt>‘=forwarded='</dt><dd>Means you have forwarded the message. Assigned by the f command (<code>rmail-forward</code>). See <a href="docs/emacs--Rmail-Reply.html">Sending Replies</a>.</dd>
+
+<dt>‘=edited='</dt><dd>Means you have edited the text of the message within Rmail. See <a href="docs/emacs--Rmail-Editing.html">Editing Within a Message</a>.</dd>
+
+<dt>‘=resent='</dt><dd>Means you have resent the message. Assigned by the command M-x rmail-resend. See <a href="docs/emacs--Rmail-Reply.html">Sending Replies</a>.</dd>
+
+<dt>‘=retried='</dt><dd>Means you have retried a failed outgoing message. Assigned by the command M-x rmail-retry-failure. See <a href="docs/emacs--Rmail-Reply.html">Sending Replies</a>.</dd>
+</dl>
+
+<p>
+All other labels are assigned or removed only by users, and have no standard meaning.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mail_002dComposition-Methods">1. 34.7 Mail-Composition Methods ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Mail-Amusements.html">Mail Amusements</a>   Up: <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>
+</p>
+
+<p>
+<a id="Mail-Methods"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mail_002dComposition-Methods" class="outline-2">
+<h2 id="Mail_002dComposition-Methods"><span class="section-number-2">1.</span> 34.7 Mail-Composition Methods <a href="#Mail_002dComposition-Methods">¶</a></h2>
+<div class="outline-text-2" id="text-Mail_002dComposition-Methods">
+<p>
+In this chapter we have described the usual Emacs mode for editing and sending mail&#x2014;Message mode. This is only one of several available modes. Prior to Emacs 23.2, the default mode was Mail mode, which is similar to Message mode in many respects but is less feature-rich; for example, it supports only basic MIME: it allows you to add attachments, but lacks more sophisticated MIME features. Another available mode is MH-E (see <a href="../mh-e_html/index.html#Top">MH-E</a> in The Emacs Interface to MH).
+</p>
+
+<p>
+You can choose any of these <i>mail user agents</i> as your preferred method for editing and sending mail. The commands C-x m, C-x 4 m and C-x 5 m use whichever agent you have specified; so do various other parts of Emacs that send mail, such as the bug reporter (see <a href="docs/emacs--Bugs.html">Reporting Bugs</a>). To specify a mail user agent, customize the variable <code>mail-user-agent</code>. Currently, legitimate values include <code>message-user-agent</code> (Message mode) <code>sendmail-user-agent</code> (Mail mode), <code>gnus-user-agent</code>, and <code>mh-e-user-agent</code>. Additional options may be available; check in the manual of your mail user agent package for details. You may also define another mail user agent using <code>define-mail-user-agent</code>.
+</p>
+
+<p>
+If you select a different mail-composition method, the information in this chapter about the mail buffer and Message mode does not apply; the other methods use a different format of text in a different buffer, and their commands are different as well.
+</p>
+
+<p>
+Similarly, to specify your preferred method for reading mail, customize the variable <code>read-mail-command</code>. The default is <code>rmail</code> (see <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>).
+</p>
+
+<hr />
+</div>
+</div>

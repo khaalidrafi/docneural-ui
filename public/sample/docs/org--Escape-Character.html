@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Escape-Character-1">1. 17.12 Escape Character ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Escape-Character"></a>
+Next: <a href="docs/org--Code-Evaluation-Security.html">Code Evaluation and Security Issues</a>, Previous: <a href="docs/org--Documentation-Access.html">Context Dependent Documentation</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Escape-Character-1" class="outline-2">
+<h2 id="Escape-Character-1"><span class="section-number-2">1.</span> 17.12 Escape Character <a href="#Escape-Character-1">¶</a></h2>
+<div class="outline-text-2" id="text-Escape-Character-1">
+<p>
+You may sometimes want to write text that looks like Org syntax, but should really read as plain text. Org may use a specific escape character in some situations, i.e., a backslash in macros (see <a href="docs/org--Macro-Replacement.html">Macro Replacement</a>) and links (see <a href="docs/org--Link-Format.html">Link Format</a>), or a comma in source and example blocks (see <a href="docs/org--Literal-Examples.html">Literal Examples</a>). In the general case, however, we suggest using the zero width space. You can insert one with any of the following:
+</p>
+
+<pre class="example" id="org872f024">
+C-x 8 &lt;RET&gt; zero width space &lt;RET&gt;
+C-x 8 &lt;RET&gt; 200B &lt;RET&gt;
+</pre>
+
+<p>
+For example, in order to write ‘==' as-is in your document, you may write instead
+</p>
+
+<pre class="example" id="orgbdbed87">
+[X[1,2]]
+</pre>
+
+<p>
+where ‘=X=' denotes the zero width space character.
+</p>
+</div>
+</div>

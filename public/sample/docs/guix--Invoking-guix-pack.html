@@ -1,0 +1,516 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-pack">1.0.1. 7.3 Invoking <code>guix pack</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-pack"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--The-GCC-toolchain.html">The GCC toolchain</a>, Previous: <a href="docs/guix--Invoking-guix-environment.html">Invoking <code>guix environment</code></a>, Up: <a href="docs/guix--Development.html">Development</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-pack-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-pack" class="outline-4">
+<h4 id="invoking-guix-pack"><span class="section-number-4">1.0.1.</span> 7.3 Invoking <code>guix pack</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-pack">
+<p>
+<a id="index-guix-pack"></a>
+Occasionally you want to pass software to people who are not (yet!) lucky enough to be using Guix. You'd tell them to run <code>guix package -i ==something</code>, but that's not possible in this case. This is where <code>guix pack</code> comes in.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> If you are looking for ways to exchange binaries among machines that already run Guix, see <a href="docs/guix--Invoking-guix-copy.html">Invoking <code>guix copy</code></a>, <a href="docs/guix--Invoking-guix-publish.html">Invoking <code>guix publish</code></a>, and <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>.
+</p>
+</blockquote>
+
+<p>
+<a id="index-pack"></a> <a id="index-bundle"></a> <a id="index-application-bundle"></a> <a id="index-software-bundle"></a>
+The <code>guix pack</code> command creates a shrink-wrapped <i>pack</i> or <i>software bundle</i>: it creates a tarball or some other archive containing the binaries of the software you're interested in, and all its dependencies. The resulting archive can be used on any machine that does not have Guix, and people can run the exact same binaries as those you have with Guix. The pack itself is created in a bit-reproducible fashion, so anyone can verify that it really contains the build results that you pretend to be shipping.
+</p>
+
+<p>
+For example, to create a bundle containing Guile, Emacs, Geiser, and all their dependencies, you can run:
+</p>
+
+<pre class="example" id="org278d37d">
+$ guix pack guile emacs emacs-geiser
+…
+/gnu/store/…-pack.tar.gz
+</pre>
+
+<p>
+The result here is a tarball containing a <code>/gnu/store</code> directory with all the relevant packages. The resulting tarball contains a <i>profile</i> with the three packages of interest; the profile is the same as would be created by <code>guix package -i</code>. It is this mechanism that is used to create Guix's own standalone binary tarball (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>).
+</p>
+
+<p>
+Users of this pack would have to run <code>/gnu/store/…-profile/bin/guile</code> to run Guile, which you may find inconvenient. To work around it, you can create, say, a <code>/opt/gnu/bin</code> symlink to the profile:
+</p>
+
+<pre class="example" id="org7059842">
+guix pack -S /opt/gnu/bin=bin guile emacs emacs-geiser
+</pre>
+
+<p>
+That way, users can happily type <code>/opt/gnu/bin/guile</code> and enjoy.
+</p>
+
+<p>
+<a id="index-relocatable-binaries_002c-with-guix-pack"></a>
+What if the recipient of your pack does not have root privileges on their machine, and thus cannot unpack it in the root file system? In that case, you will want to use the <code>--relocatable</code> option (see below). This option produces <i>relocatable binaries</i>, meaning they can be placed anywhere in the file system hierarchy: in the example above, users can unpack your tarball in their home directory and directly run <code>./opt/gnu/bin/guile</code>.
+</p>
+
+<p>
+<a id="index-Docker_002c-build-an-image-with-guix-pack"></a>
+Alternatively, you can produce a pack in the Docker image format using the following command:
+</p>
+
+<pre class="example" id="org0855f7f">
+guix pack -f docker -S /bin=bin guile guile-readline
+</pre>
+
+<p>
+The result is a tarball that can be passed to the <code>docker load</code> command, followed by <code>docker run</code>:
+</p>
+
+<pre class="example" id="orgd476f19">
+docker load &lt; file
+docker run -ti guile-guile-readline /bin/guile
+</pre>
+
+<p>
+where <code>file</code> is the image returned by <code>guix pack</code>, and <code>guile-guile-readline</code> is its “image tag”. See the <a href="https://docs.docker.com/engine/reference/commandline/load/">Docker documentation</a> for more information.
+</p>
+
+<p>
+<a id="index-Singularity_002c-build-an-image-with-guix-pack"></a> <a id="index-SquashFS_002c-build-an-image-with-guix-pack"></a>
+Yet another option is to produce a SquashFS image with the following command:
+</p>
+
+<pre class="example" id="org21fecbe">
+guix pack -f squashfs bash guile emacs emacs-geiser
+</pre>
+
+<p>
+The result is a SquashFS file system image that can either be mounted or directly be used as a file system container image with the <a href="https://www.sylabs.io/docs/">Singularity container execution environment</a>, using commands like <code>singularity shell</code> or <code>singularity exec</code>.
+</p>
+
+<p>
+<a id="index-AppImage_002c-create-an-AppImage-file-with-guix-pack"></a>
+Another format internally based on SquashFS is <a href="https://appimage.org/">AppImage</a>. An AppImage file can be created and executed without any special privileges:
+</p>
+
+<pre class="example" id="orgabbcc8c">
+file=$(guix pack -f appimage --entry-point=bin/guile guile)
+$file --help
+</pre>
+
+<p>
+Several command-line options allow you to customize your pack:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>--format===format</code><br />
+<code>-f ==format</code> :: Produce a pack in the given <code>format</code>.
+</p>
+
+<p>
+The available formats are:
+</p>
+
+<dl class="org-dl">
+<dt><code>tarball</code></dt><dd>This is the default format. It produces a tarball containing all the specified binaries and symlinks.</dd>
+
+<dt><code>docker</code></dt><dd>This produces a tarball that follows the <a href="https://github.com/docker/docker/blob/master/image/spec/v1.2.md">Docker Image Specification</a>. By default, the “repository name” as it appears in the output of the <code>docker images</code> command is computed from package names passed on the command line or in the manifest file. Alternatively, the “repository name” can also be configured via the <code>--image-tag</code> option. Refer to <code>--help-docker-format</code> for more information on such advanced options.</dd>
+
+<dt><code>squashfs</code></dt><dd><p>
+This produces a SquashFS image containing all the specified binaries and symlinks, as well as empty mount points for virtual file systems like procfs.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Singularity <i>requires</i> you to provide <code>/bin/sh</code> in the image. For that reason, <code>guix pack -f squashfs</code> always implies <code>-S /bin=bin</code>. Thus, your <code>guix pack</code> invocation must always start with something like:
+</p>
+
+<pre class="example" id="orgfdcdff6">
+guix pack -f squashfs bash …
+</pre>
+
+<p>
+If you forget the <code>bash</code> (or similar) package, <code>singularity run</code> and <code>singularity exec</code> will fail with an unhelpful “no such file or directory” message.
+</p>
+</blockquote></dd>
+
+<dt><code>deb</code> </dt><dd><p>
+This produces a Debian archive (a package with the ‘=.deb=' file extension) containing all the specified binaries and symbolic links, that can be installed on top of any dpkg-based GNU(/Linux) distribution. Advanced options can be revealed via the <code>--help-deb-format</code> option. They allow embedding control files for more fine-grained control, such as activating specific triggers or providing a maintainer configure script to run arbitrary setup code upon installation.
+</p>
+
+<pre class="example" id="org97aa069">
+guix pack -f deb -C xz -S /usr/bin/hello=bin/hello hello
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> Because archives produced with <code>guix pack</code> contain a collection of store items and because each <code>dpkg</code> package must not have conflicting files, in practice that means you likely won't be able to install more than one such archive on a given system. You can nonetheless pack as many Guix packages as you want in one such archive.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Warning:</b> <code>dpkg</code> will assume ownership of any files contained in the pack that it does <i>not</i> know about. It is unwise to install Guix-produced ‘=.deb=' files on a system where <code>/gnu/store</code> is shared by other software, such as a Guix installation or other, non-deb packs.
+</p>
+</blockquote></dd>
+
+<dt><code>rpm</code> </dt><dd><p>
+This produces an RPM archive (a package with the ‘=.rpm=' file extension) containing all the specified binaries and symbolic links, that can be installed on top of any RPM-based GNU/Linux distribution. The RPM format embeds checksums for every file it contains, which the <code>rpm</code> command uses to validate the integrity of the archive.
+</p>
+
+<p>
+Advanced RPM-related options are revealed via the <code>--help-rpm-format</code> option. These options allow embedding maintainer scripts that can run before or after the installation of the RPM archive, for example.
+</p>
+
+<p>
+The RPM format supports relocatable packages via the <code>--prefix</code> option of the <code>rpm</code> command, which can be handy to install an RPM package to a specific prefix.
+</p>
+
+<pre class="example" id="orgdd165f3">
+guix pack -f rpm -R -C xz -S /usr/bin/hello=bin/hello hello
+</pre>
+
+<pre class="example" id="orge29d239">
+sudo rpm --install --prefix=/opt /gnu/store/...-hello.rpm
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> Contrary to Debian packages, conflicting but <i>identical</i> files in RPM packages can be installed simultaneously, which means multiple <code>guix pack</code>-produced RPM packages can usually be installed side by side without any problem.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Warning:</b> <code>rpm</code> assumes ownership of any files contained in the pack, which means it will remove <code>/gnu/store</code> upon uninstalling a Guix-generated RPM package, unless the RPM package was installed with the <code>--prefix</code> option of the <code>rpm</code> command. It is unwise to install Guix-produced ‘=.rpm=' packages on a system where <code>/gnu/store</code> is shared by other software, such as a Guix installation or other, non-rpm packs.
+</p>
+</blockquote></dd>
+
+<dt><code>appimage</code> </dt><dd><p>
+This produces an <a href="https://appimage.org/">AppImage file</a> with the ‘=.AppImage=' extension. AppImage is a SquashFS volume prefixed with a runtime that mounts the SquashFS file system and executes the binary provided with <code>--entry-point</code>. This results in a self-contained archive that bundles the software and all its requirements into a single file. When the file is made executable it runs the packaged software.
+</p>
+
+<pre class="example" id="org38075cd">
+guix pack -f appimage --entry-point=bin/vlc vlc
+</pre>
+
+<p>
+The runtime used by AppImages invokes the <code>fusermount3</code> command to mount the image quickly. If that command is unavailable, the AppImage fails to run, but it can still be started by passing the <code>--appimage-extract-and-run</code> flag.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> When building an AppImage, always <i>pass</i> the <code>--relocatable</code> option (or <code>-R</code>, or <code>-RR</code>) to make sure the image can be used on systems where Guix is not installed. A warning is printed when this option is not used.
+</p>
+</blockquote>
+
+<pre class="example" id="org60602fe">
+guix pack -f appimage --entry-point=bin/hello --relocatable hello
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> The resulting AppImage does not conform to the complete standard as it currently does not contain a <code>.DirIcon</code> file. This does not impact functionality of the AppImage itself, but possibly that of software used to manage AppImages.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Note:</b> As the generated AppImage packages the complete dependency graph, it will be larger than comparable AppImage files found online, which depend on host system libraries.
+</p>
+</blockquote></dd>
+</dl>
+
+<p>
+<a id="index-relocatable-binaries"></a>
+</p></li>
+
+<li><p>
+<code>--relocatable</code><br />
+<code>-R</code> :: Produce <i>relocatable binaries</i>&#x2014;i.e., binaries that can be placed anywhere in the file system hierarchy and run from there.
+</p>
+
+<p>
+When this option is passed once, the resulting binaries require support for <i>user namespaces</i> in the kernel Linux; when passed <i>twice</i>, relocatable binaries fall to back to other techniques if user namespaces are unavailable, and essentially work anywhere&#x2014;see below for the implications.
+</p>
+
+<p>
+For example, if you create a pack containing Bash with:
+</p>
+
+<pre class="example" id="org61f97be">
+guix pack -RR -S /mybin=bin bash
+</pre>
+
+<p>
+&#x2026; you can copy that pack to a machine that lacks Guix, and from your home directory as a normal user, run:
+</p>
+
+<pre class="example" id="org176e103">
+tar xf pack.tar.gz
+./mybin/sh
+</pre>
+
+<p>
+In that shell, if you type <code>ls /gnu/store</code>, you'll notice that <code>/gnu/store</code> shows up and contains all the dependencies of <code>bash</code>, even though the machine actually lacks <code>/gnu/store</code> altogether! That is probably the simplest way to deploy Guix-built software on a non-Guix machine.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> By default, relocatable binaries rely on the <i>user namespace</i> feature of the kernel Linux, which allows unprivileged users to mount or change root. Old versions of Linux did not support it, and some GNU/Linux distributions turn it off.
+</p>
+
+<p>
+To produce relocatable binaries that work even in the absence of user namespaces, pass <code>--relocatable</code> or <code>-R</code> <i>twice</i>. In that case, binaries will try user namespace support and fall back to another <i>execution engine</i> if user namespaces are not supported. The following execution engines are supported:
+</p>
+
+<dl class="org-dl">
+<dt><code>default</code></dt><dd>Try user namespaces and fall back to PRoot if user namespaces are not supported (see below).</dd>
+
+<dt><code>performance</code></dt><dd>Try user namespaces and fall back to Fakechroot if user namespaces are not supported (see below).</dd>
+
+<dt><code>userns</code></dt><dd>Run the program through user namespaces and abort if they are not supported.</dd>
+
+<dt><code>proot</code></dt><dd>Run through PRoot. The <a href="https://proot-me.github.io/">PRoot</a> program provides the necessary support for file system virtualization. It achieves that by using the <code>ptrace</code> system call on the running program. This approach has the advantage to work without requiring special kernel support, but it incurs run-time overhead every time a system call is made.</dd>
+
+<dt><code>fakechroot</code></dt><dd>Run through Fakechroot. <a href="https://github.com/dex4er/fakechroot/">Fakechroot</a> virtualizes file system accesses by intercepting calls to C library functions such as <code>open</code>, <code>stat</code>, <code>exec</code>, and so on. Unlike PRoot, it incurs very little overhead. However, it does not always work: for example, some file system accesses made from within the C library are not intercepted, and file system accesses made <i>via</i> direct syscalls are not intercepted either, leading to erratic behavior.</dd>
+</dl>
+
+<p>
+<a id="index-GUIX_005fEXECUTION_005fENGINE"></a>
+</p>
+
+<p>
+When running a wrapped program, you can explicitly request one of the execution engines listed above by setting the <code>GUIX_EXECUTION_ENGINE</code> environment variable accordingly.
+</p>
+</blockquote>
+
+<p>
+<a id="index-entry-point_002c-for-Docker-and-Singularity-images"></a>
+</p></li>
+
+<li id="<code>--entry-point===command</code>"><p>
+Use <code>command</code> as the <i>entry point</i> of the resulting pack, if the pack format supports it&#x2014;currently <code>docker</code>, <code>appimage</code>, and <code>squashfs</code> (Singularity) support it. <code>command</code> must be relative to the profile contained in the pack.
+</p>
+
+<p>
+The entry point specifies the command that tools like <code>docker run</code> or <code>singularity run</code> automatically start by default. For example, you can do:
+</p>
+
+<pre class="example" id="org6d4aee4">
+guix pack -f docker --entry-point=bin/guile guile
+</pre>
+
+<p>
+The resulting pack can easily be loaded and <code>docker run</code> with no extra arguments will spawn <code>bin/guile</code>:
+</p>
+
+<pre class="example" id="org09041fb">
+docker load -i pack.tar.gz
+docker run image-id
+</pre>
+
+<p>
+<a id="index-entry-point-arguments_002c-for-docker-images"></a>
+</p></li>
+
+<li><p>
+<code>--entry-point-argument===command</code><br />
+<code>-A ==command</code> :: Use <code>command</code> as an argument to <i>entry point</i> of the resulting pack. This option is only valid in conjunction with <code>--entry-point</code> and can appear multiple times on the command line.
+</p>
+
+<pre class="example" id="org7f1bd06">
+guix pack -f docker --entry-point=bin/guile --entry-point-argument="--help" guile
+</pre>
+
+<p>
+<a id="index-maximum-layers-argument_002c-for-docker-images"></a>
+</p></li>
+
+<li id="<code>--max-layers===n</code>"><p>
+Specifies the maximum number of Docker image layers allowed when building an image.
+</p>
+
+<pre class="example" id="orgdce324f">
+guix pack -f docker --max-layers=100 guile
+</pre>
+
+<p>
+This option allows you to limit the number of layers in a Docker image. Docker images are comprised of multiple layers, and each layer adds to the overall size and complexity of the image. By setting a maximum number of layers, you can control the following effects:
+</p>
+
+<ul class="org-ul">
+<li>Disk Usage: Increasing the number of layers can help optimize the disk space required to store multiple images built with a similar package graph.</li>
+<li>Pulling: When transferring images between different nodes or systems, having more layers can reduce the time required to pull the image.</li>
+</ul></li>
+
+<li><p>
+<code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Consider the package <code>expr</code> evaluates to.
+</p>
+
+<p>
+This has the same purpose as the same-named option in <code>guix build</code> (see <a href="docs/guix--Additional-Build-Options.html"><code>--expression</code> in <code>guix build</code></a>).
+</p></li>
+
+<li id="<code>--file===file</code>"><p>
+Build a pack containing the package or other object the code within <code>file</code> evaluates to.
+</p>
+
+<p>
+This has the same purpose as the same-named option in <code>guix build</code> (see <a href="docs/guix--Additional-Build-Options.html"><code>--file</code> in <code>guix build</code></a>), but it has no shorthand, because <code>-f</code> already means <code>--format</code>.
+</p>
+
+<p>
+<a id="pack_002dmanifest"></a>
+</p></li>
+
+<li><p>
+<code>--manifest===file</code><br />
+<code>-m ==file</code> :: Use the packages contained in the manifest object returned by the Scheme code in <code>file</code>. This option can be repeated several times, in which case the manifests are concatenated.
+</p>
+
+<p>
+This has a similar purpose as the same-named option in <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html#profile_002dmanifest"><code>--manifest</code></a>) and uses the same manifest files. It allows you to define a collection of packages once and use it both for creating profiles and for creating archives for use on machines that do not have Guix installed. Note that you can specify <i>either</i> a manifest file <i>or</i> a list of packages, but not both.
+</p>
+
+<p>
+See <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>, for information on how to write a manifest. See <a href="docs/guix--Invoking-guix-shell.html#shell_002dexport_002dmanifest"><code>guix shell --export-manifest</code></a>, for information on how to “convert” command-line options into a manifest.
+</p></li>
+
+<li><code>--system===system</code><br />
+<code>-s ==system</code> :: Attempt to build for <code>system</code>&#x2014;e.g., <code>i686-linux</code>&#x2014;instead of the system type of the build host.</li>
+
+<li id="<code>--target===triplet</code> ">Cross-build for <code>triplet</code>, which must be a valid GNU triplet, such as <code>"aarch64-linux-gnu"</code> (see <a href="https://www.gnu.org/software/autoconf/manual/html_node/Specifying-target-triplets.html#Specifying-target-triplets">GNU configuration triplets</a> in Autoconf).</li>
+
+<li><p>
+<code>--compression===tool</code><br />
+<code>-C ==tool</code> :: Compress the resulting tarball using <code>tool</code>&#x2014;one of <code>gzip</code>, <code>zstd</code>, <code>bzip2</code>, <code>xz</code>, <code>lzip</code>, or <code>none</code> for no compression.
+</p>
+
+<p>
+<a id="pack_002dsymlink_002doption"></a>
+</p></li>
+
+<li><p>
+<code>--symlink===spec</code><br />
+<code>-S ==spec</code> :: Add the symlinks specified by <code>spec</code> to the pack. This option can appear several times.
+</p>
+
+<p>
+<code>spec</code> has the form <code>source=====target</code>, where <code>source</code> is the symlink that will be created and <code>target</code> is the symlink target.
+</p>
+
+<p>
+For instance, <code>-S /opt/gnu/bin=bin</code> creates a <code>/opt/gnu/bin</code> symlink pointing to the <code>bin</code> sub-directory of the profile.
+</p></li>
+
+<li id="<code>--save-provenance</code>"><p>
+Save provenance information for the packages passed on the command line. Provenance information includes the URL and commit of the channels in use (see <a href="docs/guix--Channels.html">Channels</a>).
+</p>
+
+<p>
+Provenance information is saved in the <code>/gnu/store/…-profile/manifest</code> file in the pack, along with the usual package metadata&#x2014;the name and version of each package, their propagated inputs, and so on. It is useful information to the recipient of the pack, who then knows how the pack was (supposedly) obtained.
+</p>
+
+<p>
+This option is not enabled by default because, like timestamps, provenance information contributes nothing to the build process. In other words, there is an infinity of channel URLs and commit IDs that can lead to the same pack. Recording such “silent” metadata in the output thus potentially breaks the source-to-binary bitwise reproducibility property.
+</p></li>
+
+<li><code>--root===file</code> <br />
+<code>-r ==file</code> :: Make <code>file</code> a symlink to the resulting pack, and register it as a garbage collector root.</li>
+
+<li><p>
+<code>--localstatedir</code><br />
+<code>--profile-name===name</code> :: Include the “local state directory”, <code>/var/guix</code>, in the resulting pack, and notably the <code>/var/guix/profiles/per-user/root/==name</code> profile&#x2014;by default <code>name</code> is <code>guix-profile</code>, which corresponds to <code>~root/.guix-profile</code>.
+</p>
+
+<p>
+<code>/var/guix</code> contains the store database (see <a href="docs/guix--The-Store.html">The Store</a>) as well as garbage-collector roots (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>). Providing it in the pack means that the store is “complete” and manageable by Guix; not providing it in the pack means that the store is “dead”: items cannot be added to it or removed from it after extraction of the pack.
+</p>
+
+<p>
+One use case for this is the Guix self-contained binary tarball (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>).
+</p></li>
+
+<li><code>--derivation</code><br />
+<code>-d</code> :: Print the name of the derivation that builds the pack.</li>
+
+<li id="<code>--bootstrap</code>">Use the bootstrap binaries to build the pack. This option is only useful to Guix developers.</li>
+</ul>
+
+<p>
+In addition, <code>guix pack</code> supports all the common build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>) and all the package transformation options (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>).
+</p>
+
+<hr />
+</div>
+</div>
+</div>

@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Embedded-WebKit-Widgets-1">1. 48.2 Embedded WebKit Widgets ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Browse_002dURL.html">Following URLs</a>   Previous: <a href="docs/emacs--EWW.html">Web Browsing with EWW</a>   Up: <a href="docs/emacs--Hyperlinking.html">Hyperlinking and Web Navigation Features</a>
+</p>
+
+<p>
+<a id="Embedded-WebKit-Widgets"></a>
+</p>
+
+<hr />
+<div id="outline-container-Embedded-WebKit-Widgets-1" class="outline-2">
+<h2 id="Embedded-WebKit-Widgets-1"><span class="section-number-2">1.</span> 48.2 Embedded WebKit Widgets <a href="#Embedded-WebKit-Widgets-1">¶</a></h2>
+<div class="outline-text-2" id="text-Embedded-WebKit-Widgets-1">
+<p>
+If Emacs was compiled with the appropriate support packages, it is able to show browser widgets in its buffers. The command M-x xwidget-webkit-browse-url asks for a URL to display in the browser widget. The URL normally defaults to the URL at or before point, but if there is an active region (see <a href="docs/emacs--Mark.html">The Mark and the Region</a>), the default URL comes from the region instead, after removing any whitespace from it. The command then creates a new buffer with the embedded browser showing the specified URL. The buffer is put in the Xwidget-WebKit mode (similar to Image mode, see <a href="docs/emacs--Image-Mode.html">Viewing Image Files</a>), which provides one-key commands for scrolling the widget, changing its size, and reloading it. Type C-h b in that buffer to see the key bindings.
+</p>
+
+<p>
+By default, typing a self-inserting character inside an xwidget webkit buffer will do nothing, or trigger some special action. To make those characters and other common editing keys insert themselves when pressed, you can enable <code>xwidget-webkit-edit-mode</code>, which redefines them to be passed through to the WebKit xwidget.
+</p>
+
+<p>
+You can also enable <code>xwidget-webkit-edit-mode</code> by typing e inside the xwidget webkit buffer.
+</p>
+
+<p>
+<code>xwidget-webkit-isearch-mode</code> is a minor mode that behaves similarly to incremental search (see <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>), but operates on the contents of a WebKit widget instead of the current buffer. It is bound to C-s and C-r inside xwidget-webkit buffers. When it is invoked by C-r, the initial search will be performed in reverse direction.
+</p>
+
+<p>
+Typing any self-inserting character will cause the character to be inserted into the current search query. Typing C-s will cause the WebKit widget to display the next search result, while typing C-r will cause it to display the previous one.
+</p>
+
+<p>
+To leave incremental search, you can type C-g.
+</p>
+
+<p>
+The command <code>xwidget-webkit-browse-history</code> displays a buffer containing a list of pages previously loaded by the current WebKit buffer, and lets you navigate to those pages by hitting RET.
+</p>
+
+<p>
+It is bound to H.
+</p>
+
+<p>
+JavaScript is enabled by default inside WebKit buffers, which could be undesirable, as Web sites often use it to track your online activity. You can disable JavaScript in WebKit buffers by customizing the variable <code>xwidget-webkit-disable-javascript</code> to a non-<code>nil</code> value. You must kill all WebKit buffers for this setting to take effect, after it is changed.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Moving-by-Sentences-1">1. 28.2.3 Moving by Sentences ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Imenu.html">Imenu</a>   Previous: <a href="docs/emacs--Moving-by-Defuns.html">Moving by Defuns</a>   Up: <a href="docs/emacs--Defuns.html">Top-Level Definitions, or Defuns</a>
+</p>
+
+<p>
+<a id="Moving-by-Sentences"></a>
+</p>
+
+<hr />
+<div id="outline-container-Moving-by-Sentences-1" class="outline-2">
+<h2 id="Moving-by-Sentences-1"><span class="section-number-2">1.</span> 28.2.3 Moving by Sentences <a href="#Moving-by-Sentences-1">¶</a></h2>
+<div class="outline-text-2" id="text-Moving-by-Sentences-1">
+<p>
+These commands move point or set up the region based on units of code, also called <i>sentences</i>. Even though sentences are usually considered when writing human languages, Emacs can use the same commands to move over certain constructs in programming languages (see <a href="docs/emacs--Sentences.html">Sentences</a>, see <a href="docs/emacs--Moving-by-Defuns.html">Moving by Defuns</a>). In a programming language a sentence is usually a complete language construct smaller than defuns, but larger than sexps (see <a href="../elisp_html/List-Motion.html#List-Motion">List Motion</a> in The Emacs Lisp Reference Manual). What exactly is a sentence in this case depends on the programming language, but usually it is a complete statement, such as a variable definition and initialization, or a conditional statement. An example of a sentence in the C language could be
+</p>
+
+<pre class="example" id="org6400ba1">
+int x = 5;
+</pre>
+
+<p>
+or in the JavaScript language it could look like
+</p>
+
+<pre class="example" id="org846d474">
+const thing = () =&gt; console.log("Hi");
+</pre>
+
+<pre class="example" id="org91066f6">
+const foo = [1] == '1'
+  ? "No way"
+  : "...";
+</pre>
+
+<pre class="example" id="org9b9ad95">
+
+</pre>
+
+<dl class="org-dl">
+<dt>M-a</dt><dd>Move to beginning of current or preceding sentence (<code>backward-sentence</code>).</dd>
+
+<dt>M-e</dt><dd>Move to end of current or following sentence (<code>forward-sentence</code>).</dd>
+</dl>
+
+<p>
+The commands to move to the beginning and end of the current sentence are M-a (<code>backward-sentence</code>) and M-e (<code>forward-sentence</code>). If you repeat one of these commands, or use a positive numeric argument, each repetition moves to the next sentence in the direction of motion.
+</p>
+
+<p>
+M-a with a negative argument −=n= moves forward <code>n</code> times to the next end of a sentence. Likewise, M-e with a negative argument moves back to the start of a sentence.
+</p>
+
+<hr />
+</div>
+</div>

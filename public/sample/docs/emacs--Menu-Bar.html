@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Menu-Bar">1. 1.4 The Menu Bar ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Mode-Line.html">The Mode Line</a>   Up: <a href="docs/emacs--Screen.html">The Organization of the Screen</a>
+</p>
+
+<p>
+<a id="Menu-Bar"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Menu-Bar" class="outline-2">
+<h2 id="The-Menu-Bar"><span class="section-number-2">1.</span> 1.4 The Menu Bar <a href="#The-Menu-Bar">¶</a></h2>
+<div class="outline-text-2" id="text-The-Menu-Bar">
+<p>
+Each Emacs frame normally has a <i>menu bar</i> at the top which you can use to perform common operations. There's no need to list them here, as you can more easily see them yourself.
+</p>
+
+<p>
+On a display that supports a mouse, you can use the mouse to choose a command from the menu bar. An arrow on the right edge of a menu item means it leads to a subsidiary menu, or <i>submenu</i>. A ‘=&#x2026;=' at the end of a menu item means that the command will prompt you for further input before it actually does anything.
+</p>
+
+<p>
+Some of the commands in the menu bar have ordinary key bindings as well; if so, a key binding is shown after the item itself. To view the full command name and documentation for a menu item, type C-h k, and then select the menu bar with the mouse in the usual way (see <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>).
+</p>
+
+<p>
+Instead of using the mouse, you can also invoke the first menu bar item by pressing F10 (to run the command <code>menu-bar-open</code>). You can then navigate the menus with the arrow keys or with C-b, C-f (left/right), C-p, and C-n (up/down). To activate a selected menu item, press RET; to cancel menu navigation, press C-g or ESC ESC ESC. (However, note that when Emacs was built with a GUI toolkit, the menus are drawn and controlled by the toolkit, and the key sequences to cancel menu navigation might be different from the above description.)
+</p>
+
+<p>
+On a text terminal, you can optionally access the menu-bar menus in the echo area. To this end, customize the variable <code>tty-menu-open-use-tmm</code> to a non-<code>nil</code> value. Then typing F10 will run the command <code>tmm-menubar</code> instead of dropping down the menu. (You can also type M-`, which always invokes <code>tmm-menubar</code>.) <code>tmm-menubar</code> lets you select a menu item with the keyboard. A provisional choice appears in the echo area. You can use the up and down arrow keys to move through the menu to different items, and then you can type RET to select the item. Each menu item is also designated by a letter or digit (usually the initial of some word in the item's name). This letter or digit is separated from the item name by ‘===&gt;='. You can type the item's letter or digit to select the item.
+</p>
+
+<hr />
+</div>
+</div>

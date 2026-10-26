@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Emacs-Lisp-Packages">1. 50 Emacs Lisp Packages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Customization.html">Customization</a>   Previous: <a href="docs/emacs--Amusements.html">Games and Other Amusements</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Packages"></a>
+</p>
+
+<hr />
+<div id="outline-container-Emacs-Lisp-Packages" class="outline-2">
+<h2 id="Emacs-Lisp-Packages"><span class="section-number-2">1.</span> 50 Emacs Lisp Packages <a href="#Emacs-Lisp-Packages">¶</a></h2>
+<div class="outline-text-2" id="text-Emacs-Lisp-Packages">
+<p>
+Emacs is extended by implementing additional features in <i>packages</i>, which are Emacs Lisp libraries. These could be written by you or provided by someone else. If you want to install such a package so it is available in your future Emacs session, you need to compile it and put it in a directory where Emacs looks for Lisp libraries. See <a href="docs/emacs--Lisp-Libraries.html">Libraries of Lisp Code for Emacs</a>, for more details about this manual installation method. Many packages provide installation and usage instructions in the large commentary near the beginning of the Lisp file; you can use those instructions for installing and fine-tuning your use of the package.
+</p>
+
+<p>
+Packages can also be provided by <i>package archives</i>, which are large collections of Emacs Lisp packages. Each package is a separate Emacs Lisp program, sometimes including other components such as an Info manual. Emacs includes a facility that lets you easily download and install packages from such archives. The rest of this chapter describes this facility.
+</p>
+
+<p>
+To list the packages available for installation from package archives, type M-x list-packages RET. It brings up a buffer named <code>*Packages*</code> with a list of all packages. You can install or uninstall packages via this buffer. See <a href="docs/emacs--Package-Menu.html">The Package Menu Buffer</a>.
+</p>
+
+<p>
+The command C-h P (<code>describe-package</code>) prompts for the name of a package, and displays a help buffer describing the attributes of the package and the features that it implements.
+</p>
+
+<p>
+By default, Emacs downloads packages from two archives: <a href="https://elpa.gnu.org/">GNU ELPA</a> and <a href="https://elpa.nongnu.org/">NonGNU ELPA</a>. These are maintained by the Emacs developers and hosted by the GNU project. Optionally, you can also download packages from third-party archives. See <a href="docs/emacs--Package-Installation.html">Package Installation</a>.
+</p>
+
+<p>
+For information about turning an Emacs Lisp program into an installable package, See <a href="../elisp_html/Packaging.html#Packaging">Packaging</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Package-Menu.html">The Package Menu Buffer</a></li>
+<li><a href="docs/emacs--Package-Statuses.html">Package Statuses</a></li>
+<li><a href="docs/emacs--Package-Installation.html">Package Installation</a></li>
+<li><a href="docs/emacs--Package-Files.html">Package Files and Directory Layout</a></li>
+<li><a href="docs/emacs--Fetching-Package-Sources.html">Fetching Package Sources</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

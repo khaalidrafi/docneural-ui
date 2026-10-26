@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Pages-1">1. 27.4 Pages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Quotation-Marks.html">Quotation Marks</a>   Previous: <a href="docs/emacs--Paragraphs.html">Paragraphs</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Pages"></a>
+</p>
+
+<hr />
+<div id="outline-container-Pages-1" class="outline-2">
+<h2 id="Pages-1"><span class="section-number-2">1.</span> 27.4 Pages <a href="#Pages-1">¶</a></h2>
+<div class="outline-text-2" id="text-Pages-1">
+<p>
+Within some text files, text is divided into <i>pages</i> delimited by the <i>formfeed character</i> (ASCII code 12, also denoted as ‘=control-L='), which is displayed in Emacs as the escape sequence ‘=<sup>L</sup>=' (see <a href="docs/emacs--Text-Display.html">How Text Is Displayed</a>). Traditionally, when such text files are printed to hardcopy, each formfeed character forces a page break. Most Emacs commands treat it just like any other character, so you can insert it with C-q C-l, delete it with DEL, etc. In addition, Emacs provides commands to move over pages and operate on them.
+</p>
+
+<dl class="org-dl">
+<dt>M-x what-page</dt><dd>Display the page number of point, and the line number within that page.</dd>
+
+<dt>C-x [</dt><dd>Move point to previous page boundary (<code>backward-page</code>).</dd>
+
+<dt>C-x ]</dt><dd>Move point to next page boundary (<code>forward-page</code>).</dd>
+
+<dt>C-x C-p</dt><dd>Put point and mark around this page (or another page) (<code>mark-page</code>).</dd>
+
+<dt>C-x l</dt><dd>Count the lines in this page (<code>count-lines-page</code>).</dd>
+</dl>
+
+<p>
+M-x what-page counts pages from the beginning of the file, and counts lines within the page, showing both numbers in the echo area.
+</p>
+
+<p>
+The C-x [ (<code>backward-page</code>) command moves point to immediately after the previous page delimiter. If point is already right after a page delimiter, it skips that one and stops at the previous one. A numeric argument serves as a repeat count. The C-x ] (<code>forward-page</code>) command moves forward past the next page delimiter.
+</p>
+
+<p>
+The C-x C-p command (<code>mark-page</code>) puts point at the beginning of the current page (after that page delimiter at the front), and the mark at the end of the page (after the page delimiter at the end).
+</p>
+
+<p>
+C-x C-p C-w is a handy way to kill a page to move it elsewhere. If you move to another page delimiter with C-x [ and C-x ], then yank the killed page, all the pages will be properly delimited once again. Making sure this works as expected is the reason C-x C-p includes only the following page delimiter in the region.
+</p>
+
+<p>
+A numeric argument to C-x C-p specifies which page to go to, relative to the current one. Zero means the current page, one means the next page, and −1 means the previous one.
+</p>
+
+<p>
+The C-x l command (<code>count-lines-page</code>) is good for deciding where to break a page in two. It displays in the echo area the total number of lines in the current page, and then divides it up into those preceding the current line and those following, as in
+</p>
+
+<pre class="example" id="org39cb059">
+Page has 96 (72+25) lines
+</pre>
+
+<p>
+Notice that the sum is off by one; this is correct if point is not at the beginning of a line.
+</p>
+
+<p>
+The variable <code>page-delimiter</code> controls where pages begin. Its value is a regular expression that matches the beginning of a line that separates pages (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). The normal value of this variable is <code>"^\f"</code>, which matches a formfeed character at the beginning of a line.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Previewing-LaTeX-fragments-1">1. 12.5.2 Previewing LaTeX fragments ¶</a>
+<ul>
+<li><a href="#section">1.1. (115)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Previewing-LaTeX-fragments"></a>
+Next: <a href="docs/org--CDLaTeX-mode.html">Using CDLaTeX to enter math</a>, Previous: <a href="docs/org--LaTeX-fragments.html">LaTeX fragments</a>, Up: <a href="docs/org--Embedded-LaTeX.html">Embedded LaTeX</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Previewing-LaTeX-fragments-1" class="outline-2">
+<h2 id="Previewing-LaTeX-fragments-1"><span class="section-number-2">1.</span> 12.5.2 Previewing LaTeX fragments <a href="#Previewing-LaTeX-fragments-1">¶</a></h2>
+<div class="outline-text-2" id="text-Previewing-LaTeX-fragments-1">
+<p>
+If you have a working LaTeX installation and ‘=dvipng=', ‘=dvisvgm=' or ‘=convert=' installed, LaTeX fragments can be processed to produce images of the typeset expressions to be used for inclusion while exporting to HTML (see <a href="docs/org--LaTeX-fragments.html">LaTeX fragments</a>), or for inline previewing within Org mode.
+</p>
+
+<p>
+You can customize the variables <code>org-format-latex-options</code> and <code>org-format-latex-header</code> to influence some aspects of the preview. In particular, the <code>:scale</code> (and for HTML export, <code>:html-scale</code>) property of the former can be used to adjust the size of the preview images.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002dl"></a>C-c C-x C-l (<code>org-latex-preview</code>) </dt><dd><p>
+Produce a preview image of the LaTeX fragment at point and overlay it over the source code. If there is no fragment at point, process all fragments in the current entry&#x2014;between two headlines.
+</p>
+
+<p>
+When called with a single prefix argument, clear all images in the current entry. Two prefix arguments produce a preview image for all fragments in the buffer, while three of them clear all the images in that buffer.
+</p></dd>
+</dl>
+
+<p>
+You can turn on the previewing of all LaTeX fragments in a file with
+</p>
+
+<pre class="example" id="orgd7d8f4d">
+#+STARTUP: latexpreview
+</pre>
+
+<p>
+To disable it, simply use
+</p>
+
+<pre class="example" id="org3d0e3fc">
+#+STARTUP: nolatexpreview
+</pre>
+
+<hr />
+</div>
+</div>

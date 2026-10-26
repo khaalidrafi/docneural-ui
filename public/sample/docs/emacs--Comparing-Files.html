@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Comparing-Files-1">1. 20.9 Comparing Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Diff-Mode.html">Diff Mode</a>   Previous: <a href="docs/emacs--Directories.html">File Directories</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Comparing-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Comparing-Files-1" class="outline-2">
+<h2 id="Comparing-Files-1"><span class="section-number-2">1.</span> 20.9 Comparing Files <a href="#Comparing-Files-1">¶</a></h2>
+<div class="outline-text-2" id="text-Comparing-Files-1">
+<p>
+The command M-x diff prompts for two file names, using the minibuffer, and displays the differences between the two files in a buffer named <code>*diff*</code>. This works by running the <code>diff</code> program, using options taken from the variable <code>diff-switches</code>. The value of <code>diff-switches</code> should be a string; the default is <code>"-u"</code> to specify a unified context diff. See <a href="../diffutils_html/index.html#Top">Diff</a> in Comparing and Merging Files, for more information about the <code>diff</code> program.
+</p>
+
+<p>
+The output of the <code>diff</code> command is shown using a major mode called Diff mode. See <a href="docs/emacs--Diff-Mode.html">Diff Mode</a>.
+</p>
+
+<p>
+A (much more sophisticated) alternative is M-x ediff (see <a href="../ediff_html/index.html#Top">Ediff</a> in The Ediff Manual).
+</p>
+
+<p>
+The command M-x diff-backup compares a specified file with its most recent backup. If you specify the name of a backup file, <code>diff-backup</code> compares it with the source file that it is a backup of. In all other respects, this behaves like M-x diff.
+</p>
+
+<p>
+The command M-x diff-buffer-with-file compares a specified buffer with its corresponding file. This shows you what changes you would make to the file if you save the buffer.
+</p>
+
+<p>
+The command M-x diff-buffers compares the contents of two specified buffers.
+</p>
+
+<p>
+The command M-x compare-windows compares the text in the current window with that in the window that was the selected window before you selected the current one. (For more information about windows in Emacs, see <a href="docs/emacs--Windows.html">Multiple Windows</a>.) Comparison starts at point in each window, after pushing each initial point value on the mark ring (see <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>) in its respective buffer. Then it moves point forward in each window, one character at a time, until it reaches characters that don't match. Then the command exits.
+</p>
+
+<p>
+If point in the two windows is followed by non-matching text when the command starts, M-x compare-windows tries heuristically to advance up to matching text in the two windows, and then exits. So if you use M-x compare-windows repeatedly (see <a href="docs/emacs--Repeating.html">Repeating a Command</a>), each time it either skips one matching range or finds the start of another.
+</p>
+
+<p>
+With a numeric argument, <code>compare-windows</code> ignores changes in whitespace. If the variable <code>compare-ignore-case</code> is non-<code>nil</code>, the comparison ignores differences in case as well. If the variable <code>compare-ignore-whitespace</code> is non-<code>nil</code>, <code>compare-windows</code> by default ignores changes in whitespace, but a prefix argument turns that off for that single invocation of the command.
+</p>
+
+<p>
+You can use M-x smerge-mode to turn on Smerge mode, a minor mode for editing output from the <code>diff3</code> program. This is typically the result of a failed merge from a version control system update outside VC, due to conflicting changes to a file. Smerge mode provides commands to resolve conflicts by selecting specific changes.
+</p>
+
+<p>
+See <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>, for the Emerge facility, which provides a powerful interface for merging files.
+</p>
+
+<hr />
+</div>
+</div>

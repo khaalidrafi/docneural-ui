@@ -1,0 +1,560 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Guix-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Linux-Services.html">Linux Services</a>, Previous: <a href="docs/guix--PAM-Mount-Service.html">PAM Mount Service</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Guix-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="guix-services"></a>11.10.35 Guix Services<br />
+<div class="outline-text-5" id="text-guix-services">
+<p>
+<a id="Shared-Cache-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="shared-cache-service"></a>Shared Cache Service<br />
+<div class="outline-text-5" id="text-shared-cache-service">
+<p>
+<a id="index-shared-cache"></a> <a id="index-cache_002c-sharing"></a>
+Running <code>guix pull</code>, <code>guix time-machine</code>, <code>guix system reconfigure</code>, and <code>guix home reconfigure</code> pulls the complete Git version control history of your channels in <code>$HOME/.cache/guix/checkouts</code>. If you have multiple user accounts (typically <code>root</code> and a main user account for your personal computer), or if multiple users are using the system (typically on a shared server), then this can quickly waste a lot of space.
+</p>
+
+<p>
+The <code>shared-cache</code> service lets you prevent this waste by either sharing or exposing a specific user's cache to the other users.
+</p>
+
+<p>
+In the context of this service, <i>sharing</i> and <i>exposing</i> have the same meaning as with <code>guix shell</code>: making the shared cache directory read-only if you use mode <code>'expose</code> (the default), and writable if you use mode <code>'share</code>, (see <a href="docs/guix--Invoking-guix-shell.html"><code>--expose</code> and <code>--share</code></a>).
+</p>
+
+<p>
+Whatever mode you choose, from the point of view of the user, the cache appears writable. With <code>'expose</code>, any write will be stored in a user-owned overlay directory next to mountpoint, whereas with <code>'share</code>, writes will be propagated back to the sharing user's cache.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> Use the <code>'share</code> option <i>if and only if</i> users on the machine trust each other. This is a hard requirement since, with this option, any user could “poison” the shared cache to indirectly gain access to other user's data and privileges.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Warning:</b> Using <code>'share</code> is meant for a single-seat computer where the single user has unprivileged user accounts&#x2014;e.g. one for work and one for gaming. Even then, channels from one will leak into the other's cache. Use with caution.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+<b>Warning:</b> <code>'share</code> will not work for multiple concurrent invocation of <code>guix</code>, e.g. if two user accounts run <code>guix time machine</code> at the same time, the results will be fun but not useful.
+</p>
+</blockquote>
+
+<p>
+Here is an example configuration that exposes <code>root</code>'s guix checkout cache to <code>alice</code> and <code>bob</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; …
+     (services
+      (cons*
+       (service shared-cache-service-type
+             (shared-cache-configuration
+               (users (list (user-cache (user "alice"))
+                            (user-cache (user "bob"))))))
+                    %desktop-services)))
+</pre>
+</div>
+
+<p>
+The service can also be extended by providing a list of <code>user-cache</code>, allowing for easier splitting of configuration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; …
+  (services
+   (cons*
+    (simple-service 'bob-shared-guix-cache shared-cache-service-type
+                    (list (user-cache (user "bob"))))
+    %desktop-services)))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: shared-cache-service-type </dt><dd><p>
+Service type for sharing a subdirectory of <code>~/.cache/</code> between multiple users.
+</p>
+
+<p>
+This service allows different system users to share the contents of the user cache, avoiding duplication and saving disk space. It can be configured in either “share” mode, where all users write to the same cache, or “expose” mode, where users get a read-only view with a writable overlay. Its value must be a <code>shared-cache-configuration</code> object.
+</p></dd>
+
+<dt>Data Type: shared-cache-configuration </dt><dd>Data type representing the configuration of the shared cache.
+
+<dl class="org-dl">
+<dt><code>mode</code> (default: <code>'expose</code>)</dt><dd>Either <code>'share</code> (read-write, dangerous) or <code>'expose</code> (read-only with per-user overlay, the default). In share mode, all writes go to the shared directory. In expose mode, only reads use the shared directory; writes go to a user-owned overlay.</dd>
+
+<dt><code>shared-directory</code> (default: <code>"/root/.cache"</code>)</dt><dd>The source cache directory that is shared between users. Each user will see some or all of its subdirectories mounted into their own <code>~/.cache</code>.</dd>
+
+<dt><code>users</code> (default: <code>'()</code>)</dt><dd>The list of users that will benefit from the shared directory. This must be a list of <code>user-info</code> records.</dd>
+</dl></dd>
+
+<dt>Data Type: user-info </dt><dd>Data type representing the configuration for a single user benefitting from a shared cache.
+
+<dl class="org-dl">
+<dt><code>user</code></dt><dd>The username of the user.</dd>
+
+<dt><code>location</code> (default: <code>"/home/==user==/.cache"</code>)</dt><dd>The cache directory of the user.</dd>
+
+<dt><code>group</code> (default: <code>"users"</code>)</dt><dd>The primary group of the user.</dd>
+
+<dt><code>directories</code> (default: <code>'("guix/checkouts")</code>)</dt><dd>List of subdirectories of the <code>shared-cache-configuration</code>'s <code>shared-directory</code> (whose default is <code>/root/.cache</code>) to mount under <code>location</code> (whose default is <code>~/.cache/</code>) for the user.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Build-Farm-Front_002dEnd-_0028BFFE_0029"></a>
+</p>
+</div>
+</li>
+<li><a id="build-farm-front-end-bffe"></a>Build Farm Front-End (BFFE)<br />
+<div class="outline-text-5" id="text-build-farm-front-end-bffe">
+<p>
+The <a href="https://git.cbaines.net/guix/bffe/">Build Farm Front-End</a> assists with building Guix packages in bulk. It's responsible for submitting builds and displaying the status of the build farm.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: bffe-service-type </dt><dd>Service type for the Build Farm Front-End. Its value must be a <code>bffe-configuration</code> object.</dd>
+
+<dt>Data Type: bffe-configuration </dt><dd>Data type representing the configuration of the Build Farm Front-End.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>bffe</code>)</dt><dd>The Build Farm Front-End package to use.</dd>
+
+<dt><code>user</code> (default: <code>"bffe"</code>)</dt><dd>The system user to run the service as.</dd>
+
+<dt><code>group</code> (default: <code>"bffe"</code>)</dt><dd>The system group to run the service as.</dd>
+
+<dt><code>arguments</code></dt><dd><p>
+A list of arguments to the Build Farm Front-End. These are passed to the <code>run-bffe-service</code> procedure when starting the service.
+</p>
+
+<p>
+For example, the following value directs the Build Farm Front-End to submit builds for derivations available from <code>data.guix.gnu.org</code> to the Build Coordinator instance assumed to be running on the same machine.
+</p>
+
+<pre class="example" id="org4febd39">
+(list
+ #:build
+ (list
+  (build-from-guix-data-service
+   (data-service-url "https://data.guix.gnu.org")
+   (build-coordinator-url "http://127.0.0.1:8746")
+   (branches '("master"))
+   (systems '("x86_64-linux" "i686-linux"))
+   (systems-and-targets
+    (map (lambda (target)
+           (cons "x86_64-linux" target))
+         '("aarch64-linux-gnu"
+           "i586-pc-gnu")))))
+ #:web-server-args
+ '(#:event-source "https://example.com"
+   #:controller-args
+   (#:title "example.com build farm")))
+</pre></dd>
+
+<dt><code>extra-environment-variables</code> (default: <code>’()</code>)</dt><dd>Extra environment variables to set via the shepherd service.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Guix-Build-Coordinator"></a>
+</p>
+</div>
+</li>
+<li><a id="guix-build-coordinator"></a>Guix Build Coordinator<br />
+<div class="outline-text-5" id="text-guix-build-coordinator">
+<p>
+The <a href="https://git.cbaines.net/guix/build-coordinator/">Guix Build Coordinator</a> aids in distributing derivation builds among machines running an <i>agent</i>. The build daemon is still used to build the derivations, but the Guix Build Coordinator manages allocating builds and working with the results.
+</p>
+
+<p>
+The Guix Build Coordinator consists of one <i>coordinator</i>, and one or more connected <i>agent</i> processes. The coordinator process handles clients submitting builds, and allocating builds to agents. The agent processes talk to a build daemon to actually perform the builds, then send the results back to the coordinator.
+</p>
+
+<p>
+There is a script to run the coordinator component of the Guix Build Coordinator, but the Guix service uses a custom Guile script instead, to provide better integration with G-expressions used in the configuration.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: guix-build-coordinator-service-type </dt><dd>Service type for the Guix Build Coordinator. Its value must be a <code>guix-build-coordinator-configuration</code> object.</dd>
+
+<dt>Data Type: guix-build-coordinator-configuration </dt><dd>Data type representing the configuration of the Guix Build Coordinator.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>guix-build-coordinator</code>)</dt><dd>The Guix Build Coordinator package to use.</dd>
+
+<dt><code>user</code> (default: <code>"guix-build-coordinator"</code>)</dt><dd>The system user to run the service as.</dd>
+
+<dt><code>group</code> (default: <code>"guix-build-coordinator"</code>)</dt><dd>The system group to run the service as.</dd>
+
+<dt><code>database-uri-string</code> (default: <code>"sqlite:///var/lib/guix-build-coordinator/guix_build_coordinator.db"</code>)</dt><dd>The URI to use for the database.</dd>
+
+<dt><code>agent-communication-uri</code> (default: <code>"http://0.0.0.0:8745"</code>)</dt><dd>The URI describing how to listen to requests from agent processes.</dd>
+
+<dt><code>client-communication-uri</code> (default: <code>"http://127.0.0.1:8746"</code>)</dt><dd>The URI describing how to listen to requests from clients. The client API allows submitting builds and currently isn't authenticated, so take care when configuring this value.</dd>
+
+<dt><code>allocation-strategy</code> (default: <code>#~basic-build-allocation-strategy</code>)</dt><dd>A G-expression for the allocation strategy to be used. This is a procedure that takes the datastore as an argument and populates the allocation plan in the database.</dd>
+
+<dt><code>hooks</code> (default: <code>’()</code>)</dt><dd>An association list of hooks. These provide a way to execute arbitrary code upon certain events, like a build result being processed.</dd>
+
+<dt><code>parallel-hooks</code> (default: <code>’()</code>)</dt><dd>Hooks can be configured to run in parallel. This parameter is an association list of hooks to do in parallel, where the key is the symbol for the hook and the value is the number of threads to run.</dd>
+
+<dt><code>listen-repl</code> (default: <code>#f</code>)</dt><dd>Port or filename to spawn a REPL listening on, pass <code>#t</code> to listen on the default port or <code>#f</code> to disable.</dd>
+
+<dt><code>guile</code> (default: <code>guile-3.0-latest</code>)</dt><dd>The Guile package with which to run the Guix Build Coordinator.</dd>
+
+<dt><code>extra-environment-variables</code> (default: <code>’()</code>)</dt><dd>Extra environment variables to set via the shepherd service.</dd>
+</dl></dd>
+
+<dt>Variable: guix-build-coordinator-agent-service-type </dt><dd>Service type for a Guix Build Coordinator agent. Its value must be a <code>guix-build-coordinator-agent-configuration</code> object.</dd>
+
+<dt>Data Type: guix-build-coordinator-agent-configuration </dt><dd>Data type representing the configuration a Guix Build Coordinator agent.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>guix-build-coordinator/agent-only</code>)</dt><dd>The Guix Build Coordinator package to use.</dd>
+
+<dt><code>user</code> (default: <code>"guix-build-coordinator-agent"</code>)</dt><dd>The system user to run the service as.</dd>
+
+<dt><code>coordinator</code> (default: <code>"http://localhost:8745"</code>)</dt><dd>The URI to use when connecting to the coordinator.</dd>
+
+<dt><code>authentication</code></dt><dd>Record describing how this agent should authenticate with the coordinator. Possible record types are described below.</dd>
+
+<dt><code>systems</code> (default: <code>#f</code>)</dt><dd>The systems for which this agent should fetch builds. The agent process will use the current system it's running on as the default.</dd>
+
+<dt><code>max-parallel-builds</code> (default: <code>#f</code>)</dt><dd>The number of builds to perform in parallel.</dd>
+
+<dt><code>max-parallel-uploads</code> (default: <code>#f</code>)</dt><dd>The number of uploads to perform in parallel.</dd>
+
+<dt><code>max-allocated-builds</code> (default: <code>#f</code>)</dt><dd>The maximum number of builds this agent can be allocated.</dd>
+
+<dt><code>max-1min-load-average</code> (default: <code>#f</code>)</dt><dd><p>
+Load average value to look at when considering starting new builds, if the 1 minute load average exceeds this value, the agent will wait before starting new builds.
+</p>
+
+<p>
+This will be unspecified if the value is <code>#f</code>, and the agent will use the number of cores reported by the system as the max 1 minute load average.
+</p></dd>
+
+<dt><code>derivation-substitute-urls</code> (default: <code>#f</code>)</dt><dd>URLs from which to attempt to fetch substitutes for derivations, if the derivations aren't already available.</dd>
+
+<dt><code>non-derivation-substitute-urls</code> (default: <code>#f</code>)</dt><dd>URLs from which to attempt to fetch substitutes for build inputs, if the input store items aren't already available.</dd>
+
+<dt><code>extra-options</code> (default: <code>’()</code>)</dt><dd>Extra command line options for <code>guix-build-coordinator-agent</code>.</dd>
+</dl></dd>
+
+<dt>Data Type: guix-build-coordinator-agent-password-auth </dt><dd>Data type representing an agent authenticating with a coordinator via a UUID and password.
+
+<dl class="org-dl">
+<dt><code>uuid</code></dt><dd>The UUID of the agent. This should be generated by the coordinator process, stored in the coordinator database, and used by the intended agent.</dd>
+
+<dt><code>password</code></dt><dd>The password to use when connecting to the coordinator.</dd>
+</dl></dd>
+
+<dt>Data Type: guix-build-coordinator-agent-password-file-auth </dt><dd>Data type representing an agent authenticating with a coordinator via a UUID and password read from a file.
+
+<dl class="org-dl">
+<dt><code>uuid</code></dt><dd>The UUID of the agent. This should be generated by the coordinator process, stored in the coordinator database, and used by the intended agent.</dd>
+
+<dt><code>password-file</code></dt><dd>A file containing the password to use when connecting to the coordinator.</dd>
+</dl></dd>
+
+<dt>Data Type: guix-build-coordinator-agent-dynamic-auth </dt><dd>Data type representing an agent authenticating with a coordinator via a dynamic auth token and agent name.
+
+<dl class="org-dl">
+<dt><code>agent-name</code></dt><dd>Name of an agent, this is used to match up to an existing entry in the database if there is one. When no existing entry is found, a new entry is automatically added.</dd>
+
+<dt><code>token</code></dt><dd>Dynamic auth token, this is created and stored in the coordinator database, and is used by the agent to authenticate.</dd>
+</dl></dd>
+
+<dt>Data Type: guix-build-coordinator-agent-dynamic-auth-with-file </dt><dd>Data type representing an agent authenticating with a coordinator via a dynamic auth token read from a file and agent name.
+
+<dl class="org-dl">
+<dt><code>agent-name</code></dt><dd>Name of an agent, this is used to match up to an existing entry in the database if there is one. When no existing entry is found, a new entry is automatically added.</dd>
+
+<dt><code>token-file</code></dt><dd>File containing the dynamic auth token, this is created and stored in the coordinator database, and is used by the agent to authenticate.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Guix-Data-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="guix-data-service"></a>Guix Data Service<br />
+<div class="outline-text-5" id="text-guix-data-service">
+<p>
+The <a href="http://data.guix.gnu.org">Guix Data Service</a> processes, stores and provides data about GNU Guix. This includes information about packages, derivations and lint warnings.
+</p>
+
+<p>
+The data is stored in a PostgreSQL database, and available through a web interface.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: guix-data-service-type </dt><dd>Service type for the Guix Data Service. Its value must be a <code>guix-data-service-configuration</code> object. The service optionally extends the getmail service, as the guix-commits mailing list is used to find out about changes in the Guix git repository.</dd>
+
+<dt>Data Type: guix-data-service-configuration </dt><dd>Data type representing the configuration of the Guix Data Service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>guix-data-service</code>)</dt><dd>The Guix Data Service package to use.</dd>
+
+<dt><code>user</code> (default: <code>"guix-data-service"</code>)</dt><dd>The system user to run the service as.</dd>
+
+<dt><code>group</code> (default: <code>"guix-data-service"</code>)</dt><dd>The system group to run the service as.</dd>
+
+<dt><code>port</code> (default: <code>8765</code>)</dt><dd>The port to bind the web service to.</dd>
+
+<dt><code>host</code> (default: <code>"127.0.0.1"</code>)</dt><dd>The host to bind the web service to.</dd>
+
+<dt><code>getmail-idle-mailboxes</code> (default: <code>#f</code>)</dt><dd>If set, this is the list of mailboxes that the getmail service will be configured to listen to.</dd>
+
+<dt><code>commits-getmail-retriever-configuration</code> (default: <code>#f</code>)</dt><dd>If set, this is the <code>getmail-retriever-configuration</code> object with which to configure getmail to fetch mail from the guix-commits mailing list.</dd>
+
+<dt><code>extra-options</code> (default: <code>’()</code>)</dt><dd>Extra command line options for <code>guix-data-service</code>.</dd>
+
+<dt><code>extra-process-jobs-options</code> (default: <code>’()</code>)</dt><dd>Extra command line options for <code>guix-data-service-process-jobs</code>.</dd>
+
+<dt><code>git-repositories</code> (default: <code>#f</code>)</dt><dd>List of git-repository information to insert into the database.</dd>
+
+<dt><code>build-servers</code> (default: <code>#f</code>)</dt><dd>List of build-server information to insert into the database.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="guix_002dhome_002dservice_002dtype"></a><a id="Guix-Home-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="guix-home-service"></a>Guix Home Service<br />
+<div class="outline-text-5" id="text-guix-home-service">
+<p>
+The Guix Home service is a way to let Guix System deploy the home environment of one or more users (see <a href="docs/guix--Home-Configuration.html">Home Configuration</a>, for more on Guix Home). That way, the system configuration embeds declarations of the home environment of those users and can be used to deploy everything consistently at once, saving users the need to run <code>guix home reconfigure</code> independently.
+</p>
+
+<p>
+<code>guix home</code> can operate on the home environment configured for current user via this service, but its effect won't last beyond the next system activation. This can be used for quick testing and may avoid the need of keeping a separate home configuration.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: guix-home-service-type </dt><dd><p>
+Service type for the Guix Home service. Its value must be a list of lists containing user and home environment pairs. The key of each pair is a string representing the user to deploy the configuration under and the value is a home-environment configuration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu services guix))
+
+(define my-home
+  (home-environment
+    …))
+
+(operating-system
+  (services (append (list (service guix-home-service-type
+                                   `(("alice" ,my-home))))
+                    %base-services)))
+</pre>
+</div>
+
+<p>
+This service can be extended by other services to add additional home environments, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'my-extra-home guix-home-service-type
+                `(("bob" ,my-extra-home)))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+<a id="Nar-Herder"></a>
+</p>
+</div>
+</li>
+<li><a id="nar-herder"></a>Nar Herder<br />
+<div class="outline-text-5" id="text-nar-herder">
+<p>
+The <a href="https://git.cbaines.net/guix/nar-herder/about/">Nar Herder</a> is a utility for managing a collection of nars.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: nar-herder-type </dt><dd>Service type for the Guix Data Service. Its value must be a <code>nar-herder-configuration</code> object. The service optionally extends the getmail service, as the guix-commits mailing list is used to find out about changes in the Guix git repository.</dd>
+
+<dt>Data Type: nar-herder-configuration </dt><dd>Data type representing the configuration of the Guix Data Service.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>nar-herder</code>)</dt><dd>The Nar Herder package to use.</dd>
+
+<dt><code>user</code> (default: <code>"nar-herder"</code>)</dt><dd>The system user to run the service as.</dd>
+
+<dt><code>group</code> (default: <code>"nar-herder"</code>)</dt><dd>The system group to run the service as.</dd>
+
+<dt><code>port</code> (default: <code>8734</code>)</dt><dd>The port to bind the server to.</dd>
+
+<dt><code>host</code> (default: <code>"127.0.0.1"</code>)</dt><dd>The host to bind the server to.</dd>
+
+<dt><code>control-port</code> (default: <code>8734</code>)</dt><dd>The port to bind the control server to.</dd>
+
+<dt><code>control-host</code> (default: <code>"127.0.0.1"</code>)</dt><dd>The host to bind the control server to.</dd>
+
+<dt><code>mirror</code> (default: <code>#f</code>)</dt><dd>Optional URL of the other Nar Herder instance which should be mirrored. This means that this Nar Herder instance will download it's database, and keep it up to date.</dd>
+
+<dt><code>database</code> (default: <code>"/var/lib/nar-herder/nar_herder.db"</code>)</dt><dd>Location for the database. If this Nar Herder instance is mirroring another, the database will be downloaded if it doesn't exist. If this Nar Herder instance isn't mirroring another, an empty database will be created.</dd>
+
+<dt><code>database-dump</code> (default: <code>"/var/lib/nar-herder/nar_herder_dump.db"</code>)</dt><dd>Location of the database dump. This is created and regularly updated by taking a copy of the database. This is the version of the database that is available to download.</dd>
+
+<dt><code>storage</code> (default: <code>#f</code>)</dt><dd>Optional location in which to store nars.</dd>
+
+<dt><code>storage-limit</code> (default: <code>"none"</code>)</dt><dd><p>
+Limit in bytes for the nars stored in the storage location. This can also be set to “none” so that there is no limit.
+</p>
+
+<p>
+When the storage location exceeds this size, nars are removed according to the nar removal criteria.
+</p></dd>
+
+<dt><code>storage-nar-removal-criteria</code> (default: <code>'()</code>)</dt><dd><p>
+Criteria used to remove nars from the storage location. These are used in conjunction with the storage limit.
+</p>
+
+<p>
+When the storage location exceeds the storage limit size, nars will be checked against the nar removal criteria and if any of the criteria match, they will be removed. This will continue until the storage location is below the storage limit size.
+</p>
+
+<p>
+Each criteria is specified by a string, then an equals sign, then another string. Currently, only one criteria is supported, checking if a nar is stored on another Nar Herder instance.
+</p></dd>
+
+<dt><code>ttl</code> (default: <code>#f</code>)</dt><dd><p>
+Produce <code>Cache-Control</code> HTTP headers that advertise a time-to-live (TTL) of <code>ttl</code>. <code>ttl</code> must denote a duration: <code>5d</code> means 5 days, <code>1m</code> means 1 month, and so on.
+</p>
+
+<p>
+This allows the user's Guix to keep substitute information in cache for <code>ttl</code>.
+</p></dd>
+
+<dt><code>new-ttl</code> (default: <code>#f</code>)</dt><dd><p>
+If specified, this will override the <code>ttl</code> setting when used for the <code>Cache-Control</code> headers, but this value will be used when scheduling the removal of nars.
+</p>
+
+<p>
+Use this setting when the TTL is being reduced to avoid removing nars while clients still have cached narinfos.
+</p></dd>
+
+<dt><code>negative-ttl</code> (default: <code>#f</code>)</dt><dd>Similarly produce <code>Cache-Control</code> HTTP headers to advertise the time-to-live (TTL) of <i>negative</i> lookups&#x2014;missing store items, for which the HTTP 404 code is returned. By default, no negative TTL is advertised.</dd>
+
+<dt><code>log-level</code> (default: <code>'DEBUG</code>)</dt><dd>Log level to use, specify a log level like <code>'INFO</code> to stop logging individual requests.</dd>
+
+<dt><code>cached-compressions</code> (default: <code>'()</code>)</dt><dd>Activate generating cached nars with different compression details from the stored nars. This is a list of nar-herder-cached-compression-configuration records.</dd>
+
+<dt><code>min-uses</code> (default: <code>3</code>)</dt><dd>When cached-compressions are enabled, generate cached nars when at least this number of requests are made for a nar.</dd>
+
+<dt><code>workers</code> (default: <code>2</code>)</dt><dd>Number of cached nars to generate at a time.</dd>
+
+<dt><code>nar-source</code> (default: <code>#f</code>)</dt><dd>Location to fetch nars from when computing cached compressions. By default, the storage location will be used.</dd>
+
+<dt><code>extra-environment-variables</code> (default: <code>'()</code>)</dt><dd>Extra environment variables to set via the shepherd service.</dd>
+</dl></dd>
+
+<dt>Data Type: nar-herder-cached-compression-configuration </dt><dd>Data type representing the cached compression configuration.
+
+<dl class="org-dl">
+<dt><code>type</code></dt><dd>Type of compression to use, e.g. <code>'zstd</code>.</dd>
+
+<dt><code>workers</code> (default: <code>#f</code>)</dt><dd>Level of the compression to use.</dd>
+
+<dt><code>directory</code> (default: <code>#f</code>)</dt><dd>Location to store the cached nars. If unspecified, they will be stored in /var/cache/nar-herder/nar/TYPE.</dd>
+
+<dt><code>directory-max-size</code> (default: <code>#f</code>)</dt><dd>Maximum size in bytes of the directory.</dd>
+
+<dt><code>unused-removal-duration</code> (default: <code>#f</code>)</dt><dd><p>
+If a cached nar isn't used for <code>unused-removal-duration</code>, it will be scheduled for removal.
+</p>
+
+<p>
+<code>unused-removal-duration</code> must denote a duration: <code>5d</code> means 5 days, <code>1m</code> means 1 month, and so on.
+</p></dd>
+
+<dt><code>ttl</code> (default: <code>#f</code>)</dt><dd>If specified this overrides the <code>ttl</code> used for narinfos when this cached compression is available.</dd>
+
+<dt><code>new-ttl</code> (default: <code>#f</code>)</dt><dd>As with the <code>new-ttl</code> option for <code>nar-herder-configuration</code>, this value will override the <code>ttl</code> when used for narinfo requests.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Linux-Services.html">Linux Services</a>, Previous: <a href="docs/guix--PAM-Mount-Service.html">PAM Mount Service</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

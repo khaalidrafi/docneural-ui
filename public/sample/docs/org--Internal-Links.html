@@ -1,0 +1,86 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Internal-Links-1">1. 4.2 Internal Links ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (26)</a></li>
+<li><a href="#section-1">1.0.2. (27)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Internal-Links"></a>
+Next: <a href="docs/org--Radio-Targets.html">Radio Targets</a>, Previous: <a href="docs/org--Link-Format.html">Link Format</a>, Up: <a href="docs/org--Hyperlinks.html">Hyperlinks</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Internal-Links-1" class="outline-2">
+<h2 id="Internal-Links-1"><span class="section-number-2">1.</span> 4.2 Internal Links <a href="#Internal-Links-1">¶</a></h2>
+<div class="outline-text-2" id="text-Internal-Links-1">
+<p>
+A link that does not look like a URL&#x2014;i.e., does not start with a known scheme or a file name&#x2014;refers to the current document. You can follow it with C-c C-o when point is on the link, or with a mouse click (see <a href="docs/org--Handling-Links.html">Handling Links</a>).
+</p>
+
+<p>
+Org provides several refinements to internal navigation within a document. Most notably, a construct like ‘==' specifically targets the entry with the ‘=CUSTOM<sub>ID</sub>=' property set to ‘=my-custom-id='. Also, an internal link looking like ‘==' points to a headline with the name ‘=Some section='.
+</p>
+
+<p>
+When the link does not belong to any of the cases above, Org looks for a <i>dedicated target</i>: the same string in double angular brackets, like ‘=<a id="My Target"></a>='.
+</p>
+
+<p>
+If no dedicated target exists, the link tries to match the exact name of an element within the buffer. Naming is done, unsurprisingly, with the ‘=NAME=' keyword, which has to be put in the line before the element it refers to, as in the following example
+</p>
+
+<pre class="example" id="org040b711">
+#+NAME: My Target
+| a  | table      |
+|----+------------|
+| of | four cells |
+</pre>
+
+<p>
+Ultimately, if none of the above succeeds, Org searches for a headline that is exactly the link text but may also include a TODO keyword and tags, or initiates a plain text search, according to the value of <code>org-link-search-must-match-exact-headline</code>.
+</p>
+
+<p>
+Note that you must make sure custom IDs, dedicated targets, and names are unique throughout the document. Org provides a linter to assist you in the process, if needed. See <a href="docs/org--Org-Syntax.html">Org Syntax</a>.
+</p>
+
+<p>
+During export, internal links are used to mark objects and assign them a number. Marked objects are then referenced by links pointing to them. In particular, links without a description appear as the number assigned to the marked object. In the following excerpt from an Org buffer
+</p>
+
+<pre class="example" id="orge82a12f">
+1. one item
+2. &lt;&lt;target&gt;&gt;another item
+Here we refer to item [[target]].
+</pre>
+
+<p>
+The last sentence will appear as ‘=Here we refer to item 2=' when exported.
+</p>
+
+<p>
+In non-Org files, the search looks for the words in the link text. In the above example, the search would be for ‘=target='.
+</p>
+
+<p>
+Following a link pushes a mark onto Org's own mark ring. You can return to the previous position with C-c &amp;. Using this command several times in direct succession goes back to positions recorded earlier.
+</p>
+
+<hr />
+</div>
+</div>

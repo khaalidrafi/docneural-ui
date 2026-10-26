@@ -1,0 +1,155 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#image-type-reference">1.0.1. 16.3 image-type Reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="image_002dtype-Reference"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Image-Modules.html">Image Modules</a>, Previous: <a href="docs/guix--Instantiate-an-Image.html">Instantiate an Image</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="image_002dtype-Reference-1"></a>
+</p>
+</div>
+<div id="outline-container-image-type-reference" class="outline-4">
+<h4 id="image-type-reference"><span class="section-number-4">1.0.1.</span> 16.3 image-type Reference</h4>
+<div class="outline-text-4" id="text-image-type-reference">
+<p>
+The <code>guix system image</code> command can, as we saw above, take a file containing an <code>image</code> declaration as argument and produce an actual disk image from it. The same command can also handle a file containing an <code>operating-system</code> declaration as argument. In that case, how is the <code>operating-system</code> turned into an image?
+</p>
+
+<p>
+That's where the <code>image-type</code> record intervenes. This record defines how to transform an <code>operating-system</code> record into an <code>image</code> record.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: image-type </dt><dd>This is the data type representing an image-type.
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The image-type name as a mandatory symbol, <code>'efi32-raw</code> for instance.</dd>
+
+<dt><code>constructor</code></dt><dd>The image-type constructor, as a mandatory procedure that takes an <code>operating-system</code> record as argument and returns an <code>image</code> record.</dd>
+</dl></dd>
+</dl>
+
+<p>
+There are several <code>image-type</code> records provided by the <code>(gnu system image)</code> and the <code>(gnu system images …)</code> modules.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: mbr-raw-image-type </dt><dd>Build an image based on the <code>mbr-disk-image</code> image.</dd>
+
+<dt>Variable: mbr-hybrid-raw-image-type </dt><dd>Build an image based on the <code>mbr-hybrid-disk-image</code> image.</dd>
+
+<dt>Variable: efi-raw-image-type </dt><dd>Build an image based on the <code>efi-disk-image</code> image.</dd>
+
+<dt>Variable: efi32-raw-image-type </dt><dd>Build an image based on the <code>efi32-disk-image</code> image.</dd>
+
+<dt>Variable: qcow2-image-type </dt><dd>Build an image based on the <code>mbr-disk-image</code> image but with the <code>compressed-qcow2</code> image format. The resulting image will have an MBR embedded bootloader as well as an EFI bootloader. This image is not suitable for architectures that do not support ‘grub-pc‘, such as AArch64. See <code>qcow2-gpt-image-type</code> for an alternative.</dd>
+
+<dt>Variable: qcow2-gpt-image-type </dt><dd>Build an image based on the <code>efi-disk-image</code> image but with the <code>compressed-qcow2</code> image format. The resulting image will have only EFI bootloader, unlike <code>qcow2-image-type</code>. This image is suitable for architectures that do not support ‘grub-pc‘, such as AArch64.</dd>
+
+<dt>Variable: iso-image-type </dt><dd>Build a compressed image based on the <code>iso9660-image</code> image.</dd>
+
+<dt>Variable: uncompressed-iso-image-type </dt><dd>Build an image based on the <code>iso9660-image</code> image but with the <code>compression?</code> field set to <code>#false</code>.</dd>
+
+<dt>Variable: docker-image-type </dt><dd>Build an image based on the <code>docker-image</code> image.</dd>
+
+<dt>Variable: raw-with-offset-image-type </dt><dd>Build an MBR image with a single partition starting at a <code>1024KiB</code> offset. This is useful to leave some room to install a bootloader in the post-MBR gap.</dd>
+
+<dt>Variable: pinebook-pro-image-type </dt><dd>Build an image that is targeting the Pinebook Pro machine. The MBR image contains a single partition starting at a <code>9MiB</code> offset. The <code>u-boot-pinebook-pro-rk3399-bootloader</code> bootloader will be installed in this gap.</dd>
+
+<dt>Variable: rock64-image-type </dt><dd>Build an image that is targeting the Rock64 machine. The MBR image contains a single partition starting at a <code>16MiB</code> offset. The <code>u-boot-rock64-rk3328-bootloader</code> bootloader will be installed in this gap.</dd>
+
+<dt>Variable: novena-image-type </dt><dd>Build an image that is targeting the Novena machine. It has the same characteristics as <code>raw-with-offset-image-type</code>.</dd>
+
+<dt>Variable: pine64-image-type </dt><dd>Build an image that is targeting the Pine64 machine. It has the same characteristics as <code>raw-with-offset-image-type</code>.</dd>
+
+<dt>Variable: hurd-image-type </dt><dd>Build an image that is targeting a <code>i386</code> machine running the Hurd kernel. The MBR image contains a single ext2 partitions with specific <code>file-system-options</code> flags.</dd>
+
+<dt>Variable: hurd-qcow2-image-type </dt><dd>Build an image similar to the one built by the <code>hurd-image-type</code> but with the <code>format</code> set to <code>'compressed-qcow2</code>.</dd>
+
+<dt>Variable: wsl2-image-type </dt><dd><p>
+Build an image for the WSL2 (Windows Subsystem for Linux 2). It can be imported by running:
+</p>
+
+<pre class="example" id="org189694a">
+wsl --import Guix ./guix ./wsl2-image.tar.gz
+wsl -d Guix
+</pre></dd>
+</dl>
+
+<p>
+So, if we get back to the <code>guix system image</code> command taking an <code>operating-system</code> declaration as argument. By default, the <code>mbr-raw-image-type</code> is used to turn the provided <code>operating-system</code> into an actual bootable image.
+</p>
+
+<p>
+To use a different <code>image-type</code>, the <code>--image-type</code> option can be used. The <code>--list-image-types</code> option will list all the supported image types. It turns out to be a textual listing of all the <code>image-types</code> variables described just above (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Image-Modules.html">Image Modules</a>, Previous: <a href="docs/guix--Instantiate-an-Image.html">Instantiate an Image</a>, Up: <a href="docs/guix--System-Images.html">Creating System Images</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

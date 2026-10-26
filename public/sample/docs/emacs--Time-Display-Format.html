@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Time-Display-Format-1">1. 33.13.5 Time Display Format ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Diary-Customizing.html">Customizing the Diary</a>   Previous: <a href="docs/emacs--Date-Display-Format.html">Date Display Format</a>   Up: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>
+</p>
+
+<p>
+<a id="Time-Display-Format"></a>
+</p>
+
+<hr />
+<div id="outline-container-Time-Display-Format-1" class="outline-2">
+<h2 id="Time-Display-Format-1"><span class="section-number-2">1.</span> 33.13.5 Time Display Format <a href="#Time-Display-Format-1">¶</a></h2>
+<div class="outline-text-2" id="text-Time-Display-Format-1">
+<p>
+The calendar and diary by default display times of day in the conventional American style with the hours from 1 through 12, minutes, and either ‘=am=' or ‘=pm='. If you prefer the European style, also known in the US as military, in which the hours go from 00 to 23, you can alter the variable <code>calendar-time-display-form</code>. This variable is a list of expressions that can involve the variables <code>12-hours</code>, <code>24-hours</code>, and <code>minutes</code>, which are all numbers in string form, and <code>am-pm</code> and <code>time-zone</code>, which are both alphabetic strings. The default value is:
+</p>
+
+<pre class="example" id="orgbcda38d">
+(12-hours ":" minutes am-pm
+          (if time-zone " (") time-zone (if time-zone ")"))
+</pre>
+
+<p>
+Here is a value that provides European style times:
+</p>
+
+<pre class="example" id="org0caa71c">
+(24-hours ":" minutes
+          (if time-zone " (") time-zone (if time-zone ")"))
+</pre>
+
+<p>
+Note that few calendar functions return a time of day (at present, only solar functions).
+</p>
+</div>
+</div>

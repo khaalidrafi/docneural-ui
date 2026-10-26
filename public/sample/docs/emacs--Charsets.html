@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Charsets-1">1. 24.19 Charsets ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>   Previous: <a href="docs/emacs--Unibyte-Mode.html">Unibyte Editing Mode</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Charsets"></a>
+</p>
+
+<hr />
+<div id="outline-container-Charsets-1" class="outline-2">
+<h2 id="Charsets-1"><span class="section-number-2">1.</span> 24.19 Charsets <a href="#Charsets-1">¶</a></h2>
+<div class="outline-text-2" id="text-Charsets-1">
+<p>
+In Emacs, <i>charset</i> is short for “character set”. Emacs supports most popular charsets (such as <code>ascii</code>, <code>iso-8859-1</code>, <code>cp1250</code>, <code>big5</code>, and <code>unicode</code>), in addition to some charsets of its own (such as <code>emacs</code>, <code>unicode-bmp</code>, and <code>eight-bit</code>). All supported characters belong to one or more charsets.
+</p>
+
+<p>
+Emacs normally does the right thing with respect to charsets, so that you don't have to worry about them. However, it is sometimes helpful to know some of the underlying details about charsets.
+</p>
+
+<p>
+One example is font selection (see <a href="docs/emacs--Fonts.html">Fonts</a>). Each language environment (see <a href="docs/emacs--Language-Environments.html">Language Environments</a>) defines a priority list for the various charsets. When searching for a font, Emacs initially attempts to find one that can display the highest-priority charsets. For instance, in the Japanese language environment, the charset <code>japanese-jisx0208</code> has the highest priority, so Emacs tries to use a font whose <code>registry</code> property is ‘=JISX0208.1983-0='.
+</p>
+
+<p>
+There are two commands that can be used to obtain information about charsets. The command M-x list-charset-chars prompts for a charset name, and displays all the characters in that character set. The command M-x describe-character-set prompts for a charset name, and displays information about that charset, including its internal representation within Emacs.
+</p>
+
+<p>
+M-x list-character-sets displays a list of all supported charsets. The list gives the names of charsets and additional information to identity each charset; for more details, see the <a href="https://www.itscj.ipsj.or.jp/itscj_english/iso-ir/ISO-IR.pdf">ISO International Register of Coded Character Sets to be Used with Escape Sequences (ISO-IR)</a> maintained by the <a href="https://www.itscj.ipsj.or.jp/itscj_english/">Information Processing Society of Japan/Information Technology Standards Commission of Japan (IPSJ/ITSCJ)</a>. In this list, charsets are divided into two categories: <i>normal charsets</i> are listed first, followed by <i>supplementary charsets</i>. A supplementary charset is one that is used to define another charset (as a parent or a subset), or to provide backward-compatibility for older Emacs versions.
+</p>
+
+<p>
+To find out which charset a character in the buffer belongs to, put point before it and type C-u C-x = (see <a href="docs/emacs--International-Chars.html">Introduction to International Character Sets</a>).
+</p>
+
+<hr />
+</div>
+</div>

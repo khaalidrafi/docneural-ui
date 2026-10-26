@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Moving-a-tree-to-an-archive-file">1. 9.2.1 Moving a tree to an archive file ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Moving-subtrees"></a>
+Next: <a href="docs/org--Internal-archiving.html">Internal archiving</a>, Up: <a href="docs/org--Archiving.html">Archiving</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Moving-a-tree-to-an-archive-file" class="outline-2">
+<h2 id="Moving-a-tree-to-an-archive-file"><span class="section-number-2">1.</span> 9.2.1 Moving a tree to an archive file <a href="#Moving-a-tree-to-an-archive-file">¶</a></h2>
+<div class="outline-text-2" id="text-Moving-a-tree-to-an-archive-file">
+<p>
+The most common archiving action is to move a project tree to another file, called the archive file.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002ds"></a>C-c C-x C-s or short C-c $ (<code>org-archive-subtree</code>) </dt><dd>Archive the subtree starting at point position to the location given by <code>org-archive-location</code>.</dd>
+
+<dt><a id="index-C_002du-C_002dc-C_002dx-C_002ds"></a>C-u C-c C-x C-s </dt><dd>Check if any direct children of the current headline could be moved to the archive. To do this, check each subtree for open TODO entries. If none is found, the command offers to move it to the archive location. If point is <i>not</i> on a headline when this command is invoked, check level 1 trees.</dd>
+
+<dt><a id="index-C_002du-C_002du-C_002dc-C_002dx-C_002ds"></a>C-u C-u C-c C-x C-s </dt><dd>As above, but check subtree for timestamps instead of TODO entries. The command offers to archive the subtree if it <i>does</i> contain a timestamp, and that timestamp is in the past.</dd>
+</dl>
+
+<p>
+The default archive location is a file in the same directory as the current file, with the name derived by appending ‘=<sub>archive</sub>=' to the current file name. You can also choose what heading to file archived items under, with the possibility to add them to a datetree in a file. For information and examples on how to specify the file and the heading, see the documentation string of the variable <code>org-archive-location</code>.
+</p>
+
+<p>
+There is also an in-buffer option for setting this variable, for example:
+</p>
+
+<pre class="example" id="orge27b66d">
+#+ARCHIVE: %s_done::
+</pre>
+
+<p>
+If you would like to have a special archive location for a single entry or a (sub)tree, give the entry an ‘=ARCHIVE=' property with the location as the value (see <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>).
+</p>
+
+<p>
+When a subtree is moved, it receives a number of special properties that record context information like the file from where the entry came, its outline path, the archiving time etc. Configure the variable <code>org-archive-save-context-info</code> to adjust the amount of information added.
+</p>
+
+<p>
+When <code>org-archive-subtree-save-file-p</code> is non-<code>nil</code>, save the target archive buffer.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Internal-archiving.html">Internal archiving</a>, Up: <a href="docs/org--Archiving.html">Archiving</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

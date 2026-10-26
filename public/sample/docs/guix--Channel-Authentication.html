@@ -1,0 +1,109 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#channel-authentication">1.0.1. 6.5 Channel Authentication</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Channel-Authentication"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Channels-with-Substitutes.html">Channels with Substitutes</a>, Previous: <a href="docs/guix--Customizing-the-System_002dWide-Guix.html">Customizing the System-Wide Guix</a>, Up: <a href="docs/guix--Channels.html">Channels</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Channel-Authentication-1"></a>
+</p>
+</div>
+<div id="outline-container-channel-authentication" class="outline-4">
+<h4 id="channel-authentication"><span class="section-number-4">1.0.1.</span> 6.5 Channel Authentication</h4>
+<div class="outline-text-4" id="text-channel-authentication">
+<p>
+<a id="channel_002dauthentication"></a><a id="index-authentication_002c-of-channel-code-1"></a>
+The <code>guix pull</code> and <code>guix time-machine</code> commands <i>authenticate</i> the code retrieved from channels: they make sure each commit that is fetched is signed by an authorized developer. The goal is to protect from unauthorized modifications to the channel that would lead users to run malicious code.
+</p>
+
+<p>
+As a user, you must provide a <i>channel introduction</i> in your channels file so that Guix knows how to authenticate its first commit. A channel specification, including its introduction, looks something along these lines:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(channel
+  (name 'some-channel)
+  (url "https://example.org/some-channel.git")
+  (introduction
+   (make-channel-introduction
+    "6f0d8cc0d88abb59c324b2990bfee2876016bb86"
+    (openpgp-fingerprint
+     "CABB A931 C0FF EEC6 900D  0CFB 090B 1199 3D9A EBB5"))))
+</pre>
+</div>
+
+<p>
+The specification above shows the name and URL of the channel. The call to <code>make-channel-introduction</code> above specifies that authentication of this channel starts at commit <code>6f0d8cc…</code>, which is signed by the OpenPGP key with fingerprint <code>CABB A931…</code>.
+</p>
+
+<p>
+For the main channel, called <code>guix</code>, you automatically get that information from your Guix installation. For other channels, include the channel introduction provided by the channel authors in your <code>channels.scm</code> file. Make sure you retrieve the channel introduction from a trusted source since that is the root of your trust.
+</p>
+
+<p>
+If you're curious about the authentication mechanics, read on!
+</p>
+</div>
+</div>
+</div>

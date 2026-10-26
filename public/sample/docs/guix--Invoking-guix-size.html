@@ -1,0 +1,197 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-size">1.0.1. 9.9 Invoking <code>guix size</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-size"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-graph.html">Invoking <code>guix graph</code></a>, Previous: <a href="docs/guix--Invoking-guix-lint.html">Invoking <code>guix lint</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-size-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-size" class="outline-4">
+<h4 id="invoking-guix-size"><span class="section-number-4">1.0.1.</span> 9.9 Invoking <code>guix size</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-size">
+<p>
+<a id="index-size"></a> <a id="index-package-size"></a> <a id="index-closure-1"></a> <a id="index-guix-size"></a>
+The <code>guix size</code> command helps package developers profile the disk usage of packages. It is easy to overlook the impact of an additional dependency added to a package, or the impact of using a single output for a package that could easily be split (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>). Such are the typical issues that <code>guix size</code> can highlight.
+</p>
+
+<p>
+The command can be passed one or more package specifications such as <code>gcc@4.8</code> or <code>guile:debug</code>, or a file name in the store. Consider this example:
+</p>
+
+<pre class="example" id="orgf23075e">
+$ guix size coreutils
+store item                               total    self
+/gnu/store/…-gcc-5.5.0-lib           60.4    30.1  38.1%
+/gnu/store/…-glibc-2.27              30.3    28.8  36.6%
+/gnu/store/…-coreutils-8.28          78.9    15.0  19.0%
+/gnu/store/…-gmp-6.1.2               63.1     2.7   3.4%
+/gnu/store/…-bash-static-4.4.12       1.5     1.5   1.9%
+/gnu/store/…-acl-2.2.52              61.1     0.4   0.5%
+/gnu/store/…-attr-2.4.47             60.6     0.2   0.3%
+/gnu/store/…-libcap-2.25             60.5     0.2   0.2%
+total: 78.9 MiB
+</pre>
+
+<p>
+<a id="index-closure-2"></a>
+The store items listed here constitute the <i>transitive closure</i> of Coreutils&#x2014;i.e., Coreutils and all its dependencies, recursively&#x2014;as would be returned by:
+</p>
+
+<pre class="example" id="orgc5f9277">
+$ guix gc -R /gnu/store/…-coreutils-8.23
+</pre>
+
+<p>
+Here the output shows three columns next to store items. The first column, labeled “total”, shows the size in mebibytes (MiB) of the closure of the store item&#x2014;that is, its own size plus the size of all its dependencies. The next column, labeled “self”, shows the size of the item itself. The last column shows the ratio of the size of the item itself to the space occupied by all the items listed here.
+</p>
+
+<p>
+In this example, we see that the closure of Coreutils weighs in at 79 MiB, most of which is taken by libc and GCC's run-time support libraries. (That libc and GCC's libraries represent a large fraction of the closure is not a problem <i>per se</i> because they are always available on the system anyway.)
+</p>
+
+<p>
+Since the command also accepts store file names, assessing the size of a build result is straightforward:
+</p>
+
+<pre class="example" id="org59a2f4d">
+guix size $(guix system build config.scm)
+</pre>
+
+<p>
+When the package(s) passed to <code>guix size</code> are available in the store, <code>guix size</code> queries the daemon to determine its dependencies, and measures its size in the store, similar to <code>du -ms --apparent-size</code> (see <a href="https://www.gnu.org/software/coreutils/manual/html_node/du-invocation.html#du-invocation">du invocation</a> in GNU Coreutils).
+</p>
+
+<p>
+When the given packages are <i>not</i> in the store, <code>guix size</code> reports information based on the available substitutes (see <a href="docs/guix--Substitutes.html">Substitutes</a>). This makes it possible to profile the disk usage of store items that are not even on disk, only available remotely.
+</p>
+
+<p>
+You can also specify several package names:
+</p>
+
+<pre class="example" id="orga3189fc">
+$ guix size coreutils grep sed bash
+store item                               total    self
+/gnu/store/…-coreutils-8.24          77.8    13.8  13.4%
+/gnu/store/…-grep-2.22               73.1     0.8   0.8%
+/gnu/store/…-bash-4.3.42             72.3     4.7   4.6%
+/gnu/store/…-readline-6.3            67.6     1.2   1.2%
+…
+total: 102.3 MiB
+</pre>
+
+<p>
+In this example we see that the combination of the four packages takes 102.3 MiB in total, which is much less than the sum of each closure since they have a lot of dependencies in common.
+</p>
+
+<p>
+When looking at the profile returned by <code>guix size</code>, you may find yourself wondering why a given package shows up in the profile at all. To understand it, you can use <code>guix graph --path -t references</code> to display the shortest path between the two packages (see <a href="docs/guix--Invoking-guix-graph.html">Invoking <code>guix graph</code></a>).
+</p>
+
+<p>
+The available options are:
+</p>
+
+<dl class="org-dl">
+<dt><code>--substitute-urls===urls</code></dt><dd>Use substitute information from <code>urls</code>. See <a href="docs/guix--Common-Build-Options.html#client_002dsubstitute_002durls">the same option for <code>guix build</code></a>.</dd>
+
+<dt><code>--sort===key</code></dt><dd>Sort lines according to <code>key</code>, one of the following options:
+
+<dl class="org-dl">
+<dt><code>self</code></dt><dd>the size of each item (the default);</dd>
+
+<dt><code>closure</code></dt><dd>the total size of the item's closure.</dd>
+</dl></dd>
+
+<dt><code>--map-file===file</code></dt><dd><p>
+Write a graphical map of disk usage in PNG format to <code>file</code>.
+</p>
+
+<p>
+For the example above, the map looks like this:
+</p>
+
+<p>
+This option requires that <a href="https://wingolog.org/software/guile-charting/">Guile-Charting</a> be installed and visible in Guile's module search path. When that is not the case, <code>guix size</code> fails as it tries to load it.
+</p></dd>
+
+<dt>(no term)</dt><dd><code>--system===system</code><br />
+<code>-s ==system</code> :: Consider packages for <code>system</code>&#x2014;e.g., <code>x86_64-linux</code>.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--load-path===directory</code><br />
+<code>-L ==directory</code> :: Add <code>directory</code> to the front of the package module search path (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+This allows users to define their own packages and make them visible to the command-line tools.
+</p></dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

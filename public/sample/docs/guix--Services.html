@@ -1,0 +1,174 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#services">1.0.1. 11.10 Services</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>, Previous: <a href="docs/guix--Locales.html">Locales</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Services-1"></a>
+</p>
+</div>
+<div id="outline-container-services" class="outline-4">
+<h4 id="services"><span class="section-number-4">1.0.1.</span> 11.10 Services</h4>
+<div class="outline-text-4" id="text-services">
+<p>
+<a id="index-system-services"></a>
+An important part of preparing an <code>operating-system</code> declaration is listing <i>system services</i> and their configuration (see <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>). System services are typically daemons launched when the system boots, or other actions needed at that time&#x2014;e.g., configuring network access.
+</p>
+
+<p>
+Guix has a broad definition of “service” (see <a href="docs/guix--Service-Composition.html">Service Composition</a>), but many services are managed by the GNU Shepherd (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>). On a running system, the <code>herd</code> command allows you to list the available services, show their status, start and stop them, or do other specific operations (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Jump-Start.html#Jump-Start">Jump Start</a> in The GNU Shepherd Manual). For example:
+</p>
+
+<pre class="example" id="orgb0a3094">
+# herd status
+</pre>
+
+<p>
+The above command, run as <code>root</code>, lists the currently defined services. The <code>herd doc</code> command shows a synopsis of the given service and its associated actions:
+</p>
+
+<pre class="example" id="org238d78e">
+# herd doc nscd
+Run libc's name service cache daemon (nscd).
+
+# herd doc nscd action invalidate
+invalidate: Invalidate the given cache--e.g., 'hosts' for host name lookups.
+</pre>
+
+<p>
+The <code>start</code>, <code>stop</code>, and <code>restart</code> sub-commands have the effect you would expect. For instance, the commands below stop the nscd service and restart the Xorg display server:
+</p>
+
+<pre class="example" id="orgdd65215">
+# herd stop nscd
+Service nscd has been stopped.
+# herd restart xorg-server
+Service xorg-server has been stopped.
+Service xorg-server has been started.
+</pre>
+
+<p>
+<a id="index-configuration_002c-action-for-shepherd-services"></a> <a id="index-configuration-file_002c-of-a-shepherd-service"></a>
+For some services, <code>herd configuration</code> returns the name of the service's configuration file, which can be handy to inspect its configuration:
+</p>
+
+<pre class="example" id="org5b16cc5">
+# herd configuration sshd
+/gnu/store/…-sshd_config
+</pre>
+
+<p>
+The following sections document the available services, starting with the core services, that may be used in an <code>operating-system</code> declaration.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Base-Services.html">Base Services</a></li>
+<li><a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a></li>
+<li><a href="docs/guix--Log-Rotation.html">Log Rotation</a></li>
+<li><a href="docs/guix--Networking-Setup.html">Networking Setup</a></li>
+<li><a href="docs/guix--Networking-Services.html">Networking Services</a></li>
+<li><a href="docs/guix--Unattended-Upgrades.html">Unattended Upgrades</a></li>
+<li><a href="docs/guix--X-Window.html">X Window</a></li>
+<li><a href="docs/guix--Printing-Services.html">Printing Services</a></li>
+<li><a href="docs/guix--Desktop-Services.html">Desktop Services</a></li>
+<li><a href="docs/guix--Sound-Services.html">Sound Services</a></li>
+<li><a href="docs/guix--File-Search-Services.html">File Search Services</a></li>
+<li><a href="docs/guix--Database-Services.html">Database Services</a></li>
+<li><a href="docs/guix--Mail-Services.html">Mail Services</a></li>
+<li><a href="docs/guix--Messaging-Services.html">Messaging Services</a></li>
+<li><a href="docs/guix--Telephony-Services.html">Telephony Services</a></li>
+<li><a href="docs/guix--File_002dSharing-Services.html">File-Sharing Services</a></li>
+<li><a href="docs/guix--Monitoring-Services.html">Monitoring Services</a></li>
+<li><a href="docs/guix--Kerberos-Services.html">Kerberos Services</a></li>
+<li><a href="docs/guix--LDAP-Services.html">LDAP Services</a></li>
+<li><a href="docs/guix--Web-Services.html">Web Services</a></li>
+<li><a href="docs/guix--High-Availability-Services.html">High Availability Services</a></li>
+<li><a href="docs/guix--Certificate-Services.html">Certificate Services</a></li>
+<li><a href="docs/guix--DNS-Services.html">DNS Services</a></li>
+<li><a href="docs/guix--VNC-Services.html">VNC Services</a></li>
+<li><a href="docs/guix--VPN-Services.html">VPN Services</a></li>
+<li><a href="docs/guix--Network-File-System.html">Network File System</a></li>
+<li><a href="docs/guix--Samba-Services.html">Samba Services</a></li>
+<li><a href="docs/guix--Continuous-Integration.html">Continuous Integration</a></li>
+<li><a href="docs/guix--Power-Management-Services.html">Power Management Services</a></li>
+<li><a href="docs/guix--Audio-Services.html">Audio Services</a></li>
+<li><a href="docs/guix--Virtualization-Services.html">Virtualization Services</a></li>
+<li><a href="docs/guix--Version-Control-Services.html">Version Control Services</a></li>
+<li><a href="docs/guix--Game-Services.html">Game Services</a></li>
+<li><a href="docs/guix--PAM-Mount-Service.html">PAM Mount Service</a></li>
+<li><a href="docs/guix--Guix-Services.html">Guix Services</a></li>
+<li><a href="docs/guix--Linux-Services.html">Linux Services</a></li>
+<li><a href="docs/guix--Hurd-Services.html">Hurd Services</a></li>
+<li><a href="docs/guix--Miscellaneous-Services.html">Miscellaneous Services</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>, Previous: <a href="docs/guix--Locales.html">Locales</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

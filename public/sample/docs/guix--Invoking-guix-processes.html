@@ -1,0 +1,160 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-processes">1.0.1. 9.16 Invoking <code>guix processes</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-processes"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Invoking-guix-weather.html">Invoking <code>guix weather</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-processes-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-processes" class="outline-4">
+<h4 id="invoking-guix-processes"><span class="section-number-4">1.0.1.</span> 9.16 Invoking <code>guix processes</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-processes">
+<p>
+<a id="index-guix-processes"></a>
+The <code>guix processes</code> command can be useful to developers and system administrators, especially on multi-user machines and on build farms: it lists the current sessions (connections to the daemon), as well as information about the processes involved. Here's an example of the information it returns:
+</p>
+
+<pre class="example" id="org6cafb26">
+$ sudo guix processes
+SessionPID: 19002
+ClientPID: 19090
+ClientCommand: guix shell python
+
+SessionPID: 19402
+ClientPID: 19367
+ClientCommand: guix publish -u guix-publish -p 3000 -C 9 …
+
+SessionPID: 19444
+ClientPID: 19419
+ClientCommand: cuirass --cache-directory /var/cache/cuirass …
+LockHeld: /gnu/store/…-perl-ipc-cmd-0.96.lock
+LockHeld: /gnu/store/…-python-six-bootstrap-1.11.0.lock
+LockHeld: /gnu/store/…-libjpeg-turbo-2.0.0.lock
+ChildPID: 20495
+ChildCommand: guix offload x86_64-linux 7200 1 28800
+ChildPID: 27733
+ChildCommand: guix offload x86_64-linux 7200 1 28800
+ChildPID: 27793
+ChildCommand: guix offload x86_64-linux 7200 1 28800
+</pre>
+
+<p>
+In this example we see that <code>guix-daemon</code> has three clients: <code>guix shell</code>, <code>guix publish</code>, and the Cuirass continuous integration tool; their process identifier (PID) is given by the <code>ClientPID</code> field. The <code>SessionPID</code> field gives the PID of the <code>guix-daemon</code> sub-process of this particular session.
+</p>
+
+<p>
+The <code>LockHeld</code> fields show which store items are currently locked by this session, which corresponds to store items being built or substituted (the <code>LockHeld</code> field is not displayed when <code>guix processes</code> is not running as root). Last, by looking at the <code>ChildPID</code> and <code>ChildCommand</code> fields, we understand that these three builds are being offloaded (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>).
+</p>
+
+<p>
+The output is in Recutils format so we can use the handy <code>recsel</code> command to select sessions of interest (see <a href="https://www.gnu.org/software/recutils/manual/html_node/Selection-Expressions.html#Selection-Expressions">Selection Expressions</a> in GNU recutils manual). As an example, the command shows the command line and PID of the client that triggered the build of a Perl package:
+</p>
+
+<pre class="example" id="orge2c0246">
+$ sudo guix processes | \
+    recsel -p ClientPID,ClientCommand -e 'LockHeld ~ "perl"'
+ClientPID: 19419
+ClientCommand: cuirass --cache-directory /var/cache/cuirass …
+</pre>
+
+<p>
+Additional options are listed below.
+</p>
+
+<ul class="org-ul">
+<li><code>--format===format</code><br />
+<code>-f ==format</code> :: Produce output in the specified <code>format</code>, one of:
+
+<dl class="org-dl">
+<dt><code>recutils</code></dt><dd>The default option. It outputs a set of Session recutils records that include each <code>ChildProcess</code> as a field.</dd>
+
+<dt><code>normalized</code></dt><dd><p>
+Normalize the output records into record sets (see <a href="https://www.gnu.org/software/recutils/manual/html_node/Record-Sets.html#Record-Sets">Record Sets</a> in GNU recutils manual). Normalizing into record sets allows joins across record types. The example below lists the PID of each <code>ChildProcess</code> and the associated PID for <code>Session</code> that spawned the <code>ChildProcess</code> where the <code>Session</code> was started using <code>guix build</code>.
+</p>
+
+<pre class="example" id="org335e1b5">
+$ guix processes --format=normalized | \
+    recsel \
+    -j Session \
+    -t ChildProcess \
+    -p Session.PID,PID \
+    -e 'Session.ClientCommand ~ "guix build"'
+PID: 4435
+Session_PID: 4278
+
+PID: 4554
+Session_PID: 4278
+
+PID: 4646
+Session_PID: 4278
+</pre></dd>
+</dl></li>
+</ul>
+
+<hr />
+</div>
+</div>
+</div>

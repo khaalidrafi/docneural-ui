@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Combining-the-Two-Versions">1. 30.6.6 Combining the Two Versions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fine-Points-of-Emerge.html">Fine Points of Emerge</a>   Previous: <a href="docs/emacs--Exiting-Emerge.html">Exiting Emerge</a>   Up: <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>
+</p>
+
+<p>
+<a id="Combining-in-Emerge"></a>
+</p>
+
+<hr />
+<div id="outline-container-Combining-the-Two-Versions" class="outline-2">
+<h2 id="Combining-the-Two-Versions"><span class="section-number-2">1.</span> 30.6.6 Combining the Two Versions <a href="#Combining-the-Two-Versions">¶</a></h2>
+<div class="outline-text-2" id="text-Combining-the-Two-Versions">
+<p>
+Sometimes you want to keep <i>both</i> alternatives for a particular difference. To do this, use x c, which edits the merge buffer like this:
+</p>
+
+<pre class="example" id="orgee2ff5d">
+#ifdef NEW
+version from B buffer
+#else /* not NEW */
+version from A buffer
+#endif /* not NEW */
+</pre>
+
+<p>
+While this example shows C preprocessor conditionals delimiting the two alternative versions, you can specify the strings to use by setting the variable <code>emerge-combine-versions-template</code> to a string of your choice. In the string, ‘=%a=' says where to put version A, and ‘=%b=' says where to put version B. The default setting, which produces the results shown above, looks like this:
+</p>
+
+<pre class="example" id="org4a2e905">
+"#ifdef NEW\n%b#else /* not NEW */\n%a#endif /* not NEW */\n"
+</pre>
+</div>
+</div>

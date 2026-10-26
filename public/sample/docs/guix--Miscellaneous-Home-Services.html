@@ -1,0 +1,322 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Miscellaneous-Home-Services"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Secrets-Home-Services.html">Secrets Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Miscellaneous-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="miscellaneous-home-services"></a>13.3.21 Miscellaneous Home Services<br />
+<div class="outline-text-5" id="text-miscellaneous-home-services">
+<p>
+This section lists Home services that lack a better place.
+</p>
+
+<p>
+<a id="Beets-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="beets-service"></a>Beets Service<br />
+<div class="outline-text-5" id="text-beets-service">
+<p>
+<a id="index-Beets-service_002c-for-Home"></a>
+The <code>(gnu home services music)</code> module provides the following service:
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-beets-service-type </dt><dd><a href="https://beets.io">Beets</a> is a music file and metadata manager that can be used via its command-line interface, <code>beet</code>. Beets requires a YAML configuration file and this Guix Home service is to create such file.</dd>
+</dl>
+
+<p>
+The service can be used as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-beets-service-type
+         (home-beets-configuration (directory "/home/alice/music")))
+</pre>
+</div>
+
+<p>
+Additional options can be specified via the service wild-card field <code>extra-options</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-beets-service-type
+         (home-beets-configuration
+          (directory "/home/alice/music")
+          (extra-options '("
+import:
+  move: yes"))))
+</pre>
+</div>
+
+<p>
+<a id="Dictionary-Service-1"></a>
+</p>
+</div>
+</li>
+<li><a id="dictionary-service"></a>Dictionary Service<br />
+<div class="outline-text-5" id="text-dictionary-service">
+<p>
+<a id="index-dictionary-service_002c-for-Home"></a>
+The <code>(gnu home services dict)</code> module provides the following service:
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-dicod-service-type </dt><dd><p>
+This is the type of the service that runs the <code>dicod</code> daemon, an implementation of DICT server (see <a href="https://puszcza.gnu.org.ua/software/dico/manual/html_node/Dicod.html#Dicod">Dicod</a> in GNU Dico Manual).
+</p>
+
+<p>
+You can add <code>open localhost</code> to your <code>~/.dico</code> file to make <code>localhost</code> the default server for <code>dico</code> client (see <a href="https://puszcza.gnu.org.ua/software/dico/manual/html_node/Initialization-File.html#Initialization-File">Initialization File</a> in GNU Dico Manual).
+</p></dd>
+</dl>
+
+<p>
+This service is a direct mapping of the <code>dicod-service-type</code> system service (see <a href="docs/guix--Miscellaneous-Services.html">Dictionary Service</a>). You can use it like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-dicod-service-type)
+</pre>
+</div>
+
+<p>
+You may specify a custom configuration by providing a <code>dicod-configuration</code> record, exactly like for <code>dicod-service-type</code>, but wrapping it in <code>for-home</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-dicod-service-type
+         (for-home
+          (dicod-configuration …)))
+</pre>
+</div>
+
+<p>
+<a id="ReadyMedia-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="readymedia-service"></a>ReadyMedia Service<br />
+<div class="outline-text-5" id="text-readymedia-service">
+<p>
+<a id="index-ReadyMedia_002c-DLNA_002fUPnP-Service"></a>
+The <code>(gnu home services upnp)</code> module provides a service to set up the <a href="https://minidlna.sourceforge.net/">ReadyMedia</a> DLNA (Digital Living Network Alliance) UPnP (Universal Plug and Play) media server.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-readymedia-service-type </dt><dd>This is the service type for the <code>minidlnad</code> daemon; it is the Home counterpart of the <code>readymedia-service-type</code> system service (see <a href="docs/guix--Miscellaneous-Services.html"><code>readymedia-service-type</code></a>). The value for this service type is a <code>readymedia-configuration</code>.</dd>
+</dl>
+
+<p>
+The service can be used with a <code>readymedia-configuration</code> wrapped in <code>for-home</code> like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-readymedia-service-type
+         (for-home
+          (readymedia-configuration
+            (media-directories
+             (list (readymedia-directory
+                     (path "/path/to/media/audio")
+                     (types '(A)))
+                   (readymedia-directory
+                     (path "/path/to/media/video")
+                     (types '(V)))
+                   (readymedia-directory
+                     (path "/path/to/media/misc")))))))
+</pre>
+</div>
+
+<p>
+For details about <code>readymedia-configuration</code>, check out the documentation of the system service (see <a href="docs/guix--Miscellaneous-Services.html"><code>readymedia-service-type</code></a>).
+</p>
+
+<p>
+<a id="OCI-backed-services-1"></a>
+</p>
+</div>
+</li>
+<li><a id="oci-backed-services"></a>OCI backed services<br />
+<div class="outline-text-5" id="text-oci-backed-services">
+<p>
+<a id="index-OCI_002dbacked_002c-for-Home"></a>
+The <code>(gnu home services containers)</code> module provides the following service:
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-oci-service-type </dt><dd>This is the type of the service that allows to manage your OCI containers with the same consistent interface you use for your other Home Shepherd services.</dd>
+</dl>
+
+<p>
+This service is a direct mapping of the <code>oci-service-type</code> system service (see <a href="docs/guix--Miscellaneous-Services.html">OCI backed services</a>). You can use it like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu services containers)
+             (gnu home services containers))
+
+(simple-service 'home-oci-provisioning
+                home-oci-service-type
+                (oci-extension
+                  (volumes
+                    (list
+                      (oci-volume-configuration (name "prometheus"))
+                      (oci-volume-configuration (name "grafana"))))
+                  (networks
+                    (list
+                      (oci-network-configuration (name "monitoring"))))
+                  (containers
+                   (list
+                    (oci-container-configuration
+                     (network "monitoring")
+                     (image
+                      (oci-image
+                        (repository "guile")
+                        (tag "3")
+                        (value (specifications-&gt;manifest '("guile")))
+                        (pack-options '(#:symlinks (("/bin/guile" -&gt; "bin/guile"))
+                                        #:max-layers 2))))
+                     (entrypoint "/bin/guile")
+                     (command
+                      '("-c" "(display \"hello!\n\")")))
+                    (oci-container-configuration
+                      (image "prom/prometheus")
+                      (network "monitoring")
+                      (ports
+                       '(("9000" . "9000")
+                         ("9090" . "9090")))
+                      (volumes
+                       (list
+                        '(("prometheus" . "/var/lib/prometheus")))))
+                    (oci-container-configuration
+                      (image "grafana/grafana:10.0.1")
+                      (network "monitoring")
+                      (volumes
+                       '(("grafana:/var/lib/grafana"))))))))
+</pre>
+</div>
+
+<p>
+You may specify a custom configuration by providing a <code>oci-configuration</code> record, exactly like for <code>oci-service-type</code>, but wrapping it in <code>for-home</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu services)
+             (gnu services containers)
+             (gnu home services containers))
+
+(service home-oci-service-type
+         (for-home
+          (oci-configuration
+           (runtime 'podman)
+           (verbose? #t))))
+
+(simple-service 'home-oci-provisioning
+                home-oci-service-type
+                (oci-extension
+                  (volumes
+                    (list
+                      (oci-volume-configuration (name "prometheus"))
+                      (oci-volume-configuration (name "grafana"))))
+                  (networks
+                    (list
+                      (oci-network-configuration (name "monitoring"))))
+                  (containers
+                   (list
+                    (oci-container-configuration
+                     (network "monitoring")
+                     (image
+                      (oci-image
+                        (repository "guile")
+                        (tag "3")
+                        (value (specifications-&gt;manifest '("guile")))
+                        (pack-options '(#:symlinks (("/bin/guile" -&gt; "bin/guile"))
+                                        #:max-layers 2))))
+                     (entrypoint "/bin/guile")
+                     (command
+                      '("-c" "(display \"hello!\n\")")))
+                    (oci-container-configuration
+                      (image "prom/prometheus")
+                      (network "monitoring")
+                      (ports
+                       '(("9000" . "9000")
+                         ("9090" . "9090")))
+                      (volumes
+                       (list
+                        '(("prometheus" . "/var/lib/prometheus")))))
+                    (oci-container-configuration
+                      (image "grafana/grafana:10.0.1")
+                      (network "monitoring")
+                      (volumes
+                       '(("grafana:/var/lib/grafana"))))))))
+</pre>
+</div>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Secrets-Home-Services.html">Secrets Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

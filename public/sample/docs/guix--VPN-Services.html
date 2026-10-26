@@ -1,0 +1,359 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="VPN-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Network-File-System.html">Network File System</a>, Previous: <a href="docs/guix--VNC-Services.html">VNC Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="VPN-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="vpn-services"></a>11.10.25 VPN Services<br />
+<div class="outline-text-5" id="text-vpn-services">
+<p>
+<a id="index-VPN-_0028virtual-private-network_0029"></a> <a id="index-virtual-private-network-_0028VPN_0029"></a>
+The <code>(gnu services vpn)</code> module provides services related to <i>virtual private networks</i> (VPNs).
+</p>
+
+<p>
+<a id="Bitmask"></a>
+</p>
+</div>
+</li>
+<li><a id="bitmask"></a>Bitmask<br />
+<div class="outline-text-5" id="text-bitmask">
+<dl class="org-dl">
+<dt>Variable: bitmask-service-type </dt><dd>A service type for the <a href="https://bitmask.net">Bitmask</a> VPN client. It makes the client available in the system and loads its polkit policy. Please note that the client expects an active polkit-agent, which is either run by your desktop-environment or should be run manually.</dd>
+</dl>
+
+<p>
+<a id="OpenVPN"></a>
+</p>
+</div>
+</li>
+<li><a id="openvpn"></a>OpenVPN<br />
+<div class="outline-text-5" id="text-openvpn">
+<p>
+It provides a <i>client</i> service for your machine to connect to a VPN, and a <i>server</i> service for your machine to host a VPN. Both <code>openvpn-client-service-type</code> and <code>openvpn-server-service-type</code> can be run simultaneously.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: openvpn-client-service-type </dt><dd><p>
+Type of the service that runs <code>openvpn</code>, a VPN daemon, as a client.
+</p>
+
+<p>
+The value for this service is a <code>&lt;openvpn-client-configuration&gt;</code> object.
+</p></dd>
+
+<dt>Variable: openvpn-server-service-type </dt><dd><p>
+Type of the service that runs <code>openvpn</code>, a VPN daemon, as a server.
+</p>
+
+<p>
+The value for this service is a <code>&lt;openvpn-server-configuration&gt;</code> object.
+</p></dd>
+
+<dt>Data Type: openvpn-client-configuration </dt><dd>Available <code>openvpn-client-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>openvpn</code> (default: <code>openvpn</code>) (type: file-like)</dt><dd>The OpenVPN package.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/openvpn/openvpn.pid"</code>) (type: string)</dt><dd>The OpenVPN pid file.</dd>
+
+<dt><code>proto</code> (default: <code>udp</code>) (type: proto)</dt><dd>The protocol (UDP or TCP) used to open a channel between clients and servers.</dd>
+
+<dt><code>dev</code> (default: <code>tun</code>) (type: dev)</dt><dd>The device type used to represent the VPN connection.</dd>
+
+<dt><code>ca</code> (default: <code>"/etc/openvpn/ca.crt"</code>) (type: maybe-string)</dt><dd>The certificate authority to check connections against.</dd>
+
+<dt><code>cert</code> (default: <code>"/etc/openvpn/client.crt"</code>) (type: maybe-string)</dt><dd>The certificate of the machine the daemon is running on. It should be signed by the authority given in <code>ca</code>.</dd>
+
+<dt><code>key</code> (default: <code>"/etc/openvpn/client.key"</code>) (type: maybe-string)</dt><dd>The key of the machine the daemon is running on. It must be the key whose certificate is <code>cert</code>.</dd>
+
+<dt><code>comp-lzo?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Whether to use the lzo compression algorithm.</dd>
+
+<dt><code>persist-key?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Don't re-read key files across SIGUSR1 or &#x2013;ping-restart.</dd>
+
+<dt><code>persist-tun?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Don't close and reopen TUN/TAP device or run up/down scripts across SIGUSR1 or &#x2013;ping-restart restarts.</dd>
+
+<dt><code>fast-io?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>(Experimental) Optimize TUN/TAP/UDP I/O writes by avoiding a call to poll/epoll/select prior to the write operation.</dd>
+
+<dt><code>verbosity</code> (default: <code>3</code>) (type: number)</dt><dd>Verbosity level.</dd>
+
+<dt><code>tls-auth</code> (default: <code>#f</code>) (type: tls-auth-client)</dt><dd>Add an additional layer of HMAC authentication on top of the TLS control channel to protect against DoS attacks.</dd>
+
+<dt><code>auth-user-pass</code> (type: maybe-string)</dt><dd>Authenticate with server using username/password. The option is a file containing username/password on 2 lines. Do not use a file-like object as it would be added to the store and readable by any user.</dd>
+
+<dt><code>verify-key-usage?</code> (default: <code>#t</code>) (type: key-usage)</dt><dd>Whether to check the server certificate has server usage extension.</dd>
+
+<dt><code>bind?</code> (default: <code>#f</code>) (type: bind)</dt><dd>Bind to a specific local port number.</dd>
+
+<dt><code>resolv-retry?</code> (default: <code>#t</code>) (type: resolv-retry)</dt><dd>Retry resolving server address.</dd>
+
+<dt><code>remote</code> (default: <code>'()</code>) (type: openvpn-remote-list)</dt><dd>A list of remote servers to connect to.
+
+<dl class="org-dl">
+<dt>Data Type: openvpn-remote-configuration </dt><dd>Available <code>openvpn-remote-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <code>"my-server"</code>) (type: string)</dt><dd>Server name.</dd>
+
+<dt><code>port</code> (default: <code>1194</code>) (type: number)</dt><dd>Port number the server listens to.</dd>
+</dl></dd>
+</dl></dd>
+</dl></dd>
+
+<dt>Data Type: openvpn-server-configuration </dt><dd>Available <code>openvpn-server-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>openvpn</code> (default: <code>openvpn</code>) (type: file-like)</dt><dd>The OpenVPN package.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/openvpn/openvpn.pid"</code>) (type: string)</dt><dd>The OpenVPN pid file.</dd>
+
+<dt><code>proto</code> (default: <code>udp</code>) (type: proto)</dt><dd>The protocol (UDP or TCP) used to open a channel between clients and servers.</dd>
+
+<dt><code>dev</code> (default: <code>tun</code>) (type: dev)</dt><dd>The device type used to represent the VPN connection.</dd>
+
+<dt><code>ca</code> (default: <code>"/etc/openvpn/ca.crt"</code>) (type: maybe-string)</dt><dd>The certificate authority to check connections against.</dd>
+
+<dt><code>cert</code> (default: <code>"/etc/openvpn/client.crt"</code>) (type: maybe-string)</dt><dd>The certificate of the machine the daemon is running on. It should be signed by the authority given in <code>ca</code>.</dd>
+
+<dt><code>key</code> (default: <code>"/etc/openvpn/client.key"</code>) (type: maybe-string)</dt><dd>The key of the machine the daemon is running on. It must be the key whose certificate is <code>cert</code>.</dd>
+
+<dt><code>comp-lzo?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Whether to use the lzo compression algorithm.</dd>
+
+<dt><code>persist-key?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Don't re-read key files across SIGUSR1 or &#x2013;ping-restart.</dd>
+
+<dt><code>persist-tun?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Don't close and reopen TUN/TAP device or run up/down scripts across SIGUSR1 or &#x2013;ping-restart restarts.</dd>
+
+<dt><code>fast-io?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>(Experimental) Optimize TUN/TAP/UDP I/O writes by avoiding a call to poll/epoll/select prior to the write operation.</dd>
+
+<dt><code>verbosity</code> (default: <code>3</code>) (type: number)</dt><dd>Verbosity level.</dd>
+
+<dt><code>tls-auth</code> (default: <code>#f</code>) (type: tls-auth-server)</dt><dd>Add an additional layer of HMAC authentication on top of the TLS control channel to protect against DoS attacks.</dd>
+
+<dt><code>port</code> (default: <code>1194</code>) (type: number)</dt><dd>Specifies the port number on which the server listens.</dd>
+
+<dt><code>server</code> (default: <code>"10.8.0.0 255.255.255.0"</code>) (type: ip-mask)</dt><dd>An ip and mask specifying the subnet inside the virtual network.</dd>
+
+<dt><code>server-ipv6</code> (default: <code>#f</code>) (type: cidr6)</dt><dd>A CIDR notation specifying the IPv6 subnet inside the virtual network.</dd>
+
+<dt><code>dh</code> (default: <code>"/etc/openvpn/dh2048.pem"</code>) (type: string)</dt><dd>The Diffie-Hellman parameters file.</dd>
+
+<dt><code>ifconfig-pool-persist</code> (default: <code>"/etc/openvpn/ipp.txt"</code>) (type: string)</dt><dd>The file that records client IPs.</dd>
+
+<dt><code>redirect-gateway?</code> (default: <code>#f</code>) (type: gateway)</dt><dd>When true, the server will act as a gateway for its clients.</dd>
+
+<dt><code>client-to-client?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>When true, clients are allowed to talk to each other inside the VPN.</dd>
+
+<dt><code>keepalive</code> (default: <code>(10 120)</code>) (type: keepalive)</dt><dd>Causes ping-like messages to be sent back and forth over the link so that each side knows when the other side has gone down. <code>keepalive</code> requires a pair. The first element is the period of the ping sending, and the second element is the timeout before considering the other side down.</dd>
+
+<dt><code>max-clients</code> (default: <code>100</code>) (type: number)</dt><dd>The maximum number of clients.</dd>
+
+<dt><code>status</code> (default: <code>"/var/run/openvpn/status"</code>) (type: string)</dt><dd>The status file. This file shows a small report on current connection. It is truncated and rewritten every minute.</dd>
+
+<dt><code>client-config-dir</code> (default: <code>'()</code>) (type: openvpn-ccd-list)</dt><dd>The list of configuration for some clients.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="strongSwan"></a>
+</p>
+</div>
+</li>
+<li><a id="strongswan"></a>strongSwan<br />
+<div class="outline-text-5" id="text-strongswan">
+<p>
+Currently, the strongSwan service only provides legacy-style configuration with <code>ipsec.conf</code> and <code>ipsec.secrets</code> files.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: strongswan-service-type </dt><dd><p>
+A service type for configuring strongSwan for IPsec VPN (Virtual Private Networking). Its value must be a <code>strongswan-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service strongswan-service-type
+         (strongswan-configuration
+          (ipsec-conf "/etc/ipsec.conf")
+          (ipsec-secrets "/etc/ipsec.secrets")))
+</pre>
+</div></dd>
+
+<dt>Data Type: strongswan-configuration </dt><dd>Data type representing the configuration of the StrongSwan service.
+
+<dl class="org-dl">
+<dt><code>strongswan</code></dt><dd>The strongSwan package to use for this service.</dd>
+
+<dt><code>ipsec-conf</code> (default: <code>#f</code>)</dt><dd>The file name of your <code>ipsec.conf</code>. If not <code>#f</code>, then this and <code>ipsec-secrets</code> must both be strings.</dd>
+
+<dt><code>ipsec-secrets</code> (default <code>#f</code>)</dt><dd>The file name of your <code>ipsec.secrets</code>. If not <code>#f</code>, then this and <code>ipsec-conf</code> must both be strings.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Wireguard"></a>
+</p>
+</div>
+</li>
+<li><a id="wireguard"></a>Wireguard<br />
+<div class="outline-text-5" id="text-wireguard">
+<dl class="org-dl">
+<dt>Variable: wireguard-service-type </dt><dd><p>
+A service type for a Wireguard tunnel interface. Its value must be a <code>wireguard-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service wireguard-service-type
+         (wireguard-configuration
+          (peers
+           (list
+            (wireguard-peer
+             (name "my-peer")
+             (endpoint "my.wireguard.com:51820")
+             (public-key "hzpKg9X1yqu1axN6iJp0mWf6BZGo8m1wteKwtTmDGF4=")
+             (allowed-ips '("10.0.0.2/32")))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: wireguard-configuration </dt><dd>Data type representing the configuration of the Wireguard service.
+
+<dl class="org-dl">
+<dt><code>wireguard</code></dt><dd>The wireguard package to use for this service.</dd>
+
+<dt><code>interface</code> (default: <code>"wg0"</code>)</dt><dd>The interface name for the VPN.</dd>
+
+<dt><code>addresses</code> (default: <code>'("10.0.0.1/32")</code>)</dt><dd>List of strings or G-expressions which represent the IP addresses to be assigned to the above interface.</dd>
+
+<dt><code>port</code> (default: <code>51820</code>)</dt><dd>The port on which to listen for incoming connections.</dd>
+
+<dt><code>dns</code> (default: <code>'())</code>)</dt><dd>List of strings or G-expressions which represent the DNS server(s) to announce to VPN clients via DHCP.</dd>
+
+<dt><code>monitor-ips?</code> (default: <code>#f</code>) </dt><dd><p>
+<a id="index-dyndns_002c-usage-with-Wireguard"></a>
+</p>
+
+<p>
+Whether to monitor the resolved Internet addresses (IPs) of the endpoints of the configured peers, resetting the peer endpoints using an IP address that no longer correspond to their freshly resolved host name. Set this to <code>#t</code> if one or more endpoints use host names provided by a dynamic DNS service to keep the sessions alive.
+</p></dd>
+
+<dt><code>monitor-ips-interval</code> (default: <code>"*/5 * * * *"</code>)</dt><dd>This is the monitoring schedule, expressed as a string in traditional cron syntax or as a gexp evaluating to a Shepherd calendar event (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Timers.html#Timers">Timers</a> in The GNU Shepherd Manual).</dd>
+
+<dt><code>private-key</code> (default: <code>"/etc/wireguard/private.key"</code>)</dt><dd>The private key file for the interface. It is automatically generated if the file does not exist. If this field is <code>#f</code>, a private key is not automatically created and the path is not serialized to the configuration file.</dd>
+
+<dt><code>bootstrap-private-key?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether or not the private key should be generated automatically if it does not exist.
+</p>
+
+<p>
+Setting this to <code>#f</code> allows one to set the private key using command substitution. One example shown in the <code>wg-quick(8)</code> manual is retrieving a private key using <code>password-store</code>. This can be achieved with the following code:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(wireguard-configuration
+ (private-key
+  #~(string-append "&lt;("
+                   #$(file-append password-store "/bin/pass")
+                   ;; Wireguard replaces %i with the interface name.
+                   " WireGuard/private-keys/%i)")))
+</pre>
+</div></dd>
+
+<dt><code>peers</code> (default: <code>'()</code>)</dt><dd>The authorized peers on this interface. This is a list of <code>wireguard-peer</code> records.</dd>
+
+<dt><code>pre-up</code> (default: <code>'()</code>)</dt><dd>List of strings or G-expressions. These are script snippets which will be executed before setting up the interface.</dd>
+
+<dt><code>post-up</code> (default: <code>'()</code>)</dt><dd>List of strings or G-expressions. These are script snippets which will be executed after setting up the interface.</dd>
+
+<dt><code>pre-down</code> (default: <code>'()</code>)</dt><dd>List of strings or G-expressions. These are script snippets which will be executed before tearing down the interface.</dd>
+
+<dt><code>post-down</code> (default: <code>'()</code>)</dt><dd>List of strings or G-expressions. These are script snippets which will be executed after tearing down the interface.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>) (type: list-of-symbols)</dt><dd>A list of symbols naming Shepherd services that this service will depend on.</dd>
+
+<dt><code>table</code> (default: <code>"auto"</code>)</dt><dd>The routing table to which routes are added, as a string. There are two special values: <code>"off"</code> that disables the creation of routes altogether, and <code>"auto"</code> (the default) that adds routes to the default table and enables special handling of default routes.</dd>
+
+<dt><code>auto-start?</code> (default: <code>#t"</code>)</dt><dd>Whether the Wireguard network should be started automatically by the Shepherd. If it is <code>#f</code> the service has to be started manually with <code>herd start wireguard-$interface</code> (for example: <code>herd start wireguard-wg0</code>).</dd>
+</dl></dd>
+
+<dt>Data Type: wireguard-peer </dt><dd>Data type representing a Wireguard peer attached to a given interface.
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The peer name.</dd>
+
+<dt><code>endpoint</code> (default: <code>#f</code>)</dt><dd>The optional endpoint for the peer, such as <code>"demo.wireguard.com:51820"</code>.</dd>
+
+<dt><code>public-key</code></dt><dd>The peer public-key represented as a base64 string.</dd>
+
+<dt><code>preshared-key</code> (default: <code>#f</code>)</dt><dd>An optional pre-shared key file for this peer that can be either a string or a G-expression. The given file will not be autogenerated.</dd>
+
+<dt><code>allowed-ips</code></dt><dd>A list of IP addresses from which incoming traffic for this peer is allowed and to which incoming traffic for this peer is directed.</dd>
+
+<dt><code>keep-alive</code> (default: <code>#f</code>)</dt><dd>An optional time interval in seconds. A packet will be sent to the server endpoint once per time interval. This helps receiving incoming connections from this peer when you are behind a NAT or a firewall.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Network-File-System.html">Network File System</a>, Previous: <a href="docs/guix--VNC-Services.html">VNC Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,103 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-Tags-Tables">1. 30.4.2.2 Creating Tags Tables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Etags-Regexps.html">Etags Regexps</a>   Previous: <a href="docs/emacs--Tag-Syntax.html">Source File Tag Syntax</a>   Up: <a href="docs/emacs--Tags-Tables.html">Tags Tables</a>
+</p>
+
+<p>
+<a id="Create-Tags-Table"></a>
+</p>
+
+<hr />
+<div id="outline-container-Creating-Tags-Tables" class="outline-2">
+<h2 id="Creating-Tags-Tables"><span class="section-number-2">1.</span> 30.4.2.2 Creating Tags Tables <a href="#Creating-Tags-Tables">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-Tags-Tables">
+<p>
+The <code>etags</code> program is used to create a tags table file. It knows the syntax of several languages, as described in <a href="docs/emacs--Tag-Syntax.html">Source File Tag Syntax</a>. Here is how to run <code>etags</code>:
+</p>
+
+<pre class="example" id="org077fc32">
+etags inputfiles...
+</pre>
+
+<p>
+The <code>etags</code> program reads the specified files, and writes a tags table named <code>TAGS</code> in the current working directory. You can optionally specify a different file name for the tags table by using the ‘=&#x2013;output===file=' option; specifying <code>-</code> as a file name prints the tags table to standard output. You can also append the newly created tags table to an existing file by using the ‘=&#x2013;append=' option.
+</p>
+
+<p>
+If the specified files don't exist, <code>etags</code> looks for compressed versions of them and uncompresses them to read them. Under MS-DOS, <code>etags</code> also looks for file names like <code>mycode.cgz</code> if it is given ‘=mycode.c=' on the command line and <code>mycode.c</code> does not exist.
+</p>
+
+<p>
+If the tags table becomes outdated due to changes in the files described in it, you can update it by running the <code>etags</code> program again. If the tags table does not record a tag, or records it for the wrong file, then Emacs will not be able to find that definition until you update the tags table. But if the position recorded in the tags table becomes a little bit wrong (due to other editing), Emacs will still be able to find the right position, with a slight delay.
+</p>
+
+<p>
+Thus, there is no need to update the tags table after each edit. You should update a tags table when you define new tags that you want to have listed, or when you move tag definitions from one file to another, or when changes become substantial.
+</p>
+
+<p>
+You can make a tags table <i>include</i> another tags table, by passing the ‘=&#x2013;include===file=' option to <code>etags</code>. It then covers all the files covered by the included tags file, as well as its own.
+</p>
+
+<p>
+If you specify the source files with relative file names when you run <code>etags</code>, the tags file will contain file names relative to the directory where the tags file was initially written. This way, you can move an entire directory tree containing both the tags file and the source files, and the tags file will still refer correctly to the source files. If the tags file is <code>-</code> or is in the <code>/dev</code> directory, however, the file names are made relative to the current working directory. This is useful, for example, when writing the tags to the standard output.
+</p>
+
+<p>
+When using a relative file name, it should not be a symbolic link pointing to a tags file in a different directory, because this would generally render the file names invalid.
+</p>
+
+<p>
+If you specify absolute file names as arguments to <code>etags</code>, then the tags file will contain absolute file names. This way, the tags file will still refer to the same files even if you move it, as long as the source files remain in the same place. Absolute file names start with ‘=/=', or with ‘=device==:/=' on MS-DOS and MS-Windows.
+</p>
+
+<p>
+When you want to make a tags table from a great number of files, you may have problems listing them on the command line, because some systems have a limit on its length. You can circumvent this limit by telling <code>etags</code> to read the file names from its standard input, by typing a dash in place of the file names, like this:
+</p>
+
+<pre class="example" id="org3df4c3c">
+find . -name "*.[chCH]" -print | etags -
+</pre>
+
+<p>
+<code>etags</code> recognizes the language used in an input file based on its file name and contents. It first tries to match the file's name and extension to the ones commonly used with certain languages. Some languages have interpreters with known names (e.g., <code>perl</code> for Perl or <code>pl</code> for Prolog), so <code>etags</code> next looks for an interpreter specification of the form ‘=#!==interp=' on the first line of an input file, and matches that against known interpreters. If none of that works, or if you want to override the automatic detection of the language, you can specify the language explicitly with the ‘=&#x2013;language===name=' option. You can intermix these options with file names; each one applies to the file names that follow it. Specify ‘=&#x2013;language=auto=' to tell <code>etags</code> to resume guessing the language from the file names and file contents. Specify ‘=&#x2013;language=none=' to turn off language-specific processing entirely; then <code>etags</code> recognizes tags by regexp matching alone (see <a href="docs/emacs--Etags-Regexps.html">Etags Regexps</a>). This comes in handy when an input file uses a language not yet supported by <code>etags</code>, and you want to avoid having <code>etags</code> fall back on Fortran and C as the default languages.
+</p>
+
+<p>
+The option ‘=&#x2013;parse-stdin===file=' is mostly useful when calling <code>etags</code> from programs. It can be used (only once) in place of a file name on the command line. <code>etags</code> will read from standard input and mark the produced tags as belonging to the file <code>file</code>.
+</p>
+
+<p>
+For C and C++, if the source files don't observe the GNU Coding Standards' convention if having braces (‘={<code>' and ‘</code>}=') in column zero only for top-level definitions, like functions and <code>struct</code> definitions, we advise that you use the ‘=&#x2013;ignore-indentation=' option, to prevent <code>etags</code> from incorrectly interpreting closing braces in column zero.
+</p>
+
+<p>
+‘=etags &#x2013;help=' outputs the list of the languages <code>etags</code> knows, and the file name rules for guessing the language. It also prints a list of all the available <code>etags</code> options, together with a short explanation. If followed by one or more ‘=&#x2013;language===lang=' options, it outputs detailed information about how tags are generated for <code>lang</code>.
+</p>
+
+<p>
+Instead of creating and updating the tags table by manually invoking <code>etags</code>, you can ask Emacs to do it for you automatically. The global minor mode <code>etags-regen-mode</code>, if enabled, generates tags tables automatically as needed, and takes care of updating them when you edit any of the source files that contribute tags. This mode uses the current project configuration (see <a href="docs/emacs--Projects.html">Working with Projects</a>) to determine which files to submit to <code>etags</code> for regenerating the tags table for the project. You can customize how this minor mode works using the following user options:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-etags_002dregen_002dprogram"></a>=etags-regen-program= </dt><dd>The program to regenerate tags table; defaults to <code>etags</code>.</dd>
+
+<dt><a id="index-etags_002dregen_002dprogram_002doptions"></a>=etags-regen-program-options= </dt><dd>Command-line options to pass to the program which regenerates tags tables.</dd>
+
+<dt><a id="index-etags_002dregen_002dignores"></a>=etags-regen-ignores= </dt><dd>List of glob patterns which specify files to ignore when regenerating tags tables.</dd>
+</dl>
+
+<p>
+If you select a tags table manually, with M-x visit-tags-table (see <a href="docs/emacs--Select-Tags-Table.html">Selecting a Tags Table</a>), <code>etags-regen-mode</code> effectively disables itself: it will no longer automatically create and update tags tables, assuming that you prefer managing your tags tables manually. You can cancel this effect of using <code>visit-tags-table</code> by invoking the command <code>tags-reset-tags-tables</code>.
+</p>
+
+<hr />
+</div>
+</div>

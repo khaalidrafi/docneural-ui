@@ -1,0 +1,116 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Changing-the-Location-of-Point">1. 9.2 Changing the Location of Point ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Erasing.html">Erasing Text</a>   Previous: <a href="docs/emacs--Inserting-Text.html">Inserting Text</a>   Up: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>
+</p>
+
+<p>
+<a id="Moving-Point"></a>
+</p>
+
+<hr />
+<div id="outline-container-Changing-the-Location-of-Point" class="outline-2">
+<h2 id="Changing-the-Location-of-Point"><span class="section-number-2">1.</span> 9.2 Changing the Location of Point <a href="#Changing-the-Location-of-Point">¶</a></h2>
+<div class="outline-text-2" id="text-Changing-the-Location-of-Point">
+<p>
+To do more than insert characters, you have to know how to move point (see <a href="docs/emacs--Point.html">Point</a>). The keyboard commands C-f, C-b, C-n, and C-p move point to the right, left, down, and up, respectively. You can also move point using the <i>arrow keys</i> present on most keyboards: RIGHT, LEFT, DOWN, and UP; however, many Emacs users find that it is slower to use the arrow keys than the control keys, because you need to move your hand to the area of the keyboard where those keys are located.
+</p>
+
+<p>
+You can also click the left mouse button to move point to the position clicked. Emacs also provides a variety of additional keyboard commands that move point in more sophisticated ways.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002df"></a>C-f </dt><dd>Move forward one character (<code>forward-char</code>).</dd>
+
+<dt><a id="index-RIGHT"></a>RIGHT </dt><dd>This command (<code>right-char</code>) behaves like C-f, except when point is in a right-to-left paragraph (see <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>).</dd>
+
+<dt><a id="index-C_002db"></a>C-b </dt><dd>Move backward one character (<code>backward-char</code>).</dd>
+
+<dt><a id="index-LEFT"></a>LEFT </dt><dd>This command (<code>left-char</code>) behaves like C-b, except if the current paragraph is right-to-left (see <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002dn"></a>C-n <br />
+DOWN :: Move down one screen line (<code>next-line</code>). This command attempts to keep the horizontal position unchanged, so if you start in the middle of one line, you move to the middle of the next.</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002dp"></a>C-p <br />
+UP :: Move up one screen line (<code>previous-line</code>). This command preserves position within the line, like C-n.</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002da"></a>C-a <br />
+Home :: Move to the beginning of the line (<code>move-beginning-of-line</code>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002de"></a>C-e <br />
+End :: Move to the end of the line (<code>move-end-of-line</code>).</dd>
+
+<dt>M-f</dt><dd>Move forward one word (<code>forward-word</code>). See <a href="docs/emacs--Words.html">Words</a>.</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002dRIGHT"></a>C-RIGHT <br />
+M-RIGHT :: This command (<code>right-word</code>) behaves like M-f, except it moves <i>backward</i> by one word if the current paragraph is right-to-left. See <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>.</dd>
+
+<dt>M-b</dt><dd>Move backward one word (<code>backward-word</code>). See <a href="docs/emacs--Words.html">Words</a>.</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002dLEFT"></a>C-LEFT <br />
+M-LEFT :: This command (<code>left-word</code>) behaves like M-b, except it moves <i>forward</i> by one word if the current paragraph is right-to-left. See <a href="docs/emacs--Bidirectional-Editing.html">Bidirectional Editing</a>.</dd>
+
+<dt><a id="index-M_002dr"></a>M-r </dt><dd><p>
+Without moving the text on the screen, reposition point on the left margin of the center-most text line of the window; on subsequent consecutive invocations, move point to the left margin of the top-most line, the bottom-most line, and so forth, in cyclic order (<code>move-to-window-line-top-bottom</code>).
+</p>
+
+<p>
+A numeric argument says which screen line to place point on, counting downward from the top of the window (zero means the top line). A negative argument counts lines up from the bottom (−1 means the bottom line). See <a href="docs/emacs--Arguments.html">Numeric Arguments</a>, for more information on numeric arguments.
+</p></dd>
+
+<dt><a id="index-M_002d_003c"></a>M-&lt; </dt><dd>Move to the top of the buffer (<code>beginning-of-buffer</code>). With numeric argument <code>n</code>, move to =n=/10 of the way from the top. On graphical displays, C-HOME does the same.</dd>
+
+<dt><a id="index-M_002d_003e"></a>M-&gt; </dt><dd>Move to the end of the buffer (<code>end-of-buffer</code>). On graphical displays, C-END does the same.</dd>
+
+<dt>(no term)</dt><dd><a id="index-C_002dv"></a>C-v <br />
+PageDown<br />
+next :: Scroll the display one screen forward, and move point onscreen if necessary (<code>scroll-up-command</code>). See <a href="docs/emacs--Scrolling.html">Scrolling</a>.</dd>
+
+<dt>(no term)</dt><dd><a id="index-M_002dv"></a>M-v <br />
+PageUp<br />
+prior :: Scroll one screen backward, and move point onscreen if necessary (<code>scroll-down-command</code>). See <a href="docs/emacs--Scrolling.html">Scrolling</a>.</dd>
+
+<dt><a id="index-M_002dg-c"></a>M-g c </dt><dd>Read a number <code>n</code> and move point to buffer position <code>n</code>. Position 1 is the beginning of the buffer. If point is on or just after a number in the buffer, that is the default for <code>n</code>. Just type RET in the minibuffer to use it. You can also specify <code>n</code> by giving M-g c a numeric prefix argument.</dd>
+
+<dt>(no term)</dt><dd><p>
+<a id="index-M_002dg-M_002dg"></a>M-g M-g <br />
+M-g g :: Read a number <code>n</code> and move point to the beginning of line number <code>n</code> (<code>goto-line</code>). Line 1 is the beginning of the buffer. If point is on or just after a number in the buffer, that is the default for <code>n</code>. Just type RET in the minibuffer to use it. You can also specify <code>n</code> by giving M-g M-g a numeric prefix argument. See <a href="docs/emacs--Select-Buffer.html">Creating and Selecting Buffers</a>, for the behavior of M-g M-g when you give it a plain prefix argument. Alternatively, you can use the command <code>goto-line-relative</code> to move point to the line relative to the accessible portion of the narrowed buffer.
+</p>
+
+<p>
+<code>goto-line</code> has its own history list (see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>). You can have either a single list shared between all buffers (the default) or a separate list for each buffer, by customizing the user option <code>goto-line-history-local</code>.
+</p></dd>
+
+<dt><a id="index-M_002dg-TAB"></a>M-g TAB </dt><dd>Read a number <code>n</code> and move to column <code>n</code> in the current line. Column 0 is the leftmost column. If called with a prefix argument, move to the column number specified by the argument's numeric value.</dd>
+
+<dt><a id="index-C_002dx-C_002dn"></a>C-x C-n </dt><dd>Use the current column of point as the <i>semipermanent goal column</i> (<code>set-goal-column</code>) in the current buffer. When a semipermanent goal column is in effect, C-n, C-p, &lt;prior&gt; and &lt;next&gt; always try to move to this column, or as close as possible to it, after moving vertically. The goal column remains in effect until canceled.</dd>
+
+<dt>C-u C-x C-n</dt><dd>Cancel the goal column. Henceforth, C-n and C-p try to preserve the horizontal position, as usual.</dd>
+</dl>
+
+<p>
+When a line of text in the buffer is longer than the width of the window, Emacs usually displays it on two or more <i>screen lines</i>, a.k.a. <i>visual lines</i>. For convenience, C-n and C-p move point by screen lines, as do the equivalent keys down and up. You can force these commands to move according to <i>logical lines</i> (i.e., according to the text lines in the buffer) by setting the variable <code>line-move-visual</code> to <code>nil</code>; if a logical line occupies multiple screen lines, the cursor then skips over the additional screen lines. For details, see <a href="docs/emacs--Continuation-Lines.html">Continuation Lines</a>. See <a href="docs/emacs--Variables.html">Variables</a>, for how to set variables such as <code>line-move-visual</code>.
+</p>
+
+<p>
+Unlike C-n and C-p, most of the Emacs commands that work on lines work on <i>logical</i> lines. For instance, C-a (<code>move-beginning-of-line</code>) and C-e (<code>move-end-of-line</code>) respectively move to the beginning and end of the logical line. Whenever we encounter commands that work on screen lines, such as C-n and C-p, we will point these out.
+</p>
+
+<p>
+When <code>line-move-visual</code> is <code>nil</code>, you can also set the variable <code>track-eol</code> to a non-<code>nil</code> value. Then C-n and C-p, when starting at the end of the logical line, move to the end of the next logical line. Normally, <code>track-eol</code> is <code>nil</code>.
+</p>
+
+<p>
+C-n normally stops at the end of the buffer when you use it on the last line in the buffer. However, if you set the variable <code>next-line-add-newlines</code> to a non-<code>nil</code> value, C-n on the last line of a buffer creates an additional line at the end and moves down into it.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,80 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Minibuffer-History-1">1. 10.5 Minibuffer History ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Repetition.html">Repeating Minibuffer Commands</a>   Previous: <a href="docs/emacs--Completion.html">Completion</a>   Up: <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>
+</p>
+
+<p>
+<a id="Minibuffer-History"></a>
+</p>
+
+<hr />
+<div id="outline-container-Minibuffer-History-1" class="outline-2">
+<h2 id="Minibuffer-History-1"><span class="section-number-2">1.</span> 10.5 Minibuffer History <a href="#Minibuffer-History-1">¶</a></h2>
+<div class="outline-text-2" id="text-Minibuffer-History-1">
+<p>
+Everything you type in the minibuffer is saved in a <i>minibuffer history list</i> so you can easily use it again later. This includes completion candidates (such as file names, buffer names, command names, etc.) and any other kind of minibuffer input. You can use the following commands to quickly fetch an earlier or alternative response into the minibuffer:
+</p>
+
+<dl class="org-dl">
+<dt>M-p</dt><dd>Move to the previous item in the minibuffer history, an earlier argument (<code>previous-history-element</code>).</dd>
+
+<dt>M-n</dt><dd>Move to the next item in the minibuffer history (<code>next-history-element</code>).</dd>
+
+<dt>(no term)</dt><dd>UP<br />
+DOWN :: Like M-p and M-n, but move to the previous or next line of a multi-line item before going to the previous history item (<code>previous-line-or-history-element</code> and <code>next-line-or-history-element</code>) .</dd>
+
+<dt>M-r <code>regexp</code> RET</dt><dd>Move to an earlier item in the minibuffer history that matches <code>regexp</code> (<code>previous-matching-history-element</code>).</dd>
+
+<dt>M-s <code>regexp</code> RET</dt><dd>Move to a later item in the minibuffer history that matches <code>regexp</code> (<code>next-matching-history-element</code>).</dd>
+</dl>
+
+<p>
+While in the minibuffer, M-p (<code>previous-history-element</code>) moves through the minibuffer history list, one item at a time. Each M-p fetches an earlier item from the history list into the minibuffer, replacing its existing contents. Typing M-n (<code>next-history-element</code>) moves through the minibuffer history list in the opposite direction, fetching later entries into the minibuffer.
+</p>
+
+<p>
+If you type M-n in the minibuffer when there are no later entries in the minibuffer history (e.g., if you haven't previously typed M-p), Emacs tries fetching from a list of default arguments: values that you are likely to enter. You can think of this as moving through the “future history”.
+</p>
+
+<p>
+The “future history” for file names includes several possible alternatives you may find useful, such as the file name or the URL at point in the current buffer. The defaults put into the “future history” in this case are controlled by the functions mentioned in the value of the option <code>file-name-at-point-functions</code>. By default, its value invokes the <code>ffap</code> package (see <a href="docs/emacs--FFAP.html">Finding Files and URLs at Point</a>), which tries to guess the default file or URL from the text around point. To disable this guessing, customize the option to a <code>nil</code> value, then the “future history” of file names will include only the file, if any, visited by the current buffer, and the default directory.
+</p>
+
+<p>
+The arrow keys UP and DOWN work like M-p and M-n, but if the current history item is longer than a single line, they allow you to move to the previous or next line of the current history item before going to the previous or next history item.
+</p>
+
+<p>
+If you edit the text inserted by the M-p or M-n minibuffer history commands, this does not change its entry in the history list. However, the edited argument does go at the end of the history list when you submit it.
+</p>
+
+<p>
+You can use M-r (<code>previous-matching-history-element</code>) to search through older elements in the history list, and M-s (<code>next-matching-history-element</code>) to search through newer entries. Each of these commands asks for a <i>regular expression</i> as an argument, and fetches the first matching entry into the minibuffer. See <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>, for an explanation of regular expressions. A numeric prefix argument <code>n</code> means to fetch the =n=th matching entry. These commands are unusual, in that they use the minibuffer to read the regular expression argument, even though they are invoked from the minibuffer. An upper-case letter in the regular expression makes the search case-sensitive (see <a href="docs/emacs--Lax-Search.html">Lax Matching During Searching</a>).
+</p>
+
+<p>
+You can also search through the history using an incremental search. See <a href="docs/emacs--Isearch-Minibuffer.html">Searching the Minibuffer</a>.
+</p>
+
+<p>
+Emacs keeps separate history lists for several different kinds of arguments. For example, there is a list for file names, used by all the commands that read file names. Other history lists include buffer names, command names (used by M-x), and command arguments (used by commands like <code>query-replace</code>).
+</p>
+
+<p>
+The variable <code>history-length</code> specifies the maximum length of a minibuffer history list; adding a new element deletes the oldest element if the list gets too long. If the value is <code>t</code>, there is no maximum length.
+</p>
+
+<p>
+The variable <code>history-delete-duplicates</code> specifies whether to delete duplicates in history. If it is non-<code>nil</code>, adding a new element deletes from the list all other elements that are equal to it. The default is <code>nil</code>.
+</p>
+
+<hr />
+</div>
+</div>

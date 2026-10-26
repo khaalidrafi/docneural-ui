@@ -1,0 +1,206 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Common-Build-Options"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>, Up: <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Common-Build-Options-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="common-build-options"></a>9.1.1 Common Build Options<br />
+<div class="outline-text-5" id="text-common-build-options">
+<p>
+A number of options that control the build process are common to <code>guix build</code> and other commands that can spawn builds, such as <code>guix package</code> or <code>guix archive</code>. These are the following:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>--load-path===directory</code><br />
+<code>-L ==directory</code> :: Add <code>directory</code> to the front of the package module search path (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+This allows users to define their own packages and make them visible to the command-line tools.
+</p></li>
+
+<li><p>
+<code>--keep-failed</code><br />
+<code>-K</code> :: Keep the build tree of failed builds. Thus, if a build fails, its build tree is kept under <code>/tmp</code>, in a directory whose name is shown at the end of the build log. This is useful when debugging build issues. See <a href="docs/guix--Debugging-Build-Failures.html">Debugging Build Failures</a>, for tips and tricks on how to debug build issues.
+</p>
+
+<p>
+This option implies <code>--no-offload</code>, and it has no effect when connecting to a remote daemon with a <code>guix://</code> URI (see <a href="docs/guix--The-Store.html">the <code>GUIX_DAEMON_SOCKET</code> variable</a>).
+</p></li>
+
+<li><p>
+<code>--keep-going</code><br />
+<code>-k</code> :: Keep going when some of the derivations fail to build; return only once all the builds have either completed or failed.
+</p>
+
+<p>
+The default behavior is to stop as soon as one of the specified derivations has failed.
+</p></li>
+
+<li><p>
+<code>--dry-run</code><br />
+<code>-n</code> :: Do not build the derivations.
+</p>
+
+<p>
+<a id="fallback_002doption"></a>
+</p></li>
+
+<li id="<code>--fallback</code>">When substituting a pre-built binary fails, fall back to building packages locally (see <a href="docs/guix--Substitution-Failure.html">Substitution Failure</a>).</li>
+
+<li id="<code>--substitute-urls===urls</code>"><p>
+<a id="client_002dsubstitute_002durls"></a>
+</p>
+
+<p>
+Consider <code>urls</code> the whitespace-separated list of substitute source URLs, overriding the default list of URLs of <code>guix-daemon</code> (see <a href="docs/guix--Invoking-guix_002ddaemon.html#daemon_002dsubstitute_002durls"><code>guix-daemon</code> URLs</a>).
+</p>
+
+<p>
+This means that substitutes may be downloaded from <code>urls</code>, provided they are signed by a key authorized by the system administrator (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<p>
+When <code>urls</code> is the empty string, substitutes are effectively disabled.
+</p></li>
+
+<li id="<code>--no-substitutes</code>">Do not use substitutes for build products. That is, always build things locally instead of allowing downloads of pre-built binaries (see <a href="docs/guix--Substitutes.html">Substitutes</a>).</li>
+
+<li id="<code>--no-grafts</code>">Do not “graft” packages. In practice, this means that package updates available as grafts are not applied. See <a href="docs/guix--Security-Updates.html">Security Updates</a>, for more information on grafts.</li>
+
+<li id="<code>--rounds===n</code>"><p>
+Build each derivation <code>n</code> times in a row, and raise an error if consecutive build results are not bit-for-bit identical.
+</p>
+
+<p>
+This is a useful way to detect non-deterministic builds processes. Non-deterministic build processes are a problem because they make it practically impossible for users to <i>verify</i> whether third-party binaries are genuine. See <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>, for more.
+</p>
+
+<p>
+When used in conjunction with <code>--keep-failed</code>, the differing output is kept in the store, under <code>/gnu/store/…-check</code>. This makes it easy to look for differences between the two results.
+</p></li>
+
+<li id="<code>--no-offload</code>">Do not use offload builds to other machines (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>). That is, always build things locally instead of offloading builds to remote machines.</li>
+
+<li id="<code>--max-silent-time===seconds</code>"><p>
+When the build or substitution process remains silent for more than <code>seconds</code>, terminate it and report a build failure.
+</p>
+
+<p>
+By default, the daemon's setting is honored (see <a href="docs/guix--Invoking-guix_002ddaemon.html"><code>--max-silent-time</code></a>).
+</p></li>
+
+<li id="<code>--timeout===seconds</code>"><p>
+Likewise, when the build or substitution process lasts for more than <code>seconds</code>, terminate it and report a build failure.
+</p>
+
+<p>
+By default, the daemon's setting is honored (see <a href="docs/guix--Invoking-guix_002ddaemon.html"><code>--timeout</code></a>).
+</p>
+
+<p>
+<a id="index-verbosity_002c-of-the-command_002dline-tools"></a> <a id="index-build-logs_002c-verbosity"></a>
+</p></li>
+
+<li><code>-v ==level</code><br />
+<code>--verbosity===level</code> :: Use the given verbosity <code>level</code>, an integer. Choosing 0 means that no output is produced, 1 is for quiet output; 2 is similar to 1 but it additionally displays download URLs; 3 shows all the build log output on standard error.</li>
+
+<li><code>--cores===n</code><br />
+<code>-c ==n</code> :: Allow the use of up to <code>n</code> CPU cores for the build. The special value <code>0</code> means to use as many CPU cores as available.</li>
+
+<li><code>--max-jobs===n</code><br />
+<code>-M ==n</code> :: Allow at most <code>n</code> build jobs in parallel. See <a href="docs/guix--Invoking-guix_002ddaemon.html"><code>--max-jobs</code></a>, for details about this option and the equivalent <code>guix-daemon</code> option.</li>
+
+<li id="<code>--debug===level</code>">Produce debugging output coming from the build daemon. <code>level</code> must be an integer between 0 and 5; higher means more verbose output. Setting a level of 4 or more may be helpful when debugging setup issues with the build daemon.</li>
+</ul>
+
+<p>
+Behind the scenes, <code>guix build</code> is essentially an interface to the <code>package-derivation</code> procedure of the <code>(guix packages)</code> module, and to the <code>build-derivations</code> procedure of the <code>(guix derivations)</code> module.
+</p>
+
+<p>
+In addition to options explicitly passed on the command line, <code>guix build</code> and other <code>guix</code> commands that support building honor the <code>GUIX_BUILD_OPTIONS</code> environment variable.
+</p>
+
+<dl class="org-dl">
+<dt>Environment Variable: GUIX<sub>BUILD</sub><sub>OPTIONS</sub> </dt><dd><p>
+Users can define this variable to a list of command line options that will automatically be used by <code>guix build</code> and other <code>guix</code> commands that can perform builds, as in the example below:
+</p>
+
+<pre class="example" id="orge6713f5">
+$ export GUIX_BUILD_OPTIONS="--no-substitutes -c 2 -L /foo/bar"
+</pre>
+
+<p>
+These options are parsed independently, and the result is appended to the parsed command-line options.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>, Up: <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

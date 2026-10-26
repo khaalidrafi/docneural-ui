@@ -1,0 +1,81 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Shell-Commands-in-Dired-1">1. 32.8 Shell Commands in Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Shell-Command-Guessing.html">Shell Command Guessing</a>   Previous: <a href="docs/emacs--Operating-on-Files.html">Operating on Files</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Shell-Commands-in-Dired"></a>
+</p>
+
+<hr />
+<div id="outline-container-Shell-Commands-in-Dired-1" class="outline-2">
+<h2 id="Shell-Commands-in-Dired-1"><span class="section-number-2">1.</span> 32.8 Shell Commands in Dired <a href="#Shell-Commands-in-Dired-1">¶</a></h2>
+<div class="outline-text-2" id="text-Shell-Commands-in-Dired-1">
+<p>
+The Dired command ! (<code>dired-do-shell-command</code>) reads a shell command string in the minibuffer, and runs that shell command on one or more files. The files that the shell command operates on are determined in the usual way for Dired commands (see <a href="docs/emacs--Operating-on-Files.html">Operating on Files</a>). The command X is a synonym for !.
+</p>
+
+<p>
+The command &amp; (<code>dired-do-async-shell-command</code>) does the same, except that it runs the shell command asynchronously. (You can also do this with !, by appending a ‘=&amp;=' character to the end of the shell command.) When the command operates on more than one file, it runs multiple parallel copies of the specified shell command, one for each file. As an exception, if the specified shell command ends in ‘=;=' or ‘=;&amp;=', the shell command is run in the background on each file sequentially; Emacs waits for each invoked shell command to terminate before running the next one.
+</p>
+
+<p>
+For both ! and &amp;, the working directory for the shell command is the top-level directory of the Dired buffer.
+</p>
+
+<p>
+If you tell ! or &amp; to operate on more than one file, the shell command string determines how those files are passed to the shell command:
+</p>
+
+<ul class="org-ul">
+<li><p>
+If you use ‘=*=' surrounded by whitespace in the command string, then the command runs just once, with the list of file names substituted for the ‘=*='. The order of file names is the order of appearance in the Dired buffer.
+</p>
+
+<p>
+Thus, ! tar cf foo.tar * RET runs <code>tar</code> on the entire list of file names, putting them into one tar file <code>foo.tar</code>.
+</p>
+
+<p>
+If you want to use ‘=*=' as a shell wildcard with whitespace around it, write ‘=*""<code>'. In the shell, this is equivalent to ‘=*</code>'; but since the ‘=*=' is not surrounded by whitespace, Dired does not treat it specially. Emacs will prompt for confirmation if you do this, unless <code>dired-confirm-shell-command</code> is <code>nil</code>.
+</p></li>
+
+<li>Otherwise, if the command string contains ‘=?=' surrounded by whitespace or ‘=`?`=', Emacs runs the shell command once <i>for each file</i>, substituting the current file name for ‘=?=' and ‘=`?`=' each time. You can use both ‘=?=' and ‘=`?`=' more than once in the command; the same file name replaces each occurrence. If you mix them with ‘=*=' the command signals an error.</li>
+
+<li>If the command string contains neither ‘=*=' nor ‘=?=' nor ‘=`?`=', Emacs runs the shell command once for each file, adding the file name at the end. For example, ! uudecode RET runs <code>uudecode</code> on each file.</li>
+</ul>
+
+<p>
+To iterate over the file names in a more complicated fashion, you might prefer to use an explicit shell loop. For example, here is how to uuencode each file, making the output file name by appending ‘=.uu=' to the input file name:
+</p>
+
+<pre class="example" id="org42390ca">
+for file in * ; do uuencode "$file" "$file" &gt;"$file".uu; done
+</pre>
+
+<p>
+The same example with ‘=`?`=' notation:
+</p>
+
+<pre class="example" id="orgb658bf0">
+uuencode ? ? &gt; `?`.uu
+</pre>
+
+<p>
+The ! and &amp; commands do not attempt to update the Dired buffer to show new or modified files, because they don't know what files will be changed. Use the g command to update the Dired buffer (see <a href="docs/emacs--Dired-Updating.html">Updating the Dired Buffer</a>).
+</p>
+
+<p>
+See <a href="docs/emacs--Single-Shell.html">Single Shell Commands</a>, for information about running shell commands outside Dired.
+</p>
+
+<hr />
+</div>
+</div>

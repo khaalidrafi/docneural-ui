@@ -1,0 +1,275 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Secure-Shell"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--GNU-Privacy-Guard.html">GNU Privacy Guard</a>, Previous: <a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Secure-Shell-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="secure-shell"></a>13.3.6 Secure Shell<br />
+<div class="outline-text-5" id="text-secure-shell">
+<p>
+<a id="index-secure-shell-client_002c-configuration"></a> <a id="index-SSH-client_002c-configuration"></a>
+The <a href="https://www.openssh.com">OpenSSH package</a> includes a client, the <code>ssh</code> command, that allows you to connect to remote machines using the SSH (secure shell) protocol. With the <code>(gnu home services ssh)</code> module, you can set up OpenSSH so that it works in a predictable fashion, almost independently of state on the local machine. To do that, you instantiate <code>home-openssh-service-type</code> in your Home configuration, as explained below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-openssh-service-type </dt><dd><p>
+This is the type of the service to set up the OpenSSH client. It takes care of several things:
+</p>
+
+<ul class="org-ul">
+<li>providing a <code>~/.ssh/config</code> file based on your configuration so that <code>ssh</code> knows about hosts you regularly connect to and their associated parameters;</li>
+<li>providing a <code>~/.ssh/authorized_keys</code>, which lists public keys that the local SSH server, <code>sshd</code>, may accept to connect to this user account;</li>
+<li>optionally providing a <code>~/.ssh/known_hosts</code> file so that <code>ssh</code> can authenticate hosts you connect to.</li>
+</ul>
+
+<p>
+Here is an example of a service and its configuration that you could add to the <code>services</code> field of your <code>home-environment</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-openssh-service-type
+         (home-openssh-configuration
+          (hosts
+           (list (openssh-host (name "ci.guix.gnu.org")
+                               (user "charlie"))
+                 (openssh-host (name "chbouib")
+                               (host-name "chbouib.example.org")
+                               (user "supercharlie")
+                               (port 10022))))
+          (authorized-keys (list (local-file "alice.pub")))))
+</pre>
+</div>
+
+<p>
+The example above lists two hosts and their parameters. For instance, running <code>ssh chbouib</code> will automatically connect to <code>chbouib.example.org</code> on port 10022, logging in as user ‘=supercharlie='. Further, it marks the public key in <code>alice.pub</code> as authorized for incoming connections.
+</p>
+
+<p>
+The value associated with a <code>home-openssh-service-type</code> instance must be a <code>home-openssh-configuration</code> record, as describe below.
+</p></dd>
+
+<dt>Data Type: home-openssh-configuration </dt><dd>This is the datatype representing the OpenSSH client and server configuration in one's home environment. It contains the following fields:
+
+<dl class="org-dl">
+<dt><code>hosts</code> (default: <code>'()</code>)</dt><dd>A list of <code>openssh-host</code> records specifying host names and associated connection parameters (see below). This host list goes into <code>~/.ssh/config</code>, which <code>ssh</code> reads at startup.</dd>
+
+<dt><code>known-hosts</code> (default: <code>*unspecified*</code>)</dt><dd><p>
+This must be either:
+</p>
+
+<ul class="org-ul">
+<li><code>*unspecified*</code>, in which case <code>home-openssh-service-type</code> leaves it up to <code>ssh</code> and to the user to maintain the list of known hosts at <code>~/.ssh/known_hosts</code>, or</li>
+<li>a list of file-like objects, in which case those are concatenated and emitted as <code>~/.ssh/known_hosts</code>.</li>
+</ul>
+
+<p>
+The <code>~/.ssh/known_hosts</code> contains a list of host name/host key pairs that allow <code>ssh</code> to authenticate hosts you connect to and to detect possible impersonation attacks. By default, <code>ssh</code> updates it in a <i>TOFU, trust-on-first-use</i> fashion, meaning that it records the host's key in that file the first time you connect to it. This behavior is preserved when <code>known-hosts</code> is set to <code>*unspecified*</code>.
+</p>
+
+<p>
+If you instead provide a list of host keys upfront in the <code>known-hosts</code> field, your configuration becomes self-contained and stateless: it can be replicated elsewhere or at another point in time. Preparing this list can be relatively tedious though, which is why <code>*unspecified*</code> is kept as a default.
+</p></dd>
+
+<dt><code>authorized-keys</code> (default: <code>#false</code>)</dt><dd><p>
+The default <code>#false</code> value means: Leave any <code>~/.ssh/authorized_keys</code> file alone. Otherwise, this must be a list of file-like objects, each of which containing an SSH public key that should be authorized to connect to this machine.
+</p>
+
+<p>
+Concretely, these files are concatenated and made available as <code>~/.ssh/authorized_keys</code>. If an OpenSSH server, <code>sshd</code>, is running on this machine, then it <i>may</i> take this file into account: this is what <code>sshd</code> does by default, but be aware that it can also be configured to ignore it.
+</p></dd>
+
+<dt><code>add-keys-to-agent</code> (default: <code>no</code>)</dt><dd>This string specifies whether keys should be automatically added to a running ssh-agent. If this option is set to <code>yes</code> and a key is loaded from a file, the key and its passphrase are added to the agent with the default lifetime, as if by <code>ssh-add</code>. If this option is set to <code>ask</code>, <code>ssh</code> will require confirmation. If this option is set to <code>confirm</code>, each use of the key must be confirmed. If this option is set to <code>no</code>, no keys are added to the agent. Alternately, this option may be specified as a time interval to specify the key's lifetime in <code>ssh-agent</code>, after which it will automatically be removed. The argument must be <code>no</code>, <code>yes</code>, <code>confirm</code> (optionally followed by a time interval), <code>ask</code> or a time interval.</dd>
+</dl></dd>
+
+<dt>Data Type: openssh-host </dt><dd>Available <code>openssh-host</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>Name of this host declaration. A <code>openssh-host</code> must define only <code>name</code> or <code>match-criteria</code>. Use host-name <code>\"*\"</code> for top-level options.</dd>
+
+<dt><code>host-name</code> (type: maybe-string)</dt><dd>Host name&#x2014;e.g., <code>"foo.example.org"</code> or <code>"192.168.1.2"</code>.</dd>
+
+<dt><code>match-criteria</code> (type: maybe-match-criteria)</dt><dd>When specified, this string denotes the set of hosts to which the entry applies, superseding the <code>host-name</code> field. Its first element must be all or one of <code>ssh-match-keywords</code>. The rest of the elements are arguments for the keyword, or other criteria. A <code>openssh-host</code> must define only <code>name</code> or <code>match-criteria</code>. Other host configuration options will apply to all hosts matching <code>match-criteria</code>.</dd>
+
+<dt><code>address-family</code> (type: maybe-address-family)</dt><dd>Address family to use when connecting to this host: one of <code>AF_INET</code> (for IPv4 only), <code>AF_INET6</code> (for IPv6 only). Additionally, the field can be left unset to allow any address family.</dd>
+
+<dt><code>identity-file</code> (type: maybe-string)</dt><dd>The identity file to use&#x2014;e.g., <code>"/home/charlie/.ssh/id_ed25519"</code>.</dd>
+
+<dt><code>port</code> (type: maybe-natural-number)</dt><dd>TCP port number to connect to.</dd>
+
+<dt><code>user</code> (type: maybe-string)</dt><dd>User name on the remote host.</dd>
+
+<dt><code>forward-x11?</code> (type: maybe-boolean)</dt><dd>Whether to forward remote client connections to the local X11 graphical display.</dd>
+
+<dt><code>forward-x11-trusted?</code> (type: maybe-boolean)</dt><dd>Whether remote X11 clients have full access to the original X11 graphical display.</dd>
+
+<dt><code>forward-agent?</code> (type: maybe-boolean)</dt><dd>Whether the authentication agent (if any) is forwarded to the remote machine.</dd>
+
+<dt><code>compression?</code> (type: maybe-boolean)</dt><dd>Whether to compress data in transit.</dd>
+
+<dt><code>proxy</code> (type: maybe-proxy-command-or-jump-list)</dt><dd><p>
+The command to use to connect to the server or a list of SSH hosts to jump through before connecting to the server. The field may be set to either a <code>proxy-command</code> or a list of <code>proxy-jump</code> records.
+</p>
+
+<p>
+As an example, a <code>proxy-command</code> to connect via an HTTP proxy at 192.0.2.0 would be constructed with: <code>(proxy-command "nc -X connect -x 192.0.2.0:8080 %h %p")</code>.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: proxy-jump </dt><dd>Available <code>proxy-jump</code> fields are:
+
+<dl class="org-dl">
+<dt><code>user</code> (type: maybe-string)</dt><dd>User name on the remote host.</dd>
+
+<dt><code>host-name</code> (type: string)</dt><dd>Host name&#x2014;e.g., <code>foo.example.org</code> or <code>192.168.1.2</code>.</dd>
+
+<dt><code>port</code> (type: maybe-natural-number)</dt><dd>TCP port number to connect to.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>host-key-algorithms</code> (type: maybe-string-list)</dt><dd>The list of accepted host key algorithms&#x2014;e.g., <code>'("ssh-ed25519")</code>.</dd>
+
+<dt><code>accepted-key-types</code> (type: maybe-string-list)</dt><dd>The list of accepted user public key types.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: raw-configuration-string)</dt><dd>Extra content appended as-is to this <code>Host</code> block in <code>~/.ssh/config</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-Parcimonie_002c-Home-service"></a>
+The <code>parcimonie</code> service runs a daemon that slowly refreshes a GnuPG public key from a keyserver. It refreshes one key at a time; between every key update parcimonie sleeps a random amount of time, long enough for the previously used Tor circuit to expire. This process is meant to make it hard for an attacker to correlate the multiple key update.
+</p>
+
+<p>
+As an example, here is how you would configure <code>parcimonie</code> to refresh the keys in your GnuPG keyring, as well as those keyrings created by Guix, such as when running <code>guix import</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-parcimonie-service-type
+         (home-parcimonie-configuration
+           (refresh-guix-keyrings? #t)))
+</pre>
+</div>
+
+<p>
+This assumes that the Tor anonymous routing daemon is already running on your system. On Guix System, this can be achieved by setting up <code>tor-service-type</code> (see <a href="docs/guix--Networking-Services.html"><code>tor-service-type</code></a>).
+</p>
+
+<p>
+The service reference is given below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: parcimonie-service-type </dt><dd>This is the service type for <code>parcimonie</code> (<a href="https://salsa.debian.org/intrigeri/parcimonie">Parcimonie's web site</a>). Its value must be a <code>home-parcimonie-configuration</code>, as shown below.</dd>
+
+<dt>Data Table: home-parcimonie-configuration </dt><dd>Available <code>home-parcimonie-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>parcimonie</code> (default: <code>parcimonie</code>) (type: file-like)</dt><dd>The parcimonie package to use.</dd>
+
+<dt><code>verbose?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to have more verbose logging from the service.</dd>
+
+<dt><code>gnupg-already-torified?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether GnuPG is already configured to pass all traffic through <a href="https://torproject.org">Tor</a>.</dd>
+
+<dt><code>refresh-guix-keyrings?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Guix creates a few keyrings in the <code>$XDG_CONFIG_HOME</code>, such as when running <code>guix import</code> (see <a href="docs/guix--Invoking-guix-import.html">Invoking <code>guix import</code></a>). Setting this to <code>#t</code> will also refresh any keyrings which Guix has created.</dd>
+
+<dt><code>extra-content</code> (default: <code>#f</code>) (type: raw-configuration-string)</dt><dd>Raw content to add to the parcimonie command.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-ssh_002dagent"></a>
+The <a href="https://www.openssh.com">OpenSSH package</a> includes a daemon, the <code>ssh-agent</code> command, that manages keys to connect to remote machines using the SSH (secure shell) protocol. With the <code>(gnu home services ssh)</code> service, you can configure the OpenSSH ssh-agent to run upon login. See <a href="docs/guix--GNU-Privacy-Guard.html"><code>home-gpg-agent-service-type</code></a>, for an alternative to OpenSSH's <code>ssh-agent</code>.
+</p>
+
+<p>
+Here is an example of a service and its configuration that you could add to the <code>services</code> field of your <code>home-environment</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-ssh-agent-service-type
+         (home-ssh-agent-configuration
+          (extra-options '("-t" "1h30m"))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: home-ssh-agent-service-type </dt><dd>This is the type of the <code>ssh-agent</code> home service, whose value is a <code>home-ssh-agent-configuration</code> object.</dd>
+
+<dt>Data Type: home-ssh-agent-configuration </dt><dd>Available <code>home-ssh-agent-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>openssh</code> (default: <code>openssh</code>) (type: file-like)</dt><dd>The OpenSSH package to use.</dd>
+
+<dt><code>socket-directory</code> (default: <code>XDG_RUNTIME_DIR==/ssh-agent"</code>) (type: gexp)</dt><dd>The directory to write the ssh-agent's <code>socket</code> file.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options will be passed to <code>ssh-agent</code>, please run <code>man ssh-agent</code> for more information.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--GNU-Privacy-Guard.html">GNU Privacy Guard</a>, Previous: <a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

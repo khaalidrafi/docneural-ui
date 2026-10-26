@@ -1,0 +1,437 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Package-Transformation-Options"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Additional-Build-Options.html">Additional Build Options</a>, Previous: <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>, Up: <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Package-Transformation-Options-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="package-transformation-options"></a>9.1.2 Package Transformation Options<br />
+<div class="outline-text-5" id="text-package-transformation-options">
+<p>
+<a id="index-package-variants"></a>
+Another set of command-line options supported by <code>guix build</code> and also <code>guix package</code> are <i>package transformation options</i>. These are options that make it possible to define <i>package variants</i>&#x2014;for instance, packages built from different source code. This is a convenient way to create customized packages on the fly without having to type in the definitions of package variants (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>).
+</p>
+
+<p>
+Package transformation options are preserved across upgrades: <code>guix upgrade</code> attempts to apply transformation options initially used when creating the profile to the upgraded packages.
+</p>
+
+<p>
+The available options are listed below. Most commands support them and also support a <code>--help-transform</code> option that lists all the available options and a synopsis (these options are not shown in the <code>--help</code> output for brevity).
+</p>
+
+<p>
+<a id="index-performance_002c-tuning-code"></a> <a id="index-optimization_002c-of-package-code"></a> <a id="index-tuning_002c-of-package-code"></a> <a id="index-SIMD-support"></a> <a id="index-tunable-packages"></a> <a id="index-package-multi_002dversioning"></a>
+<code>--tune[===cpu==]</code>
+Use versions of the packages marked as “tunable” optimized for <code>cpu</code>. When <code>cpu</code> is <code>native</code>, or when it is omitted, tune for the CPU on which the <code>guix</code> command is running.
+</p>
+
+<p>
+Valid <code>cpu</code> names are those recognized by the underlying compiler, by default the GNU Compiler Collection. On x86<sub>64</sub> processors, this includes CPU names such as <code>nehalem</code>, <code>haswell</code>, and <code>skylake</code> (see <a href="https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#x86-Options"><code>-march</code></a> in Using the GNU Compiler Collection (GCC)).
+</p>
+
+<p>
+As new generations of CPUs come out, they augment the standard instruction set architecture (ISA) with additional instructions, in particular instructions for single-instruction/multiple-data (SIMD) parallel processing. For example, while Core2 and Skylake CPUs both implement the x86<sub>64</sub> ISA, only the latter supports AVX2 SIMD instructions.
+</p>
+
+<p>
+The primary gain one can expect from <code>--tune</code> is for programs that can make use of those SIMD capabilities <i>and</i> that do not already have a mechanism to select the right optimized code at run time. Packages that have the <code>tunable?</code> property set are considered <i>tunable packages</i> by the <code>--tune</code> option; a package definition with the property set looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(package
+  (name "hello-simd")
+  ;; ...
+
+  ;; This package may benefit from SIMD extensions so
+  ;; mark it as "tunable".
+  (properties '((tunable? . #t))))
+</pre>
+</div>
+
+<p>
+Other packages are not considered tunable. This allows Guix to use generic binaries in the cases where tuning for a specific CPU is unlikely to provide any gain.
+</p>
+
+<p>
+Tuned packages are built with <code>-march===CPU</code>; under the hood, the <code>-march</code> option is passed to the actual wrapper by a compiler wrapper. Since the build machine may not be able to run code for the target CPU micro-architecture, the test suite is not run when building a tuned package.
+</p>
+
+<p>
+To reduce rebuilds to the minimum, tuned packages are <i>grafted</i> onto packages that depend on them (see <a href="docs/guix--Security-Updates.html">grafts</a>). Thus, using <code>--no-grafts</code> cancels the effect of <code>--tune</code>.
+</p>
+
+<p>
+We call this technique <i>package multi-versioning</i>: several variants of tunable packages may be built, one for each CPU variant. It is the coarse-grain counterpart of <i>function multi-versioning</i> as implemented by the GNU tool chain (see <a href="https://gcc.gnu.org/onlinedocs/gcc/Function-Multiversioning.html#Function-Multiversioning">Function Multiversioning</a> in Using the GNU Compiler Collection (GCC)).
+</p>
+
+<p>
+<code>--with-source===source</code>
+<code>--with-source===package=====source</code>
+<code>--with-source===package==@==version=====source</code>
+Use <code>source</code> as the source of <code>package</code>, and <code>version</code> as its version number. <code>source</code> must be a file name or a URL, as for <code>guix download</code> (see <a href="docs/guix--Invoking-guix-download.html">Invoking <code>guix download</code></a>).
+</p>
+
+<p>
+When <code>package</code> is omitted, it is taken to be the package name specified on the command line that matches the base of <code>source</code>&#x2014;e.g., if <code>source</code> is <code>/src/guile-2.0.10.tar.gz</code>, the corresponding package is <code>guile</code>.
+</p>
+
+<p>
+Likewise, when <code>version</code> is omitted, the version string is inferred from <code>source</code>; in the previous example, it is <code>2.0.10</code>.
+</p>
+
+<p>
+This option allows users to try out versions of packages other than the one provided by the distribution. The example below downloads <code>ed-1.7.tar.gz</code> from a GNU mirror and uses that as the source for the <code>ed</code> package:
+</p>
+
+<pre class="example" id="orgec99759">
+guix build ed --with-source=mirror://gnu/ed/ed-1.4.tar.gz
+</pre>
+
+<p>
+As a developer, <code>--with-source</code> makes it easy to test release candidates, and even to test their impact on packages that depend on them:
+</p>
+
+<pre class="example" id="org1bf3de3">
+guix build elogind --with-source=…/shepherd-0.9.0rc1.tar.gz
+</pre>
+
+<p>
+&#x2026; or to build from a checkout in a pristine environment:
+</p>
+
+<pre class="example" id="org796c25d">
+$ git clone git://git.sv.gnu.org/guix.git
+$ guix build guix --with-source=guix@1.0=./guix
+</pre>
+
+<p>
+<code>--with-input===package=====replacement</code>
+Replace dependency on <code>package</code> by a dependency on <code>replacement</code>. <code>package</code> must be a package name, and <code>replacement</code> must be a package specification such as <code>guile</code> or <code>guile@1.8</code>.
+</p>
+
+<p>
+For instance, the following command builds Guix, but replaces its dependency on the current stable version of Guile with a dependency on the legacy version of Guile, <code>guile@2.2</code>:
+</p>
+
+<pre class="example" id="org9430e6a">
+guix build --with-input=guile=guile@2.2 guix
+</pre>
+
+<p>
+This is a recursive, deep replacement. So in this example, both <code>guix</code> and its dependency <code>guile-json</code> (which also depends on <code>guile</code>) get rebuilt against <code>guile@2.2</code>.
+</p>
+
+<p>
+This is implemented using the <code>package-input-rewriting/spec</code> Scheme procedure (see <a href="docs/guix--Defining-Packages.html"><code>package-input-rewriting/spec</code></a>).
+</p>
+
+<p>
+<code>--with-graft===package=====replacement</code>
+This is similar to <code>--with-input</code> but with an important difference: instead of rebuilding the whole dependency chain, <code>replacement</code> is built and then <i>grafted</i> onto the binaries that were initially referring to <code>package</code>. See <a href="docs/guix--Security-Updates.html">Security Updates</a>, for more information on grafts.
+</p>
+
+<p>
+For example, the command below grafts version 3.5.4 of GnuTLS onto Wget and all its dependencies, replacing references to the version of GnuTLS they currently refer to:
+</p>
+
+<pre class="example" id="org6a74806">
+guix build --with-graft=gnutls=gnutls@3.5.4 wget
+</pre>
+
+<p>
+This has the advantage of being much faster than rebuilding everything. But there is a caveat: it works if and only if <code>package</code> and <code>replacement</code> are strictly compatible&#x2014;for example, if they provide a library, the application binary interface (ABI) of those libraries must be compatible. If <code>replacement</code> is somehow incompatible with <code>package</code>, then the resulting package may be unusable. Use with care!
+</p>
+
+<p>
+<a id="index-debugging-info_002c-rebuilding"></a>
+<code>--with-debug-info===package</code>
+Build <code>package</code> in a way that preserves its debugging info and graft it onto packages that depend on it. This is useful if <code>package</code> does not already provide debugging info as a <code>debug</code> output (see <a href="docs/guix--Installing-Debugging-Files.html">Installing Debugging Files</a>).
+</p>
+
+<p>
+For example, suppose you're experiencing a crash in Inkscape and would like to see what's up in GLib, a library deep down in Inkscape's dependency graph. GLib lacks a <code>debug</code> output, so debugging is tough. Fortunately, you rebuild GLib with debugging info and tack it on Inkscape:
+</p>
+
+<pre class="example" id="orgbfeaccc">
+guix install inkscape --with-debug-info=glib
+</pre>
+
+<p>
+Only GLib needs to be recompiled so this takes a reasonable amount of time. See <a href="docs/guix--Installing-Debugging-Files.html">Installing Debugging Files</a>, for more info.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Under the hood, this option works by passing the ‘=#:strip-binaries? #f=' to the build system of the package of interest (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Most build systems support that option but some do not. In that case, an error is raised.
+</p>
+
+<p>
+Likewise, if a C/C++ package is built without <code>-g</code> (which is rarely the case), debugging info will remain unavailable even when <code>#:strip-binaries?</code> is false.
+</p>
+</blockquote>
+
+<p>
+<a id="index-tool-chain_002c-changing-the-build-tool-chain-of-a-package"></a>
+<code>--with-c-toolchain===package=====toolchain</code>
+This option changes the compilation of <code>package</code> and everything that depends on it so that they get built with <code>toolchain</code> instead of the default GNU tool chain for C/C++.
+</p>
+
+<p>
+Consider this example:
+</p>
+
+<pre class="example" id="org94766ec">
+guix build octave-cli \
+  --with-c-toolchain=fftw=gcc-toolchain@10 \
+  --with-c-toolchain=fftwf=gcc-toolchain@10
+</pre>
+
+<p>
+The command above builds a variant of the <code>fftw</code> and <code>fftwf</code> packages using version 10 of <code>gcc-toolchain</code> instead of the default tool chain, and then builds a variant of the GNU Octave command-line interface using them. GNU Octave itself is also built with <code>gcc-toolchain@10</code>.
+</p>
+
+<p>
+This other example builds the Hardware Locality (<code>hwloc</code>) library and its dependents up to <code>intel-mpi-benchmarks</code> with the Clang C compiler:
+</p>
+
+<pre class="example" id="org079d90c">
+guix build --with-c-toolchain=hwloc=clang-toolchain \
+           intel-mpi-benchmarks
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> There can be application binary interface (ABI) incompatibilities among tool chains. This is particularly true of the C++ standard library and run-time support libraries such as that of OpenMP. By rebuilding all dependents with the same tool chain, <code>--with-c-toolchain</code> minimizes the risks of incompatibility but cannot entirely eliminate them. Choose <code>package</code> wisely.
+</p>
+</blockquote>
+
+<p>
+<code>--with-git-url===package=====url</code> 
+<a id="index-latest-commit_002c-building"></a>
+Build <code>package</code> from the latest commit of the <code>master</code> branch of the Git repository at <code>url</code>. Git sub-modules of the repository are fetched, recursively, if <code>package</code> <code>source</code> is not a Git repository, otherwise it depends on the inherited value of <code>recursive?</code>.
+</p>
+
+<p>
+For example, the following command builds the NumPy Python library against the latest commit of the master branch of Python itself:
+</p>
+
+<pre class="example" id="orge4b8c47">
+guix build python-numpy \
+  --with-git-url=python=https://github.com/python/cpython
+</pre>
+
+<p>
+This option can also be combined with <code>--with-branch</code> or <code>--with-commit</code> (see below).
+</p>
+
+<p>
+<a id="index-continuous-integration"></a>
+Obviously, since it uses the latest commit of the given branch, the result of such a command varies over time. Nevertheless it is a convenient way to rebuild entire software stacks against the latest commit of one or more packages. This is particularly useful in the context of continuous integration (CI).
+</p>
+
+<p>
+Checkouts are kept in a cache under <code>~/.cache/guix/checkouts</code> to speed up consecutive accesses to the same repository. You may want to clean it up once in a while to save disk space.
+</p>
+
+<p>
+<code>--with-branch===package=====branch</code>
+Build <code>package</code> from the latest commit of <code>branch</code>. If the <code>source</code> field of <code>package</code> is an origin with the <code>git-fetch</code> method (see <a href="docs/guix--origin-Reference.html"><code>origin</code> Reference</a>) or a <code>git-checkout</code> object, the repository URL is taken from that <code>source</code>. Otherwise you have to use <code>--with-git-url</code> to specify the URL of the Git repository.
+</p>
+
+<p>
+For instance, the following command builds <code>guile-sqlite3</code> from the latest commit of its <code>master</code> branch, and then builds <code>guix</code> (which depends on it) and <code>cuirass</code> (which depends on <code>guix</code>) against this specific <code>guile-sqlite3</code> build:
+</p>
+
+<pre class="example" id="org38a78a9">
+guix build --with-branch=guile-sqlite3=master cuirass
+</pre>
+
+<p>
+<code>--with-commit===package=====commit</code>
+This is similar to <code>--with-branch</code>, except that it builds from <code>commit</code> rather than the tip of a branch. <code>commit</code> must be a valid Git commit SHA1 identifier, a tag, or a <code>git describe</code> style identifier such as <code>1.0-3-gabc123</code>.
+</p>
+
+<p>
+<code>--with-patch===package=====file</code>
+Add <code>file</code> to the list of patches applied to <code>package</code>, where <code>package</code> is a spec such as <code>python@3.8</code> or <code>glibc</code>. <code>file</code> must contain a patch; it is applied with the flags specified in the <code>origin</code> of <code>package</code> (see <a href="docs/guix--origin-Reference.html"><code>origin</code> Reference</a>), which by default includes <code>-p1</code> (see <a href="https://www.gnu.org/software/diffutils/manual/html_node/patch-Directories.html#patch-Directories">patch Directories</a> in Comparing and Merging Files).
+</p>
+
+<p>
+As an example, the command below rebuilds Coreutils with the GNU C Library (glibc) patched with the given patch:
+</p>
+
+<pre class="example" id="org501ad6f">
+guix build coreutils --with-patch=glibc=./glibc-frob.patch
+</pre>
+
+<p>
+In this example, glibc itself as well as everything that leads to Coreutils in the dependency graph is rebuilt.
+</p>
+
+<p>
+<a id="index-configure-flags_002c-changing-them"></a>
+<code>--with-configure-flag===package=====flag</code>
+Append <code>flag</code> to the configure flags of <code>package</code>, where <code>package</code> is a spec such as <code>guile@3.0</code> or <code>glibc</code>. The build system of <code>package</code> must support the <code>#:configure-flags</code> argument.
+</p>
+
+<p>
+For example, the command below builds GNU Hello with the configure flag <code>--disable-nls</code>:
+</p>
+
+<pre class="example" id="org572d65d">
+guix build hello --with-configure-flag=hello=--disable-nls
+</pre>
+
+<p>
+The following command passes an extra flag to <code>cmake</code> as it builds <code>lapack</code>:
+</p>
+
+<pre class="example" id="org91c1a7f">
+guix build lapack \
+  --with-configure-flag=lapack=-DBUILD_SHARED_LIBS=OFF
+</pre>
+
+<blockquote>
+<p>
+<b>Note:</b> Under the hood, this option works by passing the ‘=#:configure-flags=' argument to the build system of the package of interest (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Most build systems support that option but some do not. In that case, an error is raised.
+</p>
+</blockquote>
+
+<p>
+<a id="index-upstream_002c-latest-version"></a>
+<code>--with-latest===package</code>
+<code>--with-version===package=====version</code>
+So you like living on the bleeding edge? The <code>--with-latest</code> option is for you! It replaces occurrences of <code>package</code> in the dependency graph with its latest upstream version, as reported by <code>guix refresh</code> (see <a href="docs/guix--Invoking-guix-refresh.html">Invoking <code>guix refresh</code></a>).
+</p>
+
+<p>
+It does so by determining the latest upstream release of <code>package</code> (if possible), downloading it, and authenticating it <i>if</i> it comes with an OpenPGP signature.
+</p>
+
+<p>
+As an example, the command below builds Guix against the latest version of Guile-JSON:
+</p>
+
+<pre class="example" id="org9f5e95d">
+guix build guix --with-latest=guile-json
+</pre>
+
+<p>
+The <code>--with-version</code> works similarly except that it lets you specify that you want precisely <code>version</code>, assuming that version exists upstream. For example, to spawn a development environment with SciPy built against version 1.22.4 of NumPy (skipping its test suite because hey, we're not gonna wait this long), you would run:
+</p>
+
+<pre class="example" id="org46ab296">
+guix shell python python-scipy --with-version=python-numpy=1.22.4
+</pre>
+
+<blockquote>
+<p>
+<b>Warning:</b> Because they depend on source code published at a given point in time on upstream servers, deployments made with <code>--with-latest</code> and <code>--with-version</code> may be non-reproducible: source might disappear or be modified in place on the servers.
+</p>
+
+<p>
+To deploy old software versions without compromising on reproducibility, see <a href="docs/guix--Invoking-guix-time_002dmachine.html"><code>guix time-machine</code></a>.
+</p>
+</blockquote>
+
+<p>
+There are limitations. First, in cases where the tool cannot or does not know how to authenticate source code, you are at risk of running malicious code; a warning is emitted in this case. Second, this option simply changes the source used in the existing package definitions, which is not always sufficient: there might be additional dependencies that need to be added, patches to apply, and more generally the quality assurance work that Guix developers normally do will be missing.
+</p>
+
+<p>
+You've been warned! When those limitations are acceptable, it's a snappy way to stay on top. We encourage you to submit patches updating the actual package definitions once you have successfully tested an upgrade with <code>--with-latest</code> (see <a href="docs/guix--Contributing.html">Contributing</a>).
+</p>
+
+<p>
+<a id="index-test-suite_002c-skipping"></a>
+<code>--without-tests===package</code>
+Build <code>package</code> without running its tests. This can be useful in situations where you want to skip the lengthy test suite of a intermediate package, or if a package's test suite fails in a non-deterministic fashion. It should be used with care because running the test suite is a good way to ensure a package is working as intended.
+</p>
+
+<p>
+Turning off tests leads to a different store item. Consequently, when using this option, anything that depends on <code>package</code> must be rebuilt, as in this example:
+</p>
+
+<pre class="example" id="org7b67597">
+guix install --without-tests=python python-notebook
+</pre>
+
+<p>
+The command above installs <code>python-notebook</code> on top of <code>python</code> built without running its test suite. To do so, it also rebuilds everything that depends on <code>python</code>, including <code>python-notebook</code> itself.
+</p>
+
+<p>
+Internally, <code>--without-tests</code> relies on changing the <code>#:tests?</code> option of a package's <code>check</code> phase (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Note that some packages use a customized <code>check</code> phase that does not respect a <code>#:tests? #f</code> setting. Therefore, <code>--without-tests</code> has no effect on these packages.
+</p>
+
+<p>
+Wondering how to achieve the same effect using Scheme code, for example in your manifest, or how to write your own package transformation? See <a href="docs/guix--Defining-Package-Variants.html">Defining Package Variants</a>, for an overview of the programming interfaces available.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Additional-Build-Options.html">Additional Build Options</a>, Previous: <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>, Up: <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

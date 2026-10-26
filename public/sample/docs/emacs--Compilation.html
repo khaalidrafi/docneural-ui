@@ -1,0 +1,80 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Running-Compilations-under-Emacs">1. 29.1 Running Compilations under Emacs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Compilation-Mode.html">Compilation Mode</a>   Up: <a href="docs/emacs--Building.html">Compiling and Testing Programs</a>
+</p>
+
+<p>
+<a id="Compilation"></a>
+</p>
+
+<hr />
+<div id="outline-container-Running-Compilations-under-Emacs" class="outline-2">
+<h2 id="Running-Compilations-under-Emacs"><span class="section-number-2">1.</span> 29.1 Running Compilations under Emacs <a href="#Running-Compilations-under-Emacs">¶</a></h2>
+<div class="outline-text-2" id="text-Running-Compilations-under-Emacs">
+<p>
+Emacs can run compilers for languages such as C and Fortran, feeding the compilation log into an Emacs buffer. It can also parse the error messages and show you where the errors occurred.
+</p>
+
+<dl class="org-dl">
+<dt>M-x compile</dt><dd>Run a compiler asynchronously under Emacs, with error messages going to the <code>*compilation*</code> buffer.</dd>
+
+<dt>(no term)</dt><dd>M-x recompile<br />
+g (Compilation mode) :: Invoke a compiler with the same command as in the last invocation of M-x compile.</dd>
+
+<dt>M-x kill-compilation</dt><dd>Kill the running compilation subprocess.</dd>
+</dl>
+
+<p>
+To run <code>make</code> or another compilation command, type M-x compile. This reads a shell command line using the minibuffer, and then executes the command by running a shell as a subprocess (or <i>inferior process</i>) of Emacs. The output is inserted in a buffer named <code>*compilation*</code>. The current buffer's default directory is used as the working directory for the execution of the command, so by default compilation takes place in that directory.
+</p>
+
+<p>
+The default compilation command is ‘=make -k=', which is usually correct for programs compiled using the <code>make</code> utility (the ‘=-k=' flag tells <code>make</code> to continue compiling as much as possible after an error). See <a href="../make_html/index.html#Top">Make</a> in GNU Make Manual. If you have done M-x compile before, the command that you specified is automatically stored in the variable <code>compile-command</code>; this is used as the default the next time you type M-x compile. A file can also specify a file-local value for <code>compile-command</code> (see <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>).
+</p>
+
+<p>
+Starting a compilation displays the <code>*compilation*</code> buffer in another window but does not select it. While the compilation is running, the word ‘=run=' is shown in the major mode indicator for the <code>*compilation*</code> buffer, and the word ‘=Compiling=' appears in all mode lines. You do not have to keep the <code>*compilation*</code> buffer visible while compilation is running; it continues in any case. When the compilation ends, for whatever reason, the mode line of the <code>*compilation*</code> buffer changes to say ‘=exit=' (followed by the exit code: ‘=[0]=' for a normal exit), or ‘=signal=' (if a signal terminated the process).
+</p>
+
+<p>
+If you want to watch the compilation transcript as it appears, switch to the <code>*compilation*</code> buffer and move point to the end of the buffer. When point is at the end, new compilation output is inserted above point, which remains at the end. Otherwise, point remains fixed while compilation output is added at the end of the buffer.
+</p>
+
+<p>
+While compilation proceeds, the mode line shows the number of errors, warnings, and informational messages emitted by the compiler so far.
+</p>
+
+<p>
+If you change the variable <code>compilation-scroll-output</code> to a non-<code>nil</code> value, the <code>*compilation*</code> buffer scrolls automatically to follow the output. If the value is <code>first-error</code>, scrolling stops when the first error appears, leaving point at that error. For any other non-<code>nil</code> value, scrolling continues until there is no more output.
+</p>
+
+<p>
+To rerun the last compilation with the same command, type M-x recompile. This reuses the compilation command from the last invocation of M-x compile. It also reuses the <code>*compilation*</code> buffer and starts the compilation in its default directory, which is the directory in which the previous compilation was started. In <code>*compilation*</code> buffers this command is bound to g.
+</p>
+
+<p>
+Starting a new compilation also kills any compilation already running in <code>*compilation*</code>, as the buffer can only handle one compilation at any time. However, M-x compile and M-x recompile ask for confirmation before actually killing a compilation that is running; to always automatically kill the compilation without asking, change the variable <code>compilation-always-kill</code> to <code>t</code>. You can also kill a compilation process with the command M-x kill-compilation.
+</p>
+
+<p>
+To run two compilations at once, start the first one, then rename the <code>*compilation*</code> buffer (perhaps using <code>rename-uniquely</code>; see <a href="docs/emacs--Misc-Buffer.html">Miscellaneous Buffer Operations</a>), then switch buffers and start the other compilation. This will create a new <code>*compilation*</code> buffer.
+</p>
+
+<p>
+You can control the environment passed to the compilation command with the variable <code>compilation-environment</code>. Its value is a list of environment variable settings; each element should be a string of the form <code>"==envvarname=====value=</code>"=. These environment variable settings override the usual ones.
+</p>
+
+<p>
+Displaying extremely long lines in compilation output can slow Emacs down. Lines that are longer than <code>compilation-max-output-line-length</code> will have the portion that's exceeds that limit hidden behind a button that can be clicked on to reveal the hidden portion. Set this variable to <code>nil</code> to never hide anything.
+</p>
+
+<hr />
+</div>
+</div>

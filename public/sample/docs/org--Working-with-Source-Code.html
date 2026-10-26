@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Working-with-Source-Code-1">1. 16 Working with Source Code ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Working-with-Source-Code"></a>
+Next: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>, Previous: <a href="docs/org--Citation-handling.html">Citation handling</a>, Up: <a href="docs/org--index.html">The Org Manual</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Working-with-Source-Code-1" class="outline-2">
+<h2 id="Working-with-Source-Code-1"><span class="section-number-2">1.</span> 16 Working with Source Code <a href="#Working-with-Source-Code-1">¶</a></h2>
+<div class="outline-text-2" id="text-Working-with-Source-Code-1">
+<p>
+Source code here refers to any plain text collection of computer instructions, possibly with comments, written using a human-readable programming language. Org can manage source code in an Org document when the source code is identified with begin and end markers. Working with source code begins with identifying source code blocks. A source code block can be placed almost anywhere in an Org document; it is not restricted to the preamble or the end of the document. However, Org cannot manage a source code block if it is placed inside an Org comment or within a fixed width section.
+</p>
+
+<p>
+Here is an example source code block in the Emacs Lisp language:
+</p>
+
+<pre class="example" id="org705f4d4">
+#+BEGIN_SRC emacs-lisp
+  (defun org-xor (a b)
+     "Exclusive or."
+     (if a (not b) b))
+#+END_SRC
+</pre>
+
+<p>
+Source code blocks are one of many Org block types, which also include “center”, “comment”, “dynamic”, “example”, “export”, “quote”, “special”, and “verse”. This section pertains to blocks between ‘=#+BEGIN<sub>SRC</sub>=' and ‘=#+END<sub>SRC</sub>='.
+</p>
+
+<p>
+Details of Org's facilities for working with source code are described in the following sections.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/org--Features-Overview.html">Features Overview</a></li>
+<li><a href="docs/org--Structure-of-Code-Blocks.html">Structure of Code Blocks</a></li>
+<li><a href="docs/org--Using-Header-Arguments.html">Using Header Arguments</a></li>
+<li><a href="docs/org--Environment-of-a-Code-Block.html">Environment of a Code Block</a></li>
+<li><a href="docs/org--Evaluating-Code-Blocks.html">Evaluating Code Blocks</a></li>
+<li><a href="docs/org--Results-of-Evaluation.html">Results of Evaluation</a></li>
+<li><a href="docs/org--Exporting-Code-Blocks.html">Exporting Code Blocks</a></li>
+<li><a href="docs/org--Extracting-Source-Code.html">Extracting Source Code</a></li>
+<li><a href="docs/org--Languages.html">Languages</a></li>
+<li><a href="docs/org--Editing-Source-Code.html">Editing Source Code</a></li>
+<li><a href="docs/org--Noweb-Reference-Syntax.html">Noweb Reference Syntax</a></li>
+<li><a href="docs/org--Library-of-Babel.html">Library of Babel</a></li>
+<li><a href="docs/org--Key-bindings-and-Useful-Functions.html">Key bindings and Useful Functions</a></li>
+<li><a href="docs/org--Batch-Execution.html">Batch Execution</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>, Previous: <a href="docs/org--Citation-handling.html">Citation handling</a>, Up: <a href="docs/org--index.html">The Org Manual</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

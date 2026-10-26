@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Editing-Binary-Files-1">1. 45 Editing Binary Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Saving-Emacs-Sessions.html">Saving Emacs Sessions</a>   Previous: <a href="docs/emacs--Picture-Mode.html">Editing Pictures</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Editing-Binary-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Editing-Binary-Files-1" class="outline-2">
+<h2 id="Editing-Binary-Files-1"><span class="section-number-2">1.</span> 45 Editing Binary Files <a href="#Editing-Binary-Files-1">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-Binary-Files-1">
+<p>
+There is a special major mode for editing binary files: Hexl mode. To use it, use M-x hexl-find-file instead of C-x C-f to visit the file. This command converts the file's contents to hexadecimal and lets you edit the translation. When you save the file, it is converted automatically back to binary.
+</p>
+
+<p>
+You can also use M-x hexl-mode to translate an existing buffer into hex. This is useful if you visit a file normally and then discover it is a binary file.
+</p>
+
+<p>
+Inserting text always overwrites in Hexl mode. This is to reduce the risk of accidentally spoiling the alignment of data in the file. Ordinary text characters insert themselves (i.e., overwrite with themselves). There are commands for insertion of special characters by their code. Most cursor motion keys, as well as C-x C-s, are bound in Hexl mode to commands that produce the same effect. Here is a list of other important commands special to Hexl mode:
+</p>
+
+<dl class="org-dl">
+<dt>C-M-d</dt><dd>Insert a byte with a code typed in decimal.</dd>
+
+<dt>C-M-o</dt><dd>Insert a byte with a code typed in octal.</dd>
+
+<dt>C-M-x</dt><dd>Insert a byte with a code typed in hex.</dd>
+
+<dt>C-M-a</dt><dd>Move to the beginning of a 512-byte page.</dd>
+
+<dt>C-M-e</dt><dd>Move to the end of a 512-byte page.</dd>
+
+<dt>C-x [</dt><dd>Move to the beginning of a 1k-byte page.</dd>
+
+<dt>C-x ]</dt><dd>Move to the end of a 1k-byte page.</dd>
+
+<dt>M-g</dt><dd>Move to an address specified in hex.</dd>
+
+<dt>M-j</dt><dd>Move to an address specified in decimal.</dd>
+
+<dt>C-c C-c</dt><dd>Leave Hexl mode, going back to the major mode this buffer had before you invoked <code>hexl-mode</code>.</dd>
+</dl>
+
+<p>
+Other Hexl commands let you insert strings (sequences) of binary bytes, move by =short=s or =int=s, etc.; type C-h a hexl- TAB for details.
+</p>
+
+<p>
+Hexl mode can also be used for editing text files. This could come in handy if the text file includes unusual characters or uses unusual encoding (see <a href="docs/emacs--Coding-Systems.html">Coding Systems</a>). For this purpose, Hexl commands that insert bytes can also insert ASCII and non-ASCII characters, including multibyte characters. To edit a text file with Hexl, visit the file as usual, and then type M-x hexl-mode RET to switch to Hexl mode. You can now insert text characters by typing them. However, inserting multibyte characters requires special care, to avoid the danger of creating invalid multibyte sequences: you should start typing such characters when point is on the first byte of a multibyte sequence in the file.
+</p>
+
+<hr />
+</div>
+</div>

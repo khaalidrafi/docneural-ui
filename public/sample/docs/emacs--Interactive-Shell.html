@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Interactive-Subshell">1. 40.2 Interactive Subshell ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Shell-Mode.html">Shell Mode</a>   Previous: <a href="docs/emacs--Single-Shell.html">Single Shell Commands</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Interactive-Shell"></a>
+</p>
+
+<hr />
+<div id="outline-container-Interactive-Subshell" class="outline-2">
+<h2 id="Interactive-Subshell"><span class="section-number-2">1.</span> 40.2 Interactive Subshell <a href="#Interactive-Subshell">¶</a></h2>
+<div class="outline-text-2" id="text-Interactive-Subshell">
+<p>
+To run a subshell interactively, type M-x shell. This creates (or reuses) a buffer named <code>*shell*</code>, and runs a shell subprocess with input coming from and output going to that buffer. That is to say, any terminal output from the subshell goes into the buffer, advancing point, and any terminal input for the subshell comes from text in the buffer. To give input to the subshell, go to the end of the buffer and type the input, terminated by RET.
+</p>
+
+<p>
+By default, when the subshell is invoked interactively, the <code>*shell*</code> buffer is displayed in a new window, unless the current window already shows the <code>*shell*</code> buffer. This behavior can be customized via <code>display-buffer-alist</code> (see <a href="docs/emacs--Window-Choice.html">How <code>display-buffer</code> works</a>).
+</p>
+
+<p>
+While the subshell is waiting or running a command, you can switch windows or buffers and perform other editing in Emacs. Emacs inserts the output from the subshell into the Shell buffer whenever it has time to process it (e.g., while waiting for keyboard input).
+</p>
+
+<p>
+In the Shell buffer, prompts are displayed with the face <code>comint-highlight-prompt</code>, and submitted input lines are displayed with the face <code>comint-highlight-input</code>. This makes it easier to distinguish input lines from the shell output. See <a href="docs/emacs--Faces.html">Text Faces</a>.
+</p>
+
+<p>
+To make multiple subshells, invoke M-x shell with a prefix argument (e.g., C-u M-x shell). Then the command will read a buffer name, and create (or reuse) a subshell in that buffer. You can also rename the <code>*shell*</code> buffer using M-x rename-uniquely, then create a new <code>*shell*</code> buffer using plain M-x shell. Subshells in different buffers run independently and in parallel.
+</p>
+
+<p>
+Emacs attempts to keep track of what the current directory is by looking at the commands you enter, looking for ‘=cd=' commands and the like. This is an error-prone solution, since there are many ways to change the current directory, so Emacs also looks for special OSC (Operating System Commands) escape codes that are designed to convey this information in a more reliable fashion. You should arrange for your shell to print the appropriate escape sequence at each prompt, for instance with the following command:
+</p>
+
+<pre class="example" id="orgf27c272">
+printf "\e]7;file://%s%s\e\\" "$HOSTNAME" "$PWD"
+</pre>
+
+<p>
+To specify the shell file name used by M-x shell, customize the variable <code>explicit-shell-file-name</code>. If this is <code>nil</code> (the default), Emacs uses the environment variable <code>ESHELL</code> if it exists. Otherwise, it usually uses the variable <code>shell-file-name</code> (see <a href="docs/emacs--Single-Shell.html">Single Shell Commands</a>); but if the default directory is remote (see <a href="docs/emacs--Remote-Files.html">Remote Files</a>), it prompts you for the shell file name. See <a href="docs/emacs--Minibuffer-File.html">Minibuffers for File Names</a>, for hints how to type remote file names effectively.
+</p>
+
+<p>
+Emacs sends the new shell the contents of the file <code>~/.emacs_==shellname</code> as input, if it exists, where <code>shellname</code> is the name of the file that the shell was loaded from. For example, if you use bash, the file sent to it is <code>~/.emacs_bash</code>. If this file is not found, Emacs tries with <code>~/.emacs.d/init_==shellname=</code>.sh=.
+</p>
+
+<p>
+To specify a coding system for the shell, you can use the command C-x RET c immediately before M-x shell. You can also change the coding system for a running subshell by typing C-x RET p in the shell buffer. See <a href="docs/emacs--Communication-Coding.html">Coding Systems for Interprocess Communication</a>.
+</p>
+
+<p>
+Emacs sets the environment variable <code>INSIDE_EMACS</code> in the subshell to ‘=version==,comint=', where <code>version</code> is the Emacs version (e.g., ‘=28.1='). Programs can check this variable to determine whether they are running inside an Emacs subshell.
+</p>
+
+<hr />
+</div>
+</div>

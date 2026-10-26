@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Automatic-Deletion-of-Backups">1. 20.3.2.2 Automatic Deletion of Backups ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Backup-Copying.html">Copying vs. Renaming</a>   Previous: <a href="docs/emacs--Backup-Names.html">Single or Numbered Backups</a>   Up: <a href="docs/emacs--Backup.html">Backup Files</a>
+</p>
+
+<p>
+<a id="Backup-Deletion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Automatic-Deletion-of-Backups" class="outline-2">
+<h2 id="Automatic-Deletion-of-Backups"><span class="section-number-2">1.</span> 20.3.2.2 Automatic Deletion of Backups <a href="#Automatic-Deletion-of-Backups">¶</a></h2>
+<div class="outline-text-2" id="text-Automatic-Deletion-of-Backups">
+<p>
+To prevent excessive consumption of disk space, Emacs can delete numbered backup versions automatically. Generally Emacs keeps the first few backups and the latest few backups, deleting any in between. This happens every time a new backup is made.
+</p>
+
+<p>
+The two variables <code>kept-old-versions</code> and <code>kept-new-versions</code> control this deletion. Their values are, respectively, the number of oldest (lowest-numbered) backups to keep and the number of newest (highest-numbered) ones to keep, each time a new backup is made. The backups in the middle (excluding those oldest and newest) are the excess middle versions&#x2014;those backups are deleted. These variables' values are used when it is time to delete excess versions, just after a new backup version is made; the newly made backup is included in the count in <code>kept-new-versions</code>. By default, both variables are 2.
+</p>
+
+<p>
+If <code>delete-old-versions</code> is <code>t</code>, Emacs deletes the excess backup files silently. If it is <code>nil</code>, the default, Emacs asks you whether it should delete the excess backup versions. If it has any other value, then Emacs never automatically deletes backups.
+</p>
+
+<p>
+Dired's . (Period) command can also be used to delete old versions. See <a href="docs/emacs--Flagging-Many-Files.html">Flagging Many Files at Once</a>.
+</p>
+</div>
+</div>

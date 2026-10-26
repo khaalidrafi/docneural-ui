@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Auto-Fill-in-Fortran-Mode">1. 28.14.4 Auto Fill in Fortran Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fortran-Columns.html">Checking Columns in Fortran</a>   Previous: <a href="docs/emacs--Fortran-Comments.html">Fortran Comments</a>   Up: <a href="docs/emacs--Fortran.html">Fortran Mode</a>
+</p>
+
+<p>
+<a id="Fortran-Autofill"></a>
+</p>
+
+<hr />
+<div id="outline-container-Auto-Fill-in-Fortran-Mode" class="outline-2">
+<h2 id="Auto-Fill-in-Fortran-Mode"><span class="section-number-2">1.</span> 28.14.4 Auto Fill in Fortran Mode <a href="#Auto-Fill-in-Fortran-Mode">¶</a></h2>
+<div class="outline-text-2" id="text-Auto-Fill-in-Fortran-Mode">
+<p>
+Fortran mode has specialized support for Auto Fill mode, which is a minor mode that automatically splits statements as you insert them when they become too wide. Splitting a statement involves making continuation lines using <code>fortran-continuation-string</code> (see <a href="docs/emacs--ForIndent-Cont.html">Continuation Lines</a>). This splitting happens when you type SPC, RET, or TAB, and also in the Fortran indentation commands. You activate Auto Fill in Fortran mode in the normal way. See <a href="docs/emacs--Auto-Fill.html">Auto Fill Mode</a>.
+</p>
+
+<p>
+Auto Fill breaks lines at spaces or delimiters when the lines get longer than the desired width (the value of <code>fill-column</code>). The delimiters (besides whitespace) that Auto Fill can break at are ‘=+=', ‘=-<code>', ‘=/</code>', ‘=*=', ‘===', ‘=&lt;=', ‘=&gt;=', and ‘=,='. The line break comes after the delimiter if the variable <code>fortran-break-before-delimiters</code> is <code>nil</code>. Otherwise (and by default), the break comes before the delimiter.
+</p>
+
+<p>
+To enable Auto Fill in all Fortran buffers, add <code>auto-fill-mode</code> to <code>fortran-mode-hook</code>. See <a href="docs/emacs--Hooks.html">Hooks</a>.
+</p>
+</div>
+</div>

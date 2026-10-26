@@ -1,0 +1,121 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Adding-Hyperlink-Types-1">1. A.3 Adding Hyperlink Types ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Adding-Hyperlink-Types"></a>
+Next: <a href="docs/org--Adding-Hyperlink-preview.html">Adding Hyperlink preview</a>, Previous: <a href="docs/org--Add_002don-Packages.html">Add-on Packages</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Adding-Hyperlink-Types-1" class="outline-2">
+<h2 id="Adding-Hyperlink-Types-1"><span class="section-number-2">1.</span> A.3 Adding Hyperlink Types <a href="#Adding-Hyperlink-Types-1">¶</a></h2>
+<div class="outline-text-2" id="text-Adding-Hyperlink-Types-1">
+<p>
+Org has many built-in hyperlink types (see <a href="docs/org--Hyperlinks.html">Hyperlinks</a>), and an interface for adding new link types. The following example shows the process of adding Org links to Unix man pages, which look like this
+</p>
+
+<pre class="example" id="orgd34793c">
+[[man:printf][The printf manual]]
+</pre>
+
+<p>
+The following ‘=ol-man.el=' file implements it
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">;;; ol-man.el - Support for links to man pages in Org mode
+(require 'ol)
+
+(org-link-set-parameters "man"
+                         :follow #'org-man-open
+                         :export #'org-man-export
+                         :store #'org-man-store-link)
+
+(defcustom org-man-command 'man
+  "The Emacs command to be used to display a man page."
+  :group 'org-link
+  :type '(choice (const man) (const woman)))
+
+(defun org-man-open (path _)
+  "Visit the manpage on PATH.
+PATH should be a topic that can be thrown at the man command."
+  (funcall org-man-command path))
+
+(defun org-man-store-link (&amp;optional _interactive?)
+  "Store a link to a man page."
+  (when (memq major-mode '(Man-mode woman-mode))
+    ;; This is a man page, we do make this link.
+    (let* ((page (org-man-get-page-name))
+           (link (concat "man:" page))
+           (description (format "Man page for %s" page)))
+      (org-link-store-props
+       :type "man"
+       :link link
+       :description description))))
+
+(defun org-man-get-page-name ()
+  "Extract the page name from the buffer name."
+  ;; This works for both `Man-mode' and `woman-mode'.
+  (if (string-match " \\(\\S-+\\)\\*" (buffer-name))
+      (match-string 1 (buffer-name))
+    (error "Cannot create link to this man page")))
+
+(defun org-man-export (link description format _)
+  "Export a man page link from Org files."
+  (let ((path (format "http://man.he.net/?topic=%s&amp;section=all" link))
+        (desc (or description link)))
+    (pcase format
+      (`html (format "&lt;a target=\"_blank\" href=\"%s\"&gt;%s&lt;/a&gt;" path desc))
+      (`latex (format "\\href{%s}{%s}" path desc))
+      (`texinfo (format "@uref{%s,%s}" path desc))
+      (`ascii (format "%s (%s)" desc path))
+      (t path))))
+
+(provide ol-man)
+;;; ol-man.el ends here
+</pre>
+</div>
+
+<p>
+To activate links to man pages in Org, enter this in the Emacs init file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(require 'ol-man)
+</pre>
+</div>
+
+<p>
+A review of ‘=ol-man.el=':
+</p>
+
+<ol class="org-ol">
+<li>First, ‘=(require 'ol)=' ensures that ‘=ol.el=' is loaded.</li>
+
+<li>Then <code>org-link-set-parameters</code> defines a new link type with ‘=man=' prefix and associates functions for following, exporting and storing such links. See the variable <code>org-link-parameters</code> for a complete list of possible associations.</li>
+
+<li><p>
+The rest of the file implements necessary variables and functions.
+</p>
+
+<p>
+For example, <code>org-man-store-link</code> is responsible for storing a link when <code>org-store-link</code> (see <a href="docs/org--Handling-Links.html">Handling Links</a>) is called from a buffer displaying a man page. It is passed an argument <code>interactive?</code> which this function does not use, but other store functions used to behave differently when a link is stored interactively by the user. It first checks if the major mode is appropriate. If check fails, the function returns <code>nil</code>, which means it isn't responsible for creating a link to the current buffer. Otherwise, the function makes a link string by combining the ‘=man:=' prefix with the man topic. It also provides a default description. The function <code>org-insert-link</code> can insert it back into an Org buffer later on.
+</p></li>
+</ol>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Adding-Hyperlink-preview.html">Adding Hyperlink preview</a>, Previous: <a href="docs/org--Add_002don-Packages.html">Add-on Packages</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

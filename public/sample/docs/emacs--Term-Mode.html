@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Term-Mode-1">1. 40.9 Term Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Remote-Host.html">Remote Host Shell</a>   Previous: <a href="docs/emacs--Terminal-emulator.html">Emacs Terminal Emulator</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Term-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Term-Mode-1" class="outline-2">
+<h2 id="Term-Mode-1"><span class="section-number-2">1.</span> 40.9 Term Mode <a href="#Term-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Term-Mode-1">
+<p>
+To switch between line and char mode in Term mode, use these commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dj-_0028Term-mode_0029"></a>C-c C-j </dt><dd>Switch to line mode (<code>term-line-mode</code>). Do nothing if already in line mode.</dd>
+
+<dt><a id="index-C_002dc-C_002dk-_0028Term-mode_0029"></a>C-c C-k </dt><dd>Switch to char mode (<code>term-char-mode</code>). Do nothing if already in char mode.</dd>
+</dl>
+
+<p>
+The following commands are only available in char mode:
+</p>
+
+<dl class="org-dl">
+<dt>C-c C-c</dt><dd>Send a literal C-c to the sub-shell (<code>term-interrupt-subjob</code>).</dd>
+
+<dt>C-c <code>char</code></dt><dd>This is equivalent to C-x <code>char</code> in normal Emacs. For example, C-c o invokes the global binding of C-x o, which is normally ‘=other-window='.</dd>
+</dl>
+
+<p>
+Term mode has a page-at-a-time feature. When enabled, it makes output pause at the end of each screenful:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dq-_0028Term-mode_0029"></a>C-c C-q </dt><dd>Toggle the page-at-a-time feature (<code>term-pager-toggle</code>). This command works in both line and char modes. When the feature is enabled, the mode-line displays the word ‘=page=', and each time Term receives more than a screenful of output, it pauses and displays ‘=**MORE**=' in the mode-line. Type SPC to display the next screenful of output, or ? to see your other options. The interface is similar to the <code>more</code> program.</dd>
+</dl>
+</div>
+</div>

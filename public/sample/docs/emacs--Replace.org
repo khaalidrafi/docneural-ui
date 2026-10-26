@@ -1,0 +1,25 @@
+:PROPERTIES:
+:ID: emacs--Replace
+:END:
+#+filetags: :emacs:
+#+title: Replace
+
+Next: [[id:emacs--Other-Repeating-Search][Other Search-and-Loop Commands]]   Previous: [[id:emacs--Lax-Search][Lax Matching During Searching]]   Up: [[id:emacs--Search][Searching and Replacement]]
+
+<<Replace>>
+
+--------------
+
+*** 17.10 Replacement Commands [[#Replacement-Commands][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Replacement-Commands
+:CLASS: section
+:END:
+Emacs provides several commands for performing search-and-replace operations. In addition to the simple M-x replace-string command, there is M-% (=query-replace=), which presents each occurrence of the search pattern and asks you whether to replace it.
+
+The replace commands normally operate on the text from point to the end of the buffer. When the region is active, they operate on it instead (see [[id:emacs--Mark][The Mark and the Region]]). The basic replace commands replace one /search string/ (or regexp) with one /replacement string/. It is possible to perform several replacements in parallel, using the command =expand-region-abbrevs= (see [[id:emacs--Expanding-Abbrevs][Controlling Abbrev Expansion]]).
+
+- [[id:emacs--Unconditional-Replace][Unconditional Replacement]]
+- [[id:emacs--Regexp-Replace][Regexp Replacement]]
+- [[id:emacs--Replacement-and-Lax-Matches][Replace Commands and Lax Matches]]
+- [[id:emacs--Query-Replace][Query Replace]]

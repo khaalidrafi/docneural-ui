@@ -1,0 +1,21 @@
+:PROPERTIES:
+:ID: emacs--Change-Log
+:END:
+#+filetags: :emacs:
+#+title: Change Log
+
+Next: [[id:emacs--Xref][Find Identifier References]]   Previous: [[id:emacs--Projects][Working with Projects]]   Up: [[id:emacs--Maintaining][Maintaining Large Programs]]
+
+<<Change-Log>>
+
+--------------
+
+*** 30.3 Change Logs [[#Change-Logs][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Change-Logs
+:CLASS: section
+:END:
+Many software projects keep a /change log/. This is a file, normally named =ChangeLog=, containing a chronological record of when and how the program was changed. Sometimes, these files are automatically generated from the change log entries stored in version control systems, or are used to generate these change log entries. Sometimes, there are several change log files, each recording the changes in one directory or directory tree.
+
+- [[id:emacs--Change-Log-Commands][Change Log Commands]]
+- [[id:emacs--Format-of-ChangeLog][Format of ChangeLog]]

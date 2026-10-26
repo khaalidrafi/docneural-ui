@@ -1,0 +1,22 @@
+:PROPERTIES:
+:ID: emacs--Buffer-Convenience
+:END:
+#+filetags: :emacs:
+#+title: Buffer Convenience
+
+Next:   Previous: [[id:emacs--Indirect-Buffers][Indirect Buffers]]   Up: [[id:emacs--Buffers][Using Multiple Buffers]]
+
+<<Buffer-Convenience>>
+
+--------------
+
+*** 21.7 Convenience Features and Customization of Buffer Handling [[#Convenience-Features-and-Customization-of-Buffer-Handling][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Convenience-Features-and-Customization-of-Buffer-Handling
+:CLASS: section
+:END:
+This section describes several modes and features that make it more convenient to switch between buffers.
+
+- [[id:emacs--Uniquify][Making Buffer Names Unique]]
+- [[id:emacs--Icomplete][Fast minibuffer selection]]
+- [[id:emacs--Buffer-Menus][Customizing Buffer Menus]]

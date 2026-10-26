@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Man-Page-Lookup">1. 28.6.2 Man Page Lookup ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Programming-Language-Doc.html">Programming Language Documentation Lookup</a>   Previous: <a href="docs/emacs--Info-Lookup.html">Info Documentation Lookup</a>   Up: <a href="docs/emacs--Documentation.html">Documentation Lookup</a>
+</p>
+
+<p>
+<a id="Man-Page"></a>
+</p>
+
+<hr />
+<div id="outline-container-Man-Page-Lookup" class="outline-2">
+<h2 id="Man-Page-Lookup"><span class="section-number-2">1.</span> 28.6.2 Man Page Lookup <a href="#Man-Page-Lookup">¶</a></h2>
+<div class="outline-text-2" id="text-Man-Page-Lookup">
+<p>
+On Unix, the main form of on-line documentation was the <i>manual page</i> or <i>man page</i>. In the GNU operating system, we aim to replace man pages with better-organized manuals that you can browse with Info (see <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>). This process is not finished, so it is still useful to read manual pages.
+</p>
+
+<p>
+You can read the man page for an operating system command, library function, or system call, with the M-x man command. This prompts for a topic, with completion (see <a href="docs/emacs--Completion.html">Completion</a>), and runs the <code>man</code> program to format the corresponding man page. If the system permits, it runs <code>man</code> asynchronously, so that you can keep on editing while the page is being formatted. The result goes in a buffer named <code>*Man ==topic==*</code>. These buffers use a special major mode, Man mode, that facilitates scrolling and jumping to other manual pages. For details, type C-h m while in a Man mode buffer.
+</p>
+
+<p>
+Each man page belongs to one of ten or more <i>sections</i>, each named by a digit or by a digit and a letter. Sometimes there are man pages with the same name in different sections. To read a man page from a specific section, type ‘=topic==(<code>=section=</code>)=' or ‘=section== <code>=topic</code>' when M-x man prompts for the topic. For example, the man page for the C library function <code>chmod</code> is in section 2, but there is a shell command of the same name, whose man page is in section 1; to view the former, type M-x man RET chmod(2) RET.
+</p>
+
+<p>
+If you do not specify a section, M-x man normally displays only the first man page found. On some systems, the <code>man</code> program accepts a ‘=-a=' command-line option, which tells it to display all the man pages for the specified topic. To make use of this, change the value of the variable <code>Man-switches</code> to ‘="-a"='. Then, in the Man mode buffer, you can type M-n and M-p to switch between man pages in different sections. The mode line shows how many manual pages are available.
+</p>
+
+<p>
+By default, M-x man calls the <code>man</code> program asynchronously. You can force the invocation to be synchronous by customizing <code>Man-prefer-synchronous-call</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+If the user option <code>Man-support-remote-systems</code> is non-<code>nil</code>, and <code>default-directory</code> indicates a remote system (see <a href="docs/emacs--Remote-Files.html">Remote Files</a>), the man page is taken from the remote system. Calling the <code>man</code> command with a prefix like C-u M-x man reverts the value of <code>Man-support-remote-systems</code> for that call.
+</p>
+
+<p>
+An alternative way of reading manual pages is the M-x woman command. Unlike M-x man, it does not run any external programs to format and display the man pages; the formatting is done by Emacs, so it works on systems such as MS-Windows where the <code>man</code> program may be unavailable. It prompts for a man page, and displays it in a buffer named <code>*WoMan ==section=</code> <code>=topic</code>.
+</p>
+
+<p>
+M-x woman computes the completion list for manpages the first time you invoke the command. With a numeric argument, it recomputes this list; this is useful if you add or delete manual pages.
+</p>
+
+<p>
+If you type a name of a manual page and M-x woman finds that several manual pages by the same name exist in different sections, it pops up a window with possible candidates asking you to choose one of them.
+</p>
+
+<p>
+Note that M-x woman doesn't yet support the latest features of modern man pages, so we recommend using M-x man if that is available on your system.
+</p>
+
+<p>
+For more information about setting up and using M-x woman, see the WoMan Info manual, which is distributed with Emacs.
+</p>
+
+<hr />
+</div>
+</div>

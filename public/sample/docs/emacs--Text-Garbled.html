@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Garbage-in-the-Text">1. 53.3 Garbage in the Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Memory-Full.html">Running out of Memory</a>   Previous: <a href="docs/emacs--Screen-Garbled.html">Garbage on the Screen</a>   Up: <a href="docs/emacs--Lossage.html">Dealing with Emacs Trouble</a>
+</p>
+
+<p>
+<a id="Text-Garbled"></a>
+</p>
+
+<hr />
+<div id="outline-container-Garbage-in-the-Text" class="outline-2">
+<h2 id="Garbage-in-the-Text"><span class="section-number-2">1.</span> 53.3 Garbage in the Text <a href="#Garbage-in-the-Text">¶</a></h2>
+<div class="outline-text-2" id="text-Garbage-in-the-Text">
+<p>
+If C-l shows that the text is wrong, first type C-h l (<code>view-lossage</code>) to see what commands you typed to produce the observed results. Then try undoing the changes step by step using C-x u (<code>undo</code>), until it gets back to a state you consider correct.
+</p>
+
+<p>
+If a large portion of text appears to be missing at the beginning or end of the buffer, check for the word ‘=Narrow=' in the mode line. If it appears, the text you don't see is probably still present, but temporarily off-limits. To make it accessible again, type C-x n w (<code>widen</code>). See <a href="docs/emacs--Narrowing.html">Narrowing</a>.
+</p>
+</div>
+</div>

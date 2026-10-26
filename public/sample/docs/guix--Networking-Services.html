@@ -1,0 +1,1475 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Networking-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Unattended-Upgrades.html">Unattended Upgrades</a>, Previous: <a href="docs/guix--Networking-Setup.html">Networking Setup</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Networking-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="networking-services"></a>11.10.5 Networking Services<br />
+<div class="outline-text-5" id="text-networking-services">
+<p>
+The <code>(gnu services networking)</code> module discussed in the previous section provides services for more advanced setups: providing a DHCP service for others to use, filtering packets with iptables or nftables, running a WiFi access point with <code>hostapd</code>, running the <code>inetd</code> “superdaemon”, and more. This section describes those.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: dhcpd-service-type </dt><dd><p>
+This type defines a service that runs a DHCP daemon. To create a service of this type, you must supply a <code>&lt;dhcpd-configuration&gt;</code>. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service dhcpd-service-type
+         (dhcpd-configuration
+          (config-file (local-file "my-dhcpd.conf"))
+          (interfaces '("enp0s25"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: dhcpd-configuration  :: - <code>package</code> (default: <code>isc-dhcp</code>)</dt><dd>The package that provides the DHCP daemon. This package is expected to provide the daemon at <code>sbin/dhcpd</code> relative to its output directory. The default package is the <a href="https://www.isc.org/dhcp/">ISC's DHCP server</a>.
+
+<dl class="org-dl">
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd>The configuration file to use. This is required. It will be passed to <code>dhcpd</code> via its <code>-cf</code> option. This may be any “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>). See <code>man dhcpd.conf</code> for details on the configuration file syntax.</dd>
+
+<dt><code>version</code> (default: <code>"4"</code>)</dt><dd>The DHCP version to use. The ISC DHCP server supports the values “4”, “6”, and “4o6”. These correspond to the <code>dhcpd</code> program options <code>-4</code>, <code>-6</code>, and <code>-4o6</code>. See <code>man dhcpd</code> for details.</dd>
+
+<dt><code>run-directory</code> (default: <code>"/run/dhcpd"</code>)</dt><dd>The run directory to use. At service activation time, this directory will be created if it does not exist.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/run/dhcpd/dhcpd.pid"</code>)</dt><dd>The PID file to use. This corresponds to the <code>-pf</code> option of <code>dhcpd</code>. See <code>man dhcpd</code> for details.</dd>
+
+<dt><code>interfaces</code> (default: <code>'()</code>)</dt><dd>The names of the network interfaces on which dhcpd should listen for broadcasts. If this list is not empty, then its elements (which must be strings) will be appended to the <code>dhcpd</code> invocation when starting the daemon. It may not be necessary to explicitly specify any interfaces here; see <code>man dhcpd</code> for details.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-hostapd-service_002c-for-Wi_002dFi-access-points"></a> <a id="index-Wi_002dFi-access-points_002c-hostapd-service"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: hostapd-service-type </dt><dd><p>
+This is the service type to run the <a href="https://w1.fi/hostapd/">hostapd</a> daemon to set up WiFi (IEEE 802.11) access points and authentication servers. Its associated value must be a <code>hostapd-configuration</code> as shown below:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Use wlan1 to run the access point for "My Network".
+(service hostapd-service-type
+         (hostapd-configuration
+          (interface "wlan1")
+          (ssid "My Network")
+          (channel 12)))
+</pre>
+</div></dd>
+
+<dt>Data Type: hostapd-configuration </dt><dd>This data type represents the configuration of the hostapd service, with the following fields:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>hostapd</code>)</dt><dd>The hostapd package to use.</dd>
+
+<dt><code>interface</code> (default: <code>"wlan0"</code>)</dt><dd>The network interface to run the WiFi access point.</dd>
+
+<dt><code>ssid</code></dt><dd>The SSID (<i>service set identifier</i>), a string that identifies this network.</dd>
+
+<dt><code>broadcast-ssid?</code> (default: <code>#t</code>)</dt><dd>Whether to broadcast this SSID.</dd>
+
+<dt><code>channel</code> (default: <code>1</code>)</dt><dd>The WiFi channel to use.</dd>
+
+<dt><code>driver</code> (default: <code>"nl80211"</code>)</dt><dd>The driver interface type. <code>"nl80211"</code> is used with all Linux mac80211 drivers. Use <code>"none"</code> if building hostapd as a standalone RADIUS server that does not control any wireless/wired driver.</dd>
+
+<dt><code>extra-settings</code> (default: <code>""</code>)</dt><dd>Extra settings to append as-is to the hostapd configuration file. See <a href="https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf">https://w1.fi/cgit/hostap/plain/hostapd/hostapd.conf</a> for the configuration file reference.</dd>
+</dl></dd>
+
+<dt>Variable: simulated-wifi-service-type </dt><dd><p>
+This is the type of a service to simulate WiFi networking, which can be useful in virtual machines for testing purposes. The service loads the Linux kernel <a href="https://www.kernel.org/doc/html/latest/networking/mac80211_hwsim/mac80211_hwsim.html"><code>mac80211_hwsim</code> module</a> and starts hostapd to create a pseudo WiFi network that can be seen on <code>wlan0</code>, by default.
+</p>
+
+<p>
+The service's value is a <code>hostapd-configuration</code> record.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-iptables"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: iptables-service-type </dt><dd><p>
+This is the service type to set up an iptables configuration. iptables is a packet filtering framework supported by the Linux kernel. This service supports configuring iptables for both IPv4 and IPv6. A simple example configuration rejecting all incoming connections except those to the ssh port 22 is shown below.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service iptables-service-type
+         (iptables-configuration
+          (ipv4-rules (plain-file "iptables.rules" "*filter
+:INPUT ACCEPT
+:FORWARD ACCEPT
+:OUTPUT ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p tcp --dport 22 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-port-unreachable
+COMMIT
+"))
+          (ipv6-rules (plain-file "ip6tables.rules" "*filter
+:INPUT ACCEPT
+:FORWARD ACCEPT
+:OUTPUT ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p tcp --dport 22 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp6-port-unreachable
+COMMIT
+"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: iptables-configuration </dt><dd>The data type representing the configuration of iptables.
+
+<dl class="org-dl">
+<dt><code>iptables</code> (default: <code>iptables</code>)</dt><dd>The iptables package that provides <code>iptables-restore</code> and <code>ip6tables-restore</code>.</dd>
+
+<dt><code>ipv4-rules</code> (default: <code>%iptables-accept-all-rules</code>)</dt><dd>The iptables rules to use. It will be passed to <code>iptables-restore</code>. This may be any “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>).</dd>
+
+<dt><code>ipv6-rules</code> (default: <code>%iptables-accept-all-rules</code>)</dt><dd>The ip6tables rules to use. It will be passed to <code>ip6tables-restore</code>. This may be any “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>).</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-nftables"></a> <a id="index-firewall_002c-nftables"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: nftables-service-type </dt><dd><p>
+This is the service type to set up a nftables configuration. nftables is a netfilter project that aims to replace the iptables, ip6tables, arptables and ebtables framework. It provides a new packet filtering framework, a new user-space utility <code>nft</code>, and a compatibility layer for iptables. This service comes with a default ruleset, <code>%default-nftables-ruleset</code>, that rejects all incoming connections except those to the SSH port 22 (TCP). To use it, simply write:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service nftables-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: nftables-configuration </dt><dd>Available <code>nftables-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>nftables</code>) (type: file-like)</dt><dd>The <code>nftables</code> package to use.</dd>
+
+<dt><code>debug-levels</code> (type: maybe-list-of-debug-levels)</dt><dd>A list of debug levels, for enabling debugging output. Valid debug level values are the ‘=scanner=', ‘=parser=', ‘=eval=', ‘=netlink=', ‘=mnl=', ‘=proto-ctx=', ‘=segtree=' or ‘=all=' symbols.</dd>
+
+<dt><code>ruleset</code> (type: file-like)</dt><dd>A file-like object containing the complete nftables ruleset. The default ruleset rejects all incoming connections except those to TCP port 22, with connections from the loopback interface are allowed.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-NTP-_0028Network-Time-Protocol_0029_002c-service"></a> <a id="index-ntpd_002c-service-for-the-Network-Time-Protocol-daemon"></a> <a id="index-real-time-clock"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: ntp-service-type </dt><dd><p>
+This is the type of the service running the <a href="https://www.ntp.org">Network Time Protocol (NTP)</a> daemon, <code>ntpd</code>. The daemon will keep the system clock synchronized with that of the specified NTP servers.
+</p>
+
+<p>
+The value of this service is an <code>ntpd-configuration</code> object, as described below.
+</p></dd>
+
+<dt>Data Type: ntp-configuration </dt><dd>This is the data type for the NTP service configuration.
+
+<dl class="org-dl">
+<dt><code>servers</code> (default: <code>%ntp-servers</code>)</dt><dd>This is the list of servers (<code>&lt;ntp-server&gt;</code> records) with which <code>ntpd</code> will be synchronized. See the <code>ntp-server</code> data type definition below.</dd>
+
+<dt><code>allow-large-adjustment?</code> (default: <code>#t</code>)</dt><dd>This determines whether <code>ntpd</code> is allowed to make an initial adjustment of more than 1,000 seconds.</dd>
+
+<dt><code>ntp</code> (default: <code>ntp</code>)</dt><dd>The NTP package to use.</dd>
+</dl></dd>
+
+<dt>Variable: %ntp-servers </dt><dd>List of host names used as the default NTP servers. These are servers of the <a href="https://www.ntppool.org/en/">NTP Pool Project</a>.</dd>
+
+<dt>Data Type: ntp-server </dt><dd>The data type representing the configuration of a NTP server.
+
+<dl class="org-dl">
+<dt><code>type</code> (default: <code>'server</code>)</dt><dd>The type of the NTP server, given as a symbol. One of <code>'pool</code>, <code>'server</code>, <code>'peer</code>, <code>'broadcast</code> or <code>'manycastclient</code>.</dd>
+
+<dt><code>address</code></dt><dd>The address of the server, as a string.</dd>
+
+<dt><code>options</code></dt><dd><p>
+NTPD options to use with that specific server, given as a list of option names and/or of option names and values tuples. The following example define a server to use with the options <code>iburst</code> and <code>prefer</code>, as well as <code>version</code> 3 and a <code>maxpoll</code> time of 16 seconds.
+</p>
+
+<pre class="example" id="orgec04bf4">
+(ntp-server
+ (type 'server)
+ (address "some.ntp.server.org")
+ (options `(iburst (version 3) (maxpoll 16) prefer))))
+</pre></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-OpenNTPD"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: openntpd-service-type </dt><dd><p>
+Run the <code>ntpd</code>, the Network Time Protocol (NTP) daemon, as implemented by <a href="http://www.openntpd.org">OpenNTPD</a>. The daemon will keep the system clock synchronized with that of the given servers.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service
+ openntpd-service-type
+ (openntpd-configuration
+  (listen-on '("127.0.0.1" "::1"))
+  (sensor '("udcf0 correction 70000"))
+  (constraint-from '("www.gnu.org"))
+  (constraints-from '("https://www.google.com/"))))
+</pre>
+</div></dd>
+
+<dt>Variable: %openntpd-servers </dt><dd>This variable is a list of the server addresses defined in <code>%ntp-servers</code>.</dd>
+
+<dt>Data Type: openntpd-configuration  :: - <code>openntpd</code> (default: <code>openntpd</code>)</dt><dd>The openntpd package to use.
+
+<dl class="org-dl">
+<dt><code>listen-on</code> (default: <code>'("127.0.0.1" "::1")</code>)</dt><dd>A list of local IP addresses or hostnames the ntpd daemon should listen on.</dd>
+
+<dt><code>query-from</code> (default: <code>'()</code>)</dt><dd>A list of local IP address the ntpd daemon should use for outgoing queries.</dd>
+
+<dt><code>sensor</code> (default: <code>'()</code>)</dt><dd>Specify a list of timedelta sensor devices ntpd should use. <code>ntpd</code> will listen to each sensor that actually exists and ignore non-existent ones. See <a href="https://man.openbsd.org/ntpd.conf">upstream documentation</a> for more information.</dd>
+
+<dt><code>server</code> (default: <code>'()</code>)</dt><dd>Specify a list of IP addresses or hostnames of NTP servers to synchronize to.</dd>
+
+<dt><code>servers</code> (default: <code>%openntp-servers</code>)</dt><dd>Specify a list of IP addresses or hostnames of NTP pools to synchronize to.</dd>
+
+<dt><code>constraint-from</code> (default: <code>'()</code>)</dt><dd><code>ntpd</code> can be configured to query the ‘Date' from trusted HTTPS servers via TLS. This time information is not used for precision but acts as an authenticated constraint, thereby reducing the impact of unauthenticated NTP man-in-the-middle attacks. Specify a list of URLs, IP addresses or hostnames of HTTPS servers to provide a constraint.</dd>
+
+<dt><code>constraints-from</code> (default: <code>'()</code>)</dt><dd>As with constraint from, specify a list of URLs, IP addresses or hostnames of HTTPS servers to provide a constraint. Should the hostname resolve to multiple IP addresses, <code>ntpd</code> will calculate a median constraint from all of them.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-inetd"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: inetd-service-type </dt><dd><p>
+This service runs the <code>inetd</code> (see <a href="https://www.gnu.org/software/inetutils/manual/html_node/inetd-invocation.html#inetd-invocation">inetd invocation</a> in GNU Inetutils) daemon. <code>inetd</code> listens for connections on internet sockets, and lazily starts the specified server program when a connection is made on one of these sockets.
+</p>
+
+<p>
+The value of this service is an <code>inetd-configuration</code> object. The following example configures the <code>inetd</code> daemon to provide the built-in <code>echo</code> service, as well as an smtp service which forwards smtp traffic over ssh to a server <code>smtp-server</code> behind a gateway <code>hostname</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service
+ inetd-service-type
+ (inetd-configuration
+  (entries (list
+            (inetd-entry
+             (name "echo")
+             (socket-type 'stream)
+             (protocol "tcp")
+             (wait? #f)
+             (user "root"))
+            (inetd-entry
+             (node "127.0.0.1")
+             (name "smtp")
+             (socket-type 'stream)
+             (protocol "tcp")
+             (wait? #f)
+             (user "root")
+             (program (file-append openssh "/bin/ssh"))
+             (arguments
+              '("ssh" "-qT" "-i" "/path/to/ssh_key"
+                "-W" "smtp-server:25" "user@hostname")))))))
+</pre>
+</div>
+
+<p>
+See below for more details about <code>inetd-configuration</code>.
+</p></dd>
+
+<dt>Data Type: inetd-configuration </dt><dd>Data type representing the configuration of <code>inetd</code>.
+
+<dl class="org-dl">
+<dt><code>program</code> (default: <code>(file-append inetutils "/libexec/inetd")</code>)</dt><dd>The <code>inetd</code> executable to use.</dd>
+
+<dt><code>entries</code> (default: <code>'()</code>)</dt><dd>A list of <code>inetd</code> service entries. Each entry should be created by the <code>inetd-entry</code> constructor.</dd>
+</dl></dd>
+
+<dt>Data Type: inetd-entry </dt><dd><p>
+Data type representing an entry in the <code>inetd</code> configuration. Each entry corresponds to a socket where <code>inetd</code> will listen for requests.
+</p>
+
+<dl class="org-dl">
+<dt><code>node</code> (default: <code>#f</code>)</dt><dd>Optional string, a comma-separated list of local addresses <code>inetd</code> should use when listening for this service. See <a href="https://www.gnu.org/software/inetutils/manual/html_node/Configuration-file.html#Configuration-file">Configuration file</a> in GNU Inetutils for a complete description of all options.</dd>
+
+<dt><code>name</code></dt><dd>A string, the name must correspond to an entry in <code>/etc/services</code>.</dd>
+
+<dt><code>socket-type</code></dt><dd>One of <code>'stream</code>, <code>'dgram</code>, <code>'raw</code>, <code>'rdm</code> or <code>'seqpacket</code>.</dd>
+
+<dt><code>protocol</code></dt><dd>A string, must correspond to an entry in <code>/etc/protocols</code>.</dd>
+
+<dt><code>wait?</code> (default: <code>#t</code>)</dt><dd>Whether <code>inetd</code> should wait for the server to exit before listening to new service requests.</dd>
+
+<dt><code>user</code></dt><dd>A string containing the user (and, optionally, group) name of the user as whom the server should run. The group name can be specified in a suffix, separated by a colon or period, i.e. <code>"user"</code>, <code>"user:group"</code> or <code>"user.group"</code>.</dd>
+
+<dt><code>program</code> (default: <code>"internal"</code>)</dt><dd>The server program which will serve the requests, or <code>"internal"</code> if <code>inetd</code> should use a built-in service.</dd>
+
+<dt><code>arguments</code> (default: <code>'()</code>)</dt><dd>A list strings or file-like objects, which are the server program's arguments, starting with the zeroth argument, i.e. the name of the program itself. For <code>inetd</code>'s internal services, this entry must be <code>'()</code> or <code>'("internal")</code>.</dd>
+</dl>
+
+<p>
+See <a href="https://www.gnu.org/software/inetutils/manual/html_node/Configuration-file.html#Configuration-file">Configuration file</a> in GNU Inetutils for a more detailed discussion of each configuration field.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-opendht_002c-distributed-hash-table-network-service"></a> <a id="index-dhtproxy_002c-for-use-with-jami"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: opendht-service-type </dt><dd><p>
+This is the type of the service running a <a href="https://opendht.net">OpenDHT</a> node, <code>dhtnode</code>. The daemon can be used to host your own proxy service to the distributed hash table (DHT), for example to connect to with Jami, among other applications.
+</p>
+
+<blockquote>
+<p>
+<b>Important:</b> When using the OpenDHT proxy server, the IP addresses it “sees” from the clients should be addresses reachable from other peers. In practice this means that a publicly reachable address is best suited for a proxy server, outside of your private network. For example, hosting the proxy server on a IPv4 private local network and exposing it via port forwarding could work for external peers, but peers local to the proxy would have their private addresses shared with the external peers, leading to connectivity problems.
+</p>
+</blockquote>
+
+<p>
+The value of this service is a <code>opendht-configuration</code> object, as described below.
+</p></dd>
+
+<dt>Data Type: opendht-configuration </dt><dd>Available <code>opendht-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>opendht</code> (default: <code>opendht</code>) (type: file-like)</dt><dd>The <code>opendht</code> package to use.</dd>
+
+<dt><code>peer-discovery?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to enable the multicast local peer discovery mechanism.</dd>
+
+<dt><code>enable-logging?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to enable logging messages to syslog. It is disabled by default as it is rather verbose.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to enable debug-level logging messages. This has no effect if logging is disabled.</dd>
+
+<dt><code>bootstrap-host</code> (default: <code>"bootstrap.jami.net:4222"</code>) (type: maybe-string)</dt><dd>The node host name that is used to make the first connection to the network. A specific port value can be provided by appending the <code>:PORT</code> suffix. By default, it uses the Jami bootstrap nodes, but any host can be specified here. It's also possible to disable bootstrapping by explicitly setting this field to the <code>%unset-value</code> value.</dd>
+
+<dt><code>port</code> (default: <code>4222</code>) (type: maybe-number)</dt><dd>The UDP port to bind to. When left unspecified, an available port is automatically selected.</dd>
+
+<dt><code>proxy-server-port</code> (type: maybe-number)</dt><dd>Spawn a proxy server listening on the specified port.</dd>
+
+<dt><code>proxy-server-port-tls</code> (type: maybe-number)</dt><dd>Spawn a proxy server listening to TLS connections on the specified port.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-Tor"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: tor-service-type </dt><dd><p>
+Type for a service that runs the <a href="https://torproject.org">Tor</a> anonymous networking daemon. The service is configured using a <code>&lt;tor-configuration&gt;</code> record. By default, the Tor daemon runs as the <code>tor</code> unprivileged user, which is a member of the <code>tor</code> group.
+</p>
+
+<p>
+<a id="index-onion-services_002c-for-Tor"></a>
+</p>
+
+<p>
+Services of this type can be extended by other services to specify <i>onion services</i> (in addition to those already specified in <code>tor-configuration</code>) as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'my-extra-onion-service tor-service-type
+                (list (tor-onion-service-configuration
+                        (name "extra-onion-service")
+                        (mapping '((80 "127.0.0.1:8080"))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: tor-configuration  :: - <code>tor</code> (default: <code>tor</code>)</dt><dd>The package that provides the Tor daemon. This package is expected to provide the daemon at <code>bin/tor</code> relative to its output directory. The default package is the <a href="https://www.torproject.org">Tor Project's</a> implementation.
+
+<dl class="org-dl">
+<dt><code>config-file</code> (default: <code>(plain-file "empty" "")</code>)</dt><dd>The configuration file to use. It will be appended to a default configuration file, and the final configuration file will be passed to <code>tor</code> via its <code>-f</code> option. This may be any “file-like” object (see <a href="docs/guix--G_002dExpressions.html">file-like objects</a>). See <code>man tor</code> for details on the configuration file syntax.</dd>
+
+<dt><code>hidden-services</code> (default: <code>'()</code>)</dt><dd>The list of <code>&lt;tor-onion-service-configuration&gt;</code> records to use. For any onion service you include in this list, appropriate configuration to enable the onion service will be automatically added to the default configuration file.</dd>
+
+<dt><code>socks-socket-type</code> (default: <code>'tcp</code>)</dt><dd><p>
+The default socket type that Tor should use for its SOCKS socket. This must be either <code>'tcp</code> or <code>'unix</code>. If it is <code>'tcp</code>, then by default Tor will listen on TCP port 9050 on the loopback interface (i.e., localhost). If it is <code>'unix</code>, then Tor will listen on the UNIX domain socket <code>/var/run/tor/socks-sock</code>, which will be made writable by members of the <code>tor</code> group.
+</p>
+
+<p>
+If you want to customize the SOCKS socket in more detail, leave <code>socks-socket-type</code> at its default value of <code>'tcp</code> and use <code>config-file</code> to override the default by providing your own <code>SocksPort</code> option.
+</p></dd>
+
+<dt><code>control-socket?</code> (default: <code>#f</code>)</dt><dd>Whether or not to provide a “control socket” by which Tor can be controlled to, for instance, dynamically instantiate tor onion services. If <code>#t</code>, Tor will listen for control commands on the UNIX domain socket <code>/var/run/tor/control-sock</code>, which will be made writable by members of the <code>tor</code> group.</dd>
+
+<dt><code>transport-plugins</code> (default: <code>'()</code>)</dt><dd>The list of <code>&lt;tor-transport-plugin&gt;</code> records to use. For any transport plugin you include in this list, appropriate configuration line to enable transport plugin will be automatically added to the default configuration file.</dd>
+
+<dt><code>auto-start?</code> (default: <code>#t</code>)</dt><dd>Whether or not to start the Tor daemon on boot.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-onion-service_002c-tor"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: tor-onion-service-configuration </dt><dd>Data Type representing a Tor <i>Onion Service</i> configuration. See <a href="https://community.torproject.org/onion-services/">the Tor project's documentation</a> for more information. Available <code>tor-onion-service-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>Name for this Onion Service. This creates a <code>/var/lib/tor/hidden-services/==name</code> directory, where the <code>hostname</code> file contains the ‘=.onion=' host name for this Onion Service.</dd>
+
+<dt><code>mapping</code> (type: alist)</dt><dd><p>
+Association list of port to address mappings. The following example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'((22 "127.0.0.1:22")
+  (80 "127.0.0.1:8080"))
+</pre>
+</div>
+
+<p>
+maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-pluggable-transports_002c-tor"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: tor-transport-plugin </dt><dd><p>
+Data type representing a Tor pluggable transport plugin in <code>tor-configuration</code>. Plugguble transports are programs that disguise Tor traffic, which can be useful in case Tor is censored. See the the Tor project's <a href="https://tb-manual.torproject.org/circumvention/">documentation</a> and <a href="https://spec.torproject.org/pt-spec/index.html">specification</a> for more information.
+</p>
+
+<p>
+Each transport plugin corresponds either to <code>ClientTransportPlugin ...</code> or to <code>ServerTransportPlugin ...</code> line in the default configuration file, see <code>man tor</code>. Available <code>tor-transport-plugin</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>role</code> (default: <code>'client</code>)</dt><dd>This must be either <code>'client</code> or <code>'server</code>. Otherwise, an error is raised. Set the <code>'server</code> value if you want to run a bridge to help censored users connect to the Tor network, see <a href="https://community.torproject.org/relay/setup/bridge/">the Tor project's bridge guide</a>. Set the <code>'client</code> value if you want to connect to somebody else's bridge, see <a href="https://bridges.torproject.org/">the Tor project's “Get Bridges” page</a>. In both cases the required additional configuration should be provided via <code>#:config-file</code> option of <code>tor-configuration</code>.</dd>
+
+<dt><code>protocol</code> (default: <code>"obfs4"</code>)</dt><dd>A string that specifies a pluggable transport protocol.</dd>
+
+<dt><code>program</code></dt><dd>This must be a “file-like” object or a string pointing to the pluggable transport plugin executable. This option allows the Tor daemon run inside the container to access the executable and all the references (e.g. package dependencies) attached to it.</dd>
+</dl>
+
+<p>
+Suppose you would like Tor daemon to use obfs4 type obfuscation and to connect to Tor network via obfs4 bridge (a nonpublic Tor relay with support for obfs4 type obfuscation). Then you may go to <a href="https://bridges.torproject.org/">https://bridges.torproject.org/</a> and get there a couple of bridge lines (each starts with <code>obfs4 ...</code>) and use these lines in tor-service-type configuration as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service tor-service-type
+     (tor-configuration
+      (config-file (plain-file "torrc"
+                   "\
+UseBridges 1
+Bridge obfs4 ...
+Bridge obfs4 ..."))
+      (transport-plugins
+       (list (tor-transport-plugin
+          (program (file-append lyrebird "/bin/lyrebird")))))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+The <code>(gnu services rsync)</code> module provides the following services:
+</p>
+
+<p>
+You might want an rsync daemon if you have files that you want available so anyone (or just yourself) can download existing files or upload new files.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: rsync-service-type </dt><dd><p>
+This is the service type for the <a href="https://rsync.samba.org">rsync</a> daemon, The value for this service type is a <code>rsync-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Export two directories over rsync.  By default rsync listens on
+;; all the network interfaces.
+(service rsync-service-type
+         (rsync-configuration
+           (modules (list (rsync-module
+                            (name "music")
+                            (file-name "/srv/zik")
+                            (read-only? #f))
+                          (rsync-module
+                            (name "movies")
+                            (file-name "/home/charlie/movies"))))))
+</pre>
+</div>
+
+<p>
+See below for details about <code>rsync-configuration</code>.
+</p></dd>
+
+<dt>Data Type: rsync-configuration </dt><dd>Data type representing the configuration for <code>rsync-service</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>rsync</code>)</dt><dd><code>rsync</code> package to use.</dd>
+
+<dt><code>address</code> (default: <code>#f</code>)</dt><dd>IP address on which <code>rsync</code> listens for incoming connections. If unspecified, it defaults to listening on all available addresses.</dd>
+
+<dt><code>port-number</code> (default: <code>873</code>)</dt><dd>TCP port on which <code>rsync</code> listens for incoming connections. If port is less than <code>1024</code> <code>rsync</code> needs to be started as the <code>root</code> user and group.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/rsyncd/rsyncd.pid"</code>)</dt><dd>Name of the file where <code>rsync</code> writes its PID.</dd>
+
+<dt><code>lock-file</code> (default: <code>"/var/run/rsyncd/rsyncd.lock"</code>)</dt><dd>Name of the file where <code>rsync</code> writes its lock file.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/rsyncd.log"</code>)</dt><dd>Name of the file where <code>rsync</code> writes its log file.</dd>
+
+<dt><code>user</code> (default: <code>"root"</code>)</dt><dd>Owner of the <code>rsync</code> process.</dd>
+
+<dt><code>group</code> (default: <code>"root"</code>)</dt><dd>Group of the <code>rsync</code> process.</dd>
+
+<dt><code>uid</code> (default: <code>"rsyncd"</code>)</dt><dd>User name or user ID that file transfers to and from that module should take place as when the daemon was run as <code>root</code>.</dd>
+
+<dt><code>gid</code> (default: <code>"rsyncd"</code>)</dt><dd>Group name or group ID that will be used when accessing the module.</dd>
+
+<dt><code>modules</code> (default: <code>%default-modules</code>)</dt><dd>List of “modules”&#x2014;i.e., directories exported over rsync. Each element must be a <code>rsync-module</code> record, as described below.</dd>
+</dl></dd>
+
+<dt>Data Type: rsync-module </dt><dd>This is the data type for rsync “modules”. A module is a directory exported over the rsync protocol. The available fields are as follows:
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>The module name. This is the name that shows up in URLs. For example, if the module is called <code>music</code>, the corresponding URL will be <code>rsync://host.example.org/music</code>.</dd>
+
+<dt><code>file-name</code></dt><dd>Name of the directory being exported.</dd>
+
+<dt><code>comment</code> (default: <code>""</code>)</dt><dd>Comment associated with the module. Client user interfaces may display it when they obtain the list of available modules.</dd>
+
+<dt><code>read-only?</code> (default: <code>#t</code>)</dt><dd>Whether or not client will be able to upload files. If this is false, the uploads will be authorized if permissions on the daemon side permit it.</dd>
+
+<dt><code>chroot?</code> (default: <code>#t</code>)</dt><dd>When this is true, the rsync daemon changes root to the module's directory before starting file transfers with the client. This improves security, but requires rsync to run as root.</dd>
+
+<dt><code>timeout</code> (default: <code>300</code>)</dt><dd>Idle time in seconds after which the daemon closes a connection with the client.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-Syncthing_002c-file-synchronization-service"></a> <a id="index-backup-service_002c-Syncthing"></a>
+The <code>(gnu services syncthing)</code> module provides the following services: <a id="index-syncthing"></a>
+</p>
+
+<p>
+You might want a Syncthing daemon if you have files between two or more computers and want to sync them in real time, safely protected from prying eyes.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: syncthing-service-type </dt><dd><p>
+This is the service type for the <a href="https://syncthing.net/">syncthing</a> daemon, The value for this service type is a <code>syncthing-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service syncthing-service-type
+         (syncthing-configuration (user "alice")))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Note:</b> This service is also available for Guix Home, where it runs directly with your user privileges (see <a href="docs/guix--Networking-Home-Services.html"><code>home-syncthing-service-type</code></a>).
+</p>
+</blockquote>
+
+<p>
+See below for details about <code>syncthing-configuration</code>.
+</p></dd>
+
+<dt>Data Type: syncthing-configuration </dt><dd>Data type representing the configuration for <code>syncthing-service-type</code>.
+
+<dl class="org-dl">
+<dt><code>syncthing</code> (default: <code>syncthing</code>)</dt><dd><code>syncthing</code> package to use.</dd>
+
+<dt><code>arguments</code> (default: <code>’()</code>)</dt><dd>List of command-line arguments passing to <code>syncthing</code> binary.</dd>
+
+<dt><code>logflags</code> (default: <code>0</code>)</dt><dd>Sum of logging flags, see <a href="https://docs.syncthing.net/users/syncthing.html#cmdoption-logflags">Syncthing documentation logflags</a>.</dd>
+
+<dt><code>user</code> (default: <code>#f</code>)</dt><dd>The user as which the Syncthing service is to be run. This assumes that the specified user exists.</dd>
+
+<dt><code>group</code> (default: <code>"users"</code>)</dt><dd>The group as which the Syncthing service is to be run. This assumes that the specified group exists.</dd>
+
+<dt><code>home</code> (default: <code>#f</code>)</dt><dd>Sets the <code>HOME</code> variable for the Syncthing daemon. The default is <code>$HOME</code> of the specified Syncthing <code>user</code>.</dd>
+
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd><p>
+Either a file-like object that resolves to a Syncthing configuration XML file, or a <code>syncthing-config-file</code> record (see below). If set to <code>#f</code>, Guix will not try to generate a config file, and Syncthing will generate a default configuration which will not be touched on reconfigure. Specifying this in a system service moves Syncthing's common configuration and data directory (<code>--home</code> in <a href="https://docs.syncthing.net/users/syncthing.html">https://docs.syncthing.net/users/syncthing.html</a>) to <code>/var/lib/syncthing-&lt;user&gt;</code>.
+</p>
+
+<p>
+When used as a home service, syncthing configuration will be populated in <code>~/.local/state/syncthing/</code>. Old Syncthing installs may have files in <code>$XDG_CONFIG_HOME/syncthing/</code> (usually <code>~/.config/syncthing/</code>), which will override configuration in <code>~/.local/state/syncthing</code> managed by this service. In such cases, you should move the contents of <code>$XDG_CONFIG_HOME/syncthing/</code> into <code>~/.local/state/syncthing/</code>.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+This section documents a subset of the Syncthing configuration options&#x2014;specifically those related to Guix or those affecting how your computer will connect to other computers over the network (such as Syncthing relays or discovery servers). The configuration is fully documented in the upstream <a href="https://docs.syncthing.net/users/config.html">Syncthing config documentation</a>; camelCase there is converted to kebab-case here. If you are migrating from a Syncthing-managed configuration to one managed by Guix, you can check what changes were introduced by <code>diff=ing the respective =config.xml</code> files. Note that you will need to add whitespace with 4-space indentation to the file generated by Guix, using the <code>xmllint</code> program from the <code>libxml2</code> package like so:
+</p>
+
+<pre class="example" id="org180001e">
+XMLLINT_INDENT="    " xmllint --format /path/to/new/config.xml | diff /path/to/old/config.xml -
+</pre>
+
+<p>
+When generating a configuration file through Guix, you can still temporarily modify Syncthing from the GUI or through <code>introducer</code> and <code>autoAcceptFolders</code> mechanisms, but such changes will be reset on reconfigure.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: syncthing-config-file </dt><dd>Data type representing the configuration file read by the Syncthing daemon.
+
+<dl class="org-dl">
+<dt><code>folders</code> (default: <code>(list (syncthing-folder (id "default") (label "Default Folder") (path "~/Sync")))</code></dt><dd>The default here is the same as Syncthing's default. The value should be a list of =syncthing-folder=s.</dd>
+
+<dt><code>devices</code> (default: <code>'()</code></dt><dd>This should be a list of =syncthing-device=s. Guix will automatically add any devices specified in any ‘folders' to this list. There are instances when you want to connect to a device despite not (initially) sharing any folders (such as a device with autoAcceptFolders). In such instances, you should specify those devices here. If multiple versions of the same device (as determined by comparing device ID) are discovered, the one in this list is prioritized. Otherwise, the first instance in the first folder is used.</dd>
+
+<dt><code>gui-enabled?</code> (default: <code>#t</code>)</dt><dd>By default, any user on the computer can access the GUI and make changes to Syncthing. If you leave this enabled, you should probably set <code>gui-user</code> and <code>gui-password</code> (see below).</dd>
+
+<dt>(no term)</dt><dd><code>gui-tls?</code> (default: <code>#f</code>)<br />
+<code>gui-debugging?</code> (default: <code>#f</code>)<br />
+<code>gui-send-basic-authorization-prompt?</code> (default: <code>#f</code>)<br />
+<code>gui-address</code> (default: <code>"127.0.0.1:8384"</code>)<br />
+<code>gui-user</code> (default: <code>#f</code>)<br />
+<code>gui-password</code> (default: <code>#f</code>) :: A bcrypt hash of the GUI password. Remember that this will be globally exposed in <code>/gnu/store</code>.</dd>
+
+<dt><code>gui-apikey</code> (default: <code>#f</code>)</dt><dd>You must specify this to use the Syncthing REST interface. This key is kept in <code>/gnu/store</code> and is accessible to all users of the system.</dd>
+
+<dt>(no term)</dt><dd><code>gui-theme</code> (default: <code>"default"</code>)<br />
+<code>ldap-enabled?</code> (default: <code>#f</code>)<br />
+<code>ldap-address</code> (default: <code>""</code>)<br />
+<code>ldap-bind-dn</code> (default: <code>""</code>)<br />
+<code>ldap-transport</code> (default: <code>""</code>)<br />
+<code>ldap-insecure-skip-verify</code> (default: <code>""</code>)<br />
+<code>ldap-search-base-dn</code> (default: <code>""</code>)<br />
+<code>ldap-search-filter</code> (default: <code>""</code>)<br />
+<code>listen-address</code> (default: <code>"default"</code>)<br />
+<code>global-announce-server</code> (default: <code>"default"</code>)<br />
+<code>global-announce-enabled?</code> (default: <code>#t</code>) :: Global discovery servers can be used to help connect devices at unknown IP addresses by storing the last known IP address.</dd>
+
+<dt><code>local-announce-enabled?</code> (default: <code>#t</code>)</dt><dd>This makes devices find each other very easily on the same LAN. Often, this will allow you to just plug an Ethernet between two devices, or connect one device to the other's hotspot and start syncing.</dd>
+
+<dt>(no term)</dt><dd><code>local-announce-port</code> (default: <code>21027</code>)<br />
+<code>local-announce-mac-address</code> (default: <code>"[ff12::8384]:21027"</code>)<br />
+<code>max-send-kbps</code> (default: <code>0</code>)<br />
+<code>max-receive-kbps</code> (default: <code>0</code>)<br />
+<code>reconnection-interval-seconds</code> (default: <code>60</code>)<br />
+<code>relays-enabled?</code> (default: <code>#t</code>) :: This option allows your Syncthing instance to use a global network of <a href="https://docs.syncthing.net/users/relaying.html">relays</a> to enable syncing between devices when all other methods fail. As always, Syncthing traffic is encrypted in transport and the relays are unable to decrypt it.</dd>
+
+<dt>(no term)</dt><dd><code>relay-reconnect-interval-minutes</code> (default: <code>10</code>)<br />
+<code>start-browser?</code> (default: <code>#t</code>)<br />
+<code>nat-enabled?</code> (default: <code>#t</code>)<br />
+<code>nat-lease-minutes</code> (default: <code>60</code>)<br />
+<code>nat-renewal-minutes</code> (default: <code>30</code>)<br />
+<code>nat-timeout-seconds</code> (default: <code>10</code>)<br />
+<code>usage-reporting-accepted</code> (default: <code>0</code>) :: Options whose names begin with ‘usage-reporting-' control usage reporting. Set to -1 to disable, or to a positive value to enable. The default (0) disables reporting, but causes a usage reporting consent prompt to be displayed in the Syncthing GUI.</dd>
+
+<dt>(no term)</dt><dd><code>usage-reporting-seen</code> (default: <code>0</code>)<br />
+<code>usage-reporting-unique-id</code> (default: <code>""</code>)<br />
+<code>usage-reporting-url</code> (default: <code>"https://data.syncthing.net/newdata"</code>)<br />
+<code>usage-reporting-post-insecurely?</code> (default: <code>#f</code>)<br />
+<code>usage-reporting-initial-delay-seconds</code> (default: <code>1800</code>)<br />
+<code>auto-upgrade-interval-hours</code> (default: <code>12</code>)<br />
+<code>upgrade-to-pre-releases?</code> (default: <code>#f</code>)<br />
+<code>keep-temporaries-hours</code> (default: <code>24</code>)<br />
+<code>cache-ignored-files?</code> (default: <code>#f</code>)<br />
+<code>progress-update-interval-seconds</code> (default: <code>5</code>)<br />
+<code>limit-bandwidth-in-lan?</code> (default: <code>#f</code>)<br />
+<code>min-home-disk-free-unit</code> (default: <code>"%"</code>)<br />
+<code>min-home-disk-free</code> (default: <code>1</code>)<br />
+<code>releases-url</code> (default: <code>"https://upgrades.syncthing.net/meta.json"</code>)<br />
+<code>overwrite-remote-device-names-on-connect?</code> (default: <code>#f</code>)<br />
+<code>temp-index-min-blocks</code> (default: <code>10</code>)<br />
+<code>unacked-notification-id</code> (default: <code>"authenticationUserAndPassword"</code>)<br />
+<code>traffic-class</code> (default: <code>0</code>)<br />
+<code>set-low-priority?</code> (default: <code>#t</code>)<br />
+<code>max-folder-concurrency</code> (default: <code>0</code>)<br />
+<code>crash-reporting-url</code> (default: <code>"https://crash.syncthing.net/newcrash"</code>)<br />
+<code>crash-reporting-enabled?</code> (default: <code>#t</code>)<br />
+<code>stun-keepalive-start-seconds</code> (default: <code>180</code>)<br />
+<code>stun-keepalive-min-seconds</code> (default: <code>20</code>)<br />
+<code>stun-server</code> (default: <code>"default"</code>)<br />
+<code>database-tuning</code> (default: <code>"auto"</code>)<br />
+<code>max-concurrent-incoming-request-kib</code> (default: <code>0</code>)<br />
+<code>announce-lan-addresses?</code> (default: <code>#t</code>)<br />
+<code>send-full-index-on-upgrade?</code> (default: <code>#f</code>)<br />
+<code>connection-limit-enough</code> (default: <code>0</code>)<br />
+<code>connection-limit-max</code> (default: <code>0</code>)<br />
+<code>insecure-allow-old-tls-versions?</code> (default: <code>#f</code>)<br />
+<code>connection-priority-tcp-lan</code> (default: <code>10</code>)<br />
+<code>connection-priority-quic-lan</code> (default: <code>20</code>)<br />
+<code>connection-priority-tcp-wan</code> (default: <code>30</code>)<br />
+<code>connection-priority-quic-wan</code> (default: <code>40</code>)<br />
+<code>connection-priority-relay</code> (default: <code>50</code>)<br />
+<code>connection-priority-upgrade-threshold</code> (default: <code>0</code>)<br />
+<code>default-folder</code> (default: <code>(syncthing-folder (label ""))</code>)<br />
+<code>default-device</code> (default: <code>(syncthing-device (id ""))</code>)<br />
+<code>default-ignores</code> (default: <code>"")</code>) :: Options whose names begin with ‘default-' above do not affect folders and devices added through the Guix configuration interface. They will, however, affect folders and devices that are added through the Syncthing GUI, by an <code>introducer</code>, or a device with <code>auto-accept-folders</code>.</dd>
+</dl></dd>
+</dl>
+
+<p>
+Data Type: syncthing-folder
+Data type representing a folder to be synchronized.
+</p>
+
+<p>
+<code>id</code> (default: <code>#f</code>)
+This ID cannot match the ID of any other folder on this device. If left unspecified, it will default to the label (see below).
+</p>
+
+<p>
+<code>label</code>
+A human readable label for the folder.
+</p>
+
+<p>
+<code>path</code>
+The path at which to store this folder.
+</p>
+
+<p>
+<code>type</code> (default: <code>"sendreceive"</code>)
+<code>rescan-interval-seconds</code> (default: <code>3600</code>)
+<code>file-system-watcher-enabled?</code> (default: <code>#t</code>)
+<code>file-system-watcher-delay-seconds</code> (default: <code>10</code>)
+<code>file-system-watcher-timeout-seconds</code> (default: <code>0</code>)
+<code>ignore-permissions?</code> (default: <code>#f</code>)
+<code>auto-normalize?</code> (default: <code>#t</code>)
+<code>devices</code> (default: <code>'()</code>)
+This should be a list of other Syncthing devices. You do not need to specify the current device. Each device can be listed as a a <code>syncthing-device</code> record or a <code>syncthing-folder-device</code> record if you want files to be encrypted on disk. See below.
+</p>
+
+<p>
+<code>filesystem-type</code> (default: <code>"basic"</code>)
+<code>min-disk-free-unit</code> (default: <code>"%"</code>)
+<code>min-disk-free</code> (default: <code>1</code>)
+<code>versioning-type</code> (default: <code>#f</code>)
+<code>versioning-file-system-path</code> (default: <code>""</code>)
+<code>versioning-file-system-type</code> (default: <code>"basic"</code>)
+<code>versioning-cleanup-interval-seconds</code> (default: <code>3600</code>)
+<code>versioning-cleanout-days</code> (default: <code>#f</code>)
+<code>versioning-keep</code> (default: <code>#f</code>)
+<code>versioning-max-age</code> (default: <code>#f</code>)
+<code>versioning-command</code> (default: <code>#f</code>)
+<code>copiers</code> (default: <code>0</code>)
+<code>puller-max-pending-kib</code> (default: <code>0</code>)
+<code>hashers</code> (default: <code>0</code>)
+<code>order</code> (default: <code>"random"</code>)
+<code>ignore-delete?</code> (default: <code>#f</code>)
+<code>scan-progress-interval-seconds</code> (default: <code>0</code>)
+<code>puller-pause-seconds</code> (default: <code>0</code>)
+<code>max-conflicts</code> (default: <code>10</code>)
+<code>disable-sparse-files?</code> (default: <code>#f</code>)
+<code>disable-temp-indexes?</code> (default: <code>#f</code>)
+<code>paused?</code> (default: <code>#f</code>)
+<code>weak-hash-threshold-percentage</code> (default: <code>25</code>)
+<code>marker-name</code> (default: <code>".stfolder"</code>)
+<code>copy-ownership-from-parent?</code> (default: <code>#f</code>)
+<code>mod-time-window-seconds</code> (default: <code>0</code>)
+<code>max-concurrent-writes</code> (default: <code>2</code>)
+<code>disable-fsync?</code> (default: <code>#f</code>)
+<code>block-pull-order</code> (default: <code>"standard"</code>)
+<code>copy-range-method</code> (default: <code>"standard"</code>)
+<code>case-sensitive-file-system?</code> (default: <code>#f</code>)
+<code>junctions-as-dirs?</code> (default: <code>#f</code>)
+<code>sync-ownership?</code> (default: <code>#f</code>)
+<code>send-ownership?</code> (default: <code>#f</code>)
+<code>sync-xattrs?</code> (default: <code>#f</code>)
+<code>send-xattrs?</code> (default: <code>#f</code>)
+<code>xattr-filter-max-single-entry-size</code> (default: <code>1024</code>)
+<code>xattr-filter-max-total-size</code> (default: <code>4096</code>)
+Data Type: syncthing-device
+Data type representing a device to synchronize folders with.
+</p>
+
+<p>
+<code>id</code>
+A long hash representing the keys generated by Syncthing on the first launch. You can obtain this from the Syncthing GUI or by inspecting an existing Syncthing configuration file.
+</p>
+
+<p>
+<code>name</code> (default: <code>""</code>)
+A human readable device name for viewing in the GUI or in Scheme.
+</p>
+
+<p>
+<code>compression</code> (default: <code>"metadata"</code>)
+<code>introducer?</code> (default: <code>#f</code>)
+<code>skip-introduction-removals?</code> (default: <code>#f</code>)
+<code>introduced-by</code> (default: <code>""</code>)
+<code>addresses</code> (default: <code>'("dynamic")</code>)
+List of addresses at which to search for this device. When the special value “dynamic” is included, Syncthing will search for the device locally as well as via the Syncthing project's <a href="https://docs.syncthing.net/users/security.html#global-discovery">global discovery</a> servers.
+</p>
+
+<p>
+<code>paused?</code> (default: <code>#f</code>)
+<code>auto-accept-folders?</code> (default: <code>#f</code>)
+<code>max-send-kbps</code> (default: <code>0</code>)
+<code>max-receive-kbps</code> (default: <code>0</code>)
+<code>max-request-kib</code> (default: <code>0</code>)
+<code>untrusted?</code> (default: <code>#f</code>)
+<code>remote-gui-port</code> (default: <code>0</code>)
+<code>num-connections</code> (default: <code>0</code>)
+</p>
+<dl class="org-dl">
+<dt>Data Type: syncthing-folder-device </dt><dd><p>
+This data type offers two folder-specific device options: <code>introduced-by</code> and <code>encryption-password</code>.
+</p>
+
+<p>
+<code>syncthing-folder-device</code> corresponds to the <a href="https://docs.syncthing.net/users/config.html#config-option-folder.device">‘device'</a> option in the upstream ‘folder' element.
+</p>
+
+<p>
+If you don't need to use these options, then you can just use <code>syncthing-device</code> instead of <code>syncthing-folder-device</code> in the <code>devices</code> field of a <code>syncthing-folder</code> instance.
+</p>
+
+<dl class="org-dl">
+<dt><code>device</code></dt><dd>The <code>syncthing-device</code> for which this configuration applies.</dd>
+
+<dt><code>introduced-by</code> (default: <code>""</code>)</dt><dd>The name of the device that "introduced" our device to the device sharing this folder. This is only used when "introduced" devices are removed by the introducer. See <a href="https://docs.syncthing.net/users/introducer.html">Syncthing introductions</a>.</dd>
+
+<dt><code>encryption-password</code> (default: <code>""</code>)</dt><dd><p>
+The password used to encrypt data that is synchronized to untrusted devices.
+</p>
+
+<p>
+Beware: specifying this field will include this password as plain text (not encrypted) and globally visible in <code>/gnu/store/</code>. If the encryption-password is non-empty, then it will be used as a password to encrypt file chunks as they are synchronized to untrusted devices. For more information on syncing to devices you don't totally trust, see Syncthing's documentation on <a href="https://docs.syncthing.net/users/untrusted.html">Untrusted (Encrypted) Devices</a>. Note that data transfer is always encrypted while in transport ("end-to-end encryption"), regardless of this setting.
+</p></dd>
+</dl></dd>
+</dl>
+
+<p>
+Here is a more complex example configuration for illustrative purposes:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service syncthing-service-type
+         (let ((laptop (syncthing-device (id "VHOD2D6-...-7XRMDEN")))
+               (desktop (syncthing-device (id "64SAZ37-...-FZJ5GUA")
+                                          (addresses '("tcp://example.com"))))
+               (bob-desktop (syncthing-device (id "KYIMEGO-...-FT77EAO"))))
+           (syncthing-configuration
+            (user "alice")
+            (config-file
+             (syncthing-config-file
+               (folders (list (syncthing-folder
+                               (label "some-files")
+                               (path "~/data")
+                               (devices (list desktop laptop)))
+                              (syncthing-folder
+                               (label "critical-files")
+                               (path "~/secrets")
+                               (devices
+                                (list desktop
+                                      laptop
+                                      (syncthing-folder-device
+                                       (device bob-desktop)
+                                       (encryption-password "mypassword"))))))))))))
+</pre>
+</div>
+
+<p>
+Furthermore, <code>(gnu services ssh)</code> provides the following services. <a id="index-SSH"></a> <a id="index-SSH-server"></a>
+</p>
+
+<dl class="org-dl">
+<dt>Variable: openssh-service-type </dt><dd><p>
+This is the type for the <a href="http://www.openssh.org">OpenSSH</a> secure shell daemon, <code>sshd</code>. Its value must be an <code>openssh-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service openssh-service-type
+         (openssh-configuration
+           (x11-forwarding? #t)
+           (permit-root-login 'prohibit-password)
+           (authorized-keys
+             `(("alice" ,(local-file "alice.pub"))
+               ("bob" ,(local-file "bob.pub"))))))
+</pre>
+</div>
+
+<p>
+See below for details about <code>openssh-configuration</code>.
+</p>
+
+<p>
+This service can be extended with extra authorized keys, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service-extension openssh-service-type
+                   (const `(("charlie"
+                             ,(local-file "charlie.pub")))))
+</pre>
+</div></dd>
+
+<dt>Data Type: openssh-configuration </dt><dd>This is the configuration record for OpenSSH's <code>sshd</code>.
+
+<dl class="org-dl">
+<dt><code>openssh</code> (default <code>openssh</code>)</dt><dd>The OpenSSH package to use.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/sshd.pid"</code>)</dt><dd>Name of the file where <code>sshd</code> writes its PID.</dd>
+
+<dt><code>port-number</code> (default: <code>22</code>)</dt><dd>TCP port on which <code>sshd</code> listens for incoming connections.</dd>
+
+<dt><code>max-connections</code> (default: <code>200</code>)</dt><dd>Hard limit on the maximum number of simultaneous client connections, enforced by the inetd-style Shepherd service (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Service-De_002d-and-Constructors.html#Service-De_002d-and-Constructors"><code>make-inetd-constructor</code></a> in The GNU Shepherd Manual).</dd>
+
+<dt><code>permit-root-login</code> (default: <code>#f</code>)</dt><dd>This field determines whether and when to allow logins as root. If <code>#f</code>, root logins are disallowed; if <code>#t</code>, they are allowed. If it's the symbol <code>'prohibit-password</code>, then root logins are permitted but not with password-based authentication.</dd>
+
+<dt><code>allow-empty-passwords?</code> (default: <code>#f</code>)</dt><dd>When true, users with empty passwords may log in. When false, they may not.</dd>
+
+<dt><code>password-authentication?</code> (default: <code>#t</code>)</dt><dd>When true, users may log in with their password. When false, they have other authentication methods.</dd>
+
+<dt><code>public-key-authentication?</code> (default: <code>#t</code>)</dt><dd><p>
+When true, users may log in using public key authentication. When false, users have to use other authentication method.
+</p>
+
+<p>
+Authorized public keys are stored in <code>~/.ssh/authorized_keys</code>. This is used only by protocol version 2.
+</p></dd>
+
+<dt><code>x11-forwarding?</code> (default: <code>#f</code>)</dt><dd>When true, forwarding of X11 graphical client connections is enabled&#x2014;in other words, <code>ssh</code> options <code>-X</code> and <code>-Y</code> will work.</dd>
+
+<dt><code>allow-agent-forwarding?</code> (default: <code>#t</code>)</dt><dd>Whether to allow agent forwarding.</dd>
+
+<dt><code>allow-tcp-forwarding?</code> (default: <code>#t</code>)</dt><dd>Whether to allow TCP forwarding.</dd>
+
+<dt><code>gateway-ports?</code> (default: <code>#f</code>)</dt><dd>Whether to allow gateway ports.</dd>
+
+<dt><code>challenge-response-authentication?</code> (default: <code>#f</code>)</dt><dd>Specifies whether challenge response authentication is allowed (e.g. via PAM).</dd>
+
+<dt><code>use-pam?</code> (default: <code>#t</code>)</dt><dd><p>
+Enables the Pluggable Authentication Module interface. If set to <code>#t</code>, this will enable PAM authentication using <code>challenge-response-authentication?</code> and <code>password-authentication?</code>, in addition to PAM account and session module processing for all authentication types.
+</p>
+
+<p>
+Because PAM challenge response authentication usually serves an equivalent role to password authentication, you should disable either <code>challenge-response-authentication?</code> or <code>password-authentication?</code>.
+</p></dd>
+
+<dt><code>print-last-log?</code> (default: <code>#t</code>)</dt><dd>Specifies whether <code>sshd</code> should print the date and time of the last user login when a user logs in interactively.</dd>
+
+<dt><code>subsystems</code> (default: <code>'(("sftp" "internal-sftp"))</code>)</dt><dd><p>
+Configures external subsystems (e.g. file transfer daemon).
+</p>
+
+<p>
+This is a list of two-element lists, each of which containing the subsystem name and a command (with optional arguments) to execute upon subsystem request.
+</p>
+
+<p>
+The command <code>internal-sftp</code> implements an in-process SFTP server. Alternatively, one can specify the <code>sftp-server</code> command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service openssh-service-type
+         (openssh-configuration
+          (subsystems
+           `(("sftp" ,(file-append openssh "/libexec/sftp-server"))))))
+</pre>
+</div></dd>
+
+<dt><code>accepted-environment</code> (default: <code>'()</code>)</dt><dd><p>
+List of strings describing which environment variables may be exported.
+</p>
+
+<p>
+Each string gets on its own line. See the <code>AcceptEnv</code> option in <code>man sshd_config</code>.
+</p>
+
+<p>
+This example allows ssh-clients to export the <code>COLORTERM</code> variable. It is set by terminal emulators, which support colors. You can use it in your shell's resource file to enable colors for the prompt and commands if this variable is set.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service openssh-service-type
+         (openssh-configuration
+           (accepted-environment '("COLORTERM"))))
+</pre>
+</div></dd>
+
+<dt><code>authorized-keys</code> (default: <code>'()</code>) </dt><dd><p>
+<a id="index-SSH-authorized-keys"></a>
+</p>
+
+<p>
+This is the list of authorized keys. Each element of the list is a user name followed by one or more file-like objects that represent SSH public keys. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(openssh-configuration
+  (authorized-keys
+    `(("rekado" ,(local-file "rekado.pub"))
+      ("chris" ,(local-file "chris.pub"))
+      ("root" ,(local-file "rekado.pub") ,(local-file "chris.pub")))))
+</pre>
+</div>
+
+<p>
+registers the specified public keys for user accounts <code>rekado</code>, <code>chris</code>, and <code>root</code>.
+</p>
+
+<p>
+Additional authorized keys can be specified <i>via</i> <code>service-extension</code>.
+</p>
+
+<p>
+Note that this does <i>not</i> interfere with the use of <code>~/.ssh/authorized_keys</code>.
+</p></dd>
+
+<dt><code>generate-host-keys?</code> (default: <code>#t</code>)</dt><dd><p>
+Whether to generate host key pairs with <code>ssh-keygen -A</code> under <code>/etc/ssh</code> if there are none.
+</p>
+
+<p>
+Generating key pairs takes a few seconds when enough entropy is available and is only done once. You might want to turn it off for instance in a virtual machine that does not need it because host keys are provided in some other way, and where the extra boot time is a problem.
+</p></dd>
+
+<dt><code>log-level</code> (default: <code>'info</code>)</dt><dd>This is a symbol specifying the logging level: <code>quiet</code>, <code>fatal</code>, <code>error</code>, <code>info</code>, <code>verbose</code>, <code>debug</code>, etc. See the man page for <code>sshd_config</code> for the full list of level names.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>)</dt><dd><p>
+This field can be used to append arbitrary text to the configuration file. It is especially useful for elaborate configurations that cannot be expressed otherwise. This configuration, for example, would generally disable root logins, but permit them from one specific IP address:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(openssh-configuration
+  (extra-content "\
+Match Address 192.168.0.1
+  PermitRootLogin yes"))
+</pre>
+</div></dd>
+</dl></dd>
+
+<dt>Variable: dropbear-service-type </dt><dd><p>
+Type of the service that runs the <a href="https://matt.ucc.asn.au/dropbear/dropbear.html">Dropbear SSH daemon</a>, whose value is a <code>&lt;dropbear-configuration&gt;</code> object.
+</p>
+
+<p>
+For example, to specify a Dropbear service listening on port 1234:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service dropbear-service-type (dropbear-configuration
+                                 (port-number 1234)))
+</pre>
+</div></dd>
+
+<dt>Data Type: dropbear-configuration </dt><dd>This data type represents the configuration of a Dropbear SSH daemon.
+
+<dl class="org-dl">
+<dt><code>dropbear</code> (default: <code>dropbear</code>)</dt><dd>The Dropbear package to use.</dd>
+
+<dt><code>port-number</code> (default: 22)</dt><dd>The TCP port where the daemon waits for incoming connections.</dd>
+
+<dt><code>syslog-output?</code> (default: <code>#t</code>)</dt><dd>Whether to enable syslog output.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/dropbear.pid"</code>)</dt><dd>File name of the daemon's PID file.</dd>
+
+<dt><code>root-login?</code> (default: <code>#f</code>)</dt><dd>Whether to allow <code>root</code> logins.</dd>
+
+<dt><code>allow-empty-passwords?</code> (default: <code>#f</code>)</dt><dd>Whether to allow empty passwords.</dd>
+
+<dt><code>password-authentication?</code> (default: <code>#t</code>)</dt><dd>Whether to enable password-based authentication.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-AutoSSH"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: autossh-service-type </dt><dd><p>
+This is the type for the <a href="https://www.harding.motd.ca/autossh">AutoSSH</a> program that runs a copy of <code>ssh</code> and monitors it, restarting it as necessary should it die or stop passing traffic. AutoSSH can be run manually from the command-line by passing arguments to the binary <code>autossh</code> from the package <code>autossh</code>, but it can also be run as a Guix service. This latter use case is documented here.
+</p>
+
+<p>
+AutoSSH can be used to forward local traffic to a remote machine using an SSH tunnel, and it respects the <code>~/.ssh/config</code> of the user it is run as.
+</p>
+
+<p>
+For example, to specify a service running autossh as the user <code>pino</code> and forwarding all local connections to port <code>8081</code> to <code>remote:8081</code> using an SSH tunnel, add this call to the operating system's <code>services</code> field:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service autossh-service-type
+         (autossh-configuration
+          (user "pino")
+          (ssh-options (list "-T" "-N" "-L" "8081:localhost:8081" "remote.net"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: autossh-configuration </dt><dd>This data type represents the configuration of an AutoSSH service.
+
+<dl class="org-dl">
+<dt><code>user</code> (default <code>"autossh"</code>)</dt><dd>The user as which the AutoSSH service is to be run. This assumes that the specified user exists.</dd>
+
+<dt><code>poll</code> (default <code>600</code>)</dt><dd>Specifies the connection poll time in seconds.</dd>
+
+<dt><code>first-poll</code> (default <code>#f</code>)</dt><dd>Specifies how many seconds AutoSSH waits before the first connection test. After this first test, polling is resumed at the pace defined in <code>poll</code>. When set to <code>#f</code>, the first poll is not treated specially and will also use the connection poll specified in <code>poll</code>.</dd>
+
+<dt><code>gate-time</code> (default <code>30</code>)</dt><dd>Specifies how many seconds an SSH connection must be active before it is considered successful.</dd>
+
+<dt><code>log-level</code> (default <code>1</code>)</dt><dd>The log level, corresponding to the levels used by syslog&#x2014;so <code>0</code> is the most silent while <code>7</code> is the chattiest.</dd>
+
+<dt><code>max-start</code> (default <code>#f</code>)</dt><dd>The maximum number of times SSH may be (re)started before AutoSSH exits. When set to <code>#f</code>, no maximum is configured and AutoSSH may restart indefinitely.</dd>
+
+<dt><code>message</code> (default <code>""</code>)</dt><dd>The message to append to the echo message sent when testing connections.</dd>
+
+<dt><code>port</code> (default <code>"0"</code>)</dt><dd>The ports used for monitoring the connection. When set to <code>"0"</code>, monitoring is disabled. When set to <code>"==n=</code>"= where <code>n</code> is a positive integer, ports <code>n</code> and <code>n=+1 are used for monitoring the connection, such that port =n</code> is the base monitoring port and <code>n+1</code> is the echo port. When set to <code>"==n=</code>:==m=="= where <code>n</code> and <code>m</code> are positive integers, the ports <code>n</code> and <code>m</code> are used for monitoring the connection, such that port <code>n</code> is the base monitoring port and <code>m</code> is the echo port.</dd>
+
+<dt><code>ssh-options</code> (default <code>'()</code>)</dt><dd>The list of command-line arguments to pass to <code>ssh</code> when it is run. Options <code>-f</code> and <code>-M</code> are reserved for AutoSSH and may cause undefined behaviour.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-WebSSH"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: webssh-service-type </dt><dd><p>
+This is the type for the <a href="https://webssh.huashengdun.org/">WebSSH</a> program that runs a web SSH client. WebSSH can be run manually from the command-line by passing arguments to the binary <code>wssh</code> from the package <code>webssh</code>, but it can also be run as a Guix service. This latter use case is documented here.
+</p>
+
+<p>
+For example, to specify a service running WebSSH on loopback interface on port <code>8888</code> with reject policy with a list of allowed to connection hosts, and NGINX as a reverse-proxy to this service listening for HTTPS connection, add this call to the operating system's <code>services</code> field:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service webssh-service-type
+  (webssh-configuration (address "127.0.0.1")
+                        (port 8888)
+                        (policy 'reject)
+                        (known-hosts '("localhost ecdsa-sha2-nistp256 AAAA…"
+                                       "127.0.0.1 ecdsa-sha2-nistp256 AAAA…"))))
+
+(service nginx-service-type
+         (nginx-configuration
+          (server-blocks
+           (list
+            (nginx-server-configuration
+             (inherit %webssh-configuration-nginx)
+             (server-name '("webssh.example.com"))
+             (listen '("443 ssl"))
+             (ssl-certificate (letsencrypt-certificate "webssh.example.com"))
+             (ssl-certificate-key (letsencrypt-key "webssh.example.com"))
+             (locations
+              (cons (nginx-location-configuration
+                     (uri "/.well-known")
+                     (body '("root /var/www;")))
+                    (nginx-server-configuration-locations %webssh-configuration-nginx))))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: webssh-configuration </dt><dd>Data type representing the configuration for <code>webssh-service</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>webssh</code>)</dt><dd><code>webssh</code> package to use.</dd>
+
+<dt><code>user-name</code> (default: <code>"webssh"</code>)</dt><dd>User name or user ID that file transfers to and from that module should take place.</dd>
+
+<dt><code>group-name</code> (default: <code>"webssh"</code>)</dt><dd>Group name or group ID that will be used when accessing the module.</dd>
+
+<dt><code>address</code> (default: <code>#f</code>)</dt><dd>IP address on which <code>webssh</code> listens for incoming connections.</dd>
+
+<dt><code>port</code> (default: <code>8888</code>)</dt><dd>TCP port on which <code>webssh</code> listens for incoming connections.</dd>
+
+<dt><code>policy</code> (default: <code>#f</code>)</dt><dd>Connection policy. <code>reject</code> policy requires to specify <code>known-hosts</code>.</dd>
+
+<dt><code>known-hosts</code> (default: <code>’()</code>)</dt><dd>List of hosts which allowed for SSH connection from <code>webssh</code>.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/webssh.log"</code>)</dt><dd>Name of the file where <code>webssh</code> writes its log file.</dd>
+
+<dt><code>log-level</code> (default: <code>#f</code>)</dt><dd>Logging level.</dd>
+</dl></dd>
+
+<dt>Variable: block-facebook-hosts-service-type </dt><dd><p>
+This service type adds a list of known Facebook hosts to the <code>/etc/hosts</code> file. (see <a href="https://www.gnu.org/software/libc/manual/html_node/Host-Names.html#Host-Names">Host Names</a> in The GNU C Library Reference Manual) Each line contains an entry that maps a known server name of the Facebook on-line service&#x2014;e.g., <code>www.facebook.com</code>&#x2014;to unroutable IPv4 and IPv6 addresses.
+</p>
+
+<p>
+This mechanism can prevent programs running locally, such as Web browsers, from accessing Facebook.
+</p></dd>
+</dl>
+
+<p>
+The <code>(gnu services avahi)</code> provides the following definition.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: avahi-service-type </dt><dd><p>
+This is the service that runs <code>avahi-daemon</code>, a system-wide mDNS/DNS-SD responder that allows for service discovery and “zero-configuration” host name lookups (see <a href="https://avahi.org/">https://avahi.org/</a>). Its value must be an <code>avahi-configuration</code> record&#x2014;see below.
+</p>
+
+<p>
+This service extends the name service cache daemon (nscd) so that it can resolve <code>.local</code> host names using <a href="https://0pointer.de/lennart/projects/nss-mdns/">nss-mdns</a>. See <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a>, for information on host name resolution.
+</p>
+
+<p>
+Additionally, add the <code>avahi</code> package to the system profile so that commands such as <code>avahi-browse</code> are directly usable.
+</p></dd>
+
+<dt>Data Type: avahi-configuration </dt><dd>Data type representation the configuration for Avahi.
+
+<dl class="org-dl">
+<dt><code>host-name</code> (default: <code>#f</code>)</dt><dd>If different from <code>#f</code>, use that as the host name to publish for this machine; otherwise, use the machine's actual host name.</dd>
+
+<dt><code>publish?</code> (default: <code>#t</code>)</dt><dd>When true, allow host names and services to be published (broadcast) over the network.</dd>
+
+<dt><code>publish-workstation?</code> (default: <code>#t</code>)</dt><dd><p>
+When true, <code>avahi-daemon</code> publishes the machine's host name and IP address via mDNS on the local network. To view the host names published on your local network, you can run:
+</p>
+
+<pre class="example" id="org7e67ea1">
+avahi-browse _workstation._tcp
+</pre></dd>
+
+<dt><code>wide-area?</code> (default: <code>#f</code>)</dt><dd>When true, DNS-SD over unicast DNS is enabled.</dd>
+
+<dt>(no term)</dt><dd><code>ipv4?</code> (default: <code>#t</code>)<br />
+<code>ipv6?</code> (default: <code>#t</code>) :: These fields determine whether to use IPv4/IPv6 sockets.</dd>
+
+<dt><code>domains-to-browse</code> (default: <code>'()</code>)</dt><dd>This is a list of domains to browse.</dd>
+</dl></dd>
+
+<dt>Variable: openvswitch-service-type </dt><dd>This is the type of the <a href="https://www.openvswitch.org">Open vSwitch</a> service, whose value should be an <code>openvswitch-configuration</code> object.</dd>
+
+<dt>Data Type: openvswitch-configuration </dt><dd>Data type representing the configuration of Open vSwitch, a multilayer virtual switch which is designed to enable massive network automation through programmatic extension.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>openvswitch</code>)</dt><dd>Package object of the Open vSwitch.</dd>
+</dl></dd>
+
+<dt>Variable: pagekite-service-type </dt><dd><p>
+This is the service type for the <a href="https://pagekite.net">PageKite</a> service, a tunneling solution for making localhost servers publicly visible, even from behind restrictive firewalls or NAT without forwarded ports. The value for this service type is a <code>pagekite-configuration</code> record.
+</p>
+
+<p>
+Here's an example exposing the local HTTP and SSH daemons:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service pagekite-service-type
+         (pagekite-configuration
+           (kites '("http:@kitename:localhost:80:@kitesecret"
+                    "raw/22:@kitename:localhost:22:@kitesecret"))
+           (extra-file "/etc/pagekite.rc")))
+</pre>
+</div></dd>
+
+<dt>Data Type: pagekite-configuration </dt><dd>Data type representing the configuration of PageKite.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>pagekite</code>)</dt><dd>Package object of PageKite.</dd>
+
+<dt><code>kitename</code> (default: <code>#f</code>)</dt><dd>PageKite name for authenticating to the frontend server.</dd>
+
+<dt><code>kitesecret</code> (default: <code>#f</code>)</dt><dd>Shared secret for authenticating to the frontend server. You should probably put this inside <code>extra-file</code> instead.</dd>
+
+<dt><code>frontend</code> (default: <code>#f</code>)</dt><dd>Connect to the named PageKite frontend server instead of the <a href="https://pagekite.net">pagekite.net</a> service.</dd>
+
+<dt><code>kites</code> (default: <code>'("http:@kitename:localhost:80:@kitesecret")</code>)</dt><dd>List of service kites to use. Exposes HTTP on port 80 by default. The format is <code>proto:kitename:host:port:secret</code>.</dd>
+
+<dt><code>extra-file</code> (default: <code>#f</code>)</dt><dd>Extra configuration file to read, which you are expected to create manually. Use this to add additional options and manage shared secrets out-of-band.</dd>
+</dl></dd>
+
+<dt>Variable: yggdrasil-service-type </dt><dd><p>
+The service type for connecting to the <a href="https://yggdrasil-network.github.io/">Yggdrasil network</a>, an early-stage implementation of a fully end-to-end encrypted IPv6 network.
+</p>
+
+<blockquote>
+<p>
+Yggdrasil provides name-independent routing with cryptographically generated addresses. Static addressing means you can keep the same address as long as you want, even if you move to a new location, or generate a new address (by generating new keys) whenever you want. <a href="https://yggdrasil-network.github.io/2018/07/28/addressing.html">https://yggdrasil-network.github.io/2018/07/28/addressing.html</a>
+</p>
+</blockquote>
+
+<p>
+Pass it a value of <code>yggdrasil-configuration</code> to connect it to public peers and/or local peers.
+</p>
+
+<p>
+Here is an example using public peers and a static address. The static signing and encryption keys are defined in <code>/etc/yggdrasil-private.conf</code> (the default value for <code>config-file</code>).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; part of the operating-system declaration
+(service yggdrasil-service-type
+              (yggdrasil-configuration
+               (autoconf? #f) ;; use only the public peers
+               (json-config
+               ;; choose one from
+               ;; https://github.com/yggdrasil-network/public-peers
+                '((peers . #("tcp://1.2.3.4:1337"))))
+               ;; /etc/yggdrasil-private.conf is the default value for config-file
+               ))
+</pre>
+</div>
+
+<pre class="example" id="orgc1e348a">
+# sample content for /etc/yggdrasil-private.conf
+{
+  # Your private key. DO NOT share this with anyone!
+  PrivateKey: 5c750...
+}
+</pre></dd>
+
+<dt>Data Type: yggdrasil-configuration </dt><dd>Data type representing the configuration of Yggdrasil.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>yggdrasil</code>)</dt><dd>Package object of Yggdrasil.</dd>
+
+<dt><code>json-config</code> (default: <code>'()</code>)</dt><dd>Contents of <code>/etc/yggdrasil.conf</code>. Will be merged with <code>/etc/yggdrasil-private.conf</code>. Note that these settings are stored in the Guix store, which is readable to all users. <b>Do not store your private keys in it</b>. See the output of <code>yggdrasil -genconf</code> for a quick overview of valid keys and their default values.</dd>
+
+<dt><code>autoconf?</code> (default: <code>#f</code>)</dt><dd>Whether to use automatic mode. Enabling it makes Yggdrasil use a dynamic IP and peer with IPv6 neighbors.</dd>
+
+<dt><code>log-level</code> (default: <code>'info</code>)</dt><dd>How much detail to include in logs. Use <code>'debug</code> for more detail.</dd>
+
+<dt><code>log-to</code> (default: <code>'stdout</code>)</dt><dd>Where to send logs. By default, the service logs standard output to <code>/var/log/yggdrasil.log</code>. The alternative is <code>'syslog</code>, which sends output to the running syslog service.</dd>
+
+<dt><code>config-file</code> (default: <code>"/etc/yggdrasil-private.conf"</code>)</dt><dd>What HJSON file to load sensitive data from. This is where private keys should be stored, which are necessary to specify if you don't want a randomized address after each restart. Use <code>#f</code> to disable. Options defined in this file take precedence over <code>json-config</code>. Use the output of <code>yggdrasil -genconf</code> as a starting point. To configure a static address, delete everything except PrivateKey option.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-IPFS"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: ipfs-service-type </dt><dd><p>
+The service type for connecting to the <a href="https://ipfs.io">IPFS network</a>, a global, versioned, peer-to-peer file system. Pass it a <code>ipfs-configuration</code> to change the ports used for the gateway and API.
+</p>
+
+<p>
+Here's an example configuration, using some non-standard ports:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service ipfs-service-type
+         (ipfs-configuration
+          (gateway "/ip4/127.0.0.1/tcp/8880")
+          (api "/ip4/127.0.0.1/tcp/8881")))
+</pre>
+</div></dd>
+
+<dt>Data Type: ipfs-configuration </dt><dd>Data type representing the configuration of IPFS.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>go-ipfs</code>)</dt><dd>Package object of IPFS.</dd>
+
+<dt><code>gateway</code> (default: <code>"/ip4/127.0.0.1/tcp/8082"</code>)</dt><dd>Address of the gateway, in ‘multiaddress' format.</dd>
+
+<dt><code>api</code> (default: <code>"/ip4/127.0.0.1/tcp/5001"</code>)</dt><dd>Address of the API endpoint, in ‘multiaddress' format.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-keepalived"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: keepalived-service-type </dt><dd><p>
+This is the type for the <a href="https://www.keepalived.org/">Keepalived</a> routing software, <code>keepalived</code>. Its value must be an <code>keepalived-configuration</code> record as in this example for master machine:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service keepalived-service-type
+         (keepalived-configuration
+           (config-file (local-file "keepalived-master.conf"))))
+</pre>
+</div>
+
+<p>
+where <code>keepalived-master.conf</code>:
+</p>
+
+<pre class="example" id="org338e606">
+vrrp_instance my-group {
+  state MASTER
+  interface enp9s0
+  virtual_router_id 100
+  priority 100
+  unicast_peer { 10.0.0.2 }
+  virtual_ipaddress {
+    10.0.0.4/24
+  }
+}
+</pre>
+
+<p>
+and for backup machine:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service keepalived-service-type
+         (keepalived-configuration
+          (config-file (local-file "keepalived-backup.conf"))))
+</pre>
+</div>
+
+<p>
+where <code>keepalived-backup.conf</code>:
+</p>
+
+<pre class="example" id="orgdb7fa2a">
+vrrp_instance my-group {
+  state BACKUP
+  interface enp9s0
+  virtual_router_id 100
+  priority 99
+  unicast_peer { 10.0.0.3 }
+  virtual_ipaddress {
+    10.0.0.4/24
+  }
+}
+</pre></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Unattended-Upgrades.html">Unattended Upgrades</a>, Previous: <a href="docs/guix--Networking-Setup.html">Networking Setup</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

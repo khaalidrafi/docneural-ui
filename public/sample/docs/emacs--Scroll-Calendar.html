@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Scrolling-in-the-Calendar">1. 33.2 Scrolling in the Calendar ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Counting-Days.html">Counting Days</a>   Previous: <a href="docs/emacs--Calendar-Motion.html">Movement in the Calendar</a>   Up: <a href="docs/emacs--Calendar_002fDiary.html">The Calendar and the Diary</a>
+</p>
+
+<p>
+<a id="Scroll-Calendar"></a>
+</p>
+
+<hr />
+<div id="outline-container-Scrolling-in-the-Calendar" class="outline-2">
+<h2 id="Scrolling-in-the-Calendar"><span class="section-number-2">1.</span> 33.2 Scrolling in the Calendar <a href="#Scrolling-in-the-Calendar">¶</a></h2>
+<div class="outline-text-2" id="text-Scrolling-in-the-Calendar">
+<p>
+The calendar display scrolls automatically through time when you move out of the visible portion. You can also scroll it manually. Imagine that the calendar window contains a long strip of paper with the months on it. Scrolling the calendar means moving the strip horizontally, so that new months become visible in the window.
+</p>
+
+<dl class="org-dl">
+<dt>&gt;</dt><dd>Scroll calendar one month forward (<code>calendar-scroll-left</code>).</dd>
+
+<dt>&lt;</dt><dd>Scroll calendar one month backward (<code>calendar-scroll-right</code>).</dd>
+
+<dt>(no term)</dt><dd>C-v<br />
+PageDown<br />
+next :: Scroll forward by three months (<code>calendar-scroll-left-three-months</code>).</dd>
+
+<dt>(no term)</dt><dd>M-v<br />
+PageUp<br />
+prior :: Scroll backward by three months (<code>calendar-scroll-right-three-months</code>).</dd>
+</dl>
+
+<p>
+The most basic calendar scroll commands scroll by one month at a time. This means that there are two months of overlap between the display before the command and the display after. &gt; (<code>calendar-scroll-left</code>) scrolls the calendar contents one month forward in time. &lt; (<code>calendar-scroll-right</code>) scrolls the contents one month backwards in time.
+</p>
+
+<p>
+The commands C-v (<code>calendar-scroll-left-three-months</code>) and M-v (<code>calendar-scroll-right-three-months</code>) scroll the calendar by an entire screenful&#x2014;three months&#x2014;in analogy with the usual meaning of these commands. C-v makes later dates visible and M-v makes earlier dates visible. These commands take a numeric argument as a repeat count; in particular, since C-u multiplies the next command by four, typing C-u C-v scrolls the calendar forward by a year and typing C-u M-v scrolls the calendar backward by a year.
+</p>
+
+<p>
+The function keys PageDown (or next) and PageUp (or prior) are equivalent to C-v and M-v, just as they are in other modes.
+</p>
+
+<hr />
+</div>
+</div>

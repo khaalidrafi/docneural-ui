@@ -1,0 +1,311 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-clock-table-1">1. 8.4.2 The clock table ¶</a>
+<ul>
+<li><a href="#section">1.1. (79)</a></li>
+<li><a href="#section-1">1.2. (80)</a></li>
+<li><a href="#section-2">1.3. (81)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="The-clock-table"></a>
+Next: <a href="docs/org--Resolving-idle-time.html">Resolving idle time and continuous clocking</a>, Previous: <a href="docs/org--Clocking-commands.html">Clocking commands</a>, Up: <a href="docs/org--Clocking-Work-Time.html">Clocking Work Time</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-clock-table-1" class="outline-2">
+<h2 id="The-clock-table-1"><span class="section-number-2">1.</span> 8.4.2 The clock table <a href="#The-clock-table-1">¶</a></h2>
+<div class="outline-text-2" id="text-The-clock-table-1">
+<p>
+Org mode can produce quite complex reports based on the time clocking information. Such a report is called a <i>clock table</i>, because it is formatted as one or several Org tables.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-x-1"></a>=org-clock-report= </dt><dd><p>
+Insert or update a clock table. When called with a prefix argument, jump to the first clock table in the current document and update it. The clock table includes archived trees.
+</p>
+
+<p>
+This command can be invoked by calling <code>org-dynamic-block-insert-dblock</code> (C-c C-x x) and selecting “clocktable” (see <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>).
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002dc-15"></a>C-c C-c or C-c C-x C-u (<code>org-dblock-update</code>) </dt><dd>Update dynamic block at point. Point needs to be in the ‘=BEGIN=' line of the dynamic block.</dd>
+
+<dt><a id="index-C_002du-C_002dc-C_002dx-C_002du-1"></a>C-u C-c C-x C-u </dt><dd>Update all dynamic blocks (see <a href="docs/org--Dynamic-Blocks.html">Dynamic Blocks</a>). This is useful if you have several clock table blocks in a buffer.</dd>
+
+<dt><a id="index-S_002dLEFT-9"></a>S-LEFT, S-RIGHT (<code>org-clocktable-try-shift</code>) </dt><dd>Shift the current ‘=:block=' interval and update the table. Point needs to be in the ‘=#+BEGIN: clocktable=' line for this command. If ‘=:block=' is ‘=today=', it is shifted to ‘=today-1=', etc.</dd>
+</dl>
+
+<p>
+Here is an example of the frame for a clock table as it is inserted into the buffer by <code>org-clock-report</code>:
+</p>
+
+<pre class="example" id="orgec9af8f">
+#+BEGIN: clocktable :maxlevel 2 :emphasize nil :scope file
+#+END:
+</pre>
+
+<p>
+The ‘=#+BEGIN=' line contains options to define the scope, structure, and formatting of the report. Defaults for all these options can be configured in the variable <code>org-clocktable-defaults</code>.
+</p>
+
+<p>
+First there are options that determine which clock entries are to be selected:
+</p>
+
+<dl class="org-dl">
+<dt>‘=:maxlevel='</dt><dd>Maximum level depth to which times are listed in the table. Clocks at deeper levels are summed into the upper level.</dd>
+
+<dt>‘=:scope='</dt><dd><p>
+The scope to consider. This can be any of the following:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=nil='</td>
+<td class="org-left">the current buffer or narrowed region</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=file='</td>
+<td class="org-left">the full current buffer</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=subtree='</td>
+<td class="org-left">the subtree where the clocktable is located</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=treeN='</td>
+<td class="org-left">the surrounding level N tree, for example ‘=tree3='</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=tree='</td>
+<td class="org-left">the surrounding level 1 tree</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=agenda='</td>
+<td class="org-left">all agenda files</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=("file" &#x2026;)='</td>
+<td class="org-left">scan these files</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=FUNCTION='</td>
+<td class="org-left">scan files returned by calling <code>FUNCTION</code> with no argument</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=file-with-archives='</td>
+<td class="org-left">current file and its archives</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=agenda-with-archives='</td>
+<td class="org-left">all agenda files, including archives</td>
+</tr>
+</tbody>
+</table></dd>
+
+<dt>‘=:block='</dt><dd><p>
+The time block to consider. This block is specified either absolutely, or relative to the current time and may be any of these formats:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=2007-12-31='</td>
+<td class="org-left">New year eve 2007</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=2007-12='</td>
+<td class="org-left">December 2007</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=2007-W50='</td>
+<td class="org-left">ISO-week 50 in 2007</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=2007-Q2='</td>
+<td class="org-left">2nd quarter in 2007</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=2007='</td>
+<td class="org-left">the year 2007</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=today=', ‘=yesterday=', ‘=today-N='</td>
+<td class="org-left">a relative day</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=thisweek=', ‘=lastweek=', ‘=thisweek-N='</td>
+<td class="org-left">a relative week</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=thismonth=', ‘=lastmonth=', ‘=thismonth-N='</td>
+<td class="org-left">a relative month</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=thisyear=', ‘=lastyear=', ‘=thisyear-N='</td>
+<td class="org-left">a relative year</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=untilnow='</td>
+<td class="org-left">all clocked time ever</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+When this option is not set, Org falls back to the value in <code>org-clock-display-default-range</code>, which defaults to the current year.
+</p>
+
+<p>
+Use S-LEFT or S-RIGHT to shift the time interval.
+</p></dd>
+
+<dt>‘=:tstart='</dt><dd>A time string specifying when to start considering times. Relative times like ‘="&lt;-2w&gt;"=' can also be used. See <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a> for relative time syntax.</dd>
+
+<dt>‘=:tend='</dt><dd>A time string specifying when to stop considering times. Relative times like ‘="&lt;now&gt;"=' can also be used. See <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a> for relative time syntax.</dd>
+
+<dt>‘=:wstart='</dt><dd>The starting day of the week. The default is 1 for Monday.</dd>
+
+<dt>‘=:mstart='</dt><dd>The starting day of the month. The default is 1 for the first.</dd>
+
+<dt>‘=:step='</dt><dd>Set to ‘=day=', ‘=week=', ‘=semimonth=', ‘=month=', ‘=quarter=', or ‘=year=' to split the table into chunks. To use this, either ‘=:block=', or ‘=:tstart=' and ‘=:tend=' are required.</dd>
+
+<dt>‘=:stepskip0='</dt><dd>When non-<code>nil</code>, do not show steps that have zero time.</dd>
+
+<dt>‘=:fileskip0='</dt><dd>When non-<code>nil</code>, do not show table sections from files which did not contribute.</dd>
+
+<dt>‘=:match='</dt><dd>A tags match to select entries that should contribute. See <a href="docs/org--Matching-tags-and-properties.html">Matching tags and properties</a> for the match syntax.</dd>
+</dl>
+
+<p>
+Then there are options that determine the formatting of the table. There options are interpreted by the function <code>org-clocktable-write-default</code>, but you can specify your own function using the ‘=:formatter=' parameter.
+</p>
+
+<dl class="org-dl">
+<dt>‘=:emphasize='</dt><dd>When non-<code>nil</code>, emphasize level one and level two items.</dd>
+
+<dt>‘=:lang='</dt><dd>Language to use for descriptive cells like “Task”.</dd>
+
+<dt>‘=:link='</dt><dd>Link the item headlines in the table to their origins.</dd>
+
+<dt>‘=:narrow='</dt><dd>An integer to limit the width of the headline column in the Org table. If you write it like ‘=50!=', then the headline is also shortened during export.</dd>
+
+<dt>‘=:indent='</dt><dd>Indent each headline field according to its level.</dd>
+
+<dt>‘=:filetitle='</dt><dd>Show title in the file column if the file has a ‘=#+title='.</dd>
+
+<dt>‘=:hidefiles='</dt><dd>Hide the file column when multiple files are used to produce the table.</dd>
+
+<dt>‘=:tcolumns='</dt><dd>Number of columns to be used for times. If this is smaller than ‘=:maxlevel=', lower levels are lumped into one column.</dd>
+
+<dt>‘=:level='</dt><dd>Should a level number column be included?</dd>
+
+<dt>‘=:sort='</dt><dd>A cons cell containing the column to sort and a sorting type. E.g., ‘=:sort (1 . ?a)=' sorts the first column alphabetically.</dd>
+
+<dt>‘=:compact='</dt><dd>Abbreviation for ‘=:level nil :indent t :narrow 40! :tcolumns 1='. All are overwritten except if there is an explicit ‘=:narrow='.</dd>
+
+<dt>‘=:timestamp='</dt><dd>A timestamp for the entry, when available. Look for ‘=SCHEDULED=', ‘=DEADLINE=', ‘=TIMESTAMP=' and ‘=TIMESTAMP<sub>IA</sub>=' special properties (see <a href="docs/org--Special-Properties.html">Special Properties</a>), in this order.</dd>
+
+<dt>‘=:tags='</dt><dd>When this flag is non-<code>nil</code>, show the headline's tags.</dd>
+
+<dt>‘=:properties='</dt><dd>List of properties shown in the table. Each property gets its own column.</dd>
+
+<dt>‘=:inherit-props='</dt><dd>When this flag is non-<code>nil</code>, the values for ‘=:properties=' are inherited.</dd>
+
+<dt>‘=:formula='</dt><dd>Content of a ‘=TBLFM=' keyword to be added and evaluated. As a special case, ‘=:formula %=' adds a column with % time. If you do not specify a formula here, any existing formula below the clock table survives updates and is evaluated.</dd>
+
+<dt>‘=:formatter='</dt><dd>A function to format clock data and insert it into the buffer.</dd>
+</dl>
+
+<p>
+To get a clock summary of the current level 1 tree, for the current day, you could write:
+</p>
+
+<pre class="example" id="org7002088">
+#+BEGIN: clocktable :maxlevel 2 :block today :scope tree1 :link t
+#+END:
+</pre>
+
+<p>
+To use a specific time range you could write
+</p>
+
+<pre class="example" id="orgb5d0112">
+#+BEGIN: clocktable :tstart "&lt;2006-08-10 Thu 10:00&gt;"
+                    :tend "&lt;2006-08-10 Thu 12:00&gt;"
+#+END:
+</pre>
+
+<p>
+A range starting a week ago and ending right now could be written as
+</p>
+
+<pre class="example" id="org7c147d1">
+#+BEGIN: clocktable :tstart "&lt;-1w&gt;" :tend "&lt;now&gt;"
+#+END:
+</pre>
+
+<p>
+A summary of the current subtree with % times would be
+</p>
+
+<pre class="example" id="org5db39fa">
+#+BEGIN: clocktable :scope subtree :link t :formula %
+#+END:
+</pre>
+
+<p>
+A horizontally compact representation of everything clocked during last week would be
+</p>
+
+<pre class="example" id="org6b8ee44">
+#+BEGIN: clocktable :scope agenda :block lastweek :compact t
+#+END:
+</pre>
+
+<hr />
+</div>
+</div>

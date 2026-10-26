@@ -1,0 +1,85 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Looking-Up-Identifiers-1">1. 30.4.1.1 Looking Up Identifiers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Xref-Commands.html">Commands Available in the <b>xref</b> Buffer</a>   Up: <a href="docs/emacs--Find-Identifiers.html">Find Identifiers</a>
+</p>
+
+<p>
+<a id="Looking-Up-Identifiers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Looking-Up-Identifiers-1" class="outline-2">
+<h2 id="Looking-Up-Identifiers-1"><span class="section-number-2">1.</span> 30.4.1.1 Looking Up Identifiers <a href="#Looking-Up-Identifiers-1">¶</a></h2>
+<div class="outline-text-2" id="text-Looking-Up-Identifiers-1">
+<p>
+The most important thing that <code>xref</code> enables you to do is to find the definition of a specific identifier.
+</p>
+
+<dl class="org-dl">
+<dt>M-.</dt><dd>Find definitions of an identifier (<code>xref-find-definitions</code>).</dd>
+
+<dt>C-M-. <code>pattern</code> RET</dt><dd>Find all identifiers whose name matches <code>pattern</code> (<code>xref-find-apropos</code>).</dd>
+
+<dt>C-x 4 . RET</dt><dd>Find definitions of identifier, but display it in another window (<code>xref-find-definitions-other-window</code>).</dd>
+
+<dt>C-x 5 . RET</dt><dd>Find definition of identifier, and display it in a new frame (<code>xref-find-definitions-other-frame</code>).</dd>
+
+<dt>M-x xref-find-definitions-at-mouse</dt><dd>Find definition of identifier at mouse click.</dd>
+
+<dt>M-,</dt><dd>Go back to where you previously invoked M-. and friends (<code>xref-go-back</code>).</dd>
+
+<dt>C-M-,</dt><dd>Go forward to where you previously invoked M-, (<code>xref-go-forward</code>).</dd>
+
+<dt>M-x xref-etags-mode</dt><dd>Switch <code>xref</code> to use the <code>etags</code> backend.</dd>
+</dl>
+
+<p>
+M-. (<code>xref-find-definitions</code>) shows the definition of the identifier at point. With a prefix argument, or if there's no identifier at point, it prompts for the identifier. (If you want it to always prompt, customize <code>xref-prompt-for-identifier</code> to <code>t</code>.)
+</p>
+
+<p>
+When entering the identifier argument to M-., you can use the usual minibuffer completion commands (see <a href="docs/emacs--Completion.html">Completion</a>), with the known identifier names being the completion candidates.
+</p>
+
+<p>
+Like most commands that can switch buffers, <code>xref-find-definitions</code> has a variant that displays the new buffer in another window, and one that makes a new frame for it. The former is C-x 4 . (<code>xref-find-definitions-other-window</code>), and the latter is C-x 5 . (<code>xref-find-definitions-other-frame</code>).
+</p>
+
+<p>
+The command <code>xref-find-definitions-at-mouse</code> works like <code>xref-find-definitions</code>, but it looks for the identifier name at or around the place of a mouse event. This command is intended to be bound to a mouse event, such as C-M-mouse-1, for example.
+</p>
+
+<p>
+The command C-M-. (<code>xref-find-apropos</code>) is like <code>apropos</code> for tags (see <a href="docs/emacs--Apropos.html">Apropos</a>). It displays a list of identifiers in the selected tags table whose names match the specified <code>regexp</code>. This is just like M-., except that it does regexp matching of identifiers instead of matching symbol names as fixed strings. By default, the command pops up the <code>*xref*</code> buffer, like M-., but you can display additional output by customizing the variable <code>tags-apropos-additional-actions</code>; see its documentation for details.
+</p>
+
+<p>
+If any of the above commands finds more than one matching definition, it by default pops up the <code>*xref*</code> buffer showing the matching candidates and selects that buffer's window. (C-M-. <i>always</i> pops up the <code>*xref*</code> buffer if it finds at least one match.) Each candidate is normally shown in that buffer as the name of a file and the matching identifier(s) in that file. In that buffer, you can select any of the candidates for display, and you have several additional commands, described in <a href="docs/emacs--Xref-Commands.html">Commands Available in the <code>*xref*</code> Buffer</a>. However, if the value of the variable <code>xref-auto-jump-to-first-definition</code> is <code>move</code>, Emacs automatically moves point to the first of these candidates in the <code>*xref*</code> buffer, so just typing RET will display the definition of that candidate. If the value of the variable is <code>t</code> or <code>show</code>, the first candidate is automatically shown in its own window; <code>t</code> also selects the window showing the first candidate's definition, while <code>show</code> leaves the window of the <code>*xfer*</code> buffer selected. The default value is <code>nil</code>, which just shows the candidates in the <code>*xref*</code> buffer, but neither selects any of them nor shows their definition, until you select a candidate in the <code>*xref*</code> buffer.
+</p>
+
+<p>
+If you switch away of the window showing the <code>*xref*</code> buffer which displays several candidates, you can move from one candidate to another using the commands M-g M-n (<code>next-error</code>) and M-g M-p (<code>previous-error</code>). See <a href="docs/emacs--Compilation-Mode.html">Compilation Mode</a>.
+</p>
+
+<p>
+To go back to places <i>from where</i> you've displayed the definition, use M-, (<code>xref-go-back</code>). It jumps back to the point of the last invocation of M-.. Thus you can find and examine the definition of something with M-. and then return to where you were with M-,. M-, allows you to retrace the steps you made forward in the history of places, all the way to the first place in history, where you first invoked M-., or to any place in-between.
+</p>
+
+<p>
+If you previously went back too far with M-,, or want to re-examine a place from which you went back, you can use C-M-, (<code>xref-go-forward</code>) to go forward again. This is similar to using M-., except that you don't need on each step to move point to the identifier whose definition you want to look up. C-M-, allows you to retrace all the steps you made back in the history of places, all the way to the last place in history, where you invoked M-,, or to any place in-between.
+</p>
+
+<p>
+Some major modes install <code>xref</code> support facilities that might sometimes fail to find certain identifiers. For example, in Emacs Lisp mode (see <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>) M-. will by default find only functions and variables from Lisp packages which are loaded into the current Emacs session or are auto-loaded (see <a href="../elisp_html/Autoload.html#Autoload">Autoload</a> in The Emacs Lisp Reference Manual). If M-. fails to find some identifiers, you can try forcing <code>xref</code> to use the <code>etags</code> backend (see <a href="docs/emacs--Xref.html">Find Identifier References</a>). To this end, turn on the Xref Etags minor mode with M-x xref-etags-mode, then invoke M-. again. (For this to work, be sure to run <code>etags</code> to create the tags table in the directory tree of the source files, see <a href="docs/emacs--Create-Tags-Table.html">Creating Tags Tables</a>.)
+</p>
+
+<hr />
+</div>
+</div>

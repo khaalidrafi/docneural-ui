@@ -1,0 +1,36 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Info-directory-file-1">1. 13.14.5 Info directory file ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Info-directory-file"></a>
+Next: <a href="docs/org--Headings-and-sectioning-structure.html">Headings and sectioning structure</a>, Previous: <a href="docs/org--Texinfo-title-and-copyright-page.html">Texinfo title and copyright page</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Info-directory-file-1" class="outline-2">
+<h2 id="Info-directory-file-1"><span class="section-number-2">1.</span> 13.14.5 Info directory file <a href="#Info-directory-file-1">¶</a></h2>
+<div class="outline-text-2" id="text-Info-directory-file-1">
+<p>
+The end result of the Texinfo export process is the creation of an Info file. This Info file's metadata has variables for category, title, and description: ‘=TEXINFO<sub>DIR</sub><sub>CATEGORY</sub>=', ‘=TEXINFO<sub>DIR</sub><sub>NAME</sub>=', and ‘=TEXINFO<sub>DIR</sub><sub>DESC</sub>=' keywords that establish where in the Info hierarchy the file fits.
+</p>
+
+<p>
+Here is an example that writes to the Info directory file:
+</p>
+
+<pre class="example" id="org1dbfe0e">
+#+TEXINFO_DIR_CATEGORY: Emacs
+#+TEXINFO_DIR_NAME: Org Mode
+#+TEXINFO_DIR_DESC: Outline-based notes management and organizer
+</pre>
+</div>
+</div>

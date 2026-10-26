@@ -1,0 +1,101 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Examining-and-Setting-Variables">1. 51.2.1 Examining and Setting Variables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Hooks.html">Hooks</a>   Up: <a href="docs/emacs--Variables.html">Variables</a>
+</p>
+
+<p>
+<a id="Examining"></a>
+</p>
+
+<hr />
+<div id="outline-container-Examining-and-Setting-Variables" class="outline-2">
+<h2 id="Examining-and-Setting-Variables"><span class="section-number-2">1.</span> 51.2.1 Examining and Setting Variables <a href="#Examining-and-Setting-Variables">¶</a></h2>
+<div class="outline-text-2" id="text-Examining-and-Setting-Variables">
+<dl class="org-dl">
+<dt>C-h v <code>var</code> RET</dt><dd>Display the value and documentation of variable <code>var</code> (<code>describe-variable</code>).</dd>
+
+<dt>M-x set-variable RET <code>var</code> RET <code>value</code> RET</dt><dd>Change the value of variable <code>var</code> to <code>value</code>.</dd>
+</dl>
+
+<p>
+To examine the value of a variable, use C-h v (<code>describe-variable</code>). This reads a variable name using the minibuffer, with completion, and displays both the value and the documentation of the variable. For example,
+</p>
+
+<pre class="example" id="orga9b30cb">
+C-h v fill-column RET
+</pre>
+
+<p>
+displays something like this:
+</p>
+
+<pre class="example" id="orgf0d4dd7">
+fill-column is a variable defined in ‘C source code’.
+Its value is 70
+
+  Automatically becomes buffer-local when set.
+  This variable is safe as a file local variable if its value
+  satisfies the predicate ‘integerp’.
+  Probably introduced at or before Emacs version 18.
+
+Documentation:
+Column beyond which automatic line-wrapping should happen.
+Interactively, you can set the buffer local value using C-x f.
+
+You can customize this variable.
+</pre>
+
+<p>
+The line that says ‘=You can customize the variable=' indicates that this variable is a user option. C-h v is not restricted to user options; it allows non-customizable variables too.
+</p>
+
+<p>
+The most convenient way to set a specific customizable variable is with M-x set-variable. This reads the variable name with the minibuffer (with completion), and then reads a Lisp expression for the new value using the minibuffer a second time (you can insert the old value into the minibuffer for editing via M-n). For example,
+</p>
+
+<pre class="example" id="org5d0c046">
+M-x set-variable RET fill-column RET 75 RET
+</pre>
+
+<p>
+sets <code>fill-column</code> to 75.
+</p>
+
+<p>
+M-x set-variable is limited to customizable variables, but you can set any variable with a Lisp expression like this:
+</p>
+
+<pre class="example" id="org07cf872">
+(setq fill-column 75)
+</pre>
+
+<p>
+To execute such an expression, type M-: (<code>eval-expression</code>) and enter the expression in the minibuffer (see <a href="docs/emacs--Lisp-Eval.html">Evaluating Emacs Lisp Expressions</a>). Alternatively, go to the <code>*scratch*</code> buffer, type in the expression, and then type C-j (see <a href="docs/emacs--Lisp-Interaction.html">Lisp Interaction Buffers</a>).
+</p>
+
+<p>
+Setting variables, like all means of customizing Emacs except where otherwise stated, affects only the current Emacs session. The only way to alter the variable in future sessions is to put something in your initialization file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>).
+</p>
+
+<p>
+If you're setting a customizable variable in your initialization file, and you don't want to use the Customize interface, you can use the <code>setopt</code> macro. For instance:
+</p>
+
+<pre class="example" id="orgf41c3f6">
+(setopt fill-column 75)
+</pre>
+
+<p>
+This works the same as <code>setq</code>, but if the variable has any special setter functions, they will be run automatically when using <code>setopt</code>. You can also use <code>setopt</code> on other, non-customizable variables, but this is less efficient than using <code>setq</code>.
+</p>
+
+<hr />
+</div>
+</div>

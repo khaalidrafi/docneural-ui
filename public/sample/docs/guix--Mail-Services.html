@@ -1,0 +1,1412 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Mail-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Messaging-Services.html">Messaging Services</a>, Previous: <a href="docs/guix--Database-Services.html">Database Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Mail-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="mail-services"></a>11.10.13 Mail Services<br />
+<div class="outline-text-5" id="text-mail-services">
+<p>
+<a id="index-mail"></a> <a id="index-email"></a>
+The <code>(gnu services mail)</code> module provides Guix service definitions for email services: IMAP, POP3, and LMTP servers, as well as mail transport agents (MTAs). Lots of acronyms! These services are detailed in the subsections below.
+</p>
+
+<p>
+<a id="Dovecot-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="dovecot-service"></a>Dovecot Service<br />
+<div class="outline-text-5" id="text-dovecot-service">
+<dl class="org-dl">
+<dt>Variable: dovecot-service-type </dt><dd>Type for the service that runs the Dovecot IMAP/POP3/LMTP mail server, whose value is a <code>&lt;dovecot-configuration&gt;</code> object.</dd>
+</dl>
+
+<p>
+By default, Dovecot does not need much configuration; the default configuration object created by <code>(dovecot-configuration)</code> will suffice if your mail is delivered to <code>~/Maildir</code>. A self-signed certificate will be generated for TLS-protected connections, though Dovecot will also listen on cleartext ports by default. There are a number of options, though, which mail administrators might need to change, and as is the case with other services, Guix allows the system administrator to specify these parameters via a uniform Scheme interface.
+</p>
+
+<p>
+For example, to specify that mail is located at <code>maildir~/.mail</code>, one would instantiate the Dovecot service like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service dovecot-service-type
+         (dovecot-configuration
+           (mail-location "maildir:~/.mail")))
+</pre>
+</div>
+
+<p>
+The available configuration parameters follow. Each parameter definition is preceded by its type; for example, ‘=string-list foo=' indicates that the <code>foo</code> parameter should be specified as a list of strings. There is also a way to specify the configuration as a string, if you have an old <code>dovecot.conf</code> file that you want to port over from some other system; see the end for more details.
+</p>
+
+<p>
+Available <code>dovecot-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>dovecot-configuration</code> parameter: <i>package</i> <b>dovecot</b> </dt><dd>The dovecot package.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>package-list</i> <b>extensions</b> </dt><dd><p>
+A list of additional Dovecot plugin packages to make available at runtime. During service activation, the <code>lib/dovecot</code> directory from each specified package is combined with Dovecot's core modules into a unified module directory.
+</p>
+
+<p>
+For example, to enable Sieve filtering:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(extensions (list dovecot-pigeonhole))
+</pre>
+</div>
+
+<p>
+Each package in the list must provide its modules at <code>lib/dovecot</code>, as this is where <code>make-dovecot-moduledir</code> expects to find its extensions. The service combines these directories to create a unified module structure.
+</p>
+
+<p>
+The default value is an empty list, providing only core Dovecot functionality.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>comma-separated-string-list</i> <b>listen</b> </dt><dd>A list of IPs or hosts where to listen for connections. ‘=*=' listens on all IPv4 interfaces, ‘=::=' listens on all IPv6 interfaces. If you want to specify non-default ports or anything more complex, customize the address and port fields of the ‘=inet-listener=' of the specific services you are interested in.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>protocol-configuration-list</i> <b>protocols</b> </dt><dd><p>
+List of protocols we want to serve. Available protocols include ‘=imap=', ‘=pop3=', and ‘=lmtp='.
+</p>
+
+<p>
+Available <code>protocol-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>protocol-configuration</code> parameter: <i>string</i> <b>name</b> </dt><dd>The name of the protocol.</dd>
+
+<dt><code>protocol-configuration</code> parameter: <i>string</i> <b>auth-socket-path</b> </dt><dd>UNIX socket path to the master authentication server to find users. This is used by imap (for shared users) and lda. It defaults to ‘="/var/run/dovecot/auth-userdb"='.</dd>
+
+<dt><code>protocol-configuration</code> parameter: <i>boolean</i> <b>imap-metadata?</b> </dt><dd><p>
+Whether to enable the <code>IMAP METADATA</code> extension as defined in <a href="https://tools.ietf.org/html/rfc5464">RFC 5464</a>, which provides a means for clients to set and retrieve per-mailbox, per-user metadata and annotations over IMAP.
+</p>
+
+<p>
+If this is ‘=#t=', you must also specify a dictionary <i>via</i> the <code>mail-attribute-dict</code> setting.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>protocol-configuration</code> parameter: <i>space-separated-string-list</i> <b>managesieve-notify-capabilities</b> </dt><dd><p>
+Which NOTIFY capabilities to report to clients that first connect to the ManageSieve service, before authentication. These may differ from the capabilities offered to authenticated users. If this field is left empty, report what the Sieve interpreter supports by default.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>protocol-configuration</code> parameter: <i>space-separated-string-list</i> <b>managesieve-sieve-capability</b> </dt><dd><p>
+Which SIEVE capabilities to report to clients that first connect to the ManageSieve service, before authentication. These may differ from the capabilities offered to authenticated users. If this field is left empty, report what the Sieve interpreter supports by default.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>protocol-configuration</code> parameter: <i>space-separated-string-list</i> <b>mail-plugins</b> </dt><dd>Space separated list of plugins to load.</dd>
+
+<dt><code>protocol-configuration</code> parameter: <i>non-negative-integer</i> <b>mail-max-userip-connections</b> </dt><dd>Maximum number of IMAP connections allowed for a user from each IP address. NOTE: The username is compared case-sensitively. Defaults to ‘=10='.</dd>
+</dl></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>service-configuration-list</i> <b>services</b> </dt><dd><p>
+List of services to enable. Available services include ‘=imap=', ‘=imap-login=', ‘=pop3=', ‘=pop3-login=', ‘=auth=', and ‘=lmtp='.
+</p>
+
+<p>
+Available <code>service-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>service-configuration</code> parameter: <i>string</i> <b>kind</b> </dt><dd>The service kind. Valid values include <code>director</code>, <code>imap-login</code>, <code>pop3-login</code>, <code>lmtp</code>, <code>imap</code>, <code>pop3</code>, <code>auth</code>, <code>auth-worker</code>, <code>dict</code>, <code>tcpwrap</code>, <code>quota-warning</code>, or anything else.</dd>
+
+<dt><code>service-configuration</code> parameter: <i>listener-configuration-list</i> <b>listeners</b> </dt><dd><p>
+Listeners for the service. A listener is either a <code>unix-listener-configuration</code>, a <code>fifo-listener-configuration</code>, or an <code>inet-listener-configuration</code>. Defaults to ‘='()='.
+</p>
+
+<p>
+Available <code>unix-listener-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>unix-listener-configuration</code> parameter: <i>string</i> <b>path</b> </dt><dd>Path to the file, relative to <code>base-dir</code> field. This is also used as the section name.</dd>
+
+<dt><code>unix-listener-configuration</code> parameter: <i>string</i> <b>mode</b> </dt><dd>The access mode for the socket. Defaults to ‘="0600"='.</dd>
+
+<dt><code>unix-listener-configuration</code> parameter: <i>string</i> <b>user</b> </dt><dd>The user to own the socket. Defaults to ‘=""='.</dd>
+
+<dt><code>unix-listener-configuration</code> parameter: <i>string</i> <b>group</b> </dt><dd>The group to own the socket. Defaults to ‘=""='.</dd>
+</dl>
+
+<p>
+Available <code>fifo-listener-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>fifo-listener-configuration</code> parameter: <i>string</i> <b>path</b> </dt><dd>Path to the file, relative to <code>base-dir</code> field. This is also used as the section name.</dd>
+
+<dt><code>fifo-listener-configuration</code> parameter: <i>string</i> <b>mode</b> </dt><dd>The access mode for the socket. Defaults to ‘="0600"='.</dd>
+
+<dt><code>fifo-listener-configuration</code> parameter: <i>string</i> <b>user</b> </dt><dd>The user to own the socket. Defaults to ‘=""='.</dd>
+
+<dt><code>fifo-listener-configuration</code> parameter: <i>string</i> <b>group</b> </dt><dd>The group to own the socket. Defaults to ‘=""='.</dd>
+</dl>
+
+<p>
+Available <code>inet-listener-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>inet-listener-configuration</code> parameter: <i>string</i> <b>protocol</b> </dt><dd>The protocol to listen for.</dd>
+
+<dt><code>inet-listener-configuration</code> parameter: <i>string</i> <b>address</b> </dt><dd>The address on which to listen, or empty for all addresses. Defaults to ‘=""='.</dd>
+
+<dt><code>inet-listener-configuration</code> parameter: <i>non-negative-integer</i> <b>port</b> </dt><dd>The port on which to listen.</dd>
+
+<dt><code>inet-listener-configuration</code> parameter: <i>boolean</i> <b>ssl?</b> </dt><dd>Whether to use SSL for this service; ‘=yes=', ‘=no=', or ‘=required='. Defaults to ‘=#t='.</dd>
+</dl></dd>
+
+<dt><code>service-configuration</code> parameter: <i>non-negative-integer</i> <b>client-limit</b> </dt><dd><p>
+Maximum number of simultaneous client connections per process. Once this number of connections is received, the next incoming connection will prompt Dovecot to spawn another process. If set to 0, <code>default-client-limit</code> is used instead.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>service-configuration</code> parameter: <i>non-negative-integer</i> <b>service-count</b> </dt><dd>Number of connections to handle before starting a new process. Typically the only useful values are 0 (unlimited) or 1. 1 is more secure, but 0 is faster. &lt;doc/wiki/LoginProcess.txt&gt;. Defaults to ‘=1='.</dd>
+
+<dt><code>service-configuration</code> parameter: <i>non-negative-integer</i> <b>process-limit</b> </dt><dd><p>
+Maximum number of processes that can exist for this service. If set to 0, <code>default-process-limit</code> is used instead.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>service-configuration</code> parameter: <i>non-negative-integer</i> <b>process-min-avail</b> </dt><dd>Number of processes to always keep waiting for more connections. Defaults to ‘=0='.</dd>
+
+<dt><code>service-configuration</code> parameter: <i>non-negative-integer</i> <b>vsz-limit</b> </dt><dd>If you set ‘=service-count 0=', you probably need to grow this. Defaults to ‘=256000000='.</dd>
+</dl></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>dict-configuration</i> <b>dict</b> </dt><dd><p>
+Dict configuration, as created by the <code>dict-configuration</code> constructor.
+</p>
+
+<p>
+Available <code>dict-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>dict-configuration</code> parameter: <i>free-form-fields</i> <b>entries</b> </dt><dd>A list of key-value pairs that this dict should hold. Defaults to ‘='()='.</dd>
+</dl></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>passdb-configuration-list</i> <b>passdbs</b> </dt><dd><p>
+A list of passdb configurations, each one created by the <code>passdb-configuration</code> constructor.
+</p>
+
+<p>
+Available <code>passdb-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>passdb-configuration</code> parameter: <i>string</i> <b>driver</b> </dt><dd>The driver that the passdb should use. Valid values include ‘=pam=', ‘=passwd=', ‘=shadow=', ‘=bsdauth=', and ‘=static='. Defaults to ‘="pam"='.</dd>
+
+<dt><code>passdb-configuration</code> parameter: <i>space-separated-string-list</i> <b>args</b> </dt><dd>Space separated list of arguments to the passdb driver. Defaults to ‘=""='.</dd>
+</dl></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>userdb-configuration-list</i> <b>userdbs</b> </dt><dd><p>
+List of userdb configurations, each one created by the <code>userdb-configuration</code> constructor.
+</p>
+
+<p>
+Available <code>userdb-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>userdb-configuration</code> parameter: <i>string</i> <b>driver</b> </dt><dd>The driver that the userdb should use. Valid values include ‘=passwd=' and ‘=static='. Defaults to ‘="passwd"='.</dd>
+
+<dt><code>userdb-configuration</code> parameter: <i>space-separated-string-list</i> <b>args</b> </dt><dd>Space separated list of arguments to the userdb driver. Defaults to ‘=""='.</dd>
+
+<dt><code>userdb-configuration</code> parameter: <i>free-form-args</i> <b>override-fields</b> </dt><dd>Override fields from passwd. Defaults to ‘='()='.</dd>
+</dl></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>plugin-configuration</i> <b>plugin-configuration</b> </dt><dd>Plug-in configuration, created by the <code>plugin-configuration</code> constructor.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>list-of-namespace-configuration</i> <b>namespaces</b> </dt><dd><p>
+List of namespaces. Each item in the list is created by the <code>namespace-configuration</code> constructor.
+</p>
+
+<p>
+Available <code>namespace-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>namespace-configuration</code> parameter: <i>string</i> <b>name</b> </dt><dd>Name for this namespace.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>string</i> <b>type</b> </dt><dd>Namespace type: ‘=private=', ‘=shared=' or ‘=public='. Defaults to ‘="private"='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>string</i> <b>separator</b> </dt><dd>Hierarchy separator to use. You should use the same separator for all namespaces or some clients get confused. ‘=/=' is usually a good one. The default however depends on the underlying mail storage format. Defaults to ‘=""='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>string</i> <b>prefix</b> </dt><dd>Prefix required to access this namespace. This needs to be different for all namespaces. For example ‘=Public/='. Defaults to ‘=""='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>string</i> <b>location</b> </dt><dd>Physical location of the mailbox. This is in the same format as mail<sub>location</sub>, which is also the default for it. Defaults to ‘=""='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>boolean</i> <b>inbox?</b> </dt><dd>There can be only one INBOX, and this setting defines which namespace has it. Defaults to ‘=#f='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>boolean</i> <b>hidden?</b> </dt><dd>If namespace is hidden, it's not advertised to clients via NAMESPACE extension. You'll most likely also want to set ‘=list? #f='. This is mostly useful when converting from another server with different namespaces which you want to deprecate but still keep working. For example you can create hidden namespaces with prefixes ‘=~/mail/=', ‘=~%u/mail/=' and ‘=mail/='. Defaults to ‘=#f='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>boolean</i> <b>list?</b> </dt><dd>Show the mailboxes under this namespace with the LIST command. This makes the namespace visible for clients that do not support the NAMESPACE extension. The special <code>children</code> value lists child mailboxes, but hides the namespace prefix. Defaults to ‘=#t='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>boolean</i> <b>subscriptions?</b> </dt><dd>Namespace handles its own subscriptions. If set to <code>#f</code>, the parent namespace handles them. The empty prefix should always have this as <code>#t</code>). Defaults to ‘=#t='.</dd>
+
+<dt><code>namespace-configuration</code> parameter: <i>mailbox-configuration-list</i> <b>mailboxes</b> </dt><dd><p>
+List of predefined mailboxes in this namespace. Defaults to ‘='()='.
+</p>
+
+<p>
+Available <code>mailbox-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>mailbox-configuration</code> parameter: <i>string</i> <b>name</b> </dt><dd>Name for this mailbox.</dd>
+
+<dt><code>mailbox-configuration</code> parameter: <i>string</i> <b>auto</b> </dt><dd>‘=create=' will automatically create this mailbox. ‘=subscribe=' will both create and subscribe to the mailbox. Defaults to ‘="no"='.</dd>
+
+<dt><code>mailbox-configuration</code> parameter: <i>space-separated-string-list</i> <b>special-use</b> </dt><dd>List of IMAP <code>SPECIAL-USE</code> attributes as specified by RFC 6154. Valid values are <code>\All</code>, <code>\Archive</code>, <code>\Drafts</code>, <code>\Flagged</code>, <code>\Junk</code>, <code>\Sent</code>, and <code>\Trash</code>. Defaults to ‘='()='.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>file-name</i> <b>base-dir</b> </dt><dd>Base directory where to store runtime data. Defaults to ‘="<i>var/run/dovecot</i>"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>login-greeting</b> </dt><dd>Greeting message for clients. Defaults to ‘="Dovecot ready."='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>login-trusted-networks</b> </dt><dd>List of trusted network ranges. Connections from these IPs are allowed to override their IP addresses and ports (for logging and for authentication checks). ‘=disable-plaintext-auth=' is also ignored for these networks. Typically you would specify your IMAP proxy servers here. Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>login-access-sockets</b> </dt><dd>List of login access check sockets (e.g. tcpwrap). Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>verbose-proctitle?</b> </dt><dd>Show more verbose process titles (in ps). Currently shows user name and IP address. Useful for seeing who is actually using the IMAP processes (e.g. shared mailboxes or if the same uid is used for multiple accounts). Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>shutdown-clients?</b> </dt><dd>Should all processes be killed when Dovecot master process shuts down. Setting this to <code>#f</code> means that Dovecot can be upgraded without forcing existing client connections to close (although that could also be a problem if the upgrade is e.g. due to a security fix). Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>doveadm-worker-count</b> </dt><dd>If non-zero, run mail commands via this many connections to doveadm server, instead of running them directly in the same process. Defaults to ‘=0='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>doveadm-socket-path</b> </dt><dd>UNIX socket or host:port used for connecting to doveadm server. Defaults to ‘="doveadm-server"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>import-environment</b> </dt><dd>List of environment variables that are preserved on Dovecot startup and passed down to all of its child processes. You can also give key=value pairs to always set specific settings.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>disable-plaintext-auth?</b> </dt><dd>Disable LOGIN command and all other plaintext authentications unless SSL/TLS is used (LOGINDISABLED capability). Note that if the remote IP matches the local IP (i.e. you're connecting from the same computer), the connection is considered secure and plaintext authentication is allowed. See also the ‘=ssl=required=' setting. Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>auth-cache-size</b> </dt><dd>Authentication cache size (e.g. ‘=#e10e6='). 0 means it's disabled. Note that bsdauth, PAM and vpopmail require ‘=cache-key=' to be set for caching to be used. Defaults to ‘=0='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-cache-ttl</b> </dt><dd>Time to live for cached data. After TTL expires the cached record is no longer used, <b>except</b> if the main database lookup returns internal failure. We also try to handle password changes automatically: If user's previous authentication was successful, but this one wasn't, the cache isn't used. For now this works only with plaintext authentication. Defaults to ‘="1 hour"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-cache-negative-ttl</b> </dt><dd>TTL for negative hits (user not found, password mismatch). 0 disables caching them completely. Defaults to ‘="1 hour"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>auth-realms</b> </dt><dd>List of realms for SASL authentication mechanisms that need them. You can leave it empty if you don't want to support multiple realms. Many clients simply use the first one listed here, so keep the default realm first. Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-default-realm</b> </dt><dd>Default realm/domain to use if none was specified. This is used for both SASL realms and appending @domain to username in plaintext logins. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-username-chars</b> </dt><dd>List of allowed characters in username. If the user-given username contains a character not listed in here, the login automatically fails. This is just an extra check to make sure user can't exploit any potential quote escaping vulnerabilities with SQL/LDAP databases. If you want to allow all characters, set this value to empty. Defaults to ‘="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890.-_@"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-username-translation</b> </dt><dd>Username character translations before it's looked up from databases. The value contains series of from -&gt; to characters. For example ‘=#@/@=' means that ‘=#=' and ‘=/=' characters are translated to ‘=@='. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-username-format</b> </dt><dd>Username formatting before it's looked up from databases. You can use the standard variables here, e.g. %Lu would lowercase the username, %n would drop away the domain if it was given, or ‘=%n-AT-%d=' would change the ‘=@=' into ‘=-AT-<code>'. This translation is done after ‘=auth-username-translation</code>' changes. Defaults to ‘="%Lu"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-master-user-separator</b> </dt><dd>If you want to allow master users to log in by specifying the master username within the normal username string (i.e. not using SASL mechanism's support for it), you can specify the separator character here. The format is then &lt;username&gt;&lt;separator&gt;&lt;master username&gt;. UW-IMAP uses ‘=*=' as the separator, so that could be a good choice. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-anonymous-username</b> </dt><dd>Username to use for users logging in with ANONYMOUS SASL mechanism. Defaults to ‘="anonymous"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>auth-worker-max-count</b> </dt><dd>Maximum number of dovecot-auth worker processes. They're used to execute blocking passdb and userdb queries (e.g. MySQL and PAM). They're automatically created and destroyed as needed. Defaults to ‘=30='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-gssapi-hostname</b> </dt><dd>Host name to use in GSSAPI principal names. The default is to use the name returned by gethostname(). Use ‘=$ALL=' (with quotes) to allow all keytab entries. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-krb5-keytab</b> </dt><dd>Kerberos keytab to use for the GSSAPI mechanism. Will use the system default (usually <code>/etc/krb5.keytab</code>) if not specified. You may need to change the auth service to run as root to be able to read this file. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>auth-use-winbind?</b> </dt><dd>Do NTLM and GSS-SPNEGO authentication using Samba's winbind daemon and ‘=ntlm-auth=' helper. &lt;doc/wiki/Authentication/Mechanisms/Winbind.txt&gt;. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>file-name</i> <b>auth-winbind-helper-path</b> </dt><dd>Path for Samba's ‘=ntlm-auth=' helper binary. Defaults to ‘="/usr/bin/ntlm<sub>auth</sub>"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-failure-delay</b> </dt><dd>Time to delay before replying to failed authentications. Defaults to ‘="2 secs"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>auth-ssl-require-client-cert?</b> </dt><dd>Require a valid SSL client certificate or the authentication fails. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>auth-ssl-username-from-cert?</b> </dt><dd>Take the username from client's SSL certificate, using <code>X509_NAME_get_text_by_NID()</code> which returns the subject's DN's CommonName. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>auth-mechanisms</b> </dt><dd>List of wanted authentication mechanisms. Supported mechanisms are: ‘=plain=', ‘=login=', ‘=digest-md5=', ‘=cram-md5=', ‘=ntlm=', ‘=rpa=', ‘=apop=', ‘=anonymous=', ‘=gssapi=', ‘=otp=', ‘=skey=', and ‘=gss-spnego='. See also the ‘=disable-plaintext-auth=' setting.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>director-servers</b> </dt><dd>List of IPs or hostnames to all director servers, including ourself. Ports can be specified as ip:port. The default port is the same as what director service's ‘=inet-listener=' is using. Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>director-mail-servers</b> </dt><dd>List of IPs or hostnames to all backend mail servers. Ranges are allowed too, like 10.0.0.10-10.0.0.30. Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>director-user-expire</b> </dt><dd>How long to redirect users to a specific server after it no longer has any connections. Defaults to ‘="15 min"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>director-username-hash</b> </dt><dd>How the username is translated before being hashed. Useful values include %Ln if user can log in with or without @domain, %Ld if mailboxes are shared within domain. Defaults to ‘="%Lu"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>log-path</b> </dt><dd>Log file to use for error messages. ‘=syslog=' logs to syslog, ‘=/dev/stderr=' logs to stderr. Defaults to ‘="syslog"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>info-log-path</b> </dt><dd>Log file to use for informational messages. Defaults to ‘=log-path='. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>debug-log-path</b> </dt><dd>Log file to use for debug messages. Defaults to ‘=info-log-path='. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>syslog-facility</b> </dt><dd>Syslog facility to use if you're logging to syslog. Usually if you don't want to use ‘=mail=', you'll use local0..local7. Also other standard facilities are supported. Defaults to ‘="mail"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>auth-verbose?</b> </dt><dd>Log unsuccessful authentication attempts and the reasons why they failed. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>auth-verbose-passwords</b> </dt><dd>In case of password mismatches, log the attempted password. Valid values are no, plain and sha1. sha1 can be useful for detecting brute force password attempts vs. user simply trying the same password over and over again. You can also truncate the value to n chars by appending ":n" (e.g. sha1:6). Defaults to ‘="no"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>auth-debug?</b> </dt><dd>Even more verbose logging for debugging purposes. Shows for example SQL queries. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>auth-debug-passwords?</b> </dt><dd>In case of password mismatches, log the passwords and used scheme so the problem can be debugged. Enabling this also enables ‘=auth-debug='. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mail-debug?</b> </dt><dd>Enable mail process debugging. This can help you figure out why Dovecot isn't finding your mails. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>verbose-ssl?</b> </dt><dd>Show protocol level SSL errors. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>log-timestamp</b> </dt><dd>Prefix for each line written to log file. % codes are in strftime(3) format. Defaults to ‘="\"%b %d %H:%M:%S \""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>login-log-format-elements</b> </dt><dd>List of elements we want to log. The elements which have a non-empty variable value are joined together to form a comma-separated string.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>login-log-format</b> </dt><dd>Login log format. %s contains ‘=login-log-format-elements=' string, %$ contains the data we want to log. Defaults to ‘="%$: %s"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-log-prefix</b> </dt><dd>Log prefix for mail processes. See doc/wiki/Variables.txt for list of possible variables you can use. Defaults to ‘="\"%s(%u)&lt;%{pid}&gt;&lt;%{session}&gt;: \""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>deliver-log-format</b> </dt><dd><p>
+Format to use for logging mail deliveries. You can use variables:
+</p>
+
+<dl class="org-dl">
+<dt><code>%$</code></dt><dd>Delivery status message (e.g. ‘=saved to INBOX=')</dd>
+
+<dt><code>%m</code></dt><dd>Message-ID</dd>
+
+<dt><code>%s</code></dt><dd>Subject</dd>
+
+<dt><code>%f</code></dt><dd>From address</dd>
+
+<dt><code>%p</code></dt><dd>Physical size</dd>
+
+<dt><code>%w</code></dt><dd>Virtual size.</dd>
+</dl>
+
+<p>
+Defaults to ‘="msgid=%m: %$"='.
+</p></dd>
+</dl>
+
+<p>
+<code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-location</b> 
+Location for users' mailboxes. The default is empty, which means that Dovecot tries to find the mailboxes automatically. This won't work if the user doesn't yet have any mail, so you should explicitly tell Dovecot the full location.
+</p>
+
+<p>
+If you're using mbox, giving a path to the INBOX file (e.g. <code>/var/mail/%u</code>) isn't enough. You'll also need to tell Dovecot where the other mailboxes are kept. This is called the <i>root mail directory</i>, and it must be the first path given in the ‘=mail-location=' setting.
+</p>
+
+<p>
+There are a few special variables you can use, e.g.:
+</p>
+
+<dl class="org-dl">
+<dt>‘=%u='</dt><dd>username</dd>
+
+<dt>‘=%n='</dt><dd>user part in user@domain, same as %u if there's no domain</dd>
+
+<dt>‘=%d='</dt><dd>domain part in user@domain, empty if there's no domain</dd>
+
+<dt>‘=%h='</dt><dd>home directory</dd>
+</dl>
+
+<p>
+See doc/wiki/Variables.txt for full list. Some examples:
+</p>
+
+<p>
+‘=maildir:~/Maildir='
+‘=mbox:~/mail:INBOX=/var/mail/%u='
+‘=mbox:/var/mail/%d/%1n/%n:INDEX=/var/indexes/%d/%1n/%='
+Defaults to ‘=""='.
+</p>
+
+<dl class="org-dl">
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-uid</b> </dt><dd>System user and group used to access mails. If you use multiple, userdb can override these by returning uid or gid fields. You can use either numbers or names. &lt;doc/wiki/UserIds.txt&gt;. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-gid</b> </dt><dd>Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-privileged-group</b> </dt><dd>Group to enable temporarily for privileged operations. Currently this is used only with INBOX when either its initial creation or dotlocking fails. Typically this is set to ‘="mail"<code>' to give access to =/var/mail</code>. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-access-groups</b> </dt><dd>Grant access to these supplementary groups for mail processes. Typically these are used to set up access to shared mailboxes. Note that it may be dangerous to set these if users can create symlinks (e.g. if ‘=mail=' group is set here, <code>ln -s /var/mail ~/mail/var</code> could allow a user to delete others' mailboxes, or <code>ln -s /secret/shared/box ~/mail/mybox</code> would allow reading it). Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-attribute-dict</b> </dt><dd><p>
+The location of a dictionary used to store <code>IMAP METADATA</code> as defined by <a href="https://tools.ietf.org/html/rfc5464">RFC 5464</a>.
+</p>
+
+<p>
+The IMAP METADATA commands are available only if the “imap” protocol configuration's <code>imap-metadata?</code> field is ‘=#t='.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mail-full-filesystem-access?</b> </dt><dd>Allow full file system access to clients. There's no access checks other than what the operating system does for the active UID/GID. It works with both maildir and mboxes, allowing you to prefix mailboxes names with e.g. <code>/path/</code> or <code>~user/</code>. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mmap-disable?</b> </dt><dd>Don't use <code>mmap()</code> at all. This is required if you store indexes to shared file systems (NFS or clustered file system). Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>dotlock-use-excl?</b> </dt><dd>Rely on ‘=O<sub>EXCL</sub>=' to work when creating dotlock files. NFS supports ‘=O<sub>EXCL</sub>=' since version 3, so this should be safe to use nowadays by default. Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-fsync</b> </dt><dd><p>
+When to use fsync() or fdatasync() calls:
+</p>
+
+<dl class="org-dl">
+<dt><code>optimized</code></dt><dd>Whenever necessary to avoid losing important data</dd>
+
+<dt><code>always</code></dt><dd>Useful with e.g. NFS when =write()=s are delayed</dd>
+
+<dt><code>never</code></dt><dd>Never use it (best performance, but crashes can lose data).</dd>
+</dl>
+
+<p>
+Defaults to ‘="optimized"='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mail-nfs-storage?</b> </dt><dd>Mail storage exists in NFS. Set this to yes to make Dovecot flush NFS caches whenever needed. If you're using only a single mail server this isn't needed. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mail-nfs-index?</b> </dt><dd>Mail index files also exist in NFS. Setting this to yes requires ‘=mmap-disable? #t=' and ‘=fsync-disable? #f='. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>lock-method</b> </dt><dd>Locking method for index files. Alternatives are fcntl, flock and dotlock. Dotlocking uses some tricks which may create more disk I/O than other locking methods. NFS users: flock doesn't work, remember to change ‘=mmap-disable='. Defaults to ‘="fcntl"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>file-name</i> <b>mail-temp-dir</b> </dt><dd>Directory in which LDA/LMTP temporarily stores incoming mails &gt;128 kB. Defaults to ‘="/tmp"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>first-valid-uid</b> </dt><dd>Valid UID range for users. This is mostly to make sure that users can't log in as daemons or other system users. Note that denying root logins is hardcoded to dovecot binary and can't be done even if ‘=first-valid-uid=' is set to 0. Defaults to ‘=500='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>last-valid-uid</b> </dt><dd>Defaults to ‘=0='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>first-valid-gid</b> </dt><dd>Valid GID range for users. Users having non-valid GID as primary group ID aren't allowed to log in. If user belongs to supplementary groups with non-valid GIDs, those groups are not set. Defaults to ‘=1='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>last-valid-gid</b> </dt><dd>Defaults to ‘=0='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>mail-max-keyword-length</b> </dt><dd>Maximum allowed length for mail keyword name. It's only forced when trying to create new keywords. Defaults to ‘=50='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>colon-separated-file-name-list</i> <b>valid-chroot-dirs</b> </dt><dd>List of directories under which chrooting is allowed for mail processes (i.e. <code>/var/mail</code> will allow chrooting to <code>/var/mail/foo/bar</code> too). This setting doesn't affect ‘=login-chroot=' ‘=mail-chroot=' or auth chroot settings. If this setting is empty, ‘=/./=' in home dirs are ignored. WARNING: Never add directories here which local users can modify, that may lead to root exploit. Usually this should be done only if you don't allow shell access for users. &lt;doc/wiki/Chrooting.txt&gt;. Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-chroot</b> </dt><dd>Default chroot directory for mail processes. This can be overridden for specific users in user database by giving ‘=/./=' in user's home directory (e.g. ‘=/home/./user=' chroots into <code>/home</code>). Note that usually there is no real need to do chrooting, Dovecot doesn't allow users to access files outside their mail directory anyway. If your home directories are prefixed with the chroot directory, append ‘=/.=' to ‘=mail-chroot='. &lt;doc/wiki/Chrooting.txt&gt;. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>file-name</i> <b>auth-socket-path</b> </dt><dd>UNIX socket path to master authentication server to find users. This is used by imap (for shared users) and lda. Defaults to ‘="/var/run/dovecot/auth-userdb"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>file-name</i> <b>mail-plugin-dir</b> </dt><dd>Directory where to look up mail plugins. Defaults to ‘="/usr/lib/dovecot"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>mail-plugins</b> </dt><dd>List of plugins to load for all services. Plugins specific to IMAP, LDA, etc. are added to this list in their own .conf files. Defaults to ‘='()='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>mail-cache-min-mail-count</b> </dt><dd>The minimum number of mails in a mailbox before updates are done to cache file. This allows optimizing Dovecot's behavior to do less disk writes at the cost of more disk reads. Defaults to ‘=0='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mailbox-idle-check-interval</b> </dt><dd>When IDLE command is running, mailbox is checked once in a while to see if there are any new mails or other changes. This setting defines the minimum time to wait between those checks. Dovecot can also use dnotify, inotify and kqueue to find out immediately when changes occur. Defaults to ‘="30 secs"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mail-save-crlf?</b> </dt><dd>Save mails with CR+LF instead of plain LF. This makes sending those mails take less CPU, especially with sendfile() syscall with Linux and FreeBSD. But it also creates a bit more disk I/O which may just make it slower. Also note that if other software reads the mboxes/maildirs, they may handle the extra CRs wrong and cause problems. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>maildir-stat-dirs?</b> </dt><dd>By default LIST command returns all entries in maildir beginning with a dot. Enabling this option makes Dovecot return only entries which are directories. This is done by stat()ing each entry, so it causes more disk I/O. (For systems setting struct ‘=dirent-&gt;d<sub>type</sub>=' this check is free and it's done always regardless of this setting). Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>maildir-copy-with-hardlinks?</b> </dt><dd>When copying a message, do it with hard links whenever possible. This makes the performance much better, and it's unlikely to have any side effects. Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>maildir-very-dirty-syncs?</b> </dt><dd>Assume Dovecot is the only MUA accessing Maildir: Scan cur/ directory only when its mtime changes unexpectedly or when we can't find the mail otherwise. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>mbox-read-locks</b> </dt><dd><p>
+Which locking methods to use for locking mbox. There are four available:
+</p>
+
+<dl class="org-dl">
+<dt><code>dotlock</code></dt><dd>Create &lt;mailbox&gt;.lock file. This is the oldest and most NFS-safe solution. If you want to use <i>var/mail</i> like directory, the users will need write access to that directory.</dd>
+
+<dt><code>dotlock-try</code></dt><dd>Same as dotlock, but if it fails because of permissions or because there isn't enough disk space, just skip it.</dd>
+
+<dt><code>fcntl</code></dt><dd>Use this if possible. Works with NFS too if lockd is used.</dd>
+
+<dt><code>flock</code></dt><dd>May not exist in all systems. Doesn't work with NFS.</dd>
+
+<dt><code>lockf</code></dt><dd>May not exist in all systems. Doesn't work with NFS.</dd>
+</dl>
+
+<p>
+You can use multiple locking methods; if you do the order they're declared in is important to avoid deadlocks if other MTAs/MUAs are using multiple locking methods as well. Some operating systems don't allow using some of them simultaneously.
+</p></dd>
+</dl>
+
+<p>
+<code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>mbox-write-locks</b> 
+</p>
+<dl class="org-dl">
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mbox-lock-timeout</b> </dt><dd>Maximum time to wait for lock (all of them) before aborting. Defaults to ‘="5 mins"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mbox-dotlock-change-timeout</b> </dt><dd>If dotlock exists but the mailbox isn't modified in any way, override the lock file after this much time. Defaults to ‘="2 mins"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mbox-dirty-syncs?</b> </dt><dd>When mbox changes unexpectedly we have to fully read it to find out what changed. If the mbox is large this can take a long time. Since the change is usually just a newly appended mail, it'd be faster to simply read the new mails. If this setting is enabled, Dovecot does this but still safely fallbacks to re-reading the whole mbox file whenever something in mbox isn't how it's expected to be. The only real downside to this setting is that if some other MUA changes message flags, Dovecot doesn't notice it immediately. Note that a full sync is done with SELECT, EXAMINE, EXPUNGE and CHECK commands. Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mbox-very-dirty-syncs?</b> </dt><dd>Like ‘=mbox-dirty-syncs=', but don't do full syncs even with SELECT, EXAMINE, EXPUNGE or CHECK commands. If this is set, ‘=mbox-dirty-syncs=' is ignored. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mbox-lazy-writes?</b> </dt><dd>Delay writing mbox headers until doing a full write sync (EXPUNGE and CHECK commands and when closing the mailbox). This is especially useful for POP3 where clients often delete all mails. The downside is that our changes aren't immediately visible to other MUAs. Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>mbox-min-index-size</b> </dt><dd>If mbox size is smaller than this (e.g. 100k), don't write index files. If an index file already exists it's still read, just not updated. Defaults to ‘=0='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>mdbox-rotate-size</b> </dt><dd>Maximum dbox file size until it's rotated. Defaults to ‘=10000000='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mdbox-rotate-interval</b> </dt><dd>Maximum dbox file age until it's rotated. Typically in days. Day begins from midnight, so 1d = today, 2d = yesterday, etc. 0 = check disabled. Defaults to ‘="1d"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>mdbox-preallocate-space?</b> </dt><dd>When creating new mdbox files, immediately preallocate their size to ‘=mdbox-rotate-size='. This setting currently works only in Linux with some file systems (ext4, xfs). Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-attachment-dir</b> </dt><dd><p>
+sdbox and mdbox support saving mail attachments to external files, which also allows single instance storage for them. Other backends don't support this for now.
+</p>
+
+<p>
+WARNING: This feature hasn't been tested much yet. Use at your own risk.
+</p>
+
+<p>
+Directory root where to store mail attachments. Disabled, if empty. Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>mail-attachment-min-size</b> </dt><dd>Attachments smaller than this aren't saved externally. It's also possible to write a plugin to disable saving specific attachments externally. Defaults to ‘=128000='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-attachment-fs</b> </dt><dd><p>
+File system backend to use for saving attachments:
+</p>
+
+<dl class="org-dl">
+<dt><code>posix</code></dt><dd>No SiS done by Dovecot (but this might help FS's own deduplication)</dd>
+
+<dt><code>sis posix</code></dt><dd>SiS with immediate byte-by-byte comparison during saving</dd>
+
+<dt><code>sis-queue posix</code></dt><dd>SiS with delayed comparison and deduplication.</dd>
+</dl>
+
+<p>
+Defaults to ‘="sis posix"='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>mail-attachment-hash</b> </dt><dd>Hash format to use in attachment filenames. You can add any text and variables: <code>%{md4}</code>, <code>%{md5}</code>, <code>%{sha1}</code>, <code>%{sha256}</code>, <code>%{sha512}</code>, <code>%{size}</code>. Variables can be truncated, e.g. <code>%{sha256:80}</code> returns only first 80 bits. Defaults to ‘="%{sha1}"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>default-process-limit</b> </dt><dd>Defaults to ‘=100='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>default-client-limit</b> </dt><dd>Defaults to ‘=1000='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>default-vsz-limit</b> </dt><dd>Default VSZ (virtual memory size) limit for service processes. This is mainly intended to catch and kill processes that leak memory before they eat up everything. Defaults to ‘=256000000='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>default-login-user</b> </dt><dd>Login user is internally used by login processes. This is the most untrusted user in Dovecot system. It shouldn't have access to anything at all. Defaults to ‘="dovenull"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>default-internal-user</b> </dt><dd>Internal user is used by unprivileged processes. It should be separate from login user, so that login processes can't disturb other processes. Defaults to ‘="dovecot"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl?</b> </dt><dd>SSL/TLS support: yes, no, required. &lt;doc/wiki/SSL.txt&gt;. Defaults to ‘="required"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-cert</b> </dt><dd>PEM encoded X.509 SSL/TLS certificate (public key). Defaults to ‘="&lt;/etc/dovecot/default.pem"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-key</b> </dt><dd>PEM encoded SSL/TLS private key. The key is opened before dropping root privileges, so keep the key file unreadable by anyone but root. Defaults to ‘="&lt;/etc/dovecot/private/default.pem"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-key-password</b> </dt><dd>If key file is password protected, give the password here. Alternatively give it when starting dovecot with -p parameter. Since this file is often world-readable, you may want to place this setting instead to a different. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-ca</b> </dt><dd>PEM encoded trusted certificate authority. Set this only if you intend to use ‘=ssl-verify-client-cert? #t='. The file should contain the CA certificate(s) followed by the matching CRL(s). (e.g. ‘=ssl-ca &lt;/etc/ssl/certs/ca.pem='). Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>ssl-require-crl?</b> </dt><dd>Require that CRL check succeeds for client certificates. Defaults to ‘=#t='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>ssl-verify-client-cert?</b> </dt><dd>Request client to send a certificate. If you also want to require it, set ‘=auth-ssl-require-client-cert? #t=' in auth section. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-cert-username-field</b> </dt><dd>Which field from certificate to use for username. commonName and x500UniqueIdentifier are the usual choices. You'll also need to set ‘=auth-ssl-username-from-cert? #t='. Defaults to ‘="commonName"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-min-protocol</b> </dt><dd>Minimum SSL protocol version to accept. Defaults to ‘="TLSv1"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-cipher-list</b> </dt><dd>SSL ciphers to use. Defaults to ‘="ALL:!kRSA:!SRP:!kDHd:!DSS:!aNULL:!eNULL:!EXPORT:!DES:!3DES:!MD5:!PSK:!RC4:!ADH:!LOW@STRENGTH"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>ssl-crypto-device</b> </dt><dd>SSL crypto device to use, for valid values run "openssl engine". Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>postmaster-address</b> </dt><dd>Address to use when sending rejection mails. %d expands to recipient domain. Defaults to ‘="postmaster@%d"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>hostname</b> </dt><dd>Hostname to use in various parts of sent mails (e.g. in Message-Id) and in LMTP replies. Default is the system's real hostname@domain. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>quota-full-tempfail?</b> </dt><dd>If user is over quota, return with temporary failure instead of bouncing the mail. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>file-name</i> <b>sendmail-path</b> </dt><dd>Binary to use for sending mails. Defaults to ‘="/usr/sbin/sendmail"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>submission-host</b> </dt><dd>If non-empty, send mails via this SMTP host[:port] instead of sendmail. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>rejection-subject</b> </dt><dd>Subject: header to use for rejection mails. You can use the same variables as for ‘=rejection-reason=' below. Defaults to ‘="Rejected: %s"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>rejection-reason</b> </dt><dd><p>
+Human readable error message for rejection mails. You can use variables:
+</p>
+
+<dl class="org-dl">
+<dt><code>%n</code></dt><dd>CRLF</dd>
+
+<dt><code>%r</code></dt><dd>reason</dd>
+
+<dt><code>%s</code></dt><dd>original subject</dd>
+
+<dt><code>%t</code></dt><dd>recipient</dd>
+</dl>
+
+<p>
+Defaults to ‘="Your message to &lt;%t&gt; was automatically rejected:%n%r"='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>recipient-delimiter</b> </dt><dd>Delimiter character between local-part and detail in email address. Defaults to ‘="+"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>lda-original-recipient-header</b> </dt><dd>Header where the original recipient address (SMTP's RCPT TO: address) is taken from if not available elsewhere. With dovecot-lda -a parameter overrides this. A commonly used header for this is X-Original-To. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>lda-mailbox-autocreate?</b> </dt><dd>Should saving a mail to a nonexistent mailbox automatically create it?. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>boolean</i> <b>lda-mailbox-autosubscribe?</b> </dt><dd>Should automatically created mailboxes be also automatically subscribed?. Defaults to ‘=#f='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>non-negative-integer</i> <b>imap-max-line-length</b> </dt><dd>Maximum IMAP command line length. Some clients generate very long command lines with huge mailboxes, so you may need to raise this if you get "Too long argument" or "IMAP command line too large" errors often. Defaults to ‘=64000='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>imap-logout-format</b> </dt><dd><p>
+IMAP logout format string:
+</p>
+
+<dl class="org-dl">
+<dt><code>%i</code></dt><dd>total number of bytes read from client</dd>
+
+<dt><code>%o</code></dt><dd>total number of bytes sent to client.</dd>
+</dl>
+
+<p>
+See <code>doc/wiki/Variables.txt</code> for a list of all the variables you can use. Defaults to ‘="in=%i out=%o deleted=%{deleted} expunged=%{expunged} trashed=%{trashed} hdr<sub>count</sub>=%{fetch<sub>hdr</sub><sub>count</sub>} hdr<sub>bytes</sub>=%{fetch<sub>hdr</sub><sub>bytes</sub>} body<sub>count</sub>=%{fetch<sub>body</sub><sub>count</sub>} body<sub>bytes</sub>=%{fetch<sub>body</sub><sub>bytes</sub>}"='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>imap-capability</b> </dt><dd>Override the IMAP CAPABILITY response. If the value begins with '+', add the given capabilities on top of the defaults (e.g. +XFOO XBAR). Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>imap-idle-notify-interval</b> </dt><dd>How long to wait between "OK Still here" notifications when client is IDLEing. Defaults to ‘="2 mins"='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>imap-id-send</b> </dt><dd>ID field names and values to send to clients. Using * as the value makes Dovecot use the default value. The following fields have default values currently: name, version, os, os-version, support-url, support-email. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>imap-id-log</b> </dt><dd>ID fields sent by client to log. * means everything. Defaults to ‘=""='.</dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>space-separated-string-list</i> <b>imap-client-workarounds</b> </dt><dd><p>
+Workarounds for various client bugs:
+</p>
+
+<dl class="org-dl">
+<dt><code>delay-newmail</code></dt><dd>Send EXISTS/RECENT new mail notifications only when replying to NOOP and CHECK commands. Some clients ignore them otherwise, for example OSX Mail (&lt;v2.1). Outlook Express breaks more badly though, without this it may show user "Message no longer in server" errors. Note that OE6 still breaks even with this workaround if synchronization is set to "Headers Only".</dd>
+
+<dt><code>tb-extra-mailbox-sep</code></dt><dd>Thunderbird gets somehow confused with LAYOUT=fs (mbox and dbox) and adds extra ‘=/=' suffixes to mailbox names. This option causes Dovecot to ignore the extra ‘=/=' instead of treating it as invalid mailbox name.</dd>
+
+<dt><code>tb-lsub-flags</code></dt><dd>Show \Noselect flags for LSUB replies with LAYOUT=fs (e.g. mbox). This makes Thunderbird realize they aren't selectable and show them greyed out, instead of only later giving "not selectable" popup error.</dd>
+</dl>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>dovecot-configuration</code> parameter: <i>string</i> <b>imap-urlauth-host</b> </dt><dd>Host allowed in URLAUTH URLs sent by client. "*" allows all. Defaults to ‘=""='.</dd>
+</dl>
+
+<p>
+Whew! Lots of configuration options. The nice thing about it though is that Guix has a complete interface to Dovecot's configuration language. This allows not only a nice way to declare configurations, but also offers reflective capabilities as well: users can write code to inspect and transform configurations from within Scheme.
+</p>
+
+<p>
+However, it could be that you just want to get a <code>dovecot.conf</code> up and running. In that case, you can pass an <code>opaque-dovecot-configuration</code> as the <code>#:config</code> parameter to <code>dovecot-service</code>. As its name indicates, an opaque configuration does not have easy reflective capabilities.
+</p>
+
+<p>
+Available <code>opaque-dovecot-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>opaque-dovecot-configuration</code> parameter: <i>package</i> <b>dovecot</b> </dt><dd>The dovecot package.</dd>
+
+<dt><code>opaque-dovecot-configuration</code> parameter: <i>string</i> <b>string</b> </dt><dd>The contents of the <code>dovecot.conf</code>, as a string.</dd>
+</dl>
+
+<p>
+For example, if your <code>dovecot.conf</code> is just the empty string, you could instantiate a dovecot service like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(dovecot-service #:config
+                 (opaque-dovecot-configuration
+                  (string "")))
+</pre>
+</div>
+
+<p>
+<a id="OpenSMTPD-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="opensmtpd-service"></a>OpenSMTPD Service<br />
+<div class="outline-text-5" id="text-opensmtpd-service">
+<dl class="org-dl">
+<dt>Variable: opensmtpd-service-type </dt><dd><p>
+This is the type of the <a href="https://www.opensmtpd.org">OpenSMTPD</a> service, whose value should be an <code>opensmtpd-configuration</code> object as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service opensmtpd-service-type
+         (opensmtpd-configuration
+           (config-file (local-file "./my-smtpd.conf"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: opensmtpd-configuration </dt><dd>Data type representing the configuration of opensmtpd.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>opensmtpd</code>)</dt><dd>Package object of the OpenSMTPD SMTP server.</dd>
+
+<dt><code>shepherd-requirement</code> (default: <code>'()</code>)</dt><dd>This option can be used to provide a list of symbols naming Shepherd services that this service will depend on, such as <code>'networking</code> if you want to configure OpenSMTPD to listen on non-loopback interfaces.</dd>
+
+<dt><code>config-file</code> (default: <code>%default-opensmtpd-config-file</code>)</dt><dd>File-like object of the OpenSMTPD configuration file to use. By default it listens on the loopback network interface, and allows for mail from users and daemons on the local machine, as well as permitting email to remote servers. Run <code>man smtpd.conf</code> for more information.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/mail.log"</code>)</dt><dd>The file location for the OpenSMTPD log file. Logging occurs in the foreground via the Shepherd, i.e. OpenSMTPD does not detach. When set to <code>#f</code> OpenSMTPD will instead detach and log to the syslog.</dd>
+
+<dt><code>setgid-commands?</code> (default: <code>#t</code>)</dt><dd>Make the following commands setgid to <code>smtpq</code> so they can be executed: <code>smtpctl</code>, <code>sendmail</code>, <code>send-mail</code>, <code>makemap</code>, <code>mailq</code>, and <code>newaliases</code>. See <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>, for more information on setgid programs.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Exim-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="exim-service"></a>Exim Service<br />
+<div class="outline-text-5" id="text-exim-service">
+<p>
+<a id="index-mail-transfer-agent-_0028MTA_0029"></a> <a id="index-MTA-_0028mail-transfer-agent_0029"></a> <a id="index-SMTP"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: exim-service-type </dt><dd><p>
+This is the type of the <a href="https://exim.org">Exim</a> mail transfer agent (MTA), whose value should be an <code>exim-configuration</code> object as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service exim-service-type
+         (exim-configuration
+           (config-file (local-file "./my-exim.conf"))))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+In order to use an <code>exim-service-type</code> service you must also have a <code>mail-aliases-service-type</code> service present in your <code>operating-system</code> (even if it has no aliases).
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: exim-configuration </dt><dd>Data type representing the configuration of exim.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>exim</code>)</dt><dd>Package object of the Exim server.</dd>
+
+<dt><code>config-file</code> (default: <code>#f</code>)</dt><dd>File-like object of the Exim configuration file to use. If its value is <code>#f</code> then use the default configuration file from the package provided in <code>package</code>. The resulting configuration file is loaded after setting the <code>exim_user</code> and <code>exim_group</code> configuration variables.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Getmail-service"></a>
+</p>
+</div>
+</li>
+<li><a id="getmail-service"></a>Getmail service<br />
+<div class="outline-text-5" id="text-getmail-service">
+<p>
+<a id="index-IMAP"></a> <a id="index-POP"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: getmail-service-type </dt><dd>This is the type of the <a href="http://pyropus.ca/software/getmail/">Getmail</a> mail retriever, whose value should be a <code>getmail-configuration</code>.</dd>
+</dl>
+
+<p>
+Available <code>getmail-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>getmail-configuration</code> parameter: <i>symbol</i> <b>name</b> </dt><dd><p>
+A symbol to identify the getmail service.
+</p>
+
+<p>
+Defaults to ‘="unset"='.
+</p></dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>package</i> <b>package</b> </dt><dd>The getmail package to use.</dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>string</i> <b>user</b> </dt><dd><p>
+The user to run getmail as.
+</p>
+
+<p>
+Defaults to ‘="getmail"='.
+</p></dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>string</i> <b>group</b> </dt><dd><p>
+The group to run getmail as.
+</p>
+
+<p>
+Defaults to ‘="getmail"='.
+</p></dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>string</i> <b>directory</b> </dt><dd><p>
+The getmail directory to use.
+</p>
+
+<p>
+Defaults to ‘="/var/lib/getmail/default"='.
+</p></dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>getmail-configuration-file</i> <b>rcfile</b> </dt><dd><p>
+The getmail configuration file to use.
+</p>
+
+<p>
+Available <code>getmail-configuration-file</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>getmail-configuration-file</code> parameter: <i>getmail-retriever-configuration</i> <b>retriever</b> </dt><dd><p>
+What mail account to retrieve mail from, and how to access that account.
+</p>
+
+<p>
+Available <code>getmail-retriever-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>type</b> </dt><dd><p>
+The type of mail retriever to use. Valid values include ‘=passwd=' and ‘=static='.
+</p>
+
+<p>
+Defaults to ‘="SimpleIMAPSSLRetriever"='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>server</b> </dt><dd><p>
+Username to login to the mail server with.
+</p>
+
+<p>
+Defaults to ‘=unset='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>username</b> </dt><dd><p>
+Username to login to the mail server with.
+</p>
+
+<p>
+Defaults to ‘=unset='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>non-negative-integer</i> <b>port</b> </dt><dd><p>
+Port number to connect to.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>password</b> </dt><dd><p>
+Override fields from passwd.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>list</i> <b>password-command</b> </dt><dd><p>
+Override fields from passwd.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>keyfile</b> </dt><dd><p>
+PEM-formatted key file to use for the TLS negotiation.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>certfile</b> </dt><dd><p>
+PEM-formatted certificate file to use for the TLS negotiation.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>string</i> <b>ca-certs</b> </dt><dd><p>
+CA certificates to use.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>getmail-retriever-configuration</code> parameter: <i>parameter-alist</i> <b>extra-parameters</b> </dt><dd><p>
+Extra retriever parameters.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl></dd>
+
+<dt><code>getmail-configuration-file</code> parameter: <i>getmail-destination-configuration</i> <b>destination</b> </dt><dd><p>
+What to do with retrieved messages.
+</p>
+
+<p>
+Available <code>getmail-destination-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>getmail-destination-configuration</code> parameter: <i>string</i> <b>type</b> </dt><dd><p>
+The type of mail destination. Valid values include ‘=Maildir=', ‘=Mboxrd=' and ‘=MDA<sub>external</sub>='.
+</p>
+
+<p>
+Defaults to ‘=unset='.
+</p></dd>
+
+<dt><code>getmail-destination-configuration</code> parameter: <i>string-or-filelike</i> <b>path</b> </dt><dd><p>
+The path option for the mail destination. The behaviour depends on the chosen type.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>getmail-destination-configuration</code> parameter: <i>parameter-alist</i> <b>extra-parameters</b> </dt><dd><p>
+Extra destination parameters
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl></dd>
+
+<dt><code>getmail-configuration-file</code> parameter: <i>getmail-options-configuration</i> <b>options</b> </dt><dd><p>
+Configure getmail.
+</p>
+
+<p>
+Available <code>getmail-options-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>getmail-options-configuration</code> parameter: <i>non-negative-integer</i> <b>verbose</b> </dt><dd><p>
+If set to ‘=0=', getmail will only print warnings and errors. A value of ‘=1=' means that messages will be printed about retrieving and deleting messages. If set to ‘=2=', getmail will print messages about each of its actions.
+</p>
+
+<p>
+Defaults to ‘=1='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>boolean</i> <b>read-all</b> </dt><dd><p>
+If true, getmail will retrieve all available messages. Otherwise it will only retrieve messages it hasn't seen previously.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>boolean</i> <b>delete</b> </dt><dd><p>
+If set to true, messages will be deleted from the server after retrieving and successfully delivering them. Otherwise, messages will be left on the server.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>non-negative-integer</i> <b>delete-after</b> </dt><dd><p>
+Getmail will delete messages this number of days after seeing them, if they have been delivered. This means messages will be left on the server this number of days after delivering them. A value of ‘=0=' disabled this feature.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>non-negative-integer</i> <b>delete-bigger-than</b> </dt><dd><p>
+Delete messages larger than this of bytes after retrieving them, even if the delete and delete-after options are disabled. A value of ‘=0=' disables this feature.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>non-negative-integer</i> <b>max-bytes-per-session</b> </dt><dd><p>
+Retrieve messages totalling up to this number of bytes before closing the session with the server. A value of ‘=0=' disables this feature.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>non-negative-integer</i> <b>max-message-size</b> </dt><dd><p>
+Don't retrieve messages larger than this number of bytes. A value of ‘=0=' disables this feature.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>boolean</i> <b>delivered-to</b> </dt><dd><p>
+If true, getmail will add a Delivered-To header to messages.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>boolean</i> <b>received</b> </dt><dd><p>
+If set, getmail adds a Received header to the messages.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>string</i> <b>message-log</b> </dt><dd><p>
+Getmail will record a log of its actions to the named file. A value of ‘=""=' disables this feature.
+</p>
+
+<p>
+Defaults to ‘=""='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>boolean</i> <b>message-log-syslog</b> </dt><dd><p>
+If true, getmail will record a log of its actions using the system logger.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>boolean</i> <b>message-log-verbose</b> </dt><dd><p>
+If true, getmail will log information about messages not retrieved and the reason for not retrieving them, as well as starting and ending information lines.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>getmail-options-configuration</code> parameter: <i>parameter-alist</i> <b>extra-parameters</b> </dt><dd><p>
+Extra options to include.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>list</i> <b>idle</b> </dt><dd><p>
+A list of mailboxes that getmail should wait on the server for new mail notifications. This depends on the server supporting the IDLE extension.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>getmail-configuration</code> parameter: <i>list</i> <b>environment-variables</b> </dt><dd><p>
+Environment variables to set for getmail.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl>
+
+<p>
+<a id="Mail-Aliases-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="mail-aliases-service"></a>Mail Aliases Service<br />
+<div class="outline-text-5" id="text-mail-aliases-service">
+<p>
+<a id="index-email-aliases"></a> <a id="index-aliases_002c-for-email-addresses"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: mail-aliases-service-type </dt><dd><p>
+This is the type of the service which provides <code>/etc/aliases</code>, specifying how to deliver mail to users on this system.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service mail-aliases-service-type
+         '(("postmaster" "bob")
+           ("bob" "bob@example.com" "bob@example2.com")))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+The configuration for a <code>mail-aliases-service-type</code> service is an association list denoting how to deliver mail that comes to this system. Each entry is of the form <code>(alias addresses ...)</code>, with <code>alias</code> specifying the local alias and <code>addresses</code> specifying where to deliver this user's mail.
+</p>
+
+<p>
+The aliases aren't required to exist as users on the local system. In the above example, there doesn't need to be a <code>postmaster</code> entry in the <code>operating-system</code>'s <code>user-accounts</code> in order to deliver the <code>postmaster</code> mail to <code>bob</code> (which subsequently would deliver mail to <code>bob@example.com</code> and <code>bob@example2.com</code>).
+</p>
+
+<p>
+<a id="GNU-Mailutils-IMAP4-Daemon"></a>
+</p>
+</div>
+</li>
+<li><a id="gnu-mailutils-imap4-daemon"></a>GNU Mailutils IMAP4 Daemon<br />
+<div class="outline-text-5" id="text-gnu-mailutils-imap4-daemon">
+<p>
+<a id="index-GNU-Mailutils-IMAP4-Daemon"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: imap4d-service-type </dt><dd><p>
+This is the type of the GNU Mailutils IMAP4 Daemon (see <a href="https://www.gnu.org/software/mailutils/manual/html_node/imap4d.html#imap4d">imap4d</a> in GNU Mailutils Manual), whose value should be an <code>imap4d-configuration</code> object as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service imap4d-service-type
+         (imap4d-configuration
+           (config-file (local-file "imap4d.conf"))))
+</pre>
+</div></dd>
+
+<dt>Data Type: imap4d-configuration </dt><dd>Data type representing the configuration of <code>imap4d</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>mailutils</code>)</dt><dd>The package that provides <code>imap4d</code>.</dd>
+
+<dt><code>config-file</code> (default: <code>%default-imap4d-config-file</code>)</dt><dd>File-like object of the configuration file to use, by default it will listen on TCP port 143 of <code>localhost</code>. See <a href="https://www.gnu.org/software/mailutils/manual/html_node/Conf_002dimap4d.html#Conf_002dimap4d">Conf-imap4d</a> in GNU Mailutils Manual, for details.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Radicale-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="radicale-service"></a>Radicale Service<br />
+<div class="outline-text-5" id="text-radicale-service">
+<p>
+<a id="index-CalDAV"></a> <a id="index-CardDAV"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: radicale-service-type </dt><dd>This is the type of the <a href="https://radicale.org">Radicale</a> CalDAV/CardDAV server whose value should be a <code>radicale-configuration</code>. The default configuration matches the <a href="https://radicale.org/v3.html#configuration">upstream documentation</a>.</dd>
+
+<dt>Data Type: radicale-configuration </dt><dd>Data type representing the configuration of <code>radicale</code>. Available <code>radicale-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>radicale</code>) (type: package)</dt><dd>Package that provides <code>radicale</code>.</dd>
+
+<dt><code>auth</code> (default: <code>'()</code>) (type: radicale-auth-configuration)</dt><dd>Configuration for auth-related variables.
+
+<dl class="org-dl">
+<dt>Data Type: radicale-auth-configuration </dt><dd>Data type representing the <code>auth</code> section of a <code>radicale</code> configuration file. Available <code>radicale-auth-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>type</code> (default: <code>'none</code>) (type: symbol)</dt><dd>The method to verify usernames and passwords. Options are <code>none</code>, <code>htpasswd</code>, <code>remote-user</code>, and <code>http-x-remote-user</code>. This value is tied to <code>htpasswd-filename</code> and <code>htpasswd-encryption</code>.</dd>
+
+<dt><code>htpasswd-filename</code> (default: <code>"/etc/radicale/users"</code>) (type: file-name)</dt><dd>Path to the htpasswd file. Use htpasswd or similar to generate this file.</dd>
+
+<dt><code>htpasswd-encryption</code> (default: <code>'md5</code>) (type: symbol)</dt><dd>Encryption method used in the htpasswd file. Options are <code>plain</code>, <code>bcrypt</code>, and <code>md5</code>.</dd>
+
+<dt><code>delay</code> (default: <code>1</code>) (type: non-negative-integer)</dt><dd>Average delay after failed login attempts in seconds.</dd>
+
+<dt><code>realm</code> (default: <code>"Radicale - Password Required"</code>) (type: string)</dt><dd>Message displayed in the client when a password is needed.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>encoding</code> (default: <code>'()</code>) (type: radicale-encoding-configuration)</dt><dd>Configuration for encoding-related variables.
+
+<dl class="org-dl">
+<dt>Data Type: radicale-encoding-configuration </dt><dd>Data type representing the <code>encoding</code> section of a <code>radicale</code> configuration file. Available <code>radicale-encoding-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>request</code> (default: <code>'utf-8</code>) (type: symbol)</dt><dd>Encoding for responding requests.</dd>
+
+<dt><code>stock</code> (default: <code>'utf-8</code>) (type: symbol)</dt><dd>Encoding for storing local collections.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>headers-file</code> (default: none) (type: file-like)</dt><dd>Custom HTTP headers.</dd>
+
+<dt><code>logging</code> (default: <code>'()</code>) (type: radicale-logging-configuration)</dt><dd>Configuration for logging-related variables.
+
+<dl class="org-dl">
+<dt>Data Type: radicale-logging-configuration </dt><dd>Data type representing the <code>logging</code> section of a <code>radicale</code> configuration file. Available <code>radicale-logging-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>level</code> (default: <code>'warning</code>) (type: symbol)</dt><dd>Set the logging level. One of <code>debug</code>, <code>info</code>, <code>warning</code>, <code>error</code>, or <code>critical</code>.</dd>
+
+<dt><code>mask-passwords?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Whether to include passwords in logs.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>rights</code> (default: <code>'()</code>) (type: radicale-rights-configuration)</dt><dd>Configuration for rights-related variables. This should be a <code>radicale-rights-configuration</code>.
+
+<dl class="org-dl">
+<dt>Data Type: radicale-rights-configuration </dt><dd>Data type representing the <code>rights</code> section of a <code>radicale</code> configuration file. Available <code>radicale-rights-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>type</code> (default: <code>'owner-only</code>) (type: symbol)</dt><dd>Backend used to check collection access rights. The recommended backend is <code>owner-only</code>. If access to calendars and address books outside the home directory of users is granted, clients won't detect these collections and will not show them to the user. Choosing any other method is only useful if you access calendars and address books directly via URL. Options are <code>authenticate</code>, <code>owner-only</code>, <code>owner-write</code>, and <code>from-file</code>.</dd>
+
+<dt><code>file</code> (default: <code>""</code>) (type: file-name)</dt><dd>File for the rights backend <code>from-file</code>.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>server</code> (default: <code>'()</code>) (type: radicale-server-configuration)</dt><dd>Configuration for server-related variables. Ignored if WSGI is used.
+
+<dl class="org-dl">
+<dt>Data Type: radicale-server-configuration </dt><dd>Data type representing the <code>server</code> section of a <code>radicale</code> configuration file. Available <code>radicale-server-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>hosts</code> (default: <code>(list "localhost:5232")</code>) (type: list-of-ip-addresses)</dt><dd>List of IP addresses that the server will bind to.</dd>
+
+<dt><code>max-connections</code> (default: <code>8</code>) (type: non-negative-integer)</dt><dd>Maximum number of parallel connections. Set to 0 to disable the limit.</dd>
+
+<dt><code>max-content-length</code> (default: <code>100000000</code>) (type: non-negative-integer)</dt><dd>Maximum size of the request body in bytes.</dd>
+
+<dt><code>timeout</code> (default: <code>30</code>) (type: non-negative-integer)</dt><dd>Socket timeout in seconds.</dd>
+
+<dt><code>ssl?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Whether to enable transport layer encryption.</dd>
+
+<dt><code>certificate</code> (default: <code>"/etc/ssl/radicale.cert.pem"</code>) (type: file-name)</dt><dd>Path of the SSL certificate.</dd>
+
+<dt><code>key</code> (default: <code>"/etc/ssl/radicale.key.pem"</code>) (type: file-name)</dt><dd>Path to the private key for SSL. Only effective if <code>ssl?</code> is <code>#t</code>.</dd>
+
+<dt><code>certificate-authority</code> (default: <code>""</code>) (type: file-name)</dt><dd>Path to CA certificate for validating client certificates. This can be used to secure TCP traffic between Radicale and a reverse proxy. If you want to authenticate users with client-side certificates, you also have to write an authentication plugin that extracts the username from the certificate.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>storage</code> (default: <code>'()</code>) (type: radicale-storage-configuration)</dt><dd>Configuration for storage-related variables.
+
+<dl class="org-dl">
+<dt>Data Type: radicale-storage-configuration </dt><dd>Data type representing the <code>storage</code> section of a <code>radicale</code> configuration file. Available <code>radicale-storage-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>type</code> (default: <code>'multifilesystem</code>) (type: symbol)</dt><dd>Backend used to store data. Options are <code>multifilesystem</code> and <code>multifilesystem-nolock</code>.</dd>
+
+<dt><code>filesystem-folder</code> (default: <code>"/var/lib/radicale/collections"</code>) (type: file-name)</dt><dd>Folder for storing local collections. Created if not present.</dd>
+
+<dt><code>max-sync-token-age</code> (default: <code>2592000</code>) (type: non-negative-integer)</dt><dd>Delete sync-tokens that are older than the specified time in seconds.</dd>
+
+<dt><code>hook</code> (default: <code>""</code>) (type: string)</dt><dd>Command run after changes to storage.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>web-interface?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Whether to use Radicale's built-in web interface.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Rspamd-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="rspamd-service"></a>Rspamd Service<br />
+<div class="outline-text-5" id="text-rspamd-service">
+<p>
+<a id="index-email-1"></a> <a id="index-spam"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: rspamd-service-type </dt><dd>This is the type of the <a href="https://rspamd.com/">Rspamd</a> filtering system whose value should be a <code>rspamd-configuration</code>.</dd>
+
+<dt>Data Type: rspamd-configuration </dt><dd>Available <code>rspamd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>rspamd</code>) (type: file-like)</dt><dd>The package that provides rspamd.</dd>
+
+<dt><code>config-file</code> (default: <code>%default-rspamd-config-file</code>) (type: file-like)</dt><dd>File-like object of the configuration file to use. By default all workers are enabled except fuzzy and they are bound to their usual ports, e.g localhost:11334, localhost:11333 and so on</dd>
+
+<dt><code>local.d-files</code> (default: <code>()</code>) (type: directory-tree)</dt><dd>Configuration files in local.d, provided as a list of two element lists where the first element is the filename and the second one is a file-like object. Settings in these files will be merged with the defaults.</dd>
+
+<dt><code>override.d-files</code> (default: <code>()</code>) (type: directory-tree)</dt><dd>Configuration files in override.d, provided as a list of two element lists where the first element is the filename and the second one is a file-like object. Settings in these files will override the defaults.</dd>
+
+<dt><code>user</code> (default: <code>%default-rspamd-account</code>) (type: user-account)</dt><dd>The user to run rspamd as.</dd>
+
+<dt><code>group</code> (default: <code>%default-rspamd-group</code>) (type: user-group)</dt><dd>The group to run rspamd as.</dd>
+
+<dt><code>debug?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Force debug output.</dd>
+
+<dt><code>insecure?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Ignore running workers as privileged users.</dd>
+
+<dt><code>skip-template?</code> (default: <code>#f</code>) (type: boolean)</dt><dd>Do not apply Jinja templates.</dd>
+
+<dt><code>shepherd-requirements</code> (default: <code>(user-processes loopback)</code>) (type: list-of-symbols)</dt><dd>This is a list of symbols naming Shepherd services that this service will depend on.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Messaging-Services.html">Messaging Services</a>, Previous: <a href="docs/guix--Database-Services.html">Database Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

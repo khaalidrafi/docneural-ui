@@ -1,0 +1,86 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-column-view-1">1. 7.5.2 Using column view ¶</a></li>
+<li><a href="#Turning-column-view-on-or-off-1">2. Turning column view on or off ¶</a></li>
+<li><a href="#Editing-values-1">3. Editing values ¶</a></li>
+<li><a href="#Modifying-column-view-on_002dthe_002dfly-1">4. Modifying column view on-the-fly ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Using-column-view"></a>
+Next: <a href="docs/org--Capturing-column-view.html">Capturing column view</a>, Previous: <a href="docs/org--Defining-columns.html">Defining columns</a>, Up: <a href="docs/org--Column-View.html">Column View</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Using-column-view-1" class="outline-2">
+<h2 id="Using-column-view-1"><span class="section-number-2">1.</span> 7.5.2 Using column view <a href="#Using-column-view-1">¶</a></h2>
+<div class="outline-text-2" id="text-Using-column-view-1">
+</div>
+</div>
+<div id="outline-container-Turning-column-view-on-or-off-1" class="outline-2">
+<h2 id="Turning-column-view-on-or-off-1"><span class="section-number-2">2.</span> Turning column view on or off <a href="#Turning-column-view-on-or-off-1">¶</a></h2>
+<div class="outline-text-2" id="text-Turning-column-view-on-or-off-1">
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002dc"></a>C-c C-x C-c (<code>org-columns</code>) </dt><dd>Turn on column view. If point is before the first headline in the file, column view is turned on for the entire file, using the ‘=#+COLUMNS=' definition. If point is somewhere inside the outline, this command searches the hierarchy, up from point, for a ‘=COLUMNS=' property that defines a format. When one is found, the column view table is established for the tree starting at the entry that contains the ‘=COLUMNS=' property. If no such property is found, the format is taken from the ‘=#+COLUMNS=' line or from the variable <code>org-columns-default-format</code>, and column view is established for the current entry and its subtree.</dd>
+
+<dt><a id="index-r"></a>r or g on a columns view line (<code>org-columns-redo</code>) </dt><dd>Recreate the column view, to include recent changes made in the buffer.</dd>
+
+<dt><a id="index-q-1"></a>C-c C-c or q on a columns view line (<code>org-columns-quit</code>) </dt><dd>Exit column view.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Editing-values-1" class="outline-2">
+<h2 id="Editing-values-1"><span class="section-number-2">3.</span> Editing values <a href="#Editing-values-1">¶</a></h2>
+<div class="outline-text-2" id="text-Editing-values-1">
+<dl class="org-dl">
+<dt>LEFT, RIGHT, UP, DOWN</dt><dd>Move through the column view from field to field.</dd>
+
+<dt><a id="index-1_002e_002e9_002c0"></a>1..9,0 </dt><dd>Directly select the Nth allowed value, 0 selects the 10th value.</dd>
+
+<dt>(no term)</dt><dd><a id="index-n"></a>n or S-RIGHT (<code>org-columns-next-allowed-value</code>) <br />
+p or S-LEFT (<code>org-columns-previous-allowed-value</code>) :: Switch to the next/previous allowed value of the field. For this, you have to have specified allowed values for a property.</dd>
+
+<dt><a id="index-e"></a>e (<code>org-columns-edit-value</code>) </dt><dd>Edit the property at point. For the special properties, this invokes the same interface that you normally use to change that property. For example, the tag completion or fast selection interface pops up when editing a ‘=TAGS=' property.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-11"></a>C-c C-c (<code>org-columns-toggle-or-columns-quit</code>) </dt><dd>When there is a checkbox at point, toggle it. Else exit column view.</dd>
+
+<dt><a id="index-v"></a>v (<code>org-columns-show-value</code>) </dt><dd>View the full value of this property. This is useful if the width of the column is smaller than that of the value.</dd>
+
+<dt><a id="index-a"></a>a (<code>org-columns-edit-allowed</code>) </dt><dd>Edit the list of allowed values for this property. If the list is found in the hierarchy, the modified values are stored there. If no list is found, the new value is stored in the first entry that is part of the current column view.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Modifying-column-view-on_002dthe_002dfly-1" class="outline-2">
+<h2 id="Modifying-column-view-on_002dthe_002dfly-1"><span class="section-number-2">4.</span> Modifying column view on-the-fly <a href="#Modifying-column-view-on_002dthe_002dfly-1">¶</a></h2>
+<div class="outline-text-2" id="text-Modifying-column-view-on_002dthe_002dfly-1">
+<ul class="org-ul">
+<li><a id="index-_003c"></a>&lt; (<code>org-columns-narrow</code>) <br />
+&gt; (<code>org-columns-widen</code>) :: Make the column narrower/wider by one character.</li>
+
+<li id="<a id="index-S_002dM_002dRIGHT"></a>S-M-RIGHT (<code>org-columns-new</code>) ">Insert a new column, to the left of the current column.</li>
+
+<li id="<a id="index-S_002dM_002dLEFT"></a>S-M-LEFT (<code>org-columns-delete</code>) ">Delete the current column.</li>
+
+<li id="<a id="index-M_002dLEFT-3"></a>M-LEFT (<code>org-columns-move-left</code>) ">Move the current column left.</li>
+
+<li id="<a id="index-M_002dRIGHT-3"></a>M-RIGHT (<code>org-columns-move-right</code>) ">Move the current column right.</li>
+
+<li id="<a id="index-M_002dUP-4"></a>M-UP (<code>org-columns-move-row-up</code>) ">Move the current row up.</li>
+
+<li id="<a id="index-M_002dDOWN-4"></a>M-DOWN (<code>org-columns-move-row-down</code>) ">Move the current row down.</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Capturing-column-view.html">Capturing column view</a>, Previous: <a href="docs/org--Defining-columns.html">Defining columns</a>, Up: <a href="docs/org--Column-View.html">Column View</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

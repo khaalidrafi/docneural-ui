@@ -1,0 +1,136 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Backup-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Fonts-Home-Services.html">Fonts Home Services</a>, Previous: <a href="docs/guix--Guix-Home-Services.html">Guix Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Backup-Services"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="backup-services"></a>13.3.10 Backup Services<br />
+<div class="outline-text-5" id="text-backup-services">
+<p>
+The <code>(gnu home services backup)</code> module offers services for backing up file system trees. For now, it provides the <code>home-restic-backup-service-type</code>.
+</p>
+
+<p>
+With <code>home-restic-backup-service-type</code>, you can periodically back up directories and files with <a href="https://restic.net/">Restic</a>, which supports end-to-end encryption and deduplication. Consider the following configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu home services backup) ;for 'restic-backup-job', 'home-restic-backup-service-type'
+             (gnu packages sync)        ;for 'rclone'
+             …)
+
+(home-environment
+
+  (packages (list rclone    ;for use by restic
+                  …))
+  (services
+    (list
+      …
+      (simple-service 'backup-jobs
+                      home-restic-backup-service-type
+                      (list (restic-backup-job
+                              (name "remote-ftp")
+                              (repository "rclone:remote-ftp:backup/restic")
+                              (password-file "/home/alice/.restic")
+                              ;; Every day at 23.
+                              (schedule "0 23 * * *")
+                              (files '("/home/alice/.restic"
+                                       "/home/alice/.config/rclone"
+                                       "/home/alice/Pictures"))))))))
+</pre>
+</div>
+
+<p>
+In general it is preferable to extend the <code>home-restic-backup-service-type</code>, as shown in the example above. This is because it takes care of wrapping everything with <code>for-home</code>, which enables the <code>home-restic-backup-service-type</code> and <code>restic-backup-service-type</code> to share the same codebase.
+</p>
+
+<p>
+For a custom configuration, wrap your <code>restic-backup-configuration</code> in <code>for-home</code>, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu services)             ;for 'for-home'
+             (gnu services backup)      ;for 'restic-backup-job' and 'restic-backup-configuration'
+             (gnu home services backup) ;for 'home-restic-backup-service-type'
+             (gnu packages sync)        ;for 'rclone'
+             …)
+
+(home-environment
+
+  (packages (list rclone    ;for use by restic
+                  …))
+  (services
+    (list
+      …
+      (service home-restic-backup-service-type
+               (for-home
+                (restic-backup-configuration
+                 (jobs (list …))))))))
+</pre>
+</div>
+
+<p>
+You can refer to see <a href="docs/guix--Miscellaneous-Services.html"><code>restic-backup-service-type</code></a> for details about <code>restic-backup-configuration</code> and <code>restic-backup-job</code>. The only difference is that the <code>home-restic-backup-service-type</code> will ignore the <code>user</code> and <code>group</code> field of <code>restic-backup-job</code>.
+</p>
+</div>
+</li>
+</ol>
+</div>

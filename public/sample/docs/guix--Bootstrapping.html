@@ -1,0 +1,104 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li><a href="#bootstrapping">1.1. 20 Bootstrapping</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Bootstrapping"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Porting.html">Porting to a New Platform</a>, Previous: <a href="docs/guix--Security-Updates.html">Security Updates</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Bootstrapping-1"></a>
+</p>
+</div>
+<div id="outline-container-bootstrapping" class="outline-3">
+<h3 id="bootstrapping"><span class="section-number-3">1.1.</span> 20 Bootstrapping</h3>
+<div class="outline-text-3" id="text-bootstrapping">
+<p>
+<a id="index-bootstrapping"></a>
+Bootstrapping in our context refers to how the distribution gets built “from nothing”. Remember that the build environment of a derivation contains nothing but its declared inputs (see <a href="docs/guix--Introduction.html">Introduction</a>). So there's an obvious chicken-and-egg problem: how does the first package get built? How does the first compiler get compiled?
+</p>
+
+<p>
+It is tempting to think of this question as one that only die-hard hackers may care about. However, while the answer to that question is technical in nature, its implications are wide-ranging. How the distribution is bootstrapped defines the extent to which we, as individuals and as a collective of users and hackers, can trust the software we run. It is a central concern from the standpoint of <i>security</i> and from a <i>user freedom</i> viewpoint.
+</p>
+
+<p>
+<a id="index-bootstrap-binaries"></a>
+The GNU system is primarily made of C code, with libc at its core. The GNU build system itself assumes the availability of a Bourne shell and command-line tools provided by GNU Coreutils, Awk, Findutils, ‘sed', and ‘grep'. Furthermore, build programs&#x2014;programs that run <code>./configure</code>, <code>make</code>, etc.&#x2014;are written in Guile Scheme (see <a href="docs/guix--Derivations.html">Derivations</a>). Consequently, to be able to build anything at all, from scratch, Guix relies on pre-built binaries of Guile, GCC, Binutils, libc, and the other packages mentioned above&#x2014;the <i>bootstrap binaries</i>.
+</p>
+
+<p>
+These bootstrap binaries are “taken for granted”, though we can also re-create them if needed (see <a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html">Preparing to Use the Bootstrap Binaries</a>).
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Full_002dSource-Bootstrap.html">The Full-Source Bootstrap</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html">Preparing to Use the Bootstrap Binaries</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html#Building-the-Build-Tools">Building the Build Tools</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html#Building-the-Bootstrap-Binaries">Building the Bootstrap Binaries</a></li>
+<li><a href="docs/guix--Preparing-to-Use-the-Bootstrap-Binaries.html#Reducing-the-Set-of-Bootstrap-Binaries">Reducing the Set of Bootstrap Binaries</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Porting.html">Porting to a New Platform</a>, Previous: <a href="docs/guix--Security-Updates.html">Security Updates</a>, Up: <a href="docs/guix--index.html">GNU Guix</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

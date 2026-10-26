@@ -1,0 +1,126 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Images-1">1. 12.7.1 Images ¶</a>
+<ul>
+<li><a href="#section">1.1. (124)</a></li>
+<li><a href="#section-1">1.2. (125)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Images"></a>
+Up: <a href="docs/org--Images-and-link-previews.html">Images and link previews</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Images-1" class="outline-2">
+<h2 id="Images-1"><span class="section-number-2">1.</span> 12.7.1 Images <a href="#Images-1">¶</a></h2>
+<div class="outline-text-2" id="text-Images-1">
+<p>
+An image is a link to an image file that does not have a description part, for example
+</p>
+
+<pre class="example" id="org6843b1a">
+./img/cat.jpg
+</pre>
+
+<p>
+If you wish to define a caption for the image (see <a href="docs/org--Captions.html">Captions</a>) and maybe a label for internal cross-references (see <a href="docs/org--Internal-Links.html">Internal Links</a>), make sure that the link is on a line by itself and precede it with ‘=CAPTION=' and ‘=NAME=' keywords as follows:
+</p>
+
+<pre class="example" id="org1a15edc">
+#+CAPTION: This is the caption for the next figure link (or table)
+#+NAME:   fig:SED-HR4049
+[[./img/a.jpg]]
+</pre>
+
+<p>
+When link previews are displayed as images, the image size and alignment can be further customized.
+</p>
+
+<p>
+By default, Org mode displays inline images according to their actual width, but no wider than <code>fill-column</code> characters.
+</p>
+
+<p>
+You can customize the displayed image width using <code>org-image-actual-width</code> variable (globally) or ‘=ORG-IMAGE-ACTUAL-WIDTH=' property (subtree-level). Their value can be the following:
+</p>
+
+<ul class="org-ul">
+<li>(default) Non-<code>nil</code>, use the actual width of images when inlining them. If the actual width is too wide, limit it according to <code>org-image-max-width</code>.</li>
+
+<li>When set to a number, use ImageMagick (when available) to set the image's width to this value.</li>
+
+<li><p>
+When set to a number in a list, try to get the width from any ‘=#+ATTR.*=' keyword if it matches a width specification like:
+</p>
+
+<pre class="example" id="org64174dc">
+#+ATTR_HTML: :width 300px
+</pre>
+
+<p>
+and fall back on that number if none is found.
+</p></li>
+
+<li>When set to <code>nil</code>, try to get the width from an ‘=#+ATTR.*=' keyword and fall back on the original width or <code>org-image-max-width</code> if none is found.</li>
+</ul>
+
+<p>
+<code>org-image-max-width</code> limits the maximum displayed image width, but only when the image width is not set explicitly. Possible maximum width can be set to:
+</p>
+
+<ul class="org-ul">
+<li>(default) <code>fill-column</code>, limit width to <code>fill-column</code> number of characters.</li>
+<li><code>window</code>, limit width to current window width.</li>
+<li>integer number, limit width to that specified number of pixels.</li>
+<li><code>nil</code>, do not limit the width.</li>
+</ul>
+
+<p>
+Org mode can left-align, center or right-align the display of inline images. This setting is controlled (globally) by <code>org-image-align</code>. Only standalone images are affected, corresponding to links with no surrounding text in their paragraph except for whitespace. Its value can be the following:
+</p>
+
+<ul class="org-ul">
+<li>(default) The symbol <code>left</code>, which inserts the image where the link appears in the buffer.</li>
+<li>The symbol <code>center</code>, which will preview links centered in the Emacs window.</li>
+<li>The symbol <code>right</code>, which will preview links right-aligned in the Emacs window.</li>
+</ul>
+
+<p>
+Inline image alignment can be specified for each link using the ‘=#+ATTR.*=' keyword if it matches an alignment specification like:
+</p>
+
+<pre class="example" id="orgf05e497">
+#+ATTR_HTML: :align center
+</pre>
+
+<p>
+Org will use the alignment specification from any ‘=#+ATTR.*=' keyword, such as ‘=#+ATTR<sub>HTML</sub>=' or ‘=#+ATTR<sub>LATEX</sub>=', but ‘=#+ATTR<sub>ORG</sub>=' (if present) will override the others. For instance, this link
+</p>
+
+<pre class="example" id="org0ba52e1">
+#+ATTR_HTML: :align right
+#+ATTR_ORG: :align center
+[[/path/to/image/file.png]]
+</pre>
+
+<p>
+will be displayed centered in Emacs but exported right-aligned to HTML.
+</p>
+
+<p>
+When ‘=#+ATTR<sub>ORG</sub>=' is not set, inline image alignment is also read from the ‘=:center=' attribute supported by some export backends (like HTML, LaTeX and Beamer.)
+</p>
+
+<hr />
+</div>
+</div>

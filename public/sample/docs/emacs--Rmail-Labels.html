@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Labels">1. 35.8 Labels ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Attributes.html">Rmail Attributes</a>   Previous: <a href="docs/emacs--Rmail-Output.html">Copying Messages Out to Files</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Labels"></a>
+</p>
+
+<hr />
+<div id="outline-container-Labels" class="outline-2">
+<h2 id="Labels"><span class="section-number-2">1.</span> 35.8 Labels <a href="#Labels">¶</a></h2>
+<div class="outline-text-2" id="text-Labels">
+<p>
+Each message can have various <i>labels</i> assigned to it as a means of classification. Each label has a name; different names are different labels. Any given label is either present or absent on a particular message. A few label names have standard meanings and are given to messages automatically by Rmail when appropriate; these special labels are called <i>attributes</i>. (See <a href="docs/emacs--Rmail-Attributes.html">Rmail Attributes</a>.) All other labels are assigned only by users.
+</p>
+
+<dl class="org-dl">
+<dt>a <code>label</code> RET</dt><dd>Assign the label <code>label</code> to the current message (<code>rmail-add-label</code>).</dd>
+
+<dt>k <code>label</code> RET</dt><dd>Remove the label <code>label</code> from the current message (<code>rmail-kill-label</code>).</dd>
+
+<dt>C-M-n <code>labels</code> RET</dt><dd>Move to the next message that has one of the labels <code>labels</code> (<code>rmail-next-labeled-message</code>).</dd>
+
+<dt>C-M-p <code>labels</code> RET</dt><dd>Move to the previous message that has one of the labels <code>labels</code> (<code>rmail-previous-labeled-message</code>).</dd>
+
+<dt>(no term)</dt><dd>l <code>labels</code> RET<br />
+C-M-l <code>labels</code> RET :: Make a summary of all messages containing any of the labels <code>labels</code> (<code>rmail-summary-by-labels</code>).</dd>
+</dl>
+
+<p>
+The a (<code>rmail-add-label</code>) and k (<code>rmail-kill-label</code>) commands allow you to assign or remove any label on the current message. If the <code>label</code> argument is empty, it means to assign or remove the label most recently assigned or removed.
+</p>
+
+<p>
+Once you have given messages labels to classify them as you wish, there are three ways to use the labels: in moving, in summaries, and in sorting.
+</p>
+
+<p>
+C-M-n <code>labels</code> RET (<code>rmail-next-labeled-message</code>) moves to the next message that has one of the labels <code>labels</code>. The argument <code>labels</code> specifies one or more label names, separated by commas. C-M-p (<code>rmail-previous-labeled-message</code>) is similar, but moves backwards to previous messages. A numeric argument to either command serves as a repeat count.
+</p>
+
+<p>
+The command C-M-l <code>labels</code> RET (<code>rmail-summary-by-labels</code>) displays a summary containing only the messages that have at least one of a specified set of labels. The argument <code>labels</code> is one or more label names, separated by commas. See <a href="docs/emacs--Rmail-Summary.html">Summaries</a>, for information on summaries.
+</p>
+
+<p>
+If the <code>labels</code> argument to C-M-n, C-M-p or C-M-l is empty, it means to use the last set of labels specified for any of these commands.
+</p>
+
+<p>
+See <a href="docs/emacs--Rmail-Sorting.html">Sorting the Rmail File</a>, for information on sorting messages with labels.
+</p>
+
+<hr />
+</div>
+</div>

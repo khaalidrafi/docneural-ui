@@ -1,0 +1,187 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Template-expansion-1">1. 10.1.3.2 Template expansion ¶</a>
+<ul>
+<li><a href="#section">1.1. (88)</a></li>
+<li><a href="#section-1">1.2. (89)</a></li>
+<li><a href="#section-2">1.3. (90)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Template-expansion"></a>
+Next: <a href="docs/org--Templates-in-contexts.html">Templates in contexts</a>, Previous: <a href="docs/org--Template-elements.html">Template elements</a>, Up: <a href="docs/org--Capture-templates.html">Capture templates</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Template-expansion-1" class="outline-2">
+<h2 id="Template-expansion-1"><span class="section-number-2">1.</span> 10.1.3.2 Template expansion <a href="#Template-expansion-1">¶</a></h2>
+<div class="outline-text-2" id="text-Template-expansion-1">
+<p>
+In the template itself, special “%-escapes” allow dynamic insertion of content. The templates are expanded in the order given here:
+</p>
+
+<dl class="org-dl">
+<dt>‘=%[FILE]='</dt><dd>Insert the contents of the file given by <code>FILE</code>.</dd>
+
+<dt>‘=%(EXP)='</dt><dd>Evaluate Elisp expression <code>(EXP)</code> and replace it with the result. The <code>(EXP)</code> form must return a string. Only placeholders pre-existing within the template, or introduced with ‘=%[file]=', are expanded this way. Since this happens after expanding non-interactive “%-escapes”, those can be used to fill the expression. Examples: ‘=%(org-id-new)=', ‘=%(eval default-directory)='</dd>
+
+<dt>‘=%&lt;FORMAT&gt;='</dt><dd>The result of format-time-string on the <code>FORMAT</code> specification.</dd>
+
+<dt>‘=%t='</dt><dd>Timestamp, date only.</dd>
+
+<dt>‘=%T='</dt><dd>Timestamp, with date and time.</dd>
+
+<dt>‘=%u=', ‘=%U='</dt><dd>Like ‘=%t=', ‘=%T=' above, but inactive timestamps.</dd>
+
+<dt>‘=%i='</dt><dd>Initial content, the region when capture is called while the region is active. If there is text before ‘=%i=' on the same line, such as indentation, and ‘=%i=' is not inside a ‘=%(exp)=' form, that prefix is added before every line in the inserted text.</dd>
+
+<dt>‘=%a='</dt><dd>Annotation, normally the link created with <code>org-store-link</code>.</dd>
+
+<dt>‘=%A='</dt><dd>Like ‘=%a=', but prompt for the description part.</dd>
+
+<dt>‘=%l='</dt><dd>Like ‘=%a=', but only insert the literal link.</dd>
+
+<dt>‘=%L='</dt><dd>Like ‘=%l=', but without brackets (the link content itself).</dd>
+
+<dt>‘=%c='</dt><dd>Current kill ring head.</dd>
+
+<dt>‘=%x='</dt><dd>Content of the X clipboard.</dd>
+
+<dt>‘=%k='</dt><dd>Title of the currently clocked task.</dd>
+
+<dt>‘=%K='</dt><dd>Link to the currently clocked task.</dd>
+
+<dt>‘=%n='</dt><dd>Username (taken from <code>user-full-name</code>).</dd>
+
+<dt>‘=%f='</dt><dd>File visited by current buffer when org-capture was called.</dd>
+
+<dt>‘=%F='</dt><dd>Full path of the file or directory visited by current buffer.</dd>
+
+<dt>‘=%:keyword='</dt><dd>Specific information for certain link types, see below.</dd>
+
+<dt>‘=%<sup>g</sup>='</dt><dd>Prompt for tags, with completion on tags in target file.</dd>
+
+<dt>‘=%<sup>G</sup>='</dt><dd>Prompt for tags, with completion all tags in all agenda files.</dd>
+
+<dt>‘=%<sup>t</sup>='</dt><dd>Like ‘=%t=', but prompt for date. Similarly, ‘=%<sup>T</sup>=', ‘=%<sup>u</sup>=', ‘=%<sup>U</sup>='. You may define a prompt like ‘=%<sup>Birthday</sup>t='.</dd>
+
+<dt>‘=%<sup>C</sup>='</dt><dd>Interactive selection of which kill or clip to use.</dd>
+
+<dt>‘=%<sup>L</sup>='</dt><dd>Like ‘=%<sup>C</sup>=', but insert as link.</dd>
+
+<dt>‘=%<sup>PROP</sup>p='</dt><dd>Prompt the user for a value for property <code>PROP</code>. You may specify a default value with ‘=%<sup>PROP|default</sup>='.</dd>
+
+<dt>‘=%<sup>PROMPT</sup>X=', X is one of g,G,t,T,u,U,C,L</dt><dd>Prompt the user as in ‘=%<sup>X</sup>=', but use the custom prompt string. You may specify a default value and completions with ‘=%<sup>PROMPT|default|completion1|completion2|completion3&#x2026;</sup>X='.</dd>
+
+<dt>‘=%<sup>PROMPT</sup>='</dt><dd>Prompt the user for a string and replace this sequence with it. You may specify a default value and a completion table with ‘=%<sup>prompt|default|completion2|completion3&#x2026;</sup>='. The arrow keys access a prompt-specific history.</dd>
+
+<dt>‘=%\N='</dt><dd>Insert the text entered at the <code>N=th ‘=%^{PROMPT}</code>' (but not ‘=%<sup>PROMPT</sup>X='), where <code>N</code> is a number, starting from 1.</dd>
+
+<dt>‘=%\*N='</dt><dd>Same as ‘=%\N=', but include all the prompts.</dd>
+
+<dt>‘=%?='</dt><dd>After completing the template, position point here.</dd>
+</dl>
+
+<p>
+For specific link types, the following keywords are defined:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Link type</th>
+<th scope="col" class="org-left">Available keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">bbdb</td>
+<td class="org-left">‘=%:name=', ‘=%:company='</td>
+</tr>
+
+<tr>
+<td class="org-left">irc</td>
+<td class="org-left">‘=%:server=', ‘=%:port=', ‘=%:nick='</td>
+</tr>
+
+<tr>
+<td class="org-left">mh, rmail</td>
+<td class="org-left">‘=%:type=', ‘=%:subject=', ‘=%:message-id='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=%:from=', ‘=%:fromname=', ‘=%:fromaddress='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=%:to=', ‘=%:toname=', ‘=%:toaddress='</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=%:date=' (message date header field)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=%:date-timestamp=' (date as active timestamp)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=%:date-timestamp-inactive=' (date as inactive timestamp)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">‘=%:fromto=' (either “to NAME” or “from NAME”)</td>
+</tr>
+
+<tr>
+<td class="org-left">gnus</td>
+<td class="org-left">‘=%:group=', for messages also all email fields</td>
+</tr>
+
+<tr>
+<td class="org-left">w3, w3m</td>
+<td class="org-left">‘=%:url='</td>
+</tr>
+
+<tr>
+<td class="org-left">info</td>
+<td class="org-left">‘=%:file=', ‘=%:node='</td>
+</tr>
+
+<tr>
+<td class="org-left">calendar</td>
+<td class="org-left">‘=%:date='</td>
+</tr>
+
+<tr>
+<td class="org-left">org-protocol</td>
+<td class="org-left">‘=%:link=', ‘=%:description=', ‘=%:annotation='</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>

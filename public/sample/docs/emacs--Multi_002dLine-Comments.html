@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Multiple-Lines-of-Comments">1. 28.5.2 Multiple Lines of Comments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Options-for-Comments.html">Options Controlling Comments</a>   Previous: <a href="docs/emacs--Comment-Commands.html">Comment Commands</a>   Up: <a href="docs/emacs--Comments.html">Manipulating Comments</a>
+</p>
+
+<p>
+<a id="Multi_002dLine-Comments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Multiple-Lines-of-Comments" class="outline-2">
+<h2 id="Multiple-Lines-of-Comments"><span class="section-number-2">1.</span> 28.5.2 Multiple Lines of Comments <a href="#Multiple-Lines-of-Comments">¶</a></h2>
+<div class="outline-text-2" id="text-Multiple-Lines-of-Comments">
+<p>
+If you are typing a comment and wish to continue it to another line, type M-j or C-M-j (<code>default-indent-new-line</code>). This breaks the current line, and inserts the necessary comment delimiters and indentation to continue the comment.
+</p>
+
+<p>
+For languages with closing comment delimiters (e.g., ‘=*/=' in C), the exact behavior of M-j depends on the value of the variable <code>comment-multi-line</code>. If the value is <code>nil</code>, the command closes the comment on the old line and starts a new comment on the new line. Otherwise, it opens a new line within the current comment delimiters.
+</p>
+
+<p>
+When Auto Fill mode is on, going past the fill column while typing a comment also continues the comment, in the same way as an explicit invocation of M-j.
+</p>
+
+<p>
+To turn existing lines into comment lines, use M-; with the region active, or use M-x comment-region as described in the preceding section.
+</p>
+
+<p>
+You can configure C Mode such that when you type a ‘=/=' at the start of a line in a multi-line block comment, this closes the comment. Enable the <code>comment-close-slash</code> clean-up for this. See <a href="../ccmode_html/Clean_002dups.html#Clean_002dups">Clean-ups</a> in The CC Mode Manual.
+</p>
+</div>
+</div>

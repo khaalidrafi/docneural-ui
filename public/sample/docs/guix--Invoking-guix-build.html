@@ -1,0 +1,125 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-build">1.0.1. 9.1 Invoking <code>guix build</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-build"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-edit.html">Invoking <code>guix edit</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-build-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-build" class="outline-4">
+<h4 id="invoking-guix-build"><span class="section-number-4">1.0.1.</span> 9.1 Invoking <code>guix build</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-build">
+<p>
+<a id="index-package-building"></a> <a id="index-guix-build"></a>
+The <code>guix build</code> command builds packages or derivations and their dependencies, and prints the resulting store paths. Note that it does not modify the user's profile&#x2014;this is the job of the <code>guix package</code> command (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). Thus, it is mainly useful for distribution developers.
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org0a42c79">
+guix build options package-or-derivation…
+</pre>
+
+<p>
+As an example, the following command builds the latest versions of Emacs and of Guile, displays their build logs, and finally displays the resulting directories:
+</p>
+
+<pre class="example" id="org044a966">
+guix build emacs guile
+</pre>
+
+<p>
+Similarly, the following command builds all the available packages:
+</p>
+
+<pre class="example" id="orgbd581a2">
+guix build --quiet --keep-going \
+  $(guix package -A | awk '{ print $1 "@" $2 }')
+</pre>
+
+<p>
+<code>package-or-derivation</code> may be either the name of a package found in the software distribution such as <code>coreutils</code> or <code>coreutils@8.20</code>, or a derivation such as <code>/gnu/store/…-coreutils-8.19.drv</code>. In the former case, a package with the corresponding name (and optionally version) is searched for among the GNU distribution modules (see <a href="docs/guix--Package-Modules.html">Package Modules</a>).
+</p>
+
+<p>
+Alternatively, the <code>--expression</code> option may be used to specify a Scheme expression that evaluates to a package; this is useful when disambiguating among several same-named packages or package variants is needed.
+</p>
+
+<p>
+There may be zero or more <code>options</code>. The available options are described in the subsections below.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Common-Build-Options.html">Common Build Options</a></li>
+<li><a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a></li>
+<li><a href="docs/guix--Additional-Build-Options.html">Additional Build Options</a></li>
+<li><a href="docs/guix--Debugging-Build-Failures.html">Debugging Build Failures</a></li>
+</ul>
+</div>
+</div>
+</div>

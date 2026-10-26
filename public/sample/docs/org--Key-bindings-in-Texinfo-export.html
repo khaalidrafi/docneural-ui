@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Key-bindings-in-Texinfo-export-1">1. 13.14.13 Key bindings in Texinfo export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Key-bindings-in-Texinfo-export"></a>
+Next: <a href="docs/org--Special-blocks-in-Texinfo-export.html">Special blocks in Texinfo export</a>, Previous: <a href="docs/org--Quotations-in-Texinfo-export.html">Quotations in Texinfo export</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Key-bindings-in-Texinfo-export-1" class="outline-2">
+<h2 id="Key-bindings-in-Texinfo-export-1"><span class="section-number-2">1.</span> 13.14.13 Key bindings in Texinfo export <a href="#Key-bindings-in-Texinfo-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Key-bindings-in-Texinfo-export-1">
+<p>
+Org does not provide any markup for key bindings that corresponds to Texinfo's <code>@kbd</code> and <code>@key</code> commands. One way to deal with this is to fall back to code syntax. ‘=~C-x SPC~=', for example, is transcoded to <code>@code{C-x SPC}</code>.
+</p>
+
+<p>
+A better approach is to define and use an Org macro named <code>kbd</code>. To make that easier the function <code>org-texinfo-kbd-macro</code> is provided, which is intended to be used like this:
+</p>
+
+<pre class="example" id="org56e371e">
+#+macro: kbd (eval (org-texinfo-kbd-macro $1))
+
+Type {{{kbd(C-c SPC)}}}.
+</pre>
+
+<p>
+which becomes
+</p>
+
+<pre class="example" id="org5ce6955">
+Type @kbd{C-c @key{SPC}}.
+</pre>
+</div>
+</div>

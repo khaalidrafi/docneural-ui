@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Abbrevs-Suggestions-1">1. 31.4 Abbrevs Suggestions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Editing-Abbrevs.html">Examining and Editing Abbrevs</a>   Previous: <a href="docs/emacs--Expanding-Abbrevs.html">Controlling Abbrev Expansion</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Abbrevs-Suggestions"></a>
+</p>
+
+<hr />
+<div id="outline-container-Abbrevs-Suggestions-1" class="outline-2">
+<h2 id="Abbrevs-Suggestions-1"><span class="section-number-2">1.</span> 31.4 Abbrevs Suggestions <a href="#Abbrevs-Suggestions-1">¶</a></h2>
+<div class="outline-text-2" id="text-Abbrevs-Suggestions-1">
+<p>
+You can get abbrev suggestions when you manually type text for which there is currently an active defined abbrev. For example, if there is an abbrev ‘=foo=' with the expansion ‘=find outer otter=', and you manually type ‘=find outer otter=', Emacs can notice this and show a hint in the echo area when you have stopped typing.
+</p>
+
+<p>
+To enable the abbrev suggestion feature, customize the option <code>abbrev-suggest</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+The variable <code>abbrev-suggest-hint-threshold</code> controls when to suggest an abbrev to the user. This variable defines the minimum savings (in terms of the number of characters the user will not have to type) required for Emacs to suggest using an abbrev. For example, if the user types ‘=foo bar=' (seven characters) and there is an abbrev ‘=fubar=' defined (five characters), the user will not get any suggestion unless the threshold is set to the number 2 or lower. With the default value 3, the user would not get any suggestion in this example, because the savings in using the abbrev are below the threshold. If you always want to get abbrev suggestions, set this variable's value to zero.
+</p>
+
+<p>
+The command <code>abbrev-suggest-show-report</code> displays a buffer with all the abbrev suggestions shown during the current editing session. This can be useful if you get several abbrev suggestions and don't remember them all.
+</p>
+</div>
+</div>

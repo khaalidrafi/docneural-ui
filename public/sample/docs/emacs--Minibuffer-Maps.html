@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Minibuffer-Keymaps">1. 51.3.4 Minibuffer Keymaps ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rebinding.html">Changing Key Bindings Interactively</a>   Previous: <a href="docs/emacs--Local-Keymaps.html">Local Keymaps</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Minibuffer-Maps"></a>
+</p>
+
+<hr />
+<div id="outline-container-Minibuffer-Keymaps" class="outline-2">
+<h2 id="Minibuffer-Keymaps"><span class="section-number-2">1.</span> 51.3.4 Minibuffer Keymaps <a href="#Minibuffer-Keymaps">¶</a></h2>
+<div class="outline-text-2" id="text-Minibuffer-Keymaps">
+<p>
+The minibuffer has its own set of local keymaps; they contain various completion and exit commands.
+</p>
+
+<ul class="org-ul">
+<li><code>minibuffer-local-map</code> is used for ordinary input (no completion).</li>
+<li><code>minibuffer-local-ns-map</code> is similar, except that SPC exits just like RET.</li>
+<li><code>minibuffer-local-completion-map</code> is for permissive completion.</li>
+<li><code>minibuffer-local-must-match-map</code> is for strict completion and for cautious completion.</li>
+<li><code>minibuffer-local-filename-completion-map</code> is like the two previous ones, but specifically for file name completion. It does not bind SPC.</li>
+</ul>
+
+<p>
+By default, TAB, SPC and ? do completion in <code>minibuffer-local-completion-map</code>. If you commonly complete over collections that have elements with space or question mark characters in them, it may be convenient to disable completion on those keys by putting this in your init file:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(keymap-set minibuffer-local-completion-map "SPC" 'self-insert-command)
+(keymap-set minibuffer-local-completion-map "?" 'self-insert-command)
+</pre>
+</div>
+</div>
+</div>

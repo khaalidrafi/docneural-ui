@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Continuation-Lines-1">1. 9.8 Continuation Lines ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Position-Info.html">Cursor Position Information</a>   Previous: <a href="docs/emacs--Blank-Lines.html">Blank Lines</a>   Up: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>
+</p>
+
+<p>
+<a id="Continuation-Lines"></a>
+</p>
+
+<hr />
+<div id="outline-container-Continuation-Lines-1" class="outline-2">
+<h2 id="Continuation-Lines-1"><span class="section-number-2">1.</span> 9.8 Continuation Lines <a href="#Continuation-Lines-1">¶</a></h2>
+<div class="outline-text-2" id="text-Continuation-Lines-1">
+<p>
+Sometimes, a line of text in the buffer&#x2014;a <i>logical line</i>&#x2014;is too long to fit in the window, and Emacs displays it as two or more <i>screen lines</i>, or <i>visual lines</i>. This is called <i>line wrapping</i> or <i>continuation</i>, and the long logical line is called a <i>continued line</i>. On a graphical display, Emacs indicates line wrapping with small bent arrows in the left and right window fringes. On a text terminal, Emacs indicates line wrapping by displaying a ‘=\=' character at the right margin.
+</p>
+
+<p>
+Most commands that act on lines act on logical lines, not screen lines. For instance, C-k kills a logical line. As described earlier, C-n (<code>next-line</code>) and C-p (<code>previous-line</code>) are special exceptions: they move point down and up, respectively, by one screen line (see <a href="docs/emacs--Moving-Point.html">Changing the Location of Point</a>).
+</p>
+
+<p>
+Emacs can optionally <i>truncate</i> long logical lines instead of continuing them. This means that every logical line occupies a single screen line; if it is longer than the width of the window, the rest of the line is not displayed. On a graphical display, a truncated line is indicated by a small straight arrow in the right fringe; on a text terminal, it is indicated by a ‘=$=' character in the right margin. See <a href="docs/emacs--Line-Truncation.html">Line Truncation</a>.
+</p>
+
+<p>
+By default, continued lines are wrapped at the right window edge. Since the wrapping may occur in the middle of a word, continued lines can be difficult to read. The usual solution is to break your lines before they get too long, by inserting newlines. If you prefer, you can make Emacs insert a newline automatically when a line gets too long, by using Auto Fill mode. See <a href="docs/emacs--Filling.html">Filling Text</a>.
+</p>
+
+<p>
+Normally, the first character of each continuation line is positioned at the beginning of the screen line where it is displayed. The minor mode <code>visual-wrap-prefix-mode</code> and its global counterpart (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>) <code>global-visual-wrap-prefix-mode</code> arranges for continuation lines to be indented on display using a fill prefix (see <a href="docs/emacs--Fill-Prefix.html">The Fill Prefix</a>) automatically computed from each line's surrounding context. These prefixes are display-only feature, and do not change the buffer text in any way.
+</p>
+
+<p>
+Sometimes, you may need to edit files containing many long logical lines, and it may not be practical to break them all up by adding newlines. In that case, you can use Visual Line mode, which enables <i>word wrapping</i>: instead of wrapping long lines exactly at the right window edge, Emacs wraps them at the word boundaries (i.e., space or tab characters) nearest to the right window edge. Visual Line mode also redefines editing commands such as C-a, C-n, and C-k to operate on screen lines rather than logical lines. See <a href="docs/emacs--Visual-Line-Mode.html">Visual Line Mode</a>.
+</p>
+
+<hr />
+</div>
+</div>

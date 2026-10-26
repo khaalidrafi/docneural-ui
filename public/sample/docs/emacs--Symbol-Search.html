@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Symbol-Search-1">1. 17.4 Symbol Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Regexp-Search.html">Regular Expression Search</a>   Previous: <a href="docs/emacs--Word-Search.html">Word Search</a>   Up: <a href="docs/emacs--Search.html">Searching and Replacement</a>
+</p>
+
+<p>
+<a id="Symbol-Search"></a>
+</p>
+
+<hr />
+<div id="outline-container-Symbol-Search-1" class="outline-2">
+<h2 id="Symbol-Search-1"><span class="section-number-2">1.</span> 17.4 Symbol Search <a href="#Symbol-Search-1">¶</a></h2>
+<div class="outline-text-2" id="text-Symbol-Search-1">
+<p>
+A <i>symbol search</i> is much like an ordinary search, except that the boundaries of the search must match the boundaries of a symbol. The meaning of <i>symbol</i> in this context depends on the major mode, and usually refers to a source code token, such as a Lisp symbol in Emacs Lisp mode. For instance, if you perform an incremental symbol search for the Lisp symbol <code>forward-word</code>, it would not match <code>isearch-forward-word</code>. This feature is thus mainly useful for searching source code.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-isearch_002dtoggle_002dsymbol"></a>M-s _ </dt><dd>If incremental search is active, toggle symbol search mode (<code>isearch-toggle-symbol</code>); otherwise, begin an incremental forward symbol search (<code>isearch-forward-symbol</code>).</dd>
+
+<dt>M-s .</dt><dd>Start a symbol incremental search forward with the symbol found near point added to the search string initially.</dd>
+
+<dt>M-s _ RET <code>symbol</code> RET</dt><dd>Search forward for <code>symbol</code>, nonincrementally.</dd>
+
+<dt>M-s _ C-r RET <code>symbol</code> RET</dt><dd>Search backward for <code>symbol</code>, nonincrementally.</dd>
+</dl>
+
+<p>
+To begin a forward incremental symbol search, type M-s _ (or M-s . if the symbol to search is near point). If incremental search is not already active, M-s _ runs the command <code>isearch-forward-symbol</code> and M-s . runs the command <code>isearch-forward-symbol-at-point</code>. With a numeric prefix argument of <code>n</code>, M-s . will search for the <code>n=the next occurrence of the symbol at point; negative values of =n</code> search backwards. If incremental search is already active, M-s _ switches to a symbol search, preserving the direction of the search and the current search string; you can disable symbol search by typing M-s _ again. In incremental symbol search, while you are typing the search string, only the beginning of the search string is required to match the beginning of a symbol, and ‘=Pending=' appears in the search prompt until you use a search repeating key like C-s.
+</p>
+
+<p>
+To begin a nonincremental symbol search, type M-s _ RET for a forward search, or M-s _ C-r RET or a backward search. In nonincremental symbol searches, the beginning and end of the search string are required to match the beginning and end of a symbol, respectively.
+</p>
+
+<p>
+The symbol search commands don't perform character folding, and toggling lax whitespace matching (see <a href="docs/emacs--Lax-Search.html">lax space matching</a>) has no effect on them.
+</p>
+
+<hr />
+</div>
+</div>

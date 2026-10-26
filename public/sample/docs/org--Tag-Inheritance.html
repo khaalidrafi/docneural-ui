@@ -1,0 +1,75 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tag-Inheritance-1">0.0.1. 6.1 Tag Inheritance ¶</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orged42f80">1. Meeting with the French group&#xa0;&#xa0;&#xa0;<span class="tag"><span class="work">work</span></span></a>
+<ul>
+<li><a href="#org004febb">1.1. Summary by Frank&#xa0;&#xa0;&#xa0;<span class="tag"><span class="boss">boss</span>&#xa0;<span class="notes">notes</span></span></a>
+<ul>
+<li><a href="#org47c4e31">1.1.1. <span class="todo TODO">TODO</span> Prepare slides for him&#xa0;&#xa0;&#xa0;<span class="tag"><span class="action">action</span></span></a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Tag-Inheritance"></a>
+Next: <a href="docs/org--Setting-Tags.html">Setting Tags</a>, Up: <a href="docs/org--Tags.html">Tags</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Tag-Inheritance-1" class="outline-4">
+<h4 id="Tag-Inheritance-1"><span class="section-number-4">0.0.1.</span> 6.1 Tag Inheritance <a href="#Tag-Inheritance-1">¶</a></h4>
+<div class="outline-text-4" id="text-Tag-Inheritance-1">
+<p>
+<i>Tags</i> make use of the hierarchical structure of outline trees. If a heading has a certain tag, all subheadings inherit the tag as well. For example, in the list
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-orged42f80" class="outline-2">
+<h2 id="orged42f80"><span class="section-number-2">1.</span> Meeting with the French group&#xa0;&#xa0;&#xa0;<span class="tag"><span class="work">work</span></span></h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org004febb" class="outline-3">
+<h3 id="org004febb"><span class="section-number-3">1.1.</span> Summary by Frank&#xa0;&#xa0;&#xa0;<span class="tag"><span class="boss">boss</span>&#xa0;<span class="notes">notes</span></span></h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org47c4e31" class="outline-4">
+<h4 id="org47c4e31"><span class="section-number-4">1.1.1.</span> <span class="todo TODO">TODO</span> Prepare slides for him&#xa0;&#xa0;&#xa0;<span class="tag"><span class="action">action</span></span></h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+the final heading has the tags ‘=work=', ‘=boss=', ‘=notes=', and ‘=action=' even though the final heading is not explicitly marked with those tags. You can also set tags that all entries in a file should inherit just as if these tags were defined in a hypothetical level zero that surrounds the entire file. Use a line like this
+</p>
+
+<pre class="example" id="orge21c2aa">
+#+FILETAGS: :Peter:Boss:Secret:
+</pre>
+
+<p>
+To limit tag inheritance to specific tags, or to turn it off entirely, use the variables <code>org-use-tag-inheritance</code> and <code>org-tags-exclude-from-inheritance</code>.
+</p>
+
+<p>
+Tag inheritance is relevant when the agenda search tries to match a tag, either in the <code>tags</code> or <code>tags-todo</code> agenda types. In other agenda types, <code>org-use-tag-inheritance</code> has no effect. Still, you may want to have your tags correctly set in the agenda, so that tag filtering works fine, with inherited tags. Set <code>org-agenda-use-tag-inheritance</code> to control this: the default value includes all agenda types, but setting this to <code>nil</code> can really speed up agenda generation.
+</p>
+
+<hr />
+</div>
+</div>
+</div>
+</div>

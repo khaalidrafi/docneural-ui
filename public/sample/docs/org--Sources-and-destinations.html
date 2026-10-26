@@ -1,0 +1,42 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Sources-and-destinations-for-files">1. 14.1.2 Sources and destinations for files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Sources-and-destinations"></a>
+Next: <a href="docs/org--Selecting-files.html">Selecting files</a>, Previous: <a href="docs/org--Project-alist.html">The variable <code>org-publish-project-alist</code></a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Sources-and-destinations-for-files" class="outline-2">
+<h2 id="Sources-and-destinations-for-files"><span class="section-number-2">1.</span> 14.1.2 Sources and destinations for files <a href="#Sources-and-destinations-for-files">¶</a></h2>
+<div class="outline-text-2" id="text-Sources-and-destinations-for-files">
+<p>
+Most properties are optional, but some should always be set. In particular, Org needs to know where to look for source files, and where to put published files.
+</p>
+
+<dl class="org-dl">
+<dt><code>:base-directory</code></dt><dd>Directory containing publishing source files.</dd>
+
+<dt><code>:publishing-directory</code></dt><dd>Directory where output files are published. You can directly publish to a web server using a file name syntax appropriate for the Emacs tramp package. Or you can publish to a local directory and use external tools to upload your website (see <a href="docs/org--Uploading-Files.html">Uploading Files</a>).</dd>
+
+<dt><code>:preparation-function</code></dt><dd>Function or list of functions to be called before starting the publishing process, for example, to run ‘=make=' for updating files to be published. Each preparation function is called with a single argument, the project property list.</dd>
+
+<dt><code>:completion-function</code></dt><dd>Function or list of functions called after finishing the publishing process, for example, to change permissions of the resulting files. Each completion function is called with a single argument, the project property list.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Selecting-files.html">Selecting files</a>, Previous: <a href="docs/org--Project-alist.html">The variable <code>org-publish-project-alist</code></a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

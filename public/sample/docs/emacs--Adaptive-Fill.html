@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Adaptive-Filling">1. 27.6.4 Adaptive Filling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Fill-Prefix.html">The Fill Prefix</a>   Up: <a href="docs/emacs--Filling.html">Filling Text</a>
+</p>
+
+<p>
+<a id="Adaptive-Fill"></a>
+</p>
+
+<hr />
+<div id="outline-container-Adaptive-Filling" class="outline-2">
+<h2 id="Adaptive-Filling"><span class="section-number-2">1.</span> 27.6.4 Adaptive Filling <a href="#Adaptive-Filling">¶</a></h2>
+<div class="outline-text-2" id="text-Adaptive-Filling">
+<p>
+The fill commands can deduce the proper fill prefix for a paragraph automatically in certain cases: either whitespace or certain punctuation characters at the beginning of a line are propagated to all lines of the paragraph.
+</p>
+
+<p>
+If the paragraph has two or more lines, the fill prefix is taken from the paragraph's second line, but only if it appears on the first line as well.
+</p>
+
+<p>
+If a paragraph has just one line, fill commands <i>may</i> take a prefix from that line. The decision is complicated because there are three reasonable things to do in such a case:
+</p>
+
+<ul class="org-ul">
+<li>Use the first line's prefix on all the lines of the paragraph.</li>
+<li>Indent subsequent lines with whitespace, so that they line up under the text that follows the prefix on the first line, but don't actually copy the prefix from the first line.</li>
+<li>Don't do anything special with the second and following lines.</li>
+</ul>
+
+<p>
+All three of these styles of formatting are commonly used. So the fill commands try to determine what you would like, based on the prefix that appears and on the major mode. Here is how.
+</p>
+
+<p>
+If the prefix found on the first line matches <code>adaptive-fill-first-line-regexp</code>, or if it appears to be a comment-starting sequence (this depends on the major mode), then the prefix found is used for filling the paragraph, provided it would not act as a paragraph starter on subsequent lines.
+</p>
+
+<p>
+Otherwise, the prefix found is converted to an equivalent number of spaces, and those spaces are used as the fill prefix for the rest of the lines, provided they would not act as a paragraph starter on subsequent lines.
+</p>
+
+<p>
+In Text mode, and other modes where only blank lines and page delimiters separate paragraphs, the prefix chosen by adaptive filling never acts as a paragraph starter, so it can always be used for filling.
+</p>
+
+<p>
+The variable <code>adaptive-fill-regexp</code> determines what kinds of line beginnings can serve as a fill prefix: any characters at the start of the line that match this regular expression are used. If you set the variable <code>adaptive-fill-mode</code> to <code>nil</code>, the fill prefix is never chosen automatically.
+</p>
+
+<p>
+You can specify more complex ways of choosing a fill prefix automatically by setting the variable <code>adaptive-fill-function</code> to a function. This function is called with point after the left margin of a line, and it should return the appropriate fill prefix based on that line. If it returns <code>nil</code>, <code>adaptive-fill-regexp</code> gets a chance to find a prefix.
+</p>
+
+<hr />
+</div>
+</div>

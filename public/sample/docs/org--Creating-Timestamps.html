@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-Timestamps-1">1. 8.2 Creating Timestamps ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Creating-Timestamps"></a>
+Next: <a href="docs/org--Deadlines-and-Scheduling.html">Deadlines and Scheduling</a>, Previous: <a href="docs/org--Timestamps.html">Timestamps</a>, Up: <a href="docs/org--Dates-and-Times.html">Dates and Times</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Creating-Timestamps-1" class="outline-2">
+<h2 id="Creating-Timestamps-1"><span class="section-number-2">1.</span> 8.2 Creating Timestamps <a href="#Creating-Timestamps-1">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-Timestamps-1">
+<p>
+For Org mode to recognize timestamps, they need to be in the specific format. All commands listed below produce timestamps in the correct format.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-_002e"></a>C-c . (<code>org-timestamp</code>) </dt><dd><p>
+Prompt for a date and insert a corresponding timestamp. When point is at an existing timestamp in the buffer, the command is used to modify this timestamp instead of inserting a new one. When this command is used twice in succession, a time range is inserted.
+</p>
+
+<p>
+When called with a prefix argument, use the alternative format which contains date and time. The default time can be rounded to multiples of 5 minutes. See the option <code>org-time-stamp-rounding-minutes</code>.
+</p>
+
+<p>
+With two prefix arguments, insert an active timestamp with the current time without prompting.
+</p></dd>
+
+<dt><a id="index-C_002dc-_0021"></a>C-c ! (<code>org-timestamp-inactive</code>) </dt><dd>Like C-c ., but insert an inactive timestamp that does not cause an agenda entry.</dd>
+
+<dt><a id="index-C_002dc-C_002dc-13"></a>C-c C-c </dt><dd>Normalize timestamp, insert or fix day name if missing or wrong.</dd>
+
+<dt><a id="index-C_002dc-_003c"></a>C-c &lt; (<code>org-date-from-calendar</code>) </dt><dd>Insert a timestamp corresponding to point date in the calendar.</dd>
+
+<dt><a id="index-C_002dc-_003e"></a>C-c &gt; (<code>org-goto-calendar</code>) </dt><dd>Access the Emacs calendar for the current date. If there is a timestamp in the current line, go to the corresponding date instead.</dd>
+
+<dt><a id="index-C_002dc-C_002do-1"></a>C-c C-o (<code>org-open-at-point</code>) </dt><dd>Access the agenda for the date given by the timestamp or -range at point (see <a href="docs/org--Weekly_002fdaily-agenda.html">Weekly/daily agenda</a>).</dd>
+
+<dt><a id="index-S_002dLEFT-7"></a>S-LEFT (<code>org-timestamp-down-day</code>), S-RIGHT (<code>org-timestamp-up-day</code>) </dt><dd>Change date at point by one day. These key bindings conflict with shift-selection and related modes (see <a href="docs/org--Conflicts.html">Packages that conflict with Org mode</a>).</dd>
+
+<dt><a id="index-S_002dUP-4"></a>S-UP (<code>org-timestamp-up</code>), S-DOWN (<code>org-timestamp-down</code>) </dt><dd>On the beginning or enclosing bracket of a timestamp, change its type. Within a timestamp, change the item under point. Point can be on a year, month, day, hour or minute. When the timestamp contains a time range like ‘=15:30-16:30=', modifying the first time also shifts the second, shifting the time block with constant length. To change the length, modify the second time. Note that if point is in a headline and not at a timestamp, these same keys modify the priority of an item (see <a href="docs/org--Priorities.html">Priorities</a>). The key bindings also conflict with shift-selection and related modes (see <a href="docs/org--Conflicts.html">Packages that conflict with Org mode</a>).</dd>
+
+<dt><a id="index-C_002dc-C_002dy"></a>C-c C-y (<code>org-evaluate-time-range</code>) </dt><dd>Evaluate a time range by computing the difference between start and end. With a prefix argument, insert result after the time range (in a table: into the following column).</dd>
+
+<dt>(no term)</dt><dd><a href="docs/org--The-date_002ftime-prompt.html">The date/time prompt</a></dd>
+<dt>(no term)</dt><dd><a href="docs/org--Custom-time-format.html">Custom time format</a></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Deadlines-and-Scheduling.html">Deadlines and Scheduling</a>, Previous: <a href="docs/org--Timestamps.html">Timestamps</a>, Up: <a href="docs/org--Dates-and-Times.html">Dates and Times</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

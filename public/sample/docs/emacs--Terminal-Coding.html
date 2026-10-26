@@ -1,0 +1,66 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Coding-Systems-for-Terminal-I_002fO">1. 24.13 Coding Systems for Terminal I/O ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fontsets.html">Fontsets</a>   Previous: <a href="docs/emacs--X-Coding.html">Coding Systems for X Keyboard Input</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Terminal-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Coding-Systems-for-Terminal-I_002fO" class="outline-2">
+<h2 id="Coding-Systems-for-Terminal-I_002fO"><span class="section-number-2">1.</span> 24.13 Coding Systems for Terminal I/O <a href="#Coding-Systems-for-Terminal-I_002fO">¶</a></h2>
+<div class="outline-text-2" id="text-Coding-Systems-for-Terminal-I_002fO">
+<dl class="org-dl">
+<dt>C-x RET t <code>coding</code> RET</dt><dd>Use coding system <code>coding</code> for terminal output (<code>set-terminal-coding-system</code>).</dd>
+
+<dt>C-x RET k <code>coding</code> RET</dt><dd>Use coding system <code>coding</code> for keyboard input (<code>set-keyboard-coding-system</code>).</dd>
+</dl>
+
+<p>
+The command C-x RET t (<code>set-terminal-coding-system</code>) specifies the coding system for terminal output. If you specify a character code for terminal output, all characters output to the terminal are translated into that coding system.
+</p>
+
+<p>
+This feature is useful for certain character-only terminals built to support specific languages or character sets&#x2014;for example, European terminals that support one of the ISO Latin character sets. You need to specify the terminal coding system when using multibyte text, so that Emacs knows which characters the terminal can actually handle.
+</p>
+
+<p>
+By default, output to the terminal is not translated at all, unless Emacs can deduce the proper coding system from your terminal type or your locale specification (see <a href="docs/emacs--Language-Environments.html">Language Environments</a>).
+</p>
+
+<p>
+The command C-x RET k (<code>set-keyboard-coding-system</code>), or the variable <code>keyboard-coding-system</code>, specifies the coding system for keyboard input. Character-code translation of keyboard input is useful for terminals with keys that send non-ASCII graphic characters&#x2014;for example, some terminals designed for ISO Latin-1 or subsets of it.
+</p>
+
+<p>
+By default, keyboard input is translated based on your system locale setting. If your terminal does not really support the encoding implied by your locale (for example, if you find it inserts a non-ASCII character if you type M-i), you will need to set <code>keyboard-coding-system</code> to <code>nil</code> to turn off encoding. You can do this by putting
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(set-keyboard-coding-system nil)
+</pre>
+</div>
+
+<p>
+in your init file.
+</p>
+
+<p>
+Setting <code>keyboard-coding-system</code> has no effect on MS-Windows, except on old Windows 9X systems, in which case the encoding must match the current codepage of the MS-Windows console, which can be changed by calling <code>w32-set-console-codepage</code>.
+</p>
+
+<p>
+There is a similarity between using a coding system translation for keyboard input, and using an input method: both define sequences of keyboard input that translate into single characters. However, input methods are designed to be convenient for interactive use by humans, and the sequences that are translated are typically sequences of ASCII printing characters. Coding systems typically translate sequences of non-graphic characters.
+</p>
+
+<hr />
+</div>
+</div>

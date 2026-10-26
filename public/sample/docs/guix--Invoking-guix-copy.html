@@ -1,0 +1,133 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-copy">1.0.1. 9.13 Invoking <code>guix copy</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-copy"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-container.html">Invoking <code>guix container</code></a>, Previous: <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-copy-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-copy" class="outline-4">
+<h4 id="invoking-guix-copy"><span class="section-number-4">1.0.1.</span> 9.13 Invoking <code>guix copy</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-copy">
+<p>
+<a id="index-guix-copy"></a> <a id="index-copy_002c-of-store-items_002c-over-SSH"></a> <a id="index-SSH_002c-copy-of-store-items"></a> <a id="index-sharing-store-items-across-machines"></a> <a id="index-transferring-store-items-across-machines"></a>
+The <code>guix copy</code> command copies items from the store of one machine to that of another machine over a secure shell (SSH) connection. For example, the following command copies the <code>coreutils</code> package, the user's profile, and all their dependencies over to <code>host</code>, logged in as <code>user</code>:
+</p>
+
+<pre class="example" id="org28f7638">
+guix copy --to=user@host \
+          coreutils $(readlink -f ~/.guix-profile)
+</pre>
+
+<p>
+If some of the items to be copied are already present on <code>host</code>, they are not actually sent.
+</p>
+
+<p>
+The command below retrieves <code>libreoffice</code> and <code>gimp</code> from <code>host</code>, assuming they are available there:
+</p>
+
+<pre class="example" id="orgb738aca">
+guix copy --from=host libreoffice gimp
+</pre>
+
+<p>
+The SSH connection is established using the Guile-SSH client, which is compatible with OpenSSH: it honors <code>~/.ssh/known_hosts</code> and <code>~/.ssh/config</code>, and uses the SSH agent for authentication.
+</p>
+
+<p>
+The key used to sign items that are sent must be accepted by the remote machine. Likewise, the key used by the remote machine to sign items you are retrieving must be in <code>/etc/guix/acl</code> so it is accepted by your own daemon. See <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>, for more information about store item authentication.
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org2c30433">
+guix copy [--to=spec|--from=spec] items…
+</pre>
+
+<p>
+You must always specify one of the following options:
+</p>
+
+<ul class="org-ul">
+<li><code>--to===spec</code><br />
+<code>--from===spec</code> :: Specify the host to send to or receive from. <code>spec</code> must be an SSH spec such as <code>example.org</code>, <code>charlie@example.org</code>, or <code>charlie@example.org:2222</code>.</li>
+</ul>
+
+<p>
+The <code>items</code> can be either package names, such as <code>gimp</code>, or store items, such as <code>/gnu/store/…-idutils-4.6</code>.
+</p>
+
+<p>
+When specifying the name of a package to send, it is first built if needed, unless <code>--dry-run</code> was specified. Common build options are supported (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>).
+</p>
+
+<hr />
+</div>
+</div>
+</div>

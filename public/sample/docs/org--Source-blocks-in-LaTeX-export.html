@@ -1,0 +1,67 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Source-blocks-in-LaTeX-export-1">1. 13.10.8 Source blocks in LaTeX export ¶</a>
+<ul>
+<li><a href="#section">1.1. (144)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Source-blocks-in-LaTeX-export"></a>
+Next: <a href="docs/org--Example-blocks-in-LaTeX-export.html">Example blocks in LaTeX export</a>, Previous: <a href="docs/org--Plain-lists-in-LaTeX-export.html">Plain lists in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Source-blocks-in-LaTeX-export-1" class="outline-2">
+<h2 id="Source-blocks-in-LaTeX-export-1"><span class="section-number-2">1.</span> 13.10.8 Source blocks in LaTeX export <a href="#Source-blocks-in-LaTeX-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Source-blocks-in-LaTeX-export-1">
+<p>
+LaTeX export backend provides multiple ways to render src blocks in LaTeX, according to the value of <code>org-latex-src-block-backend</code>. The default value ‘=verbatim=' renders the src code verbatim, without any extra styling. Alternative values allow more colorful styling, but require additional LaTeX (‘=listings=', ‘=minted='), system (‘=minted='), or Emacs (‘=engraved=') packages. See the <code>org-latex-src-block-backend</code> docstring for more details.
+</p>
+
+<p>
+The LaTeX export backend can make source code blocks into floating objects through the attributes ‘=:float=' and ‘=:options='. For ‘=:float=':
+</p>
+
+<dl class="org-dl">
+<dt>‘=t='</dt><dd>Makes a source block float; by default floats any source block with a caption.</dd>
+
+<dt>‘=multicolumn='</dt><dd>Spans the source block across multiple columns of a page.</dd>
+
+<dt>‘=nil='</dt><dd>Avoids a ‘=:float=' even if using a caption; useful for source code blocks that may not fit on a page.</dd>
+</dl>
+
+<pre class="example" id="org200cd5c">
+#+ATTR_LATEX: :float nil
+#+BEGIN_SRC emacs-lisp
+  Lisp code that may not fit in a single page.
+#+END_SRC
+</pre>
+
+<p>
+The LaTeX export backend passes string values in ‘=:options=' to LaTeX packages for customization of that specific source block. In the example below, the ‘=:options=' are set for Engraved or Minted. Minted is a source code highlighting LaTeX package with many configurable options. Both Minted and Engraved are built on <a href="https://www.ctan.org/pkg/fvextra">fvextra</a>, and so support many of the same options.
+</p>
+
+<pre class="example" id="org0f5e02f">
+#+ATTR_LATEX: :options mathescape
+#+BEGIN_SRC emacs-lisp
+  (defun Fib (n) ; $n_i = n_{i-2} + n_{i-1}$
+    (if (&lt; n 2) n (+ (Fib (- n 1)) (Fib (- n 2)))))
+#+END_SRC
+</pre>
+
+<p>
+To apply similar configuration options for all source blocks in a file, use the <code>org-latex-listings-options</code>, <code>org-latex-engraved-options</code>, and <code>org-latex-minted-options</code> variables.
+</p>
+
+<hr />
+</div>
+</div>

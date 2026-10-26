@@ -1,0 +1,227 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#CSS-support-1">1. 13.9.13 CSS support ¶</a>
+<ul>
+<li><a href="#section">1.1. (140)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="CSS-support"></a>
+Next: <a href="docs/org--JavaScript-support.html">JavaScript supported display of web pages</a>, Previous: <a href="docs/org--Text-areas-in-HTML-export.html">Text areas in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-CSS-support-1" class="outline-2">
+<h2 id="CSS-support-1"><span class="section-number-2">1.</span> 13.9.13 CSS support <a href="#CSS-support-1">¶</a></h2>
+<div class="outline-text-2" id="text-CSS-support-1">
+<p>
+You can modify the CSS style definitions for the exported file. The HTML exporter assigns the following special CSS classes to appropriate parts of the document&#x2014;your style specifications may change these, in addition to any of the standard classes like for headlines, tables, etc.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>p.author</code></td>
+<td class="org-left">author information, including email</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>p.date</code></td>
+<td class="org-left">publishing date</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>p.creator</code></td>
+<td class="org-left">creator info, about org mode version</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.title</code></td>
+<td class="org-left">document title</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.subtitle</code></td>
+<td class="org-left">document subtitle</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.todo</code></td>
+<td class="org-left">TODO keywords, all not-done states</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.done</code></td>
+<td class="org-left">the DONE keywords, all states that count as done</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.WAITING</code></td>
+<td class="org-left">each TODO keyword also uses a class named after itself</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.timestamp</code></td>
+<td class="org-left">timestamp</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.timestamp-kwd</code></td>
+<td class="org-left">keyword associated with a timestamp, like ‘=SCHEDULED='</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.timestamp-wrapper</code></td>
+<td class="org-left">span around keyword plus timestamp</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.tag</code></td>
+<td class="org-left">tag in a headline</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>._HOME</code></td>
+<td class="org-left">each tag uses itself as a class, “@” replaced by “_”</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.target</code></td>
+<td class="org-left">target for links</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.linenr</code></td>
+<td class="org-left">the line number in a code example</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.code-highlighted</code></td>
+<td class="org-left">for highlighting referenced code lines</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>div.outline-N</code></td>
+<td class="org-left">div for outline level N (headline plus text)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>div.outline-text-N</code></td>
+<td class="org-left">extra div for text at outline level N</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.section-number-N</code></td>
+<td class="org-left">section number in headlines, different for each level</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.figure-number</code></td>
+<td class="org-left">label like “Figure 1:”</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.table-number</code></td>
+<td class="org-left">label like “Table 1:”</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.listing-number</code></td>
+<td class="org-left">label like “Listing 1:”</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>div.figure</code></td>
+<td class="org-left">how to format an in-lined image</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>pre.src</code></td>
+<td class="org-left">formatted source code</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>pre.example</code></td>
+<td class="org-left">normal example</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>p.verse</code></td>
+<td class="org-left">verse paragraph</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>div.footnotes</code></td>
+<td class="org-left">footnote section headline</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>p.footnote</code></td>
+<td class="org-left">footnote definition paragraph, containing a footnote</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.footref</code></td>
+<td class="org-left">a footnote reference number (always a &lt;sup&gt;)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.footnum</code></td>
+<td class="org-left">footnote number in footnote definition (always &lt;sup&gt;)</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>.org-svg</code></td>
+<td class="org-left">default class for a linked ‘=.svg=' image</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+The HTML export backend includes a compact default style in each exported HTML file. To override the default style with another style, use these keywords in the Org file. They will replace the global defaults the HTML exporter uses.
+</p>
+
+<pre class="example" id="org421dd28">
+#+HTML_HEAD: &lt;link rel="stylesheet" type="text/css" href="style1.css" /&gt;
+#+HTML_HEAD_EXTRA: &lt;link rel="alternate stylesheet" type="text/css" href="style2.css" /&gt;
+</pre>
+
+<p>
+To just turn off the default style, customize <code>org-html-head-include-default-style</code> variable, or use this option line in the Org file.
+</p>
+
+<pre class="example" id="orgb185277">
+#+OPTIONS: html-style:nil
+</pre>
+
+<p>
+For longer style definitions, either use several ‘=HTML<sub>HEAD</sub>=' and ‘=HTML<sub>HEAD</sub><sub>EXTRA</sub>=' keywords, or use <code>&lt;style&gt; ... &lt;/style&gt;</code> blocks around them. Both of these approaches can avoid referring to an external file.
+</p>
+
+<p>
+In order to add styles to a subtree, use the ‘=HTML<sub>CONTAINER</sub><sub>CLASS</sub>=' property to assign a class to the tree. In order to specify CSS styles for a particular headline, you can use the ID specified in a ‘=CUSTOM<sub>ID</sub>=' property. You can also assign a specific class to a headline with the ‘=HTML<sub>HEADLINE</sub><sub>CLASS</sub>=' property.
+</p>
+
+<p>
+Never change the <code>org-html-style-default</code> constant. Instead, use other simpler ways of customizing as described above.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Scrolling-1">1. 16.1 Scrolling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Recentering.html">Recentering</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Scrolling"></a>
+</p>
+
+<hr />
+<div id="outline-container-Scrolling-1" class="outline-2">
+<h2 id="Scrolling-1"><span class="section-number-2">1.</span> 16.1 Scrolling <a href="#Scrolling-1">¶</a></h2>
+<div class="outline-text-2" id="text-Scrolling-1">
+<p>
+If a window is too small to display all the text in its buffer, it displays only a portion of it. <i>Scrolling</i> commands change which portion of the buffer is displayed.
+</p>
+
+<p>
+Scrolling forward or up advances the portion of the buffer displayed in the window; equivalently, it moves the buffer text upwards relative to the window. Scrolling backward or down displays an earlier portion of the buffer, and moves the text downwards relative to the window.
+</p>
+
+<p>
+In Emacs, scrolling up or down refers to the direction that the text moves in the window, <i>not</i> the direction that the window moves relative to the text. This terminology was adopted by Emacs before the modern meaning of “scrolling up” and “scrolling down” became widespread. Hence, the strange result that PageDown scrolls up in the Emacs sense.
+</p>
+
+<p>
+The portion of a buffer displayed in a window always contains point. If you move point past the bottom or top of the window, scrolling occurs automatically to bring it back onscreen (see <a href="docs/emacs--Auto-Scrolling.html">Automatic Scrolling</a>). You can also scroll explicitly with these commands:
+</p>
+
+<ul class="org-ul">
+<li>C-v<br />
+PageDown<br />
+next :: Scroll forward by nearly a full window (<code>scroll-up-command</code>).</li>
+
+<li>M-v<br />
+PageUp<br />
+prior :: Scroll backward (<code>scroll-down-command</code>).</li>
+</ul>
+
+<p>
+C-v (<code>scroll-up-command</code>) scrolls forward by nearly the whole window height. The effect is to take the two lines at the bottom of the window and put them at the top, followed by lines that were not previously visible. If point was in the text that scrolled off the top, it ends up on the window's new topmost line. The PageDown (or next) key is equivalent to C-v.
+</p>
+
+<p>
+M-v (<code>scroll-down-command</code>) scrolls backward in a similar way. The PageUp (or prior) key is equivalent to M-v.
+</p>
+
+<p>
+The number of lines of overlap left by these scroll commands is controlled by the variable <code>next-screen-context-lines</code>, whose default value is 2. You can supply the commands with a numeric prefix argument, <code>n</code>, to scroll by <code>n</code> lines; Emacs attempts to leave point unchanged, so that the text and point move up or down together. C-v with a negative argument is like M-v and vice versa.
+</p>
+
+<p>
+By default, these commands signal an error (by beeping or flashing the screen) if no more scrolling is possible, because the window has reached the beginning or end of the buffer. If you change the variable <code>scroll-error-top-bottom</code> to <code>t</code>, these commands move point to the farthest possible position. If point is already there, the commands signal an error.
+</p>
+
+<p>
+Some users like scroll commands to keep point at the same screen position, so that scrolling back to the same screen conveniently returns point to its original position. You can enable this behavior via the variable <code>scroll-preserve-screen-position</code>. If the value is <code>t</code>, Emacs adjusts point to keep the cursor at the same screen position whenever a scroll command moves it off-window, rather than moving it to the topmost or bottommost line. With any other non-<code>nil</code> value, Emacs adjusts point this way even if the scroll command leaves point in the window. This variable affects all the scroll commands documented in this section, as well as scrolling with the mouse wheel (see <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>); in general, it affects any command that has a non-<code>nil</code> <code>scroll-command</code> property. See <a href="../elisp_html/Property-Lists.html#Property-Lists">Property Lists</a> in The Emacs Lisp Reference Manual. The same property also causes Emacs not to exit incremental search when one of these commands is invoked and <code>isearch-allow-scroll</code> is non-<code>nil</code> (see <a href="docs/emacs--Not-Exiting-Isearch.html">Not Exiting Incremental Search</a>).
+</p>
+
+<p>
+Sometimes, particularly when you hold down keys such as C-v and M-v, activating keyboard auto-repeat, Emacs fails to keep up with the rapid rate of scrolling requested; the display doesn't update and Emacs can become unresponsive to input for quite a long time. You can counter this sluggishness by setting the variable <code>fast-but-imprecise-scrolling</code> to a non-<code>nil</code> value. This instructs the scrolling commands not to fontify (see <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>) any unfontified text they scroll over, instead to assume it has the default face. This can cause Emacs to scroll to somewhat wrong buffer positions when the faces in use are not all the same size, even with single (i.e., without auto-repeat) scrolling operations.
+</p>
+
+<p>
+As an alternative to setting <code>fast-but-imprecise-scrolling</code> you might prefer to enable jit-lock deferred fontification (see <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>). To do this, customize <code>jit-lock-defer-time</code> to a small positive number such as 0.25, or even 0.1 if you type quickly. This gives you less jerky scrolling when you hold down C-v, but the window contents after any action which scrolls into a fresh portion of the buffer will be momentarily unfontified.
+</p>
+
+<p>
+Finally, a third alternative to these variables is <code>redisplay-skip-fontification-on-input</code>. If this variable is non-<code>nil</code>, skip some fontifications if there's input pending. This usually does not affect the display because redisplay is completely skipped anyway if input was pending, but it can make scrolling smoother by avoiding unnecessary fontification.
+</p>
+
+<p>
+The commands M-x scroll-up and M-x scroll-down behave similarly to <code>scroll-up-command</code> and <code>scroll-down-command</code>, except they do not obey <code>scroll-error-top-bottom</code>. Prior to Emacs 24, these were the default commands for scrolling up and down. The commands M-x scroll-up-line and M-x scroll-down-line scroll the current window by one line at a time. If you intend to use any of these commands, you might want to give them key bindings (see <a href="docs/emacs--Init-Rebinding.html">Rebinding Keys in Your Init File</a>).
+</p>
+
+<p>
+On graphical displays, you can also scroll a window using the scroll bar; see <a href="docs/emacs--Scroll-Bars.html">Scroll Bars</a>.
+</p>
+
+<hr />
+</div>
+</div>

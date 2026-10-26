@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Options-Controlling-Comments">1. 28.5.3 Options Controlling Comments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Multi_002dLine-Comments.html">Multiple Lines of Comments</a>   Up: <a href="docs/emacs--Comments.html">Manipulating Comments</a>
+</p>
+
+<p>
+<a id="Options-for-Comments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Options-Controlling-Comments" class="outline-2">
+<h2 id="Options-Controlling-Comments"><span class="section-number-2">1.</span> 28.5.3 Options Controlling Comments <a href="#Options-Controlling-Comments">¶</a></h2>
+<div class="outline-text-2" id="text-Options-Controlling-Comments">
+<p>
+As mentioned in <a href="docs/emacs--Comment-Commands.html">Comment Commands</a>, when the M-j command adds a comment to a line, it tries to place the comment between the columns specified by the buffer-local variables <code>comment-column</code> and <code>comment-fill-column</code> (or if that is <code>nil</code>, then the value of <code>fill-column</code>, see <a href="docs/emacs--Fill-Commands.html">Explicit Fill Commands</a>). You can set either the local value or the default value of these buffer-local variables in the usual way (see <a href="docs/emacs--Locals.html">Local Variables</a>). Alternatively, you can type C-x ; (<code>comment-set-column</code>) to set the value of <code>comment-column</code> in the current buffer to the column where point is currently located. C-u C-x ; sets the comment column to match the last comment before point in the buffer, and then does a M-; to align the current line's comment under the previous one.
+</p>
+
+<p>
+The comment commands recognize comments based on the regular expression that is the value of the variable <code>comment-start-skip</code>. Make sure this regexp does not match the null string. It may match more than the comment starting delimiter in the strictest sense of the word; for example, in C mode the value of the variable could be <code>"/\\*+[ \t]*\\|//+[ \t]*"</code>, which matches extra stars and spaces after the ‘=/*=' itself, and accepts C++ style (‘=//=') comments also. (Note that ‘=\\=' is needed in Lisp syntax to include a ‘=\=' in the string, which is needed to deny the first star its special meaning in regexp syntax. See <a href="docs/emacs--Regexp-Backslash.html">Backslash in Regular Expressions</a>.)
+</p>
+
+<p>
+When a comment command makes a new comment, it inserts the value of <code>comment-start</code> as an opening comment delimiter. It also inserts the value of <code>comment-end</code> after point, as a closing comment delimiter. For example, in Lisp mode, <code>comment-start</code> is ‘=";"<code>' and =comment-end</code> is <code>""</code> (the empty string). In C mode, <code>comment-start</code> is <code>"/* "</code> and <code>comment-end</code> is <code>" */"</code>.
+</p>
+
+<p>
+The variable <code>comment-padding</code> specifies a string that the commenting commands should insert between the comment delimiter(s) and the comment text. The default, ‘=" "<code>', specifies a single space. Alternatively, the value can be a number, which specifies that number of spaces, or =nil</code>, which means no spaces at all.
+</p>
+
+<p>
+The variable <code>comment-multi-line</code> controls how M-j and Auto Fill mode continue comments over multiple lines. See <a href="docs/emacs--Multi_002dLine-Comments.html">Multiple Lines of Comments</a>.
+</p>
+
+<p>
+The variable <code>comment-indent-function</code> should contain a function that will be called to compute the alignment for a newly inserted comment or for aligning an existing comment. It is set differently by various major modes. The function is called with no arguments, but with point at the beginning of the comment, or at the end of a line if a new comment is to be inserted. It should return the column in which the comment ought to start. For example, the default function bases its decision on how many comment characters begin an existing comment.
+</p>
+
+<p>
+Emacs also tries to align comments on adjacent lines. To override this, the function may return a cons of two (possibly equal) integers to indicate an acceptable range of indentation.
+</p>
+
+<hr />
+</div>
+</div>

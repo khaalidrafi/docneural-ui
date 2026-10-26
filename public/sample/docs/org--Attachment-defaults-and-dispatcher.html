@@ -1,0 +1,76 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Attachment-defaults-and-dispatcher-1">1. 10.2.1 Attachment defaults and dispatcher ¶</a>
+<ul>
+<li><a href="#section">1.1. (91)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Attachment-defaults-and-dispatcher"></a>
+Next: <a href="docs/org--Attachment-options.html">Attachment options</a>, Up: <a href="docs/org--Attachments.html">Attachments</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Attachment-defaults-and-dispatcher-1" class="outline-2">
+<h2 id="Attachment-defaults-and-dispatcher-1"><span class="section-number-2">1.</span> 10.2.1 Attachment defaults and dispatcher <a href="#Attachment-defaults-and-dispatcher-1">¶</a></h2>
+<div class="outline-text-2" id="text-Attachment-defaults-and-dispatcher-1">
+<p>
+By default, Org attach uses ‘=ID=' properties when adding attachments to headings. This makes working with attachments fully automated. There is no decision needed for folder-name or location. ‘=ID='-based directories are by default located in the ‘=data/=' directory, which lives in the same directory where your Org file lives.
+</p>
+
+<p>
+When attachments are made using <code>org-attach</code> a default tag ‘=ATTACH=' is added to the node that gets the attachments.
+</p>
+
+<p>
+For more control over the setup, see <a href="docs/org--Attachment-options.html">Attachment options</a>.
+</p>
+
+<p>
+The following commands deal with attachments:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002da"></a>C-c C-a (<code>org-attach</code>) </dt><dd>The dispatcher for commands related to the attachment system. After these keys, a list of commands is displayed, and you must press an additional key to select a command:
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002da-a"></a>a (<code>org-attach-attach</code>) </dt><dd>Select a file and move it into the task's attachment directory. The file is copied, moved, or linked, depending on <code>org-attach-method</code>. Note that hard links are not supported on all systems.</dd>
+
+<dt><a id="index-C_002dc-C_002da-c"></a>c/m/l </dt><dd>Attach a file using the copy/move/link method. Note that hard links are not supported on all systems.</dd>
+
+<dt><a id="index-C_002dc-C_002da-b"></a>b (<code>org-attach-buffer</code>) </dt><dd>Select a buffer and save it as a file in the task's attachment directory.</dd>
+
+<dt><a id="index-C_002dc-C_002da-n"></a>n (<code>org-attach-new</code>) </dt><dd>Create a new attachment as an Emacs buffer.</dd>
+
+<dt><a id="index-C_002dc-C_002da-z"></a>z (<code>org-attach-sync</code>) </dt><dd>Synchronize the current task with its attachment directory, in case you added attachments yourself.</dd>
+
+<dt><a id="index-C_002dc-C_002da-o"></a>o (<code>org-attach-open</code>) </dt><dd>Open current task's attachment. If there is more than one, prompt for a file name first. Opening follows the rules set by <code>org-file-apps</code>. For more details, see the information on following hyperlinks (see <a href="docs/org--Handling-Links.html">Handling Links</a>).</dd>
+
+<dt><a id="index-C_002dc-C_002da-O"></a>O (<code>org-attach-open-in-emacs</code>) </dt><dd>Also open the attachment, but force opening the file in Emacs.</dd>
+
+<dt><a id="index-C_002dc-C_002da-f"></a>f (<code>org-attach-reveal</code>) </dt><dd>Open the current task's attachment directory.</dd>
+
+<dt><a id="index-C_002dc-C_002da-F"></a>F (<code>org-attach-reveal-in-emacs</code>) </dt><dd>Also open the directory, but force using Dired in Emacs.</dd>
+
+<dt><a id="index-C_002dc-C_002da-d"></a>d (<code>org-attach-delete-one</code>) </dt><dd>Select and delete a single attachment.</dd>
+
+<dt><a id="index-C_002dc-C_002da-D"></a>D (<code>org-attach-delete-all</code>) </dt><dd>Delete all of a task's attachments. A safer way is to open the directory in Dired and delete from there.</dd>
+
+<dt><a id="index-C_002dc-C_002da-s"></a>s (<code>org-attach-set-directory</code>) </dt><dd>Set a specific directory as the entry's attachment directory. This works by putting the directory path into the ‘=DIR=' property.</dd>
+
+<dt><a id="index-C_002dc-C_002da-S"></a>S (<code>org-attach-unset-directory</code>) </dt><dd>Remove the attachment directory. This command removes the ‘=DIR=' property and asks the user to either move content inside that folder, if an ‘=ID=' property is set, delete the content, or to leave the attachment directory as is but no longer attached to the heading.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+</div>
+</div>

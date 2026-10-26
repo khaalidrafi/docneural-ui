@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Unibyte-Editing-Mode">1. 24.18 Unibyte Editing Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Charsets.html">Charsets</a>   Previous: <a href="docs/emacs--Undisplayable-Characters.html">Undisplayable Characters</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Unibyte-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Unibyte-Editing-Mode" class="outline-2">
+<h2 id="Unibyte-Editing-Mode"><span class="section-number-2">1.</span> 24.18 Unibyte Editing Mode <a href="#Unibyte-Editing-Mode">¶</a></h2>
+<div class="outline-text-2" id="text-Unibyte-Editing-Mode">
+<p>
+The ISO 8859 Latin-<code>n</code> character sets define character codes in the range 0240 to 0377 octal (160 to 255 decimal) to handle the accented letters and punctuation needed by various European languages (and some non-European ones). Note that Emacs considers bytes with codes in this range as raw bytes, not as characters, even in a unibyte buffer, i.e., if you disable multibyte characters. However, Emacs can still handle these character codes as if they belonged to <i>one</i> of the single-byte character sets at a time. To specify <i>which</i> of these codes to use, invoke M-x set-language-environment and specify a suitable language environment such as ‘=Latin-<code>=n</code>'. See <a href="../elisp_html/Disabling-Multibyte.html#Disabling-Multibyte">Disabling Multibyte Characters</a> in GNU Emacs Lisp Reference Manual.
+</p>
+
+<p>
+Emacs can also display bytes in the range 160 to 255 as readable characters, provided the terminal or font in use supports them. This works automatically. On a graphical display, Emacs can also display single-byte characters through fontsets, in effect by displaying the equivalent multibyte characters according to the current language environment. To request this, set the variable <code>unibyte-display-via-language-environment</code> to a non-<code>nil</code> value. Note that setting this only affects how these bytes are displayed, but does not change the fundamental fact that Emacs treats them as raw bytes, not as characters.
+</p>
+
+<p>
+If your terminal does not support display of the Latin-1 character set, Emacs can display these characters as ASCII sequences which at least give you a clear idea of what the characters are. To do this, load the library <code>iso-ascii</code>. Similar libraries for other Latin-<code>n</code> character sets could be implemented, but have not been so far.
+</p>
+
+<p>
+Normally non-ISO-8859 characters (decimal codes between 128 and 159 inclusive) are displayed as octal escapes. You can change this for non-standard extended versions of ISO-8859 character sets by using the function <code>standard-display-8bit</code> in the <code>disp-table</code> library.
+</p>
+
+<p>
+There are two ways to input single-byte non-ASCII characters:
+</p>
+
+<ul class="org-ul">
+<li>You can use an input method for the selected language environment. See <a href="docs/emacs--Input-Methods.html">Input Methods</a>. When you use an input method in a unibyte buffer, the non-ASCII character you specify with it is converted to unibyte.</li>
+
+<li><p>
+If your keyboard can generate character codes 128 (decimal) and up, representing non-ASCII characters, you can type those character codes directly.
+</p>
+
+<p>
+On a graphical display, you should not need to do anything special to use these keys; they should simply work. On a text terminal, you should use the command M-x set-keyboard-coding-system or customize the variable <code>keyboard-coding-system</code> to specify which coding system your keyboard uses (see <a href="docs/emacs--Terminal-Coding.html">Coding Systems for Terminal I/O</a>). Enabling this feature will probably require you to use ESC to type Meta characters; however, on a console terminal or a terminal emulator such as <code>xterm</code>, you can arrange for Meta to be converted to ESC and still be able to type 8-bit characters present directly on the keyboard or using Compose or AltGr keys. See <a href="docs/emacs--User-Input.html">Kinds of User Input</a>.
+</p>
+
+<p>
+Many modern systems provide <i>native input methods</i> for many languages whose characters don't have keyboard keys assigned to them. If Emacs was built with support for these native input methods, you can activate such an input method and type the characters they support. How to activate and use these input methods depends on the system and the input method, and will not be described here; see your system documentation. Here we describe some Emacs facilities to control the use of the native input methods.
+</p>
+
+<p>
+In Emacs built with the GTK toolkit, the variable <code>x-gtk-use-native-input</code> controls whether Emacs should receive characters produced by GTK input methods. If the value is <code>nil</code>, the default, Emacs uses the X input methods (XIM), otherwise it uses the GTK input methods. The <code>useXIM</code> X resource controls whether to use XIM, and <code>inputStyle</code> X resource controls the display on X of preview text generated by the native input methods; see <a href="docs/emacs--Table-of-Resources.html">Table of X Resources for Emacs</a>.
+</p>
+
+<p>
+On MS-Windows, Emacs supports native inputs methods provided by IMM, the Input Method Manager, but that can be turned off if needed; see <a href="docs/emacs--Windows-Keyboard.html">Keyboard Usage on MS-Windows</a>.
+</p></li>
+
+<li><p>
+You can use the key C-x 8 as a compose-character prefix for entry of non-ASCII Latin-1 and other printing characters. C-x 8 is good for insertion (in the minibuffer as well as other buffers), for searching, and in any other context where a key sequence is allowed.
+</p>
+
+<p>
+C-x 8 works by loading the <code>iso-transl</code> library. Once that library is loaded, the Alt modifier key, if the keyboard has one, serves the same purpose as C-x 8: use Alt together with an accent character to modify the following letter. In addition, if the keyboard has keys for the Latin-1 dead accent characters, they too are defined to compose with the following character, once <code>iso-transl</code> is loaded.
+</p>
+
+<p>
+Use C-x 8 C-h to list all the available C-x 8 translations.
+</p>
+
+<p>
+The set of translations available can be extended with certain language-specific characters using the M-x iso-transl-set-language command. Current supported languages are: ‘=French=', ‘=German=', ‘=Portuguese=', ‘=Spanish=', and ‘=Esperanto='. See <code>iso-transl-language-alist</code> for details.
+</p></li>
+</ul>
+
+<hr />
+</div>
+</div>

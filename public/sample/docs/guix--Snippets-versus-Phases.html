@@ -1,0 +1,74 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Snippets-versus-Phases"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Cyclic-Module-Dependencies.html">Cyclic Module Dependencies</a>, Previous: <a href="docs/guix--Synopses-and-Descriptions.html">Synopses and Descriptions</a>, Up: <a href="docs/guix--Packaging-Guidelines.html">Packaging Guidelines</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Snippets-versus-Phases-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="snippets-versus-phases"></a>22.8.5 Snippets versus Phases<br />
+<div class="outline-text-5" id="text-snippets-versus-phases">
+<p>
+<a id="index-snippets_002c-when-to-use"></a>
+The boundary between using an origin snippet versus a build phase to modify the sources of a package can be elusive. Origin snippets are typically used to remove unwanted files such as bundled libraries, nonfree sources, or to apply simple substitutions. The source derived from an origin should produce a source that can be used to build the package on any system that the upstream package supports (i.e., act as the corresponding source). In particular, origin snippets must not embed store items in the sources; such patching should rather be done using build phases. Refer to the <code>origin</code> record documentation for more information (see <a href="docs/guix--origin-Reference.html"><code>origin</code> Reference</a>).
+</p>
+</div>
+</li>
+</ol>
+</div>

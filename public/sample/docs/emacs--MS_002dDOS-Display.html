@@ -1,0 +1,71 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Display-on-MS_002dDOS">1. I.12.3 Display on MS-DOS ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--MS_002dDOS-File-Names.html">File Names on MS-DOS</a>   Previous: <a href="docs/emacs--MS_002dDOS-Mouse.html">Mouse Usage on MS-DOS</a>   Up: <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>
+</p>
+
+<p>
+<a id="MS_002dDOS-Display"></a>
+</p>
+
+<hr />
+<div id="outline-container-Display-on-MS_002dDOS" class="outline-2">
+<h2 id="Display-on-MS_002dDOS"><span class="section-number-2">1.</span> I.12.3 Display on MS-DOS <a href="#Display-on-MS_002dDOS">¶</a></h2>
+<div class="outline-text-2" id="text-Display-on-MS_002dDOS">
+<p>
+Display on MS-DOS cannot use font variants, like bold or italic, but it does support multiple faces, each of which can specify a foreground and a background color. Therefore, you can get the full functionality of Emacs packages that use fonts (such as <code>font-lock</code>, Enriched Text mode, and others) by defining the relevant faces to use different colors. Use the <code>list-colors-display</code> command (see <a href="docs/emacs--Colors.html">Colors for Faces</a>) and the <code>list-faces-display</code> command (see <a href="docs/emacs--Faces.html">Text Faces</a>) to see what colors and faces are available and what they look like.
+</p>
+
+<p>
+See <a href="docs/emacs--MS_002dDOS-and-MULE.html">International Support on MS-DOS</a>, later in this chapter, for information on how Emacs displays glyphs and characters that aren't supported by the native font built into the DOS display.
+</p>
+
+<p>
+When Emacs starts, it changes the cursor shape to a solid box. This is for compatibility with other systems, where the box cursor is the default in Emacs. This default shape can be changed to a bar by specifying the <code>cursor-type</code> parameter in the variable <code>default-frame-alist</code> (see <a href="docs/emacs--Creating-Frames.html">Creating Frames</a>). The MS-DOS terminal doesn't support a vertical-bar cursor, so the bar cursor is horizontal, and the <code>width</code> parameter, if specified by the frame parameters, actually determines its height. For this reason, the <code>bar</code> and <code>hbar</code> cursor types produce the same effect on MS-DOS. As an extension, the bar cursor specification can include the starting scan line of the cursor as well as its width, like this:
+</p>
+
+<pre class="example" id="orga2e576c">
+'(cursor-type bar width . start)
+</pre>
+
+<p>
+In addition, if the <code>width</code> parameter is negative, the cursor bar begins at the top of the character cell.
+</p>
+
+<p>
+The MS-DOS terminal can only display a single frame at a time. The Emacs frame facilities work on MS-DOS much as they do on text terminals (see <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>). When you run Emacs from a DOS window on MS-Windows, you can make the visible frame smaller than the full screen, but Emacs still cannot display more than a single frame at a time.
+</p>
+
+<p>
+The <code>dos-mode4350</code> command switches the display to 43 or 50 lines, depending on your hardware; the <code>dos-mode25</code> command switches to the default 80x25 screen size.
+</p>
+
+<p>
+By default, Emacs only knows how to set screen sizes of 80 columns by 25, 28, 35, 40, 43 or 50 rows. However, if your video adapter has special video modes that will switch the display to other sizes, you can have Emacs support those too. When you ask Emacs to switch the frame to <code>n</code> rows by <code>m</code> columns dimensions, it checks if there is a variable called <code>screen-dimensions-==n==x==m</code>, and if so, uses its value (which must be an integer) as the video mode to switch to. (Emacs switches to that video mode by calling the BIOS <code>Set Video Mode</code> function with the value of <code>screen-dimensions-==n==x==m</code> in the <code>AL</code> register.) For example, suppose your adapter will switch to 66x80 dimensions when put into video mode 85. Then you can make Emacs support this screen size by putting the following into your <code>_emacs</code> file:
+</p>
+
+<pre class="example" id="org69346bb">
+(setq screen-dimensions-66x80 85)
+</pre>
+
+<p>
+Since Emacs on MS-DOS can only set the frame size to specific supported dimensions, it cannot honor every possible frame resizing request. When an unsupported size is requested, Emacs chooses the next larger supported size beyond the specified size. For example, if you ask for 36x80 frame, you will get 40x80 instead.
+</p>
+
+<p>
+The variables <code>screen-dimensions-==n==x==m</code> are used only when they exactly match the specified size; the search for the next larger supported size ignores them. In the above example, even if your VGA supports 38x80 dimensions and you define a variable <code>screen-dimensions-38x80</code> with a suitable value, you will still get 40x80 screen when you ask for a 36x80 frame. If you want to get the 38x80 size in this case, you can do it by setting the variable named <code>screen-dimensions-36x80</code> with the same video mode value as <code>screen-dimensions-38x80</code>.
+</p>
+
+<p>
+Changing frame dimensions on MS-DOS has the effect of changing all the other frames to the new dimensions.
+</p>
+
+<hr />
+</div>
+</div>

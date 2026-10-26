@@ -1,0 +1,46 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Identifier-Inquiries">1. 30.4.1.4 Identifier Inquiries ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Identifier-Search.html">Searching and Replacing with Identifiers</a>   Up: <a href="docs/emacs--Find-Identifiers.html">Find Identifiers</a>
+</p>
+
+<p>
+<a id="List-Identifiers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Identifier-Inquiries" class="outline-2">
+<h2 id="Identifier-Inquiries"><span class="section-number-2">1.</span> 30.4.1.4 Identifier Inquiries <a href="#Identifier-Inquiries">¶</a></h2>
+<div class="outline-text-2" id="text-Identifier-Inquiries">
+<ul class="org-ul">
+<li>C-M-i<br />
+M-TAB :: Perform completion on the text around point, possibly using the selected tags table if one is loaded (<code>completion-at-point</code>).</li>
+
+<li id="M-x list-tags RET <code>file</code> RET">Display a list of the identifiers defined in the program file <code>file</code>.</li>
+
+<li id="C-M-. <code>regexp</code> RET">Display a list of all identifiers matching <code>regexp</code> (<code>xref-find-apropos</code>). See <a href="docs/emacs--Looking-Up-Identifiers.html">Looking Up Identifiers</a>.</li>
+
+<li id="M-x tags-next-file">Visit files recorded in the selected tags table.</li>
+</ul>
+
+<p>
+In most programming language modes, you can type C-M-i or M-TAB (<code>completion-at-point</code>) to complete the symbol at point. Some modes provide specialized completion for this command tailored to the mode; for those that don't, if there is a tags table loaded, this command can use it to generate completion candidates. See <a href="docs/emacs--Symbol-Completion.html">Completion for Symbol Names</a>.
+</p>
+
+<p>
+M-x list-tags reads the name of one of the files covered by the selected tags table, with completion, and displays the list of tags defined in that file; it offers the current buffer's file name as the default file whose tags to list. Do not include a directory as part of the file name unless the file name recorded in the tags table includes a directory. This command works only with the etags backend, and requires a tags table for the project to be available. See <a href="docs/emacs--Tags-Tables.html">Tags Tables</a>.
+</p>
+
+<p>
+M-x tags-next-file visits files covered by the selected tags table. The first time it is called, it visits the first file covered by the table. Each subsequent call visits the next covered file, unless a prefix argument is supplied, in which case it returns to the first file. This command requires a tags table to be selected.
+</p>
+
+<hr />
+</div>
+</div>

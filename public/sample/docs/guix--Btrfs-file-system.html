@@ -1,0 +1,167 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Btrfs-file-system"></a>
+</p>
+
+<p>
+Up: <a href="docs/guix--File-Systems.html">File Systems</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Btrfs-file-system-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="btrfs-file-system"></a>11.4.1 Btrfs file system<br />
+<div class="outline-text-5" id="text-btrfs-file-system">
+<p>
+The Btrfs has special features, such as subvolumes, that merit being explained in more details. The following section attempts to cover basic as well as complex uses of a Btrfs file system with the Guix System.
+</p>
+
+<p>
+In its simplest usage, a Btrfs file system can be described, for example, by:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system
+  (mount-point "/home")
+  (type "btrfs")
+  (device (file-system-label "my-home")))
+</pre>
+</div>
+
+<p>
+The example below is more complex, as it makes use of a Btrfs subvolume, named <code>rootfs</code>. The parent Btrfs file system is labeled <code>my-btrfs-pool</code>, and is located on an encrypted device (hence the dependency on <code>mapped-devices</code>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system
+  (device (file-system-label "my-btrfs-pool"))
+  (mount-point "/")
+  (type "btrfs")
+  (options "subvol=rootfs")
+  (dependencies mapped-devices))
+</pre>
+</div>
+
+<p>
+Some bootloaders, for example GRUB, only mount a Btrfs partition at its top level during the early boot, and rely on their configuration to refer to the correct subvolume path within that top level. The bootloaders operating in this way typically produce their configuration on a running system where the Btrfs partitions are already mounted and where the subvolume information is readily available. As an example, <code>grub-mkconfig</code>, the configuration generator command shipped with GRUB, reads <code>/proc/self/mountinfo</code> to determine the top-level path of a subvolume.
+</p>
+
+<p>
+The Guix System produces a bootloader configuration using the operating system configuration as its sole input; it is therefore necessary to extract the subvolume name on which <code>/gnu/store</code> lives (if any) from that operating system configuration. To better illustrate, consider a subvolume named 'rootfs' which contains the root file system data. In such situation, the GRUB bootloader would only see the top level of the root Btrfs partition, e.g.:
+</p>
+
+<pre class="example" id="orgfc8ed86">
+/                   (top level)
+├── rootfs          (subvolume directory)
+    ├── gnu         (normal directory)
+        ├── store   (normal directory)
+[...]
+</pre>
+
+<p>
+Thus, the subvolume name must be prepended to the <code>/gnu/store</code> path of the kernel, initrd binaries and any other files referred to in the GRUB configuration that must be found during the early boot.
+</p>
+
+<p>
+The next example shows a nested hierarchy of subvolumes and directories:
+</p>
+
+<pre class="example" id="orge26f7b8">
+/                   (top level)
+├── rootfs          (subvolume)
+    ├── gnu         (normal directory)
+        ├── store   (subvolume)
+[...]
+</pre>
+
+<p>
+This scenario would work without mounting the 'store' subvolume. Mounting 'rootfs' is sufficient, since the subvolume name matches its intended mount point in the file system hierarchy. Alternatively, the 'store' subvolume could be referred to by setting the <code>subvol</code> option to either <code>/rootfs/gnu/store</code> or <code>rootfs/gnu/store</code>.
+</p>
+
+<p>
+Finally, a more contrived example of nested subvolumes:
+</p>
+
+<pre class="example" id="orgf9c3c69">
+/                           (top level)
+├── root-snapshots          (subvolume)
+    ├── root-current        (subvolume)
+        ├── guix-store      (subvolume)
+[...]
+</pre>
+
+<p>
+Here, the 'guix-store' subvolume doesn't match its intended mount point, so it is necessary to mount it. The subvolume must be fully specified, by passing its file name to the <code>subvol</code> option. To illustrate, the 'guix-store' subvolume could be mounted on <code>/gnu/store</code> by using a file system declaration such as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-system
+  (device (file-system-label "btrfs-pool-1"))
+  (mount-point "/gnu/store")
+  (type "btrfs")
+  (options "subvol=root-snapshots/root-current/guix-store,\
+compress-force=zstd,space_cache=v2"))
+</pre>
+</div>
+
+<hr />
+
+<p>
+Up: <a href="docs/guix--File-Systems.html">File Systems</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

@@ -1,0 +1,690 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#g-expressions">1.0.1. 8.12 G-Expressions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="G_002dExpressions"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-repl.html">Invoking <code>guix repl</code></a>, Previous: <a href="docs/guix--The-Store-Monad.html">The Store Monad</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="G_002dExpressions-1"></a>
+</p>
+</div>
+<div id="outline-container-g-expressions" class="outline-4">
+<h4 id="g-expressions"><span class="section-number-4">1.0.1.</span> 8.12 G-Expressions</h4>
+<div class="outline-text-4" id="text-g-expressions">
+<p>
+<a id="index-G_002dexpression"></a> <a id="index-build-code-quoting"></a>
+So we have “derivations”, which represent a sequence of build actions to be performed to produce an item in the store (see <a href="docs/guix--Derivations.html">Derivations</a>). These build actions are performed when asking the daemon to actually build the derivations; they are run by the daemon in a container (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>).
+</p>
+
+<p>
+<a id="index-code-staging-1"></a> <a id="index-staging_002c-of-code-1"></a> <a id="index-strata-of-code"></a>
+It should come as no surprise that we like to write these build actions in Scheme. When we do that, we end up with two <i>strata</i> of Scheme code: the “host code”&#x2014;code that defines packages, talks to the daemon, etc.&#x2014;and the “build code”&#x2014;code that actually performs build actions, such as making directories, invoking <code>make</code>, and so on (see <a href="docs/guix--Build-Phases.html">Build Phases</a>).
+</p>
+
+<p>
+To describe a derivation and its build actions, one typically needs to embed build code inside host code. It boils down to manipulating build code as data, and the homoiconicity of Scheme&#x2014;code has a direct representation as data&#x2014;comes in handy for that. But we need more than the normal <code>quasiquote</code> mechanism in Scheme to construct build expressions.
+</p>
+
+<p>
+The <code>(guix gexp)</code> module implements <i>G-expressions</i>, a form of S-expressions adapted to build expressions. G-expressions, or <i>gexps</i>, consist essentially of three syntactic forms: <code>gexp</code>, <code>ungexp</code>, and <code>ungexp-splicing</code> (or simply: <code>#~</code>, <code>#$</code>, and <code>#$@</code>), which are comparable to <code>quasiquote</code>, <code>unquote</code>, and <code>unquote-splicing</code>, respectively (see <a href="https://www.gnu.org/software/guile/manual/html_node/Expression-Syntax.html#Expression-Syntax"><code>quasiquote</code></a> in GNU Guile Reference Manual). However, there are major differences:
+</p>
+
+<ul class="org-ul">
+<li>Gexps are meant to be written to a file and run or manipulated by other processes.</li>
+<li>When a high-level object such as a package or derivation is unquoted inside a gexp, the result is as if its output file name had been introduced.</li>
+<li>Gexps carry information about the packages or derivations they refer to, and these dependencies are automatically added as inputs to the build processes that use them.</li>
+</ul>
+
+<p>
+<a id="index-lowering_002c-of-high_002dlevel-objects-in-gexps"></a>
+This mechanism is not limited to package and derivation objects: <i>compilers</i> able to “lower” other high-level objects to derivations or files in the store can be defined, such that these objects can also be inserted into gexps. For example, a useful type of high-level objects that can be inserted in a gexp is “file-like objects”, which make it easy to add files to the store and to refer to them in derivations and such (see <code>local-file</code> and <code>plain-file</code> below).
+</p>
+
+<p>
+To illustrate the idea, here is an example of a gexp:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define build-exp
+  #~(begin
+      (mkdir #$output)
+      (chdir #$output)
+      (symlink (string-append #$coreutils "/bin/ls")
+               "list-files")))
+</pre>
+</div>
+
+<p>
+This gexp can be passed to <code>gexp-&gt;derivation</code>; we obtain a derivation that builds a directory containing exactly one symlink to <code>/gnu/store/…-coreutils-8.22/bin/ls</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(gexp-&gt;derivation "the-thing" build-exp)
+</pre>
+</div>
+
+<p>
+As one would expect, the <code>"/gnu/store/…-coreutils-8.22"</code> string is substituted to the reference to the <code>coreutils</code> package in the actual build code, and <code>coreutils</code> is automatically made an input to the derivation. Likewise, <code>#$output</code> (equivalent to <code>(ungexp output)</code>) is replaced by a string containing the directory name of the output of the derivation.
+</p>
+
+<p>
+<a id="index-cross-compilation"></a>
+In a cross-compilation context, it is useful to distinguish between references to the <i>native</i> build of a package&#x2014;that can run on the host&#x2014;versus references to cross builds of a package. To that end, the <code>#+</code> plays the same role as <code>#$</code>, but is a reference to a native package build:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(gexp-&gt;derivation "vi"
+   #~(begin
+       (mkdir #$output)
+       (mkdir (string-append #$output "/bin"))
+       (system* (string-append #+coreutils "/bin/ln")
+                "-s"
+                (string-append #$emacs "/bin/emacs")
+                (string-append #$output "/bin/vi")))
+   #:target "aarch64-linux-gnu")
+</pre>
+</div>
+
+<p>
+In the example above, the native build of <code>coreutils</code> is used, so that <code>ln</code> can actually run on the host; but then the cross-compiled build of <code>emacs</code> is referenced.
+</p>
+
+<p>
+<a id="index-imported-modules_002c-for-gexps"></a> <a id="index-with_002dimported_002dmodules"></a>
+Another gexp feature is <i>imported modules</i>: sometimes you want to be able to use certain Guile modules from the “host environment” in the gexp, so those modules should be imported in the “build environment”. The <code>with-imported-modules</code> form allows you to express that:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(let ((build (with-imported-modules '((guix build utils))
+               #~(begin
+                   (use-modules (guix build utils))
+                   (mkdir-p (string-append #$output "/bin"))))))
+  (gexp-&gt;derivation "empty-dir"
+                    #~(begin
+                        #$build
+                        (display "success!\n")
+                        #t)))
+</pre>
+</div>
+
+<p>
+In this example, the <code>(guix build utils)</code> module is automatically pulled into the isolated build environment of our gexp, such that <code>(use-modules (guix build utils))</code> works as expected.
+</p>
+
+<p>
+<a id="index-module-closure"></a> <a id="index-source_002dmodule_002dclosure"></a>
+Usually you want the <i>closure</i> of the module to be imported&#x2014;i.e., the module itself and all the modules it depends on&#x2014;rather than just the module; failing to do that, attempts to use the module will fail because of missing dependent modules. The <code>source-module-closure</code> procedure computes the closure of a module by looking at its source file headers, which comes in handy in this case:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix modules))   ;for 'source-module-closure'
+
+(with-imported-modules (source-module-closure
+                         '((guix build utils)
+                           (gnu build image)))
+  (gexp-&gt;derivation "something-with-vms"
+                    #~(begin
+                        (use-modules (guix build utils)
+                                     (gnu build image))
+                        …)))
+</pre>
+</div>
+
+<p>
+<a id="index-extensions_002c-for-gexps"></a> <a id="index-with_002dextensions"></a>
+In the same vein, sometimes you want to import not just pure-Scheme modules, but also “extensions” such as Guile bindings to C libraries or other “full-blown” packages. Say you need the <code>guile-json</code> package available on the build side, here's how you would do it:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages guile))  ;for 'guile-json'
+
+(with-extensions (list guile-json)
+  (gexp-&gt;derivation "something-with-json"
+                    #~(begin
+                        (use-modules (json))
+                        …)))
+</pre>
+</div>
+
+<p>
+The syntactic form to construct gexps is summarized below.
+</p>
+
+<ul class="org-ul">
+<li><p>
+Macro: <b>#~=exp=</b> <br />
+Macro: (gexp <code>exp</code>) :: Return a G-expression containing <code>exp</code>. <code>exp</code> may contain one or more of the following forms:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>#$==obj</code><br />
+<code>(ungexp ==obj=</code>)= :: Introduce a reference to <code>obj</code>. <code>obj</code> may have one of the supported types, for example a package or a derivation, in which case the <code>ungexp</code> form is replaced by its output file name&#x2014;e.g., <code>"/gnu/store/…-coreutils-8.22</code>.
+</p>
+
+<p>
+If <code>obj</code> is a list, it is traversed and references to supported objects are substituted similarly.
+</p>
+
+<p>
+If <code>obj</code> is another gexp, its contents are inserted and its dependencies are added to those of the containing gexp.
+</p>
+
+<p>
+If <code>obj</code> is another kind of object, it is inserted as is.
+</p></li>
+
+<li><p>
+<code>#$==obj=</code>:==output=<br />
+<code>(ungexp ==obj=</code> <code>=output=</code>)= :: This is like the form above, but referring explicitly to the <code>output</code> of <code>obj</code>&#x2014;this is useful when <code>obj</code> produces multiple outputs (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>).
+</p>
+
+<p>
+Sometimes a gexp unconditionally refers to the <code>"out"</code> output, but the user of that gexp would still like to insert a reference to another output. The <code>gexp-input</code> procedure aims to address that. See .
+</p></li>
+
+<li><code>#+==obj</code><br />
+<code>#+==obj=</code>:output=<br />
+<code>(ungexp-native ==obj=</code>)=<br />
+<code>(ungexp-native ==obj=</code> <code>=output=</code>)= :: Same as <code>ungexp</code>, but produces a reference to the <i>native</i> build of <code>obj</code> when used in a cross compilation context.</li>
+
+<li><p>
+<code>#$output[:==output==]</code><br />
+<code>(ungexp output [==output==])</code> :: Insert a reference to derivation output <code>output</code>, or to the main output when <code>output</code> is omitted.
+</p>
+
+<p>
+This only makes sense for gexps passed to <code>gexp-&gt;derivation</code>.
+</p></li>
+
+<li><code>#$@==lst</code><br />
+<code>(ungexp-splicing ==lst=</code>)= :: Like the above, but splices the contents of <code>lst</code> inside the containing list.</li>
+
+<li><code>#+@==lst</code><br />
+<code>(ungexp-native-splicing ==lst=</code>)= :: Like the above, but refers to native builds of the objects listed in <code>lst</code>.</li>
+</ul>
+
+<p>
+G-expressions created by <code>gexp</code> or <code>#~</code> are run-time objects of the <code>gexp?</code> type (see below).
+</p></li>
+
+<li id="Macro: with-imported-modules modules body&#x2026;"><p>
+Mark the gexps defined in <code>body</code>&#x2026; as requiring <code>modules</code> in their execution environment.
+</p>
+
+<p>
+Each item in <code>modules</code> can be the name of a module, such as <code>(guix build utils)</code>, or it can be a module name, followed by an arrow, followed by a file-like object:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`((guix build utils)
+  (guix gcrypt)
+  ((guix config) =&gt; ,(scheme-file "config.scm"
+                                  #~(define-module …))))
+</pre>
+</div>
+
+<p>
+In the example above, the first two modules are taken from the search path, and the last one is created from the given file-like object.
+</p>
+
+<p>
+This form has <i>lexical</i> scope: it has an effect on the gexps directly defined in <code>body</code>&#x2026;, but not on those defined, say, in procedures called from <code>body</code>&#x2026;.
+</p></li>
+
+<li id="Macro: with-extensions extensions body&#x2026;"><p>
+Mark the gexps defined in <code>body</code>&#x2026; as requiring <code>extensions</code> in their build and execution environment. <code>extensions</code> is typically a list of package objects such as those defined in the <code>(gnu packages guile)</code> module.
+</p>
+
+<p>
+Concretely, the packages listed in <code>extensions</code> are added to the load path while compiling imported modules in <code>body</code>&#x2026;; they are also added to the load path of the gexp returned by <code>body</code>&#x2026;.
+</p></li>
+
+<li id="Procedure: gexp? obj">Return <code>#t</code> if <code>obj</code> is a G-expression.</li>
+</ul>
+
+<p>
+G-expressions are meant to be written to disk, either as code building some derivation, or as plain files in the store. The monadic procedures below allow you to do that (see <a href="docs/guix--The-Store-Monad.html">The Store Monad</a>, for more information about monads).
+</p>
+
+<dl class="org-dl">
+<dt>Monadic Procedure: gexp-&gt;derivation <code>name</code> <code>exp</code> [#:system (%current-system)] [#:target #f] [#:graft? #t] [#:hash #f] [#:hash-algo #f] [#:recursive? #f] [#:env-vars '()] [#:modules '()] [#:module-path <code>%load-path=] [#:effective-version "2.2"] [#:references-graphs #f] [#:allowed-references #f] [#:disallowed-references #f] [#:leaked-env-vars #f] [#:script-name (string-append =name</code> "-builder")] [#:deprecation-warnings #f] [#:local-build? #f] [#:substitutable? #t] [#:properties '()] [#:guile-for-build #f]</dt><dd><p>
+Return a derivation <code>name</code> that runs <code>exp</code> (a gexp) with <code>guile-for-build</code> (a derivation) on <code>system</code>; <code>exp</code> is stored in a file called <code>script-name</code>. When <code>target</code> is true, it is used as the cross-compilation target triplet for packages referred to by <code>exp</code>.
+</p>
+
+<p>
+<code>modules</code> is deprecated in favor of <code>with-imported-modules</code>. Its meaning is to make <code>modules</code> available in the evaluation context of <code>exp</code>; <code>modules</code> is a list of names of Guile modules searched in <code>module-path</code> to be copied in the store, compiled, and made available in the load path during the execution of <code>exp</code>&#x2014;e.g., <code>((guix build utils) (guix build gnu-build-system))</code>.
+</p>
+
+<p>
+<code>effective-version</code> determines the string to use when adding extensions of <code>exp</code> (see <code>with-extensions</code>) to the search path&#x2014;e.g., <code>"2.2"</code>.
+</p>
+
+<p>
+<code>graft?</code> determines whether packages referred to by <code>exp</code> should be grafted when applicable.
+</p>
+
+<p>
+When <code>references-graphs</code> is true, it must be a list of tuples of one of the following forms:
+</p>
+
+<pre class="example" id="org7a150b8">
+(file-name obj)
+(file-name obj output)
+(file-name gexp-input)
+(file-name store-item)
+</pre>
+
+<p>
+The right-hand-side of each element of <code>references-graphs</code> is automatically made an input of the build process of <code>exp</code>. In the build environment, each <code>file-name</code> contains the reference graph of the corresponding item, in a simple text format.
+</p>
+
+<p>
+<code>allowed-references</code> must be either <code>#f</code> or a list of output names and packages. In the latter case, the list denotes store items that the result is allowed to refer to. Any reference to another store item will lead to a build error. Similarly for <code>disallowed-references</code>, which can list items that must not be referenced by the outputs.
+</p>
+
+<p>
+<code>deprecation-warnings</code> determines whether to show deprecation warnings while compiling modules. It can be <code>#f</code>, <code>#t</code>, or <code>'detailed</code>.
+</p>
+
+<p>
+The other arguments are as for <code>derivation</code> (see <a href="docs/guix--Derivations.html">Derivations</a>).
+</p></dd>
+</dl>
+
+<p>
+<a id="index-file_002dlike-objects"></a>
+The <code>local-file</code>, <code>plain-file</code>, <code>computed-file</code>, <code>program-file</code>, and <code>scheme-file</code> procedures below return <i>file-like objects</i>. That is, when unquoted in a G-expression, these objects lead to a file in the store. Consider this G-expression:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">#~(system* #$(file-append glibc "/sbin/nscd") "-f"
+           #$(local-file "/tmp/my-nscd.conf"))
+</pre>
+</div>
+
+<p>
+The effect here is to “intern” <code>/tmp/my-nscd.conf</code> by copying it to the store. Once expanded, for instance <i>via</i> <code>gexp-&gt;derivation</code>, the G-expression refers to that copy under <code>/gnu/store</code>; thus, modifying or removing the file in <code>/tmp</code> does not have any effect on what the G-expression does. <code>plain-file</code> can be used similarly; it differs in that the file content is directly passed as a string.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: local-file file [name] [#:recursive? #f] [#:select? (const #t)]</dt><dd><p>
+Return an object representing local file <code>file</code> to add to the store; this object can be used in a gexp. If <code>file</code> is a literal string denoting a relative file name, it is looked up relative to the source file where it appears; if <code>file</code> is not a literal string, it is looked up relative to the current working directory at run time. <code>file</code> will be added to the store under <code>name</code>&#x2013;by default the base name of <code>file</code>.
+</p>
+
+<p>
+When <code>recursive?</code> is true, the contents of <code>file</code> are added recursively; if <code>file</code> designates a flat file and <code>recursive?</code> is true, its contents are added, and its permission bits are kept.
+</p>
+
+<p>
+When <code>recursive?</code> is true, call <code>(==select?=</code> <code>=file=</code> <code>=stat=</code>)= for each directory entry, where <code>file</code> is the entry's absolute file name and <code>stat</code> is the result of <code>lstat</code>; exclude entries for which <code>select?</code> does not return true.
+</p>
+
+<p>
+<a id="index-assume_002dvalid_002dfile_002dname"></a>
+</p>
+
+<p>
+<code>file</code> can be wrapped in the <code>assume-valid-file-name</code> syntactic keyword. When this is done, there will not be a warning when <code>local-file</code> is used with a non-literal path. The path is still looked up relative to the current working directory at run time. Wrapping is done like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define alice-key-file-path "alice.pub")
+;; ...
+(local-file (assume-valid-file-name alice-key-file-path))
+</pre>
+</div>
+
+<p>
+<a id="index-relative-file-name_002c-in-local_002dfile"></a> <a id="index-assume_002dsource_002drelative_002dfile_002dname"></a>
+</p>
+
+<p>
+<code>file</code> can be wrapped in the <code>assume-source-relative-file-name</code> syntactic keyword. When this is done, the file name will be looked up relative to the source file where it appears even when it is not a string literal.
+</p>
+
+<p>
+This is the declarative counterpart of the <code>interned-file</code> monadic procedure (see <a href="docs/guix--The-Store-Monad.html"><code>interned-file</code></a>).
+</p></dd>
+
+<dt>Procedure: plain-file name content</dt><dd><p>
+Return an object representing a text file called <code>name</code> with the given <code>content</code> (a string or a bytevector) to be added to the store.
+</p>
+
+<p>
+This is the declarative counterpart of <code>text-file</code>.
+</p></dd>
+
+<dt>Procedure: computed-file <code>name</code> <code>gexp</code> [#:guile] [#:local-build? #t] [#:options '()]</dt><dd><p>
+Return an object representing the store item <code>name</code>, a file or directory computed by <code>gexp</code>. When <code>local-build?</code> is true (the default), the derivation is built locally. <code>options</code> is a list of additional arguments to pass to <code>gexp-&gt;derivation</code>.
+</p>
+
+<p>
+This is the declarative counterpart of <code>gexp-&gt;derivation</code>.
+</p></dd>
+
+<dt>Monadic Procedure: gexp-&gt;script <code>name</code> <code>exp</code> [#:guile (default-guile)] [#:module-path %load-path] [#:system (%current-system)] [#:target 'current]</dt><dd><p>
+Return an executable script <code>name</code> that runs <code>exp</code> using <code>guile</code>, with <code>exp</code>'s imported modules in its search path. Look up <code>exp</code>'s modules in <code>module-path</code>.
+</p>
+
+<p>
+The example below builds a script that simply invokes the <code>ls</code> command:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (guix gexp) (gnu packages base))
+
+(gexp-&gt;script "list-files"
+              #~(execl #$(file-append coreutils "/bin/ls")
+                       "ls"))
+</pre>
+</div>
+
+<p>
+When “running” it through the store (see <a href="docs/guix--The-Store-Monad.html"><code>run-with-store</code></a>), we obtain a derivation that produces an executable file <code>/gnu/store/…-list-files</code> along these lines:
+</p>
+
+<pre class="example" id="org0815eb3">
+#!/gnu/store/…-guile-2.0.11/bin/guile -ds
+!#
+(execl "/gnu/store/…-coreutils-8.22"/bin/ls" "ls")
+</pre></dd>
+
+<dt>Procedure: program-file name exp [#:guile #f] [#:module-path %load-path]</dt><dd><p>
+Return an object representing the executable store item <code>name</code> that runs <code>gexp</code>. <code>guile</code> is the Guile package used to execute that script. Imported modules of <code>gexp</code> are looked up in <code>module-path</code>.
+</p>
+
+<p>
+This is the declarative counterpart of <code>gexp-&gt;script</code>.
+</p></dd>
+
+<dt>Monadic Procedure: gexp-&gt;file <code>name</code> <code>exp</code> [#:set-load-path? #t] [#:module-path %load-path] [#:splice? #f] [#:guile (default-guile)] [#:system (%current-system)] [#:target 'current]</dt><dd><p>
+Return a derivation that builds a file <code>name</code> containing <code>exp</code>. When <code>splice?</code> is true, <code>exp</code> is considered to be a list of expressions that will be spliced in the resulting file.
+</p>
+
+<p>
+When <code>set-load-path?</code> is true, emit code in the resulting file to set <code>%load-path</code> and <code>%load-compiled-path</code> to honor <code>exp</code>'s imported modules. Look up <code>exp</code>'s modules in <code>module-path</code>.
+</p>
+
+<p>
+The resulting file holds references to all the dependencies of <code>exp</code> or a subset thereof.
+</p></dd>
+
+<dt>Procedure: scheme-file name exp [#:splice? #f] [#:guile #f] [#:set-load-path? #t]</dt><dd><p>
+Return an object representing the Scheme file <code>name</code> that contains <code>exp</code>. <code>guile</code> is the Guile package used to produce that file.
+</p>
+
+<p>
+This is the declarative counterpart of <code>gexp-&gt;file</code>.
+</p></dd>
+
+<dt>Monadic Procedure: text-file* <code>name</code> <code>text</code> &#x2026;</dt><dd><p>
+Return as a monadic value a derivation that builds a text file containing all of <code>text</code>. <code>text</code> may list, in addition to strings, objects of any type that can be used in a gexp: packages, derivations, local file objects, etc. The resulting store file holds references to all these.
+</p>
+
+<p>
+This variant should be preferred over <code>text-file</code> anytime the file to create will reference items from the store. This is typically the case when building a configuration file that embeds store file names, like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (profile.sh)
+  ;; Return the name of a shell script in the store that
+  ;; initializes the 'PATH' environment variable.
+  (text-file* "profile.sh"
+              "export PATH=" coreutils "/bin:"
+              grep "/bin:" sed "/bin\n"))
+</pre>
+</div>
+
+<p>
+In this example, the resulting <code>/gnu/store/…-profile.sh</code> file will reference <code>coreutils</code>, <code>grep</code>, and <code>sed</code>, thereby preventing them from being garbage-collected during its lifetime.
+</p></dd>
+
+<dt>Procedure: mixed-text-file name text &#x2026;</dt><dd><p>
+Return an object representing store file <code>name</code> containing <code>text</code>. <code>text</code> is a sequence of strings and file-like objects, as in:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(mixed-text-file "profile"
+                 "export PATH=" coreutils "/bin:" grep "/bin")
+</pre>
+</div>
+
+<p>
+This is the declarative counterpart of <code>text-file*</code>.
+</p></dd>
+
+<dt>Procedure: file-union name files [#:dangling-symlinks? #f]</dt><dd><p>
+Return a <code>&lt;computed-file&gt;</code> that builds a directory containing all of <code>files</code>. Each item in <code>files</code> must be a two-element list where the first element is the file name to use in the new directory, and the second element is a gexp denoting the target file. <code>#:dangling-symlinks?</code> controls if gexps must lower to an existing file. Here's an example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(file-union "etc"
+            `(("hosts" ,(plain-file "hosts"
+                                    "127.0.0.1 localhost"))
+              ("bashrc" ,(plain-file "bashrc"
+                                     "alias ls='ls --color=auto'"))))
+</pre>
+</div>
+
+<p>
+This yields an <code>etc</code> directory containing these two files.
+</p></dd>
+
+<dt>Procedure: symlink-to target</dt><dd><p>
+Return a <code>&lt;computed-file&gt;</code> that is a symbolic link to target. Note, that the target does not need to exist at the build time. One of uses is to put arbitrary symlinks into user's home:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-files-service-type
+  `(("Sync" ,(symlink-to "/storage/Sync"))))
+</pre>
+</div></dd>
+
+<dt>Procedure: directory-union name things</dt><dd><p>
+Return a directory that is the union of <code>things</code>, where <code>things</code> is a list of file-like objects denoting directories. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(directory-union "guile+emacs" (list guile emacs))
+</pre>
+</div>
+
+<p>
+yields a directory that is the union of the <code>guile</code> and <code>emacs</code> packages.
+</p></dd>
+
+<dt>Procedure: file-append obj suffix &#x2026;</dt><dd><p>
+Return a file-like object that expands to the concatenation of <code>obj</code> and <code>suffix</code>, where <code>obj</code> is a lowerable object and each <code>suffix</code> is a string.
+</p>
+
+<p>
+As an example, consider this gexp:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(gexp-&gt;script "run-uname"
+              #~(system* #$(file-append coreutils
+                                        "/bin/uname")))
+</pre>
+</div>
+
+<p>
+The same effect could be achieved with:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(gexp-&gt;script "run-uname"
+              #~(system* (string-append #$coreutils
+                                        "/bin/uname")))
+</pre>
+</div>
+
+<p>
+There is one difference though: in the <code>file-append</code> case, the resulting script contains the absolute file name as a string, whereas in the second case, the resulting script contains a <code>(string-append …)</code> expression to construct the file name <i>at run time</i>.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+Macro: let-system system body&#x2026;<br />
+Macro: let-system (system target) body&#x2026; :: Bind <code>system</code> to the currently targeted system&#x2014;e.g., <code>"x86_64-linux"</code>&#x2014;within <code>body</code>.
+</p>
+
+<p>
+In the second case, additionally bind <code>target</code> to the current cross-compilation target&#x2014;a GNU triplet such as <code>"arm-linux-gnueabihf"</code>&#x2014;or <code>#f</code> if we are not cross-compiling.
+</p>
+
+<p>
+<code>let-system</code> is useful in the occasional case where the object spliced into the gexp depends on the target system, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">#~(system*
+   #+(let-system system
+       (cond ((string-prefix? "armhf-" system)
+              (file-append qemu "/bin/qemu-system-arm"))
+             ((string-prefix? "x86_64-" system)
+              (file-append qemu "/bin/qemu-system-x86_64"))
+             (else
+              (error "dunno!"))))
+   "-net" "user" #$image)
+</pre>
+</div></dd>
+
+<dt>Macro: with-parameters ((parameter value) &#x2026;) exp</dt><dd><p>
+This macro is similar to the <code>parameterize</code> form for dynamically-bound <i>parameters</i> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Parameters.html#Parameters">Parameters</a> in GNU Guile Reference Manual). The key difference is that it takes effect when the file-like object returned by <code>exp</code> is lowered to a derivation or store item.
+</p>
+
+<p>
+A typical use of <code>with-parameters</code> is to force the system in effect for a given object:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(with-parameters ((%current-system "i686-linux"))
+  coreutils)
+</pre>
+</div>
+
+<p>
+The example above returns an object that corresponds to the i686 build of Coreutils, regardless of the current value of <code>%current-system</code>.
+</p></dd>
+</dl>
+
+<p>
+<a id="gexp_002dinput"></a>
+</p>
+<dl class="org-dl">
+<dt>Procedure: gexp-input <code>obj</code> [=output=] [#:native? #f]</dt><dd><p>
+Return a <i>gexp input</i> record for the given <code>output</code> of file-like object <code>obj</code>, with <code>#:native?</code> determining whether this is a native reference (as with <code>ungexp-native</code>) or not.
+</p>
+
+<p>
+This procedure is helpful when you want to pass a reference to a specific output of an object to some procedure that may not know about that output. For example, assume you have this procedure, which takes one file-like object:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (make-symlink target)
+  (computed-file "the-symlink"
+                 #~(symlink #$target #$output)))
+</pre>
+</div>
+
+<p>
+Here <code>make-symlink</code> can only ever refer to the default output of <code>target</code>&#x2014;the <code>"out"</code> output (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>). To have it refer to, say, the <code>"lib"</code> output of the <code>hwloc</code> package, you can call it like so:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(make-symlink (gexp-input hwloc "lib"))
+</pre>
+</div>
+
+<p>
+You can also compose it like any other file-like object:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(make-symlink
+  (file-append (gexp-input hwloc "lib") "/lib/libhwloc.so"))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+Of course, in addition to gexps embedded in “host” code, there are also modules containing build tools. To make it clear that they are meant to be used in the build stratum, these modules are kept in the <code>(guix build …)</code> name space.
+</p>
+
+<p>
+<a id="index-lowering_002c-of-high_002dlevel-objects-in-gexps-1"></a>
+Internally, high-level objects are <i>lowered</i>, using their compiler, to either derivations or store items. For instance, lowering a package yields a derivation, and lowering a <code>plain-file</code> yields a store item. This is achieved using the <code>lower-object</code> monadic procedure.
+</p>
+
+<dl class="org-dl">
+<dt>Monadic Procedure: lower-object <code>obj</code> [=system=] [#:target #f]</dt><dd>Return as a value in <code>%store-monad</code> the derivation or store item corresponding to <code>obj</code> for <code>system</code>, cross-compiling for <code>target</code> if <code>target</code> is true. <code>obj</code> must be an object that has an associated gexp compiler, such as a <code>&lt;package&gt;</code>.</dd>
+
+<dt>Procedure: gexp-&gt;approximate-sexp gexp</dt><dd>Sometimes, it may be useful to convert a G-exp into a S-exp. For example, some linters (see <a href="docs/guix--Invoking-guix-lint.html">Invoking <code>guix lint</code></a>) peek into the build phases of a package to detect potential problems. This conversion can be achieved with this procedure. However, some information can be lost in the process. More specifically, lowerable objects will be silently replaced with some arbitrary object &#x2013; currently the list <code>(*approximate*)</code>, but this may change.</dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

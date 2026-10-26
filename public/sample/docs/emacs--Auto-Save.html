@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Auto_002dSaving_003a-Protection-Against-Disasters">1. 20.6 Auto-Saving: Protection Against Disasters ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--File-Aliases.html">File Name Aliases</a>   Previous: <a href="docs/emacs--Auto-Revert.html">Auto Revert: Keeping buffers automatically up-to-date</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Auto-Save"></a>
+</p>
+
+<hr />
+<div id="outline-container-Auto_002dSaving_003a-Protection-Against-Disasters" class="outline-2">
+<h2 id="Auto_002dSaving_003a-Protection-Against-Disasters"><span class="section-number-2">1.</span> 20.6 Auto-Saving: Protection Against Disasters <a href="#Auto_002dSaving_003a-Protection-Against-Disasters">¶</a></h2>
+<div class="outline-text-2" id="text-Auto_002dSaving_003a-Protection-Against-Disasters">
+<p>
+From time to time, Emacs automatically saves each visited file in a separate file, without altering the file you actually use. This is called <i>auto-saving</i>. It prevents you from losing more than a limited amount of work if the system crashes.
+</p>
+
+<p>
+When Emacs determines that it is time for auto-saving, it considers each buffer, and each is auto-saved if auto-saving is enabled for it and it has been changed since the last time it was auto-saved. When the <code>auto-save-no-message</code> variable is set to <code>nil</code> (the default), the message ‘=Auto-saving&#x2026;=' is displayed in the echo area during auto-saving, if any files are actually auto-saved; to disable these messages, customize the variable to a non-<code>nil</code> value. Errors occurring during auto-saving are caught so that they do not interfere with the execution of commands you have been typing.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Auto-Save-Files.html">Auto-Save Files</a></li>
+<li><a href="docs/emacs--Auto-Save-Control.html">Controlling Auto-Saving</a></li>
+<li><a href="docs/emacs--Recover.html">Recovering Data from Auto-Saves</a></li>
+</ul>
+</div>
+</div>

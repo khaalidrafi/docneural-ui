@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Retrieving-Mail-from-Local-Mailboxes-in-Various-Formats">1. 35.20 Retrieving Mail from Local Mailboxes in Various Formats ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Remote-Mailboxes.html">Retrieving Mail from Remote Mailboxes</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Other-Mailbox-Formats"></a>
+</p>
+
+<hr />
+<div id="outline-container-Retrieving-Mail-from-Local-Mailboxes-in-Various-Formats" class="outline-2">
+<h2 id="Retrieving-Mail-from-Local-Mailboxes-in-Various-Formats"><span class="section-number-2">1.</span> 35.20 Retrieving Mail from Local Mailboxes in Various Formats <a href="#Retrieving-Mail-from-Local-Mailboxes-in-Various-Formats">¶</a></h2>
+<div class="outline-text-2" id="text-Retrieving-Mail-from-Local-Mailboxes-in-Various-Formats">
+<p>
+If your incoming mail is stored on a local machine in a format other than Unix mailbox, you will need the Mailutils <code>movemail</code> to retrieve it. See <a href="docs/emacs--Movemail.html"><code>movemail</code> program</a>, for the detailed description of <code>movemail</code> versions. For example, to access mail from an inbox in <code>maildir</code> format located in <code>/var/spool/mail/in</code>, you would include the following in the Rmail inbox list:
+</p>
+
+<pre class="example" id="org76a6550">
+maildir:///var/spool/mail/in
+</pre>
+</div>
+</div>

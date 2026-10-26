@@ -1,0 +1,96 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Setting-options-for-custom-commands">1. 11.6.3 Setting options for custom commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Setting-options"></a>
+Previous: <a href="docs/org--Block-agenda.html">Block agenda</a>, Up: <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Setting-options-for-custom-commands" class="outline-2">
+<h2 id="Setting-options-for-custom-commands"><span class="section-number-2">1.</span> 11.6.3 Setting options for custom commands <a href="#Setting-options-for-custom-commands">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-options-for-custom-commands">
+<p>
+Org mode contains a number of variables regulating agenda construction and display. The global variables define the behavior for all agenda commands, including the custom commands. However, if you want to change some settings just for a single custom view, you can do so. Setting options requires inserting a list of variable names and values at the right spot in <code>org-agenda-custom-commands</code>. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands
+      '(("w" todo "WAITING"
+         ((org-agenda-sorting-strategy '(priority-down))
+          (org-agenda-prefix-format "  Mixed: ")))
+        ("U" tags-tree "+boss-urgent"
+         ((org-fold-show-context-detail 'minimal)))
+        ("N" search ""
+         ((org-agenda-files '("~org/notes.org"))
+          (org-agenda-text-search-extra-files nil)))))
+</pre>
+</div>
+
+<p>
+Now the w command sorts the collected entries only by priority, and the prefix format is modified to just say ‘=Mixed:=' instead of giving the category of the entry. The sparse tags tree of U now turns out ultra-compact, because neither the headline hierarchy above the match, nor the headline following the match are shown. The command N does a text search limited to only a single file.
+</p>
+
+<p>
+For command sets creating a block agenda, <code>org-agenda-custom-commands</code> has two separate spots for setting options. You can add options that should be valid for just a single command in the set, and options that should be valid for all commands in the set. The former are just added to the command entry; the latter must come after the list of command entries. Going back to the block agenda example (see <a href="docs/org--Block-agenda.html">Block agenda</a>), let's change the sorting strategy for the h commands to <code>priority-down</code>, but let's sort the results for ‘=garden=' tags query in the opposite order, <code>priority-up</code>. This would look like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands
+      '(("h" "Agenda and Home-related tasks"
+         ((agenda)
+          (tags-todo "home")
+          (tags "garden"
+                ((org-agenda-sorting-strategy '(priority-up)))))
+         ((org-agenda-sorting-strategy '(priority-down))))
+        ("o" "Agenda and Office-related tasks"
+         ((agenda)
+          (tags-todo "work")
+          (tags "office")))))
+</pre>
+</div>
+
+<p>
+As you see, the values and parentheses setting is a little complex. When in doubt, use the customize interface to set this variable&#x2014;it fully supports its structure. Just one caveat: when setting options in this interface, the <i>values</i> are just Lisp expressions. So if the value is a string, you need to add the double-quotes around the value yourself.
+</p>
+
+<p>
+To control whether an agenda command should be accessible from a specific context, you can customize <code>org-agenda-custom-commands-contexts</code>. Let's say for example that you have an agenda command o displaying a view that you only need when reading emails. Then you would configure this option like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands-contexts
+      '(("o" (in-mode . "message-mode"))))
+</pre>
+</div>
+
+<p>
+You can also tell that the command key o should refer to another command key r. In that case, add this command key like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands-contexts
+      '(("o" "r" (in-mode . "message-mode"))))
+</pre>
+</div>
+
+<p>
+See the docstring of the variable for more information.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Block-agenda.html">Block agenda</a>, Up: <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

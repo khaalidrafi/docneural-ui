@@ -1,0 +1,225 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#initial-ram-disk">1.0.1. 11.14 Initial RAM Disk</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Initial-RAM-Disk"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a>, Previous: <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Initial-RAM-Disk-1"></a>
+</p>
+</div>
+<div id="outline-container-initial-ram-disk" class="outline-4">
+<h4 id="initial-ram-disk"><span class="section-number-4">1.0.1.</span> 11.14 Initial RAM Disk</h4>
+<div class="outline-text-4" id="text-initial-ram-disk">
+<p>
+<a id="index-initrd-1"></a> <a id="index-initial-RAM-disk-1"></a>
+For bootstrapping purposes, the Linux-Libre kernel is passed an <i>initial RAM disk</i>, or <i>initrd</i>. An initrd contains a temporary root file system as well as an initialization script. The latter is responsible for mounting the real root file system, and for loading any kernel modules that may be needed to achieve that.
+</p>
+
+<p>
+The <code>initrd-modules</code> field of an <code>operating-system</code> declaration allows you to specify Linux-libre kernel modules that must be available in the initrd. In particular, this is where you would list modules needed to actually drive the hard disk where your root partition is&#x2014;although the default value of <code>initrd-modules</code> should cover most use cases. For example, assuming you need the <code>megaraid_sas</code> module in addition to the default modules to be able to access your root file system, you would write:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(operating-system
+  ;; …
+  (initrd-modules (cons "megaraid_sas" %base-initrd-modules)))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: %base-initrd-modules </dt><dd>This is the list of kernel modules included in the initrd by default.</dd>
+</dl>
+
+<p>
+Furthermore, if you need lower-level customization, the <code>initrd</code> field of an <code>operating-system</code> declaration allows you to specify which initrd you would like to use. The <code>(gnu system linux-initrd)</code> module provides three ways to build an initrd: the high-level <code>base-initrd</code> procedure and the low-level <code>raw-initrd</code> and <code>expression-&gt;initrd</code> procedures.
+</p>
+
+<p>
+The <code>base-initrd</code> procedure is intended to cover most common uses. For example, if you want to add a bunch of kernel modules to be loaded at boot time, you can define the <code>initrd</code> field of the operating system declaration like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(initrd (lambda (file-systems . rest)
+          ;; Create a standard initrd but set up networking
+          ;; with the parameters QEMU expects by default.
+          (apply base-initrd file-systems
+                 #:qemu-networking? #t
+                 rest)))
+</pre>
+</div>
+
+<p>
+The <code>base-initrd</code> procedure also handles common use cases that involves using the system as a QEMU guest, or as a “live” system with volatile root file system.
+</p>
+
+<p>
+The <code>base-initrd</code> procedure is built from <code>raw-initrd</code> procedure. Unlike <code>base-initrd</code>, <code>raw-initrd</code> doesn't do anything high-level, such as trying to guess which kernel modules and packages should be included to the initrd. An example use of <code>raw-initrd</code> is when a user has a custom Linux kernel configuration and default kernel modules included by <code>base-initrd</code> are not available.
+</p>
+
+<p>
+The initial RAM disk produced by <code>base-initrd</code> or <code>raw-initrd</code> honors several options passed on the Linux kernel command line (that is, arguments passed <i>via</i> the <code>linux</code> command of GRUB, or the <code>-append</code> option of QEMU), notably:
+</p>
+
+<dl class="org-dl">
+<dt><code>gnu.load===boot</code></dt><dd><p>
+Tell the initial RAM disk to load <code>boot</code>, a file containing a Scheme program, once it has mounted the root file system.
+</p>
+
+<p>
+Guix uses this option to yield control to a boot program that runs the service activation programs and then spawns the GNU Shepherd, the initialization system.
+</p></dd>
+
+<dt><code>root===root</code></dt><dd>Mount <code>root</code> as the root file system. <code>root</code> can be a device name like <code>/dev/sda1</code>, a file system label, or a file system UUID. When unspecified, the device name from the root file system of the operating system declaration is used.</dd>
+
+<dt><code>rootfstype===type</code></dt><dd>Set the type of the root file system. It overrides the <code>type</code> field of the root file system specified via the <code>operating-system</code> declaration, if any.</dd>
+
+<dt><code>rootflags===options</code></dt><dd>Set the mount <i>options</i> of the root file system. It overrides the <code>options</code> field of the root file system specified via the <code>operating-system</code> declaration, if any.</dd>
+
+<dt><code>fsck.mode===mode</code></dt><dd><p>
+Whether to check the <code>root</code> file system for errors before mounting it. <code>mode</code> is one of <code>skip</code> (never check), <code>force</code> (always check), or <code>auto</code> to respect the root <code>&lt;file-system&gt;</code> object's <code>check?</code> setting (see <a href="docs/guix--File-Systems.html">File Systems</a>) and run a full scan only if the file system was not cleanly shut down.
+</p>
+
+<p>
+<code>auto</code> is the default if this option is not present or if <code>mode</code> is not one of the above.
+</p></dd>
+
+<dt><code>fsck.repair===level</code></dt><dd><p>
+The level of repairs to perform automatically if errors are found in the <code>root</code> file system. <code>level</code> is one of <code>no</code> (do not write to <code>root</code> at all if possible), <code>yes</code> (repair as much as possible), or <code>preen</code> to repair problems considered safe to repair automatically.
+</p>
+
+<p>
+<code>preen</code> is the default if this option is not present or if <code>level</code> is not one of the above.
+</p></dd>
+
+<dt><code>gnu.system===system</code></dt><dd>Have <code>/run/booted-system</code> and <code>/run/current-system</code> point to <code>system</code>.</dd>
+
+<dt><code>modprobe.blacklist===modules==…</code> </dt><dd><p>
+<a id="index-black-list_002c-of-kernel-modules"></a>
+</p>
+
+<p>
+Instruct the initial RAM disk as well as the <code>modprobe</code> command (from the kmod package) to refuse to load <code>modules</code>. <code>modules</code> must be a comma-separated list of module names&#x2014;e.g., <code>usbkbd,9pnet</code>.
+</p></dd>
+
+<dt><code>gnu.repl</code></dt><dd>Start a read-eval-print loop (REPL) from the initial RAM disk before it tries to load kernel modules and to mount the root file system. Our marketing team calls it <i>boot-to-Guile</i>. The Schemer in you will love it. See <a href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-Interactively.html#Using-Guile-Interactively">Using Guile Interactively</a> in GNU Guile Reference Manual, for more information on Guile's REPL.</dd>
+</dl>
+
+<p>
+Now that you know all the features that initial RAM disks produced by <code>base-initrd</code> and <code>raw-initrd</code> provide, here is how to use it and customize it further.
+</p>
+
+<p>
+<a id="index-initrd-2"></a> <a id="index-initial-RAM-disk-2"></a>
+</p>
+<dl class="org-dl">
+<dt>Procedure: raw-initrd file-systems [#:linux-modules '()] [#:pre-mount #t] [#:mapped-devices '()] [#:keyboard-layout #f] [#:helper-packages '()] [#:qemu-networking? #f] [#:volatile-root? #f]</dt><dd><p>
+Return a derivation that builds a raw initrd. <code>file-systems</code> is a list of file systems to be mounted by the initrd, possibly in addition to the root file system specified on the kernel command line via <code>root</code>. <code>linux-modules</code> is a list of kernel modules to be loaded at boot time. <code>mapped-devices</code> is a list of device mappings to realize before <code>file-systems</code> are mounted (see <a href="docs/guix--Mapped-Devices.html">Mapped Devices</a>). <code>pre-mount</code> is a G-expression to evaluate before realizing <code>mapped-devices</code>. <code>helper-packages</code> is a list of packages to be copied in the initrd. It may include <code>e2fsck/static</code> or other packages needed by the initrd to check the root file system.
+</p>
+
+<p>
+When true, <code>keyboard-layout</code> is a <code>&lt;keyboard-layout&gt;</code> record denoting the desired console keyboard layout. This is done before <code>mapped-devices</code> are set up and before <code>file-systems</code> are mounted such that, should the user need to enter a passphrase or use the REPL, this happens using the intended keyboard layout.
+</p>
+
+<p>
+When <code>qemu-networking?</code> is true, set up networking with the standard QEMU parameters.
+</p>
+
+<p>
+When <code>volatile-root?</code> is true, the root file system is writable but any changes to it are lost.
+</p></dd>
+
+<dt>Procedure: base-initrd file-systems [#:mapped-devices '()] [#:keyboard-layout #f] [#:qemu-networking? #f] [#:volatile-root? #f] [#:linux-modules '()]</dt><dd><p>
+Return as a file-like object a generic initrd, with kernel modules taken from <code>linux</code>. <code>file-systems</code> is a list of file-systems to be mounted by the initrd, possibly in addition to the root file system specified on the kernel command line via <code>root</code>. <code>mapped-devices</code> is a list of device mappings to realize before <code>file-systems</code> are mounted.
+</p>
+
+<p>
+When true, <code>keyboard-layout</code> is a <code>&lt;keyboard-layout&gt;</code> record denoting the desired console keyboard layout. This is done before <code>mapped-devices</code> are set up and before <code>file-systems</code> are mounted such that, should the user need to enter a passphrase or use the REPL, this happens using the intended keyboard layout.
+</p>
+
+<p>
+<code>qemu-networking?</code> and <code>volatile-root?</code> behaves as in <code>raw-initrd</code>.
+</p>
+
+<p>
+The initrd is automatically populated with all the kernel modules necessary for <code>file-systems</code> and for the given options. Additional kernel modules can be listed in <code>linux-modules</code>. They will be added to the initrd, and loaded at boot time in the order in which they appear.
+</p></dd>
+</dl>
+
+<p>
+Needless to say, the initrds we produce and use embed a statically-linked Guile, and the initialization program is a Guile program. That gives a lot of flexibility. The <code>expression-&gt;initrd</code> procedure builds such an initrd, given the program to run in that initrd.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: expression-&gt;initrd exp [#:guile %guile-static-initrd] [#:name "guile-initrd"]</dt><dd>Return as a file-like object a Linux initrd (a gzipped cpio archive) containing <code>guile</code> and that evaluates <code>exp</code>, a G-expression, upon booting. All the derivations referenced by <code>exp</code> are automatically copied to the initrd.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Bootloader-Configuration.html">Bootloader Configuration</a>, Previous: <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

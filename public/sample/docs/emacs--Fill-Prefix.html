@@ -1,0 +1,84 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Fill-Prefix">1. 27.6.3 The Fill Prefix ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Adaptive-Fill.html">Adaptive Filling</a>   Previous: <a href="docs/emacs--Fill-Commands.html">Explicit Fill Commands</a>   Up: <a href="docs/emacs--Filling.html">Filling Text</a>
+</p>
+
+<p>
+<a id="Fill-Prefix"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Fill-Prefix" class="outline-2">
+<h2 id="The-Fill-Prefix"><span class="section-number-2">1.</span> 27.6.3 The Fill Prefix <a href="#The-Fill-Prefix">¶</a></h2>
+<div class="outline-text-2" id="text-The-Fill-Prefix">
+<p>
+The <i>fill prefix</i> feature allows paragraphs to be filled so that each line starts with a special string of characters (such as a sequence of spaces, giving an indented paragraph). You can specify a fill prefix explicitly; otherwise, Emacs tries to deduce one automatically (see <a href="docs/emacs--Adaptive-Fill.html">Adaptive Filling</a>).
+</p>
+
+<dl class="org-dl">
+<dt>C-x .</dt><dd>Set the fill prefix (<code>set-fill-prefix</code>).</dd>
+
+<dt>M-q</dt><dd>Fill a paragraph using current fill prefix (<code>fill-paragraph</code>).</dd>
+
+<dt>M-x fill-individual-paragraphs</dt><dd>Fill the region, considering each change of indentation as starting a new paragraph.</dd>
+
+<dt>M-x fill-nonuniform-paragraphs</dt><dd>Fill the region, considering only paragraph-separator lines as starting a new paragraph.</dd>
+</dl>
+
+<p>
+To specify a fill prefix for the current buffer, move to a line that starts with the desired prefix, put point at the end of the prefix, and type C-x . (<code>set-fill-prefix</code>). (That's a period after the C-x.) To turn off the fill prefix, specify an empty prefix: type C-x . with point at the beginning of a line.
+</p>
+
+<p>
+When a fill prefix is in effect, the fill commands remove the fill prefix from each line of the paragraph before filling, and insert it on each line after filling. (The beginning of the first line of the paragraph is left unchanged, since often that is intentionally different.) Auto Fill mode also inserts the fill prefix automatically when it makes a new line (see <a href="docs/emacs--Auto-Fill.html">Auto Fill Mode</a>). The C-o command inserts the fill prefix on new lines it creates, when you use it at the beginning of a line (see <a href="docs/emacs--Blank-Lines.html">Blank Lines</a>). Conversely, the command M-^ deletes the prefix (if it occurs) after the newline that it deletes (see <a href="docs/emacs--Indentation.html">Indentation</a>).
+</p>
+
+<p>
+For example, if <code>fill-column</code> is 40 and you set the fill prefix to ‘=;; =', then M-q in the following text
+</p>
+
+<pre class="example" id="org6453c09">
+;; This is an
+;; example of a paragraph
+;; inside a Lisp-style comment.
+</pre>
+
+<p>
+produces this:
+</p>
+
+<pre class="example" id="org97208f1">
+;; This is an example of a paragraph
+;; inside a Lisp-style comment.
+</pre>
+
+<p>
+Lines that do not start with the fill prefix are considered to start paragraphs, both in M-q and the paragraph commands; this gives good results for paragraphs with hanging indentation (every line indented except the first one). Lines which are blank or indented once the prefix is removed also separate or start paragraphs; this is what you want if you are writing multi-paragraph comments with a comment delimiter on each line.
+</p>
+
+<p>
+You can use M-x fill-individual-paragraphs to set the fill prefix for each paragraph automatically. This command divides the region into paragraphs, treating every change in the amount of indentation as the start of a new paragraph, and fills each of these paragraphs. Thus, all the lines in one paragraph have the same amount of indentation. That indentation serves as the fill prefix for that paragraph.
+</p>
+
+<p>
+M-x fill-nonuniform-paragraphs is a similar command that divides the region into paragraphs in a different way. It considers only paragraph-separating lines (as defined by <code>paragraph-separate</code>) as starting a new paragraph. Since this means that the lines of one paragraph may have different amounts of indentation, the fill prefix used is the smallest amount of indentation of any of the lines of the paragraph. This gives good results with styles that indent a paragraph's first line more or less that the rest of the paragraph.
+</p>
+
+<p>
+The fill prefix is stored in the variable <code>fill-prefix</code>. Its value is a string, or <code>nil</code> when there is no fill prefix. This is a per-buffer variable; altering the variable affects only the current buffer, but there is a default value which you can change as well. See <a href="docs/emacs--Locals.html">Local Variables</a>.
+</p>
+
+<p>
+The <code>indentation</code> text property provides another way to control the amount of indentation paragraphs receive. See <a href="docs/emacs--Enriched-Indentation.html">Indentation in Enriched Text</a>.
+</p>
+
+<hr />
+</div>
+</div>

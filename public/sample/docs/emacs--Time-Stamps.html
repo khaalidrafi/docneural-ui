@@ -1,0 +1,41 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Updating-Time-Stamps-Automatically">1. 20.3.6 Updating Time Stamps Automatically ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--File-Shadowing.html">Shadowing Files</a>   Up: <a href="docs/emacs--Saving.html">Saving Files</a>
+</p>
+
+<p>
+<a id="Time-Stamps"></a>
+</p>
+
+<hr />
+<div id="outline-container-Updating-Time-Stamps-Automatically" class="outline-2">
+<h2 id="Updating-Time-Stamps-Automatically"><span class="section-number-2">1.</span> 20.3.6 Updating Time Stamps Automatically <a href="#Updating-Time-Stamps-Automatically">¶</a></h2>
+<div class="outline-text-2" id="text-Updating-Time-Stamps-Automatically">
+<p>
+You can arrange to put a time stamp in a file, so that it is updated automatically each time you edit and save the file. The time stamp must be in the first eight lines of the file, and you should insert it like this:
+</p>
+
+<pre class="example" id="org2003b62">
+Time-stamp: &lt;&gt;
+</pre>
+
+<p>
+or like this:
+</p>
+
+<pre class="example" id="orgb157542">
+Time-stamp: " "
+</pre>
+
+<p>
+Then add the function <code>time-stamp</code> to the hook <code>before-save-hook</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>). When you save the file, this function then automatically updates the time stamp with the current date and time. You can also use the command M-x time-stamp to update the time stamp manually. By default the time stamp is formatted according to your locale setting (see <a href="docs/emacs--Environment.html">Environment Variables</a>) and time zone (see <a href="../elisp_html/Time-of-Day.html#Time-of-Day">Time of Day</a> in The Emacs Lisp Reference Manual). For customizations, see the Custom group <code>time-stamp</code>.
+</p>
+</div>
+</div>

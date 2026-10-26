@@ -1,0 +1,83 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Overview-of-Emerge-1">1. 30.6.1 Overview of Emerge ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Submodes-of-Emerge.html">Submodes of Emerge</a>   Up: <a href="docs/emacs--Emerge.html">Merging Files with Emerge</a>
+</p>
+
+<p>
+<a id="Overview-of-Emerge"></a>
+</p>
+
+<hr />
+<div id="outline-container-Overview-of-Emerge-1" class="outline-2">
+<h2 id="Overview-of-Emerge-1"><span class="section-number-2">1.</span> 30.6.1 Overview of Emerge <a href="#Overview-of-Emerge-1">¶</a></h2>
+<div class="outline-text-2" id="text-Overview-of-Emerge-1">
+<p>
+To start Emerge, run one of these four commands:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-emerge_002dfiles"></a>M-x emerge-files </dt><dd>Merge two specified files.</dd>
+
+<dt><a id="index-emerge_002dfiles_002dwith_002dancestor"></a>M-x emerge-files-with-ancestor </dt><dd>Merge two specified files, with reference to a common ancestor.</dd>
+
+<dt><a id="index-emerge_002dbuffers"></a>M-x emerge-buffers </dt><dd>Merge two buffers.</dd>
+
+<dt><a id="index-emerge_002dbuffers_002dwith_002dancestor"></a>M-x emerge-buffers-with-ancestor </dt><dd>Merge two buffers with reference to a common ancestor in a third buffer.</dd>
+</dl>
+
+<p>
+The Emerge commands compare two files or buffers, and display the comparison in three buffers: one for each input text (the <i>A buffer</i> and the <i>B buffer</i>), and one (the <i>merge buffer</i>) where merging takes place. The merge buffer shows the full merged text, not just the differences. Wherever the two input texts differ, you can choose which one of them to include in the merge buffer.
+</p>
+
+<p>
+The Emerge commands that take input from existing buffers use only the accessible portions of those buffers, if they are narrowed. See <a href="docs/emacs--Narrowing.html">Narrowing</a>.
+</p>
+
+<p>
+If a common ancestor version is available, from which the two texts to be merged were both derived, Emerge can use it to guess which alternative is right. Wherever one current version agrees with the ancestor, Emerge presumes that the other current version is a deliberate change which should be kept in the merged version. Use the ‘=with-ancestor=' commands if you want to specify a common ancestor text. These commands read three file or buffer names&#x2014;variant A, variant B, and the common ancestor.
+</p>
+
+<p>
+After the comparison is done and the buffers are prepared, the interactive merging starts. You control the merging by typing special <i>merge commands</i> in the merge buffer (see <a href="docs/emacs--Merge-Commands.html">Merge Commands</a>). For each run of differences between the input texts, you can choose which one of them to keep, or edit them both together.
+</p>
+
+<p>
+The merge buffer uses a special major mode, Emerge mode, with commands for making these choices. But you can also edit the buffer with ordinary Emacs commands.
+</p>
+
+<p>
+At any given time, the attention of Emerge is focused on one particular difference, called the <i>selected</i> difference. This difference is marked off in the three buffers like this:
+</p>
+
+<pre class="example" id="orgb6697ee">
+vvvvvvvvvvvvvvvvvvvv
+text that differs
+^^^^^^^^^^^^^^^^^^^^
+</pre>
+
+<p>
+Emerge numbers all the differences sequentially and the mode line always shows the number of the selected difference.
+</p>
+
+<p>
+Normally, the merge buffer starts out with the A version of the text. But when the A version of a difference agrees with the common ancestor, then the B version is initially preferred for that difference.
+</p>
+
+<p>
+Emerge leaves the merged text in the merge buffer when you exit. At that point, you can save it in a file with C-x C-w. If you give a numeric argument to <code>emerge-files</code> or <code>emerge-files-with-ancestor</code>, it reads the name of the output file using the minibuffer. (This is the last file name those commands read.) Then exiting from Emerge saves the merged text in the output file.
+</p>
+
+<p>
+Normally, Emerge commands save the output buffer in its file when you exit. If you abort Emerge with C-], the Emerge command does not save the output buffer, but you can save it yourself if you wish.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,132 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Substitute-Server-Authorization"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Getting-Substitutes-from-Other-Servers.html">Getting Substitutes from Other Servers</a>, Previous: <a href="docs/guix--Official-Substitute-Servers.html">Official Substitute Servers</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Substitute-Server-Authorization-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="substitute-server-authorization"></a>5.3.2 Substitute Server Authorization<br />
+<div class="outline-text-5" id="text-substitute-server-authorization">
+<p>
+<a id="index-security"></a> <a id="index-substitutes_002c-authorization-thereof-1"></a> <a id="index-access-control-list-_0028ACL_0029_002c-for-substitutes"></a> <a id="index-ACL-_0028access-control-list_0029_002c-for-substitutes"></a>
+To allow Guix to download substitutes from <code>bordeaux.guix.gnu.org</code>, <code>ci.guix.gnu.org</code> or a mirror, you must add the relevant public key to the access control list (ACL) of archive imports, using the <code>guix archive</code> command (see <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>). Doing so implies that you trust the substitute server to not be compromised and to serve genuine substitutes.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> If you are using Guix System, you can skip this section: Guix System authorizes substitutes from <code>bordeaux.guix.gnu.org</code> and <code>ci.guix.gnu.org</code> by default.
+</p>
+</blockquote>
+
+<p>
+The public keys for each of the project maintained substitute servers are installed along with Guix, in <code>prefix==/share/guix/</code>, where <code>prefix</code> is the installation prefix of Guix. If you installed Guix from source, make sure you checked the GPG signature of <code>guix-1.5.0.tar.gz</code>, which contains this public key file. Then, you can run something like this:
+</p>
+
+<pre class="example" id="org0a4e87b">
+# guix archive --authorize &lt; prefix/share/guix/bordeaux.guix.gnu.org.pub
+# guix archive --authorize &lt; prefix/share/guix/ci.guix.gnu.org.pub
+</pre>
+
+<p>
+Once this is in place, the output of a command like <code>guix build</code> should change from something like:
+</p>
+
+<pre class="example" id="orgdbdb9ad">
+$ guix build emacs --dry-run
+The following derivations would be built:
+   /gnu/store/yr7bnx8xwcayd6j95r2clmkdl1qh688w-emacs-24.3.drv
+   /gnu/store/x8qsh1hlhgjx6cwsjyvybnfv2i37z23w-dbus-1.6.4.tar.gz.drv
+   /gnu/store/1ixwp12fl950d15h2cj11c73733jay0z-alsa-lib-1.0.27.1.tar.bz2.drv
+   /gnu/store/nlma1pw0p603fpfiqy7kn4zm105r5dmw-util-linux-2.21.drv
+…
+</pre>
+
+<p>
+to something like:
+</p>
+
+<pre class="example" id="orgd37752b">
+$ guix build emacs --dry-run
+112.3 MB would be downloaded:
+   /gnu/store/pk3n22lbq6ydamyymqkkz7i69wiwjiwi-emacs-24.3
+   /gnu/store/2ygn4ncnhrpr61rssa6z0d9x22si0va3-libjpeg-8d
+   /gnu/store/71yz6lgx4dazma9dwn2mcjxaah9w77jq-cairo-1.12.16
+   /gnu/store/7zdhgp0n1518lvfn8mb96sxqfmvqrl7v-libxrender-0.9.7
+…
+</pre>
+
+<p>
+The text changed from “The following derivations would be built” to “112.3 MB would be downloaded”. This indicates that substitutes from the configured substitute servers are usable and will be downloaded, when possible, for future builds.
+</p>
+
+<p>
+<a id="index-substitutes_002c-how-to-disable"></a>
+The substitute mechanism can be disabled globally by running <code>guix-daemon</code> with <code>--no-substitutes</code> (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>). It can also be disabled temporarily by passing the <code>--no-substitutes</code> option to <code>guix package</code>, <code>guix build</code>, and other command-line tools.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Getting-Substitutes-from-Other-Servers.html">Getting Substitutes from Other Servers</a>, Previous: <a href="docs/guix--Official-Substitute-Servers.html">Official Substitute Servers</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

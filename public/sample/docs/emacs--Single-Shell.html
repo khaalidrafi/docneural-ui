@@ -1,0 +1,103 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Single-Shell-Commands">1. 40.1 Single Shell Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Interactive-Shell.html">Interactive Subshell</a>   Up: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>
+</p>
+
+<p>
+<a id="Single-Shell"></a>
+</p>
+
+<hr />
+<div id="outline-container-Single-Shell-Commands" class="outline-2">
+<h2 id="Single-Shell-Commands"><span class="section-number-2">1.</span> 40.1 Single Shell Commands <a href="#Single-Shell-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Single-Shell-Commands">
+<p>
+M-! (<code>shell-command</code>) reads a line of text using the minibuffer and executes it as a shell command, in a subshell made just for that command. Standard input for the command comes from the null device. If the shell command produces any output, the output appears either in the echo area (if it is short), or in the ‘="<b>Shell Command Output</b>"<code>' (=shell-command-buffer-name</code>) buffer (if the output is long). The variables <code>resize-mini-windows</code> and <code>max-mini-window-height</code> (see <a href="docs/emacs--Minibuffer-Edit.html">Editing in the Minibuffer</a>) control when Emacs should consider the output to be too long for the echo area. Note that customizing <code>shell-command-dont-erase-buffer</code>, described below, can affect what is displayed in the echo area.
+</p>
+
+<p>
+For instance, one way to decompress a file named <code>foo.gz</code> is to type M-! gunzip foo.gz RET. That shell command normally creates the file <code>foo</code> and produces no terminal output.
+</p>
+
+<p>
+A numeric argument to <code>shell-command</code>, e.g., M-1 M-!, causes it to insert terminal output into the current buffer instead of a separate buffer. By default, it puts point before the output, and sets the mark after the output (but a non-default value of <code>shell-command-dont-erase-buffer</code> can change that, see below). For instance, M-1 M-! gunzip &lt; foo.gz RET would insert the uncompressed form of the file <code>foo.gz</code> into the current buffer.
+</p>
+
+<p>
+Provided the specified shell command does not end with ‘=&amp;=', it runs <i>synchronously</i>, and you must wait for it to exit before continuing to use Emacs. To stop waiting, type C-g to quit; this sends a <code>SIGINT</code> signal to terminate the shell command (this is the same signal that C-c normally generates in the shell). Emacs then waits until the command actually terminates. If the shell command doesn't stop (because it ignores the <code>SIGINT</code> signal), type C-g again; this sends the command a <code>SIGKILL</code> signal, which is impossible to ignore.
+</p>
+
+<p>
+A shell command that ends in ‘=&amp;=' is executed <i>asynchronously</i>, and you can continue to use Emacs as it runs. You can also type M-&amp; (<code>async-shell-command</code>) to execute a shell command asynchronously; this is exactly like calling M-! with a trailing ‘=&amp;=', except that you do not need the ‘=&amp;='. The output from asynchronous shell commands, by default, goes into the ‘="<b>Async Shell Command</b>"<code>' buffer (=shell-command-buffer-name-async</code>). Emacs inserts the output into this buffer as it comes in, whether or not the buffer is visible in a window.
+</p>
+
+<p>
+If you want to run more than one asynchronous shell command at the same time, they could end up competing for the output buffer. The option <code>async-shell-command-buffer</code> specifies what to do about this; e.g., whether to rename the pre-existing output buffer, or to use a different buffer for the new command. Consult the variable's documentation for more possibilities.
+</p>
+
+<p>
+If you want the output buffer for asynchronous shell commands to be displayed only when the command generates output, set <code>async-shell-command-display-buffer</code> to <code>nil</code>.
+</p>
+
+<p>
+The option <code>async-shell-command-width</code> defines the number of display columns available for output of asynchronous shell commands. A positive integer tells the shell to use that number of columns for command output. The default value is <code>nil</code> that means to use the same number of columns as provided by the shell.
+</p>
+
+<p>
+To make the above commands show the current directory in their prompts, customize the variable <code>shell-command-prompt-show-cwd</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+M-| (<code>shell-command-on-region</code>) is like M-!, but passes the contents of the region as the standard input to the shell command, instead of no input. With a numeric argument, it deletes the old region and replaces it with the output from the shell command.
+</p>
+
+<p>
+For example, you can use M-| with the <code>gpg</code> program to see what keys are in the buffer. If the buffer contains a GnuPG key, type C-x h M-| gpg RET to feed the entire buffer contents to <code>gpg</code>. This will output the list of keys to the buffer whose name is the value of <code>shell-command-buffer-name</code>.
+</p>
+
+<p>
+The above commands use the shell specified by the variable <code>shell-file-name</code>. Its default value is determined by the <code>SHELL</code> environment variable when Emacs is started. If the file name is relative, Emacs searches the directories listed in <code>exec-path</code> (see <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>).
+</p>
+
+<p>
+If the default directory is remote (see <a href="docs/emacs--Remote-Files.html">Remote Files</a>), the default value is <code>/bin/sh</code>. This can be changed by declaring <code>shell-file-name</code> connection-local (see <a href="docs/emacs--Connection-Variables.html">Per-Connection Local Variables</a>).
+</p>
+
+<p>
+To specify a coding system for M-! or M-|, use the command C-x RET c immediately beforehand. See <a href="docs/emacs--Communication-Coding.html">Coding Systems for Interprocess Communication</a>.
+</p>
+
+<p>
+By default, error output is intermixed with the regular output in the output buffer. But if you change the value of the variable <code>shell-command-default-error-buffer</code> to a string, error output is inserted into a buffer of that name.
+</p>
+
+<p>
+By default, the output buffer is erased between shell commands, except when the output goes to the current buffer. If you change the value of the option <code>shell-command-dont-erase-buffer</code> to <code>erase</code>, then the output buffer is always erased. Other non-<code>nil</code> values prevent erasing of the output buffer, and&#x2014;if the output buffer is not the current buffer&#x2014;also control where to put point after inserting the output of the shell command:
+</p>
+
+<dl class="org-dl">
+<dt><code>beg-last-out</code></dt><dd>Puts point at the beginning of the last shell-command output.</dd>
+
+<dt><code>end-last-out</code></dt><dd>Puts point at the end of the last shell-command output, i.e. at the end of the output buffer.</dd>
+
+<dt><code>save-point</code></dt><dd>Restores the position of point as it was before inserting the shell-command output.</dd>
+</dl>
+
+<p>
+Note that if this option is non-<code>nil</code>, the output shown in the echo area could be from more than just the last command, since the echo area just displays a portion of the output buffer.
+</p>
+
+<p>
+In case the output buffer is not the current buffer, shell command output is appended at the end of this buffer.
+</p>
+
+<hr />
+</div>
+</div>

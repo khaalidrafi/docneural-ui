@@ -1,0 +1,149 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org13f9095">1. Holidays</a></li>
+<li><a href="#org41d59f8">2. Birthdays</a></li>
+<li><a href="#org22f479c">3. Anniversaries</a></li>
+<li><a href="#org6e5e15b">4. Anniversaries</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Weekly_002fdaily-agenda"></a>
+Next: <a href="docs/org--Global-TODO-list.html">The global TODO list</a>, Up: <a href="docs/org--Built_002din-Agenda-Views.html">The Built-in Agenda Views</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Weekly_002fdaily-agenda-1"></a>11.3.1 Weekly/daily agenda <a href="#Weekly_002fdaily-agenda-1">¶</a><br />
+<div class="outline-text-5" id="text-Weekly_002fdaily-agenda-1">
+<p>
+The purpose of the weekly/daily <i>agenda</i> is to act like a page of a paper agenda, showing all the tasks for the current week or day.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-a-_0028Agenda-dispatcher_0029"></a>M-x org-agenda a (<code>org-agenda-list</code>) </dt><dd>Compile an agenda for the current week from a list of Org files. The agenda shows the entries for each day. With a numeric prefix argument&#x2014;like C-u 2 1 M-x org-agenda a&#x2014;you may set the number of days to be displayed.</dd>
+</dl>
+
+<p>
+The default number of days displayed in the agenda is set by the variable <code>org-agenda-span</code>. This variable can be set to any number of days you want to see by default in the agenda, or to a span name, such a <code>day</code>, <code>week</code>, <code>month</code> or <code>year</code>. For weekly agendas, the default is to start on the previous Monday (see <code>org-agenda-start-on-weekday</code>). You can also set the start date using a date shift: ‘=(setq org-agenda-start-day "+10d")=' starts the agenda ten days from today in the future. <code>org-agenda-start-on-weekday</code> takes precedence over <code>org-agenda-start-day</code> in weekly and bi-weekly agendas.
+</p>
+
+<p>
+Remote editing from the agenda buffer means, for example, that you can change the dates of deadlines and appointments from the agenda buffer. The commands available in the Agenda buffer are listed in <a href="docs/org--Agenda-Commands.html">Commands in the Agenda Buffer</a>.
+</p>
+</div>
+</li>
+<li><a id="Calendar_002fDiary-integration-1"></a>Calendar/Diary integration <a href="#Calendar_002fDiary-integration-1">¶</a><br />
+<div class="outline-text-5" id="text-Calendar_002fDiary-integration-1">
+<p>
+Emacs contains the calendar and diary by Edward M. Reingold. The calendar displays a three-month calendar with holidays from different countries and cultures. The diary allows you to keep track of anniversaries, lunar phases, sunrise/set, recurrent appointments (weekly, monthly) and more. In this way, it is quite complementary to Org. It can be very useful to combine output from Org with the diary.
+</p>
+
+<p>
+In order to include entries from the Emacs diary into Org mode's agenda, you only need to customize the variable
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-include-diary t)
+</pre>
+</div>
+
+<p>
+After that, everything happens automatically. All diary entries including holidays, anniversaries, etc., are included in the agenda buffer created by Org mode. SPC, TAB, and RET can be used from the agenda buffer to jump to the diary file in order to edit existing diary entries. The i command to insert new entries for the current date works in the agenda buffer, as well as the commands S, M, and C to display Sunrise/Sunset times, show lunar phases and to convert to other calendars, respectively. c can be used to switch back and forth between calendar and agenda.
+</p>
+
+<p>
+If you are using the diary only for expression entries and holidays, it is faster to not use the above setting, but instead to copy or even move the entries into an Org file. Org mode evaluates diary-style expression entries, and does it faster because there is no overhead for first creating the diary display. Note that the expression entries must start at the left margin, no whitespace is allowed before them, as seen in the following segment of an Org file:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-org13f9095" class="outline-2">
+<h2 id="org13f9095"><span class="section-number-2">1.</span> Holidays</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+</div>
+<div id="outline-container-org41d59f8" class="outline-2">
+<h2 id="org41d59f8"><span class="section-number-2">2.</span> Birthdays</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="Anniversaries-from-BBDB-1"></a>Anniversaries from BBDB <a href="#Anniversaries-from-BBDB-1">¶</a><br />
+<div class="outline-text-5" id="text-Anniversaries-from-BBDB-1">
+<p>
+If you are using the Insidious Big Brother Database to store your contacts, you very likely prefer to store anniversaries in BBDB rather than in a separate Org or diary file. Org supports this and can show BBDB anniversaries as part of the agenda. All you need to do is to add the following to one of your agenda files:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org22f479c" class="outline-2">
+<h2 id="org22f479c"><span class="section-number-2">3.</span> Anniversaries</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+You can then go ahead and define anniversaries for a BBDB record. Basically, you need a field named ‘=anniversary=' for the BBDB record which contains the date in the format ‘=YYYY-MM-DD=' or ‘=MM-DD=', followed by a space and the class of the anniversary (‘=birthday=', ‘=wedding=', or a format string). If you omit the class, it defaults to ‘=birthday='. Here are a few examples, the header for the file ‘=ol-bbdb.el=' contains more detailed information.
+</p>
+
+<pre class="example" id="org5685218">
+1973-06-22
+06-22
+1955-08-02 wedding
+2008-04-14 %s released version 6.01 of Org mode, %d years ago
+</pre>
+
+<p>
+After a change to BBDB, or for the first agenda display during an Emacs session, the agenda display suffers a short delay as Org updates its hash with anniversaries. However, from then on things will be very fast, much faster in fact than a long list of ‘=%%(diary-anniversary)=' entries in an Org or Diary file.
+</p>
+
+<p>
+If you would like to see upcoming anniversaries with a bit of forewarning, you can use the following instead:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+<div id="outline-container-org6e5e15b" class="outline-2">
+<h2 id="org6e5e15b"><span class="section-number-2">4.</span> Anniversaries</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+That will give you three days' warning: on the anniversary date itself and the two days prior. The argument is optional: if omitted, it defaults to 7.
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="Appointment-reminders-1"></a>Appointment reminders <a href="#Appointment-reminders-1">¶</a><br />
+<div class="outline-text-5" id="text-Appointment-reminders-1">
+<p>
+Org can interact with Emacs appointments notification facility. To add the appointments of your agenda files, use the command <code>org-agenda-to-appt</code>. This command lets you filter through the list of your appointments and add only those belonging to a specific category or matching a regular expression. It also reads a ‘=APPT<sub>WARNTIME</sub>=' property which overrides the value of <code>appt-message-warning-time</code> for this appointment. See the docstring for details.
+</p>
+
+<hr />
+</div>
+</li>
+</div>

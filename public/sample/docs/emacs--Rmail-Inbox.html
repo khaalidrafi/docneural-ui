@@ -1,0 +1,60 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Rmail-Files-and-Inboxes">1. 35.5 Rmail Files and Inboxes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Files.html">Multiple Rmail Files</a>   Previous: <a href="docs/emacs--Rmail-Deletion.html">Deleting Messages</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Inbox"></a>
+</p>
+
+<hr />
+<div id="outline-container-Rmail-Files-and-Inboxes" class="outline-2">
+<h2 id="Rmail-Files-and-Inboxes"><span class="section-number-2">1.</span> 35.5 Rmail Files and Inboxes <a href="#Rmail-Files-and-Inboxes">¶</a></h2>
+<div class="outline-text-2" id="text-Rmail-Files-and-Inboxes">
+<p>
+When you receive mail locally, the operating system places incoming mail for you in a file that we call your <i>inbox</i>. When you start up Rmail, it runs a C program called <code>movemail</code> to copy the new messages from your inbox into your primary Rmail file, which also contains other messages saved from previous Rmail sessions. It is in this file that you actually read the mail with Rmail. This operation is called <i>getting new mail</i>. You can get new mail at any time in Rmail by typing g.
+</p>
+
+<p>
+The variable <code>rmail-primary-inbox-list</code> contains a list of the files that are inboxes for your primary Rmail file. If you don't set this variable explicitly, Rmail uses the <code>MAIL</code> environment variable, or, as a last resort, a default inbox based on <code>rmail-spool-directory</code>. The default inbox file depends on your operating system; often it is <code>/var/mail/==username</code>, <code>/var/spool/mail/==username</code>, or <code>/usr/spool/mail/==username</code>.
+</p>
+
+<p>
+You can specify the inbox file(s) for any Rmail file for the current session with the command <code>set-rmail-inbox-list</code>; see <a href="docs/emacs--Rmail-Files.html">Multiple Rmail Files</a>.
+</p>
+
+<p>
+There are two reasons for having separate Rmail files and inboxes.
+</p>
+
+<ol class="org-ol">
+<li>The inbox file format varies between operating systems and according to the other mail software in use. Only one part of Rmail needs to know about the alternatives, and it need only understand how to convert all of them to Rmail's own format.</li>
+<li>It is very cumbersome to access an inbox file without danger of losing mail, because it is necessary to interlock with mail delivery. Moreover, different operating systems use different interlocking techniques. The strategy of moving mail out of the inbox once and for all into a separate Rmail file avoids the need for interlocking in all the rest of Rmail, since only Rmail operates on the Rmail file.</li>
+</ol>
+
+<p>
+Rmail uses the standard ‘=mbox=' format, introduced by Unix and GNU systems for inbox files, as its internal format of Rmail files. (In fact, there are a few slightly different mbox formats. The differences are not very important, but you can set the variable <code>rmail-mbox-format</code> to tell Rmail which form your system uses. See that variable's documentation for more details.)
+</p>
+
+<p>
+When getting new mail, Rmail first copies the new mail from the inbox file to the Rmail file; then it saves the Rmail file; then it clears out the inbox file. This way, a system crash may cause duplication of mail between the inbox and the Rmail file, but cannot lose mail. If <code>rmail-preserve-inbox</code> is non-<code>nil</code>, then Rmail does not clear out the inbox file when it gets new mail. You may wish to set this, for example, on a portable computer you use to check your mail via POP while traveling, so that your mail will remain on the server and you can save it later on your main desktop workstation.
+</p>
+
+<p>
+In some cases, Rmail copies the new mail from the inbox file indirectly. First it runs the <code>movemail</code> program to move the mail from the inbox to an intermediate file called <code>.newmail-==inboxname</code>, in the same directory as the Rmail file. Then Rmail merges the new mail from that file, saves the Rmail file, and only then deletes the intermediate file. If there is a crash at the wrong time, this file continues to exist, and Rmail will use it again the next time it gets new mail from that inbox.
+</p>
+
+<p>
+If Rmail is unable to convert the data in <code>.newmail-==inboxname</code> into mbox format, it renames the file to <code>RMAILOSE.==n</code> (<code>n</code> is an integer chosen to make the name unique) so that Rmail will not have trouble with the data again. You should look at the file, find whatever message confuses Rmail (probably one that includes the control-underscore character, octal code 037), and delete it. Then you can use 1 g to get new mail from the corrected file.
+</p>
+
+<hr />
+</div>
+</div>

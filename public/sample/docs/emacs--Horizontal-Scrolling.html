@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Horizontal-Scrolling-1">1. 16.4 Horizontal Scrolling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Narrowing.html">Narrowing</a>   Previous: <a href="docs/emacs--Auto-Scrolling.html">Automatic Scrolling</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Horizontal-Scrolling"></a>
+</p>
+
+<hr />
+<div id="outline-container-Horizontal-Scrolling-1" class="outline-2">
+<h2 id="Horizontal-Scrolling-1"><span class="section-number-2">1.</span> 16.4 Horizontal Scrolling <a href="#Horizontal-Scrolling-1">¶</a></h2>
+<div class="outline-text-2" id="text-Horizontal-Scrolling-1">
+<p>
+<i>Horizontal scrolling</i> means shifting all the lines sideways within a window, so that some of the text near the left margin is not displayed. When the text in a window is scrolled horizontally, text lines are truncated rather than continued (see <a href="docs/emacs--Line-Truncation.html">Line Truncation</a>). If a window shows truncated lines, Emacs performs automatic horizontal scrolling whenever point moves off the left or right edge of the screen. By default, all the lines in the window are scrolled horizontally together, but if you set the variable <code>auto-hscroll-mode</code> to the special value of <code>current-line</code>, only the line showing the cursor will be scrolled. To disable automatic horizontal scrolling entirely, set the variable <code>auto-hscroll-mode</code> to <code>nil</code>. Note that when the automatic horizontal scrolling is turned off, if point moves off the edge of the screen, the cursor disappears to indicate that. (On text terminals, the cursor is left at the edge instead.)
+</p>
+
+<p>
+The variable <code>hscroll-margin</code> controls how close point can get to the window's left and right edges before automatic scrolling occurs. It is measured in columns. For example, if the value is 5, then moving point within 5 columns of an edge causes horizontal scrolling away from that edge.
+</p>
+
+<p>
+The variable <code>hscroll-step</code> determines how many columns to scroll the window when point gets too close to the edge. Zero, the default value, means to center point horizontally within the window. A positive integer value specifies the number of columns to scroll by. A floating-point number (whose value should be between 0 and 1) specifies the fraction of the window's width to scroll by.
+</p>
+
+<p>
+You can also perform explicit horizontal scrolling with the following commands:
+</p>
+
+<dl class="org-dl">
+<dt>C-x &lt;</dt><dd>Scroll text in current window to the left (<code>scroll-left</code>).</dd>
+
+<dt>C-x &gt;</dt><dd>Scroll to the right (<code>scroll-right</code>).</dd>
+</dl>
+
+<p>
+C-x &lt; (<code>scroll-left</code>) scrolls text in the selected window to the left by the full width of the window, less two columns. (In other words, the text in the window moves left relative to the window.) With a numeric argument <code>n</code>, it scrolls by <code>n</code> columns.
+</p>
+
+<p>
+If the text is scrolled to the left, and point moves off the left edge of the window, the cursor will freeze at the left edge of the window, until point moves back to the displayed portion of the text. This is independent of the current setting of <code>auto-hscroll-mode</code>, which, for text scrolled to the left, only affects the behavior at the right edge of the window.
+</p>
+
+<p>
+C-x &gt; (<code>scroll-right</code>) scrolls similarly to the right. The window cannot be scrolled any farther to the right once it is displayed normally, with each line starting at the window's left margin; attempting to do so has no effect. This means that you don't have to calculate the argument precisely for C-x &gt;; any sufficiently large argument will restore the normal display.
+</p>
+
+<p>
+If you use those commands to scroll a window horizontally, that sets a lower bound for automatic horizontal scrolling. Automatic scrolling will continue to scroll the window, but never farther to the right than the amount you previously set by <code>scroll-left</code>. When <code>auto-hscroll-mode</code> is set to <code>current-line</code>, all the lines other than the one showing the cursor will be scrolled by that minimal amount.
+</p>
+
+<p>
+On graphical displays, you can scroll a window horizontally using the horizontal scroll bar, if you turn on the optional <code>horizontal-scroll-bar-mode</code>; see <a href="docs/emacs--Scroll-Bars.html">Scroll Bars</a>.
+</p>
+
+<hr />
+</div>
+</div>

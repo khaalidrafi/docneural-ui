@@ -1,0 +1,876 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Printing-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Desktop-Services.html">Desktop Services</a>, Previous: <a href="docs/guix--X-Window.html">X Window</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Printing-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="printing-services"></a>11.10.8 Printing Services<br />
+<div class="outline-text-5" id="text-printing-services">
+<p>
+<a id="index-printer-support-with-CUPS"></a>
+The <code>(gnu services cups)</code> module provides a Guix service definition for the CUPS printing service. To add printer support to a Guix system, add a <code>cups-service</code> to the operating system definition:
+</p>
+
+<dl class="org-dl">
+<dt>Variable: cups-service-type </dt><dd><p>
+The service type for the CUPS print server. Its value should be a valid CUPS configuration (see below). To use the default settings, simply write:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service cups-service-type)
+</pre>
+</div></dd>
+</dl>
+
+<p>
+The CUPS configuration controls the basic things about your CUPS installation: what interfaces it listens on, what to do if a print job fails, how much logging to do, and so on. To actually add a printer, you have to visit the <a href="http://localhost:631">http://localhost:631</a> URL, or use a tool such as GNOME's printer configuration services. By default, configuring a CUPS service will generate a self-signed certificate if needed, for secure connections to the print server.
+</p>
+
+<p>
+Suppose you want to enable the Web interface of CUPS and also add support for Epson printers <i>via</i> the <code>epson-inkjet-printer-escpr</code> package and for HP printers <i>via</i> the <code>hplip-minimal</code> package. You can do that directly, like this (you need to use the <code>(gnu packages cups)</code> module):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service cups-service-type
+         (cups-configuration
+           (web-interface? #t)
+           (extensions
+             (list cups-filters epson-inkjet-printer-escpr hplip-minimal))))
+</pre>
+</div>
+
+<blockquote>
+<p>
+<b>Note:</b> If you wish to use the Qt5 based GUI which comes with the hplip package then it is suggested that you install the <code>hplip</code> package, either in your OS configuration file or as your user.
+</p>
+</blockquote>
+
+<p>
+The available configuration parameters follow. Each parameter definition is preceded by its type; for example, ‘=string-list foo=' indicates that the <code>foo</code> parameter should be specified as a list of strings. There is also a way to specify the configuration as a string, if you have an old <code>cupsd.conf</code> file that you want to port over from some other system; see the end for more details.
+</p>
+
+<p>
+Available <code>cups-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>cups-configuration</code> parameter: <i>package</i> <b>cups</b> </dt><dd>The CUPS package.</dd>
+
+<dt><code>cups-configuration</code> parameter: <i>package-list</i> <b>extensions</b> <i>(default: <code>(list brlaser cups-filters epson-inkjet-printer-escpr foomatic-filters hplip-minimal splix)</code>)</i> </dt><dd>Drivers and other extensions to the CUPS package.</dd>
+
+<dt><code>cups-configuration</code> parameter: <i>files-configuration</i> <b>files-configuration</b> </dt><dd><p>
+Configuration of where to write logs, what directories to use for print spools, and related privileged configuration parameters.
+</p>
+
+<p>
+Available <code>files-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>files-configuration</code> parameter: <i>log-location</i> <b>access-log</b> </dt><dd><p>
+Defines the access log filename. Specifying a blank filename disables access log generation. The value <code>stderr</code> causes log entries to be sent to the standard error file when the scheduler is running in the foreground, or to the system log daemon when run in the background. The value <code>syslog</code> causes log entries to be sent to the system log daemon. The server name may be included in filenames using the string <code>%s</code>, as in <code>/var/log/cups/%s-access_log</code>.
+</p>
+
+<p>
+Defaults to ‘="/var/log/cups/access<sub>log</sub>"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>file-name</i> <b>cache-dir</b> </dt><dd><p>
+Where CUPS should cache data.
+</p>
+
+<p>
+Defaults to ‘="/var/cache/cups"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>config-file-perm</b> </dt><dd><p>
+Specifies the permissions for all configuration files that the scheduler writes.
+</p>
+
+<p>
+Note that the permissions for the printers.conf file are currently masked to only allow access from the scheduler user (typically root). This is done because printer device URIs sometimes contain sensitive authentication information that should not be generally known on the system. There is no way to disable this security feature.
+</p>
+
+<p>
+Defaults to ‘="0640"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>log-location</i> <b>error-log</b> </dt><dd><p>
+Defines the error log filename. Specifying a blank filename disables error log generation. The value <code>stderr</code> causes log entries to be sent to the standard error file when the scheduler is running in the foreground, or to the system log daemon when run in the background. The value <code>syslog</code> causes log entries to be sent to the system log daemon. The server name may be included in filenames using the string <code>%s</code>, as in <code>/var/log/cups/%s-error_log</code>.
+</p>
+
+<p>
+Defaults to ‘="/var/log/cups/error<sub>log</sub>"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>fatal-errors</b> </dt><dd><p>
+Specifies which errors are fatal, causing the scheduler to exit. The kind strings are:
+</p>
+
+<dl class="org-dl">
+<dt><code>none</code></dt><dd>No errors are fatal.</dd>
+
+<dt><code>all</code></dt><dd>All of the errors below are fatal.</dd>
+
+<dt><code>browse</code></dt><dd>Browsing initialization errors are fatal, for example failed connections to the DNS-SD daemon.</dd>
+
+<dt><code>config</code></dt><dd>Configuration file syntax errors are fatal.</dd>
+
+<dt><code>listen</code></dt><dd>Listen or Port errors are fatal, except for IPv6 failures on the loopback or <code>any</code> addresses.</dd>
+
+<dt><code>log</code></dt><dd>Log file creation or write errors are fatal.</dd>
+
+<dt><code>permissions</code></dt><dd>Bad startup file permissions are fatal, for example shared TLS certificate and key files with world-read permissions.</dd>
+</dl>
+
+<p>
+Defaults to ‘="all -browse"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>boolean</i> <b>file-device?</b> </dt><dd><p>
+Specifies whether the file pseudo-device can be used for new printer queues. The URI <a href="file:///dev/null">file:///dev/null</a> is always allowed.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>group</b> </dt><dd><p>
+Specifies the group name or ID that will be used when executing external programs.
+</p>
+
+<p>
+Defaults to ‘="lp"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>log-file-group</b> </dt><dd><p>
+Specifies the group name or ID that will be used for log files.
+</p>
+
+<p>
+Defaults to ‘="lpadmin"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>log-file-perm</b> </dt><dd><p>
+Specifies the permissions for all log files that the scheduler writes.
+</p>
+
+<p>
+Defaults to ‘="0644"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>log-location</i> <b>page-log</b> </dt><dd><p>
+Defines the page log filename. Specifying a blank filename disables page log generation. The value <code>stderr</code> causes log entries to be sent to the standard error file when the scheduler is running in the foreground, or to the system log daemon when run in the background. The value <code>syslog</code> causes log entries to be sent to the system log daemon. The server name may be included in filenames using the string <code>%s</code>, as in <code>/var/log/cups/%s-page_log</code>.
+</p>
+
+<p>
+Defaults to ‘="/var/log/cups/page<sub>log</sub>"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>remote-root</b> </dt><dd><p>
+Specifies the username that is associated with unauthenticated accesses by clients claiming to be the root user. The default is <code>remroot</code>.
+</p>
+
+<p>
+Defaults to ‘="remroot"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>file-name</i> <b>request-root</b> </dt><dd><p>
+Specifies the directory that contains print jobs and other HTTP request data.
+</p>
+
+<p>
+Defaults to ‘="/var/spool/cups"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>sandboxing</i> <b>sandboxing</b> </dt><dd><p>
+Specifies the level of security sandboxing that is applied to print filters, backends, and other child processes of the scheduler; either <code>relaxed</code> or <code>strict</code>. This directive is currently only used/supported on macOS.
+</p>
+
+<p>
+Defaults to ‘=strict='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>file-name</i> <b>server-keychain</b> </dt><dd><p>
+Specifies the location of TLS certificates and private keys. CUPS will look for public and private keys in this directory: <code>.crt</code> files for PEM-encoded certificates and corresponding <code>.key</code> files for PEM-encoded private keys.
+</p>
+
+<p>
+Defaults to ‘="/etc/cups/ssl"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>file-name</i> <b>server-root</b> </dt><dd><p>
+Specifies the directory containing the server configuration files.
+</p>
+
+<p>
+Defaults to ‘="/etc/cups"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>boolean</i> <b>sync-on-close?</b> </dt><dd><p>
+Specifies whether the scheduler calls fsync(2) after writing configuration or state files.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>space-separated-string-list</i> <b>system-group</b> </dt><dd>Specifies the group(s) to use for <code>@SYSTEM</code> group authentication.</dd>
+
+<dt><code>files-configuration</code> parameter: <i>file-name</i> <b>temp-dir</b> </dt><dd><p>
+Specifies the directory where temporary files are stored.
+</p>
+
+<p>
+Defaults to ‘="/var/spool/cups/tmp"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>user</b> </dt><dd><p>
+Specifies the user name or ID that is used when running external programs.
+</p>
+
+<p>
+Defaults to ‘="lp"='.
+</p></dd>
+
+<dt><code>files-configuration</code> parameter: <i>string</i> <b>set-env</b> </dt><dd><p>
+Set the specified environment variable to be passed to child processes.
+</p>
+
+<p>
+Defaults to ‘="variable value"='.
+</p></dd>
+</dl></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>access-log-level</i> <b>access-log-level</b> </dt><dd><p>
+Specifies the logging level for the AccessLog file. The <code>config</code> level logs when printers and classes are added, deleted, or modified and when configuration files are accessed or updated. The <code>actions</code> level logs when print jobs are submitted, held, released, modified, or canceled, and any of the conditions for <code>config</code>. The <code>all</code> level logs all requests.
+</p>
+
+<p>
+Defaults to ‘=actions='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>auto-purge-jobs?</b> </dt><dd><p>
+Specifies whether to purge job history data automatically when it is no longer required for quotas.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>comma-separated-string-list</i> <b>browse-dns-sd-sub-types</b> </dt><dd><p>
+Specifies a list of DNS-SD sub-types to advertise for each shared printer.
+</p>
+
+<p>
+The default ‘=(list "<sub>cups</sub>" "<sub>print</sub>" "<sub>universal</sub>")=' tells clients that CUPS sharing, IPP Everywhere, AirPrint, and Mopria are supported.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>browse-local-protocols</i> <b>browse-local-protocols</b> </dt><dd><p>
+Specifies which protocols to use for local printer sharing.
+</p>
+
+<p>
+Defaults to ‘=dnssd='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>browse-web-if?</b> </dt><dd><p>
+Specifies whether the CUPS web interface is advertised.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>browsing?</b> </dt><dd><p>
+Specifies whether shared printers are advertised.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>default-auth-type</i> <b>default-auth-type</b> </dt><dd><p>
+Specifies the default type of authentication to use.
+</p>
+
+<p>
+Defaults to ‘=Basic='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>default-encryption</i> <b>default-encryption</b> </dt><dd><p>
+Specifies whether encryption will be used for authenticated requests.
+</p>
+
+<p>
+Defaults to ‘=Required='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>string</i> <b>default-language</b> </dt><dd><p>
+Specifies the default language to use for text and web content.
+</p>
+
+<p>
+Defaults to ‘="en"='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>string</i> <b>default-paper-size</b> </dt><dd><p>
+Specifies the default paper size for new print queues. ‘="Auto"<code>' uses a locale-specific default, while ‘</code>"None"<code>' specifies there is no default paper size. Specific size names are typically ‘</code>"Letter"<code>' or ‘</code>"A4"='.
+</p>
+
+<p>
+Defaults to ‘="Auto"='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>string</i> <b>default-policy</b> </dt><dd><p>
+Specifies the default access policy to use.
+</p>
+
+<p>
+Defaults to ‘="default"='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>default-shared?</b> </dt><dd><p>
+Specifies whether local printers are shared by default.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>dirty-clean-interval</b> </dt><dd><p>
+Specifies the delay for updating of configuration and state files, in seconds. A value of 0 causes the update to happen as soon as possible, typically within a few milliseconds.
+</p>
+
+<p>
+Defaults to ‘=30='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>error-policy</i> <b>error-policy</b> </dt><dd><p>
+Specifies what to do when an error occurs. Possible values are <code>abort-job</code>, which will discard the failed print job; <code>retry-job</code>, which will retry the job at a later time; <code>retry-current-job</code>, which retries the failed job immediately; and <code>stop-printer</code>, which stops the printer.
+</p>
+
+<p>
+Defaults to ‘=stop-printer='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>filter-limit</b> </dt><dd><p>
+Specifies the maximum cost of filters that are run concurrently, which can be used to minimize disk, memory, and CPU resource problems. A limit of 0 disables filter limiting. An average print to a non-PostScript printer needs a filter limit of about 200. A PostScript printer needs about half that (100). Setting the limit below these thresholds will effectively limit the scheduler to printing a single job at any time.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>filter-nice</b> </dt><dd><p>
+Specifies the scheduling priority of filters that are run to print a job. The nice value ranges from 0, the highest priority, to 19, the lowest priority.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>host-name-lookups</i> <b>host-name-lookups</b> </dt><dd><p>
+Specifies whether to do reverse lookups on connecting clients. The <code>double</code> setting causes <code>cupsd</code> to verify that the hostname resolved from the address matches one of the addresses returned for that hostname. Double lookups also prevent clients with unregistered addresses from connecting to your server. Only set this option to <code>#t</code> or <code>double</code> if absolutely required.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>job-kill-delay</b> </dt><dd><p>
+Specifies the number of seconds to wait before killing the filters and backend associated with a canceled or held job.
+</p>
+
+<p>
+Defaults to ‘=30='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>job-retry-interval</b> </dt><dd><p>
+Specifies the interval between retries of jobs in seconds. This is typically used for fax queues but can also be used with normal print queues whose error policy is <code>retry-job</code> or <code>retry-current-job</code>.
+</p>
+
+<p>
+Defaults to ‘=30='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>job-retry-limit</b> </dt><dd><p>
+Specifies the number of retries that are done for jobs. This is typically used for fax queues but can also be used with normal print queues whose error policy is <code>retry-job</code> or <code>retry-current-job</code>.
+</p>
+
+<p>
+Defaults to ‘=5='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>keep-alive?</b> </dt><dd><p>
+Specifies whether to support HTTP keep-alive connections.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>limit-request-body</b> </dt><dd><p>
+Specifies the maximum size of print files, IPP requests, and HTML form data. A limit of 0 disables the limit check.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>multiline-string-list</i> <b>listen</b> </dt><dd>Listens on the specified interfaces for connections. Valid values are of the form <code>address</code>:=port=, where <code>address</code> is either an IPv6 address enclosed in brackets, an IPv4 address, or <code>*</code> to indicate all addresses. Values can also be file names of local UNIX domain sockets. The Listen directive is similar to the Port directive but allows you to restrict access to specific interfaces or networks.</dd>
+
+<dt><code>cups-configuration</code> parameter: <i>location-access-control-list</i> <b>location-access-controls</b> </dt><dd><p>
+Specifies a set of additional access controls.
+</p>
+
+<p>
+Available <code>location-access-controls</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>location-access-controls</code> parameter: <i>file-name</i> <b>path</b> </dt><dd>Specifies the URI path to which the access control applies.</dd>
+
+<dt><code>location-access-controls</code> parameter: <i>access-control-list</i> <b>access-controls</b> </dt><dd><p>
+Access controls for all access to this path, in the same format as the <code>access-controls</code> of <code>operation-access-control</code>.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>location-access-controls</code> parameter: <i>method-access-control-list</i> <b>method-access-controls</b> </dt><dd><p>
+Access controls for method-specific access to this path.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p>
+
+<p>
+Available <code>method-access-controls</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>method-access-controls</code> parameter: <i>boolean</i> <b>reverse?</b> </dt><dd><p>
+If <code>#t</code>, apply access controls to all methods except the listed methods. Otherwise apply to only the listed methods.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>method-access-controls</code> parameter: <i>method-list</i> <b>methods</b> </dt><dd><p>
+Methods to which this access control applies.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>method-access-controls</code> parameter: <i>access-control-list</i> <b>access-controls</b> </dt><dd><p>
+Access control directives, as a list of strings. Each string should be one directive, such as ‘="Order allow,deny"='.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>log-debug-history</b> </dt><dd><p>
+Specifies the number of debugging messages that are retained for logging if an error occurs in a print job. Debug messages are logged regardless of the LogLevel setting.
+</p>
+
+<p>
+Defaults to ‘=100='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>log-level</i> <b>log-level</b> </dt><dd><p>
+Specifies the level of logging for the ErrorLog file. The value <code>none</code> stops all logging while <code>debug2</code> logs everything.
+</p>
+
+<p>
+Defaults to ‘=info='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>log-time-format</i> <b>log-time-format</b> </dt><dd><p>
+Specifies the format of the date and time in the log files. The value <code>standard</code> logs whole seconds while <code>usecs</code> logs microseconds.
+</p>
+
+<p>
+Defaults to ‘=standard='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-clients</b> </dt><dd><p>
+Specifies the maximum number of simultaneous clients that are allowed by the scheduler.
+</p>
+
+<p>
+Defaults to ‘=100='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-clients-per-host</b> </dt><dd><p>
+Specifies the maximum number of simultaneous clients that are allowed from a single address.
+</p>
+
+<p>
+Defaults to ‘=100='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-copies</b> </dt><dd><p>
+Specifies the maximum number of copies that a user can print of each job.
+</p>
+
+<p>
+Defaults to ‘=9999='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-hold-time</b> </dt><dd><p>
+Specifies the maximum time a job may remain in the <code>indefinite</code> hold state before it is canceled. A value of 0 disables cancellation of held jobs.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-jobs</b> </dt><dd><p>
+Specifies the maximum number of simultaneous jobs that are allowed. Set to 0 to allow an unlimited number of jobs.
+</p>
+
+<p>
+Defaults to ‘=500='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-jobs-per-printer</b> </dt><dd><p>
+Specifies the maximum number of simultaneous jobs that are allowed per printer. A value of 0 allows up to <code>max-jobs</code> per printer.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-jobs-per-user</b> </dt><dd><p>
+Specifies the maximum number of simultaneous jobs that are allowed per user. A value of 0 allows up to <code>max-jobs</code> per user.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-job-time</b> </dt><dd><p>
+Specifies the maximum time a job may take to print before it is canceled, in seconds. Set to 0 to disable cancellation of “stuck” jobs.
+</p>
+
+<p>
+Defaults to ‘=10800='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-log-size</b> </dt><dd><p>
+Specifies the maximum size of the log files before they are rotated, in bytes. The value 0 disables log rotation.
+</p>
+
+<p>
+Defaults to ‘=1048576='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-subscriptions</b> </dt><dd><p>
+Specifies the maximum number of simultaneous event subscriptions that are allowed. Set to ‘=0=' to allow an unlimited number of subscriptions.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-subscriptions-per-job</b> </dt><dd><p>
+Specifies the maximum number of simultaneous event subscriptions that are allowed per job. A value of ‘=0=' allows up to <code>max-subscriptions</code> per job.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-subscriptions-per-printer</b> </dt><dd><p>
+Specifies the maximum number of simultaneous event subscriptions that are allowed per printer. A value of ‘=0=' allows up to <code>max-subscriptions</code> per printer.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>max-subscriptions-per-user</b> </dt><dd><p>
+Specifies the maximum number of simultaneous event subscriptions that are allowed per user. A value of ‘=0=' allows up to <code>max-subscriptions</code> per user.
+</p>
+
+<p>
+Defaults to ‘=0='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>multiple-operation-timeout</b> </dt><dd><p>
+Specifies the maximum amount of time to allow between files in a multiple file print job, in seconds.
+</p>
+
+<p>
+Defaults to ‘=900='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>environment-variables</i> <b>environment-variables</b> </dt><dd><p>
+Passes the specified environment variable(s) to child processes; a list of strings.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>policy-configuration-list</i> <b>policies</b> </dt><dd><p>
+Specifies named access control policies.
+</p>
+
+<p>
+Available <code>policy-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>policy-configuration</code> parameter: <i>string</i> <b>name</b> </dt><dd>Name of the policy.</dd>
+
+<dt><code>policy-configuration</code> parameter: <i>string</i> <b>job-private-access</b> </dt><dd><p>
+Specifies an access list for a job's private values. <code>@ACL</code> maps to the printer's requesting-user-name-allowed or requesting-user-name-denied values. <code>@OWNER</code> maps to the job's owner. <code>@SYSTEM</code> maps to the groups listed for the <code>system-group</code> field of the <code>files-configuration</code>, which is reified into the <code>cups-files.conf(5)</code> file. Other possible elements of the access list include specific user names, and <code>@==group</code> to indicate members of a specific group. The access list may also be simply <code>all</code> or <code>default</code>.
+</p>
+
+<p>
+Defaults to ‘="@OWNER @SYSTEM"='.
+</p></dd>
+
+<dt><code>policy-configuration</code> parameter: <i>string</i> <b>job-private-values</b> </dt><dd><p>
+Specifies the list of job values to make private, or <code>all</code>, <code>default</code>, or <code>none</code>.
+</p>
+
+<p>
+Defaults to ‘="job-name job-originating-host-name job-originating-user-name phone"='.
+</p></dd>
+
+<dt><code>policy-configuration</code> parameter: <i>string</i> <b>subscription-private-access</b> </dt><dd><p>
+Specifies an access list for a subscription's private values. <code>@ACL</code> maps to the printer's requesting-user-name-allowed or requesting-user-name-denied values. <code>@OWNER</code> maps to the job's owner. <code>@SYSTEM</code> maps to the groups listed for the <code>system-group</code> field of the <code>files-configuration</code>, which is reified into the <code>cups-files.conf(5)</code> file. Other possible elements of the access list include specific user names, and <code>@==group</code> to indicate members of a specific group. The access list may also be simply <code>all</code> or <code>default</code>.
+</p>
+
+<p>
+Defaults to ‘="@OWNER @SYSTEM"='.
+</p></dd>
+
+<dt><code>policy-configuration</code> parameter: <i>string</i> <b>subscription-private-values</b> </dt><dd><p>
+Specifies the list of job values to make private, or <code>all</code>, <code>default</code>, or <code>none</code>.
+</p>
+
+<p>
+Defaults to ‘="notify-events notify-pull-method notify-recipient-uri notify-subscriber-user-name notify-user-data"='.
+</p></dd>
+
+<dt><code>policy-configuration</code> parameter: <i>operation-access-control-list</i> <b>access-controls</b> </dt><dd><p>
+Access control by IPP operation.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean-or-non-negative-integer</i> <b>preserve-job-files</b> </dt><dd><p>
+Specifies whether job files (documents) are preserved after a job is printed. If a numeric value is specified, job files are preserved for the indicated number of seconds after printing. Otherwise a boolean value applies indefinitely.
+</p>
+
+<p>
+Defaults to ‘=86400='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean-or-non-negative-integer</i> <b>preserve-job-history</b> </dt><dd><p>
+Specifies whether the job history is preserved after a job is printed. If a numeric value is specified, the job history is preserved for the indicated number of seconds after printing. If <code>#t</code>, the job history is preserved until the MaxJobs limit is reached.
+</p>
+
+<p>
+Defaults to ‘=#t='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>comma-separated-string-list-or-#f</i> <b>ready-paper-sizes</b> </dt><dd><p>
+Specifies a list of potential paper sizes that are reported as ready, that is: loaded. The actual list will contain only the sizes that each printer supports.
+</p>
+
+<p>
+The default value of <code>#f</code> is a special case: CUPS will use ‘=(list \"Letter\" \"Legal\" \"Tabloid\" \"4x6\" \"Env10\")=' if the default paper size is \"Letter\", and ‘=(list \"A3\" \"A4\" \"A5\" \"A6\" \"EnvDL\")=' otherwise.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>reload-timeout</b> </dt><dd><p>
+Specifies the amount of time to wait for job completion before restarting the scheduler.
+</p>
+
+<p>
+Defaults to ‘=30='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>string</i> <b>server-admin</b> </dt><dd><p>
+Specifies the email address of the server administrator.
+</p>
+
+<p>
+Defaults to ‘="root@localhost.localdomain"='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>host-name-list-or-*</i> <b>server-alias</b> </dt><dd><p>
+The ServerAlias directive is used for HTTP Host header validation when clients connect to the scheduler from external interfaces. Using the special name <code>*</code> can expose your system to known browser-based DNS rebinding attacks, even when accessing sites through a firewall. If the auto-discovery of alternate names does not work, we recommend listing each alternate name with a ServerAlias directive instead of using <code>*</code>.
+</p>
+
+<p>
+Defaults to ‘=*='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>string</i> <b>server-name</b> </dt><dd><p>
+Specifies the fully-qualified host name of the server.
+</p>
+
+<p>
+Defaults to ‘="localhost"='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>server-tokens</i> <b>server-tokens</b> </dt><dd><p>
+Specifies what information is included in the Server header of HTTP responses. <code>None</code> disables the Server header. <code>ProductOnly</code> reports <code>CUPS</code>. <code>Major</code> reports <code>CUPS 2</code>. <code>Minor</code> reports <code>CUPS 2.0</code>. <code>Minimal</code> reports <code>CUPS 2.0.0</code>. <code>OS</code> reports <code>CUPS 2.0.0 (==uname=</code>)= where <code>uname</code> is the output of the <code>uname</code> command. <code>Full</code> reports <code>CUPS 2.0.0 (==uname=</code>) IPP/2.0=.
+</p>
+
+<p>
+Defaults to ‘=Minimal='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>multiline-string-list</i> <b>ssl-listen</b> </dt><dd><p>
+Listens on the specified interfaces for encrypted connections. Valid values are of the form <code>address</code>:=port=, where <code>address</code> is either an IPv6 address enclosed in brackets, an IPv4 address, or <code>*</code> to indicate all addresses.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>ssl-options</i> <b>ssl-options</b> </dt><dd><p>
+Sets encryption options. By default, CUPS only supports encryption using TLS v1.0 or higher using known secure cipher suites. Security is reduced when <code>Allow</code> options are used, and enhanced when <code>Deny</code> options are used. The <code>AllowRC4</code> option enables the 128-bit RC4 cipher suites, which are required for some older clients. The <code>AllowSSL3</code> option enables SSL v3.0, which is required for some older clients that do not support TLS v1.0. The <code>DenyCBC</code> option disables all CBC cipher suites. The <code>DenyTLS1.0</code> option disables TLS v1.0 support - this sets the minimum protocol version to TLS v1.1.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>strict-conformance?</b> </dt><dd><p>
+Specifies whether the scheduler requires clients to strictly adhere to the IPP specifications.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>non-negative-integer</i> <b>timeout</b> </dt><dd><p>
+Specifies the HTTP request timeout, in seconds.
+</p>
+
+<p>
+Defaults to ‘=900='.
+</p></dd>
+
+<dt><code>cups-configuration</code> parameter: <i>boolean</i> <b>web-interface?</b> </dt><dd><p>
+Specifies whether the web interface is enabled.
+</p>
+
+<p>
+Defaults to ‘=#f='.
+</p></dd>
+</dl>
+
+<p>
+At this point you're probably thinking “oh dear, Guix manual, I like you but you can stop already with the configuration options”. Indeed. However, one more point: it could be that you have an existing <code>cupsd.conf</code> that you want to use. In that case, you can pass an <code>opaque-cups-configuration</code> as the configuration of a <code>cups-service-type</code>.
+</p>
+
+<p>
+Available <code>opaque-cups-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>opaque-cups-configuration</code> parameter: <i>package</i> <b>cups</b> </dt><dd>The CUPS package.</dd>
+
+<dt><code>opaque-cups-configuration</code> parameter: <i>string</i> <b>cupsd.conf</b> </dt><dd>The contents of the <code>cupsd.conf</code>, as a string.</dd>
+
+<dt><code>opaque-cups-configuration</code> parameter: <i>string</i> <b>cups-files.conf</b> </dt><dd>The contents of the <code>cups-files.conf</code> file, as a string.</dd>
+</dl>
+
+<p>
+For example, if your <code>cupsd.conf</code> and <code>cups-files.conf</code> are in strings of the same name, you could instantiate a CUPS service like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service cups-service-type
+         (opaque-cups-configuration
+           (cupsd.conf cupsd.conf)
+           (cups-files.conf cups-files.conf)))
+</pre>
+</div>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Desktop-Services.html">Desktop Services</a>, Previous: <a href="docs/guix--X-Window.html">X Window</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

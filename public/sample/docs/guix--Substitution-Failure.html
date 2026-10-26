@@ -1,0 +1,81 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Substitution-Failure"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--On-Trusting-Binaries.html">On Trusting Binaries</a>, Previous: <a href="docs/guix--Proxy-Settings.html">Proxy Settings</a>, Up: <a href="docs/guix--Substitutes.html">Substitutes</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Substitution-Failure-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="substitution-failure"></a>5.3.6 Substitution Failure<br />
+<div class="outline-text-5" id="text-substitution-failure">
+<p>
+Even when a substitute for a derivation is available, sometimes the substitution attempt will fail. This can happen for a variety of reasons: the substitute server might be offline, the substitute may recently have been deleted, the connection might have been interrupted, etc.
+</p>
+
+<p>
+When substitutes are enabled and a substitute for a derivation is available, but the substitution attempt fails, Guix will attempt to build the derivation locally depending on whether or not <code>--fallback</code> was given (see <a href="docs/guix--Common-Build-Options.html#fallback_002doption">common build option <code>--fallback</code></a>). Specifically, if <code>--fallback</code> was omitted, then no local build will be performed, and the derivation is considered to have failed. However, if <code>--fallback</code> was given, then Guix will attempt to build the derivation locally, and the success or failure of the derivation depends on the success or failure of the local build. Note that when substitutes are disabled or no substitute is available for the derivation in question, a local build will <i>always</i> be performed, regardless of whether or not <code>--fallback</code> was given.
+</p>
+
+<p>
+To get an idea of how many substitutes are available right now, you can try running the <code>guix weather</code> command (see <a href="docs/guix--Invoking-guix-weather.html">Invoking <code>guix weather</code></a>). This command provides statistics on the substitutes provided by a server.
+</p>
+</div>
+</li>
+</ol>
+</div>

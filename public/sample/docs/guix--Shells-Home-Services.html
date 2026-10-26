@@ -1,0 +1,350 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Shells-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Mcron-Home-Service.html">Scheduled User's Job Execution</a>, Previous: <a href="docs/guix--Essential-Home-Services.html">Essential Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Shells"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="shells"></a>13.3.2 Shells<br />
+<div class="outline-text-5" id="text-shells">
+<p>
+<a id="index-shell"></a> <a id="index-login-shell"></a> <a id="index-interactive-shell"></a> <a id="index-bash"></a> <a id="index-zsh"></a>
+Shells play a quite important role in the environment initialization process, you can configure them manually as described in section <a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a>, but the recommended way is to use home services listed below. It's both easier and more reliable.
+</p>
+
+<p>
+Each home environment instantiates <code>home-shell-profile-service-type</code>, which creates a <code>~/.profile</code> startup file for all POSIX-compatible shells. This file contains all the necessary steps to properly initialize the environment, but many modern shells like Bash or Zsh prefer their own startup files, that's why the respective home services (<code>home-bash-service-type</code> and <code>home-zsh-service-type</code>) ensure that <code>~/.profile</code> is sourced by <code>~/.bash_profile</code> and <code>~/.zprofile</code>, respectively.
+</p>
+
+<p>
+<a id="Shell-Profile-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="shell-profile-service"></a>Shell Profile Service<br />
+<div class="outline-text-5" id="text-shell-profile-service">
+<dl class="org-dl">
+<dt>Data Type: home-shell-profile-configuration </dt><dd>Available <code>home-shell-profile-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>profile</code> (default: <code>'()</code>) (type: text-config)</dt><dd><code>home-shell-profile</code> is instantiated automatically by <code>home-environment</code>, DO NOT create this service manually, it can only be extended. <code>profile</code> is a list of file-like objects, which will go to <code>~/.profile</code>. By default <code>~/.profile</code> contains the initialization code which must be evaluated by the login shell to make home-environment's profile available to the user, but other commands can be added to the file if it is really necessary. In most cases shell's configuration files are preferred places for user's customizations. Extend home-shell-profile service only if you really know what you do.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Bash-Home-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="bash-home-service"></a>Bash Home Service<br />
+<div class="outline-text-5" id="text-bash-home-service">
+<p>
+<a id="home_002dbash_002dconfiguration"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: home-bash-configuration </dt><dd>Available <code>home-bash-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>bash</code>) (type: package)</dt><dd>The Bash package to use.</dd>
+
+<dt><code>guix-defaults?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Add sane defaults like setting <code>PS1</code>, <code>SHELL</code>, and ensuring <code>/etc/profile</code> is sourced for non-interactive SSH shells. If you use Guix System, is it safe to set this to <code>#f</code>, as in this case this is already taken care of by the globally installed <code>/etc/bashrc</code>.</dd>
+
+<dt><code>environment-variables</code> (default: <code>()</code>) (type: alist)</dt><dd>Association list of environment variables to set for the Bash session. The rules for the <code>home-environment-variables-service-type</code> apply here (see <a href="docs/guix--Essential-Home-Services.html">Essential Home Services</a>). The contents of this field will be added after the contents of the <code>bash-profile</code> field.</dd>
+
+<dt><code>variables</code> (default: <code>()</code>) (type: alist)</dt><dd>Bash variables (not to be confused with environment variables) to be set in <code>.bashrc</code> for use by interactive shells. A typical example of such variables is <code>HISTSIZE</code> and related history variables (see <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html#Bash-Variables">Bash Variables</a> in Bash Reference Manual).</dd>
+
+<dt><code>aliases</code> (type: alist)</dt><dd><p>
+Association list of aliases to set for the Bash session. The aliases will be defined after the contents of the <code>bashrc</code> field has been put in the <code>.bashrc</code> file. The alias will automatically be quoted, so something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'(("ls" . "ls -alF"))
+</pre>
+</div>
+
+<p>
+turns into
+</p>
+
+<pre class="example" id="orgc79d9b2">
+alias ls="ls -alF"
+</pre></dd>
+
+<dt><code>bash-profile</code> (default: <code>()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.bash_profile</code>. Used for executing user's commands at start of login shell (In most cases the shell started on tty just after login). <code>.bash_login</code> won't be ever read, because <code>.bash_profile</code> always present.</dd>
+
+<dt><code>bashrc</code> (default: <code>()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.bashrc</code>. Used for executing user's commands at start of interactive shell (The shell for interactive usage started by typing <code>bash</code> or by terminal app or any other program).</dd>
+
+<dt><code>bash-logout</code> (default: <code>()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.bash_logout</code>. Used for executing user's commands at the exit of login shell. It won't be read in some cases (if the shell terminates by exec'ing another process for example).</dd>
+</dl></dd>
+</dl>
+
+<p>
+You can extend the Bash service by using the <code>home-bash-extension</code> configuration record, whose fields must mirror that of <code>home-bash-configuration</code> (see ). The contents of the extensions will be added to the end of the corresponding Bash configuration files (see <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash Startup Files</a> in The GNU Bash Reference Manual.
+</p>
+
+<p>
+For example, here is how you would define a service that extends the Bash service such that <code>~/.bash_profile</code> defines an additional shell variable, <code>PS1</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define bash-fancy-prompt-service
+  (simple-service 'bash-fancy-prompt
+                  home-bash-service-type
+                  (home-bash-extension
+                   (variables
+                    '(("PS1" . "\\u \\wλ "))))))
+</pre>
+</div>
+
+<p>
+You would then add <code>bash-fancy-prompt-service</code> to the list in the <code>services</code> field of your <code>home-environment</code>. The reference of <code>home-bash-extension</code> follows.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: home-bash-extension </dt><dd>Available <code>home-bash-extension</code> fields are:
+
+<dl class="org-dl">
+<dt><code>environment-variables</code> (default: <code>()</code>) (type: alist)</dt><dd>Additional environment variables to set. These will be combined with the environment variables from other extensions and the base service to form one coherent block of environment variables.</dd>
+
+<dt><code>variables</code> (default: <code>()</code>) (type: alist)</dt><dd>Extra Bash variables (not to be confused with environment variables) to be set in <code>.bashrc</code> for use by interactive shells.</dd>
+
+<dt><code>aliases</code> (default: <code>()</code>) (type: alist)</dt><dd>Additional aliases to set. These will be combined with the aliases from other extensions and the base service.</dd>
+
+<dt><code>bash-profile</code> (default: <code>()</code>) (type: text-config)</dt><dd>Additional text blocks to add to <code>.bash_profile</code>, which will be combined with text blocks from other extensions and the base service.</dd>
+
+<dt><code>bashrc</code> (default: <code>()</code>) (type: text-config)</dt><dd>Additional text blocks to add to <code>.bashrc</code>, which will be combined with text blocks from other extensions and the base service.</dd>
+
+<dt><code>bash-logout</code> (default: <code>()</code>) (type: text-config)</dt><dd>Additional text blocks to add to <code>.bash_logout</code>, which will be combined with text blocks from other extensions and the base service.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Zsh-Home-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="zsh-home-service"></a>Zsh Home Service<br />
+<div class="outline-text-5" id="text-zsh-home-service">
+<dl class="org-dl">
+<dt>Data Type: home-zsh-configuration </dt><dd>Available <code>home-zsh-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>zsh</code>) (type: package)</dt><dd>The Zsh package to use.</dd>
+
+<dt><code>xdg-flavor?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>Place all the configs to <code>$XDG_CONFIG_HOME/zsh</code>. Makes <code>~/.zshenv</code> to set <code>ZDOTDIR</code> to <code>$XDG_CONFIG_HOME/zsh</code>. Shell startup process will continue with <code>$XDG_CONFIG_HOME/zsh/.zshenv</code>.</dd>
+
+<dt><code>environment-variables</code> (default: <code>'()</code>) (type: alist)</dt><dd>Association list of environment variables to set for the Zsh session.</dd>
+
+<dt><code>zshenv</code> (default: <code>'()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.zshenv</code>. Used for setting user's shell environment variables. Must not contain commands assuming the presence of tty or producing output. Will be read always. Will be read before any other file in <code>ZDOTDIR</code>.</dd>
+
+<dt><code>zprofile</code> (default: <code>'()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.zprofile</code>. Used for executing user's commands at start of login shell (In most cases the shell started on tty just after login). Will be read before <code>.zlogin</code>.</dd>
+
+<dt><code>zshrc</code> (default: <code>'()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.zshrc</code>. Used for executing user's commands at start of interactive shell (The shell for interactive usage started by typing <code>zsh</code> or by terminal app or any other program).</dd>
+
+<dt><code>zlogin</code> (default: <code>'()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.zlogin</code>. Used for executing user's commands at the end of starting process of login shell.</dd>
+
+<dt><code>zlogout</code> (default: <code>'()</code>) (type: text-config)</dt><dd>List of file-like objects, which will be added to <code>.zlogout</code>. Used for executing user's commands at the exit of login shell. It won't be read in some cases (if the shell terminates by exec'ing another process for example).</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Inputrc-Profile-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="inputrc-profile-service"></a>Inputrc Profile Service<br />
+<div class="outline-text-5" id="text-inputrc-profile-service">
+<p>
+<a id="index-inputrc"></a> <a id="index-readline"></a>
+The <a href="https://tiswww.cwru.edu/php/chet/readline/rltop.html">GNU Readline package</a> includes Emacs and vi editing modes, with the ability to customize the configuration with settings in the <code>~/.inputrc</code> file. With the <code>gnu home services shells</code> module, you can setup your readline configuration in a predictable manner, as shown below. For more information about configuring an <code>~/.inputrc</code> file, see <a href="https://tiswww.cwru.edu/php/chet/readline/readline.html#Readline-Init-File">Readline Init File</a> in GNU Readline.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-inputrc-service-type </dt><dd><p>
+This is the service to setup various <code>.inputrc</code> configurations. The settings in <code>.inputrc</code> are read by all programs which are linked with GNU Readline.
+</p>
+
+<p>
+Here is an example of a service and its configuration that you could add to the <code>services</code> field of your <code>home-environment</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-inputrc-service-type
+         (home-inputrc-configuration
+           (key-bindings
+            `(("Control-l" . "clear-screen")))
+           (variables
+            `(("bell-style" . "visible")
+              ("colored-completion-prefix" . #t)
+              ("editing-mode" . "vi")
+              ("show-mode-in-prompt" . #t)))
+           (conditional-constructs
+            `(("$if mode=vi" .
+               ,(home-inputrc-configuration
+                  (variables
+                   `(("colored-stats" . #t)
+                     ("enable-bracketed-paste" . #t)))))
+              ("$else" .
+               ,(home-inputrc-configuration
+                  (variables
+                   `(("show-all-if-ambiguous" . #t)))))
+              ("endif" . #t)
+              ("$include" . "/etc/inputrc")
+              ("$include" . ,(file-append
+                               (specification-&gt;package "readline")
+                               "/etc/inputrc"))))))
+</pre>
+</div>
+
+<p>
+The example above starts with a combination of <code>key-bindings</code> and <code>variables</code>. The <code>conditional-constructs</code> show how it is possible to add conditionals and includes. In the example above <code>colored-stats</code> is only enabled if the editing mode is <code>vi</code> style, and it also reads any additional configuration located in <code>/etc/inputrc</code> or in <code>/gnu/store/…-readline/etc/inputrc</code>.
+</p>
+
+<p>
+The value associated with a <code>home-inputrc-service-type</code> instance must be a <code>home-inputrc-configuration</code> record, as described below.
+</p></dd>
+</dl>
+
+<p>
+<a id="home_002dinputrc_002dconfiguration"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: home-inputrc-configuration </dt><dd>Available <code>home-inputrc-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>key-bindings</code> (default: <code>'()</code>) (type: alist)</dt><dd><p>
+Association list of readline key bindings to be added to the <code>~/.inputrc</code> file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'((\"Control-l\" . \"clear-screen\"))
+</pre>
+</div>
+
+<p>
+turns into
+</p>
+
+<pre class="example" id="org739c0ec">
+Control-l: clear-screen
+</pre></dd>
+
+<dt><code>variables</code> (default: <code>'()</code>) (type: alist)</dt><dd><p>
+Association list of readline variables to set.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">'((\"bell-style\" . \"visible\")
+  (\"colored-completion-prefix\" . #t))
+</pre>
+</div>
+
+<p>
+turns into
+</p>
+
+<pre class="example" id="org6de6fc7">
+set bell-style visible
+set colored-completion-prefix on
+</pre></dd>
+
+<dt><code>conditional-constructs</code> (default: <code>'()</code>) (type: alist)</dt><dd><p>
+Association list of conditionals to add to the initialization file. This includes <code>$if</code>, <code>else</code>, <code>endif</code> and <code>include</code> and they receive a value of another <code>home-inputrc-configuration</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(conditional-constructs
+ `((\"$if mode=vi\" .
+     ,(home-inputrc-configuration
+        (variables
+         `((\"show-mode-in-prompt\" . #t)))))
+   (\"$else\" .
+     ,(home-inputrc-configuration
+        (key-bindings
+         `((\"Control-l\" . \"clear-screen\")))))
+   (\"$endif\" . #t)))
+</pre>
+</div>
+
+<p>
+turns into
+</p>
+
+<pre class="example" id="org9c2d89a">
+$if mode=vi
+set show-mode-in-prompt on
+$else
+Control-l: clear-screen
+$endif
+</pre></dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: text-config)</dt><dd>Extra content appended as-is to the configuration file. Run <code>man readline</code> for more information about all the configuration options.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Mcron-Home-Service.html">Scheduled User's Job Execution</a>, Previous: <a href="docs/guix--Essential-Home-Services.html">Essential Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

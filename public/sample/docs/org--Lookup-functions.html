@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Lookup-functions-1">1. 3.5.7 Lookup functions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Lookup-functions"></a>
+Next: <a href="docs/org--Editing-and-debugging-formulas.html">Editing and debugging formulas</a>, Previous: <a href="docs/org--Column-formulas.html">Column formulas</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Lookup-functions-1" class="outline-2">
+<h2 id="Lookup-functions-1"><span class="section-number-2">1.</span> 3.5.7 Lookup functions <a href="#Lookup-functions-1">¶</a></h2>
+<div class="outline-text-2" id="text-Lookup-functions-1">
+<p>
+Org has three predefined Emacs Lisp functions for lookups in tables.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dlookup_002dfirst"></a>‘=(org-lookup-first VAL S-LIST R-LIST &amp;optional PREDICATE)=' </dt><dd><p>
+Searches for the first element <code>S</code> in list <code>S-LIST</code> for which
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(PREDICATE VAL S)
+</pre>
+</div>
+
+<p>
+is non-<code>nil</code>; returns the value from the corresponding position in list <code>R-LIST</code>. The default <code>PREDICATE</code> is <code>equal</code>. Note that the parameters <code>VAL</code> and <code>S</code> are passed to <code>PREDICATE</code> in the same order as the corresponding parameters are in the call to <code>org-lookup-first</code>, where <code>VAL</code> precedes <code>S-LIST</code>. If <code>R-LIST</code> is <code>nil</code>, the matching element <code>S</code> of <code>S-LIST</code> is returned.
+</p></dd>
+
+<dt><a id="index-org_002dlookup_002dlast"></a>‘=(org-lookup-last VAL S-LIST R-LIST &amp;optional PREDICATE)=' </dt><dd>Similar to <code>org-lookup-first</code> above, but searches for the <i>last</i> element for which <code>PREDICATE</code> is non-<code>nil</code>.</dd>
+
+<dt><a id="index-org_002dlookup_002dall"></a>‘=(org-lookup-all VAL S-LIST R-LIST &amp;optional PREDICATE)=' </dt><dd>Similar to <code>org-lookup-first</code>, but searches for <i>all</i> elements for which <code>PREDICATE</code> is non-<code>nil</code>, and returns <i>all</i> corresponding values. This function cannot be used by itself in a formula, because it returns a list of values. However, powerful lookups can be built when this function is combined with other Emacs Lisp functions.</dd>
+</dl>
+
+<p>
+If the ranges used in these functions contain empty fields, the ‘=E=' mode for the formula should usually be specified: otherwise empty fields are not included in <code>S-LIST</code> and/or <code>R-LIST</code> which can, for example, result in an incorrect mapping from an element of <code>S-LIST</code> to the corresponding element of <code>R-LIST</code>.
+</p>
+
+<p>
+These three functions can be used to implement associative arrays, count matching cells, rank results, group data, etc. For practical examples see <a href="https://orgmode.org/worg/org-tutorials/org-lookups.html">this tutorial on Worg</a>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Editing-and-debugging-formulas.html">Editing and debugging formulas</a>, Previous: <a href="docs/org--Column-formulas.html">Column formulas</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

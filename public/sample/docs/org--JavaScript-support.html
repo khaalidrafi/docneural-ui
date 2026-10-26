@@ -1,0 +1,101 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#JavaScript-supported-display-of-web-pages">1. 13.9.14 JavaScript supported display of web pages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="JavaScript-support"></a>
+Previous: <a href="docs/org--CSS-support.html">CSS support</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-JavaScript-supported-display-of-web-pages" class="outline-2">
+<h2 id="JavaScript-supported-display-of-web-pages"><span class="section-number-2">1.</span> 13.9.14 JavaScript supported display of web pages <a href="#JavaScript-supported-display-of-web-pages">¶</a></h2>
+<div class="outline-text-2" id="text-JavaScript-supported-display-of-web-pages">
+<p>
+Sebastian Rose has written a JavaScript program especially designed to allow two different ways of viewing HTML files created with Org. One is an <i>Info</i>-like mode where each section is displayed separately and navigation can be done with the n and p keys, and some other keys as well, press ? for an overview of the available keys. The second one has a <i>folding</i> view, much like Org provides inside Emacs. The script is available at <a href="https://orgmode.org/org-info.js">https://orgmode.org/org-info.js</a> and the documentation at <a href="https://orgmode.org/worg/code/org-info-js/">https://orgmode.org/worg/code/org-info-js/</a>. The script is hosted on <a href="https://orgmode.org">https://orgmode.org</a>, but for reliability, prefer installing it on your own web server.
+</p>
+
+<p>
+To use this program, just add this line to the Org file:
+</p>
+
+<pre class="example" id="org64f5caa">
+#+INFOJS_OPT: view:info toc:nil
+</pre>
+
+<p>
+The HTML header now has the code needed to automatically invoke the script. For setting options, use the syntax from the above line for options described below:
+</p>
+
+<dl class="org-dl">
+<dt>‘=path:='</dt><dd>The path to the script. The default is to grab the script from <a href="https://orgmode.org/org-info.js">https://orgmode.org/org-info.js</a>, but you might want to have a local copy and use a path like ‘=../scripts/org-info.js='.</dd>
+
+<dt>‘=view:='</dt><dd><p>
+Initial view when the website is first shown. Possible values are:
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">‘=info='</td>
+<td class="org-left">Info-like interface with one section per page</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=overview='</td>
+<td class="org-left">Folding interface, initially showing only top-level</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=content='</td>
+<td class="org-left">Folding interface, starting with all headlines visible</td>
+</tr>
+
+<tr>
+<td class="org-left">‘=showall='</td>
+<td class="org-left">Folding interface, all headlines and text visible</td>
+</tr>
+</tbody>
+</table></dd>
+
+<dt>‘=sdepth:='</dt><dd>Maximum headline level still considered as an independent section for info and folding modes. The default is taken from <code>org-export-headline-levels</code>, i.e., the ‘=H=' switch in ‘=OPTIONS='. If this is smaller than in <code>org-export-headline-levels</code>, each info/folding section can still contain child headlines.</dd>
+
+<dt>‘=toc:='</dt><dd>Should the table of contents <i>initially</i> be visible? Even when ‘=nil=', you can always get to the “toc” with i.</dd>
+
+<dt>‘=tdepth:='</dt><dd>The depth of the table of contents. The defaults are taken from the variables <code>org-export-headline-levels</code> and <code>org-export-with-toc</code>.</dd>
+
+<dt>‘=ftoc:='</dt><dd>Does the CSS of the page specify a fixed position for the “toc”? If yes, the TOC is displayed as a section.</dd>
+
+<dt>‘=ltoc:='</dt><dd>Should there be short contents (children) in each section? Make this ‘=above=' if the section should be above initial text.</dd>
+
+<dt>‘=mouse:='</dt><dd>Headings are highlighted when the mouse is over them. Should be ‘=underline=' (default) or a background color like ‘=#cccccc='.</dd>
+
+<dt>‘=buttons:='</dt><dd>Should view-toggle buttons be everywhere? When ‘=nil=' (the default), only one such button is present.</dd>
+</dl>
+
+<p>
+You can choose default values for these options by customizing the variable <code>org-infojs-options</code>. If you always want to apply the script to your pages, configure the variable <code>org-export-html-use-infojs</code>.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--CSS-support.html">CSS support</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

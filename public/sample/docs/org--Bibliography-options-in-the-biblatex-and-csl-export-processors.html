@@ -1,0 +1,68 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Bibliography-options-in-the-biblatex-and-csl-export-processors-1">1. 15.3.1 Bibliography options in the ‘=biblatex=' and ‘=csl=' export processors ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Bibliography-options-in-the-biblatex-and-csl-export-processors"></a>
+Up: <a href="docs/org--Bibliography-printing.html">Bibliography printing</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Bibliography-options-in-the-biblatex-and-csl-export-processors-1" class="outline-2">
+<h2 id="Bibliography-options-in-the-biblatex-and-csl-export-processors-1"><span class="section-number-2">1.</span> 15.3.1 Bibliography options in the ‘=biblatex=' and ‘=csl=' export processors <a href="#Bibliography-options-in-the-biblatex-and-csl-export-processors-1">¶</a></h2>
+<div class="outline-text-2" id="text-Bibliography-options-in-the-biblatex-and-csl-export-processors-1">
+<p>
+The ‘=biblatex=' and ‘=csl=' export processors support bibliography options through a property list attached to the ‘=PRINT<sub>BIBLIOGRAPHY</sub>=' keyword. For example,
+</p>
+
+<pre class="example" id="orgaa7cddc">
+#+print_bibliography: :keyword algebra :type book
+</pre>
+
+<p>
+Values including spaces must be surrounded with double quotes. If you need to use a key multiple times, you can separate its values with commas, but without any space in-between:
+</p>
+
+<pre class="example" id="org7876f5c">
+#+print_bibliography: :keyword "algebraic logic" :nottype article,book
+</pre>
+
+<p>
+The ‘=biblatex=' export processor accepts all options supported by BibLaTeX's <code>\printbibliography</code> command.
+</p>
+
+<p>
+The ‘=csl=' processor accepts the following options:
+</p>
+
+<dl class="org-dl">
+<dt>‘=:keyword &lt;keyword(,keyword2&#x2026;)&gt;='</dt><dd>Print only entries whose keyword field contains all given keywords.</dd>
+
+<dt>‘=:notkeyword &lt;keyword(,keyword2&#x2026;)&gt;='</dt><dd>Print only entries whose keyword field does not contain any of the given keywords.</dd>
+
+<dt>‘=:type &lt;entrytype&gt;='</dt><dd>Print only entries whose type is ‘=&lt;entrytype&gt;='. Entry type is the BibTeX/BibLaTeX entry type if this information is available (the entry was read from a BibTeX/BibLaTeX bibliography) and the CSL entry type otherwise.</dd>
+
+<dt>‘=:nottype &lt;entrytype(,entrytype2&#x2026;)&gt;='</dt><dd>Print only entries whose type is not among the given entry types. Entry type is determined as in the case of ‘=:type='.</dd>
+
+<dt>‘=:csltype &lt;entrytype&gt;='</dt><dd>Print only entries whose CSL entry type (possibly based on a conversion from BibTeX/BibLaTeX to CSL) is ‘=&lt;entrytype&gt;='.</dd>
+
+<dt>‘=:notcsltype &lt;entrytype(,entrytype2&#x2026;)&gt;='</dt><dd>Print only entries whose CSL entry type (possibly based on a conversion from BibTeX/BibLaTeX to CSL) is not among the listed entry types.</dd>
+
+<dt>‘=:filter &lt;predicate&gt;='</dt><dd>Print only entries for which the given Emacs Lisp predicate returns a non-<code>nil</code> value.</dd>
+</dl>
+
+<hr />
+
+<p>
+Up: <a href="docs/org--Bibliography-printing.html">Bibliography printing</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

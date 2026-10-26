@@ -1,0 +1,32 @@
+:PROPERTIES:
+:ID: emacs--Key-Bindings
+:END:
+#+filetags: :emacs:
+#+title: Key Bindings
+
+Next: [[id:emacs--Init-File][The Emacs Initialization File]]   Previous: [[id:emacs--Variables][Variables]]   Up: [[id:emacs--Customization][Customization]]
+
+<<Key-Bindings>>
+
+--------------
+
+*** 51.3 Customizing Key Bindings [[#Customizing-Key-Bindings][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Customizing-Key-Bindings
+:CLASS: section
+:END:
+This section describes /key bindings/, which map keys to commands, and /keymaps/, which record key bindings. It also explains how to customize key bindings, which is done by editing your init file (see [[id:emacs--Init-Rebinding][Rebinding Keys in Your Init File]]).
+
+Since most modes define their own key bindings, activating a mode might override your custom key bindings. A small number of keys are reserved for user-defined bindings, and should not be used by modes, so key bindings using those keys are safer in this regard. The reserved key sequences are those consisting of C-c followed by a letter (either upper or lower case), and function keys F5 through F9 without modifiers (see [[id:emacs--Modifier-Keys][Modifier Keys]]).
+
+- [[id:emacs--Keymaps][Keymaps]]
+- [[id:emacs--Prefix-Keymaps][Prefix Keymaps]]
+- [[id:emacs--Local-Keymaps][Local Keymaps]]
+- [[id:emacs--Minibuffer-Maps][Minibuffer Keymaps]]
+- [[id:emacs--Rebinding][Changing Key Bindings Interactively]]
+- [[id:emacs--Init-Rebinding][Rebinding Keys in Your Init File]]
+- [[id:emacs--Modifier-Keys][Modifier Keys]]
+- [[id:emacs--Function-Keys][Rebinding Function Keys]]
+- [[id:emacs--Named-ASCII-Chars][Named ASCII Control Characters]]
+- [[id:emacs--Mouse-Buttons][Rebinding Mouse Buttons]]
+- [[id:emacs--Disabling][Disabling Commands]]

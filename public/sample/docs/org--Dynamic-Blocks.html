@@ -1,0 +1,94 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Dynamic-Blocks-1">1. A.7 Dynamic Blocks ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Dynamic-Blocks"></a>
+Next: <a href="docs/org--Special-Agenda-Views.html">Special Agenda Views</a>, Previous: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Dynamic-Blocks-1" class="outline-2">
+<h2 id="Dynamic-Blocks-1"><span class="section-number-2">1.</span> A.7 Dynamic Blocks <a href="#Dynamic-Blocks-1">¶</a></h2>
+<div class="outline-text-2" id="text-Dynamic-Blocks-1">
+<p>
+Org supports <i>dynamic blocks</i> in Org documents. They are inserted with begin and end markers like any other code block, but the contents are updated automatically by a user function.
+</p>
+
+<p>
+You can insert a dynamic block with <code>org-dynamic-block-insert-dblock</code>, which is bound to C-c C-x x by default. For example, C-c C-x x c l o c k t a b l e RET inserts a table that updates the work time (see <a href="docs/org--Clocking-Work-Time.html">Clocking Work Time</a>).
+</p>
+
+<p>
+Dynamic blocks can have names and function parameters. The syntax is similar to source code block specifications:
+</p>
+
+<pre class="example" id="org3daf0f8">
+#+BEGIN: myblock :parameter1 value1 :parameter2 value2 ...
+  ...
+#+END:
+</pre>
+
+<p>
+These commands update dynamic blocks:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002du-2"></a>C-c C-x C-u (<code>org-dblock-update</code>) </dt><dd>Update dynamic block at point.</dd>
+
+<dt><a id="index-C_002du-C_002dc-C_002dx-C_002du-2"></a>C-u C-c C-x C-u </dt><dd>Update all dynamic blocks in the current file.</dd>
+</dl>
+
+<p>
+Before updating a dynamic block, Org removes content between the ‘=BEGIN=' and ‘=END=' markers. Org then reads the parameters on the ‘=BEGIN=' line for passing to the writer function as a plist. The previous content of the dynamic block becomes erased from the buffer and appended to the plist under <code>:content</code>.
+</p>
+
+<p>
+The syntax for naming a writer function with a dynamic block labeled ‘=myblock=' is: <code>org-dblock-write:myblock</code>.
+</p>
+
+<p>
+The following is an example of a dynamic block and a block writer function that updates the time when the function was last run:
+</p>
+
+<pre class="example" id="org7bca01b">
+#+BEGIN: block-update-time :format "on %m/%d/%Y at %H:%M"
+  ...
+#+END:
+</pre>
+
+<p>
+The dynamic block's writer function:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(defun org-dblock-write:block-update-time (params)
+  (let ((fmt (or (plist-get params :format) "%d. %m. %Y")))
+    (insert "Last block update at: "
+            (format-time-string fmt))))
+</pre>
+</div>
+
+<p>
+To keep dynamic blocks up-to-date in an Org file, use the function, <code>org-update-all-dblocks</code> in hook, such as <code>before-save-hook</code>. The <code>org-update-all-dblocks</code> function does not run if the file is not in Org mode.
+</p>
+
+<p>
+Dynamic blocks, like any other block, can be narrowed with <code>org-narrow-to-block</code>.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Special-Agenda-Views.html">Special Agenda Views</a>, Previous: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>, Up: <a href="docs/org--Hacking.html">Hacking</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

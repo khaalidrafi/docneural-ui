@@ -1,0 +1,48 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Running-out-of-Memory">1. 53.4 Running out of Memory ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Crashing.html">When Emacs Crashes</a>   Previous: <a href="docs/emacs--Text-Garbled.html">Garbage in the Text</a>   Up: <a href="docs/emacs--Lossage.html">Dealing with Emacs Trouble</a>
+</p>
+
+<p>
+<a id="Memory-Full"></a>
+</p>
+
+<hr />
+<div id="outline-container-Running-out-of-Memory" class="outline-2">
+<h2 id="Running-out-of-Memory"><span class="section-number-2">1.</span> 53.4 Running out of Memory <a href="#Running-out-of-Memory">¶</a></h2>
+<div class="outline-text-2" id="text-Running-out-of-Memory">
+<p>
+If you get the error message ‘=Virtual memory exceeded=', save your modified buffers with C-x s (<code>save-some-buffers</code>). This method of saving them has the smallest need for additional memory. Emacs keeps a reserve of memory which it makes available when this error happens; that should be enough to enable C-x s to complete its work. When the reserve has been used, ‘=!MEM FULL!=' appears at the beginning of the mode line, indicating there is no more reserve.
+</p>
+
+<p>
+Once you have saved your modified buffers, you can exit this Emacs session and start another, or you can use M-x kill-some-buffers to free space in the current Emacs job. If this frees up sufficient space, Emacs will refill its memory reserve, and ‘=!MEM FULL!=' will disappear from the mode line. That means you can safely go on editing in the same Emacs session.
+</p>
+
+<p>
+Do not use M-x buffer-menu to save or kill buffers when you run out of memory, because the Buffer Menu needs a fair amount of memory itself, and the reserve supply may not be enough.
+</p>
+
+<p>
+On GNU/Linux systems, Emacs does not normally get notified about out-of-memory situations; instead, the OS can kill the Emacs process when it runs out of memory. This feature is known as the <i>out-of-memory killer</i>, or <i>OOM killer</i>. When this behavior is in effect, Emacs is unable to detect the out-of-memory situation in time, and won't be able to let you save your buffer as described above. However, it is possible to turn off this behavior of the OS, and thus allow Emacs a chance to handle the out-of-memory situation in a more useful manner, before it is killed. To do that, become the super user, edit the file <code>/etc/sysctl.conf</code> to contain the lines shown below, and then invoke the command sysctl -p from the shell prompt:
+</p>
+
+<pre class="example" id="org4231b93">
+vm.overcommit_memory=2
+vm.overcommit_ratio=0
+</pre>
+
+<p>
+Please note that the above setting affects all the processes on the system, and in general the behavior of the system under memory pressure, not just the Emacs process alone.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,148 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Checking-and-Correcting-Spelling">1. 18.4 Checking and Correcting Spelling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Fixing-Case.html">Case Conversion</a>   Up: <a href="docs/emacs--Fixit.html">Commands for Fixing Typos</a>
+</p>
+
+<p>
+<a id="Spelling"></a>
+</p>
+
+<hr />
+<div id="outline-container-Checking-and-Correcting-Spelling" class="outline-2">
+<h2 id="Checking-and-Correcting-Spelling"><span class="section-number-2">1.</span> 18.4 Checking and Correcting Spelling <a href="#Checking-and-Correcting-Spelling">¶</a></h2>
+<div class="outline-text-2" id="text-Checking-and-Correcting-Spelling">
+<p>
+This section describes the commands to check the spelling of a single word or of a portion of a buffer. These commands only work if a spelling checker program, one of Hunspell, Aspell, Ispell or Enchant, is installed. These programs are not part of Emacs, but one of them is usually installed on GNU/Linux and other free operating systems. See <a href="../aspell_html/index.html#Top">Aspell</a> in The Aspell Manual.
+</p>
+
+<p>
+If you have only one of the spelling checker programs installed, Emacs will find it when you invoke for the first time one of the commands described here. If you have more than one of them installed, you can control which one is used by customizing the variable <code>ispell-program-name</code>.
+</p>
+
+<dl class="org-dl">
+<dt>M-$</dt><dd>Check and correct spelling of the word at point (<code>ispell-word</code>). If the region is active, do it for all words in the region instead.</dd>
+
+<dt>C-u M-$</dt><dd>If a previous spelling operation was interrupted, continue that operation (<code>ispell-continue</code>).</dd>
+
+<dt>M-x ispell</dt><dd>Check and correct spelling of all words in the buffer. If the region is active, do it for all words in the region instead.</dd>
+
+<dt>M-x ispell-buffer</dt><dd>Check and correct spelling in the buffer.</dd>
+
+<dt>M-x ispell-region</dt><dd>Check and correct spelling in the region.</dd>
+
+<dt>M-x ispell-message</dt><dd>Check and correct spelling in a draft mail message, excluding cited material.</dd>
+
+<dt>M-x ispell-comments-and-strings</dt><dd>Check and correct spelling of comments and strings in the buffer or region.</dd>
+
+<dt>M-x ispell-comment-or-string-at-point</dt><dd>Check the comment or string at point.</dd>
+
+<dt>M-x ispell-change-dictionary RET <code>dict</code> RET</dt><dd>Restart the spell-checker process, using <code>dict</code> as the dictionary.</dd>
+
+<dt>M-x ispell-kill-ispell</dt><dd>Kill the spell-checker subprocess.</dd>
+
+<dt>(no term)</dt><dd>M-TAB<br />
+ESC TAB<br />
+C-M-i :: Complete the word before point based on the spelling dictionary and other completion sources (<code>completion-at-point</code>).</dd>
+
+<dt>M-x flyspell-mode</dt><dd>Enable Flyspell mode, which highlights all misspelled words.</dd>
+
+<dt>M-x flyspell-prog-mode</dt><dd>Enable Flyspell mode for comments and strings only.</dd>
+</dl>
+
+<p>
+To check the spelling of the word around or before point, and optionally correct it as well, type M-$ (<code>ispell-word</code>). If a region is active, M-$ checks the spelling of all words within the region. See <a href="docs/emacs--Mark.html">The Mark and the Region</a>. (When Transient Mark mode is off, M-$ always acts on the word around or before point, ignoring the region; see <a href="docs/emacs--Disabled-Transient-Mark.html">Disabling Transient Mark Mode</a>.) When invoked with a prefix argument, C-u M-$, this calls <code>ispell-continue</code>, which continues the spelling operation, if any, which was interrupted with X or C-g.
+</p>
+
+<p>
+Similarly, the command M-x ispell performs spell-checking in the region if one is active, or in the entire buffer otherwise. The commands M-x ispell-buffer and M-x ispell-region explicitly perform spell-checking on the entire buffer or the region respectively. To check spelling in an email message you are writing, use M-x ispell-message; that command checks the whole buffer, except for material that is indented or appears to be cited from other messages. See <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>. When dealing with source code, you can use M-x ispell-comments-and-strings or M-x ispell-comment-or-string-at-point to check only comments or string literals.
+</p>
+
+<p>
+When one of these commands encounters what appears to be an incorrect word, it asks you what to do. It usually displays a list of numbered <i>near-misses</i>&#x2014;words that are close to the incorrect word. Then you must type a single-character response. Here are the valid responses:
+</p>
+
+<dl class="org-dl">
+<dt><code>digit</code></dt><dd>Replace the word, just this time, with one of the displayed near-misses. Each near-miss is listed with a digit; type that digit to select it.</dd>
+
+<dt>SPC</dt><dd>Skip this word&#x2014;continue to consider it incorrect, but don't change it here.</dd>
+
+<dt>r <code>new</code> RET</dt><dd>Replace the word, just this time, with <code>new</code>. (The replacement string will be rescanned for more spelling errors.)</dd>
+
+<dt>R <code>new</code> RET</dt><dd>Replace the word with <code>new</code>, and do a <code>query-replace</code> so you can replace it elsewhere in the buffer if you wish. (The replacements will be rescanned for more spelling errors.)</dd>
+
+<dt>a</dt><dd>Accept the incorrect word&#x2014;treat it as correct, but only in this editing session.</dd>
+
+<dt>A</dt><dd>Accept the incorrect word&#x2014;treat it as correct, but only in this editing session and for this buffer.</dd>
+
+<dt>i</dt><dd>Insert this word in your personal dictionary file so that it will be considered correct from now on, even in future sessions.</dd>
+
+<dt>m</dt><dd>Like i, but you can also specify dictionary completion information.</dd>
+
+<dt>u</dt><dd>Insert the lower-case version of this word in your personal dictionary file.</dd>
+
+<dt>l <code>word</code> RET</dt><dd>Look in the dictionary for words that match <code>word</code>. These words become the new list of near-misses; you can select one of them as the replacement by typing a digit. You can use ‘=*=' in <code>word</code> as a wildcard.</dd>
+
+<dt>(no term)</dt><dd>C-g<br />
+X :: Interrupt the interactive spell-checking, leaving point at the word that was being checked. You can restart checking again afterward with C-u M-$.</dd>
+
+<dt>x</dt><dd>Quit interactive spell-checking and move point back to where it was when you started spell-checking.</dd>
+
+<dt>q</dt><dd>Quit interactive spell-checking and kill the spell-checker subprocess.</dd>
+
+<dt>C-r</dt><dd>Enter recursive-edit (see <a href="docs/emacs--Recursive-Edit.html">Recursive Editing Levels</a>). When you exit recursive-edit with C-M-c, the interactive spell-checking will resume. This allows you to consult the buffer text without interrupting the spell-checking. Do <i>not</i> modify the buffer in the recursive editing, and especially don't modify the misspelled word, as the edits will be undone when you exit recursive-edit. If you need to edit the misspelled word, use r or R instead, or use X, edit the buffer, then resume with C-u M-$.</dd>
+
+<dt>C-z</dt><dd>Suspend Emacs or iconify the selected frame.</dd>
+
+<dt>?</dt><dd>Show the list of options.</dd>
+</dl>
+
+<p>
+Use the command M-TAB (<code>completion-at-point</code>) to complete the word at point. Insert the beginning of a word, and then type M-TAB to select from a list of completions. (If your window manager intercepts M-TAB, type ESC TAB or C-M-i.)
+</p>
+
+<p>
+Once started, the spell-checker subprocess continues to run, waiting for something to do, so that subsequent spell-checking commands complete more quickly. If you want to get rid of the process, use M-x ispell-kill-ispell. This is not usually necessary, since the process uses no processor time except when you do spelling correction.
+</p>
+
+<p>
+Spell-checkers look up spelling in two dictionaries: the standard dictionary and your personal dictionary. The standard dictionary is specified by the variable <code>ispell-local-dictionary</code> or, if that is <code>nil</code>, by the variable <code>ispell-dictionary</code>. If both are <code>nil</code>, the spelling program's default dictionary is used. The command M-x ispell-change-dictionary sets the standard dictionary for the buffer and then restarts the subprocess, so that it will use a different standard dictionary. Your personal dictionary is specified by the variable <code>ispell-personal-dictionary</code>. If that is <code>nil</code>, the spelling program looks for a personal dictionary in a default location, which is specific to each spell-checker.
+</p>
+
+<p>
+Usually, a dictionary used by a spell-checker is for a specific language. The default language is determined from your system's environment and locale. Both the standard dictionary and your personal dictionary should be changed if you want to spell-check text in a different language. You can use the <code>ispell-change-dictionary</code> command for that.
+</p>
+
+<p>
+Hunspell is special in that it supports spell-checking using several different dictionaries in parallel. To use this feature, invoke the M-x ispell-hunspell-add-multi-dic command before you start using Hunspell for a particular combination of dictionaries. This command prompts for the dictionary combination, which should be a comma-separated list of language-specific dictionary names, such as ‘=en<sub>US,de</sub><sub>DE,ru</sub><sub>RU</sub>='. Thereafter, you can spell-check text which mixes these languages without changing the dictionaries each time. (Caveat: when several languages use the same script, it is possible that a word that is mis-spelled in one language is found as a valid spelling in the dictionary of another language; in that case, the mis-spelled word might be missed.)
+</p>
+
+<p>
+A separate dictionary is used for word completion. The variable <code>ispell-complete-word-dict</code> specifies the file name of this dictionary. The completion dictionary must be different because it cannot use the information about roots and affixes of the words, which spell-checking uses to detect variations of words. For some languages, there is a spell-checking dictionary but no word completion dictionary.
+</p>
+
+<p>
+Flyspell mode is a minor mode that performs automatic spell-checking of the text you type as you type it. When it finds a word that it does not recognize, it highlights that word. Type M-x flyspell-mode to toggle Flyspell mode in the current buffer. To enable Flyspell mode in all text mode buffers, add <code>flyspell-mode</code> to <code>text-mode-hook</code>. See <a href="docs/emacs--Hooks.html">Hooks</a>. Note that, as Flyspell mode needs to check each word across which you move, it will slow down cursor motion and scrolling commands. It also doesn't automatically check the text you didn't type or move across; use <code>flyspell-region</code> or <code>flyspell-buffer</code> for that.
+</p>
+
+<p>
+Normally, Flyspell mode highlights misspelled words that you typed or modified, but also words you move across without changing them. But if you customize the variable <code>flyspell-check-changes</code> to a non-<code>nil</code> value, Flyspell mode will check only the words you typed or edited in some way.
+</p>
+
+<p>
+When Flyspell mode highlights a word as misspelled, you can click on it with mouse-2 (<code>flyspell-correct-word</code>) to display a menu of possible corrections and actions. If you want this menu on mouse-3 instead, enable <code>context-menu-mode</code>. In addition, C-. or ESC TAB (<code>flyspell-auto-correct-word</code>) will propose various successive corrections for the word at point, and C-c $ (<code>flyspell-correct-word-before-point</code>) will pop up a menu of possible corrections. Of course, you can always correct the misspelled word by editing it manually in any way you like.
+</p>
+
+<p>
+Flyspell Prog mode works just like ordinary Flyspell mode, except that it only checks words in comments and string constants. This feature is useful for editing programs. Type M-x flyspell-prog-mode to enable or disable this mode in the current buffer. To enable this mode in all programming mode buffers, add <code>flyspell-prog-mode</code> to <code>prog-mode-hook</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>).
+</p>
+
+<hr />
+</div>
+</div>

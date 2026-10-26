@@ -1,0 +1,570 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-shell">1.0.1. 7.1 Invoking <code>guix shell</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-shell"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-environment.html">Invoking <code>guix environment</code></a>, Up: <a href="docs/guix--Development.html">Development</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-shell-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-shell" class="outline-4">
+<h4 id="invoking-guix-shell"><span class="section-number-4">1.0.1.</span> 7.1 Invoking <code>guix shell</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-shell">
+<p>
+<a id="index-reproducible-build-environments"></a> <a id="index-development-environments"></a> <a id="index-guix-environment"></a> <a id="index-guix-shell"></a> <a id="index-environment_002c-package-build-environment"></a>
+The purpose of <code>guix shell</code> is to make it easy to create one-off software environments, without changing one's profile. It is typically used to create development environments; it is also a convenient way to run applications without “polluting” your profile.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>guix shell</code> command was recently introduced to supersede <code>guix environment</code> (see <a href="docs/guix--Invoking-guix-environment.html">Invoking <code>guix environment</code></a>). If you are familiar with <code>guix environment</code>, you will notice that it is similar but also&#x2014;we hope!&#x2014;more convenient.
+</p>
+</blockquote>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org5c2ad78">
+guix shell [options] [package…]
+</pre>
+
+<p>
+Sometimes an interactive shell session is not desired. An arbitrary command may be invoked by placing the <code>--</code> token to separate the command from the rest of the arguments.
+</p>
+
+<p>
+The following example creates an environment containing Python and NumPy, building or downloading any missing package, and runs the <code>python3</code> command in that environment:
+</p>
+
+<pre class="example" id="org6cca193">
+guix shell python python-numpy -- python3
+</pre>
+
+<p>
+Note that it is necessary to include the main <code>python</code> package in this command even if it is already installed into your environment. This is so that the shell environment knows to set <code>PYTHONPATH</code> and other related variables. The shell environment cannot check the previously installed environment, because then it would be non-deterministic. This is true for most libraries: their corresponding language package should be included in the shell invocation.
+</p>
+
+<blockquote>
+<p>
+<a id="index-shebang_002c-for-guix-shell"></a>
+</p>
+
+<p>
+<b>Note:</b> <code>guix shell</code> can be also be used as a script interpreter, also known as <i>shebang</i>. Here is an example self-contained Python script making use of this feature:
+</p>
+
+<pre class="example" id="org3fcce80">
+#!/usr/bin/env -S guix shell python python-numpy -- python3
+import numpy
+print("This is numpy", numpy.version.version)
+</pre>
+
+<p>
+You may pass any <code>guix shell</code> option, but there's one caveat: the Linux kernel has a limit of 127 bytes on shebang length.
+</p>
+</blockquote>
+
+<p>
+Development environments can be created as in the example below, which spawns an interactive shell containing all the dependencies and environment variables needed to work on Inkscape:
+</p>
+
+<pre class="example" id="org2dc0d5a">
+guix shell --development inkscape
+</pre>
+
+<p>
+Exiting the shell places the user back in the original environment before <code>guix shell</code> was invoked. The next garbage collection (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>) may clean up packages that were installed in the environment and that are no longer used outside of it.
+</p>
+
+<p>
+As an added convenience, <code>guix shell</code> will try to do what you mean when it is invoked interactively without any other arguments as in:
+</p>
+
+<pre class="example" id="org56b1ab1">
+guix shell
+</pre>
+
+<p>
+If it finds a <code>manifest.scm</code> in the current working directory or any of its parents, it uses this manifest as though it was given via <code>--manifest</code>. Likewise, if it finds a <code>guix.scm</code> in the same directories, it uses it to build a development profile as though both <code>--development</code> and <code>--file</code> were present. In either case, the file will only be loaded if the directory it resides in is listed in <code>~/.config/guix/shell-authorized-directories</code>. This provides an easy way to define, share, and enter development environments.
+</p>
+
+<p>
+By default, the shell session or command runs in an <i>augmented</i> environment, where the new packages are added to search path environment variables such as <code>PATH</code>. You can, instead, choose to create an <i>isolated</i> environment containing nothing but the packages you asked for. Passing the <code>--pure</code> option clears environment variable definitions found in the parent environment; passing <code>--container</code> goes one step further by spawning a <i>container</i> isolated from the rest of the system:
+</p>
+
+<pre class="example" id="orga2a66b9">
+guix shell --container emacs gcc-toolchain
+</pre>
+
+<p>
+The command above spawns an interactive shell in a container where nothing but <code>emacs</code>, <code>gcc-toolchain</code>, and their dependencies is available. The container lacks network access and shares no files other than the current working directory with the surrounding environment. This is useful to prevent access to system-wide resources such as <code>/usr/bin</code> on foreign distros.
+</p>
+
+<p>
+This <code>--container</code> option can also prove useful if you wish to run a security-sensitive application, such as a web browser, in an isolated environment. For example, the command below launches Ungoogled-Chromium in an isolated environment, which:
+</p>
+
+<ul class="org-ul">
+<li>shares network access with the host</li>
+<li>inherits host's environment variables <code>DISPLAY</code> and <code>XAUTHORITY</code></li>
+<li>has access to host's authentication records from the <code>XAUTHORITY</code> file</li>
+<li>has no information about host's current directory</li>
+</ul>
+
+<pre class="example" id="org9101cf8">
+guix shell --container --network --no-cwd ungoogled-chromium \
+  --preserve='^XAUTHORITY$' --expose="${XAUTHORITY}" \
+  --preserve='^DISPLAY$' -- chromium
+</pre>
+
+<p>
+<a id="index-GUIX_005fENVIRONMENT"></a>
+<code>guix shell</code> defines the <code>GUIX_ENVIRONMENT</code> variable in the shell it spawns; its value is the file name of the profile of this environment. This allows users to, say, define a specific prompt for development environments in their <code>.bashrc</code> (see <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash Startup Files</a> in The GNU Bash Reference Manual):
+</p>
+
+<pre class="example" id="org4ccce68">
+if [ -n "$GUIX_ENVIRONMENT" ]
+then
+    export PS1="\u@\h \w [dev]\$ "
+fi
+</pre>
+
+<p>
+&#x2026; or to browse the profile:
+</p>
+
+<pre class="example" id="org8b1e877">
+$ ls "$GUIX_ENVIRONMENT/bin"
+</pre>
+
+<p>
+The available options are summarized below.
+</p>
+
+<dl class="org-dl">
+<dt><code>--check</code></dt><dd><p>
+Set up the environment and check whether the shell would clobber environment variables. It's a good idea to use this option the first time you run <code>guix shell</code> for an interactive session to make sure your setup is correct.
+</p>
+
+<p>
+For example, if the shell modifies the <code>PATH</code> environment variable, report it since you would get a different environment than what you asked for.
+</p>
+
+<p>
+Such problems usually indicate that the shell startup files are unexpectedly modifying those environment variables. For example, if you are using Bash, make sure that environment variables are set or modified in <code>~/.bash_profile</code> and <i>not</i> in <code>~/.bashrc</code>&#x2014;the former is sourced only by log-in shells. See <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">Bash Startup Files</a> in The GNU Bash Reference Manual, for details on Bash start-up files.
+</p>
+
+<p>
+<a id="shell_002ddevelopment_002doption"></a>
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--development</code><br />
+<code>-D</code> :: Cause <code>guix shell</code> to include in the environment the dependencies of the following package rather than the package itself. This can be combined with other packages. For instance, the command below starts an interactive shell containing the build-time dependencies of GNU Guile, plus Autoconf, Automake, and Libtool:
+</p>
+
+<pre class="example" id="orga6eb9f6">
+guix shell -D guile autoconf automake libtool
+</pre></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Create an environment for the package or list of packages that <code>expr</code> evaluates to.
+</p>
+
+<p>
+For example, running:
+</p>
+
+<pre class="example" id="org1751e93">
+guix shell -D -e '(@ (gnu packages maths) petsc-openmpi)'
+</pre>
+
+<p>
+starts a shell with the environment for this specific variant of the PETSc package.
+</p>
+
+<p>
+Running:
+</p>
+
+<pre class="example" id="org9dce466">
+guix shell -e '(@ (gnu) %base-packages)'
+</pre>
+
+<p>
+starts a shell with all the base system packages available.
+</p>
+
+<p>
+The above commands only use the default output of the given packages. To select other outputs, two element tuples can be specified:
+</p>
+
+<pre class="example" id="orgb2c3d78">
+guix shell -e '(list (@ (gnu packages bash) bash) "include")'
+</pre>
+
+<p>
+See <a href="docs/guix--Writing-Manifests.html#package_002ddevelopment_002dmanifest"><code>package-&gt;development-manifest</code></a>, for information on how to write a manifest for the development environment of a package.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--file===file</code><br />
+<code>-f ==file</code> :: Create an environment containing the package or list of packages that the code within <code>file</code> evaluates to.
+</p>
+
+<p>
+As an example, <code>file</code> might contain a definition like this (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-verbatim">(use-modules (guix)
+             (gnu packages gdb)
+             (gnu packages autotools)
+             (gnu packages texinfo))
+
+;; Augment the package definition of GDB with the build tools
+;; needed when developing GDB (and which are not needed when
+;; simply installing it.)
+(package
+  (inherit gdb)
+  (native-inputs (modify-inputs (package-native-inputs gdb)
+                   (prepend autoconf-2.69 automake texinfo))))
+</pre>
+</div>
+
+<p>
+With the file above, you can enter a development environment for GDB by running:
+</p>
+
+<pre class="example" id="orgb148de0">
+guix shell -D -f gdb-devel.scm
+</pre>
+
+<p>
+<a id="shell_002dmanifest"></a>
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--manifest===file</code><br />
+<code>-m ==file</code> :: Create an environment for the packages contained in the manifest object returned by the Scheme code in <code>file</code>. This option can be repeated several times, in which case the manifests are concatenated.
+</p>
+
+<p>
+This is similar to the same-named option in <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html#profile_002dmanifest"><code>--manifest</code></a>) and uses the same manifest files.
+</p>
+
+<p>
+See <a href="docs/guix--Writing-Manifests.html">Writing Manifests</a>, for information on how to write a manifest. See <code>--export-manifest</code> below on how to obtain a first manifest.
+</p>
+
+<p>
+<a id="index-manifest_002c-exporting-1"></a> <a id="shell_002dexport_002dmanifest"></a>
+</p></dd>
+
+<dt><code>--export-manifest</code></dt><dd><p>
+Write to standard output a manifest suitable for <code>--manifest</code> corresponding to given command-line options.
+</p>
+
+<p>
+This is a way to “convert” command-line arguments into a manifest. For example, imagine you are tired of typing long lines and would like to get a manifest equivalent to this command line:
+</p>
+
+<pre class="example" id="org892b50c">
+guix shell -D guile git emacs emacs-geiser emacs-geiser-guile
+</pre>
+
+<p>
+Just add <code>--export-manifest</code> to the command line above:
+</p>
+
+<pre class="example" id="org82e2960">
+guix shell --export-manifest \
+  -D guile git emacs emacs-geiser emacs-geiser-guile
+</pre>
+
+<p>
+&#x2026; and you get a manifest along these lines:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(concatenate-manifests
+  (list (specifications-&gt;manifest
+          (list "git"
+                "emacs"
+                "emacs-geiser"
+                "emacs-geiser-guile"))
+        (package-&gt;development-manifest
+          (specification-&gt;package "guile"))))
+</pre>
+</div>
+
+<p>
+You can store it into a file, say <code>manifest.scm</code>, and from there pass it to <code>guix shell</code> or indeed pretty much any <code>guix</code> command:
+</p>
+
+<pre class="example" id="org03006e9">
+guix shell -m manifest.scm
+</pre>
+
+<p>
+Voilà, you've converted a long command line into a manifest! That conversion process honors package transformation options (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>) so it should be lossless.
+</p></dd>
+
+<dt>(no term)</dt><dd><code>--profile===profile</code><br />
+<code>-p ==profile</code> :: Create an environment containing the packages installed in <code>profile</code>. Use <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>) to create and manage profiles.</dd>
+
+<dt><code>--pure</code></dt><dd>Unset existing environment variables when building the new environment, except those specified with <code>--preserve</code> (see below). This has the effect of creating an environment in which search paths only contain package inputs.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--preserve===regexp</code><br />
+<code>-E ==regexp</code> :: When used alongside <code>--pure</code>, preserve the environment variables matching <code>regexp</code>&#x2014;in other words, put them on a “white list” of environment variables that must be preserved. This option can be repeated several times.
+</p>
+
+<pre class="example" id="org55126fb">
+guix shell --pure --preserve=^SLURM openmpi … \
+  -- mpirun …
+</pre>
+
+<p>
+This example runs <code>mpirun</code> in a context where the only environment variables defined are <code>PATH</code>, environment variables whose name starts with ‘=SLURM=', as well as the usual “precious” variables (<code>HOME</code>, <code>USER</code>, etc.).
+</p></dd>
+
+<dt><code>--search-paths</code></dt><dd>Display the environment variable definitions that make up the environment.</dd>
+
+<dt>(no term)</dt><dd><code>--system===system</code><br />
+<code>-s ==system</code> :: Attempt to build for <code>system</code>&#x2014;e.g., <code>i686-linux</code>.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--container</code> <br />
+<code>-C</code> :: Run <code>command</code> within an isolated container. The current working directory outside the container is mapped inside the container. Additionally, unless overridden with <code>--user</code>, a dummy home directory is created that matches the current user's home directory, and <code>/etc/passwd</code> is configured accordingly.
+</p>
+
+<p>
+The spawned process runs as the current user outside the container. Inside the container, it has the same UID and GID as the current user, unless <code>--user</code> is passed (see below).
+</p></dd>
+
+<dt>(no term)</dt><dd><code>--network</code><br />
+<code>-N</code> :: For containers, share the network namespace with the host system. Containers created without this flag only have access to the loopback device.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--link-profile</code><br />
+<code>-P</code> :: For containers, link the environment profile to <code>~/.guix-profile</code> within the container and set <code>GUIX_ENVIRONMENT</code> to that. This is equivalent to making <code>~/.guix-profile</code> a symlink to the actual profile within the container. Linking will fail and abort the environment if the directory already exists, which will certainly be the case if <code>guix shell</code> was invoked in the user's home directory.
+</p>
+
+<p>
+Certain packages are configured to look in <code>~/.guix-profile</code> for configuration files and data; <code>--link-profile</code> allows these programs to behave as expected within the environment.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--user===user</code><br />
+<code>-u ==user</code> :: For containers, use the username <code>user</code> in place of the current user. The generated <code>/etc/passwd</code> entry within the container will contain the name <code>user</code>, the home directory will be <code>/home/==user</code>, and no user GECOS data will be copied. Furthermore, the UID and GID inside the container are 1000. <code>user</code> need not exist on the system.
+</p>
+
+<p>
+Additionally, any shared or exposed path (see <code>--share</code> and <code>--expose</code> respectively) whose target is within the current user's home directory will be remapped relative to <code>/home/USER</code>; this includes the automatic mapping of the current working directory.
+</p>
+
+<pre class="example" id="org7a659dc">
+# will expose paths as /home/foo/wd, /home/foo/test, and /home/foo/target
+cd $HOME/wd
+guix shell --container --user=foo \
+     --expose=$HOME/test \
+     --expose=/tmp/target=$HOME/target
+</pre>
+
+<p>
+While this will limit the leaking of user identity through home paths and each of the user fields, this is only one useful component of a broader privacy/anonymity solution&#x2014;not one in and of itself.
+</p></dd>
+
+<dt><code>--no-cwd</code></dt><dd>For containers, the default behavior is to share the current working directory with the isolated container and immediately change to that directory within the container. If this is undesirable, <code>--no-cwd</code> will cause the current working directory to <i>not</i> be automatically shared and will change to the user's home directory within the container instead. See also <code>--user</code>.</dd>
+
+<dt><code>--writable-root</code></dt><dd>When using <code>--container</code>, this option makes the root file system writable (it is read-only by default).</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--expose===source=</code>[===target==]=<br />
+<code>--share===source=</code>[===target==]= :: For containers, <code>--expose</code> (resp. <code>--share</code>) exposes the file system <code>source</code> from the host system as the read-only (resp. writable) file system <code>target</code> within the container. If <code>target</code> is not specified, <code>source</code> is used as the target mount point in the container.
+</p>
+
+<p>
+The example below spawns a Guile REPL in a container in which the user's home directory is accessible read-only via the <code>/exchange</code> directory:
+</p>
+
+<pre class="example" id="org5e5c73e">
+guix shell --container --expose=$HOME=/exchange guile -- guile
+</pre>
+
+<p>
+<a id="index-symbolic-links_002c-guix-shell"></a>
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--symlink===spec</code><br />
+<code>-S ==spec</code> :: For containers, create the symbolic links specified by <code>spec</code>, as documented in <a href="docs/guix--Invoking-guix-pack.html#pack_002dsymlink_002doption">pack-symlink-option</a>.
+</p>
+
+<p>
+<a id="index-file-system-hierarchy-standard-_0028FHS_0029"></a> <a id="index-FHS-_0028file-system-hierarchy-standard_0029"></a>
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--emulate-fhs</code><br />
+<code>-F</code> :: When used with <code>--container</code>, emulate a <a href="https://refspecs.linuxfoundation.org/fhs.shtml">Filesystem Hierarchy Standard (FHS)</a> configuration within the container, providing <code>/bin</code>, <code>/lib</code>, and other directories and files specified by the FHS.
+</p>
+
+<p>
+As Guix deviates from the FHS specification, this option sets up the container to more closely mimic that of other GNU/Linux distributions. This is useful for reproducing other development environments, testing, and using programs which expect the FHS specification to be followed. With this option, the container will include a version of glibc that will read <code>/etc/ld.so.cache</code> within the container for the shared library cache (contrary to glibc in regular Guix usage) and set up the expected FHS directories: <code>/bin</code>, <code>/etc</code>, <code>/lib</code>, and <code>/usr</code> from the container's profile.
+</p>
+
+<p>
+<a id="index-nested-containers_002c-for-guix-shell"></a> <a id="index-container-nesting_002c-for-guix-shell"></a>
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--nesting</code><br />
+<code>-W</code> :: When used with <code>--container</code>, provide Guix <i>inside</i> the container and arrange so that it can interact with the build daemon that runs outside the container. This is useful if you want, within your isolated container, to create other containers, as in this sample session:
+</p>
+
+<pre class="example" id="org50552bf">
+$ guix shell -CW coreutils
+[env]$ guix shell -C guile -- guile -c '(display "hello!\n")'
+hello!
+[env]$ exit
+</pre>
+
+<p>
+The session above starts a container with <code>coreutils</code> programs available in <code>PATH</code>. From there, we spawn <code>guix shell</code> to create a <i>nested</i> container that provides nothing but Guile.
+</p>
+
+<p>
+Another example is evaluating a <code>guix.scm</code> file that is untrusted, as shown here:
+</p>
+
+<pre class="example" id="orgb4e7cd6">
+guix shell -CW -- guix build -f guix.scm
+</pre>
+
+<p>
+The <code>guix build</code> command as executed above can only access the current directory.
+</p>
+
+<p>
+Under the hood, the <code>-W</code> option does several things:
+</p>
+
+<ul class="org-ul">
+<li>map the daemon's socket (by default <code>/var/guix/daemon-socket/socket</code>) inside the container;</li>
+<li>map the whole store (by default <code>/gnu/store</code>) inside the container such that store items made available by nested <code>guix</code> invocations are visible;</li>
+<li>add the currently-used <code>guix</code> command to the profile in the container, such that <code>guix describe</code> returns the same state inside and outside the container;</li>
+<li>share the cache (by default <code>~/.cache/guix</code>) with the host, to speed up operations such as <code>guix time-machine</code> and <code>guix shell</code>.</li>
+</ul></dd>
+
+<dt><code>--rebuild-cache</code> </dt><dd><p>
+<a id="index-caching_002c-in-guix-shell"></a>
+</p>
+
+<p>
+In most cases, <code>guix shell</code> caches the environment so that subsequent uses are instantaneous. Least-recently used cache entries are periodically removed. The cache is also invalidated, when using <code>--file</code> or <code>--manifest</code>, anytime the corresponding file is modified.
+</p>
+
+<p>
+The <code>--rebuild-cache</code> forces the cached environment to be refreshed. This is useful when using <code>--file</code> or <code>--manifest</code> and the <code>guix.scm</code> or <code>manifest.scm</code> file has external dependencies, or if its behavior depends, say, on environment variables.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--root===file</code> <br />
+<code>-r ==file</code> :: <a id="index-garbage-collector-root_002c-for-environments"></a>
+</p>
+
+<p>
+Make <code>file</code> a symlink to the profile for this environment, and register it as a garbage collector root.
+</p>
+
+<p>
+This is useful if you want to protect your environment from garbage collection, to make it “persistent”.
+</p>
+
+<p>
+When this option is omitted, <code>guix shell</code> caches profiles so that subsequent uses of the same environment are instantaneous&#x2014;this is comparable to using <code>--root</code> except that <code>guix shell</code> takes care of periodically removing the least-recently used garbage collector roots.
+</p>
+
+<p>
+In some cases, <code>guix shell</code> does not cache profiles&#x2014;e.g., if transformation options such as <code>--with-latest</code> are used. In those cases, the environment is protected from garbage collection only for the duration of the <code>guix shell</code> session. This means that next time you recreate the same environment, you could have to rebuild or re-download packages.
+</p>
+
+<p>
+See <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, for more on GC roots.
+</p></dd>
+</dl>
+
+<p>
+<code>guix shell</code> also supports all of the common build options that <code>guix build</code> supports (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>) as well as package transformation options (see <a href="docs/guix--Package-Transformation-Options.html">Package Transformation Options</a>).
+</p>
+
+<hr />
+</div>
+</div>
+</div>

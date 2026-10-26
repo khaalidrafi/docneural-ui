@@ -1,0 +1,109 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Vim-and-NeoVim"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Guile-Studio.html">Guile Studio</a>, Up: <a href="docs/guix--Alternative-Setups.html">Alternative Setups</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Vim-and-NeoVim-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="vim-and-neovim"></a>22.6.2 Vim and NeoVim<br />
+<div class="outline-text-5" id="text-vim-and-neovim">
+<p>
+Vim (and NeoVim) are also packaged in Guix, just in case you decided to go for the evil path.
+</p>
+
+<pre class="example" id="org28934aa">
+guix install vim
+</pre>
+
+<p>
+If you want to enjoy a similar development experience to that in the perfect setup, you should install several plugins to configure the editor. Vim (and NeoVim) have the equivalent to Paredit, <a href="https://www.vim.org/scripts/script.php?script_id=3998"><code>paredit.vim</code></a>, that will help you with the structural editing of Scheme files (the support for very large files is not great, though).
+</p>
+
+<pre class="example" id="org9f0b3c0">
+guix install vim-paredit
+</pre>
+
+<p>
+We also recommend that you run <code>:set autoindent</code> so that your code is automatically indented as you type.
+</p>
+
+<p>
+For the interaction with Git, <a href="https://www.vim.org/scripts/script.php?script_id=2975"><code>fugitive.vim</code></a> is the most commonly used plugin:
+</p>
+
+<pre class="example" id="org6dbbd12">
+guix install vim-fugitive
+</pre>
+
+<p>
+And of course if you want to interact with Guix directly from inside of vim, using the built-in terminal emulator, we have our very own <code>guix.vim</code> package!
+</p>
+
+<pre class="example" id="org10c3b2f">
+guix install vim-guix-vim
+</pre>
+
+<p>
+In NeoVim you can even make a similar setup to Geiser using <a href="https://conjure.fun/">Conjure</a> that lets you connect to a running Guile process and inject your code there live (sadly it's not packaged in Guix yet).
+</p>
+</div>
+</li>
+</ol>
+</div>

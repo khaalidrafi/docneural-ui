@@ -1,0 +1,26 @@
+:PROPERTIES:
+:ID: emacs--Emerge
+:END:
+#+filetags: :emacs:
+#+title: Emerge
+
+Next: [[id:emacs--Bug-Reference][Bug Reference]]   Previous: [[id:emacs--EDE][Emacs Development Environment]]   Up: [[id:emacs--Maintaining][Maintaining Large Programs]]
+
+<<Emerge>>
+
+--------------
+
+*** 30.6 Merging Files with Emerge [[#Merging-Files-with-Emerge][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Merging-Files-with-Emerge
+:CLASS: section
+:END:
+It's not unusual for programmers to get their signals crossed and modify the same program in two different directions. To recover from this confusion, you need to merge the two versions. Emerge makes this easier. For other ways to compare files, see [[id:emacs--Comparing-Files][Comparing Files]], and [[../ediff_html/index.html#Top][Ediff]] in The Ediff Manual.
+
+- [[id:emacs--Overview-of-Emerge][Overview of Emerge]]
+- [[id:emacs--Submodes-of-Emerge][Submodes of Emerge]]
+- [[id:emacs--State-of-Difference][State of a Difference]]
+- [[id:emacs--Merge-Commands][Merge Commands]]
+- [[id:emacs--Exiting-Emerge][Exiting Emerge]]
+- [[id:emacs--Combining-in-Emerge][Combining the Two Versions]]
+- [[id:emacs--Fine-Points-of-Emerge][Fine Points of Emerge]]

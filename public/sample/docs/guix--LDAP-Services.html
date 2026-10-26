@@ -1,0 +1,647 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="LDAP-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Web-Services.html">Web Services</a>, Previous: <a href="docs/guix--Kerberos-Services.html">Kerberos Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="LDAP-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="ldap-services"></a>11.10.19 LDAP Services<br />
+<div class="outline-text-5" id="text-ldap-services">
+<p>
+<a id="index-LDAP"></a> <a id="Authentication-against-LDAP-with-nslcd"></a>
+</p>
+</div>
+</li>
+<li><a id="authentication-against-ldap-with-nslcd"></a>Authentication against LDAP with nslcd<br />
+<div class="outline-text-5" id="text-authentication-against-ldap-with-nslcd">
+<p>
+<a id="index-nslcd_002c-LDAP-service"></a>
+The <code>(gnu services authentication)</code> module provides the <code>nslcd-service-type</code>, which can be used to authenticate against an LDAP server. In addition to configuring the service itself, you may want to add <code>ldap</code> as a name service to the Name Service Switch. See <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a> for detailed information.
+</p>
+
+<p>
+Here is a simple operating system declaration with a default configuration of the <code>nslcd-service-type</code> and a Name Service Switch configuration that consults the <code>ldap</code> name service last:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-service-modules authentication)
+(use-modules (gnu system nss))
+...
+(operating-system
+  ...
+  (services
+    (cons*
+      (service nslcd-service-type)
+      (service dhcp-client-service-type)
+      %base-services))
+  (name-service-switch
+   (let ((services (list (name-service (name "db"))
+                         (name-service (name "files"))
+                         (name-service (name "ldap")))))
+     (name-service-switch
+      (inherit %mdns-host-lookup-nss)
+      (password services)
+      (shadow   services)
+      (group    services)
+      (netgroup services)
+      (gshadow  services)))))
+</pre>
+</div>
+
+<p>
+Available <code>nslcd-configuration</code> fields are:
+</p>
+
+<dl class="org-dl">
+<dt><code>nslcd-configuration</code> parameter: <i>package</i> <b>nss-pam-ldapd</b> </dt><dd>The <code>nss-pam-ldapd</code> package to use.</dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>threads</b> </dt><dd><p>
+The number of threads to start that can handle requests and perform LDAP queries. Each thread opens a separate connection to the LDAP server. The default is to start 5 threads.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>string</i> <b>uid</b> </dt><dd><p>
+This specifies the user id with which the daemon should be run.
+</p>
+
+<p>
+Defaults to ‘="nslcd"='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>string</i> <b>gid</b> </dt><dd><p>
+This specifies the group id with which the daemon should be run.
+</p>
+
+<p>
+Defaults to ‘="nslcd"='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>log-option</i> <b>log</b> </dt><dd><p>
+This option controls the way logging is done via a list containing SCHEME and LEVEL. The SCHEME argument may either be the symbols ‘=none=' or ‘=syslog=', or an absolute file name. The LEVEL argument is optional and specifies the log level. The log level may be one of the following symbols: ‘=crit=', ‘=error=', ‘=warning=', ‘=notice=', ‘=info=' or ‘=debug='. All messages with the specified log level or higher are logged.
+</p>
+
+<p>
+Defaults to ‘='("/var/log/nslcd" info)='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>list</i> <b>uri</b> </dt><dd><p>
+The list of LDAP server URIs. Normally, only the first server will be used with the following servers as fall-back.
+</p>
+
+<p>
+Defaults to ‘='("ldap://localhost:389/")='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>ldap-version</b> </dt><dd><p>
+The version of the LDAP protocol to use. The default is to use the maximum version supported by the LDAP library.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>binddn</b> </dt><dd><p>
+Specifies the distinguished name with which to bind to the directory server for lookups. The default is to bind anonymously.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>bindpw</b> </dt><dd><p>
+Specifies the credentials with which to bind. This option is only applicable when used with binddn.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>rootpwmoddn</b> </dt><dd><p>
+Specifies the distinguished name to use when the root user tries to modify a user's password using the PAM module.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>rootpwmodpw</b> </dt><dd><p>
+Specifies the credentials with which to bind if the root user tries to change a user's password. This option is only applicable when used with rootpwmoddn
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>sasl-mech</b> </dt><dd><p>
+Specifies the SASL mechanism to be used when performing SASL authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>sasl-realm</b> </dt><dd><p>
+Specifies the SASL realm to be used when performing SASL authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>sasl-authcid</b> </dt><dd><p>
+Specifies the authentication identity to be used when performing SASL authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>sasl-authzid</b> </dt><dd><p>
+Specifies the authorization identity to be used when performing SASL authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>sasl-canonicalize?</b> </dt><dd><p>
+Determines whether the LDAP server host name should be canonicalised. If this is enabled the LDAP library will do a reverse host name lookup. By default, it is left up to the LDAP library whether this check is performed or not.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>krb5-ccname</b> </dt><dd><p>
+Set the name for the GSS-API Kerberos credentials cache.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>string</i> <b>base</b> </dt><dd><p>
+The directory search base.
+</p>
+
+<p>
+Defaults to ‘="dc=example,dc=com"='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>scope-option</i> <b>scope</b> </dt><dd><p>
+Specifies the search scope (subtree, onelevel, base or children). The default scope is subtree; base scope is almost never useful for name service lookups; children scope is not supported on all servers.
+</p>
+
+<p>
+Defaults to ‘='(subtree)='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-deref-option</i> <b>deref</b> </dt><dd><p>
+Specifies the policy for dereferencing aliases. The default policy is to never dereference aliases.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>referrals</b> </dt><dd><p>
+Specifies whether automatic referral chasing should be enabled. The default behaviour is to chase referrals.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>list-of-map-entries</i> <b>maps</b> </dt><dd><p>
+This option allows for custom attributes to be looked up instead of the default RFC 2307 attributes. It is a list of maps, each consisting of the name of a map, the RFC 2307 attribute to match and the query expression for the attribute as it is available in the directory.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>list-of-filter-entries</i> <b>filters</b> </dt><dd><p>
+A list of filters consisting of the name of a map to which the filter applies and an LDAP search filter expression.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>bind-timelimit</b> </dt><dd><p>
+Specifies the time limit in seconds to use when connecting to the directory server. The default value is 10 seconds.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>timelimit</b> </dt><dd><p>
+Specifies the time limit (in seconds) to wait for a response from the LDAP server. A value of zero, which is the default, is to wait indefinitely for searches to be completed.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>idle-timelimit</b> </dt><dd><p>
+Specifies the period if inactivity (in seconds) after which the con‐ nection to the LDAP server will be closed. The default is not to time out connections.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>reconnect-sleeptime</b> </dt><dd><p>
+Specifies the number of seconds to sleep when connecting to all LDAP servers fails. By default one second is waited between the first failure and the first retry.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>reconnect-retrytime</b> </dt><dd><p>
+Specifies the time after which the LDAP server is considered to be permanently unavailable. Once this time is reached retries will be done only once per this time period. The default value is 10 seconds.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-ssl-option</i> <b>ssl</b> </dt><dd><p>
+Specifies whether to use SSL/TLS or not (the default is not to). If 'start-tls is specified then StartTLS is used rather than raw LDAP over SSL.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-tls-reqcert-option</i> <b>tls-reqcert</b> </dt><dd><p>
+Specifies what checks to perform on a server-supplied certificate. The meaning of the values is described in the ldap.conf(5) manual page.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>tls-cacertdir</b> </dt><dd><p>
+Specifies the directory containing X.509 certificates for peer authen‐ tication. This parameter is ignored when using GnuTLS.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>tls-cacertfile</b> </dt><dd><p>
+Specifies the path to the X.509 certificate for peer authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>tls-randfile</b> </dt><dd><p>
+Specifies the path to an entropy source. This parameter is ignored when using GnuTLS.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>tls-ciphers</b> </dt><dd><p>
+Specifies the ciphers to use for TLS as a string.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>tls-cert</b> </dt><dd><p>
+Specifies the path to the file containing the local certificate for client TLS authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>tls-key</b> </dt><dd><p>
+Specifies the path to the file containing the private key for client TLS authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>pagesize</b> </dt><dd><p>
+Set this to a number greater than 0 to request paged results from the LDAP server in accordance with RFC2696. The default (0) is to not request paged results.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-ignore-users-option</i> <b>nss-initgroups-ignoreusers</b> </dt><dd><p>
+This option prevents group membership lookups through LDAP for the specified users. Alternatively, the value 'all-local may be used. With that value nslcd builds a full list of non-LDAP users on startup.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>nss-min-uid</b> </dt><dd><p>
+This option ensures that LDAP users with a numeric user id lower than the specified value are ignored.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>nss-uid-offset</b> </dt><dd><p>
+This option specifies an offset that is added to all LDAP numeric user ids. This can be used to avoid user id collisions with local users.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-number</i> <b>nss-gid-offset</b> </dt><dd><p>
+This option specifies an offset that is added to all LDAP numeric group ids. This can be used to avoid user id collisions with local groups.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>nss-nested-groups</b> </dt><dd><p>
+If this option is set, the member attribute of a group may point to another group. Members of nested groups are also returned in the higher level group and parent groups are returned when finding groups for a specific user. The default is not to perform extra searches for nested groups.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>nss-getgrent-skipmembers</b> </dt><dd><p>
+If this option is set, the group member list is not retrieved when looking up groups. Lookups for finding which groups a user belongs to will remain functional so the user will likely still get the correct groups assigned on login.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>nss-disable-enumeration</b> </dt><dd><p>
+If this option is set, functions which cause all user/group entries to be loaded from the directory will not succeed in doing so. This can dramatically reduce LDAP server load in situations where there are a great number of users and/or groups. This option is not recommended for most configurations.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>validnames</b> </dt><dd><p>
+This option can be used to specify how user and group names are verified within the system. This pattern is used to check all user and group names that are requested and returned from LDAP.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>ignorecase</b> </dt><dd><p>
+This specifies whether or not to perform searches using case-insensitive matching. Enabling this could open up the system to authorization bypass vulnerabilities and introduce nscd cache poisoning vulnerabilities which allow denial of service.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-boolean</i> <b>pam-authc-ppolicy</b> </dt><dd><p>
+This option specifies whether password policy controls are requested and handled from the LDAP server when performing user authentication.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>pam-authc-search</b> </dt><dd><p>
+By default nslcd performs an LDAP search with the user's credentials after BIND (authentication) to ensure that the BIND operation was successful. The default search is a simple check to see if the user's DN exists. A search filter can be specified that will be used instead. It should return at least one entry.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>pam-authz-search</b> </dt><dd><p>
+This option allows flexible fine tuning of the authorisation check that should be performed. The search filter specified is executed and if any entries match, access is granted, otherwise access is denied.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>maybe-string</i> <b>pam-password-prohibit-message</b> </dt><dd><p>
+If this option is set password modification using pam<sub>ldap</sub> will be denied and the specified message will be presented to the user instead. The message can be used to direct the user to an alternative means of changing their password.
+</p>
+
+<p>
+Defaults to ‘=disabled='.
+</p></dd>
+
+<dt><code>nslcd-configuration</code> parameter: <i>list</i> <b>pam-services</b> </dt><dd><p>
+List of pam service names for which LDAP authentication should suffice.
+</p>
+
+<p>
+Defaults to ‘='()='.
+</p></dd>
+</dl>
+
+<p>
+<a id="LDAP-Directory-Server"></a>
+</p>
+</div>
+</li>
+<li><a id="ldap-directory-server"></a>LDAP Directory Server<br />
+<div class="outline-text-5" id="text-ldap-directory-server">
+<p>
+<a id="index-LDAP_002c-server"></a>
+The <code>(gnu services ldap)</code> module provides the <code>directory-server-service-type</code>, which can be used to create and launch an LDAP server instance.
+</p>
+
+<p>
+Here is an example configuration of the <code>directory-server-service-type</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-service-modules ldap)
+
+...
+(operating-system
+  ...
+  (services
+    (cons
+      (service directory-server-service-type
+               (directory-server-instance-configuration
+                (slapd
+                 (slapd-configuration
+                  (root-password "{PBKDF2_SHA256}AAAgAG…ABSOLUTELYSECRET")))))
+      %base-services)))
+</pre>
+</div>
+
+<p>
+The root password should be generated with the <code>pwdhash</code> utility that is provided by the <code>389-ds-base</code> package.
+</p>
+
+<p>
+Note that changes to the directory server configuration will not be applied to existing instances. You will need to back up and restore server data manually. Only new directory server instances will be created upon system reconfiguration.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: directory-server-instance-configuration </dt><dd>Available <code>directory-server-instance-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>389-ds-base</code>) (type: file-like)</dt><dd>The <code>389-ds-base</code> package.</dd>
+
+<dt><code>config-version</code> (default: <code>2</code>) (type: number)</dt><dd>Sets the format version of the configuration file. To use the INF file with <code>dscreate</code>, this parameter must be 2.</dd>
+
+<dt><code>full-machine-name</code> (default: <code>"localhost"</code>) (type: string)</dt><dd>Sets the fully qualified hostname (FQDN) of this system.</dd>
+
+<dt><code>selinux</code> (default: <code>#false</code>) (type: boolean)</dt><dd>Enables SELinux detection and integration during the installation of this instance. If set to <code>#true</code>, <code>dscreate</code> auto-detects whether SELinux is enabled.</dd>
+
+<dt><code>strict-host-checking</code> (default: <code>#true</code>) (type: boolean)</dt><dd>Sets whether the server verifies the forward and reverse record set in the <code>full-machine-name</code> parameter. When installing this instance with GSSAPI authentication behind a load balancer, set this parameter to <code>#false</code>.</dd>
+
+<dt><code>systemd</code> (default: <code>#false</code>) (type: boolean)</dt><dd>Enables systemd platform features. If set to <code>#true</code>, <code>dscreate</code> auto-detects whether systemd is installed.</dd>
+
+<dt><code>slapd</code> (type: slapd-configuration)</dt><dd>Configuration of slapd.
+
+<dl class="org-dl">
+<dt>Data Type: slapd-configuration </dt><dd>Available <code>slapd-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>instance-name</code> (default: <code>"localhost"</code>) (type: string)</dt><dd>Sets the name of the instance. You can refer to this value in other parameters of this INF file using the <code>{instance_name}</code> variable. Note that this name cannot be changed after the installation!</dd>
+
+<dt><code>user</code> (default: <code>"dirsrv"</code>) (type: string)</dt><dd>Sets the user name the ns-slapd process will use after the service started.</dd>
+
+<dt><code>group</code> (default: <code>"dirsrv"</code>) (type: string)</dt><dd>Sets the group name the ns-slapd process will use after the service started.</dd>
+
+<dt><code>port</code> (default: <code>389</code>) (type: number)</dt><dd>Sets the TCP port the instance uses for LDAP connections.</dd>
+
+<dt><code>secure-port</code> (default: <code>636</code>) (type: number)</dt><dd>Sets the TCP port the instance uses for TLS-secured LDAP connections (LDAPS).</dd>
+
+<dt><code>root-dn</code> (default: <code>"cn=Directory Manager"</code>) (type: string)</dt><dd>Sets the <i>Distinquished Name</i> (DN) of the administrator account for this instance.</dd>
+
+<dt><code>root-password</code> (default: <code>"{invalid}YOU-SHOULD-CHANGE-THIS"</code>) (type: string)</dt><dd>Sets the password of the account specified in the <code>root-dn</code> parameter. You can either set this parameter to a plain text password <code>dscreate</code> hashes during the installation or to a "{algorithm}hash" string generated by the <code>pwdhash</code> utility. Note that setting a plain text password can be a security risk if unprivileged users can read this INF file!</dd>
+
+<dt><code>self-sign-cert</code> (default: <code>#true</code>) (type: boolean)</dt><dd>Sets whether the setup creates a self-signed certificate and enables TLS encryption during the installation. This is not suitable for production, but it enables administrators to use TLS right after the installation. You can replace the self-signed certificate with a certificate issued by a certificate authority.</dd>
+
+<dt><code>self-sign-cert-valid-months</code> (default: <code>24</code>) (type: number)</dt><dd>Set the number of months the issued self-signed certificate will be valid.</dd>
+
+<dt><code>backup-dir</code> (default: <code>"/var/lib/dirsrv/slapd-{instance_name}/bak"</code>) (type: string)</dt><dd>Set the backup directory of the instance.</dd>
+
+<dt><code>cert-dir</code> (default: <code>"/etc/dirsrv/slapd-{instance_name}"</code>) (type: string)</dt><dd>Sets the directory of the instance's Network Security Services (NSS) database.</dd>
+
+<dt><code>config-dir</code> (default: <code>"/etc/dirsrv/slapd-{instance_name}"</code>) (type: string)</dt><dd>Sets the configuration directory of the instance.</dd>
+
+<dt><code>db-dir</code> (default: <code>"/var/lib/dirsrv/slapd-{instance_name}/db"</code>) (type: string)</dt><dd>Sets the database directory of the instance.</dd>
+
+<dt><code>initconfig-dir</code> (default: <code>"/etc/dirsrv/registry"</code>) (type: string)</dt><dd>Sets the directory of the operating system's rc configuration directory.</dd>
+
+<dt><code>ldif-dir</code> (default: <code>"/var/lib/dirsrv/slapd-{instance_name}/ldif"</code>) (type: string)</dt><dd>Sets the LDIF export and import directory of the instance.</dd>
+
+<dt><code>lock-dir</code> (default: <code>"/var/lock/dirsrv/slapd-{instance_name}"</code>) (type: string)</dt><dd>Sets the lock directory of the instance.</dd>
+
+<dt><code>log-dir</code> (default: <code>"/var/log/dirsrv/slapd-{instance_name}"</code>) (type: string)</dt><dd>Sets the log directory of the instance.</dd>
+
+<dt><code>run-dir</code> (default: <code>"/run/dirsrv"</code>) (type: string)</dt><dd>Sets PID directory of the instance.</dd>
+
+<dt><code>schema-dir</code> (default: <code>"/etc/dirsrv/slapd-{instance_name}/schema"</code>) (type: string)</dt><dd>Sets schema directory of the instance.</dd>
+
+<dt><code>tmp-dir</code> (default: <code>"/tmp"</code>) (type: string)</dt><dd>Sets the temporary directory of the instance.</dd>
+</dl></dd>
+</dl></dd>
+
+<dt><code>backend-userroot</code> (type: backend-userroot-configuration)</dt><dd>Configuration of the userroot backend.
+
+<dl class="org-dl">
+<dt>Data Type: backend-userroot-configuration </dt><dd>Available <code>backend-userroot-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>create-suffix-entry?</code> (default: <code>#false</code>) (type: boolean)</dt><dd>Set this parameter to <code>#true</code> to create a generic root node entry for the suffix in the database.</dd>
+
+<dt><code>require-index?</code> (default: <code>#false</code>) (type: boolean)</dt><dd>Set this parameter to <code>#true</code> to refuse unindexed searches in this database.</dd>
+
+<dt><code>sample-entries</code> (default: <code>"no"</code>) (type: string)</dt><dd>Set this parameter to <code>"yes"</code> to add latest version of sample entries to this database. Or, use <code>"001003006"</code> to use the 1.3.6 version sample entries. Use this option, for example, to create a database for testing purposes.</dd>
+
+<dt><code>suffix</code> (type: maybe-string)</dt><dd>Sets the root suffix stored in this database. If you do not set the suffix attribute the install process will not create the backend/suffix. You can also create multiple backends/suffixes by duplicating this section.</dd>
+</dl></dd>
+</dl></dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Web-Services.html">Web Services</a>, Previous: <a href="docs/guix--Kerberos-Services.html">Kerberos Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

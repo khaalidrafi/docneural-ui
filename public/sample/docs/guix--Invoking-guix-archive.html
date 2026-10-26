@@ -1,0 +1,223 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-archive">1.0.1. 5.11 Invoking <code>guix archive</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-archive"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-archive-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-archive" class="outline-4">
+<h4 id="invoking-guix-archive"><span class="section-number-4">1.0.1.</span> 5.11 Invoking <code>guix archive</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-archive">
+<p>
+<a id="index-guix-archive"></a> <a id="index-archive"></a> <a id="index-exporting-files-from-the-store"></a> <a id="index-importing-files-to-the-store"></a>
+The <code>guix archive</code> command allows users to <i>export</i> files from the store into a single archive, and to later <i>import</i> them on a machine that runs Guix. In particular, it allows store files to be transferred from one machine to the store on another machine.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> If you're looking for a way to produce archives in a format suitable for tools other than Guix, see <a href="docs/guix--Invoking-guix-pack.html">Invoking <code>guix pack</code></a>.
+</p>
+</blockquote>
+
+<p>
+<a id="index-exporting-store-items"></a>
+To export store files as an archive to standard output, run:
+</p>
+
+<pre class="example" id="org82c8bc8">
+guix archive --export options specifications...
+</pre>
+
+<p>
+<code>specifications</code> may be either store file names or package specifications, as for <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). For instance, the following command creates an archive containing the <code>gui</code> output of the <code>git</code> package and the main output of <code>emacs</code>:
+</p>
+
+<pre class="example" id="org932df25">
+guix archive --export git:gui /gnu/store/...-emacs-24.3 &gt; great.nar
+</pre>
+
+<p>
+If the specified packages are not built yet, <code>guix archive</code> automatically builds them. The build process may be controlled with the common build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>).
+</p>
+
+<p>
+To transfer the <code>emacs</code> package to a machine connected over SSH, one would run:
+</p>
+
+<pre class="example" id="orga2b43ea">
+guix archive --export -r emacs | ssh the-machine guix archive --import
+</pre>
+
+<p>
+Similarly, a complete user profile may be transferred from one machine to another like this:
+</p>
+
+<pre class="example" id="orgcdbbb21">
+guix archive --export -r $(readlink -f ~/.guix-profile) | \
+  ssh the-machine guix archive --import
+</pre>
+
+<p>
+However, note that, in both examples, all of <code>emacs</code> and the profile as well as all of their dependencies are transferred (due to <code>-r</code>), regardless of what is already available in the store on the target machine. The <code>--missing</code> option can help figure out which items are missing from the target store. The <code>guix copy</code> command simplifies and optimizes this whole process, so this is probably what you should use in this case (see <a href="docs/guix--Invoking-guix-copy.html">Invoking <code>guix copy</code></a>).
+</p>
+
+<p>
+<a id="index-nar_002c-archive-format"></a> <a id="index-normalized-archive-_0028nar_0029"></a> <a id="index-nar-bundle_002c-archive-format"></a>
+Each store item is written in the <i>normalized archive</i> or <i>nar</i> format (described below), and the output of <code>guix archive --export</code> (and input of <code>guix archive --import</code>) is a <i>nar bundle</i>.
+</p>
+
+<p>
+The nar format is comparable in spirit to ‘tar', but with differences that make it more appropriate for our purposes. First, rather than recording all Unix metadata for each file, the nar format only mentions the file type (regular, directory, or symbolic link); Unix permissions and owner/group are dismissed. Second, the order in which directory entries are stored always follows the order of file names according to the C locale collation order. This makes archive production fully deterministic.
+</p>
+
+<p>
+That nar bundle format is essentially the concatenation of zero or more nars along with metadata for each store item it contains: its file name, references, corresponding derivation, and a digital signature.
+</p>
+
+<p>
+When exporting, the daemon digitally signs the contents of the archive, and that digital signature is appended. When importing, the daemon verifies the signature and rejects the import in case of an invalid signature or if the signing key is not authorized.
+</p>
+
+<p>
+The main options are:
+</p>
+
+<dl class="org-dl">
+<dt><code>--export</code></dt><dd><p>
+Export the specified store files or packages (see below). Write the resulting archive to the standard output.
+</p>
+
+<p>
+Dependencies are <i>not</i> included in the output, unless <code>--recursive</code> is passed.
+</p></dd>
+
+<dt>(no term)</dt><dd><code>-r</code><br />
+<code>--recursive</code> :: When combined with <code>--export</code>, this instructs <code>guix archive</code> to include dependencies of the given items in the archive. Thus, the resulting archive is self-contained: it contains the closure of the exported store items.</dd>
+
+<dt><code>--import</code></dt><dd>Read an archive from the standard input, and import the files listed therein into the store. Abort if the archive has an invalid digital signature, or if it is signed by a public key not among the authorized keys (see <code>--authorize</code> below).</dd>
+
+<dt><code>--missing</code></dt><dd>Read a list of store file names from the standard input, one per line, and write on the standard output the subset of these files missing from the store.</dd>
+
+<dt><code>--generate-key[===parameters==]</code> </dt><dd><p>
+Generate a new key pair for the daemon. This is a prerequisite before archives can be exported with <code>--export</code>. This operation is usually instantaneous but it can take time if the system's entropy pool needs to be refilled. On Guix System, <code>guix-service-type</code> takes care of generating this key pair the first boot.
+</p>
+
+<p>
+The generated key pair is typically stored under <code>/etc/guix</code>, in <code>signing-key.pub</code> (public key) and <code>signing-key.sec</code> (private key, which must be kept secret). When <code>parameters</code> is omitted, an ECDSA key using the Ed25519 curve is generated, or, for Libgcrypt versions before 1.6.0, it is a 4096-bit RSA key. Alternatively, <code>parameters</code> can specify <code>genkey</code> parameters suitable for Libgcrypt (see <a href="https://www.gnupg.org/documentation/manuals/gcrypt/General-public_002dkey-related-Functions.html#General-public_002dkey-related-Functions"><code>gcry_pk_genkey</code></a> in The Libgcrypt Reference Manual).
+</p></dd>
+
+<dt><code>--authorize</code> </dt><dd><p>
+Authorize imports signed by the public key passed on standard input. The public key must be in “s-expression advanced format”&#x2014;i.e., the same format as the <code>signing-key.pub</code> file.
+</p>
+
+<p>
+The list of authorized keys is kept in the human-editable file <code>/etc/guix/acl</code>. The file contains <a href="https://people.csail.mit.edu/rivest/Sexp.txt">“advanced-format s-expressions”</a> and is structured as an access-control list in the <a href="https://theworld.com/~cme/spki.txt">Simple Public-Key Infrastructure (SPKI)</a>.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--extract===directory</code><br />
+<code>-x ==directory</code> :: Read a single-item archive as served by substitute servers (see <a href="docs/guix--Substitutes.html">Substitutes</a>) and extract it to <code>directory</code>. This is a low-level operation needed in only very narrow use cases; see below.
+</p>
+
+<p>
+For example, the following command extracts the substitute for Emacs served by <code>bordeaux.guix.gnu.org</code> to <code>/tmp/emacs</code>:
+</p>
+
+<pre class="example" id="orgb3f308b">
+$ wget -O - \
+  https://bordeaux.guix.gnu.org/nar/gzip/…-emacs-24.5 \
+  | gunzip | guix archive -x /tmp/emacs
+</pre>
+
+<p>
+Single-item archives are different from multiple-item archives produced by <code>guix archive --export</code>; they contain a single store item, and they do <i>not</i> embed a signature. Thus this operation does <i>no</i> signature verification and its output should be considered unsafe.
+</p>
+
+<p>
+The primary purpose of this operation is to facilitate inspection of archive contents coming from possibly untrusted substitute servers (see <a href="docs/guix--Invoking-guix-challenge.html">Invoking <code>guix challenge</code></a>).
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--list</code><br />
+<code>-t</code> :: Read a single-item archive as served by substitute servers (see <a href="docs/guix--Substitutes.html">Substitutes</a>) and print the list of files it contains, as in this example:
+</p>
+
+<pre class="example" id="org3921f48">
+$ wget -O - \
+  https://bordeaux.guix.gnu.org/nar/lzip/…-emacs-26.3 \
+  | lzip -d | guix archive -t
+</pre></dd>
+</dl>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

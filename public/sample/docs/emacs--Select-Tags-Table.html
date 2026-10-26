@@ -1,0 +1,56 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Selecting-a-Tags-Table">1. 30.4.3 Selecting a Tags Table ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Tags-Tables.html">Tags Tables</a>   Up: <a href="docs/emacs--Xref.html">Find Identifier References</a>
+</p>
+
+<p>
+<a id="Select-Tags-Table"></a>
+</p>
+
+<hr />
+<div id="outline-container-Selecting-a-Tags-Table" class="outline-2">
+<h2 id="Selecting-a-Tags-Table"><span class="section-number-2">1.</span> 30.4.3 Selecting a Tags Table <a href="#Selecting-a-Tags-Table">¶</a></h2>
+<div class="outline-text-2" id="text-Selecting-a-Tags-Table">
+<p>
+Emacs has at any time at most one <i>selected</i> tags table. All the commands for working with tags tables use the selected one first. To select a tags table, type M-x visit-tags-table, which reads the tags table file name as an argument, with <code>TAGS</code> defaulting to the first directory that contains a file named <code>TAGS</code> encountered when recursively searching upward from the default directory.
+</p>
+
+<p>
+Emacs does not actually read in the tags table contents until you try to use them; all <code>visit-tags-table</code> does is store the file name in the variable <code>tags-file-name</code>, and not much more. The variable's initial value is <code>nil</code>; that value tells all the commands for working with tags tables that they must ask for a tags table file name to use.
+</p>
+
+<p>
+In addition to the selected tags table, Emacs maintains the list of several tags tables that you use together. For example, if you are working on a program that uses a library, you may wish to have the tags tables of both the program and the library available, so that Emacs could easily find identifiers from both. If the selected tags table doesn't have the identifier or doesn't mention the source file a tags command needs, the command will try using all the other tags tables in the current list of tags tables.
+</p>
+
+<p>
+Using <code>visit-tags-table</code> to load a new tags table when another tags table is already loaded gives you a choice: you can add the new tags table to the current list of tags tables, or discard the current list and start a new list. If you start a new list, the new tags table is used <i>instead</i> of others. If you add the new table to the current list, it is used <i>as well as</i> the others.
+</p>
+
+<p>
+You can specify a precise list of tags tables by setting the variable <code>tags-table-list</code> to a list of directory names, like this:
+</p>
+
+<pre class="example" id="org4bf64a3">
+(setq tags-table-list
+      '("~/.emacs.d" "/usr/local/lib/emacs/src"))
+</pre>
+
+<p>
+This tells the tags commands to look at the <code>TAGS</code> files in your <code>~/.emacs.d</code> directory and in the <code>/usr/local/lib/emacs/src</code> directory. The order depends on which file you are in and which tags table mentions that file.
+</p>
+
+<p>
+Do not set both <code>tags-file-name</code> and <code>tags-table-list</code>.
+</p>
+
+<hr />
+</div>
+</div>

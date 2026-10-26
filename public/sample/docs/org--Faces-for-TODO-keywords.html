@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Faces-for-TODO-keywords-1">1. 5.2.6 Faces for TODO keywords ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Faces-for-TODO-keywords"></a>
+Next: <a href="docs/org--TODO-dependencies.html">TODO dependencies</a>, Previous: <a href="docs/org--Per_002dfile-keywords.html">Setting up keywords for individual files</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Faces-for-TODO-keywords-1" class="outline-2">
+<h2 id="Faces-for-TODO-keywords-1"><span class="section-number-2">1.</span> 5.2.6 Faces for TODO keywords <a href="#Faces-for-TODO-keywords-1">¶</a></h2>
+<div class="outline-text-2" id="text-Faces-for-TODO-keywords-1">
+<p>
+Org mode highlights TODO keywords with special faces: <code>org-todo</code> for keywords indicating that an item still has to be acted upon, and <code>org-done</code> for keywords indicating that an item is finished. If you are using more than two different states, you might want to use special faces for some of them. This can be done using the variable <code>org-todo-keyword-faces</code>. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-todo-keyword-faces
+      '(("TODO" . org-warning) ("STARTED" . "yellow")
+        ("CANCELED" . (:foreground "blue" :weight bold))))
+</pre>
+</div>
+
+<p>
+While using a list with face properties as shown for ‘=CANCELED=' <i>should</i> work, this does not always seem to be the case. If necessary, define a special face and use that. A string is interpreted as a color. The variable <code>org-faces-easy-properties</code> determines if that color is interpreted as a foreground or a background color.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--TODO-dependencies.html">TODO dependencies</a>, Previous: <a href="docs/org--Per_002dfile-keywords.html">Setting up keywords for individual files</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

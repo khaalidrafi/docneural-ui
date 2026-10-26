@@ -1,0 +1,87 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mail-Aliases-1">1. 34.3 Mail Aliases ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mail-Commands.html">Mail Commands</a>   Previous: <a href="docs/emacs--Mail-Headers.html">Mail Header Fields</a>   Up: <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>
+</p>
+
+<p>
+<a id="Mail-Aliases"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mail-Aliases-1" class="outline-2">
+<h2 id="Mail-Aliases-1"><span class="section-number-2">1.</span> 34.3 Mail Aliases <a href="#Mail-Aliases-1">¶</a></h2>
+<div class="outline-text-2" id="text-Mail-Aliases-1">
+<p>
+You can define <i>mail aliases</i>, which are short mnemonic names that stand for one or more mailing addresses. By default, mail aliases are defined in the file <code>~/.mailrc</code>. You can specify a different file name to use, by setting the variable <code>mail-personal-alias-file</code>.
+</p>
+
+<p>
+To define an alias in <code>~/.mailrc</code>, write a line like this:
+</p>
+
+<pre class="example" id="org1d985f4">
+alias nick fulladdresses
+</pre>
+
+<p>
+This means that <code>nick</code> should expand into <code>fulladdresses</code>, where <code>fulladdresses</code> can be either a single address, or multiple addresses separated with spaces. For instance, to make <code>maingnu</code> stand for <code>gnu@gnu.org</code> plus a local address of your own, put in this line:
+</p>
+
+<pre class="example" id="org2336020">
+alias maingnu gnu@gnu.org local-gnu
+</pre>
+
+<p>
+If an address contains a space, quote the whole address with a pair of double quotes, like this:
+</p>
+
+<pre class="example" id="orgf167fb1">
+alias jsmith "John Q. Smith &lt;none@example.com&gt;"
+</pre>
+
+<p>
+Note that you need not include double quotes around individual parts of the address, such as the person's full name. Emacs puts them in if they are needed. For instance, it inserts the above address as ‘="John Q. Smith" &lt;none@example.com&gt;='.
+</p>
+
+<p>
+After editing the <code>~/.mailrc</code> file, or if the file was modified outside of Emacs, you can update the mail aliases used by a running Emacs session with M-x rebuild-mail-abbrevs RET. This prompts for the name of the file to use, the default being the value of <code>mail-personal-alias-file</code>. A similar command <code>merge-mail-abbrevs</code> prompts for a file with mail aliases, then merges the aliases in that file with the existing ones.
+</p>
+
+<p>
+Alternatively, you can use Emacs commands to define mail aliases. The command <code>define-mail-abbrev</code> prompts for the alias and the full address, and defines the alias to expand to the full address. Emacs will save the added aliases whenever it offers to save all files (for C-x s or C-x C-c), like it does with other abbrevs (see <a href="docs/emacs--Saving-Abbrevs.html">Saving Abbrevs</a>).
+</p>
+
+<p>
+Emacs also recognizes include commands in <code>~/.mailrc</code>. They look like this:
+</p>
+
+<pre class="example" id="orge0df750">
+source filename
+</pre>
+
+<p>
+The <code>~/.mailrc</code> file is not unique to Emacs; many other mail-reading programs use it for mail aliases, and it can contain various other commands. However, Emacs ignores everything except alias definitions and include commands.
+</p>
+
+<p>
+Mail aliases expand as abbrevs&#x2014;that is to say, as soon as you type a word-separator character after an alias (see <a href="docs/emacs--Abbrevs.html">Abbrevs</a>). This expansion takes place only within the ‘=To=', ‘=From=', ‘=CC=', ‘=BCC=', and ‘=Reply-To=' header fields (plus their ‘=Resent-<code>' variants); it does not take place in other header fields, such as ‘=Subject</code>'.
+</p>
+
+<p>
+You can also insert an aliased address directly, using the command M-x mail-abbrev-insert-alias. This reads an alias name, with completion, and inserts its definition at point.
+</p>
+
+<p>
+The command <code>mail-abbrev-complete-alias</code> completes on the mail alias preceding point.
+</p>
+
+<hr />
+</div>
+</div>

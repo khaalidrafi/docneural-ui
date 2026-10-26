@@ -1,0 +1,56 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Mouse-Usage-on-MS_002dDOS">1. I.12.2 Mouse Usage on MS-DOS ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--MS_002dDOS-Display.html">Display on MS-DOS</a>   Previous: <a href="docs/emacs--MS_002dDOS-Keyboard.html">Keyboard Usage on MS-DOS</a>   Up: <a href="docs/emacs--MS_002dDOS.html">Emacs and MS-DOS</a>
+</p>
+
+<p>
+<a id="MS_002dDOS-Mouse"></a>
+</p>
+
+<hr />
+<div id="outline-container-Mouse-Usage-on-MS_002dDOS" class="outline-2">
+<h2 id="Mouse-Usage-on-MS_002dDOS"><span class="section-number-2">1.</span> I.12.2 Mouse Usage on MS-DOS <a href="#Mouse-Usage-on-MS_002dDOS">¶</a></h2>
+<div class="outline-text-2" id="text-Mouse-Usage-on-MS_002dDOS">
+<p>
+Emacs on MS-DOS supports a mouse (on the default terminal only). The mouse commands work as documented, including those that use menus and the menu bar (see <a href="docs/emacs--Menu-Bar.html">The Menu Bar</a>). Scroll bars don't work in MS-DOS Emacs. PC mice usually have only two buttons; these act as mouse-1 and mouse-2, but if you press both of them together, that has the effect of mouse-3. If the mouse does have 3 buttons, Emacs detects that at startup, and all the 3 buttons function normally, as on X.
+</p>
+
+<p>
+Help strings for menu-bar and pop-up menus are displayed in the echo area when the mouse pointer moves across the menu items. Highlighting of mouse-sensitive text (see <a href="docs/emacs--Mouse-References.html">Following References with the Mouse</a>) is also supported.
+</p>
+
+<p>
+Some versions of mouse drivers don't report the number of mouse buttons correctly. For example, mice with a wheel report that they have 3 buttons, but only 2 of them are passed to Emacs; the clicks on the wheel, which serves as the middle button, are not passed. In these cases, you can use the M-x msdos-set-mouse-buttons command to tell Emacs how many mouse buttons to expect. You could make such a setting permanent by adding this fragment to your <code>_emacs</code> init file:
+</p>
+
+<pre class="example" id="orge0d2917">
+;; Treat the mouse like a 2-button mouse.
+(msdos-set-mouse-buttons 2)
+</pre>
+
+<p>
+Emacs built for MS-DOS supports clipboard operations when it runs on Windows. Commands that put text on the kill ring, or yank text from the ring, check the Windows clipboard first, just as Emacs does on the X Window System (see <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>). Only the primary selection and the cut buffer are supported by MS-DOS Emacs on Windows; the secondary selection always appears as empty.
+</p>
+
+<p>
+Due to the way clipboard access is implemented by Windows, the length of text you can put into the clipboard is limited by the amount of free DOS memory that is available to Emacs. Usually, up to 620KB of text can be put into the clipboard, but this limit depends on the system configuration and is lower if you run Emacs as a subprocess of another program. If the killed text does not fit, Emacs outputs a message saying so, and does not put the text into the clipboard.
+</p>
+
+<p>
+Null characters also cannot be put into the Windows clipboard. If the killed text includes null characters, Emacs does not put such text into the clipboard, and displays in the echo area a message to that effect.
+</p>
+
+<p>
+The variable <code>dos-display-scancodes</code>, when non-<code>nil</code>, directs Emacs to display the ASCII value and the keyboard scan code of each keystroke; this feature serves as a complement to the <code>view-lossage</code> command, for debugging.
+</p>
+
+<hr />
+</div>
+</div>

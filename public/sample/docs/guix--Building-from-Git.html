@@ -1,0 +1,262 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#building-from-git">1.0.1. 22.2 Building from Git</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Building-from-Git"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Running-the-Test-Suite.html">Running the Test Suite</a>, Previous: <a href="docs/guix--Requirements.html">Requirements</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Building-from-Git-1"></a>
+</p>
+</div>
+<div id="outline-container-building-from-git" class="outline-4">
+<h4 id="building-from-git"><span class="section-number-4">1.0.1.</span> 22.2 Building from Git</h4>
+<div class="outline-text-4" id="text-building-from-git">
+<p>
+If you want to hack Guix itself, it is recommended to use the latest version from the Git repository:
+</p>
+
+<pre class="example" id="org1bfa13c">
+git clone https://git.guix.gnu.org/guix.git
+cd guix
+</pre>
+
+<p>
+<a id="index-authentication_002c-of-a-Guix-checkout"></a>
+How do you ensure that you obtained a genuine copy of the repository? To do that, run <code>guix git authenticate</code>, passing it the commit and OpenPGP fingerprint of the <i>channel introduction</i> (see <a href="docs/guix--Invoking-guix-git-authenticate.html">Invoking <code>guix git authenticate</code></a>):
+</p>
+
+<pre class="example" id="orgb4a8e52">
+git fetch origin keyring:keyring
+guix git authenticate 9edb3f66fd807b096b48283debdcddccfea34bad \
+  "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
+</pre>
+
+<p>
+This command completes with exit code zero on success; it prints an error message and exits with a non-zero code otherwise.
+</p>
+
+<p>
+As you can see, there is a chicken-and-egg problem: you first need to have Guix installed. Typically you would install Guix System (see <a href="docs/guix--System-Installation.html">System Installation</a>) or Guix on top of another distro (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>); in either case, you would verify the OpenPGP signature on the installation medium. This “bootstraps” the trust chain.
+</p>
+
+<p>
+The easiest way to set up a development environment for Guix is, of course, by using Guix! The following command starts a new shell where all the dependencies and appropriate environment variables are set up to hack on Guix:
+</p>
+
+<pre class="example" id="org6c5a6d3">
+guix shell -D guix -CPW
+</pre>
+
+<p>
+or even, from within a Git worktree for Guix:
+</p>
+
+<pre class="example" id="org075a6c1">
+echo $(pwd) &gt;&gt; ~/.config/guix/shell-authorized-directories
+guix shell -CPW
+</pre>
+
+<p>
+If <code>-C</code> (short for <code>--container</code>) is not supported on your system, try <code>--pure</code> instead of <code>-CPW</code>. See <a href="docs/guix--Invoking-guix-shell.html">Invoking <code>guix shell</code></a>, for more information on that command.
+</p>
+
+<p>
+Most of the test suite runs without an internet connection. The <code>-N</code> (short for <code>--network</code>) can be added to the <code>guix shell</code> command to run the tests that require internet access.
+</p>
+
+<p>
+If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (see <a href="docs/guix--Requirements.html">Requirements</a>).
+</p>
+
+<ul class="org-ul">
+<li><a href="https://gnu.org/software/autoconf/">GNU Autoconf</a>;</li>
+<li><a href="https://gnu.org/software/automake/">GNU Automake</a>;</li>
+<li><a href="https://gnu.org/software/gettext/">GNU Gettext</a>;</li>
+<li><a href="https://gnu.org/software/texinfo/">GNU Texinfo</a>;</li>
+<li><a href="https://www.graphviz.org/">Graphviz</a>;</li>
+<li><a href="https://www.gnu.org/software/help2man/">GNU Help2man (optional)</a>.</li>
+</ul>
+
+<p>
+On Guix, other development tools, like <code>strace</code>, can be included by giving them as extra arguments to <code>guix shell</code>:
+</p>
+
+<pre class="example" id="orgdb489c4">
+guix shell -D guix -CPW strace
+</pre>
+
+<p>
+From there you can generate the build system infrastructure using Autoconf and Automake:
+</p>
+
+<pre class="example" id="org1643355">
+./bootstrap
+</pre>
+
+<p>
+If you get an error like this one:
+</p>
+
+<pre class="example" id="org1ea2ba7">
+configure.ac:46: error: possibly undefined macro: PKG_CHECK_MODULES
+</pre>
+
+<p>
+it probably means that Autoconf couldn't find <code>pkg.m4</code>, which is provided by pkg-config. Make sure that <code>pkg.m4</code> is available. The same holds for the <code>guile.m4</code> set of macros provided by Guile. For instance, if you installed Automake in <code>/usr/local</code>, it wouldn't look for <code>.m4</code> files in <code>/usr/share</code>. In that case, you have to invoke the following command:
+</p>
+
+<pre class="example" id="org262929e">
+export ACLOCAL_PATH=/usr/share/aclocal
+</pre>
+
+<p>
+See <a href="https://www.gnu.org/software/automake/manual/html_node/Macro-Search-Path.html#Macro-Search-Path">Macro Search Path</a> in The GNU Automake Manual, for more information.
+</p>
+
+<p>
+<a id="index-state-directory"></a> <a id="index-localstatedir"></a> <a id="index-system-configuration-directory"></a> <a id="index-sysconfdir"></a>
+Then, run:
+</p>
+
+<pre class="example" id="orgda23bbd">
+./configure
+</pre>
+
+<p>
+Optionally, <code>--localstatedir</code> and <code>--sysconfdir</code> can also be provided as arguments. By default, <code>localstatedir</code> is <code>/var</code> (see <a href="docs/guix--The-Store.html">The Store</a>, for information about this) and <code>sysconfdir</code> is <code>/etc</code>. Note that you will probably not run <code>make install</code> at the end (you don't have to) but it's still important to pass the right <code>localstatedir</code> and <code>sysconfdir</code> values, which get recorded in the <code>(guix config)</code> Guile module.
+</p>
+
+<p>
+Finally, you can build Guix and, if you feel so inclined, run the tests (see <a href="docs/guix--Running-the-Test-Suite.html">Running the Test Suite</a>):
+</p>
+
+<pre class="example" id="org91fee0b">
+make
+make check
+</pre>
+
+<p>
+If anything fails, take a look at installation instructions (see <a href="docs/guix--Installation.html">Installation</a>) or send a message to the <a href="mailto:guix-devel@gnu.org">mailing list</a>.
+</p>
+
+<p>
+From there on, you can authenticate all the commits included in your checkout by running:
+</p>
+
+<pre class="example" id="orgf46310b">
+guix git authenticate \
+  9edb3f66fd807b096b48283debdcddccfea34bad \
+  "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
+</pre>
+
+<p>
+The first run takes a couple of minutes, but subsequent runs are faster. On subsequent runs, you can run the command without any arguments since the <i>introduction</i> (the commit ID and OpenPGP fingerprints above) will have been recorded:
+</p>
+
+<pre class="example" id="org59583be">
+guix git authenticate
+</pre>
+
+<p>
+When your configuration for your local Git repository doesn't match the default one, you can provide the reference for the <code>keyring</code> branch <i>via</i> the <code>-k</code> option. The following example assumes that you have a Git remote called ‘=myremote=' pointing to the official repository:
+</p>
+
+<pre class="example" id="org0c9d74a">
+guix git authenticate \
+  -k myremote/keyring \
+  9edb3f66fd807b096b48283debdcddccfea34bad \
+  "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
+</pre>
+
+<p>
+See <a href="docs/guix--Invoking-guix-git-authenticate.html">Invoking <code>guix git authenticate</code></a>, for more information on this command.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> By default, hooks are installed such that <code>guix git authenticate</code> is invoked anytime you run <code>git pull</code> or <code>git push</code>.
+</p>
+</blockquote>
+
+<p>
+After updating the repository, <code>make</code> might fail with an error similar to the following example:
+</p>
+
+<pre class="example" id="org9e3b16d">
+error: failed to load 'gnu/packages/linux.scm':
+ice-9/eval.scm:293:34: In procedure abi-check: #&lt;record-type &lt;origin&gt;&gt;: record ABI mismatch; recompilation needed
+</pre>
+
+<p>
+This means that one of the record types that Guix defines (in this example, the <code>origin</code> record) has changed, and all of guix needs to be recompiled to take that change into account. To do so, run <code>make clean-go</code> followed by <code>make</code>.
+</p>
+
+<p>
+Should <code>make</code> fail with an Automake error message after updating, you need to repeat the steps outlined in this section, commencing with <code>./bootstrap</code>.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

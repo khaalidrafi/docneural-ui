@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Drag-and-Drop-_0026-yank_002dmedia-1">1. 17.19 Drag and Drop &amp; <code>yank-media</code> ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (173)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Drag-and-Drop-_0026-yank_002dmedia"></a>
+Next: <a href="docs/org--Repeating-commands.html">Repeating commands</a>, Previous: <a href="docs/org--Org-Mobile.html">Org Mobile</a>, Up: <a href="docs/org--Miscellaneous.html">Miscellaneous</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Drag-and-Drop-_0026-yank_002dmedia-1" class="outline-2">
+<h2 id="Drag-and-Drop-_0026-yank_002dmedia-1"><span class="section-number-2">1.</span> 17.19 Drag and Drop &amp; <code>yank-media</code> <a href="#Drag-and-Drop-_0026-yank_002dmedia-1">¶</a></h2>
+<div class="outline-text-2" id="text-Drag-and-Drop-_0026-yank_002dmedia-1">
+<p>
+Org mode supports drag and drop (DnD) of files. By default, Org asks the user what must be done with the dropped file: attach it, insert ‘=file:=' link, or open the file. Customize <code>org-yank-dnd-method</code> to set the default DnD action.
+</p>
+
+<p>
+When DnD method is “attach”, Org mode first consults DnD metadata to decide the attach method. For example, when file/files are dragged from a file manager, Org may attach by copying or by moving.
+</p>
+
+<p>
+If Org cannot figure out which attachment method to use from the metadata, it defaults to <code>org-yank-dnd-default-attach-method</code> 
+</p>
+
+<p>
+Starting from Emacs 29, Org mode supports <code>yank-media</code> command to yank images from the clipboard, files from a file manager and tables copied from LibreOffice Calc documents.
+</p>
+
+<p>
+When yanking images from clipboard, Org saves the image on disk and inserts the image link to Org buffer. Images can be saved as attachments to heading (default), to a globally defined directory, or to a directory returned by a function call. The save location is controlled by <code>org-yank-image-save-method</code>.
+</p>
+
+<p>
+The yanked images are saved under automatically generated name. You can customize <code>org-yank-image-file-name-function</code> to make Org query the image names or change the naming scheme.
+</p>
+
+<p>
+When yanking files copied from a file manager, Org respects the value of <code>org-yank-dnd-method</code>. Image files pasted this way also respect the value of <code>org-yank-image-save-method</code> when the action to perform is ‘=attach='.
+</p>
+
+<p>
+Tables copied from LibreOffice Calc documents are yanked as Org tables.
+</p>
+
+<hr />
+</div>
+</div>

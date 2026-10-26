@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Controlling-Motion-after-Insert">1. 44.2 Controlling Motion after Insert ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Tabs-in-Picture.html">Picture Mode Tabs</a>   Previous: <a href="docs/emacs--Basic-Picture.html">Basic Editing in Picture Mode</a>   Up: <a href="docs/emacs--Picture-Mode.html">Editing Pictures</a>
+</p>
+
+<p>
+<a id="Insert-in-Picture"></a>
+</p>
+
+<hr />
+<div id="outline-container-Controlling-Motion-after-Insert" class="outline-2">
+<h2 id="Controlling-Motion-after-Insert"><span class="section-number-2">1.</span> 44.2 Controlling Motion after Insert <a href="#Controlling-Motion-after-Insert">¶</a></h2>
+<div class="outline-text-2" id="text-Controlling-Motion-after-Insert">
+<p>
+Since self-inserting characters in Picture mode overwrite and move point, there is no essential restriction on how point should be moved. Normally point moves right, but you can specify any of the eight orthogonal or diagonal directions for motion after a self-inserting character. This is useful for drawing lines in the buffer.
+</p>
+
+<ul class="org-ul">
+<li>C-c &lt;<br />
+C-c LEFT :: Move left after insertion (<code>picture-movement-left</code>).</li>
+
+<li>C-c &gt;<br />
+C-c RIGHT :: Move right after insertion (<code>picture-movement-right</code>).</li>
+
+<li>C-c ^<br />
+C-c UP :: Move up after insertion (<code>picture-movement-up</code>).</li>
+
+<li>C-c .<br />
+C-c DOWN :: Move down after insertion (<code>picture-movement-down</code>).</li>
+
+<li>C-c `<br />
+C-c Home :: Move up and left (“northwest”) after insertion (<code>picture-movement-nw</code>).</li>
+
+<li>C-c '<br />
+C-c PageUp<br />
+C-c prior :: Move up and right (“northeast”) after insertion (<code>picture-movement-ne</code>).</li>
+
+<li>C-c /<br />
+C-c End :: Move down and left (“southwest”) after insertion<br />
+(<code>picture-movement-sw</code>).</li>
+
+<li>C-c \\\
+C-c PageDown<br />
+C-c next :: Move down and right (“southeast”) after insertion<br />
+(<code>picture-movement-se</code>).</li>
+</ul>
+
+<p>
+Two motion commands move based on the current Picture insertion direction. The command C-c C-f (<code>picture-motion</code>) moves in the same direction as motion after insertion currently does, while C-c C-b (<code>picture-motion-reverse</code>) moves in the opposite direction.
+</p>
+
+<hr />
+</div>
+</div>

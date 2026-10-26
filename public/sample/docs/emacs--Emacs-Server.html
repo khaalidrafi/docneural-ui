@@ -1,0 +1,118 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Using-Emacs-as-a-Server">1. 41 Using Emacs as a Server ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Printing.html">Printing Hard Copies</a>   Previous: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Emacs-Server"></a>
+</p>
+
+<hr />
+<div id="outline-container-Using-Emacs-as-a-Server" class="outline-2">
+<h2 id="Using-Emacs-as-a-Server"><span class="section-number-2">1.</span> 41 Using Emacs as a Server <a href="#Using-Emacs-as-a-Server">¶</a></h2>
+<div class="outline-text-2" id="text-Using-Emacs-as-a-Server">
+<p>
+Various programs can invoke your choice of editor to edit a particular piece of text. For instance, version control programs invoke an editor to enter version control logs (see <a href="docs/emacs--Version-Control.html">Version Control</a>), and the Unix <code>mail</code> utility invokes an editor to enter a message to send. By convention, your choice of editor is specified by the environment variable <code>EDITOR</code>. If you set <code>EDITOR</code> to ‘=emacs=', Emacs would be invoked, but in an inconvenient way&#x2014;by starting a new Emacs process. This is inconvenient because the new Emacs process doesn't share buffers, a command history, or other kinds of information with any existing Emacs process.
+</p>
+
+<p>
+You can solve this problem by setting up Emacs as an <i>edit server</i>, so that it “listens” for external edit requests and acts accordingly. There are various ways to start an Emacs server:
+</p>
+
+<ul class="org-ul">
+<li>Run the command <code>server-start</code> in an existing Emacs process: either type M-x server-start, or put the expression <code>(server-start)</code> in your init file (see <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>). The existing Emacs process is the server; when you exit Emacs, the server dies with the Emacs process.</li>
+
+<li>Run Emacs as a <i>daemon</i>, using one of the ‘=&#x2013;daemon=' command-line options. See <a href="docs/emacs--Initial-Options.html">Initial Options</a>. When Emacs is started this way, it calls <code>server-start</code> after initialization and does not open an initial frame. It then waits for edit requests from clients.</li>
+
+<li>Run the command <code>emacsclient</code> with the ‘=&#x2013;alternate-editor=""=' command-line option. This starts an Emacs daemon only if no Emacs daemon is already running.</li>
+
+<li><p>
+If your operating system uses <code>systemd</code> to manage startup, you can automatically start Emacs in daemon mode when you login using the supplied <i>systemd unit file</i>. To activate this:
+</p>
+
+<pre class="example" id="org51aed17">
+systemctl --user enable emacs
+</pre>
+
+<p>
+(If your Emacs was installed into a non-standard location, you may need to copy the <code>emacs.service</code> file to a standard directory such as <code>~/.config/systemd/user/</code>.)
+</p></li>
+
+<li><p>
+An external process can invoke the Emacs server when a connection event occurs upon a specified socket and pass the socket to the new Emacs server process. An instance of this is the socket functionality of <code>systemd</code>: the <code>systemd</code> service creates a socket and listens for connections on it; when <code>emacsclient</code> connects to it for the first time, <code>systemd</code> can launch the Emacs server and hand over the socket to it for servicing <code>emacsclient</code> connections. A setup to use this functionality could be:
+</p>
+
+<p>
+<code>~/.config/systemd/user/emacs.socket</code>:
+</p>
+
+<pre class="example" id="org3e59761">
+[Socket]
+ListenStream=/path/to/.emacs.socket
+DirectoryMode=0700
+
+[Install]
+WantedBy=sockets.target
+</pre>
+
+<p>
+(The <code>emacs.service</code> file described above must also be installed.)
+</p>
+
+<p>
+The <code>ListenStream</code> path will be the path that Emacs listens for connections from <code>emacsclient</code>; this is a file of your choice.
+</p></li>
+</ul>
+
+<p>
+Once an Emacs server is started, you can use a shell command called <code>emacsclient</code> to connect to the Emacs process and tell it to visit a file. You can then set the <code>EDITOR</code> environment variable to ‘=emacsclient=', so that external programs will use the existing Emacs process for editing.
+</p>
+
+<p>
+You can run multiple Emacs servers on the same machine by giving each one a unique <i>server name</i>, using the variable <code>server-name</code>. For example, M-x set-variable RET server-name RET "foo" RET sets the server name to ‘=foo='. The <code>emacsclient</code> program can specify a server by name, using the ‘=-s=' or the ‘=-f=' option (see <a href="docs/emacs--emacsclient-Options.html"><code>emacsclient</code> Options</a>), depending on whether or not the server uses a TCP socket (see <a href="docs/emacs--TCP-Emacs-server.html">TCP Emacs server</a>).
+</p>
+
+<p>
+If you want to run multiple Emacs daemons (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>), you can give each daemon its own server name like this:
+</p>
+
+<pre class="example" id="orga084b48">
+emacs --daemon=foo
+</pre>
+
+<p>
+The Emacs server can optionally be stopped automatically when certain conditions are met. To do this, set the option <code>server-stop-automatically</code> to one of the following values:
+</p>
+
+<dl class="org-dl">
+<dt><code>empty</code></dt><dd>This value causes the server to be stopped when it has no clients, no unsaved file-visiting buffers and no running processes anymore.</dd>
+
+<dt><code>delete-frame</code></dt><dd>This value means that when the last client frame is being closed, you are asked whether each unsaved file-visiting buffer must be saved and each unfinished process can be stopped, and if so, the server is stopped.</dd>
+
+<dt><code>kill-terminal</code></dt><dd>This value means that when the last client frame is being closed with C-x C-c (<code>save-buffers-kill-terminal</code>), you are asked whether each unsaved file-visiting buffer must be saved and each unfinished process can be stopped, and if so, the server is stopped.</dd>
+</dl>
+
+<p>
+If you have defined a server by a unique server name, it is possible to connect to the server from another Emacs instance and evaluate Lisp expressions on the server, using the <code>server-eval-at</code> function. For instance, <code>(server-eval-at "foo" '(+ 1 2))</code> evaluates the expression <code>(+ 1 2)</code> on the ‘=foo=' server, and returns <code>3</code>. (If there is no server with that name, an error is signaled.) Currently, this feature is mainly useful for developers.
+</p>
+
+<p>
+If your operating system's desktop environment is <a href="https://www.freedesktop.org/wiki/Specifications/">freedesktop.org-compatible</a> (which is true of most GNU/Linux and other recent Unix-like GUIs), you may use the ‘=Emacs (Client)=' menu entry to connect to an Emacs server with <code>emacsclient</code>. The daemon starts if not already running.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--TCP-Emacs-server.html">TCP Emacs server</a></li>
+<li><a href="docs/emacs--Invoking-emacsclient.html">Invoking <code>emacsclient</code></a></li>
+<li><a href="docs/emacs--emacsclient-Options.html"><code>emacsclient</code> Options</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

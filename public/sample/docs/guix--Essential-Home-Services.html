@@ -1,0 +1,344 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Essential-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Shells-Home-Services.html">Shells</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Essential-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="essential-home-services"></a>13.3.1 Essential Home Services<br />
+<div class="outline-text-5" id="text-essential-home-services">
+<p>
+There are a few essential home services defined in <code>(gnu home services)</code>, they are mostly for internal use and are required to build a home environment, but some of them will be useful for the end user.
+</p>
+
+<p>
+<a id="index-environment-variables"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: home-environment-variables-service-type </dt><dd><p>
+The service of this type will be instantiated by every home environment automatically by default, there is no need to define it, but someone may want to extend it with a list of pairs to set some environment variables.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(list ("ENV_VAR1" . "value1")
+      ("ENV_VAR2" . "value2"))
+</pre>
+</div>
+
+<p>
+The easiest way to extend a service type, without defining a new service type is to use the <code>simple-service</code> helper from <code>(gnu services)</code>.
+</p>
+
+<p>
+<a id="index-literal_002dstring"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'some-useful-env-vars-service
+        home-environment-variables-service-type
+        `(("LESSHISTFILE" . "$XDG_CACHE_HOME/.lesshst")
+                  ("SHELL" . ,(file-append zsh "/bin/zsh"))
+                  ("USELESS_VAR" . #f)
+                  ("_JAVA_AWT_WM_NONREPARENTING" . #t)
+                  ("LITERAL_VALUE" . ,(literal-string "${abc}"))))
+</pre>
+</div>
+
+<p>
+If you include such a service in you home environment definition, it will add the following content to the <code>setup-environment</code> script (which is expected to be sourced by the login shell):
+</p>
+
+<pre class="example" id="orge379112">
+export LESSHISTFILE="$XDG_CACHE_HOME/.lesshst"
+export SHELL="/gnu/store/2hsg15n644f0glrcbkb1kqknmmqdar03-zsh-5.8/bin/zsh"
+export _JAVA_AWT_WM_NONREPARENTING
+export LITERAL_VALUE='${abc}'
+</pre>
+
+<p>
+Notice that <code>literal-string</code> above lets us declare that a value is to be interpreted as a <i>literal string</i>, meaning that “special characters” such as the dollar sign will not be interpreted by the shell.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Make sure that module <code>(gnu packages shells)</code> is imported with <code>use-modules</code> or any other way, this namespace contains the definition of the <code>zsh</code> package, which is used in the example above.
+</p>
+</blockquote>
+
+<p>
+The association list (see <a href="https://www.gnu.org/software/guile/manual/html_node/Association-Lists.html#Association-Lists">Association Lists</a> in The GNU Guile Reference manual) is a data structure containing key-value pairs, for <code>home-environment-variables-service-type</code> the key is always a string, the value can be a string, string-valued gexp (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>), file-like object (see <a href="docs/guix--G_002dExpressions.html">file-like object</a>) or boolean. For gexps, the variable will be set to the value of the gexp; for file-like objects, it will be set to the path of the file in the store (see <a href="docs/guix--The-Store.html">The Store</a>); for <code>#t</code>, it will export the variable without any value; and for <code>#f</code>, it will omit variable.
+</p></dd>
+
+<dt>Variable: home-profile-service-type </dt><dd><p>
+The service of this type will be instantiated by every home environment automatically, there is no need to define it, but you may want to extend it with a list of packages if you want to install additional packages into your profile. Other services, which need to make some programs available to the user will also extend this service type.
+</p>
+
+<p>
+The extension value is just a list of packages:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(list htop vim emacs)
+</pre>
+</div>
+
+<p>
+The same approach as <code>simple-service</code> (see <a href="docs/guix--Service-Reference.html">simple-service</a>) for <code>home-environment-variables-service-type</code> can be used here, too. Make sure that modules containing the specified packages are imported with <code>use-modules</code>. To find a package or information about its module use <code>guix search</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). Alternatively, <code>specification-&gt;package</code> can be used to get the package record from a string without importing its related module.
+</p></dd>
+</dl>
+
+<p>
+There are few more essential services, but users are not expected to extend them.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-service-type </dt><dd>The root of home services DAG, it generates a folder, which later will be symlinked to <code>~/.guix-home</code>, it contains configurations, profile with binaries and libraries, and some necessary scripts to glue things together.</dd>
+
+<dt>Variable: home-run-on-first-login-service-type </dt><dd><p>
+The service of this type generates a Guile script, which is expected to be executed by the login shell. It is only executed if the special flag file inside <code>XDG_RUNTIME_DIR</code> hasn't been created, this prevents redundant executions of the script if multiple login shells are spawned.
+</p>
+
+<p>
+It can be extended with a gexp. However, to autostart an application, users <i>should not</i> use this service, in most cases it's better to extend <code>home-shepherd-service-type</code> with a Shepherd service (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>), or extend the shell's startup file with the required command using the appropriate service type.
+</p></dd>
+
+<dt>Variable: home-files-service-type </dt><dd><p>
+The service of this type allows to specify a list of files, which will go to <code>~/.guix-home/files</code>, usually this directory contains configuration files (to be more precise it contains symlinks to files in <code>/gnu/store</code>), which should be placed in <code>$XDG_CONFIG_HOME</code> or in rare cases in <code>$HOME</code>. It accepts extension values in the following format:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`((".sway/config" ,sway-file-like-object)
+  (".tmux.conf" ,(local-file "./tmux.conf")))
+</pre>
+</div>
+
+<p>
+Each nested list contains two values: a subdirectory and file-like object. After building a home environment <code>~/.guix-home/files</code> will be populated with appropriate content and all nested directories will be created accordingly, however, those files won't go any further until some other service will do it. By default a <code>home-symlink-manager-service-type</code>, which creates necessary symlinks in home folder to files from <code>~/.guix-home/files</code> and backs up already existing, but clashing configs and other things, is a part of essential home services (enabled by default), but it's possible to use alternative services to implement more advanced use cases like read-only home. Feel free to experiment and share your results.
+</p></dd>
+</dl>
+
+<p>
+<a id="index-dot-files-in-Guix-Home"></a>
+It is often the case that Guix Home users already have a setup for versioning their user configuration files (also known as <i>dot files</i>) in a single directory, and some way of automatically deploy changes to their user home.
+</p>
+
+<p>
+<a id="index-Stow_002dlike-dot-file-management"></a>
+The <code>home-dotfiles-service-type</code> from <code>(gnu home services dotfiles)</code> is designed to ease the way into using Guix Home for this kind of users, allowing them to point the service to their dotfiles directory without migrating them to Guix native configurations.
+</p>
+
+<p>
+Please keep in mind that it is advisable to keep your dotfiles directories under version control, for example in the same repository where you'd track your Guix Home configuration.
+</p>
+
+<p>
+There are two supported dotfiles directory layouts, for now. The <code>'plain</code> layout, which is structured as follows:
+</p>
+
+<pre class="example" id="org8736d10">
+~$ tree -a ./dotfiles/
+dotfiles/
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+</pre>
+
+<p>
+This tree structure is installed as is to the home directory upon <code>guix home reconfigure</code>.
+</p>
+
+<p>
+The <code>'stow</code> layout, which must follow the layout suggested by <a href="https://www.gnu.org/software/stow/">GNU Stow</a> presents an additional application specific directory layer, just like:
+</p>
+
+<pre class="example" id="org76aa269">
+~$ tree -a ./dotfiles/
+dotfiles/
+├── git
+│   └── .gitconfig
+├── gpg
+│   └── .gnupg
+│       ├── gpg-agent.conf
+│       └── gpg.conf
+├── guile
+│   └── .guile
+├── guix
+│   └── .config
+│       └── guix
+│           └── channels.scm
+├── nix
+│   ├── .config
+│   │   └── nixpkgs
+│   │       └── config.nix
+│   └── .nix-channels
+├── tmux
+│   └── .tmux.conf
+└── vim
+    └── .vimrc
+
+13 directories, 10 files
+</pre>
+
+<p>
+For an informal specification please refer to the Stow manual (see <a href="https://www.gnu.org/software/stow/manual/html_node/Introduction.html#Introduction">Introduction</a> in The GNU Stow Manual). This tree structure is installed following GNU Stow's logic to the home directory upon <code>guix home reconfigure</code>.
+</p>
+
+<p>
+A suitable configuration with a <code>'plain</code> layout could be:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(home-environment
+  ;; …
+  (services
+    (service home-dotfiles-service-type
+             (home-dotfiles-configuration
+               (directories '("./dotfiles"))))))
+</pre>
+</div>
+
+<p>
+The expected home directory state would then be:
+</p>
+
+<pre class="example" id="orge9c9421">
+.
+├── .config
+│   ├── guix
+│   │   └── channels.scm
+│   └── nixpkgs
+│       └── config.nix
+├── .gitconfig
+├── .gnupg
+│   ├── gpg-agent.conf
+│   └── gpg.conf
+├── .guile
+├── .nix-channels
+├── .tmux.conf
+└── .vimrc
+</pre>
+
+<dl class="org-dl">
+<dt>Variable: home-dotfiles-service-type </dt><dd>Return a service which is very similar to <code>home-files-service-type</code> (and actually extends it), but designed to ease the way into using Guix Home for users that already track their dotfiles under some kind of version control. This service allows users to point Guix Home to their dotfiles directory and have their files automatically provisioned to their home directory, without migrating all of their dotfiles to Guix native configurations.</dd>
+
+<dt>Data Type: home-dotfiles-configuration </dt><dd>Available <code>home-dotfiles-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>source-directory</code> (default: <code>(current-source-directory)</code>) (type: string)</dt><dd>The path where dotfile directories are resolved. By default dotfile directories are resolved relative the source location where <code>home-dotfiles-configuration</code> appears.</dd>
+
+<dt><code>layout</code> (default: <code>'plain</code>) (type: symbol)</dt><dd>The intended layout of the specified <code>directory</code>. It can be either <code>'stow</code> or <code>'plain</code>.</dd>
+
+<dt><code>directories</code> (default: <code>'()</code>) (type: list-of-strings)</dt><dd>The list of dotfiles directories where <code>home-dotfiles-service-type</code> will look for application dotfiles.</dd>
+
+<dt><code>packages</code> (type: maybe-list-of-strings)</dt><dd>The names of a subset of the GNU Stow package layer directories. When provided the <code>home-dotfiles-service-type</code> will only provision dotfiles from this subset of applications. This field will be ignored if <code>layout</code> is set to <code>'plain</code>.</dd>
+
+<dt><code>excluded</code> (default: <code>'(".*~" ".*\\.swp" "\\.git" "\\.gitignore")</code>) (type: list-of-strings)</dt><dd>The list of file patterns <code>home-dotfiles-service-type</code> will exclude while visiting each one of the <code>directories</code>.</dd>
+</dl></dd>
+
+<dt>Variable: home-xdg-configuration-files-service-type </dt><dd><p>
+The service is very similar to <code>home-files-service-type</code> (and actually extends it), but used for defining files, which will go to <code>~/.guix-home/files/.config</code>, which will be symlinked to <code>$XDG_CONFIG_HOME</code> by <code>home-symlink-manager-service-type</code> (for example) during activation. It accepts extension values in the following format:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">`(("sway/config" ,sway-file-like-object)
+  ;; -&gt; ~/.guix-home/files/.config/sway/config
+  ;; -&gt; $XDG_CONFIG_HOME/sway/config (by symlink-manager)
+  ("tmux/tmux.conf" ,(local-file "./tmux.conf")))
+</pre>
+</div></dd>
+
+<dt>Variable: home-activation-service-type </dt><dd>The service of this type generates a guile script, which runs on every <code>guix home reconfigure</code> invocation or any other action, which leads to the activation of the home environment.</dd>
+
+<dt>Variable: home-symlink-manager-service-type </dt><dd><p>
+The service of this type generates a guile script, which will be executed during activation of home environment, and do a few following steps:
+</p>
+
+<ol class="org-ol">
+<li>Reads the content of <code>files/</code> directory of current and pending home environments.</li>
+<li>Cleans up all symlinks created by symlink-manager on previous activation. Also, sub-directories, which become empty also will be cleaned up.</li>
+<li>Creates new symlinks the following way: It looks <code>files/</code> directory (usually defined with <code>home-files-service-type</code>, <code>home-xdg-configuration-files-service-type</code> and maybe some others), takes the files from <code>files/.config/</code> subdirectory and put respective links in <code>XDG_CONFIG_HOME</code>. For example symlink for <code>files/.config/sway/config</code> will end up in <code>$XDG_CONFIG_HOME/sway/config</code>. The rest files in <code>files/</code> outside of <code>files/.config/</code> subdirectory will be treated slightly different: symlink will just go to <code>$HOME</code>. <code>files/.some-program/config</code> will end up in <code>$HOME/.some-program/config</code>.</li>
+<li>If some sub-directories are missing, they will be created.</li>
+<li>If there is a clashing files on the way, they will be backed up.</li>
+</ol>
+
+<p>
+symlink-manager is a part of essential home services and is enabled and used by default.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Shells-Home-Services.html">Shells</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

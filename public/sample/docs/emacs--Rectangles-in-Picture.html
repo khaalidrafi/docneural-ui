@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Picture-Mode-Rectangle-Commands">1. 44.4 Picture Mode Rectangle Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Tabs-in-Picture.html">Picture Mode Tabs</a>   Up: <a href="docs/emacs--Picture-Mode.html">Editing Pictures</a>
+</p>
+
+<p>
+<a id="Rectangles-in-Picture"></a>
+</p>
+
+<hr />
+<div id="outline-container-Picture-Mode-Rectangle-Commands" class="outline-2">
+<h2 id="Picture-Mode-Rectangle-Commands"><span class="section-number-2">1.</span> 44.4 Picture Mode Rectangle Commands <a href="#Picture-Mode-Rectangle-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Picture-Mode-Rectangle-Commands">
+<p>
+Picture mode defines commands for working on rectangular pieces of the text in ways that fit with the quarter-plane model. The standard rectangle commands may also be useful. See <a href="docs/emacs--Rectangles.html">Rectangles</a>.
+</p>
+
+<dl class="org-dl">
+<dt>C-c C-k</dt><dd>Clear out the region-rectangle with spaces (<code>picture-clear-rectangle</code>). With a prefix argument, delete the text.</dd>
+
+<dt>C-c C-w <code>r</code></dt><dd>Similar, but save rectangle contents in register <code>r</code> first (<code>picture-clear-rectangle-to-register</code>). See <a href="docs/emacs--Registers.html">Registers</a>.</dd>
+
+<dt>C-c C-y</dt><dd>Copy last killed rectangle into the buffer by overwriting, with upper left corner at point (<code>picture-yank-rectangle</code>). With argument, insert instead.</dd>
+
+<dt>C-c C-x <code>r</code></dt><dd>Similar, but use the rectangle in register <code>r</code> (<code>picture-yank-rectangle-from-register</code>).</dd>
+</dl>
+
+<p>
+The picture rectangle commands C-c C-k (<code>picture-clear-rectangle</code>) and C-c C-w (<code>picture-clear-rectangle-to-register</code>) differ from the standard rectangle commands in that they normally clear the rectangle instead of deleting it; this is analogous with the way C-d is changed in Picture mode.
+</p>
+
+<p>
+However, deletion of rectangles can be useful in Picture mode, so these commands delete the rectangle if given a numeric argument. C-c C-k either with or without a numeric argument saves the rectangle for C-c C-y.
+</p>
+
+<p>
+The Picture mode commands for yanking rectangles differ from the standard ones in that they overwrite instead of inserting. This is the same way that Picture mode insertion of other text differs from other modes. C-c C-y (<code>picture-yank-rectangle</code>) inserts (by overwriting) the rectangle that was most recently killed, while C-c C-x (<code>picture-yank-rectangle-from-register</code>) does likewise for the rectangle found in a specified register.
+</p>
+
+<hr />
+</div>
+</div>

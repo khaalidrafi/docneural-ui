@@ -1,0 +1,288 @@
+:PROPERTIES:
+:ID: guix--Audio-Services
+:END:
+#+filetags: :guix:
+#+title: Audio Services
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Audio-Services>>
+
+Next: [[id:guix--Virtualization-Services][Virtualization Services]], Previous: [[id:guix--Power-Management-Services][Power Management Services]], Up: [[id:guix--Services][Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Audio-Services-1>>
+**** 11.10.30 Audio Services
+:PROPERTIES:
+:CUSTOM_ID: audio-services
+:CLASS: subsection
+:END:
+The =(gnu services audio)= module provides a service to start MPD (the Music Player Daemon).
+
+<<index-mpd>> <<Music-Player-Daemon>>
+**** Music Player Daemon
+:PROPERTIES:
+:CUSTOM_ID: music-player-daemon
+:CLASS: subsubheading
+:END:
+The Music Player Daemon (MPD) is a service that can play music while being controlled from the local machine or over the network by a variety of clients.
+
+The following example shows the simplest configuration to locally expose, via PulseAudio, a music collection kept at =/srv/music=, with =mpd= running as the default ‘=mpd=' user. This user will spawn its own PulseAudio daemon, which may compete for the sound card access with that of your own user. In this configuration, you may have to stop the playback of your user audio applications to hear MPD's output and vice-versa.
+
+#+begin_src lisp
+(service mpd-service-type
+         (mpd-configuration
+          (music-directory "/srv/music")))
+#+end_src
+
+#+begin_quote
+*Important:* The music directory must be readable to the MPD user, by default, ‘=mpd='. Permission problems will be reported via ‘=Permission denied=' errors in the MPD logs, which appear in =/var/log/messages= by default.
+
+#+end_quote
+
+Most MPD clients will trigger a database update upon connecting, but you can also use the =update= action do to so:
+
+#+begin_example
+herd update mpd
+#+end_example
+
+All the MPD configuration fields are documented below, and a more complex example follows.
+
+- Variable: mpd-service-type  :: The service type for =mpd=
+
+- Data Type: mpd-configuration  :: Available =mpd-configuration= fields are:
+
+  - =package= (default: =mpd=) (type: file-like) :: The MPD package.
+
+  - =user= (type: user-account) :: The user to run mpd as.
+
+  - =group= (type: user-group) :: The group to run mpd as.
+
+    The default =%mpd-group= is a system group with name “mpd”.
+
+  - =shepherd-requirement= (default: ='()=) (type: list-of-symbols) :: A list of symbols naming Shepherd services that this service will depend on.
+
+  - =environment-variables= (default: ='("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")=) (type: list-of-strings) :: A list of strings specifying environment variables.
+
+  - =log-file= (type: maybe-string) :: The location of the log file. Unless specified, logs are sent to the local syslog daemon. Alternatively, a log file name can be specified, for example =/var/log/mpd.log=.
+
+  - =log-level= (type: maybe-string) :: Suppress any messages below this threshold. The available values, in decreasing order of verbosity, are: =verbose=, =info=, =notice=, =warning= and =error=.
+
+  - =music-directory= (type: maybe-string) :: The directory to scan for music files.
+
+  - =music-dir= (type: maybe-string) :: The directory to scan for music files.
+
+  - =playlist-directory= (type: maybe-string) :: The directory to store playlists.
+
+  - =playlist-dir= (type: maybe-string) :: The directory to store playlists.
+
+  - =db-file= (type: maybe-string) :: The location of the music database. When left unspecified, =~/.cache/db= is used.
+
+  - =state-file= (type: maybe-string) :: The location of the file that stores current MPD's state.
+
+  - =sticker-file= (type: maybe-string) :: The location of the sticker database.
+
+  - =default-port= (default: =6600=) (type: maybe-port) :: The default port to run mpd on.
+
+  - =endpoints= (type: maybe-list-of-strings) :: The addresses that mpd will bind to. A port different from =default-port= may be specified, e.g. =localhost:6602= and IPv6 addresses must be enclosed in square brackets when a different port is used. To use a Unix domain socket, an absolute path or a path starting with =~= can be specified here.
+
+  - =address= (type: maybe-string) :: The address that mpd will bind to. To use a Unix domain socket, an absolute path can be specified here.
+
+  - =database= (type: maybe-mpd-plugin) :: MPD database plugin configuration.
+
+  - =partitions= (default: ='()=) (type: list-of-mpd-partition) :: List of MPD "partitions".
+
+  - =neighbors= (default: ='()=) (type: list-of-mpd-plugin) :: List of MPD neighbor plugin configurations.
+
+  - =inputs= (default: ='()=) (type: list-of-mpd-plugin) :: List of MPD input plugin configurations.
+
+  - =archive-plugins= (default: ='()=) (type: list-of-mpd-plugin) :: List of MPD archive plugin configurations.
+
+  - =auto-update?= (type: maybe-boolean) :: Whether to automatically update the music database when files are changed in the =music-directory=.
+
+  - =input-cache-size= (type: maybe-string) :: MPD input cache size.
+
+  - =decoders= (default: ='()=) (type: list-of-mpd-plugin) :: List of MPD decoder plugin configurations.
+
+  - =resampler= (type: maybe-mpd-plugin) :: MPD resampler plugin configuration.
+
+  - =filters= (default: ='()=) (type: list-of-mpd-plugin) :: List of MPD filter plugin configurations.
+
+  - =outputs= (type: list-of-mpd-plugin-or-output) :: The audio outputs that MPD can use. By default this is a single output using pulseaudio.
+
+  - =playlist-plugins= (default: ='()=) (type: list-of-mpd-plugin) :: List of MPD playlist plugin configurations.
+
+  - =extra-options= (default: ='()=) (type: alist) :: An association list of option symbols/strings to string values to be appended to the configuration.
+
+- Data Type: mpd-plugin  :: Data type representing a =mpd= plugin.
+
+  - =plugin= (type: maybe-string) :: Plugin name.
+
+  - =name= (type: maybe-string) :: Name.
+
+  - =enabled?= (type: maybe-boolean) :: Whether the plugin is enabled/disabled.
+
+  - =extra-options= (default: ='()=) (type: alist) :: An association list of option symbols/strings to string values to be appended to the plugin configuration. See [[https://mpd.readthedocs.io/en/latest/plugins.html][MPD plugin reference]] for available options.
+
+- Data Type: mpd-partition  :: Data type representing a =mpd= partition.
+
+  - =name= (type: string) :: Partition name.
+
+  - =extra-options= (default: ='()=) (type: alist) :: An association list of option symbols/strings to string values to be appended to the partition configuration. See [[https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions][Configuring Partitions]] for available options.
+
+- Data Type: mpd-output  :: Available =mpd-output= fields are:
+
+  - =name= (default: ="MPD"=) (type: string) :: The name of the audio output.
+
+  - =type= (default: ="pulse"=) (type: string) :: The type of audio output.
+
+  - =enabled?= (default: =#t=) (type: boolean) :: Specifies whether this audio output is enabled when MPD is started. By default, all audio outputs are enabled. This is just the default setting when there is no state file; with a state file, the previous state is restored.
+
+  - =format= (type: maybe-string) :: Force a specific audio format on output. See [[https://mpd.readthedocs.io/en/latest/user.html#audio-output-format][Global Audio Format]] for a more detailed description.
+
+  - =tags?= (default: =#t=) (type: boolean) :: If set to =#f=, then MPD will not send tags to this output. This is only useful for output plugins that can receive tags, for example the =httpd= output plugin.
+
+  - =always-on?= (default: =#f=) (type: boolean) :: If set to =#t=, then MPD attempts to keep this audio output always open. This may be useful for streaming servers, when you don't want to disconnect all listeners even when playback is accidentally stopped.
+
+  - =mixer-type= (type: maybe-string) :: This field accepts a string that specifies which mixer should be used for this audio output: the =hardware= mixer, the =software= mixer, the =null= mixer (allows setting the volume, but with no effect; this can be used as a trick to implement an external mixer External Mixer) or no mixer (=none=). When left unspecified, a =hardware= mixer is used for devices that support it.
+
+  - =replay-gain-handler= (type: maybe-string) :: This field accepts a string that specifies how [[https://mpd.readthedocs.io/en/latest/user.html#replay-gain][Replay Gain]] is to be applied. =software= uses an internal software volume control, =mixer= uses the configured (hardware) mixer control and =none= disables replay gain on this audio output.
+
+  - =extra-options= (default: ='()=) (type: alist) :: An association list of option symbols/strings to string values to be appended to the audio output configuration.
+
+The following example shows a configuration of =mpd= that configures some of its plugins and provides a HTTP audio streaming output.
+
+#+begin_src lisp
+(service mpd-service-type
+         (mpd-configuration
+           (outputs
+             (list (mpd-output
+                     (name "streaming")
+                     (type "httpd")
+                     (mixer-type 'null)
+                     (extra-options
+                      `((encoder . "vorbis")
+                        (port    . "8080"))))))
+           (decoders
+             (list (mpd-plugin
+                     (plugin "mikmod")
+                     (enabled? #f))
+                   (mpd-plugin
+                     (plugin "openmpt")
+                     (enabled? #t)
+                     (extra-options `((repeat-count . -1)
+                                      (interpolation-filter . 1))))))
+           (resampler (mpd-plugin
+                        (plugin "libsamplerate")
+                        (extra-options `((type . 0)))))))
+#+end_src
+
+<<myMPD>>
+**** myMPD
+:PROPERTIES:
+:CUSTOM_ID: mympd
+:CLASS: subsubheading
+:END:
+<<index-MPD_002c-web-interface>> <<index-myMPD-service>>
+[[https://jcorporation.github.io/myMPD/][myMPD]] is a web server frontend for MPD that provides a mobile friendly web client for MPD.
+
+The following example shows a myMPD instance listening on port 80, with album cover caching disabled.
+
+#+begin_src lisp
+(service mympd-service-type
+         (mympd-configuration
+          (port 80)
+          (covercache-ttl 0)))
+#+end_src
+
+- Variable: mympd-service-type  :: The service type for =mympd=.
+
+- Data Type: mympd-configuration  :: Available =mympd-configuration= fields are:
+
+  - =package= (default: =mympd=) (type: file-like) :: The package object of the myMPD server.
+
+  - =shepherd-requirement= (default: ='()=) (type: list-of-symbols) :: This is a list of symbols naming Shepherd services that this service will depend on.
+
+  - =user= (default: =%mympd-user=) (type: user-account) :: Owner of the =mympd= process.
+
+    The default =%mympd-user= is a system user with the name “mympd”, who is a part of the group =group= (see below).
+
+  - =group= (default: =%mympd-group=) (type: user-group) :: Owner group of the =mympd= process.
+
+    The default =%mympd-group= is a system group with name “mympd”.
+
+  - =work-directory= (default: ="/var/lib/mympd"=) (type: string) :: Where myMPD will store its data.
+
+  - =cache-directory= (default: ="/var/cache/mympd"=) (type: string) :: Where myMPD will store its cache.
+
+  - =acl= (type: maybe-mympd-ip-acl) :: ACL to access the myMPD webserver.
+
+  - =covercache-ttl= (default: =31=) (type: maybe-integer) :: How long to keep cached covers, =0= disables cover caching.
+
+  - =http?= (default: =#t=) (type: boolean) :: HTTP support.
+
+  - =host= (default: ="[::]"=) (type: string) :: Host name to listen on.
+
+  - =port= (default: =80=) (type: maybe-port) :: HTTP port to listen on.
+
+  - =log-level= (default: =5=) (type: integer) :: How much detail to include in logs, possible values: =0= to =7=.
+
+  - =log-to= (type: maybe-string) :: Where to send logs. Unless specified, the service logs to the local syslog service under the ‘=daemon=' facility. Alternatively, a log file name can be specified, for example =/var/log/mympd.log=.
+
+  - =lualibs= (default: ="all"=) (type: maybe-string) :: See [[https://jcorporation.github.io/myMPD/scripting/#lua-standard-libraries]].
+
+  - =uri= (type: maybe-string) :: Override URI to myMPD. See [[https://github.com/jcorporation/myMPD/issues/950]].
+
+  - =script-acl= (default: =(mympd-ip-acl (allow '("127.0.0.1")))=) (type: maybe-mympd-ip-acl) :: ACL to access the myMPD script backend.
+
+  - =ssl?= (default: =#f=) (type: boolean) :: SSL/TLS support.
+
+  - =ssl-port= (default: =443=) (type: maybe-port) :: Port to listen for HTTPS.
+
+  - =ssl-cert= (type: maybe-string) :: Path to PEM encoded X.509 SSL/TLS certificate (public key).
+
+  - =ssl-key= (type: maybe-string) :: Path to PEM encoded SSL/TLS private key.
+
+  - =pin-hash= (type: maybe-string) :: SHA-256 hashed pin used by myMPD to control settings access by prompting a pin from the user.
+
+  - =save-caches?= (type: maybe-boolean) :: Whether to preserve caches between service restarts.
+
+- Data Type: mympd-ip-acl  :: Available =mympd-ip-acl= fields are:
+
+  - =allow= (default: ='()=) (type: list-of-strings) :: Allowed IP addresses.
+
+  - =deny= (default: ='()=) (type: list-of-strings) :: Disallowed IP addresses.
+
+--------------
+
+Next: [[id:guix--Virtualization-Services][Virtualization Services]], Previous: [[id:guix--Power-Management-Services][Power Management Services]], Up: [[id:guix--Services][Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]

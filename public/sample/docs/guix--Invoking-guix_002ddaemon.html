@@ -1,0 +1,351 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-daemon">1.0.1. 2.3 Invoking <code>guix-daemon</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix_002ddaemon"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Application-Setup.html">Application Setup</a>, Previous: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix_002ddaemon-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-daemon" class="outline-4">
+<h4 id="invoking-guix-daemon"><span class="section-number-4">1.0.1.</span> 2.3 Invoking <code>guix-daemon</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-daemon">
+<p>
+<a id="index-guix_002ddaemon"></a>
+The <code>guix-daemon</code> program implements all the functionality to access the store. This includes launching build processes, running the garbage collector, querying the availability of a build result, etc. It is normally run as <code>root</code> like this:
+</p>
+
+<pre class="example" id="org19ba3c4">
+# guix-daemon --build-users-group=guixbuild
+</pre>
+
+<p>
+<a id="index-socket-activation_002c-for-guix_002ddaemon"></a>
+This daemon can also be started following the systemd “socket activation” protocol (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Service-De_002d-and-Constructors.html#Service-De_002d-and-Constructors"><code>make-systemd-constructor</code></a> in The GNU Shepherd Manual).
+</p>
+
+<p>
+For details on how to set it up, see <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>.
+</p>
+
+<p>
+<a id="index-chroot-1"></a> <a id="index-container_002c-build-environment"></a> <a id="index-build-environment-1"></a> <a id="index-reproducible-builds"></a>
+By default, <code>guix-daemon</code> launches build processes under different UIDs, taken from the build group specified with <code>--build-users-group</code>. In addition, each build process is run in a chroot environment that only contains the subset of the store that the build process depends on, as specified by its derivation (see <a href="docs/guix--Programming-Interface.html">derivation</a>), plus a set of specific system directories. By default, the latter contains <code>/dev</code> and <code>/dev/pts</code>. Furthermore, on GNU/Linux, the build environment is a <i>container</i>: in addition to having its own file system tree, it has a separate mount name space, its own PID name space, network name space, etc. This helps achieve reproducible builds (see <a href="docs/guix--Features.html">Features</a>).
+</p>
+
+<p>
+When the daemon performs a build on behalf of the user, it creates a build directory under <code>/tmp</code> or under the directory specified by its <code>TMPDIR</code> environment variable. This directory is shared with the container for the duration of the build, though within the container, the build tree is always called <code>/tmp/guix-build-==name=</code>.drv-0=.
+</p>
+
+<p>
+The build directory is automatically deleted upon completion, unless the build failed and the client specified <code>--keep-failed</code> (see <a href="docs/guix--Common-Build-Options.html"><code>--keep-failed</code></a>).
+</p>
+
+<p>
+The daemon listens for connections and spawns one sub-process for each session started by a client (one of the <code>guix</code> sub-commands). The <code>guix processes</code> command allows you to get an overview of the activity on your system by viewing each of the active sessions and clients. See <a href="docs/guix--Invoking-guix-processes.html">Invoking <code>guix processes</code></a>, for more information.
+</p>
+
+<p>
+The following command-line options are supported:
+</p>
+
+<dl class="org-dl">
+<dt><code>--build-users-group===group</code></dt><dd>Take users from <code>group</code> to run build processes (see <a href="docs/guix--Setting-Up-the-Daemon.html">build users</a>).</dd>
+
+<dt><code>--no-substitutes</code> </dt><dd><p>
+Do not use substitutes for build products. That is, always build things locally instead of allowing downloads of pre-built binaries (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<p>
+When the daemon runs with <code>--no-substitutes</code>, clients can still explicitly enable substitution <i>via</i> the <code>set-build-options</code> remote procedure call (see <a href="docs/guix--The-Store.html">The Store</a>).
+</p>
+
+<p>
+<a id="daemon_002dsubstitute_002durls"></a>
+</p></dd>
+
+<dt><code>--substitute-urls===urls</code></dt><dd><p>
+Consider <code>urls</code> the default whitespace-separated list of substitute source URLs. When this option is omitted, ‘=<a href="https://bordeaux.guix.gnu.org">https://bordeaux.guix.gnu.org</a> <a href="https://ci.guix.gnu.org">https://ci.guix.gnu.org</a>=' is used.
+</p>
+
+<p>
+This means that substitutes may be downloaded from <code>urls</code>, as long as they are signed by a trusted signature (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<p>
+See <a href="docs/guix--Getting-Substitutes-from-Other-Servers.html">Getting Substitutes from Other Servers</a>, for more information on how to configure the daemon to get substitutes from other servers.
+</p>
+
+<p>
+<a id="index-offloading-1"></a>
+</p></dd>
+
+<dt><code>--no-offload</code></dt><dd>Do not use offload builds to other machines (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>). That is, always build things locally instead of offloading builds to remote machines.</dd>
+
+<dt><code>--cache-failures</code></dt><dd><p>
+Cache build failures. By default, only successful builds are cached.
+</p>
+
+<p>
+When this option is used, <code>guix gc --list-failures</code> can be used to query the set of store items marked as failed; <code>guix gc --clear-failures</code> removes store items from the set of cached failures. See <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+<code>--cores===n</code><br />
+<code>-c ==n</code> :: Use <code>n</code> CPU cores to build each derivation; <code>0</code> means as many as available.
+</p>
+
+<p>
+The default value is <code>0</code>, but it may be overridden by clients, such as the <code>--cores</code> option of <code>guix build</code> (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>).
+</p>
+
+<p>
+The effect is to define the <code>NIX_BUILD_CORES</code> environment variable in the build process, which can then use it to exploit internal parallelism&#x2014;for instance, by running <code>make -j$NIX_BUILD_CORES</code>.
+</p></dd>
+
+<dt>(no term)</dt><dd><code>--max-jobs===n</code><br />
+<code>-M ==n</code> :: Allow at most <code>n</code> build jobs in parallel. The default value is <code>1</code>. Setting it to <code>0</code> means that no builds will be performed locally; instead, the daemon will offload builds (see <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>), or simply fail.</dd>
+
+<dt><code>--max-silent-time===seconds</code></dt><dd><p>
+When the build or substitution process remains silent for more than <code>seconds</code>, terminate it and report a build failure.
+</p>
+
+<p>
+The default value is <code>3600</code> (one hour).
+</p>
+
+<p>
+The value specified here can be overridden by clients (see <a href="docs/guix--Common-Build-Options.html"><code>--max-silent-time</code></a>).
+</p></dd>
+
+<dt><code>--timeout===seconds</code></dt><dd><p>
+Likewise, when the build or substitution process lasts for more than <code>seconds</code>, terminate it and report a build failure.
+</p>
+
+<p>
+The default value is 24 hours.
+</p>
+
+<p>
+The value specified here can be overridden by clients (see <a href="docs/guix--Common-Build-Options.html"><code>--timeout</code></a>).
+</p></dd>
+
+<dt><code>--rounds===N</code></dt><dd><p>
+Build each derivation <code>n</code> times in a row, and raise an error if consecutive build results are not bit-for-bit identical. Note that this setting can be overridden by clients such as <code>guix build</code> (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>).
+</p>
+
+<p>
+When used in conjunction with <code>--keep-failed</code>, the differing output is kept in the store, under <code>/gnu/store/…-check</code>. This makes it easy to look for differences between the two results.
+</p></dd>
+
+<dt><code>--debug</code></dt><dd><p>
+Produce debugging output.
+</p>
+
+<p>
+This is useful to debug daemon start-up issues, but then it may be overridden by clients, for example the <code>--verbosity</code> option of <code>guix build</code> (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>).
+</p></dd>
+
+<dt><code>--chroot-directory===dir</code></dt><dd><p>
+Add <code>dir</code> to the build chroot.
+</p>
+
+<p>
+Doing this may change the result of build processes&#x2014;for instance if they use optional dependencies found in <code>dir</code> when it is available, and not otherwise. For that reason, it is not recommended to do so. Instead, make sure that each derivation declares all the inputs that it needs.
+</p></dd>
+
+<dt><code>--disable-chroot</code></dt><dd><p>
+Disable chroot builds.
+</p>
+
+<blockquote>
+<p>
+<b>Warning:</b> Using this option is not recommended since it allows build processes to gain access to undeclared dependencies, to interfere with one another, and more generally to do anything that can be done with the authority of build users or that of the daemon&#x2014;which includes at least the ability to tamper with any file in the store!
+</p>
+
+<p>
+You may find it necessary, though, when support for Linux unprivileged user namespaces is missing (see <a href="docs/guix--Build-Environment-Setup.html">Build Environment Setup</a>). Use at your own risk!
+</p>
+</blockquote></dd>
+
+<dt><code>--isolate-host-loopback</code></dt><dd>Prevent fixed-output chroot builds from accessing the host loopback. When this is used, fixed-output builds will have their own loopback interface, and attempts to connect to 127.0.0.1 or ::1 will instead attempt to connect to its local loopback interface.</dd>
+
+<dt><code>--log-compression===type</code></dt><dd><p>
+Compress build logs according to <code>type</code>, one of <code>gzip</code>, <code>bzip2</code>, or <code>none</code>.
+</p>
+
+<p>
+Unless <code>--lose-logs</code> is used, all the build logs are kept in the <code>localstatedir</code>. To save space, the daemon automatically compresses them with gzip by default.
+</p></dd>
+
+<dt><code>--discover[=yes|no]</code></dt><dd><p>
+Whether to discover substitute servers on the local network using mDNS and DNS-SD.
+</p>
+
+<p>
+This feature is still experimental. However, here are a few considerations.
+</p>
+
+<ol class="org-ol">
+<li>It might be faster/less expensive than fetching from remote servers;</li>
+<li>There are no security risks, only genuine substitutes will be used (see <a href="docs/guix--Substitute-Authentication.html">Substitute Authentication</a>);</li>
+<li>An attacker advertising <code>guix publish</code> on your LAN cannot serve you malicious binaries, but they can learn what software you're installing;</li>
+<li>Servers may serve substitute over HTTP, unencrypted, so anyone on the LAN can see what software you're installing.</li>
+</ol>
+
+<p>
+It is also possible to enable or disable substitute server discovery at run-time by running:
+</p>
+
+<pre class="example" id="org95c4b25">
+herd discover guix-daemon on
+herd discover guix-daemon off
+</pre></dd>
+
+<dt><code>--disable-deduplication</code> </dt><dd><p>
+Disable automatic file “deduplication” in the store.
+</p>
+
+<p>
+By default, files added to the store are automatically “deduplicated”: if a newly added file is identical to another one found in the store, the daemon makes the new file a hard link to the other file. This can noticeably reduce disk usage, at the expense of slightly increased input/output load at the end of a build process. This option disables this optimization.
+</p></dd>
+
+<dt><code>--gc-keep-outputs[=yes|no]</code></dt><dd><p>
+Tell whether the garbage collector (GC) must keep outputs of live derivations.
+</p>
+
+<p>
+<a id="index-GC-roots"></a> <a id="index-garbage-collector-roots"></a>
+</p>
+
+<p>
+When set to <code>yes</code>, the GC will keep the outputs of any live derivation available in the store&#x2014;the <code>.drv</code> files. The default is <code>no</code>, meaning that derivation outputs are kept only if they are reachable from a GC root. See <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, for more on GC roots.
+</p></dd>
+
+<dt><code>--gc-keep-derivations[=yes|no]</code></dt><dd><p>
+Tell whether the garbage collector (GC) must keep derivations corresponding to live outputs.
+</p>
+
+<p>
+When set to <code>yes</code>, as is the case by default, the GC keeps derivations&#x2014;i.e., <code>.drv</code> files&#x2014;as long as at least one of their outputs is live. This allows users to keep track of the origins of items in their store. Setting it to <code>no</code> saves a bit of disk space.
+</p>
+
+<p>
+In this way, setting <code>--gc-keep-derivations</code> to <code>yes</code> causes liveness to flow from outputs to derivations, and setting <code>--gc-keep-outputs</code> to <code>yes</code> causes liveness to flow from derivations to outputs. When both are set to <code>yes</code>, the effect is to keep all the build prerequisites (the sources, compiler, libraries, and other build-time tools) of live objects in the store, regardless of whether these prerequisites are reachable from a GC root. This is convenient for developers since it saves rebuilds or downloads.
+</p></dd>
+
+<dt><code>--impersonate-linux-2.6</code></dt><dd><p>
+On Linux-based systems, impersonate Linux 2.6. This means that the kernel's <code>uname</code> system call will report 2.6 as the release number.
+</p>
+
+<p>
+This might be helpful to build programs that (usually wrongfully) depend on the kernel version number.
+</p></dd>
+
+<dt><code>--lose-logs</code></dt><dd>Do not keep build logs. By default they are kept under <code>localstatedir==/guix/log</code>.</dd>
+
+<dt><code>--system===system</code></dt><dd>Assume <code>system</code> as the current system type. By default it is the architecture/kernel pair found at configure time, such as <code>x86_64-linux</code>.</dd>
+
+<dt><code>--listen===endpoint</code></dt><dd><p>
+Listen for connections on <code>endpoint</code>. <code>endpoint</code> is interpreted as the file name of a Unix-domain socket if it starts with <code>/</code> (slash sign). Otherwise, <code>endpoint</code> is interpreted as a host name or host name and port to listen to. Here are a few examples:
+</p>
+
+<dl class="org-dl">
+<dt><code>--listen=/gnu/var/daemon</code></dt><dd>Listen for connections on the <code>/gnu/var/daemon</code> Unix-domain socket, creating it if needed.</dd>
+
+<dt><code>--listen=localhost</code> </dt><dd><p>
+<a id="index-remote-access-to-the-daemon"></a> <a id="index-daemon_002c-cluster-setup"></a> <a id="index-clusters_002c-daemon-setup"></a>
+</p>
+
+<p>
+Listen for TCP connections on the network interface corresponding to <code>localhost</code>, on port 44146.
+</p></dd>
+
+<dt><code>--listen=128.0.0.42:1234</code></dt><dd>Listen for TCP connections on the network interface corresponding to <code>128.0.0.42</code>, on port 1234.</dd>
+</dl>
+
+<p>
+This option can be repeated multiple times, in which case <code>guix-daemon</code> accepts connections on all the specified endpoints. Users can tell client commands what endpoint to connect to by setting the <code>GUIX_DAEMON_SOCKET</code> environment variable (see <a href="docs/guix--The-Store.html"><code>GUIX_DAEMON_SOCKET</code></a>).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The daemon protocol is <i>unauthenticated and unencrypted</i>. Using <code>--listen===host</code> is suitable on local networks, such as clusters, where only trusted nodes may connect to the build daemon. In other cases where remote access to the daemon is needed, we recommend using Unix-domain sockets along with SSH.
+</p>
+</blockquote>
+
+<p>
+When <code>--listen</code> is omitted, <code>guix-daemon</code> listens for connections on the Unix-domain socket located at <code>localstatedir==/guix/daemon-socket/socket</code>.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Application-Setup.html">Application Setup</a>, Previous: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

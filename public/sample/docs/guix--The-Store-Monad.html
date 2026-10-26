@@ -1,0 +1,331 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#the-store-monad">1.0.1. 8.11 The Store Monad</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="The-Store-Monad"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>, Previous: <a href="docs/guix--Derivations.html">Derivations</a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="The-Store-Monad-1"></a>
+</p>
+</div>
+<div id="outline-container-the-store-monad" class="outline-4">
+<h4 id="the-store-monad"><span class="section-number-4">1.0.1.</span> 8.11 The Store Monad</h4>
+<div class="outline-text-4" id="text-the-store-monad">
+<p>
+<a id="index-monad"></a>
+The procedures that operate on the store described in the previous sections all take an open connection to the build daemon as their first argument. Although the underlying model is functional, they either have side effects or depend on the current state of the store.
+</p>
+
+<p>
+The former is inconvenient: the connection to the build daemon has to be carried around in all those functions, making it impossible to compose functions that do not take that parameter with functions that do. The latter can be problematic: since store operations have side effects and/or depend on external state, they have to be properly sequenced.
+</p>
+
+<p>
+<a id="index-monadic-values"></a> <a id="index-monadic-functions"></a>
+This is where the <code>(guix monads)</code> module comes in. This module provides a framework for working with <i>monads</i>, and a particularly useful monad for our uses, the <i>store monad</i>. Monads are a construct that allows two things: associating “context” with values (in our case, the context is the store), and building sequences of computations (here computations include accesses to the store). Values in a monad&#x2014;values that carry this additional context&#x2014;are called <i>monadic values</i>; procedures that return such values are called <i>monadic procedures</i>.
+</p>
+
+<p>
+Consider this “normal” procedure:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (sh-symlink store)
+  ;; Return a derivation that symlinks the 'bash' executable.
+  (let* ((drv (package-derivation store bash))
+         (out (derivation-&gt;output-path drv))
+         (sh  (string-append out "/bin/bash")))
+    (build-expression-&gt;derivation store "sh"
+                                  `(symlink ,sh %output))))
+</pre>
+</div>
+
+<p>
+Using <code>(guix monads)</code> and <code>(guix gexp)</code>, it may be rewritten as a monadic function:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (sh-symlink)
+  ;; Same, but return a monadic value.
+  (mlet %store-monad ((drv (package-&gt;derivation bash)))
+    (gexp-&gt;derivation "sh"
+                      #~(symlink (string-append #$drv "/bin/bash")
+                                 #$output))))
+</pre>
+</div>
+
+<p>
+There are several things to note in the second version: the <code>store</code> parameter is now implicit and is “threaded” in the calls to the <code>package-&gt;derivation</code> and <code>gexp-&gt;derivation</code> monadic procedures, and the monadic value returned by <code>package-&gt;derivation</code> is <i>bound</i> using <code>mlet</code> instead of plain <code>let</code>.
+</p>
+
+<p>
+As it turns out, the call to <code>package-&gt;derivation</code> can even be omitted since it will take place implicitly, as we will see later (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (sh-symlink)
+  (gexp-&gt;derivation "sh"
+                    #~(symlink (string-append #$bash "/bin/bash")
+                               #$output)))
+</pre>
+</div>
+
+<p>
+Calling the monadic <code>sh-symlink</code> has no effect. As someone once said, “you exit a monad like you exit a building on fire: by running”. So, to exit the monad and get the desired effect, one must use <code>run-with-store</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(run-with-store (open-connection) (sh-symlink))
+⇒ /gnu/store/...-sh-symlink
+</pre>
+</div>
+
+<p>
+Note that the <code>(guix monad-repl)</code> module extends the Guile REPL with new “commands” to make it easier to deal with monadic procedures: <code>run-in-store</code>, and <code>enter-store-monad</code> (see <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>). The former is used to “run” a single monadic value through the store:
+</p>
+
+<pre class="example" id="orgd65ebff">
+scheme@(guile-user)&gt; ,run-in-store (package-&gt;derivation hello)
+$1 = #&lt;derivation /gnu/store/…-hello-2.9.drv =&gt; …&gt;
+</pre>
+
+<p>
+The latter enters a recursive REPL, where all the return values are automatically run through the store:
+</p>
+
+<pre class="example" id="org1c55ac3">
+scheme@(guile-user)&gt; ,enter-store-monad
+store-monad@(guile-user) [1]&gt; (package-&gt;derivation hello)
+$2 = #&lt;derivation /gnu/store/…-hello-2.9.drv =&gt; …&gt;
+store-monad@(guile-user) [1]&gt; (text-file "foo" "Hello!")
+$3 = "/gnu/store/…-foo"
+store-monad@(guile-user) [1]&gt; ,q
+scheme@(guile-user)&gt;
+</pre>
+
+<p>
+Note that non-monadic values cannot be returned in the <code>store-monad</code> REPL.
+</p>
+
+<p>
+Other meta-commands are available at the REPL, such as <code>,build</code> to build a file-like object (see <a href="docs/guix--Using-Guix-Interactively.html">Using Guix Interactively</a>).
+</p>
+
+<p>
+The main syntactic forms to deal with monads in general are provided by the <code>(guix monads)</code> module and are described below.
+</p>
+
+<dl class="org-dl">
+<dt>Macro: with-monad monad body &#x2026;</dt><dd>Evaluate any <code>&gt;&gt;=</code> or <code>return</code> forms in <code>body</code> as being in <code>monad</code>.</dd>
+
+<dt>Macro: return val</dt><dd>Return a monadic value that encapsulates <code>val</code>.</dd>
+
+<dt>Macro: &gt;&gt;= mval mproc &#x2026;</dt><dd><p>
+<i>Bind</i> monadic value <code>mval</code>, passing its “contents” to monadic procedures <code>mproc</code>&#x2026;. There can be one <code>mproc</code> or several of them, as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(run-with-state
+    (with-monad %state-monad
+      (&gt;&gt;= (return 1)
+           (lambda (x) (return (+ 1 x)))
+           (lambda (x) (return (* 2 x)))))
+  'some-state)
+
+⇒ 4
+⇒ some-state
+</pre>
+</div></dd>
+
+<dt>(no term)</dt><dd><p>
+Macro: mlet monad ((var mval) &#x2026;) body &#x2026;<br />
+Macro: mlet* monad ((var mval) &#x2026;) body &#x2026; :: Bind the variables <code>var</code> to the monadic values <code>mval</code> in <code>body</code>, which is a sequence of expressions. As with the bind operator, this can be thought of as “unpacking” the raw, non-monadic value “contained” in <code>mval</code> and making <code>var</code> refer to that raw, non-monadic value within the scope of the <code>body</code>. The form (<code>var</code> -&gt; <code>val</code>) binds <code>var</code> to the “normal” value <code>val</code>, as per <code>let</code>. The binding operations occur in sequence from left to right. The last expression of <code>body</code> must be a monadic expression, and its result will become the result of the <code>mlet</code> or <code>mlet*</code> when run in the <code>monad</code>.
+</p>
+
+<p>
+<code>mlet*</code> is to <code>mlet</code> what <code>let*</code> is to <code>let</code> (see <a href="https://www.gnu.org/software/guile/manual/html_node/Local-Bindings.html#Local-Bindings">Local Bindings</a> in GNU Guile Reference Manual).
+</p></dd>
+
+<dt>Macro: mbegin monad mexp &#x2026;</dt><dd><p>
+Bind <code>mexp</code> and the following monadic expressions in sequence, returning the result of the last expression. Every expression in the sequence must be a monadic expression.
+</p>
+
+<p>
+This is akin to <code>mlet</code>, except that the return values of the monadic expressions are ignored. In that sense, it is analogous to <code>begin</code>, but applied to monadic expressions.
+</p></dd>
+
+<dt>Macro: mwhen condition mexp0 mexp* &#x2026;</dt><dd>When <code>condition</code> is true, evaluate the sequence of monadic expressions <code>mexp0</code>..=mexp*= as in an <code>mbegin</code>. When <code>condition</code> is false, return <code>*unspecified*</code> in the current monad. Every expression in the sequence must be a monadic expression.</dd>
+
+<dt>Macro: munless condition mexp0 mexp* &#x2026;</dt><dd>When <code>condition</code> is false, evaluate the sequence of monadic expressions <code>mexp0</code>..=mexp*= as in an <code>mbegin</code>. When <code>condition</code> is true, return <code>*unspecified*</code> in the current monad. Every expression in the sequence must be a monadic expression.</dd>
+</dl>
+
+<p>
+<a id="index-state-monad"></a>
+The <code>(guix monads)</code> module provides the <i>state monad</i>, which allows an additional value&#x2014;the state&#x2014;to be <i>threaded</i> through monadic procedure calls.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: %state-monad </dt><dd><p>
+The state monad. Procedures in the state monad can access and change the state that is threaded.
+</p>
+
+<p>
+Consider the example below. The <code>square</code> procedure returns a value in the state monad. It returns the square of its argument, but also increments the current state value:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define (square x)
+  (mlet %state-monad ((count (current-state)))
+    (mbegin %state-monad
+      (set-current-state (+ 1 count))
+      (return (* x x)))))
+
+(run-with-state (sequence %state-monad (map square (iota 3))) 0)
+⇒ (0 1 4)
+⇒ 3
+</pre>
+</div>
+
+<p>
+When “run” through <code>%state-monad</code>, we obtain that additional state value, which is the number of <code>square</code> calls.
+</p></dd>
+
+<dt>Monadic Procedure: current-state </dt><dd>Return the current state as a monadic value.</dd>
+
+<dt>Monadic Procedure: set-current-state <code>value</code></dt><dd>Set the current state to <code>value</code> and return the previous state as a monadic value.</dd>
+
+<dt>Monadic Procedure: state-push <code>value</code></dt><dd>Push <code>value</code> to the current state, which is assumed to be a list, and return the previous state as a monadic value.</dd>
+
+<dt>Monadic Procedure: state-pop </dt><dd>Pop a value from the current state and return it as a monadic value. The state is assumed to be a list.</dd>
+
+<dt>Procedure: run-with-state mval [state]</dt><dd>Run monadic value <code>mval</code> starting with <code>state</code> as the initial state. Return two values: the resulting value, and the resulting state.</dd>
+</dl>
+
+<p>
+The main interface to the store monad, provided by the <code>(guix store)</code> module, is as follows.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: %store-monad </dt><dd><p>
+The store monad&#x2014;an alias for <code>%state-monad</code>.
+</p>
+
+<p>
+Values in the store monad encapsulate accesses to the store. When its effect is needed, a value of the store monad must be “evaluated” by passing it to the <code>run-with-store</code> procedure (see below).
+</p></dd>
+
+<dt>Procedure: run-with-store store mval [#:guile-for-build] [#:system (%current-system)]</dt><dd>Run <code>mval</code>, a monadic value in the store monad, in <code>store</code>, an open store connection.</dd>
+
+<dt>Monadic Procedure: text-file <code>name</code> <code>text</code> [=references=]</dt><dd>Return as a monadic value the absolute file name in the store of the file containing <code>text</code>, a string. <code>references</code> is a list of store items that the resulting text file refers to; it defaults to the empty list.</dd>
+
+<dt>Monadic Procedure: binary-file <code>name</code> <code>data</code> [=references=]</dt><dd>Return as a monadic value the absolute file name in the store of the file containing <code>data</code>, a bytevector. <code>references</code> is a list of store items that the resulting binary file refers to; it defaults to the empty list.</dd>
+
+<dt>Monadic Procedure: interned-file <code>file</code> [=name=] [#:recursive? #t] [#:select? (const #t)]</dt><dd><p>
+Return the name of <code>file</code> once interned in the store. Use <code>name</code> as its store name, or the basename of <code>file</code> if <code>name</code> is omitted.
+</p>
+
+<p>
+When <code>recursive?</code> is true, the contents of <code>file</code> are added recursively; if <code>file</code> designates a flat file and <code>recursive?</code> is true, its contents are added, and its permission bits are kept.
+</p>
+
+<p>
+When <code>recursive?</code> is true, call <code>(==select?=</code> <code>=file=</code> <code>=stat=</code>)= for each directory entry, where <code>file</code> is the entry's absolute file name and <code>stat</code> is the result of <code>lstat</code>; exclude entries for which <code>select?</code> does not return true.
+</p>
+
+<p>
+The example below adds a file to the store, under two different names:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(run-with-store (open-connection)
+  (mlet %store-monad ((a (interned-file "README"))
+                      (b (interned-file "README" "LEGU-MIN")))
+    (return (list a b))))
+
+⇒ ("/gnu/store/rwm…-README" "/gnu/store/44i…-LEGU-MIN")
+</pre>
+</div></dd>
+</dl>
+
+<p>
+The <code>(guix packages)</code> module exports the following package-related monadic procedures:
+</p>
+
+<dl class="org-dl">
+<dt>Monadic Procedure: package-file <code>package</code> [=file=] [#:system (%current-system)] [#:target #f] [#:output "out"]</dt><dd><p>
+Return as a monadic value in the absolute file name of <code>file</code> within the <code>output</code> directory of <code>package</code>. When <code>file</code> is omitted, return the name of the <code>output</code> directory of <code>package</code>. When <code>target</code> is true, use it as a cross-compilation target triplet.
+</p>
+
+<p>
+Note that this procedure does <i>not</i> build <code>package</code>. Thus, the result might or might not designate an existing file. We recommend not using this procedure unless you know what you are doing.
+</p></dd>
+
+<dt>(no term)</dt><dd>Monadic Procedure: package-&gt;derivation <code>package</code> [=system=]<br />
+Monadic Procedure: package-&gt;cross-derivation <code>package</code> <code>target</code> [=system=] :: Monadic version of <code>package-derivation</code> and <code>package-cross-derivation</code> (see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>).</dd>
+</dl>
+
+<hr />
+</div>
+</div>
+</div>

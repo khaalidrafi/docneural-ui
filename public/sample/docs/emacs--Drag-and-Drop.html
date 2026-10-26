@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Drag-and-Drop-1">1. 23.14 Drag and Drop ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Menu-Bars.html">Menu Bars</a>   Previous: <a href="docs/emacs--Window-Dividers.html">Window Dividers</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Drag-and-Drop"></a>
+</p>
+
+<hr />
+<div id="outline-container-Drag-and-Drop-1" class="outline-2">
+<h2 id="Drag-and-Drop-1"><span class="section-number-2">1.</span> 23.14 Drag and Drop <a href="#Drag-and-Drop-1">¶</a></h2>
+<div class="outline-text-2" id="text-Drag-and-Drop-1">
+<p>
+In most graphical desktop environments, Emacs has basic support for <i>drag and drop</i> operations. For instance, dropping text onto an Emacs frame inserts the text where it is dropped. Dropping a file onto an Emacs frame visits that file. As a special case, dropping the file on a Dired buffer moves or copies the file (according to the conventions of the application it came from) into the directory displayed in that buffer.
+</p>
+
+<p>
+Dropping a file normally visits it in the window you drop it on. If you prefer to visit the file in a new window in such cases, customize the variable <code>dnd-open-file-other-window</code>.
+</p>
+
+<p>
+The XDND and Motif drag and drop protocols, and the old KDE 1.x protocol, are currently supported.
+</p>
+
+<p>
+It can be difficult to scroll a window or determine where dropped text will be inserted while dragging text onto an Emacs window. Setting the option <code>dnd-indicate-insertion-point</code> to a non-<code>nil</code> value makes point move to the location any dropped text will be inserted when the mouse moves in a window during drag, and setting <code>dnd-scroll-margin</code> to an integer value causes a window to be scrolled if the mouse moves within that many lines of the top or bottom of the window during drag.
+</p>
+
+<p>
+Emacs can also optionally drag the region with the mouse into another portion of this or another buffer. To enable that, customize the variable <code>mouse-drag-and-drop-region</code> to a non-<code>nil</code> value. Normally, the text is moved, i.e. cut and pasted, when the destination is the same buffer as the origin; dropping the region on another buffer copies the text instead. If the value of this variable names a modifier key, such as ‘=shift=', ‘=control=' or ‘=alt=', then pressing that modifier key when dropping the text will copy it instead of cutting it, even if you drop on the same buffer as the one from which the text came.
+</p>
+
+<p>
+In order to cut text even when source and destination buffers differ, set the option <code>mouse-drag-and-drop-region-cut-when-buffers-differ</code> to a non-<code>nil</code> value. By default, on a graphic display the selected text is shown in a tooltip and point moves together with the mouse cursor during dragging. To suppress such behavior, set the options <code>mouse-drag-and-drop-region-show-tooltip</code> and/or <code>mouse-drag-and-drop-region-show-cursor</code> to <code>nil</code>.
+</p>
+
+<p>
+To drag text from Emacs to other programs, set the option <code>mouse-drag-and-drop-region-cross-program</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+On the X window system, some programs can drop files on Emacs, expecting Emacs to save them. Normally, Emacs will prompt for a file name under which the file will be saved, and then open the file, but that behavior can be changed by changing the variable <code>x-dnd-direct-save-function</code>. See <a href="../elisp_html/Drag-and-Drop.html#Drag-and-Drop">Drag and Drop</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,179 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#emacsclient-Options-1">1. 41.3 <code>emacsclient</code> Options ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Invoking-emacsclient.html">Invoking emacsclient</a>   Up: <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>
+</p>
+
+<p>
+<a id="emacsclient-Options"></a>
+</p>
+
+<hr />
+<div id="outline-container-emacsclient-Options-1" class="outline-2">
+<h2 id="emacsclient-Options-1"><span class="section-number-2">1.</span> 41.3 <code>emacsclient</code> Options <a href="#emacsclient-Options-1">¶</a></h2>
+<div class="outline-text-2" id="text-emacsclient-Options-1">
+<p>
+You can pass some optional arguments to the <code>emacsclient</code> program, such as:
+</p>
+
+<pre class="example" id="org324478d">
+emacsclient -c +12 file1 +4:3 file2
+</pre>
+
+<p>
+The ‘=+==line=' or ‘=+==line==:==column=' arguments specify line numbers, or line and column numbers, for the next file argument. These behave like the command line arguments for Emacs itself. See <a href="docs/emacs--Action-Arguments.html">Action Arguments</a>.
+</p>
+
+<p>
+The other optional arguments recognized by <code>emacsclient</code> are listed below:
+</p>
+
+<ul class="org-ul">
+<li><p>
+‘=-a <code>=command</code>'<br />
+‘=&#x2013;alternate-editor===command=' :: Specify a shell command to run if <code>emacsclient</code> fails to contact Emacs. This is useful when running <code>emacsclient</code> in a script. The command may include arguments, which may be quoted "like this". Currently, escaping of quotes is not supported.
+</p>
+
+<p>
+As a special exception, if <code>command</code> is the empty string, then <code>emacsclient</code> starts Emacs in daemon mode (as ‘=emacs &#x2013;daemon=') and then tries connecting again.
+</p>
+
+<p>
+The environment variable <code>ALTERNATE_EDITOR</code> has the same effect as the ‘=-a=' option. If both are present, the latter takes precedence.
+</p></li>
+
+<li><p>
+<a id="index-client-frame"></a>‘=-c=' <br />
+‘=&#x2013;create-frame=' :: Create a new graphical <i>client frame</i>, instead of using an existing Emacs frame. See below for the special behavior of C-x C-c in a client frame. If Emacs cannot create a new graphical frame (e.g., if it cannot connect to the X server), it tries to create a text terminal client frame, as though you had supplied the ‘=-t=' option instead.
+</p>
+
+<p>
+On MS-Windows, a single Emacs session cannot display frames on both graphical and text terminals, nor on multiple text terminals. Thus, if the Emacs server is running on a text terminal, the ‘=-c=' option, like the ‘=-t=' option, creates a new frame in the server's current text terminal. See <a href="docs/emacs--Windows-Startup.html">How to Start Emacs on MS-Windows</a>.
+</p>
+
+<p>
+If you omit a filename argument while supplying the ‘=-c=' option, the new frame displays the <code>*scratch*</code> buffer by default. You can customize this behavior with the variable <code>initial-buffer-choice</code> (see <a href="docs/emacs--Entering-Emacs.html">Entering Emacs</a>).
+</p></li>
+
+<li>‘=-r='<br />
+‘=&#x2013;reuse-frame=' :: Create a new graphical client frame if none exists, otherwise use an existing Emacs frame.</li>
+
+<li>‘=-F <code>=alist</code>'<br />
+‘=&#x2013;frame-parameters===alist=' :: Set the parameters for a newly-created graphical frame (see <a href="docs/emacs--Frame-Parameters.html">Frame Parameters</a>).</li>
+
+<li>‘=-d <code>=display</code>'<br />
+‘=&#x2013;display===display=' :: Tell Emacs to open the given files on the X display <code>display</code> (assuming there is more than one X display available).</li>
+
+<li><p>
+‘=-e='<br />
+‘=&#x2013;eval=' :: Tell Emacs to evaluate some Emacs Lisp code, instead of visiting some files. When this option is given, the arguments to <code>emacsclient</code> are interpreted as a list of expressions to evaluate, <i>not</i> as a list of files to visit.
+</p>
+
+<p>
+Passing complex Lisp expression via the <code>--eval</code> command-line option sometimes requires elaborate escaping of characters special to the shell. To avoid this, you can pass arguments to Lisp functions in your expression as additional separate arguments to <code>emacsclient</code>, and use <code>server-eval-args-left</code> in the expression to access those arguments. Be careful to have your expression remove the processed arguments from <code>server-eval-args-left</code> regardless of whether your code succeeds, for example by using <code>pop</code>, otherwise Emacs will attempt to evaluate those arguments as separate Lisp expressions.
+</p></li>
+
+<li><p>
+‘=-f <code>=server-file</code>'<br />
+‘=&#x2013;server-file===server-file=' :: Specify a server file (see <a href="docs/emacs--TCP-Emacs-server.html">TCP Emacs server</a>) for connecting to an Emacs server via TCP. Alternatively, you can set the <code>EMACS_SERVER_FILE</code> environment variable to point to the server file. (The command-line option overrides the environment variable.)
+</p>
+
+<p>
+An Emacs server usually uses a local socket to listen for connections, but also supports connections over TCP. To connect to a TCP Emacs server, <code>emacsclient</code> needs to read a <i>server file</i> containing the connection details of the Emacs server. The name of this file is specified with this option, either as a file name relative to <code>~/.emacs.d/server</code> or as an absolute file name. See <a href="docs/emacs--TCP-Emacs-server.html">TCP Emacs server</a>.
+</p></li>
+
+<li>‘=-n='<br />
+‘=&#x2013;no-wait=' :: Let <code>emacsclient</code> exit immediately, instead of waiting until all server buffers are finished. You can take as long as you like to edit the server buffers within Emacs, and they are <i>not</i> killed when you type C-x # in them.</li>
+
+<li>‘=-w='<br />
+‘=&#x2013;timeout===N=' :: Wait for a response from Emacs for <code>N</code> seconds before giving up. If there is no response within that time, <code>emacsclient</code> will display a warning and exit. The default is ‘=0=', which means to wait forever.</li>
+
+<li id="‘=&#x2013;parent-id===id='">Open an <code>emacsclient</code> frame as a client frame in the parent X window with id <code>id</code>, via the XEmbed protocol. Currently, this option is mainly useful for developers.</li>
+
+<li>‘=-q='<br />
+‘=&#x2013;quiet=' :: Do not let <code>emacsclient</code> display messages about waiting for Emacs or connecting to remote server sockets.</li>
+
+<li>‘=-u='<br />
+‘=&#x2013;suppress-output=' :: Do not let <code>emacsclient</code> display results returned from the server. Mostly useful in combination with ‘=-e=' when the evaluation performed is for side-effect rather than result.</li>
+
+<li><p>
+‘=-s <code>=server-name</code>'<br />
+‘=&#x2013;socket-name===server-name=' :: Connect to the Emacs server named <code>server-name</code>. (This option is not supported on MS-Windows.) The server name is given by the variable <code>server-name</code> on the Emacs server. If this option is omitted, <code>emacsclient</code> connects to the default socket. If you set <code>server-name</code> of the Emacs server to an absolute file name, give the same absolute file name as <code>server-name</code> to this option to instruct <code>emacsclient</code> to connect to that server. You need to use this option if you started Emacs as daemon (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>) and specified the name for the server started by the daemon.
+</p>
+
+<p>
+Alternatively, you can set the <code>EMACS_SOCKET_NAME</code> environment variable to point to the server socket. (The command-line option overrides the environment variable.)
+</p></li>
+
+<li><p>
+‘=-t='<br />
+‘=&#x2013;tty='<br />
+‘=-nw='<br />
+‘=&#x2013;no-window-system=' :: Create a new client frame on the current text terminal, instead of using an existing Emacs frame. This behaves just like the ‘=-c=' option, described above, except that it creates a text terminal frame (see <a href="docs/emacs--Text-Terminals.html">Text Terminals</a>).
+</p>
+
+<p>
+On MS-Windows, ‘=-t=' behaves just like ‘=-c=' if the Emacs server is using the graphical display, but if the Emacs server is running on a text terminal, it creates a new frame in the current text terminal.
+</p></li>
+
+<li><p>
+‘=-T <code>=tramp-prefix</code>'<br />
+‘=&#x2013;tramp===tramp-prefix=' :: Set the prefix to add to filenames for Emacs to locate files on remote machines (see <a href="docs/emacs--Remote-Files.html">Remote Files</a>) using TRAMP (see <a href="../tramp_html/index.html#Top">The Tramp Manual</a> in The Tramp Manual). This is mostly useful in combination with using the Emacs server from a remote host. By ssh-forwarding the listening socket, or ssh-forwarding the listening port see <a href="docs/emacs--TCP-Emacs-server.html">TCP Emacs server</a> and making the <code>server-file</code> available on a remote machine, programs on the remote machine can use <code>emacsclient</code> as the value for the <code>EDITOR</code> and similar environment variables, but instead of talking to an Emacs server on the remote machine, the files will be visited in the local Emacs session using TRAMP.
+</p>
+
+<p>
+Setting the environment variable <code>EMACSCLIENT_TRAMP</code> has the same effect as using the ‘=-T=' option. If both are specified, the command-line option takes precedence.
+</p>
+
+<p>
+For example, assume two hosts, ‘=local=' and ‘=remote='.
+</p>
+
+<pre class="example" id="org1290b5c">
+local$ ssh -R "/home/%r/.emacs.socket":"${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}/emacs%i}${XDG_RUNTIME_DIR:+/emacs}/server" remote
+remote$ export EMACS_SOCKET_NAME=$HOME/.emacs.socket
+remote$ export EMACSCLIENT_TRAMP=/ssh:remote:
+remote$ export EDITOR=emacsclient
+remote$ $EDITOR /tmp/foo.txt #Should open in local emacs.
+</pre>
+
+<p>
+If you are using a platform where <code>emacsclient</code> does not use Unix domain sockets (i.e., MS-Windows), or your SSH implementation is not able to forward them (e.g., OpenSSH before version 6.7), you can forward a TCP port instead. In this example, assume that the local Emacs listens on tcp port 12345. Assume further that <code>/home</code> is on a shared file system, so that the server file <code>~/.emacs.d/server/server</code> is readable on both hosts.
+</p>
+
+<pre class="example" id="org291a7ca">
+local$ ssh -R12345:localhost:12345 remote
+remote$ export EMACS_SERVER_FILE=server
+remote$ export EMACSCLIENT_TRAMP=/ssh:remote:
+remote$ export EDITOR=emacsclient
+remote$ $EDITOR /tmp/foo.txt #Should open in local emacs.
+</pre></li>
+
+<li>‘=-V='<br />
+‘=&#x2013;version=' :: Print version information and exit.</li>
+
+<li>‘=-H='<br />
+‘=&#x2013;help=' :: Print usage information message and exit.</li>
+</ul>
+
+<p>
+The new graphical or text terminal frames created by the ‘=-c=' or ‘=-t=' options are considered <i>client frames</i>. Any new frame that you create from a client frame is also considered a client frame. If you type C-x C-c (<code>save-buffers-kill-terminal</code>) in a client frame, that command does not kill the Emacs session as it normally does (see <a href="docs/emacs--Exiting.html">Exiting Emacs</a>). Instead, Emacs deletes the client frame; furthermore, if the client frame has an <code>emacsclient</code> waiting to regain control (i.e., if you did not supply the ‘=-n=' option), Emacs deletes all other frames of the same client, and marks the client's server buffers as finished, as though you had typed C-x # in all of them. If it so happens that there are no remaining frames after the client frame(s) are deleted, the Emacs session exits.
+</p>
+
+<p>
+As an exception, when Emacs is started as a daemon, all frames are considered client frames, and C-x C-c never kills Emacs. To kill a daemon session, type M-x kill-emacs.
+</p>
+
+<p>
+Note that the ‘=-t=' and ‘=-n=' options are contradictory: ‘=-t=' says to take control of the current text terminal to create a new client frame, while ‘=-n=' says not to take control of the text terminal. If you supply both options, Emacs visits the specified files(s) in an existing frame rather than a new client frame, negating the effect of ‘=-t='.
+</p>
+
+<hr />
+</div>
+</div>

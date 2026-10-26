@@ -1,0 +1,226 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Log-Rotation"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Networking-Setup.html">Networking Setup</a>, Previous: <a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Log-Rotation-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="log-rotation"></a>11.10.3 Log Rotation<br />
+<div class="outline-text-5" id="text-log-rotation">
+<p>
+<a id="index-log-rotation"></a> <a id="index-logging"></a>
+Log files such as those found in <code>/var/log</code> tend to grow endlessly, so it's a good idea to <i>rotate</i> them once in a while&#x2014;i.e., archive their contents in separate files, possibly compressed. The <code>(gnu services admin)</code> module provides an interface to the log rotation service provided by the Shepherd (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Log-Rotation-Service.html#Log-Rotation-Service">Log Rotation Service</a> in The GNU Shepherd Manual).
+</p>
+
+<p>
+This log rotation service is made available through <code>log-rotation-service-type</code>, which takes a <code>log-rotation-configuration</code> record as its value. By default, this provides <code>log-rotation</code>, a Shepherd “timed service” that runs periodically&#x2014;once a week by default. It automatically knows about the log files produced by Shepherd services and can be taught about external log files. You can inspect the service and see when it's going to run the usual way:
+</p>
+
+<pre class="example" id="org02bf168">
+$ sudo herd status log-rotation
+Status of log-rotation:
+  It is running since Mon 09 Dec 2024 03:27:47 PM CET (2 days ago).
+  …
+
+Upcoming timer alarms:
+  Sun 15 Dec 2024 10:00:00 PM CET (in 4 days)
+  Sun 22 Dec 2024 10:00:00 PM CET (in 11 days)
+  Sun 29 Dec 2024 10:00:00 PM CET (in 18 days)
+</pre>
+
+<p>
+You can also list files subject to rotation with <code>herd files log-rotation</code> and trigger rotation manually with <code>herd trigger log-rotation</code>.
+</p>
+
+<p>
+This service is part of <code>%base-services</code>, and thus enabled by default, with the default settings.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: log-rotation-service-type </dt><dd>This is the type of the log rotation service. Its associated value must be a <code>log-rotation-configuration</code> record, as discussed below.</dd>
+</dl>
+
+<p>
+<a id="log_002drotation_002dconfiguration"></a>
+</p>
+<dl class="org-dl">
+<dt>Data Type: log-rotation-configuration </dt><dd>Available <code>log-rotation-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>provision</code> (default: <code>(log-rotation)</code>) (type: list-of-symbols)</dt><dd>The name(s) of the log rotation Shepherd service.</dd>
+
+<dt><code>requirement</code> (default: <code>(user-processes)</code>) (type: list-of-symbols)</dt><dd>Dependencies of the log rotation Shepherd service.</dd>
+
+<dt><code>calendar-event</code> (type: gexp)</dt><dd>Gexp containing the <i>calendar event</i> when log rotation occurs. See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Timers.html#Timers">Timers</a> in The GNU Shepherd Manual, for more information on calendar events.</dd>
+
+<dt><code>external-log-files</code> (default: <code>()</code>) (type: list-of-strings)</dt><dd>List of file names, external log files that should also be rotated.</dd>
+
+<dt><code>compression</code> (default: <code>zstd</code>) (type: gexp-or-symbol)</dt><dd>The compression method used for rotated log files, one of <code>'none</code>, <code>'gzip</code>, and <code>'zstd</code>. Alternatively, it can be a gexp that evaluates to a procedure; that procedure gets called with the file to be rotated.</dd>
+
+<dt><code>expiry</code> (type: gexp-or-integer)</dt><dd>Age in seconds after which a log file is deleted.</dd>
+
+<dt><code>size-threshold</code> (type: gexp-or-integer)</dt><dd>Size in bytes below which a log file is <i>not</i> rotated.</dd>
+</dl></dd>
+</dl>
+
+<p>
+Some log files just need to be deleted periodically once they are old, without any other criterion and without any archival step. This is the case of build logs stored by <code>guix-daemon</code> under <code>/var/log/guix/drvs</code> (see <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>). The <code>log-cleanup</code> service addresses this use case. For example, <code>%base-services</code> (see <a href="docs/guix--Base-Services.html">Base Services</a>) includes the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Periodically delete old build logs.
+(service log-cleanup-service-type
+         (log-cleanup-configuration
+          (directory "/var/log/guix/drvs")))
+</pre>
+</div>
+
+<p>
+That ensures build logs do not accumulate endlessly.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: log-cleanup-service-type </dt><dd>This is the type of the service to delete old logs. Its value must be a <code>log-cleanup-configuration</code> record as described below.</dd>
+
+<dt>Data Type: log-cleanup-configuration </dt><dd>Data type representing the log cleanup configuration
+
+<dl class="org-dl">
+<dt><code>directory</code></dt><dd>Name of the directory containing log files.</dd>
+
+<dt><code>expiry</code> (default: <code>(* 6 30 24 3600)</code>)</dt><dd>Age in seconds after which a file is subject to deletion (six months by default).</dd>
+
+<dt><code>schedule</code> (default: <code>"30 12 01,08,15,22 * *"</code>)</dt><dd>Schedule of the log cleanup job written either as a string in traditional cron syntax or as a gexp representing a Shepherd calendar event (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Timers.html#Timers">Timers</a> in The GNU Shepherd Manual).</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-logging_002c-anonymization"></a> <a id="Anonip-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="anonip-service"></a>Anonip Service<br />
+<div class="outline-text-5" id="text-anonip-service">
+<p>
+Anonip is a privacy filter that removes IP address from web server logs. This service creates a FIFO and filters any written lines with anonip before writing the filtered log to a target file.
+</p>
+
+<p>
+The following example sets up the FIFO <code>/var/run/anonip/https.access.log</code> and writes the filtered log file <code>/var/log/anonip/https.access.log</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service anonip-service-type
+         (anonip-configuration
+           (input  "/var/run/anonip/https.access.log")
+           (output "/var/log/anonip/https.access.log")))
+</pre>
+</div>
+
+<p>
+Configure your web server to write its logs to the FIFO at <code>/var/run/anonip/https.access.log</code> and collect the anonymized log file at <code>/var/web-logs/https.access.log</code>.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: anonip-configuration </dt><dd><p>
+This data type represents the configuration of anonip. It has the following parameters:
+</p>
+
+<dl class="org-dl">
+<dt><code>anonip</code> (default: <code>anonip</code>)</dt><dd>The anonip package to use.</dd>
+
+<dt><code>input</code></dt><dd>The file name of the input log file to process. The service creates a FIFO of this name. The web server should write its logs to this FIFO.</dd>
+
+<dt><code>output</code></dt><dd>The file name of the processed log file. This file is subject to log rotation <i>via</i> the Shepherd's log rotation service (see ).</dd>
+</dl>
+
+<p>
+The following optional settings may be provided:
+</p>
+
+<dl class="org-dl">
+<dt><code>debug?</code></dt><dd>Print debug messages when <code>#true</code>.</dd>
+
+<dt><code>skip-private?</code></dt><dd>When <code>#true</code> do not mask addresses in private ranges.</dd>
+
+<dt><code>column</code></dt><dd>A 1-based indexed column number. Assume IP address is in the specified column (default is 1).</dd>
+
+<dt><code>replacement</code></dt><dd>Replacement string in case address parsing fails, e.g. <code>"0.0.0.0"</code>.</dd>
+
+<dt><code>ipv4mask</code></dt><dd>Number of bits to mask in IPv4 addresses.</dd>
+
+<dt><code>ipv6mask</code></dt><dd>Number of bits to mask in IPv6 addresses.</dd>
+
+<dt><code>increment</code></dt><dd>Increment the IP address by the given number. By default this is zero.</dd>
+
+<dt><code>delimiter</code></dt><dd>Log delimiter string.</dd>
+
+<dt><code>regex</code></dt><dd>Regular expression for detecting IP addresses. Use this instead of <code>column</code>.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Networking-Setup.html">Networking Setup</a>, Previous: <a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

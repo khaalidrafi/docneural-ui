@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Working-with-Projects">1. 30.2 Working with Projects ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Change-Log.html">Change Logs</a>   Previous: <a href="docs/emacs--Version-Control.html">Version Control</a>   Up: <a href="docs/emacs--Maintaining.html">Maintaining Large Programs</a>
+</p>
+
+<p>
+<a id="Projects"></a>
+</p>
+
+<hr />
+<div id="outline-container-Working-with-Projects" class="outline-2">
+<h2 id="Working-with-Projects"><span class="section-number-2">1.</span> 30.2 Working with Projects <a href="#Working-with-Projects">¶</a></h2>
+<div class="outline-text-2" id="text-Working-with-Projects">
+<p>
+A <i>project</i> is a collection of files used for producing one or more programs. Files that belong to a project are typically stored in a hierarchy of directories; the top-level directory of the hierarchy is known as the <i>project root</i>.
+</p>
+
+<p>
+Whether a given directory is a root of some project is determined by the project-specific infrastructure, known as <i>project back-end</i>. Emacs currently supports two such back-ends: VC-aware (see <a href="docs/emacs--Version-Control.html">Version Control</a>), whereby a VCS repository is considered a project; and EDE (see <a href="docs/emacs--EDE.html">Emacs Development Environment</a>). This is expected to be extended in the future to support additional types of projects.
+</p>
+
+<p>
+Which files do or don't belong to a project is also determined by the project back-end. For example, the VC-aware back-end doesn't consider “ignored” files (see <a href="docs/emacs--VC-Ignore.html">Ignore Version Control Files</a>) to be part of the project. Also, the VC-aware Project back-end considers “untracked” files by default. That behavior is controllable with the variable <code>project-vc-include-untracked</code>.
+</p>
+
+<dl class="org-dl">
+<dt>User Option: <b>project-mode-line</b> </dt><dd>If this user option is non-<code>nil</code>, Emacs displays the name of the current project (if any) on the mode line; clicking mouse-1 on the project name pops up the menu with the project-related commands. The default value is <code>nil</code>.</dd>
+
+<dt>(no term)</dt><dd><a href="docs/emacs--Project-File-Commands.html">Project Commands That Operate on Files</a></dd>
+<dt>(no term)</dt><dd><a href="docs/emacs--Project-Buffer-Commands.html">Project Commands That Operate on Buffers</a></dd>
+<dt>(no term)</dt><dd><a href="docs/emacs--Switching-Projects.html">Switching Projects</a></dd>
+<dt>(no term)</dt><dd><a href="docs/emacs--Managing-Projects.html">Managing the Project List File</a></dd>
+</dl>
+
+<hr />
+</div>
+</div>

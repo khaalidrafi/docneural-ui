@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Paragraphs-1">1. 27.3 Paragraphs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Pages.html">Pages</a>   Previous: <a href="docs/emacs--Sentences.html">Sentences</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Paragraphs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Paragraphs-1" class="outline-2">
+<h2 id="Paragraphs-1"><span class="section-number-2">1.</span> 27.3 Paragraphs <a href="#Paragraphs-1">¶</a></h2>
+<div class="outline-text-2" id="text-Paragraphs-1">
+<p>
+The Emacs commands for manipulating paragraphs are also on Meta keys.
+</p>
+
+<dl class="org-dl">
+<dt>M-{</dt><dd>Move back to previous paragraph beginning (<code>backward-paragraph</code>).</dd>
+
+<dt>M-}</dt><dd>Move forward to next paragraph end (<code>forward-paragraph</code>).</dd>
+
+<dt>M-h</dt><dd>Put point and mark around this or next paragraph (<code>mark-paragraph</code>).</dd>
+</dl>
+
+<p>
+M-{ (<code>backward-paragraph</code>) moves to the beginning of the current or previous paragraph, depending on where point is when the command is invoked (see below for the definition of a paragraph). M-} (<code>forward-paragraph</code>) similarly moves to the end of the current or next paragraph. If there is a blank line before the paragraph, M-{ moves to the blank line.
+</p>
+
+<p>
+When you wish to operate on a paragraph, type M-h (<code>mark-paragraph</code>) to set the region around it. For example, M-h C-w kills the paragraph around or after point. M-h puts point at the beginning and mark at the end of the paragraph point was in. If point is between paragraphs (in a run of blank lines, or at a boundary), M-h sets the region around the paragraph following point. If there are blank lines preceding the first line of the paragraph, one of these blank lines is included in the region. If the region is already active, the command sets the mark without changing point, and each subsequent M-h further advances the mark by one paragraph.
+</p>
+
+<p>
+The definition of a paragraph depends on the major mode. In Fundamental mode, as well as Text mode and related modes, a paragraph is separated from neighboring paragraphs by one or more <i>blank lines</i>&#x2014;lines that are either empty, or consist solely of space, tab and/or formfeed characters. In programming language modes, paragraphs are usually defined in a similar way, so that you can use the paragraph commands even though there are no paragraphs as such in a program.
+</p>
+
+<p>
+Note that an indented line is <i>not</i> itself a paragraph break in Text mode. If you want indented lines to separate paragraphs, use Paragraph-Indent Text mode instead. See <a href="docs/emacs--Text-Mode.html">Text Mode</a>.
+</p>
+
+<p>
+If you set a fill prefix, then paragraphs are delimited by all lines which don't start with the fill prefix. See <a href="docs/emacs--Filling.html">Filling Text</a>.
+</p>
+
+<p>
+The precise definition of a paragraph boundary is controlled by the variables <code>paragraph-separate</code> and <code>paragraph-start</code>. The value of <code>paragraph-start</code> is a regular expression that should match lines that either start or separate paragraphs (see <a href="docs/emacs--Regexps.html">Syntax of Regular Expressions</a>). The value of <code>paragraph-separate</code> is another regular expression that should match lines that separate paragraphs without being part of any paragraph (for example, blank lines). Lines that start a new paragraph and are contained in it must match only <code>paragraph-start</code>, not <code>paragraph-separate</code>. For example, in Fundamental mode, <code>paragraph-start</code> is <code>"\f\\|[ \t]*$"</code>, and <code>paragraph-separate</code> is <code>"[ \t\f]*$"</code>.
+</p>
+
+<p>
+Note that <code>paragraph-start</code> and <code>paragraph-separate</code> are matched against the text at the left margin, which is not necessarily the beginning of the line, so these regexps should not use ‘=^=' as an anchor, to ensure that the paragraph functions will work equally within a region of text indented by a margin setting.
+</p>
+
+<hr />
+</div>
+</div>
