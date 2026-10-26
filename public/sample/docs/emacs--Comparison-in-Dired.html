@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#File-Comparison-with-Dired">1. 32.11 File Comparison with Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Subdirectories-in-Dired.html">Subdirectories in Dired</a>   Previous: <a href="docs/emacs--Transforming-File-Names.html">Transforming File Names in Dired</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Comparison-in-Dired"></a>
+</p>
+
+<hr />
+<div id="outline-container-File-Comparison-with-Dired" class="outline-2">
+<h2 id="File-Comparison-with-Dired"><span class="section-number-2">1.</span> 32.11 File Comparison with Dired <a href="#File-Comparison-with-Dired">¶</a></h2>
+<div class="outline-text-2" id="text-File-Comparison-with-Dired">
+<p>
+The = (<code>dired-diff</code>) command compares the current file (the file at point) with another file (read using the minibuffer) using the <code>diff</code> program. The file specified with the minibuffer is the first argument of <code>diff</code>, and file at point is the second argument. The output of the <code>diff</code> program is shown in a buffer using Diff mode (see <a href="docs/emacs--Comparing-Files.html">Comparing Files</a>).
+</p>
+
+<p>
+If the region is active, the default for the file read using the minibuffer is the file at the mark (i.e., the ordinary Emacs mark, not a Dired mark; see <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>). Otherwise, if the file at point has a backup file (see <a href="docs/emacs--Backup.html">Backup Files</a>), that is the default.
+</p>
+
+<p>
+You could also compare files using <code>ediff-files</code>, see <a href="../ediff_html/Major-Entry-Points.html#Major-Entry-Points">Major Entry Points</a> in Ediff User's Manual.
+</p>
+</div>
+</div>

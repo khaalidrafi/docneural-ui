@@ -1,0 +1,136 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-container">1.0.1. 9.14 Invoking <code>guix container</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-container"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-weather.html">Invoking <code>guix weather</code></a>, Previous: <a href="docs/guix--Invoking-guix-copy.html">Invoking <code>guix copy</code></a>, Up: <a href="docs/guix--Utilities.html">Utilities</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-container-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-container" class="outline-4">
+<h4 id="invoking-guix-container"><span class="section-number-4">1.0.1.</span> 9.14 Invoking <code>guix container</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-container">
+<p>
+<a id="index-container-3"></a> <a id="index-guix-container"></a>
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> As of version 1.5.0, this tool is experimental. The interface is subject to radical change in the future.
+</p>
+</blockquote>
+
+<p>
+The purpose of <code>guix container</code> is to manipulate processes running within an isolated environment, commonly known as a “container”, typically created by the <code>guix shell</code> (see <a href="docs/guix--Invoking-guix-shell.html">Invoking <code>guix shell</code></a>) and <code>guix system container</code> (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>) commands.
+</p>
+
+<p>
+The general syntax is:
+</p>
+
+<pre class="example" id="org3e635af">
+guix container action options…
+</pre>
+
+<p>
+<code>action</code> specifies the operation to perform with a container, and <code>options</code> specifies the context-specific arguments for the action.
+</p>
+
+<p>
+The following actions are available:
+</p>
+
+<dl class="org-dl">
+<dt><code>exec</code></dt><dd><p>
+Execute a command within the context of a running container.
+</p>
+
+<p>
+The syntax is:
+</p>
+
+<pre class="example" id="orgeb0c063">
+guix container exec pid program arguments…
+</pre>
+
+<p>
+<code>pid</code> specifies the process ID of the running container. <code>program</code> specifies an executable file name within the root file system of the container. <code>arguments</code> are the additional options that will be passed to <code>program</code>.
+</p>
+
+<p>
+The following command launches an interactive login shell inside a Guix system container, started by <code>guix system container</code>, and whose process ID is 9001:
+</p>
+
+<pre class="example" id="org1bcfded">
+guix container exec 9001 /run/current-system/profile/bin/bash --login
+</pre>
+
+<p>
+Note that the <code>pid</code> cannot be the parent process of a container. It must be PID 1 of the container or one of its child processes.
+</p></dd>
+</dl>
+</div>
+</div>
+</div>

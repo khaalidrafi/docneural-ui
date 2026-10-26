@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Dynamic-Abbrev-Expansion">1. 31.7 Dynamic Abbrev Expansion ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Dabbrev-Customization.html">Customizing Dynamic Abbreviation</a>   Previous: <a href="docs/emacs--Saving-Abbrevs.html">Saving Abbrevs</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Dynamic-Abbrevs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Dynamic-Abbrev-Expansion" class="outline-2">
+<h2 id="Dynamic-Abbrev-Expansion"><span class="section-number-2">1.</span> 31.7 Dynamic Abbrev Expansion <a href="#Dynamic-Abbrev-Expansion">¶</a></h2>
+<div class="outline-text-2" id="text-Dynamic-Abbrev-Expansion">
+<p>
+The abbrev facility described above operates automatically as you insert text, but all abbrevs must be defined explicitly. By contrast, <i>dynamic abbrevs</i> allow the meanings of abbreviations to be determined automatically from the contents of the buffer, but dynamic abbrev expansion happens only when you request it explicitly.
+</p>
+
+<dl class="org-dl">
+<dt>M-/</dt><dd>Expand the word in the buffer before point as a <i>dynamic abbrev</i>, by searching for words starting with that abbreviation (<code>dabbrev-expand</code>).</dd>
+
+<dt>C-M-/</dt><dd>Complete the word before point as a dynamic abbrev (<code>dabbrev-completion</code>).</dd>
+</dl>
+
+<p>
+For example, if the buffer contains ‘=does this follow <code>' and you type f o M-/, the effect is to insert ‘=follow</code>' because that is the last word in the buffer that starts with ‘=fo='. A numeric argument to M-/ says to take the second, third, etc. distinct expansion found looking backward from point. Repeating M-/ searches for an alternative expansion by looking farther back. After scanning all the text before point, it searches the text after point. The variable <code>dabbrev-limit</code>, if non-<code>nil</code>, specifies how far away in the buffer to search for an expansion.
+</p>
+
+<p>
+After scanning the current buffer, M-/ normally searches other buffers. The variables <code>dabbrev-check-all-buffers</code> and <code>dabbrev-check-other-buffers</code> can be used to determine which other buffers, if any, are searched. Buffers that have major modes derived from any of the modes in <code>dabbrev-ignored-buffer-modes</code> are ignored.
+</p>
+
+<p>
+For finer control over which buffers to scan, customize the variables <code>dabbrev-ignored-buffer-names</code> and <code>dabbrev-ignored-buffer-regexps</code>. The value of the former is a list of buffer names to skip. The value of the latter is a list of regular expressions; if a buffer's name matches any of these regular expressions, dynamic abbrev expansion skips that buffer.
+</p>
+
+<p>
+A negative argument to M-<i>, as in C-u - M-</i>, says to search first for expansions after point, then other buffers, and consider expansions before point only as a last resort. If you repeat the M-/ to look for another expansion, do not specify an argument. Repeating M-/ cycles through all the expansions after point and then the expansions before point.
+</p>
+
+<p>
+After you have expanded a dynamic abbrev, you can copy additional words that follow the expansion in its original context. Simply type SPC M-/ for each additional word you want to copy. The spacing and punctuation between words is copied along with the words.
+</p>
+
+<p>
+You can control the way M-/ determines the word to expand and how to expand it, see <a href="docs/emacs--Dabbrev-Customization.html">Customizing Dynamic Abbreviation</a>.
+</p>
+
+<p>
+The command C-M-/ (<code>dabbrev-completion</code>) performs completion of a dynamic abbrev. Instead of trying the possible expansions one by one, it finds all of them, then inserts the text that they have in common. If they have nothing in common, C-M-/ displays a list of completions, from which you can select a choice in the usual manner. See <a href="docs/emacs--Completion.html">Completion</a>.
+</p>
+
+<p>
+Dynamic abbrev expansion is completely independent of Abbrev mode; the expansion of a word with M-/ is completely independent of whether it has a definition as an ordinary abbrev.
+</p>
+
+<hr />
+</div>
+</div>

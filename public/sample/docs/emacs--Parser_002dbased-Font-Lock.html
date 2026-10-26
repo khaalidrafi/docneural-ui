@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Parser_002dbased-Font-Lock-1">1. 16.13.2 Parser-based Font Lock ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Traditional-Font-Lock.html">Traditional Font Lock</a>   Up: <a href="docs/emacs--Font-Lock.html">Font Lock mode</a>
+</p>
+
+<p>
+<a id="Parser_002dbased-Font-Lock"></a>
+</p>
+
+<hr />
+<div id="outline-container-Parser_002dbased-Font-Lock-1" class="outline-2">
+<h2 id="Parser_002dbased-Font-Lock-1"><span class="section-number-2">1.</span> 16.13.2 Parser-based Font Lock <a href="#Parser_002dbased-Font-Lock-1">¶</a></h2>
+<div class="outline-text-2" id="text-Parser_002dbased-Font-Lock-1">
+<p>
+If your Emacs was built with the tree-sitter library, it can use the results of parsing the buffer text by that library for the purposes of fontification. This is usually faster and more accurate than the “traditional” methods described in the previous subsection, since the tree-sitter library provides full-blown parsers for programming languages and other kinds of formatted text which it supports. Major modes which utilize the tree-sitter library are named <code>foo=</code>-ts-mode=, with the ‘=-ts-=' part indicating the use of the library. This subsection documents the Font Lock support based on the tree-sitter library.
+</p>
+
+<p>
+You can control the amount of fontification applied by Font Lock mode of major modes based on tree-sitter by customizing the variable <code>treesit-font-lock-level</code>. Its value is a number between 1 and 4:
+</p>
+
+<dl class="org-dl">
+<dt>Level 1</dt><dd>This level usually fontifies only comments and function names in function definitions.</dd>
+
+<dt>Level 2</dt><dd>This level adds fontification of keywords, strings, and data types.</dd>
+
+<dt>Level 3</dt><dd>This is the default level; it adds fontification of assignments, numbers, etc.</dd>
+
+<dt>Level 4</dt><dd>This level adds everything else that can be fontified: operators, delimiters, brackets, other punctuation, function names in function calls, property look ups, variables, etc.</dd>
+</dl>
+
+<p>
+What exactly constitutes each of the syntactical categories mentioned above depends on the major mode and the parser grammar used by tree-sitter for the major-mode's language. However, in general the categories follow the conventions of the programming language or the file format supported by the major mode. The buffer-local value of the variable <code>treesit-font-lock-feature-list</code> holds the fontification features supported by a tree-sitter based major mode, where each sub-list shows the features provided by the corresponding fontification level.
+</p>
+
+<p>
+Once you change the value of <code>treesit-font-lock-level</code> via M-x customize-variable (see <a href="docs/emacs--Specific-Customization.html">Customizing Specific Items</a>), it takes effect immediately in all the existing buffers and for files you visit in the future in the same session.
+</p>
+
+<hr />
+</div>
+</div>

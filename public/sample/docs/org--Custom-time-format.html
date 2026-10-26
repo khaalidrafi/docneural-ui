@@ -1,0 +1,48 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Custom-time-format-1">1. 8.2.2 Custom time format ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Custom-time-format"></a>
+Previous: <a href="docs/org--The-date_002ftime-prompt.html">The date/time prompt</a>, Up: <a href="docs/org--Creating-Timestamps.html">Creating Timestamps</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Custom-time-format-1" class="outline-2">
+<h2 id="Custom-time-format-1"><span class="section-number-2">1.</span> 8.2.2 Custom time format <a href="#Custom-time-format-1">¶</a></h2>
+<div class="outline-text-2" id="text-Custom-time-format-1">
+<p>
+Org mode uses the standard ISO notation for dates and times as it is defined in ISO 8601. If you cannot get used to this and require another representation of date and time to keep you happy, you can get it by customizing the variables <code>org-display-custom-times</code> and <code>org-timestamp-custom-formats</code>.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-C_002dt"></a>C-c C-x C-t (<code>org-toggle-timestamp-overlays</code>) </dt><dd>Toggle the display of custom formats for dates and times.</dd>
+</dl>
+
+<p>
+Org mode needs the default format for scanning, so the custom date/time format does not <i>replace</i> the default format. Instead, it is put <i>over</i> the default format using text properties. This has the following consequences:
+</p>
+
+<ul class="org-ul">
+<li>You cannot place point onto a timestamp anymore, only before or after.</li>
+<li>The S-UP and S-DOWN keys can no longer be used to adjust each component of a timestamp. If point is at the beginning of the stamp, S-UP and S-DOWN change the stamp by one day, just like S-LEFT S-RIGHT. At the end of the stamp, change the time by one minute.</li>
+<li>If the timestamp contains a range of clock times or a repeater, these are not overlaid, but remain in the buffer as they were.</li>
+<li>When you delete a timestamp character-by-character, it only disappears from the buffer after <i>all</i> (invisible) characters belonging to the ISO timestamp have been removed.</li>
+<li>If the custom timestamp format is longer than the default, and you are using dates in tables, table alignment will be messed up. If the custom format is shorter, things do work as expected.</li>
+</ul>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--The-date_002ftime-prompt.html">The date/time prompt</a>, Up: <a href="docs/org--Creating-Timestamps.html">Creating Timestamps</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

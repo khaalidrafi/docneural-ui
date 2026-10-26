@@ -1,0 +1,1209 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Options-for-the-exporters">1. 14.1.5 Options for the exporters ¶</a></li>
+<li><a href="#Generic-properties-1">2. Generic properties ¶</a></li>
+<li><a href="#ASCII-specific-properties-1">3. ASCII specific properties ¶</a></li>
+<li><a href="#Beamer-specific-properties-1">4. Beamer specific properties ¶</a></li>
+<li><a href="#HTML-specific-properties-1">5. HTML specific properties ¶</a></li>
+<li><a href="#LaTeX-specific-properties-1">6. LaTeX specific properties ¶</a></li>
+<li><a href="#Markdown-specific-properties-1">7. Markdown specific properties ¶</a></li>
+<li><a href="#ODT-specific-properties-1">8. ODT specific properties ¶</a></li>
+<li><a href="#Texinfo-specific-properties-1">9. Texinfo specific properties ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Publishing-options"></a>
+Next: <a href="docs/org--Publishing-links.html">Publishing links</a>, Previous: <a href="docs/org--Publishing-action.html">Publishing action</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Options-for-the-exporters" class="outline-2">
+<h2 id="Options-for-the-exporters"><span class="section-number-2">1.</span> 14.1.5 Options for the exporters <a href="#Options-for-the-exporters">¶</a></h2>
+<div class="outline-text-2" id="text-Options-for-the-exporters">
+<p>
+The property list can be used to set many export options for the HTML and LaTeX exporters. In most cases, these properties correspond to user variables in Org. The table below lists these properties along with the variable they belong to. See the documentation string for the respective variable for details.
+</p>
+
+<p>
+When a property is given a value in <code>org-publish-project-alist</code>, its setting overrides the value of the corresponding user variable, if any, during publishing. Options set within a file (see <a href="docs/org--Export-Settings.html">Export Settings</a>), however, override everything.
+</p>
+</div>
+</div>
+<div id="outline-container-Generic-properties-1" class="outline-2">
+<h2 id="Generic-properties-1"><span class="section-number-2">2.</span> Generic properties <a href="#Generic-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-Generic-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:author</code></td>
+<td class="org-left"><code>user-full-name</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:email</code></td>
+<td class="org-left"><code>user-mail-address</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:language</code></td>
+<td class="org-left"><code>org-export-default-language</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:select-tags</code></td>
+<td class="org-left"><code>org-export-select-tags</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:exclude-tags</code></td>
+<td class="org-left"><code>org-export-exclude-tags</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:creator</code></td>
+<td class="org-left"><code>org-export-creator-string</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:headline-levels</code></td>
+<td class="org-left"><code>org-export-headline-levels</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:preserve-breaks</code></td>
+<td class="org-left"><code>org-export-preserve-breaks</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:section-numbers</code></td>
+<td class="org-left"><code>org-export-with-section-numbers</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:time-stamp-file</code></td>
+<td class="org-left"><code>org-export-timestamp-file</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-archived-trees</code></td>
+<td class="org-left"><code>org-export-with-archived-trees</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-author</code></td>
+<td class="org-left"><code>org-export-with-author</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:expand-links</code></td>
+<td class="org-left"><code>org-export-expand-links</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-broken-links</code></td>
+<td class="org-left"><code>org-export-with-broken-links</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-clocks</code></td>
+<td class="org-left"><code>org-export-with-clocks</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-creator</code></td>
+<td class="org-left"><code>org-export-with-creator</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-date</code></td>
+<td class="org-left"><code>org-export-with-date</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-drawers</code></td>
+<td class="org-left"><code>org-export-with-drawers</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-email</code></td>
+<td class="org-left"><code>org-export-with-email</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-emphasize</code></td>
+<td class="org-left"><code>org-export-with-emphasize</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-entities</code></td>
+<td class="org-left"><code>org-export-with-entities</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-fixed-width</code></td>
+<td class="org-left"><code>org-export-with-fixed-width</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-footnotes</code></td>
+<td class="org-left"><code>org-export-with-footnotes</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-inlinetasks</code></td>
+<td class="org-left"><code>org-export-with-inlinetasks</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-latex</code></td>
+<td class="org-left"><code>org-export-with-latex</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-planning</code></td>
+<td class="org-left"><code>org-export-with-planning</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-priority</code></td>
+<td class="org-left"><code>org-export-with-priority</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-properties</code></td>
+<td class="org-left"><code>org-export-with-properties</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-smart-quotes</code></td>
+<td class="org-left"><code>org-export-with-smart-quotes</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-special-strings</code></td>
+<td class="org-left"><code>org-export-with-special-strings</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-statistics-cookies</code></td>
+<td class="org-left"><code>org-export-with-statistics-cookies</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-sub-superscript</code></td>
+<td class="org-left"><code>org-export-with-sub-superscripts</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-toc</code></td>
+<td class="org-left"><code>org-export-with-toc</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-tables</code></td>
+<td class="org-left"><code>org-export-with-tables</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-tags</code></td>
+<td class="org-left"><code>org-export-with-tags</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-tasks</code></td>
+<td class="org-left"><code>org-export-with-tasks</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-timestamps</code></td>
+<td class="org-left"><code>org-export-with-timestamps</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-title</code></td>
+<td class="org-left"><code>org-export-with-title</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-todo-keywords</code></td>
+<td class="org-left"><code>org-export-with-todo-keywords</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-cite-processors</code></td>
+<td class="org-left"><code>org-export-process-citations</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:cite-export</code></td>
+<td class="org-left"><code>org-cite-export-processors</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-ASCII-specific-properties-1" class="outline-2">
+<h2 id="ASCII-specific-properties-1"><span class="section-number-2">3.</span> ASCII specific properties <a href="#ASCII-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-ASCII-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:ascii-bullets</code></td>
+<td class="org-left"><code>org-ascii-bullets</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-caption-above</code></td>
+<td class="org-left"><code>org-ascii-caption-above</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-charset</code></td>
+<td class="org-left"><code>org-ascii-charset</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-global-margin</code></td>
+<td class="org-left"><code>org-ascii-global-margin</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-format-drawer-function</code></td>
+<td class="org-left"><code>org-ascii-format-drawer-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-format-inlinetask-function</code></td>
+<td class="org-left"><code>org-ascii-format-inlinetask-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-headline-spacing</code></td>
+<td class="org-left"><code>org-ascii-headline-spacing</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-indented-line-width</code></td>
+<td class="org-left"><code>org-ascii-indented-line-width</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-inlinetask-width</code></td>
+<td class="org-left"><code>org-ascii-inlinetask-width</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-inner-margin</code></td>
+<td class="org-left"><code>org-ascii-inner-margin</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-links-to-notes</code></td>
+<td class="org-left"><code>org-ascii-links-to-notes</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-list-margin</code></td>
+<td class="org-left"><code>org-ascii-list-margin</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-paragraph-spacing</code></td>
+<td class="org-left"><code>org-ascii-paragraph-spacing</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-quote-margin</code></td>
+<td class="org-left"><code>org-ascii-quote-margin</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-table-keep-all-vertical-lines</code></td>
+<td class="org-left"><code>org-ascii-table-keep-all-vertical-lines</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-table-use-ascii-art</code></td>
+<td class="org-left"><code>org-ascii-table-use-ascii-art</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-table-widen-columns</code></td>
+<td class="org-left"><code>org-ascii-table-widen-columns</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-text-width</code></td>
+<td class="org-left"><code>org-ascii-text-width</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-underline</code></td>
+<td class="org-left"><code>org-ascii-underline</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:ascii-verbatim-format</code></td>
+<td class="org-left"><code>org-ascii-verbatim-format</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-Beamer-specific-properties-1" class="outline-2">
+<h2 id="Beamer-specific-properties-1"><span class="section-number-2">4.</span> Beamer specific properties <a href="#Beamer-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-Beamer-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:headline-levels</code></td>
+<td class="org-left"><code>org-beamer-frame-level</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-subtitle-format</code></td>
+<td class="org-left"><code>org-beamer-subtitle-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-column-view-format</code></td>
+<td class="org-left"><code>org-beamer-column-view-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-theme</code></td>
+<td class="org-left"><code>org-beamer-theme</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-environments-extra</code></td>
+<td class="org-left"><code>org-beamer-environments-extra</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-frame-default-options</code></td>
+<td class="org-left"><code>org-beamer-frame-default-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-outline-frame-options</code></td>
+<td class="org-left"><code>org-beamer-outline-frame-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:beamer-outline-frame-title</code></td>
+<td class="org-left"><code>org-beamer-outline-frame-title</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-HTML-specific-properties-1" class="outline-2">
+<h2 id="HTML-specific-properties-1"><span class="section-number-2">5.</span> HTML specific properties <a href="#HTML-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-HTML-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:html-doctype</code></td>
+<td class="org-left"><code>org-html-doctype</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-container</code></td>
+<td class="org-left"><code>org-html-container-element</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-content-class</code></td>
+<td class="org-left"><code>org-html-content-class</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-html5-fancy</code></td>
+<td class="org-left"><code>org-html-html5-fancy</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-link-use-abs-url</code></td>
+<td class="org-left"><code>org-html-link-use-abs-url</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-link-home</code></td>
+<td class="org-left"><code>org-html-link-home</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-link-up</code></td>
+<td class="org-left"><code>org-html-link-up</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-equation-reference-format</code></td>
+<td class="org-left"><code>org-html-equation-reference-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-postamble</code></td>
+<td class="org-left"><code>org-html-postamble</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-preamble</code></td>
+<td class="org-left"><code>org-html-preamble</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-head</code></td>
+<td class="org-left"><code>org-html-head</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-head-extra</code></td>
+<td class="org-left"><code>org-html-head-extra</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-head-include-default-style</code></td>
+<td class="org-left"><code>org-html-head-include-default-style</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-head-include-scripts</code></td>
+<td class="org-left"><code>org-html-head-include-scripts</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-allow-name-attribute-in-anchors</code></td>
+<td class="org-left"><code>org-html-allow-name-attribute-in-anchors</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-divs</code></td>
+<td class="org-left"><code>org-html-divs</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-checkbox-type</code></td>
+<td class="org-left"><code>org-html-checkbox-type</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-extension</code></td>
+<td class="org-left"><code>org-html-extension</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-footnote-format</code></td>
+<td class="org-left"><code>org-html-footnote-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-footnote-separator</code></td>
+<td class="org-left"><code>org-html-footnote-separator</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-footnotes-section</code></td>
+<td class="org-left"><code>org-html-footnotes-section</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-format-drawer-function</code></td>
+<td class="org-left"><code>org-html-format-drawer-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-format-headline-function</code></td>
+<td class="org-left"><code>org-html-format-headline-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-format-inlinetask-function</code></td>
+<td class="org-left"><code>org-html-format-inlinetask-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-home/up-format</code></td>
+<td class="org-left"><code>org-html-home/up-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-indent</code></td>
+<td class="org-left"><code>org-html-indent</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-infojs-options</code></td>
+<td class="org-left"><code>org-html-infojs-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-infojs-template</code></td>
+<td class="org-left"><code>org-html-infojs-template</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-inline-image-rules</code></td>
+<td class="org-left"><code>org-html-inline-image-rules</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-link-org-files-as-html</code></td>
+<td class="org-left"><code>org-html-link-org-files-as-html</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-mathjax-options</code></td>
+<td class="org-left"><code>org-html-mathjax-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-mathjax-template</code></td>
+<td class="org-left"><code>org-html-mathjax-template</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-metadata-timestamp-format</code></td>
+<td class="org-left"><code>org-html-metadata-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-postamble-format</code></td>
+<td class="org-left"><code>org-html-postamble-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-preamble-format</code></td>
+<td class="org-left"><code>org-html-preamble-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-prefer-user-labels</code></td>
+<td class="org-left"><code>org-html-prefer-user-labels</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-self-link-headlines</code></td>
+<td class="org-left"><code>org-html-self-link-headlines</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-align-individual-fields</code></td>
+<td class="org-left"><code>org-html-table-align-individual-fields</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-caption-above</code></td>
+<td class="org-left"><code>org-html-table-caption-above</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-data-tags</code></td>
+<td class="org-left"><code>org-html-table-data-tags</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-header-tags</code></td>
+<td class="org-left"><code>org-html-table-header-tags</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-use-header-tags-for-first-column</code></td>
+<td class="org-left"><code>org-html-table-use-header-tags-for-first-column</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-tag-class-prefix</code></td>
+<td class="org-left"><code>org-html-tag-class-prefix</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-text-markup-alist</code></td>
+<td class="org-left"><code>org-html-text-markup-alist</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-todo-kwd-class-prefix</code></td>
+<td class="org-left"><code>org-html-todo-kwd-class-prefix</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-toplevel-hlevel</code></td>
+<td class="org-left"><code>org-html-toplevel-hlevel</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-use-infojs</code></td>
+<td class="org-left"><code>org-html-use-infojs</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-validation-link</code></td>
+<td class="org-left"><code>org-html-validation-link</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-viewport</code></td>
+<td class="org-left"><code>org-html-viewport</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-inline-images</code></td>
+<td class="org-left"><code>org-html-inline-images</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-attributes</code></td>
+<td class="org-left"><code>org-html-table-default-attributes</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-row-open-tag</code></td>
+<td class="org-left"><code>org-html-table-row-open-tag</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-table-row-close-tag</code></td>
+<td class="org-left"><code>org-html-table-row-close-tag</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-xml-declaration</code></td>
+<td class="org-left"><code>org-html-xml-declaration</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-wrap-src-lines</code></td>
+<td class="org-left"><code>org-html-wrap-src-lines</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-klipsify-src</code></td>
+<td class="org-left"><code>org-html-klipsify-src</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-klipse-css</code></td>
+<td class="org-left"><code>org-html-klipse-css</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-klipse-js</code></td>
+<td class="org-left"><code>org-html-klipse-js</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:html-klipse-selection-script</code></td>
+<td class="org-left"><code>org-html-klipse-selection-script</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:creator</code></td>
+<td class="org-left"><code>org-html-creator-string</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-latex</code></td>
+<td class="org-left"><code>org-html-with-latex</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-LaTeX-specific-properties-1" class="outline-2">
+<h2 id="LaTeX-specific-properties-1"><span class="section-number-2">6.</span> LaTeX specific properties <a href="#LaTeX-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-LaTeX-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:latex-class</code></td>
+<td class="org-left"><code>org-latex-default-class</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-active-timestamp-format</code></td>
+<td class="org-left"><code>org-latex-active-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-caption-above</code></td>
+<td class="org-left"><code>org-latex-caption-above</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-classes</code></td>
+<td class="org-left"><code>org-latex-classes</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-default-figure-position</code></td>
+<td class="org-left"><code>org-latex-default-figure-position</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-default-table-environment</code></td>
+<td class="org-left"><code>org-latex-default-table-environment</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-default-quote-environment</code></td>
+<td class="org-left"><code>org-latex-default-quote-environment</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-default-table-mode</code></td>
+<td class="org-left"><code>org-latex-default-table-mode</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-default-footnote-command</code></td>
+<td class="org-left"><code>org-latex-default-footnote-command</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-diary-timestamp-format</code></td>
+<td class="org-left"><code>org-latex-diary-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-engraved-options</code></td>
+<td class="org-left"><code>org-latex-engraved-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-engraved-preamble</code></td>
+<td class="org-left"><code>org-latex-engraved-preamble</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-engraved-theme</code></td>
+<td class="org-left"><code>org-latex-engraved-theme</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-footnote-defined-format</code></td>
+<td class="org-left"><code>org-latex-footnote-defined-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-footnote-separator</code></td>
+<td class="org-left"><code>org-latex-footnote-separator</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-format-drawer-function</code></td>
+<td class="org-left"><code>org-latex-format-drawer-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-format-headline-function</code></td>
+<td class="org-left"><code>org-latex-format-headline-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-format-inlinetask-function</code></td>
+<td class="org-left"><code>org-latex-format-inlinetask-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-hyperref-template</code></td>
+<td class="org-left"><code>org-latex-hyperref-template</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-image-default-scale</code></td>
+<td class="org-left"><code>org-latex-image-default-scale</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-image-default-height</code></td>
+<td class="org-left"><code>org-latex-image-default-height</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-image-default-option</code></td>
+<td class="org-left"><code>org-latex-image-default-option</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-image-default-width</code></td>
+<td class="org-left"><code>org-latex-image-default-width</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-images-centered</code></td>
+<td class="org-left"><code>org-latex-images-centered</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-inactive-timestamp-format</code></td>
+<td class="org-left"><code>org-latex-inactive-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-inline-image-rules</code></td>
+<td class="org-left"><code>org-latex-inline-image-rules</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-link-with-unknown-path-format</code></td>
+<td class="org-left"><code>org-latex-link-with-unknown-path-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-src-block-backend</code></td>
+<td class="org-left"><code>org-latex-src-block-backend</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-listings-langs</code></td>
+<td class="org-left"><code>org-latex-listings-langs</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-listings-options</code></td>
+<td class="org-left"><code>org-latex-listings-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-listings-src-omit-language</code></td>
+<td class="org-left"><code>org-latex-listings-src-omit-language</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-minted-langs</code></td>
+<td class="org-left"><code>org-latex-minted-langs</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-minted-options</code></td>
+<td class="org-left"><code>org-latex-minted-options</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-prefer-user-labels</code></td>
+<td class="org-left"><code>org-latex-prefer-user-labels</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-subtitle-format</code></td>
+<td class="org-left"><code>org-latex-subtitle-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-subtitle-separate</code></td>
+<td class="org-left"><code>org-latex-subtitle-separate</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-table-scientific-notation</code></td>
+<td class="org-left"><code>org-latex-table-scientific-notation</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-tables-booktabs</code></td>
+<td class="org-left"><code>org-latex-tables-booktabs</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-tables-centered</code></td>
+<td class="org-left"><code>org-latex-tables-centered</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-text-markup-alist</code></td>
+<td class="org-left"><code>org-latex-text-markup-alist</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-title-command</code></td>
+<td class="org-left"><code>org-latex-title-command</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-toc-command</code></td>
+<td class="org-left"><code>org-latex-toc-command</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-compiler</code></td>
+<td class="org-left"><code>org-latex-compiler</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:latex-use-sans</code></td>
+<td class="org-left"><code>org-latex-use-sans</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-Markdown-specific-properties-1" class="outline-2">
+<h2 id="Markdown-specific-properties-1"><span class="section-number-2">7.</span> Markdown specific properties <a href="#Markdown-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-Markdown-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:md-footnote-format</code></td>
+<td class="org-left"><code>org-md-footnote-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:md-footnotes-section</code></td>
+<td class="org-left"><code>org-md-footnotes-section</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:md-headline-style</code></td>
+<td class="org-left"><code>org-md-headline-style</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:md-toplevel-hlevel</code></td>
+<td class="org-left"><code>org-md-toplevel-hlevel</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:md-link-org-files-as-md</code></td>
+<td class="org-left"><code>org-md-link-org-files-as-md</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-ODT-specific-properties-1" class="outline-2">
+<h2 id="ODT-specific-properties-1"><span class="section-number-2">8.</span> ODT specific properties <a href="#ODT-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-ODT-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:odt-styles-file</code></td>
+<td class="org-left"><code>org-odt-styles-file</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-with-forbidden-chars</code></td>
+<td class="org-left"><code>org-odt-with-forbidden-chars</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-content-template-file</code></td>
+<td class="org-left"><code>org-odt-content-template-file</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-display-outline-level</code></td>
+<td class="org-left"><code>org-odt-display-outline-level</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-fontify-srcblocks</code></td>
+<td class="org-left"><code>org-odt-fontify-srcblocks</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-format-drawer-function</code></td>
+<td class="org-left"><code>org-odt-format-drawer-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-format-headline-function</code></td>
+<td class="org-left"><code>org-odt-format-headline-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-format-inlinetask-function</code></td>
+<td class="org-left"><code>org-odt-format-inlinetask-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-inline-formula-rules</code></td>
+<td class="org-left"><code>org-odt-inline-formula-rules</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-inline-image-rules</code></td>
+<td class="org-left"><code>org-odt-inline-image-rules</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-pixels-per-inch</code></td>
+<td class="org-left"><code>org-odt-pixels-per-inch</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-table-styles</code></td>
+<td class="org-left"><code>org-odt-table-styles</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:odt-use-date-fields</code></td>
+<td class="org-left"><code>org-odt-use-date-fields</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-latex</code></td>
+<td class="org-left"><code>org-odt-with-latex</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-Texinfo-specific-properties-1" class="outline-2">
+<h2 id="Texinfo-specific-properties-1"><span class="section-number-2">9.</span> Texinfo specific properties <a href="#Texinfo-specific-properties-1">¶</a></h2>
+<div class="outline-text-2" id="text-Texinfo-specific-properties-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><code>:texinfo-class</code></td>
+<td class="org-left"><code>org-texinfo-default-class</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-classes</code></td>
+<td class="org-left"><code>org-texinfo-classes</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-format-headline-function</code></td>
+<td class="org-left"><code>org-texinfo-format-headline-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-node-description-column</code></td>
+<td class="org-left"><code>org-texinfo-node-description-column</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-active-timestamp-format</code></td>
+<td class="org-left"><code>org-texinfo-active-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-inactive-timestamp-format</code></td>
+<td class="org-left"><code>org-texinfo-inactive-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-diary-timestamp-format</code></td>
+<td class="org-left"><code>org-texinfo-diary-timestamp-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-link-with-unknown-path-format</code></td>
+<td class="org-left"><code>org-texinfo-link-with-unknown-path-format</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-tables-verbatim</code></td>
+<td class="org-left"><code>org-texinfo-tables-verbatim</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-table-scientific-notation</code></td>
+<td class="org-left"><code>org-texinfo-table-scientific-notation</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-table-default-markup</code></td>
+<td class="org-left"><code>org-texinfo-table-default-markup</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-text-markup-alist</code></td>
+<td class="org-left"><code>org-texinfo-text-markup-alist</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-format-drawer-function</code></td>
+<td class="org-left"><code>org-texinfo-format-drawer-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-format-inlinetask-function</code></td>
+<td class="org-left"><code>org-texinfo-format-inlinetask-function</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:texinfo-compact-itemx</code></td>
+<td class="org-left"><code>org-texinfo-compact-itemx</code></td>
+</tr>
+
+<tr>
+<td class="org-left"><code>:with-latex</code></td>
+<td class="org-left"><code>org-texinfo-with-latex</code></td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Publishing-links.html">Publishing links</a>, Previous: <a href="docs/org--Publishing-action.html">Publishing action</a>, Up: <a href="docs/org--Configuration.html">Configuration</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

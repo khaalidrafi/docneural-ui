@@ -1,0 +1,659 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="DNS-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--VNC-Services.html">VNC Services</a>, Previous: <a href="docs/guix--Certificate-Services.html">Certificate Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="DNS-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="dns-services"></a>11.10.23 DNS Services<br />
+<div class="outline-text-5" id="text-dns-services">
+<p>
+<a id="index-DNS-_0028domain-name-system_0029"></a> <a id="index-domain-name-system-_0028DNS_0029"></a>
+The <code>(gnu services dns)</code> module provides services related to the <i>domain name system</i> (DNS). It provides a server service for hosting an <i>authoritative</i> DNS server for multiple zones, slave or master. This service uses <a href="https://www.knot-dns.cz/">Knot DNS</a>. And also a caching and forwarding DNS server for the LAN, which uses <a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</a>.
+</p>
+
+<p>
+<a id="Knot-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="knot-service"></a>Knot Service<br />
+<div class="outline-text-5" id="text-knot-service">
+<p>
+An example configuration of an authoritative server for two zones, one master and one slave, is:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define-zone-entries example.org.zone
+;; Name TTL Class Type Data
+  ("@"  ""  "IN"  "A"  "127.0.0.1")
+  ("@"  ""  "IN"  "NS" "ns")
+  ("ns" ""  "IN"  "A"  "127.0.0.1"))
+
+(define master-zone
+  (knot-zone-configuration
+    (domain "example.org")
+    (zone (zone-file
+            (origin "example.org")
+            (entries example.org.zone)))))
+
+(define slave-zone
+  (knot-zone-configuration
+    (domain "plop.org")
+    (dnssec-policy "default")
+    (master (list "plop-master"))))
+
+(define plop-master
+  (knot-remote-configuration
+    (id "plop-master")
+    (address (list "208.76.58.171"))))
+
+(operating-system
+  ;; ...
+  (services (cons* (service knot-service-type
+                     (knot-configuration
+                       (remotes (list plop-master))
+                       (zones (list master-zone slave-zone))))
+                   ;; ...
+                   %base-services)))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: knot-service-type </dt><dd><p>
+This is the type for the Knot DNS server.
+</p>
+
+<p>
+Knot DNS is an authoritative DNS server, meaning that it can serve multiple zones, that is to say domain names you would buy from a registrar. This server is not a resolver, meaning that it can only resolve names for which it is authoritative. This server can be configured to serve zones as a master server or a slave server as a per-zone basis. Slave zones will get their data from masters, and will serve it as an authoritative server. From the point of view of a resolver, there is no difference between master and slave.
+</p>
+
+<p>
+The following data types are used to configure the Knot DNS server:
+</p></dd>
+
+<dt>Data Type: knot-key-configuration </dt><dd>Data type representing a key. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>id</code> (default: <code>""</code>)</dt><dd>An identifier for other configuration fields to refer to this key. IDs must be unique and must not be empty.</dd>
+
+<dt><code>algorithm</code> (default: <code>#f</code>)</dt><dd>The algorithm to use. Choose between <code>#f</code>, <code>'hmac-md5</code>, <code>'hmac-sha1</code>, <code>'hmac-sha224</code>, <code>'hmac-sha256</code>, <code>'hmac-sha384</code> and <code>'hmac-sha512</code>.</dd>
+
+<dt><code>secret</code> (default: <code>""</code>)</dt><dd>The secret key itself.</dd>
+</dl></dd>
+
+<dt>Data Type: knot-acl-configuration </dt><dd>Data type representing an Access Control List (ACL) configuration. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>id</code> (default: <code>""</code>)</dt><dd>An identifier for other configuration fields to refer to this key. IDs must be unique and must not be empty.</dd>
+
+<dt><code>address</code> (default: <code>'()</code>)</dt><dd>An ordered list of IP addresses, network subnets, or network ranges represented with strings. The query must match one of them. Empty value means that address match is not required.</dd>
+
+<dt><code>key</code> (default: <code>'()</code>)</dt><dd>An ordered list of references to keys represented with strings. The string must match a key ID defined in a <code>knot-key-configuration</code>. No key means that a key is not require to match that ACL.</dd>
+
+<dt><code>action</code> (default: <code>'()</code>)</dt><dd>An ordered list of actions that are permitted or forbidden by this ACL. Possible values are lists of zero or more elements from <code>'transfer</code>, <code>'notify</code> and <code>'update</code>.</dd>
+
+<dt><code>deny?</code> (default: <code>#f</code>)</dt><dd>When true, the ACL defines restrictions. Listed actions are forbidden. When false, listed actions are allowed.</dd>
+</dl></dd>
+
+<dt>Data Type: zone-entry </dt><dd>Data type representing a record entry in a zone file. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>name</code> (default: <code>"@"</code>)</dt><dd>The name of the record. <code>"@"</code> refers to the origin of the zone. Names are relative to the origin of the zone. For example, in the <code>example.org</code> zone, <code>"ns.example.org"</code> actually refers to <code>ns.example.org.example.org</code>. Names ending with a dot are absolute, which means that <code>"ns.example.org."</code> refers to <code>ns.example.org</code>.</dd>
+
+<dt><code>ttl</code> (default: <code>""</code>)</dt><dd>The Time-To-Live (TTL) of this record. If not set, the default TTL is used.</dd>
+
+<dt><code>class</code> (default: <code>"IN"</code>)</dt><dd>The class of the record. Knot currently supports only <code>"IN"</code> and partially <code>"CH"</code>.</dd>
+
+<dt><code>type</code> (default: <code>"A"</code>)</dt><dd>The type of the record. Common types include A (IPv4 address), AAAA (IPv6 address), NS (Name Server) and MX (Mail eXchange). Many other types are defined.</dd>
+
+<dt><code>data</code> (default: <code>""</code>)</dt><dd>The data contained in the record. For instance an IP address associated with an A record, or a domain name associated with an NS record. Remember that domain names are relative to the origin unless they end with a dot.</dd>
+</dl></dd>
+
+<dt>Data Type: zone-file </dt><dd>Data type representing the content of a zone file. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>entries</code> (default: <code>'()</code>)</dt><dd>The list of entries. The SOA record is taken care of, so you don't need to put it in the list of entries. This list should probably contain an entry for your primary authoritative DNS server. Other than using a list of entries directly, you can use <code>define-zone-entries</code> to define a object containing the list of entries more easily, that you can later pass to the <code>entries</code> field of the <code>zone-file</code>.</dd>
+
+<dt><code>origin</code> (default: <code>""</code>)</dt><dd>The name of your zone. This parameter cannot be empty.</dd>
+
+<dt><code>ns</code> (default: <code>"ns"</code>)</dt><dd>The domain of your primary authoritative DNS server. The name is relative to the origin, unless it ends with a dot. It is mandatory that this primary DNS server corresponds to an NS record in the zone and that it is associated to an IP address in the list of entries.</dd>
+
+<dt><code>mail</code> (default: <code>"hostmaster"</code>)</dt><dd>An email address people can contact you at, as the owner of the zone. This is translated as <code>&lt;mail&gt;@&lt;origin&gt;</code>.</dd>
+
+<dt><code>serial</code> (default: <code>1</code>)</dt><dd>The serial number of the zone. As this is used to keep track of changes by both slaves and resolvers, it is mandatory that it <i>never</i> decreases. Always increment it when you make a change in your zone.</dd>
+
+<dt><code>refresh</code> (default: <code>(* 2 24 3600)</code>)</dt><dd>The frequency at which slaves will do a zone transfer. This value is a number of seconds. It can be computed by multiplications or with <code>(string-&gt;duration)</code>.</dd>
+
+<dt><code>retry</code> (default: <code>(* 15 60)</code>)</dt><dd>The period after which a slave will retry to contact its master when it fails to do so a first time.</dd>
+
+<dt><code>expiry</code> (default: <code>(* 14 24 3600)</code>)</dt><dd>Default TTL of records. Existing records are considered correct for at most this amount of time. After this period, resolvers will invalidate their cache and check again that it still exists.</dd>
+
+<dt><code>nx</code> (default: <code>3600</code>)</dt><dd>Default TTL of inexistent records. This delay is usually short because you want your new domains to reach everyone quickly.</dd>
+</dl></dd>
+
+<dt>Data Type: knot-remote-configuration </dt><dd>Data type representing a remote configuration. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>id</code> (default: <code>""</code>)</dt><dd>An identifier for other configuration fields to refer to this remote. IDs must be unique and must not be empty.</dd>
+
+<dt><code>address</code> (default: <code>'()</code>)</dt><dd>An ordered list of destination IP addresses. Addresses are tried in sequence. An optional port can be given with the @ separator. For instance: <code>(list "1.2.3.4" "2.3.4.5@53")</code>. Default port is 53.</dd>
+
+<dt><code>via</code> (default: <code>'()</code>)</dt><dd>An ordered list of source IP addresses. An empty list will have Knot choose an appropriate source IP. An optional port can be given with the @ separator. The default is to choose at random.</dd>
+
+<dt><code>key</code> (default: <code>#f</code>)</dt><dd>A reference to a key, that is a string containing the identifier of a key defined in a <code>knot-key-configuration</code> field.</dd>
+</dl></dd>
+
+<dt>Data Type: knot-keystore-configuration </dt><dd>Data type representing a keystore to hold dnssec keys. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>id</code> (default: <code>""</code>)</dt><dd>The id of the keystore. It must not be empty.</dd>
+
+<dt><code>backend</code> (default: <code>'pem</code>)</dt><dd>The backend to store the keys in. Can be <code>'pem</code> or <code>'pkcs11</code>.</dd>
+
+<dt><code>config</code> (default: <code>"/var/lib/knot/keys/keys"</code>)</dt><dd>The configuration string of the backend. An example for the PKCS#11 is: <code>"pkcs11:token=knot;pin-value=1234 /gnu/store/.../lib/pkcs11/libsofthsm2.so"</code>. For the pem backend, the string represents a path in the file system.</dd>
+</dl></dd>
+
+<dt>Data Type: knot-policy-configuration </dt><dd><p>
+Data type representing a dnssec policy. Knot DNS is able to automatically sign your zones. It can either generate and manage your keys automatically or use keys that you generate.
+</p>
+
+<p>
+Dnssec is usually implemented using two keys: a Key Signing Key (KSK) that is used to sign the second, and a Zone Signing Key (ZSK) that is used to sign the zone. In order to be trusted, the KSK needs to be present in the parent zone (usually a top-level domain). If your registrar supports dnssec, you will have to send them your KSK's hash so they can add a DS record in their zone. This is not automated and need to be done each time you change your KSK.
+</p>
+
+<p>
+The policy also defines the lifetime of keys. Usually, ZSK can be changed easily and use weaker cryptographic functions (they use lower parameters) in order to sign records quickly, so they are changed often. The KSK however requires manual interaction with the registrar, so they are changed less often and use stronger parameters because they sign only one record.
+</p>
+
+<p>
+This type has the following parameters:
+</p>
+
+<dl class="org-dl">
+<dt><code>id</code> (default: <code>""</code>)</dt><dd>The id of the policy. It must not be empty.</dd>
+
+<dt><code>keystore</code> (default: <code>"default"</code>)</dt><dd>A reference to a keystore, that is a string containing the identifier of a keystore defined in a <code>knot-keystore-configuration</code> field. The <code>"default"</code> identifier means the default keystore (a kasp database that was setup by this service).</dd>
+
+<dt><code>manual?</code> (default: <code>#f</code>)</dt><dd>Whether the key management is manual or automatic.</dd>
+
+<dt><code>single-type-signing?</code> (default: <code>#f</code>)</dt><dd>When <code>#t</code>, use the Single-Type Signing Scheme.</dd>
+
+<dt><code>algorithm</code> (default: <code>"ecdsap256sha256"</code>)</dt><dd>An algorithm of signing keys and issued signatures.</dd>
+
+<dt><code>ksk-size</code> (default: <code>256</code>)</dt><dd>The length of the KSK. Note that this value is correct for the default algorithm, but would be unsecure for other algorithms.</dd>
+
+<dt><code>zsk-size</code> (default: <code>256</code>)</dt><dd>The length of the ZSK. Note that this value is correct for the default algorithm, but would be unsecure for other algorithms.</dd>
+
+<dt><code>dnskey-ttl</code> (default: <code>'default</code>)</dt><dd>The TTL value for DNSKEY records added into zone apex. The special <code>'default</code> value means same as the zone SOA TTL.</dd>
+
+<dt><code>zsk-lifetime</code> (default: <code>(* 30 24 3600)</code>)</dt><dd>The period between ZSK publication and the next rollover initiation.</dd>
+
+<dt><code>propagation-delay</code> (default: <code>(* 24 3600)</code>)</dt><dd>An extra delay added for each key rollover step. This value should be high enough to cover propagation of data from the master server to all slaves.</dd>
+
+<dt><code>rrsig-lifetime</code> (default: <code>(* 14 24 3600)</code>)</dt><dd>A validity period of newly issued signatures.</dd>
+
+<dt><code>rrsig-refresh</code> (default: <code>(* 7 24 3600)</code>)</dt><dd>A period how long before a signature expiration the signature will be refreshed.</dd>
+
+<dt><code>nsec3?</code> (default: <code>#f</code>)</dt><dd>When <code>#t</code>, NSEC3 will be used instead of NSEC.</dd>
+
+<dt><code>nsec3-iterations</code> (default: <code>5</code>)</dt><dd>The number of additional times the hashing is performed.</dd>
+
+<dt><code>nsec3-salt-length</code> (default: <code>8</code>)</dt><dd>The length of a salt field in octets, which is appended to the original owner name before hashing.</dd>
+
+<dt><code>nsec3-salt-lifetime</code> (default: <code>(* 30 24 3600)</code>)</dt><dd>The validity period of newly issued salt field.</dd>
+</dl></dd>
+
+<dt>Data Type: knot-zone-configuration </dt><dd>Data type representing a zone served by Knot. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>domain</code> (default: <code>""</code>)</dt><dd>The domain served by this configuration. It must not be empty.</dd>
+
+<dt><code>file</code> (default: <code>""</code>)</dt><dd>The file where this zone is saved. This parameter is ignored by master zones. Empty means default location that depends on the domain name.</dd>
+
+<dt><code>zone</code> (default: <code>(zone-file)</code>)</dt><dd>The content of the zone file. This parameter is ignored by slave zones. It must contain a zone-file record.</dd>
+
+<dt><code>master</code> (default: <code>'()</code>)</dt><dd>A list of master remotes. When empty, this zone is a master. When set, this zone is a slave. This is a list of remotes identifiers.</dd>
+
+<dt><code>ddns-master</code> (default: <code>#f</code>)</dt><dd>The main master. When empty, it defaults to the first master in the list of masters.</dd>
+
+<dt><code>notify</code> (default: <code>'()</code>)</dt><dd>A list of slave remote identifiers.</dd>
+
+<dt><code>acl</code> (default: <code>'()</code>)</dt><dd>A list of acl identifiers.</dd>
+
+<dt><code>semantic-checks?</code> (default: <code>#f</code>)</dt><dd>When set, this adds more semantic checks to the zone.</dd>
+
+<dt><code>zonefile-sync</code> (default: <code>0</code>)</dt><dd>The delay between a modification in memory and on disk. 0 means immediate synchronization.</dd>
+
+<dt><code>zonefile-load</code> (default: <code>#f</code>)</dt><dd>The way the zone file contents are applied during zone load. Possible values are:
+
+<ul class="org-ul">
+<li><code>#f</code> for using the default value from Knot,</li>
+<li><code>'none</code> for not using the zone file at all,</li>
+<li><code>'difference</code> for computing the difference between already available contents and zone contents and applying it to the current zone contents,</li>
+<li><code>'difference-no-serial</code> for the same as <code>'difference</code>, but ignoring the SOA serial in the zone file, while the server takes care of it automatically.</li>
+<li><code>'whole</code> for loading zone contents from the zone file.</li>
+</ul></dd>
+
+<dt><code>journal-content</code> (default: <code>#f</code>)</dt><dd>The way the journal is used to store zone and its changes. Possible values are <code>'none</code> to not use it at all, <code>'changes</code> to store changes and <code>'all</code> to store contents. <code>#f</code> does not set this option, so the default value from Knot is used.</dd>
+
+<dt><code>max-journal-usage</code> (default: <code>#f</code>)</dt><dd>The maximum size for the journal on disk. <code>#f</code> does not set this option, so the default value from Knot is used.</dd>
+
+<dt><code>max-journal-depth</code> (default: <code>#f</code>)</dt><dd>The maximum size of the history. <code>#f</code> does not set this option, so the default value from Knot is used.</dd>
+
+<dt><code>max-zone-size</code> (default: <code>#f</code>)</dt><dd>The maximum size of the zone file. This limit is enforced for incoming transfer and updates. <code>#f</code> does not set this option, so the default value from Knot is used.</dd>
+
+<dt><code>dnssec-policy</code> (default: <code>#f</code>)</dt><dd>A reference to a <code>knot-policy-configuration</code> record, or the special name <code>"default"</code>. If the value is <code>#f</code>, there is no dnssec signing on this zone.</dd>
+
+<dt><code>serial-policy</code> (default: <code>'increment</code>)</dt><dd>A policy between <code>'increment</code> and <code>'unixtime</code>.</dd>
+</dl></dd>
+
+<dt>Data Type: knot-configuration </dt><dd>Data type representing the Knot configuration. This type has the following parameters:
+
+<dl class="org-dl">
+<dt><code>knot</code> (default: <code>knot</code>)</dt><dd>The Knot package.</dd>
+
+<dt><code>run-directory</code> (default: <code>"/var/run/knot"</code>)</dt><dd>The run directory. This directory will be used for pid file and sockets.</dd>
+
+<dt><code>includes</code> (default: <code>'()</code>)</dt><dd><p>
+A list of strings or file-like objects denoting other files that must be included at the top of the configuration file.
+</p>
+
+<p>
+<a id="index-secrets_002c-Knot-service"></a>
+</p>
+
+<p>
+This can be used to manage secrets out-of-band. For example, secret keys may be stored in an out-of-band file not managed by Guix, and thus not visible in <code>/gnu/store</code>&#x2014;e.g., you could store secret key configuration in <code>/etc/knot/secrets.conf</code> and add this file to the <code>includes</code> list.
+</p>
+
+<p>
+One can generate a secret tsig key (for nsupdate and zone transfers with the keymgr command from the knot package. Note that the package is not automatically installed by the service. The following example shows how to generate a new tsig key:
+</p>
+
+<pre class="example" id="org2174b8b">
+keymgr -t mysecret &gt; /etc/knot/secrets.conf
+chmod 600 /etc/knot/secrets.conf
+</pre>
+
+<p>
+Also note that the generated key will be named <code>mysecret</code>, so it is the name that needs to be used in the <code>key</code> field of the <code>knot-acl-configuration</code> record and in other places that need to refer to that key.
+</p>
+
+<p>
+It can also be used to add configuration not supported by this interface.
+</p></dd>
+
+<dt><code>listen-v4</code> (default: <code>"0.0.0.0"</code>)</dt><dd>An ip address on which to listen.</dd>
+
+<dt><code>listen-v6</code> (default: <code>"::"</code>)</dt><dd>An ip address on which to listen.</dd>
+
+<dt><code>listen-port</code> (default: <code>53</code>)</dt><dd>A port on which to listen.</dd>
+
+<dt><code>keys</code> (default: <code>'()</code>)</dt><dd>The list of knot-key-configuration used by this configuration.</dd>
+
+<dt><code>acls</code> (default: <code>'()</code>)</dt><dd>The list of knot-acl-configuration used by this configuration.</dd>
+
+<dt><code>remotes</code> (default: <code>'()</code>)</dt><dd>The list of knot-remote-configuration used by this configuration.</dd>
+
+<dt><code>zones</code> (default: <code>'()</code>)</dt><dd>The list of knot-zone-configuration used by this configuration.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Knot-Resolver-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="knot-resolver-service"></a>Knot Resolver Service<br />
+<div class="outline-text-5" id="text-knot-resolver-service">
+<dl class="org-dl">
+<dt>Variable: knot-resolver-service-type </dt><dd><p>
+This is the type of the knot resolver service, whose value should be a <code>knot-resolver-configuration</code> object as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service knot-resolver-service-type
+         (knot-resolver-configuration
+           (kresd-config-file (plain-file "kresd.conf" "
+net.listen('192.168.0.1', 5353)
+user('knot-resolver', 'knot-resolver')
+modules = { 'hints &gt; iterate', 'stats', 'predict' }
+cache.size = 100 * MB
+"))))
+</pre>
+</div>
+
+<p>
+For more information, refer its <a href="https://knot-resolver.readthedocs.io/en/stable/config-overview.html">manual</a>.
+</p></dd>
+
+<dt>Data Type: knot-resolver-configuration </dt><dd>Data type representing the configuration of knot-resolver.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>knot-resolver</code>)</dt><dd>Package object of the knot DNS resolver.</dd>
+
+<dt><code>kresd-config-file</code> (default: %kresd.conf)</dt><dd>File-like object of the kresd configuration file to use, by default it will listen on <code>127.0.0.1</code> and <code>::1</code>.</dd>
+
+<dt><code>garbage-collection-interval</code> (default: 1000)</dt><dd>Number of milliseconds for <code>kres-cache-gc</code> to periodically trim the cache.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Dnsmasq-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="dnsmasq-service"></a>Dnsmasq Service<br />
+<div class="outline-text-5" id="text-dnsmasq-service">
+<dl class="org-dl">
+<dt>Variable: dnsmasq-service-type </dt><dd><p>
+This is the type of the dnsmasq service, whose value should be a <code>dnsmasq-configuration</code> object as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service dnsmasq-service-type
+         (dnsmasq-configuration
+           (no-resolv? #t)
+           (servers '("192.168.1.1"))))
+</pre>
+</div>
+
+<p>
+<code>dnsmasq-service-type</code> provides two actions:
+</p>
+
+<dl class="org-dl">
+<dt><code>reload</code></dt><dd><p>
+Send a <code>SIGHUP</code> signal to <code>dnsmasq</code> to clear cache and reload hosts files which triggers the following actions:
+</p>
+
+<ul class="org-ul">
+<li>Clear the DNS cache</li>
+<li>Reload <code>/etc/hosts</code> and <code>/etc/ethers</code></li>
+<li>Reload files specified by <code>--dhcp-hostsfile</code>, <code>--dhcp-hostsdir</code>, <code>--dhcp-optsfile</code>, <code>--dhcp-optsdir</code>, <code>--addn-hosts</code>, or <code>--hostsdir</code></li>
+<li>Execute DHCP lease change scripts for all existing leases</li>
+<li>Reread <code>/etc/resolv.conf</code> (only if <code>--no-poll</code> is configured).</li>
+</ul>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>SIGHUP</code> signal does not trigger a reload of the main configuration file.
+</p>
+</blockquote>
+
+<p>
+Example usage:
+</p>
+
+<pre class="example" id="org2e0b4a3">
+herd reload dnsmasq
+</pre></dd>
+
+<dt><code>stats</code></dt><dd><p>
+When <code>dnsmasq</code> receives a <code>SIGUSR1</code> signal, it writes statistics to the system log including:
+</p>
+
+<ul class="org-ul">
+<li>Cache size and number of evicted entries</li>
+<li>Cache hits, misses, and authoritative queries answered</li>
+<li>For each upstream server: queries sent and errors received</li>
+<li>TCP connection fork statistics.</li>
+</ul>
+
+<p>
+Example usage:
+</p>
+
+<pre class="example" id="org396a5b9">
+herd stats dnsmasq
+</pre></dd>
+</dl></dd>
+
+<dt>Data Type: dnsmasq-configuration </dt><dd>Data type representing the configuration of dnsmasq.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>dnsmasq</code>)</dt><dd>Package object of the dnsmasq server.</dd>
+
+<dt>(no term)</dt><dd><p>
+<code>shepherd-provision</code> (default: <code>'(dnsmasq)</code>)<br />
+<code>shepherd-requirement</code> (default: <code>'(user-processes networking)</code>) :: This option can be used to provide a list of Shepherd service names (symbols) provided by this service. You might want to change the default value if you intend to run several <code>dnsmasq</code> instances.
+</p>
+
+<p>
+Likewise, <code>shepherd-requirement</code> is a list of Shepherd service names (symbols) that this service will depend on.
+</p></dd>
+
+<dt><code>pid-file</code> (default: <code>"/run/dnsmasq.pid"</code>)</dt><dd>Specify an alternate path for dnsmasq to record its process-id in.</dd>
+
+<dt><code>no-hosts?</code> (default: <code>#f</code>)</dt><dd>When true, don't read the hostnames in /etc/hosts.</dd>
+
+<dt><code>port</code> (default: <code>53</code>)</dt><dd>The port to listen on. Setting this to zero completely disables DNS responses, leaving only DHCP and/or TFTP functions.</dd>
+
+<dt><code>local-service?</code> (default: <code>#t</code>)</dt><dd>Accept DNS queries only from hosts whose address is on a local subnet, ie a subnet for which an interface exists on the server.</dd>
+
+<dt><code>listen-addresses</code> (default: <code>'()</code>)</dt><dd>Listen on the given IP addresses.</dd>
+
+<dt><code>resolv-file</code> (default: <code>"/etc/resolv.conf"</code>)</dt><dd>The file to read the IP address of the upstream nameservers from.</dd>
+
+<dt><code>no-resolv?</code> (default: <code>#f</code>)</dt><dd>When true, don't read <code>resolv-file</code>.</dd>
+
+<dt><code>forward-private-reverse-lookup?</code> (default: <code>#t</code>)</dt><dd>When false, all reverse lookups for private IP ranges are answered with "no such domain" rather than being forwarded upstream.</dd>
+
+<dt><code>query-servers-in-order?</code> (default: <code>#f</code>)</dt><dd>When true, dnsmasq queries the servers in the same order as they appear in <code>servers</code>.</dd>
+
+<dt><code>servers</code> (default: <code>'()</code>)</dt><dd>Specify IP address of upstream servers directly.</dd>
+
+<dt><code>servers-file</code> (default: <code>#f</code>)</dt><dd>Specify file containing upstream servers. This file is re-read when dnsmasq receives SIGHUP. Could be either a string or a file-like object.</dd>
+
+<dt><code>addresses</code> (default: <code>'()</code>)</dt><dd><p>
+For each entry, specify an IP address to return for any host in the given domains. Queries in the domains are never forwarded and always replied to with the specified IP address.
+</p>
+
+<p>
+This is useful for redirecting hosts locally, for example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service dnsmasq-service-type
+         (dnsmasq-configuration
+           (addresses
+             '(; Redirect to a local web-server.
+               "/example.org/127.0.0.1"
+               ; Redirect subdomain to a specific IP.
+               "/subdomain.example.org/192.168.1.42"))))
+</pre>
+</div>
+
+<p>
+Note that rules in <code>/etc/hosts</code> take precedence over this.
+</p></dd>
+
+<dt><code>cache-size</code> (default: <code>150</code>)</dt><dd>Set the size of dnsmasq's cache. Setting the cache size to zero disables caching.</dd>
+
+<dt><code>negative-cache?</code> (default: <code>#t</code>)</dt><dd>When false, disable negative caching.</dd>
+
+<dt><code>cpe-id</code> (default: <code>#f</code>)</dt><dd>If set, add a CPE (Customer-Premises Equipment) identifier to DNS queries which are forwarded upstream.</dd>
+
+<dt><code>tftp-enable?</code> (default: <code>#f</code>)</dt><dd>Whether to enable the built-in TFTP server.</dd>
+
+<dt><code>tftp-no-fail?</code> (default: <code>#f</code>)</dt><dd>If true, does not fail dnsmasq if the TFTP server could not start up.</dd>
+
+<dt><code>tftp-single-port?</code> (default: <code>#f</code>)</dt><dd>Whether to use only one single port for TFTP.</dd>
+
+<dt><code>tftp-secure?</code> (default: <code>#f</code>)</dt><dd><p>
+If true, only files owned by the user running the dnsmasq process are accessible.
+</p>
+
+<p>
+If dnsmasq is being run as root, different rules apply: <code>tftp-secure?</code> has no effect, but only files which have the world-readable bit set are accessible.
+</p></dd>
+
+<dt><code>tftp-max</code> (default: <code>#f</code>)</dt><dd>If set, sets the maximal number of concurrent connections allowed.</dd>
+
+<dt><code>tftp-mtu</code> (default: <code>#f</code>)</dt><dd>If set, sets the MTU for TFTP packets to that value.</dd>
+
+<dt><code>tftp-no-blocksize?</code> (default: <code>#f</code>)</dt><dd>If true, stops the TFTP server from negotiating the blocksize with a client.</dd>
+
+<dt><code>tftp-lowercase?</code> (default: <code>#f</code>)</dt><dd>Whether to convert all filenames in TFTP requests to lowercase.</dd>
+
+<dt><code>tftp-port-range</code> (default: <code>#f</code>)</dt><dd>If set, fixes the dynamical ports (one per client) to the given range (<code>"&lt;start&gt;,&lt;end&gt;"</code>).</dd>
+
+<dt><code>tftp-root</code> (default: <code>/var/empty,lo</code>)</dt><dd>Look for files to transfer using TFTP relative to the given directory. When this is set, TFTP paths which include ‘=..=' are rejected, to stop clients getting outside the specified root. Absolute paths (starting with ‘=/=') are allowed, but they must be within the TFTP-root. If the optional interface argument is given, the directory is only used for TFTP requests via that interface.</dd>
+
+<dt><code>tftp-unique-root</code> (default: <code>#f</code>)</dt><dd><p>
+If set, add the IP or hardware address of the TFTP client as a path component on the end of the TFTP-root. Only valid if a TFTP root is set and the directory exists. Defaults to adding IP address (in standard dotted-quad format).
+</p>
+
+<p>
+For instance, if <code>--tftp-root</code> is ‘=/tftp=' and client ‘=1.2.3.4=' requests file <code>myfile</code> then the effective path will be <code>/tftp/1.2.3.4/myfile</code> if <code>/tftp/1.2.3.4</code> exists or <code>/tftp/myfile</code> otherwise. When ‘==mac=' is specified it will append the MAC address instead, using lowercase zero padded digits separated by dashes, e.g.: ‘=01-02-03-04-aa-bb='. Note that resolving MAC addresses is only possible if the client is in the local network or obtained a DHCP lease from dnsmasq.
+</p></dd>
+
+<dt><code>conf-file</code> (default: <code>'()</code>)</dt><dd>File names of configuration files to use. Strings and file-like objects are accepted.</dd>
+
+<dt><code>conf-dir</code> (default: <code>#f</code>)</dt><dd>Read all the files in the given directory as configuration files. Support for <code>dnsmasq</code> field extensions is not implemented; users can use <code>computed-file</code> to build a directory of files instead. The configuration files are loaded in alphabetical order of file name.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>This option provides an “escape hatch” for the user to provide arbitrary command-line arguments to <code>dnsmasq</code> as a list of strings.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Unbound-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="unbound-service"></a>Unbound Service<br />
+<div class="outline-text-5" id="text-unbound-service">
+<dl class="org-dl">
+<dt>Variable: unbound-service-type </dt><dd><p>
+This is the type of the service to run <a href="https://www.unbound.net">Unbound</a>, a validating, recursive, and caching DNS resolver. Its value must be a <code>unbound-configuration</code> object as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service unbound-service-type
+         (unbound-configuration
+          (forward-zone
+           (list
+            (unbound-zone
+             (name ".")
+             (forward-addr '("149.112.112.112#dns.quad9.net"
+                             "2620:fe::9#dns.quad9.net"))
+             (forward-tls-upstream #t))))))
+</pre>
+</div></dd>
+
+<dt>Data Type: unbound-configuration </dt><dd>Available <code>unbound-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>server</code> (type: unbound-server)</dt><dd>General options for the Unbound server.</dd>
+
+<dt><code>remote-control</code> (type: unbound-remote)</dt><dd>Remote control options for the daemon.</dd>
+
+<dt><code>forward-zone</code> (default: <code>()</code>) (type: list-of-unbound-zone)</dt><dd>A zone for which queries should be forwarded to another resolver.</dd>
+
+<dt><code>extra-content</code> (type: maybe-string)</dt><dd>Raw content to add to the configuration file.</dd>
+</dl></dd>
+
+<dt>Data Type: unbound-server </dt><dd>Available <code>unbound-server</code> fields are:
+
+<dl class="org-dl">
+<dt><code>interface</code> (type: maybe-list-of-strings)</dt><dd>Interfaces listened on for queries from clients.</dd>
+
+<dt><code>hide-version</code> (type: maybe-boolean)</dt><dd>Refuse the version.server and version.bind queries.</dd>
+
+<dt><code>hide-identity</code> (type: maybe-boolean)</dt><dd>Refuse the id.server and hostname.bind queries.</dd>
+
+<dt><code>tls-cert-bundle</code> (type: maybe-string)</dt><dd>Certificate bundle file, used for DNS over TLS.</dd>
+
+<dt><code>extra-options</code> (default: <code>()</code>) (type: alist)</dt><dd>An association list of options to append.</dd>
+</dl></dd>
+
+<dt>Data Type: unbound-remote </dt><dd>Available <code>unbound-remote</code> fields are:
+
+<dl class="org-dl">
+<dt><code>control-enable</code> (type: maybe-boolean)</dt><dd>Enable remote control.</dd>
+
+<dt><code>control-interface</code> (type: maybe-string)</dt><dd>IP address or local socket path to listen on for remote control.</dd>
+
+<dt><code>extra-options</code> (default: <code>()</code>) (type: alist)</dt><dd>An association list of options to append.</dd>
+</dl></dd>
+
+<dt>Data Type: unbound-zone </dt><dd>Available <code>unbound-zone</code> fields are:
+
+<dl class="org-dl">
+<dt><code>name</code> (type: string)</dt><dd>Zone name.</dd>
+
+<dt><code>forward-addr</code> (type: maybe-list-of-strings)</dt><dd>IP address of server to forward to.</dd>
+
+<dt><code>forward-tls-upstream</code> (type: maybe-boolean)</dt><dd>Whether the queries to this forwarder use TLS for transport.</dd>
+
+<dt><code>extra-options</code> (default: <code>()</code>) (type: alist)</dt><dd>An association list of options to append.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--VNC-Services.html">VNC Services</a>, Previous: <a href="docs/guix--Certificate-Services.html">Certificate Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

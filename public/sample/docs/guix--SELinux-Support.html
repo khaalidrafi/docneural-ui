@@ -1,0 +1,171 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="SELinux-Support"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--AppArmor-Support.html">AppArmor Support</a>, Previous: <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>, Up: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="SELinux-Support-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="selinux-support"></a>2.2.3 SELinux Support<br />
+<div class="outline-text-5" id="text-selinux-support">
+<p>
+<a id="index-SELinux_002c-daemon-policy"></a> <a id="index-mandatory-access-control_002c-SELinux"></a> <a id="index-security_002c-guix_002ddaemon"></a>
+Guix includes an SELinux policy file at <code>etc/guix-daemon.cil</code> that can be installed on a system where SELinux is enabled, in order to label Guix files and to specify the expected behavior of the daemon. Since Guix System does not provide an SELinux base policy, the daemon policy cannot be used on Guix System.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Installing-the-SELinux-policy"></a>
+</p>
+</div>
+</li>
+<li><a id="installing-the-selinux-policy"></a>2.2.3.1 Installing the SELinux policy<br />
+<div class="outline-text-5" id="text-installing-the-selinux-policy">
+<p>
+<a id="index-SELinux_002c-policy-installation"></a>
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> The <code>guix-install.sh</code> binary installation script offers to perform the steps below for you (see <a href="docs/guix--Binary-Installation.html">Binary Installation</a>).
+</p>
+</blockquote>
+
+<p>
+To install the policy run this command as root:
+</p>
+
+<pre class="example" id="orgd6db52d">
+semodule -i /var/guix/profiles/per-user/root/current-guix/share/selinux/guix-daemon.cil
+</pre>
+
+<p>
+Then, as root, relabel the file system, possibly after making it writable:
+</p>
+
+<pre class="example" id="org1ef721c">
+mount -o remount,rw /gnu/store
+restorecon -R /gnu /var/guix
+</pre>
+
+<p>
+At this point you can start or restart <code>guix-daemon</code>; on a distribution that uses systemd as its service manager, you can do that with:
+</p>
+
+<pre class="example" id="orgf2dad15">
+systemctl restart guix-daemon
+</pre>
+
+<p>
+Once the policy is installed, the file system has been relabeled, and the daemon has been restarted, it should be running in the <code>guix_daemon_t</code> context. You can confirm this with the following command:
+</p>
+
+<pre class="example" id="org2d6cb4a">
+ps -Zax | grep guix-daemon
+</pre>
+
+<p>
+Monitor the SELinux log files as you run a command like <code>guix build hello</code> to convince yourself that SELinux permits all necessary operations.
+</p>
+
+<p>
+<a id="Limitations-1"></a>
+</p>
+</div>
+</li>
+<li><a id="limitations"></a>2.2.3.2 Limitations<br />
+<div class="outline-text-5" id="text-limitations">
+<p>
+<a id="index-SELinux_002c-limitations"></a>
+This policy is not perfect. Here is a list of limitations or quirks that should be considered when deploying the provided SELinux policy for the Guix daemon.
+</p>
+
+<ol class="org-ol">
+<li><code>guix_daemon_socket_t</code> isn't actually used. None of the socket operations involve contexts that have anything to do with <code>guix_daemon_socket_t</code>. It doesn't hurt to have this unused label, but it would be preferable to define socket rules for only this label.</li>
+
+<li><code>guix gc</code> cannot access arbitrary links to profiles. By design, the file label of the destination of a symlink is independent of the file label of the link itself. Although all profiles under <code>$localstatedir</code> are labelled, the links to these profiles inherit the label of the directory they are in. For links in the user's home directory this will be <code>user_home_t</code>. But for links from the root user's home directory, or <code>/tmp</code>, or the HTTP server's working directory, etc, this won't work. <code>guix gc</code> would be prevented from reading and following these links.</li>
+
+<li>The daemon's feature to listen for TCP connections might no longer work. This might require extra rules, because SELinux treats network sockets differently from files.</li>
+
+<li><p>
+Currently all files with a name matching the regular expression <code>/gnu/store/.+-(guix-.+|profile)/bin/guix-daemon</code> are assigned the label <code>guix_daemon_exec_t</code>; this means that <i>any</i> file with that name in any profile would be permitted to run in the <code>guix_daemon_t</code> domain. This is not ideal. An attacker could build a package that provides this executable and convince a user to install and run it, which lifts it into the <code>guix_daemon_t</code> domain. At that point SELinux could not prevent it from accessing files that are allowed for processes in that domain.
+</p>
+
+<p>
+You will need to relabel the store directory after all upgrades to <code>guix-daemon</code>, such as after running <code>guix pull</code>. Assuming the store is in <code>/gnu</code>, you can do this with <code>restorecon -vR /gnu</code>, or by other means provided by your operating system.
+</p>
+
+<p>
+We could generate a much more restrictive policy at installation time, so that only the <i>exact</i> file name of the currently installed <code>guix-daemon</code> executable would be labelled with <code>guix_daemon_exec_t</code>, instead of using a broad regular expression. The downside is that root would have to install or upgrade the policy at installation time whenever the Guix package that provides the effectively running <code>guix-daemon</code> executable is upgraded.
+</p></li>
+</ol>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--AppArmor-Support.html">AppArmor Support</a>, Previous: <a href="docs/guix--Daemon-Offload-Setup.html">Using the Offload Facility</a>, Up: <a href="docs/guix--Setting-Up-the-Daemon.html">Setting Up the Daemon</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

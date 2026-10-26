@@ -1,0 +1,33 @@
+:PROPERTIES:
+:ID: emacs--Org-Mode
+:END:
+#+filetags: :emacs:
+#+title: Org Mode
+
+Next: [[id:emacs--TeX-Mode][TeX Mode]]   Previous: [[id:emacs--Outline-Mode][Outline Mode]]   Up: [[id:emacs--Text][Commands for Human Languages]]
+
+<<Org-Mode>>
+
+--------------
+
+*** 27.10 Org Mode [[#Org-Mode-1][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Org-Mode-1
+:CLASS: section
+:END:
+Org mode is a variant of Outline mode for using Emacs as an organizer and/or authoring system. Files with names ending in the extension =.org= are opened in Org mode (see [[id:emacs--Choosing-Modes][Choosing File Modes]]). To explicitly switch to Org mode, type M-x org-mode.
+
+In Org mode, as in Outline mode, each entry has a heading line that starts with one or more ‘=*=' characters. See [[id:emacs--Outline-Format][Format of Outlines]]. In addition, any line that begins with the ‘=#=' character is treated as a comment.
+
+Org mode provides commands for easily viewing and manipulating the outline structure. The simplest of these commands is TAB (=org-cycle=). If invoked on a heading line, it cycles through the different visibility states of the subtree: (i) showing only that heading line, (ii) showing only the heading line and the heading lines of its direct children, if any, and (iii) showing the entire subtree. If invoked in a body line, the global binding for TAB is executed.
+
+Typing S-TAB (=org-shifttab=) anywhere in an Org mode buffer cycles the visibility of the entire outline structure, between (i) showing only top-level heading lines, (ii) showing all heading lines but no body lines, and (iii) showing everything.
+
+You can move an entire entry up or down in the buffer, including its body lines and subtree (if any), by typing M-UP (=org-metaup=) or M-DOWN (=org-metadown=) on the heading line. Similarly, you can promote or demote a heading line with M-LEFT (=org-metaleft=) and M-RIGHT (=org-metaright=). These commands execute their global bindings if invoked on a body line.
+
+The following subsections give basic instructions for using Org mode as an organizer and as an authoring system. For details, see [[../org_html/index.html#Top][Introduction]] in The Org Manual.
+
+- [[id:emacs--Org-Organizer][Org as an organizer]]
+- [[id:emacs--Org-Authoring][Org as an authoring system]]
+
+--------------

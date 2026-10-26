@@ -1,0 +1,35 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Activating-URLs">1. 48.4 Activating URLs ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--FFAP.html">Finding Files and URLs at Point</a>   Previous: <a href="docs/emacs--Browse_002dURL.html">Following URLs</a>   Up: <a href="docs/emacs--Hyperlinking.html">Hyperlinking and Web Navigation Features</a>
+</p>
+
+<p>
+<a id="Goto-Address-mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Activating-URLs" class="outline-2">
+<h2 id="Activating-URLs"><span class="section-number-2">1.</span> 48.4 Activating URLs <a href="#Activating-URLs">¶</a></h2>
+<div class="outline-text-2" id="text-Activating-URLs">
+<dl class="org-dl">
+<dt>M-x goto-address-mode</dt><dd>Activate URLs and e-mail addresses in the current buffer.</dd>
+
+<dt>M-x global-goto-address-mode</dt><dd>Activate <code>goto-address-mode</code> in all buffers.</dd>
+</dl>
+
+<p>
+You can make Emacs mark out URLs specially in the current buffer, by typing M-x goto-address-mode. When this buffer-local minor mode is enabled, it finds all the URLs in the buffer, highlights them, and turns them into clickable buttons. You can follow the URL by typing C-c RET (<code>goto-address-at-point</code>) while point is on its text; or by clicking with mouse-2, or by clicking mouse-1 quickly (see <a href="docs/emacs--Mouse-References.html">Following References with the Mouse</a>). Following a URL is done by calling <code>browse-url</code> as a subroutine (see <a href="docs/emacs--Browse_002dURL.html">Following URLs</a>).
+</p>
+
+<p>
+It can be useful to add <code>goto-address-mode</code> to mode hooks and hooks for displaying an incoming message (e.g., <code>rmail-show-message-hook</code> for Rmail). This is not needed for Gnus or MH-E, which have similar features of their own.
+</p>
+</div>
+</div>

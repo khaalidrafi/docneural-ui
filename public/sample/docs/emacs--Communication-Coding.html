@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Coding-Systems-for-Interprocess-Communication">1. 24.10 Coding Systems for Interprocess Communication ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--File-Name-Coding.html">Coding Systems for File Names</a>   Previous: <a href="docs/emacs--Text-Coding.html">Specifying a Coding System for File Text</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Communication-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Coding-Systems-for-Interprocess-Communication" class="outline-2">
+<h2 id="Coding-Systems-for-Interprocess-Communication"><span class="section-number-2">1.</span> 24.10 Coding Systems for Interprocess Communication <a href="#Coding-Systems-for-Interprocess-Communication">¶</a></h2>
+<div class="outline-text-2" id="text-Coding-Systems-for-Interprocess-Communication">
+<p>
+This section explains how to specify coding systems for use in communication with other processes.
+</p>
+
+<dl class="org-dl">
+<dt>C-x RET x <code>coding</code> RET</dt><dd>Use coding system <code>coding</code> for transferring selections to and from other graphical applications (<code>set-selection-coding-system</code>).</dd>
+
+<dt>C-x RET X <code>coding</code> RET</dt><dd>Use coding system <code>coding</code> for transferring <i>one</i> selection&#x2014;the next one&#x2014;to or from another graphical application (<code>set-next-selection-coding-system</code>).</dd>
+
+<dt>C-x RET p <code>input-coding</code> RET <code>output-coding</code> RET</dt><dd>Use coding systems <code>input-coding</code> and <code>output-coding</code> for subprocess input and output in the current buffer (<code>set-buffer-process-coding-system</code>).</dd>
+</dl>
+
+<p>
+The command C-x RET x (<code>set-selection-coding-system</code>) specifies the coding system for sending selected text to other windowing applications, and for receiving the text of selections made in other applications. This command applies to all subsequent selections, until you override it by using the command again. The command C-x RET X (<code>set-next-selection-coding-system</code>) specifies the coding system for the next selection made in Emacs or read by Emacs.
+</p>
+
+<p>
+The variable <code>x-select-request-type</code> specifies the data type to request from the X Window System for receiving text selections from other applications. If the value is <code>nil</code> (the default), Emacs tries <code>UTF8_STRING</code> and <code>COMPOUND_TEXT</code>, in this order, and uses various heuristics to choose the more appropriate of the two results; if none of these succeed, Emacs falls back on <code>STRING</code>. If the value of <code>x-select-request-type</code> is one of the symbols <code>COMPOUND_TEXT</code>, <code>UTF8_STRING</code>, <code>STRING</code>, or <code>TEXT</code>, Emacs uses only that request type. If the value is a list of some of these symbols, Emacs tries only the request types in the list, in order, until one of them succeeds, or until the list is exhausted.
+</p>
+
+<p>
+The command C-x RET p (<code>set-buffer-process-coding-system</code>) specifies the coding system for input and output to a subprocess. This command applies to the current buffer; normally, each subprocess has its own buffer, and thus you can use this command to specify translation to and from a particular subprocess by giving the command in the corresponding buffer.
+</p>
+
+<p>
+You can also use C-x RET c (<code>universal-coding-system-argument</code>) just before the command that runs or starts a subprocess, to specify the coding system for communicating with that subprocess. See <a href="docs/emacs--Text-Coding.html">Specifying a Coding System for File Text</a>.
+</p>
+
+<p>
+The default for translation of process input and output depends on the current language environment.
+</p>
+
+<p>
+The variable <code>locale-coding-system</code> specifies a coding system to use when encoding and decoding system strings such as system error messages and <code>format-time-string</code> formats and time stamps. That coding system might also be used for decoding non-ASCII keyboard input on the X Window System and will also be used to encode text sent to the standard output and error streams in batch mode. You should choose a coding system that is compatible with the underlying system's text representation, which is normally specified by one of the environment variables <code>LC_ALL</code>, <code>LC_CTYPE</code>, and <code>LANG</code>. (The first one, in the order specified above, whose value is nonempty is the one that determines the text representation.)
+</p>
+
+<hr />
+</div>
+</div>

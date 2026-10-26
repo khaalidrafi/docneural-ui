@@ -1,0 +1,29 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#DocView-Conversion-1">1. 39.4 DocView Conversion ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--DocView-Slicing.html">DocView Slicing</a>   Up: <a href="docs/emacs--Document-View.html">Document Viewing</a>
+</p>
+
+<p>
+<a id="DocView-Conversion"></a>
+</p>
+
+<hr />
+<div id="outline-container-DocView-Conversion-1" class="outline-2">
+<h2 id="DocView-Conversion-1"><span class="section-number-2">1.</span> 39.4 DocView Conversion <a href="#DocView-Conversion-1">¶</a></h2>
+<div class="outline-text-2" id="text-DocView-Conversion-1">
+<p>
+For efficiency, DocView caches the images produced by <code>gs</code>. The name of the directory where it caches images is given by the variable <code>doc-view-cache-directory</code>. You can clear the cache directory by typing M-x doc-view-clear-cache.
+</p>
+
+<p>
+To force reconversion of the currently viewed document, type r or g (<code>revert-buffer</code>). To kill the converter process associated with the current buffer, type K (<code>doc-view-kill-proc</code>). The command k (<code>doc-view-kill-proc-and-buffer</code>) kills the converter process and the DocView buffer.
+</p>
+</div>
+</div>

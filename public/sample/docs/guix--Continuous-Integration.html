@@ -1,0 +1,407 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Continuous-Integration"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Power-Management-Services.html">Power Management Services</a>, Previous: <a href="docs/guix--Samba-Services.html">Samba Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Continuous-Integration-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="continuous-integration"></a>11.10.28 Continuous Integration<br />
+<div class="outline-text-5" id="text-continuous-integration">
+<p>
+<a id="index-continuous-integration-1"></a>
+<a href="https://guix.gnu.org/cuirass/">Cuirass</a> is a continuous integration tool for Guix. It can be used both for development and for providing substitutes to others (see <a href="docs/guix--Substitutes.html">Substitutes</a>).
+</p>
+
+<p>
+The <code>(gnu services cuirass)</code> module provides the following service.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: cuirass-service-type </dt><dd>The type of the Cuirass service. Its value must be a <code>cuirass-configuration</code> object, as described below.</dd>
+</dl>
+
+<p>
+To add build jobs, you have to set the <code>specifications</code> field of the configuration. For instance, the following example will build all the packages provided by the <code>my-channel</code> channel.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define %cuirass-specs
+  #~(list (specification
+           (name 'my-channel)
+           (build '(channels my-channel))
+           (channels
+            (cons (channel
+                   (name 'my-channel)
+                   (url "https://my-channel.git"))
+                  %default-channels)))))
+
+(service cuirass-service-type
+         (cuirass-configuration
+          (specifications %cuirass-specs)))
+</pre>
+</div>
+
+<p>
+To build the <code>linux-libre</code> package defined by the default Guix channel, one can use the following configuration.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define %cuirass-specs
+  #~(list (specification
+           (name 'my-linux)
+           (build '(packages "linux-libre")))))
+
+(service cuirass-service-type
+         (cuirass-configuration
+          (specifications %cuirass-specs)))
+</pre>
+</div>
+
+<p>
+The other configuration possibilities, as well as the specification record itself are described in the Cuirass manual (see <a href="https://www.gnu.org/software/guix/cuirass/manual/html_node/Specifications.html#Specifications">Specifications</a> in Cuirass).
+</p>
+
+<p>
+While information related to build jobs is located directly in the specifications, global settings for the <code>cuirass</code> process are accessible in other <code>cuirass-configuration</code> fields.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: cuirass-configuration </dt><dd>Data type representing the configuration of Cuirass.
+
+<dl class="org-dl">
+<dt><code>cuirass</code> (default: <code>cuirass</code>)</dt><dd>The Cuirass package to use.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/cuirass.log"</code>)</dt><dd>Location of the log file.</dd>
+
+<dt><code>web-log-file</code> (default: <code>"/var/log/cuirass-web.log"</code>)</dt><dd>Location of the log file used by the web interface.</dd>
+
+<dt><code>cache-directory</code> (default: <code>"/var/cache/cuirass"</code>)</dt><dd>Location of the repository cache.</dd>
+
+<dt><code>user</code> (default: <code>"cuirass"</code>)</dt><dd>Owner of the <code>cuirass</code> process.</dd>
+
+<dt><code>group</code> (default: <code>"cuirass"</code>)</dt><dd>Owner's group of the <code>cuirass</code> process.</dd>
+
+<dt><code>interval</code> (default: <code>300</code>)</dt><dd><p>
+Number of seconds between the poll of the repositories followed by the Cuirass jobs, by default.
+</p>
+
+<p>
+Note that individual jobset specifications may override this in their <code>period</code> field; the value specified here is only used for specifications that use the default <code>period</code> value, which is zero.
+</p></dd>
+
+<dt><code>parallel-evaluations</code> (default: <code>#f</code>)</dt><dd>Maximum number of jobset evaluations that may run concurrently. If <code>#f</code>, that number is determined based on a number of CPU cores, with an upper bound of 8.</dd>
+
+<dt><code>ttl</code> (default: <code>2592000</code>)</dt><dd>Duration to keep build results' GC roots alive, in seconds.</dd>
+
+<dt><code>evaluation-ttl</code> (default: 24 months)</dt><dd>Number of seconds after which an evaluation may be deleted from the database.</dd>
+
+<dt><code>build-expiry</code> (default: 4 months)</dt><dd>Duration in seconds after which pending builds are canceled. This helps ensure that the backlog does not grow indefinitely.</dd>
+
+<dt>(no term)</dt><dd><code>threads</code> (default: <code>#f</code>)<br />
+<code>web-threads</code> (default: <code>#f</code>) :: Number of kernel threads to use for Cuirass (main process) and for the web interface (the <code>cuirass web</code> program). The default value should be appropriate for most cases.</dd>
+
+<dt><code>parameters</code> (default: <code>#f</code>)</dt><dd>Read parameters from the given <code>parameters</code> file. The supported parameters are described here (see <a href="https://www.gnu.org/software/guix/cuirass/manual/html_node/Parameters.html#Parameters">Parameters</a> in Cuirass).</dd>
+
+<dt><code>remote-server</code> (default: <code>#f</code>)</dt><dd>A <code>cuirass-remote-server-configuration</code> record to use the build remote mechanism or <code>#f</code> to use the default build mechanism.</dd>
+
+<dt><code>database</code> (default: <code>"dbname=cuirass host=/var/run/postgresql"</code>)</dt><dd>Use <code>database</code> as the database containing the jobs and the past build results. Since Cuirass uses PostgreSQL as a database engine, <code>database</code> must be a string such as <code>"dbname=cuirass host=localhost"</code>.</dd>
+
+<dt><code>port</code> (default: <code>8081</code>)</dt><dd>Port number used by the HTTP server.</dd>
+
+<dt><code>host</code> (default: <code>"localhost"</code>)</dt><dd>Listen on the network interface for <code>host</code>. The default is to accept connections from localhost.</dd>
+
+<dt><code>specifications</code> (default: <code>#~'()</code>)</dt><dd>A gexp (see <a href="docs/guix--G_002dExpressions.html">G-Expressions</a>) that evaluates to a list of specifications records. The specification record is described in the Cuirass manual (see <a href="https://www.gnu.org/software/guix/cuirass/manual/html_node/Specifications.html#Specifications">Specifications</a> in Cuirass).</dd>
+
+<dt><code>one-shot?</code> (default: <code>#f</code>)</dt><dd>Only evaluate specifications and build derivations once.</dd>
+
+<dt><code>fallback?</code> (default: <code>#f</code>)</dt><dd>When substituting a pre-built binary fails, fall back to building packages locally.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options to pass when running the <code>cuirass register</code> process.</dd>
+
+<dt><code>web-extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options to pass when running the <code>cuirass web</code> process.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-remote-build"></a> <a id="Cuirass-remote-building"></a>
+</p>
+</div>
+</li>
+<li><a id="cuirass-remote-building"></a>Cuirass remote building<br />
+<div class="outline-text-5" id="text-cuirass-remote-building">
+<p>
+Cuirass supports two mechanisms to build derivations.
+</p>
+
+<ul class="org-ul">
+<li>Using the local Guix daemon. This is the default build mechanism. Once the build jobs are evaluated, they are sent to the local Guix daemon. Cuirass then listens to the Guix daemon output to detect the various build events.</li>
+<li>Using the remote build mechanism. The build jobs are not submitted to the local Guix daemon. Instead, a remote server dispatches build requests to the connect remote workers, according to the build priorities.</li>
+</ul>
+
+<p>
+To enable this build mode a <code>cuirass-remote-server-configuration</code> record must be passed as <code>remote-server</code> argument of the <code>cuirass-configuration</code> record. The <code>cuirass-remote-server-configuration</code> record is described below.
+</p>
+
+<p>
+This build mode scales way better than the default build mode. This is the build mode that is used on the GNU Guix build farm at <a href="https://ci.guix.gnu.org">https://ci.guix.gnu.org</a>. It should be preferred when using Cuirass to build large amount of packages.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: cuirass-remote-server-configuration </dt><dd>Data type representing the configuration of the Cuirass remote-server.
+
+<dl class="org-dl">
+<dt><code>backend-port</code> (default: <code>5555</code>)</dt><dd>The TCP port for communicating with <code>remote-worker</code> processes using ZMQ. It defaults to <code>5555</code>.</dd>
+
+<dt><code>log-port</code> (default: <code>5556</code>)</dt><dd>The TCP port of the log server. It defaults to <code>5556</code>.</dd>
+
+<dt><code>publish-port</code> (default: <code>5557</code>)</dt><dd>The TCP port of the publish server. It defaults to <code>5557</code>.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/cuirass-remote-server.log"</code>)</dt><dd>Location of the log file.</dd>
+
+<dt><code>cache</code> (default: <code>"/var/cache/cuirass/remote"</code>)</dt><dd>Use <code>cache</code> directory to cache build log files.</dd>
+
+<dt><code>log-expiry</code> (default: 6 months)</dt><dd>The duration in seconds after which build logs collected by <code>cuirass remote-worker</code> may be deleted.</dd>
+
+<dt><code>trigger-url</code> (default: <code>#f</code>)</dt><dd>Once a substitute is successfully fetched, trigger substitute baking at <code>trigger-url</code>.</dd>
+
+<dt><code>publish?</code> (default: <code>#t</code>)</dt><dd>If set to false, do not start a publish server and ignore the <code>publish-port</code> argument. This can be useful if there is already a standalone publish server standing next to the remote server.</dd>
+
+<dt>(no term)</dt><dd><code>public-key</code><br />
+<code>private-key</code> :: Use the specific =file=s as the public/private key pair used to sign the store items being published.</dd>
+</dl></dd>
+</dl>
+
+<p>
+At least one remote worker must also be started on any machine of the local network to actually perform the builds and report their status.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: cuirass-remote-worker-configuration </dt><dd>Data type representing the configuration of the Cuirass remote-worker.
+
+<dl class="org-dl">
+<dt><code>cuirass</code> (default: <code>cuirass</code>)</dt><dd>The Cuirass package to use.</dd>
+
+<dt><code>workers</code> (default: <code>1</code>)</dt><dd>Start <code>workers</code> parallel workers.</dd>
+
+<dt><code>server</code> (default: <code>#f</code>)</dt><dd>Do not use Avahi discovery and connect to the given <code>server</code> IP address instead.</dd>
+
+<dt><code>systems</code> (default: <code>(list (%current-system))</code>)</dt><dd>Only request builds for the given <code>systems</code>.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/cuirass-remote-worker.log"</code>)</dt><dd>Location of the log file.</dd>
+
+<dt><code>publish-port</code> (default: <code>5558</code>)</dt><dd>The TCP port of the publish server. It defaults to <code>5558</code>.</dd>
+
+<dt><code>substitute-urls</code> (default: <code>%default-substitute-urls</code>)</dt><dd>The list of URLs where to look for substitutes by default.</dd>
+
+<dt>(no term)</dt><dd><code>public-key</code><br />
+<code>private-key</code> :: Use the specific =file=s as the public/private key pair used to sign the store items being published.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Laminar"></a>
+</p>
+</div>
+</li>
+<li><a id="laminar"></a>Laminar<br />
+<div class="outline-text-5" id="text-laminar">
+<p>
+<a href="https://laminar.ohwg.net/">Laminar</a> is a lightweight and modular Continuous Integration service. It doesn't have a configuration web UI instead uses version-controllable configuration files and scripts.
+</p>
+
+<p>
+Laminar encourages the use of existing tools such as bash and cron instead of reinventing them.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: laminar-service-type </dt><dd><p>
+The type of the Laminar service. Its value must be a <code>laminar-configuration</code> object, as described below.
+</p>
+
+<p>
+All configuration values have defaults, a minimal configuration to get Laminar running is shown below. By default, the web interface is available on port 8080.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service laminar-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: laminar-configuration </dt><dd>Data type representing the configuration of Laminar.
+
+<dl class="org-dl">
+<dt><code>laminar</code> (default: <code>laminar</code>)</dt><dd>The Laminar package to use.</dd>
+
+<dt><code>home-directory</code> (default: <code>"/var/lib/laminar"</code>)</dt><dd>The directory for job configurations and run directories.</dd>
+
+<dt><code>supplementary-groups</code> (default: <code>()</code>)</dt><dd>Supplementary groups for the Laminar user account.</dd>
+
+<dt><code>bind-http</code> (default: <code>"*:8080"</code>)</dt><dd>The interface/port or unix socket on which laminard should listen for incoming connections to the web frontend.</dd>
+
+<dt><code>bind-rpc</code> (default: <code>"unix-abstract:laminar"</code>)</dt><dd>The interface/port or unix socket on which laminard should listen for incoming commands such as build triggers.</dd>
+
+<dt><code>title</code> (default: <code>"Laminar"</code>)</dt><dd>The page title to show in the web frontend.</dd>
+
+<dt><code>keep-rundirs</code> (default: <code>0</code>)</dt><dd>Set to an integer defining how many rundirs to keep per job. The lowest-numbered ones will be deleted. The default is 0, meaning all run dirs will be immediately deleted.</dd>
+
+<dt><code>archive-url</code> (default: <code>#f</code>)</dt><dd>The web frontend served by laminard will use this URL to form links to artefacts archived jobs.</dd>
+
+<dt><code>base-url</code> (default: <code>#f</code>)</dt><dd>Base URL to use for links to laminar itself.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Forgejo-Runner"></a>
+</p>
+</div>
+</li>
+<li><a id="forgejo-runner"></a>Forgejo Runner<br />
+<div class="outline-text-5" id="text-forgejo-runner">
+<p>
+<a id="index-continuous-integration_002c-Forgejo"></a> <a id="index-Forgejo_002c-continuous-integration"></a>
+The <code>(gnu services ci)</code> also provides a service for <a href="https://code.forgejo.org/forgejo/runner">Forgejo Runner</a>, a daemon that connects to an instance of the <a href="https://forgejo.org">Forgejo code collaboration tool</a> and runs jobs for continuous integration.
+</p>
+
+<p>
+A minimal configuration mostly with default values that can be added to the <code>services</code> field of your operating system looks like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service forgejo-runner-service-type
+         (forgejo-runner-configuration
+          (name "my-runner")
+          (labels '("guix" "linux"))))
+</pre>
+</div>
+
+<p>
+This provides a <code>forgejo-runner</code> Shepherd service. That service will initially fail to start; you will have to manually <i>register</i> the runner against the Forgejo server by running a command like:
+</p>
+
+<pre class="example" id="org2f50ecf">
+herd register forgejo-runner url token
+</pre>
+
+<p>
+&#x2026; where the arguments are as follows:
+</p>
+
+<dl class="org-dl">
+<dt><code>url</code></dt><dd>the URL of the Forgejo server&#x2014;e.g., ‘=<a href="https://codeberg.org">https://codeberg.org</a>=';</dd>
+
+<dt><code>token</code></dt><dd>an access token <a href="https://forgejo.org/docs/latest/admin/runner-installation/#standard-registration">provided by the Forgejo server</a>.</dd>
+</dl>
+
+<p>
+Once registration has succeeded, you can start the runner:
+</p>
+
+<pre class="example" id="org5377882">
+herd enable forgejo-runner
+herd start forgejo-runner
+</pre>
+
+<p>
+The runner then receives orders from the Forgejo server to execute <i>actions</i>. Actions are commands and workflows specified by YAML files in the <code>.forgejo/workflows</code> directory of source code repositories&#x2014;see <a href="https://forgejo.org/docs/v7.0/user/actions/">the Forgejo Action documentation</a> for more info.
+</p>
+
+<p>
+Note that at the moment <code>forgejo-runner-service-type</code> lets you run only one runner. Details about the configuration of this service follow.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: forgejo-runner-service-type </dt><dd>This is the service type for Forgejo Runner. Its value must be a <code>forgejo-runner-configuration</code> record, documented below.</dd>
+
+<dt>Data Type: forgejo-runner-configuration </dt><dd>This data type represents the configuration of an instance of <code>forgejo-runner-service-type</code>. It contains the following fields:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>forgejo-runner</code>)</dt><dd>The Forgejo Runner package to use.</dd>
+
+<dt><code>name</code> (default: <code>#~(gethostname)</code>)</dt><dd>Name of the runner as will be shown in the runner management interface of Forgejo.</dd>
+
+<dt><code>labels</code> (default: <code>'("guix")</code>)</dt><dd>List of <a href="https://forgejo.org/docs/latest/admin/actions/#choosing-labels">labels</a> representing the type of environment the runner provides and that actions may refer to.</dd>
+
+<dt><code>capacity</code> (default: <code>1</code>)</dt><dd>Number of tasks to be executed concurrently.</dd>
+
+<dt><code>timeout</code> (default: <code>(* 3 3600)</code>)</dt><dd>Maximum duration of a job, in seconds.</dd>
+
+<dt><code>fetch-timeout</code> (default: <code>5</code>)</dt><dd>Maximum duration for fetching the job from the Forgejo server, in seconds.</dd>
+
+<dt><code>fetch-interval</code> (default: <code>2</code>)</dt><dd>Interval (in seconds) for fetching the job from the Forgejo server.</dd>
+
+<dt><code>report-interval</code> (default: <code>1</code>)</dt><dd>Interval (in seconds) for reporting the job status and log to the Forgejo server.</dd>
+
+<dt><code>data-directory</code> (default: <code>"/var/lib/forgejo-runner"</code>)</dt><dd>Directory where <code>forgejo-runner</code> will store persistent data such as its configuration and access token.</dd>
+
+<dt><code>run-directory</code> (default: <code>"/var/run/forgejo-runner"</code>)</dt><dd>Directory where <code>forgejo-runner</code> stores cached data.</dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/forgejo-runner.log"</code>)</dt><dd>Name of the <code>forgejo-runner</code> log file.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Power-Management-Services.html">Power Management Services</a>, Previous: <a href="docs/guix--Samba-Services.html">Samba Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

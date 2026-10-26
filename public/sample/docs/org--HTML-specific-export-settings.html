@@ -1,0 +1,66 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#HTML-specific-export-settings-1">1. 13.9.2 HTML specific export settings ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="HTML-specific-export-settings"></a>
+Next: <a href="docs/org--HTML-doctypes.html">HTML doctypes</a>, Previous: <a href="docs/org--HTML-export-commands.html">HTML export commands</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-HTML-specific-export-settings-1" class="outline-2">
+<h2 id="HTML-specific-export-settings-1"><span class="section-number-2">1.</span> 13.9.2 HTML specific export settings <a href="#HTML-specific-export-settings-1">¶</a></h2>
+<div class="outline-text-2" id="text-HTML-specific-export-settings-1">
+<p>
+HTML export has a number of keywords, similar to the general options settings described in <a href="docs/org--Export-Settings.html">Export Settings</a>.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-DESCRIPTION_002c-keyword-1"></a>‘=DESCRIPTION=' </dt><dd><p>
+This is the document's description, which the HTML exporter inserts it as an HTML meta tag in the HTML file. For long descriptions, use multiple ‘=DESCRIPTION=' lines. The exporter takes care of wrapping the lines properly.
+</p>
+
+<p>
+The exporter includes a number of other meta tags, which can be customized by modifying <code>org-html-meta-tags</code>.
+</p></dd>
+
+<dt><a id="index-HTML_005fDOCTYPE_002c-keyword"></a>‘=HTML<sub>DOCTYPE</sub>=' </dt><dd>Specify the document type, for example: HTML5 (<code>org-html-doctype</code>).</dd>
+
+<dt><a id="index-HTML_005fCONTAINER_002c-keyword"></a>‘=HTML<sub>CONTAINER</sub>=' </dt><dd>Specify the HTML container, such as ‘=div=', for wrapping sections and elements (<code>org-html-container-element</code>).</dd>
+
+<dt><a id="index-HTML_005fLINK_005fHOME_002c-keyword"></a>‘=HTML<sub>LINK</sub><sub>HOME</sub>=' </dt><dd>The URL for home link (<code>org-html-link-home</code>).</dd>
+
+<dt><a id="index-HTML_005fLINK_005fUP_002c-keyword"></a>‘=HTML<sub>LINK</sub><sub>UP</sub>=' </dt><dd>The URL for the up link of exported HTML pages (<code>org-html-link-up</code>).</dd>
+
+<dt><a id="index-HTML_005fMATHJAX_002c-keyword"></a>‘=HTML<sub>MATHJAX</sub>=' </dt><dd>Options for MathJax (<code>org-html-mathjax-options</code>). MathJax is used to typeset LaTeX math in HTML documents. See <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>, for an example.</dd>
+
+<dt><a id="index-HTML_005fHEAD_002c-keyword"></a>‘=HTML<sub>HEAD</sub>=' </dt><dd>Arbitrary lines for appending to the HTML document's head (<code>org-html-head</code>).</dd>
+
+<dt><a id="index-HTML_005fHEAD_005fEXTRA_002c-keyword"></a>‘=HTML<sub>HEAD</sub><sub>EXTRA</sub>=' </dt><dd>More arbitrary lines for appending to the HTML document's head (<code>org-html-head-extra</code>).</dd>
+
+<dt><a id="index-KEYWORDS_002c-keyword-1"></a>‘=KEYWORDS=' </dt><dd>Keywords to describe the document's content. HTML exporter inserts these keywords as HTML meta tags. For long keywords, use multiple ‘=KEYWORDS=' lines.</dd>
+
+<dt><a id="index-LATEX_005fHEADER_002c-keyword"></a>‘=LATEX<sub>HEADER</sub>=' </dt><dd>Arbitrary lines for appending to the preamble; HTML exporter appends when transcoding LaTeX fragments to images (see <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>).</dd>
+
+<dt><a id="index-SUBTITLE_002c-keyword-2"></a>‘=SUBTITLE=' </dt><dd>The document's subtitle. HTML exporter formats subtitle if document type is ‘=HTML5=' and the CSS has a ‘=subtitle=' class.</dd>
+</dl>
+
+<p>
+Some of these keywords are explained in more detail in the following sections of the manual.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--HTML-doctypes.html">HTML doctypes</a>, Previous: <a href="docs/org--HTML-export-commands.html">HTML export commands</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

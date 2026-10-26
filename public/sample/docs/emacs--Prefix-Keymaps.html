@@ -1,0 +1,48 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Prefix-Keymaps-1">1. 51.3.2 Prefix Keymaps ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Local-Keymaps.html">Local Keymaps</a>   Previous: <a href="docs/emacs--Keymaps.html">Keymaps</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Prefix-Keymaps"></a>
+</p>
+
+<hr />
+<div id="outline-container-Prefix-Keymaps-1" class="outline-2">
+<h2 id="Prefix-Keymaps-1"><span class="section-number-2">1.</span> 51.3.2 Prefix Keymaps <a href="#Prefix-Keymaps-1">¶</a></h2>
+<div class="outline-text-2" id="text-Prefix-Keymaps-1">
+<p>
+Internally, Emacs records only single events in each keymap. Interpreting a key sequence of multiple events involves a chain of keymaps: the first keymap gives a definition for the first event, which is another keymap, which is used to look up the second event in the sequence, and so on. Thus, a prefix key such as C-x or ESC has its own keymap, which holds the definition for the event that immediately follows that prefix.
+</p>
+
+<p>
+The definition of a prefix key is usually the keymap to use for looking up the following event. The definition can also be a Lisp symbol whose function definition is the following keymap; the effect is the same, but it provides a command name for the prefix key that can be used as a description of what the prefix key is for. Thus, the binding of C-x is the symbol <code>Control-X-prefix</code>, whose function definition is the keymap for C-x commands. The definitions of C-c, C-x, C-h, and ESC as prefix keys appear in the global map, so these prefix keys are always available.
+</p>
+
+<p>
+Aside from ordinary prefix keys, there is a fictitious “prefix key” which represents the menu bar; see <a href="../elisp_html/Menu-Bar.html#Menu-Bar">Menu Bar</a> in The Emacs Lisp Reference Manual, for special information about menu bar key bindings. Mouse button events that invoke pop-up menus are also prefix keys; see <a href="../elisp_html/Menu-Keymaps.html#Menu-Keymaps">Menu Keymaps</a> in The Emacs Lisp Reference Manual, for more details.
+</p>
+
+<p>
+Some prefix keymaps are stored in variables with names:
+</p>
+
+<ul class="org-ul">
+<li><code>ctl-x-map</code> is the variable name for the map used for characters that follow C-x.</li>
+<li><code>help-map</code> is for characters that follow C-h.</li>
+<li><code>esc-map</code> is for characters that follow ESC. Thus, all Meta characters are actually defined by this map.</li>
+<li><code>ctl-x-4-map</code> is for characters that follow C-x 4.</li>
+<li><code>mode-specific-map</code> is for characters that follow C-c.</li>
+<li><code>project-prefix-map</code> is for characters that follow C-x p, used for project-related commands (see <a href="docs/emacs--Projects.html">Working with Projects</a>).</li>
+</ul>
+
+<hr />
+</div>
+</div>

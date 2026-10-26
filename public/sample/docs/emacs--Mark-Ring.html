@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Mark-Ring">1. 13.4 The Mark Ring ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Global-Mark-Ring.html">The Global Mark Ring</a>   Previous: <a href="docs/emacs--Using-Region.html">Operating on the Region</a>   Up: <a href="docs/emacs--Mark.html">The Mark and the Region</a>
+</p>
+
+<p>
+<a id="Mark-Ring"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Mark-Ring" class="outline-2">
+<h2 id="The-Mark-Ring"><span class="section-number-2">1.</span> 13.4 The Mark Ring <a href="#The-Mark-Ring">¶</a></h2>
+<div class="outline-text-2" id="text-The-Mark-Ring">
+<p>
+Each buffer remembers previous locations of the mark, in the <i>mark ring</i>. Commands that set the mark also push the old mark onto this ring. One of the uses of the mark ring is to remember spots that you may want to go back to.
+</p>
+
+<dl class="org-dl">
+<dt>C-SPC C-SPC</dt><dd>Set the mark, pushing it onto the mark ring, without activating it.</dd>
+
+<dt>C-u C-SPC</dt><dd>Move point to where the mark was, and restore the mark from the ring of former marks.</dd>
+</dl>
+
+<p>
+The command C-SPC C-SPC is handy when you want to use the mark to remember a position to which you may wish to return. It pushes the current point onto the mark ring, without activating the mark (which would cause Emacs to highlight the region). This is actually two consecutive invocations of C-SPC (<code>set-mark-command</code>); the first C-SPC sets the mark, and the second C-SPC deactivates it. (When Transient Mark mode is off, C-SPC C-SPC instead activates Transient Mark mode temporarily; see <a href="docs/emacs--Disabled-Transient-Mark.html">Disabling Transient Mark Mode</a>.)
+</p>
+
+<p>
+To return to a marked position, use <code>set-mark-command</code> with a prefix argument: C-u C-SPC. This moves point to where the mark was, and deactivates the mark if it was active. Each subsequent C-u C-SPC jumps to a prior position stored in the mark ring. The positions you move through in this way are not lost; they go to the end of the ring.
+</p>
+
+<p>
+If you set <code>set-mark-command-repeat-pop</code> to non-<code>nil</code>, then immediately after you type C-u C-SPC, you can type C-SPC instead of C-u C-SPC to cycle through the mark ring. By default, <code>set-mark-command-repeat-pop</code> is <code>nil</code>.
+</p>
+
+<p>
+Each buffer has its own mark ring. All editing commands use the current buffer's mark ring. In particular, C-u C-SPC always stays in the same buffer.
+</p>
+
+<p>
+The variable <code>mark-ring-max</code> specifies the maximum number of entries to keep in the mark ring. This defaults to 16 entries. If that many entries exist and another one is pushed, the earliest one in the list is discarded. Repeating C-u C-SPC cycles through the positions currently in the ring.
+</p>
+
+<p>
+If you want to move back to the same place over and over, the mark ring may not be convenient enough. If so, you can record the position in a register for later retrieval (see <a href="docs/emacs--Position-Registers.html">Saving Positions in Registers</a>).
+</p>
+
+<hr />
+</div>
+</div>

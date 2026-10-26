@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Repeating-Incremental-Search">1. 17.1.2 Repeating Incremental Search ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Isearch-Yank.html">Isearch Yanking</a>   Previous: <a href="docs/emacs--Basic-Isearch.html">Basics of Incremental Search</a>   Up: <a href="docs/emacs--Incremental-Search.html">Incremental Search</a>
+</p>
+
+<p>
+<a id="Repeat-Isearch"></a>
+</p>
+
+<hr />
+<div id="outline-container-Repeating-Incremental-Search" class="outline-2">
+<h2 id="Repeating-Incremental-Search"><span class="section-number-2">1.</span> 17.1.2 Repeating Incremental Search <a href="#Repeating-Incremental-Search">¶</a></h2>
+<div class="outline-text-2" id="text-Repeating-Incremental-Search">
+<p>
+Suppose you search forward for ‘=FOO=' and find a match, but not the one you expected to find: the ‘=FOO=' you were aiming for occurs later in the buffer. In this event, type another C-s (<code>isearch-repeat-forward</code>) to move to the next occurrence of the search string, or C-r (<code>isearch-repeat-backward</code>) to move to the previous occurrence. You can repeat these commands any number of times. Alternatively, you can supply a numeric prefix argument of <code>n</code> to C-s and C-r to find the <code>n=th next or previous occurrence. If you overshoot, you can cancel some C-s commands with DEL. Similarly, each C-r (=isearch-repeat-backward</code>) in a backward incremental search repeats the backward search.
+</p>
+
+<p>
+If you pause for a little while during incremental search, Emacs highlights all the other possible matches for the search string that are present on the screen. This helps you anticipate where you can get to by typing C-s or C-r to repeat the search. The other matches are highlighted differently from the current match, using the customizable face <code>lazy-highlight</code> (see <a href="docs/emacs--Faces.html">Text Faces</a>). If you don't like this feature, you can disable it by setting <code>isearch-lazy-highlight</code> to <code>nil</code>. For other customizations related to highlighting matches, see <a href="docs/emacs--Search-Customizations.html">Tailoring Search to Your Needs</a>.
+</p>
+
+<p>
+After exiting a search, you can search for the same string again by typing just C-s C-s. The first C-s is the key that invokes incremental search, and the second C-s means to search again for the last search string. Similarly, C-r C-r searches backward for the last search string. In determining the last search string, it doesn't matter whether that string was searched for with C-s or C-r.
+</p>
+
+<p>
+If you are searching forward but you realize you were looking for something before the starting point, type C-r to switch to a backward search, leaving the search string unchanged. Similarly, C-s in a backward search switches to a forward search.
+</p>
+
+<p>
+When you change the direction of a search, the first command you type will, by default, remain on the same match, and the cursor will move to the other end of the match. To move to another match immediately, customize the variable <code>isearch-repeat-on-direction-change</code> to <code>t</code>.
+</p>
+
+<p>
+If a search is failing and you ask to repeat it by typing another C-s, it starts again from the beginning of the buffer. Repeating a failing reverse search with C-r starts again from the end. This is called <i>wrapping around</i>, and ‘=Wrapped=' appears in the search prompt once this has happened. If you keep on going past the original starting point of the search, it changes to ‘=Overwrapped=', which means that you are revisiting matches that you have already seen.
+</p>
+
+<p>
+You can control what happens when there are no more matches by customizing the <code>isearch-wrap-pause</code> user option. If it is <code>t</code> (the default), signal an error. (Repeating the search will wrap around.) If <code>no</code>, issue a <code>ding</code> and wrap immediately after reaching the last match. If <code>no-ding</code>, wrap immediately, but don't <code>ding</code>. With the values <code>no</code> and <code>no-ding</code> the search will try to wrap around also on typing a character. Finally, if <code>nil</code>, never wrap, but just stop at the last match.
+</p>
+
+<p>
+To reuse earlier search strings, use the <i>search ring</i>. The commands M-p (<code>isearch-ring-retreat</code>) and M-n (<code>isearch-ring-advance</code>) move through the ring to pick a search string to reuse. These commands leave the selected search ring element in the minibuffer, where you can edit it. Type C-s/C-r or RET to accept the string and start searching for it. The number of most recently used search strings saved in the search ring is specified by the variable <code>search-ring-max</code>, 16 by default.
+</p>
+
+<p>
+To edit the current search string in the minibuffer without replacing it with items from the search ring, type M-e (<code>isearch-edit-string</code>) or click mouse-1 in the minibuffer. Type RET, C-s or C-r to finish editing the string and search for it. Type C-f or RIGHT to add to the search string characters following point from the buffer from which you started the search.
+</p>
+
+<hr />
+</div>
+</div>

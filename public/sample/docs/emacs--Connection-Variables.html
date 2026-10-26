@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Per_002dConnection-Local-Variables">1. 51.2.6 Per-Connection Local Variables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Directory-Variables.html">Per-Directory Local Variables</a>   Up: <a href="docs/emacs--Variables.html">Variables</a>
+</p>
+
+<p>
+<a id="Connection-Variables"></a>
+</p>
+
+<hr />
+<div id="outline-container-Per_002dConnection-Local-Variables" class="outline-2">
+<h2 id="Per_002dConnection-Local-Variables"><span class="section-number-2">1.</span> 51.2.6 Per-Connection Local Variables <a href="#Per_002dConnection-Local-Variables">¶</a></h2>
+<div class="outline-text-2" id="text-Per_002dConnection-Local-Variables">
+<p>
+Most of the variables reflect the situation on the local machine. Often, they must use a different value when you operate in buffers with a remote default directory. Think about the behavior when calling <code>shell</code> &#x2013; on your local machine, you might use <code>/bin/bash</code> and rely on termcap, but on a remote machine, it may be <code>/bin/ksh</code> and terminfo.
+</p>
+
+<p>
+This can be accomplished with <i>connection-local variables</i>. Directory and file local variables override connection-local variables. Unsafe connection-local variables are handled in the same way as unsafe file-local variables (see <a href="docs/emacs--Safe-File-Variables.html">Safety of File Variables</a>).
+</p>
+
+<p>
+Connection-local variables are declared as a group of variables/value pairs in a <i>profile</i>, using the <code>connection-local-set-profile-variables</code> function. The function <code>connection-local-set-profiles</code> activates profiles for a given criteria, identifying a remote machine:
+</p>
+
+<pre class="example" id="org56143fe">
+(connection-local-set-profile-variables 'remote-terminfo
+   '((system-uses-terminfo . t)
+     (comint-terminfo-terminal . "dumb-emacs-ansi")))
+
+(connection-local-set-profile-variables 'remote-ksh
+   '((shell-file-name . "/bin/ksh")
+     (shell-command-switch . "-c")))
+
+(connection-local-set-profile-variables 'remote-bash
+   '((shell-file-name . "/bin/bash")
+     (shell-command-switch . "-c")))
+
+(connection-local-set-profiles
+   '(:application tramp :machine "remotemachine")
+   'remote-terminfo 'remote-ksh)
+</pre>
+
+<p>
+This code declares three different profiles, <code>remote-terminfo</code>, <code>remote-ksh</code>, and <code>remote-bash</code>. The profiles <code>remote-terminfo</code> and <code>remote-ksh</code> are applied to all buffers which have a remote default directory matching the regexp <code>"remotemachine"</code> as host name. Such a criteria can also discriminate for the properties <code>:protocol</code> (this is the Tramp method) or <code>:user</code> (a remote user name). The <code>nil</code> criteria matches all buffers with a remote default directory.
+</p>
+
+<p>
+Be careful when declaring different profiles with the same variable, and setting these profiles to criteria which could match in parallel. It is unspecified which variable value is used then.
+</p>
+
+<p>
+Be also careful when setting connection-local variables in a buffer, which changes its major mode afterwards. Because all buffer-local variables will be killed when changing the major mode, the connection-local variable's value would be lost. You can prevent this by setting the respective variable's <code>permanent-local</code> symbol property to non-<code>nil</code>.
+</p>
+
+<hr />
+</div>
+</div>

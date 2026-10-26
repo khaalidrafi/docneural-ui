@@ -1,0 +1,258 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-gc">1.0.1. 5.6 Invoking <code>guix gc</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-gc"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>, Previous: <a href="docs/guix--Invoking-guix-locate.html">Invoking <code>guix locate</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-gc-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-gc" class="outline-4">
+<h4 id="invoking-guix-gc"><span class="section-number-4">1.0.1.</span> 5.6 Invoking <code>guix gc</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-gc">
+<p>
+<a id="index-garbage-collector"></a> <a id="index-disk-space"></a> <a id="index-guix-gc"></a>
+Packages that are installed, but not used, may be <i>garbage-collected</i>. The <code>guix gc</code> command allows users to explicitly run the garbage collector to reclaim space from the <code>/gnu/store</code> directory. It is the <i>only</i> way to remove files from <code>/gnu/store</code>&#x2014;removing files or directories manually may break it beyond repair!
+</p>
+
+<p>
+<a id="index-GC-roots-1"></a> <a id="index-garbage-collector-roots-1"></a>
+The garbage collector has a set of known <i>roots</i>: any file under <code>/gnu/store</code> reachable from a root is considered <i>live</i> and cannot be deleted; any other file is considered <i>dead</i> and may be deleted. The set of garbage collector roots (“GC roots” for short) includes default user profiles; by default, the symlinks under <code>/var/guix/gcroots</code> represent these GC roots. New GC roots can be added with <code>guix build --root</code>, for example (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>). The <code>guix gc --list-roots</code> command lists them.
+</p>
+
+<p>
+Prior to running <code>guix gc --collect-garbage</code> to make space, it is often useful to remove old generations from user profiles; that way, old package builds referenced by those generations can be reclaimed. This is achieved by running <code>guix package --delete-generations</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+Our recommendation is to run a garbage collection periodically, or when you are short on disk space. For instance, to guarantee that at least 5 GB are available on your disk, simply run:
+</p>
+
+<pre class="example" id="orge255538">
+guix gc -F 5G
+</pre>
+
+<p>
+It is perfectly safe to run as a non-interactive periodic job (see <a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a>, for how to set up such a job). Running <code>guix gc</code> with no arguments will collect as much garbage as it can, but that is often inconvenient: you may find yourself having to rebuild or re-download software that is “dead” from the GC viewpoint but that is necessary to build other pieces of software&#x2014;e.g., the compiler tool chain.
+</p>
+
+<p>
+The <code>guix gc</code> command has three modes of operation: it can be used to garbage-collect any dead files (the default), to delete specific files (the <code>--delete</code> option), to print garbage-collector information, or for more advanced queries. The garbage collection options are as follows:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>--collect-garbage[===min==]</code><br />
+<code>-C [==min==]</code> :: Collect garbage&#x2014;i.e., unreachable <code>/gnu/store</code> files and sub-directories. This is the default operation when no option is specified.
+</p>
+
+<p>
+When <code>min</code> is given, stop once <code>min</code> bytes have been collected. <code>min</code> may be a number of bytes, or it may include a unit as a suffix, such as <code>MiB</code> for mebibytes and <code>GB</code> for gigabytes (see <a href="https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html#Block-size">size specifications</a> in GNU Coreutils).
+</p>
+
+<p>
+When <code>min</code> is omitted, collect all the garbage.
+</p></li>
+
+<li><p>
+<code>--free-space===free</code><br />
+<code>-F ==free</code> :: Collect garbage until <code>free</code> space is available under <code>/gnu/store</code>, if possible; <code>free</code> denotes storage space, such as <code>500MiB</code>, as described above.
+</p>
+
+<p>
+When <code>free</code> or more is already available in <code>/gnu/store</code>, do nothing and exit immediately.
+</p></li>
+
+<li><p>
+<code>--delete-generations[===duration==]</code><br />
+<code>-d [==duration==]</code> :: Before starting the garbage collection process, delete all the generations older than <code>duration</code>, for all the user profiles and home environment generations; when run as root, this applies to all the profiles <i>of all the users</i>.
+</p>
+
+<p>
+For example, this command deletes all the generations of all your profiles that are older than 2 months (except generations that are current), and then proceeds to free space until at least 10 GiB are available:
+</p>
+
+<pre class="example" id="org3a74a1c">
+guix gc -d 2m -F 10G
+</pre></li>
+
+<li><code>--delete</code><br />
+<code>-D</code> :: Attempt to delete all the store files and directories specified as arguments. This fails if some of the files are not in the store, or if they are still live.</li>
+
+<li id="<code>--list-failures</code>"><p>
+List store items corresponding to cached build failures.
+</p>
+
+<p>
+This prints nothing unless the daemon was started with <code>--cache-failures</code> (see <a href="docs/guix--Invoking-guix_002ddaemon.html"><code>--cache-failures</code></a>).
+</p></li>
+
+<li id="<code>--list-roots</code>">List the GC roots owned by the user; when run as root, list <i>all</i> the GC roots.</li>
+
+<li id="<code>--list-busy</code>">List store items in use by currently running processes. These store items are effectively considered GC roots: they cannot be deleted.</li>
+
+<li id="<code>--clear-failures</code>"><p>
+Remove the specified store items from the failed-build cache.
+</p>
+
+<p>
+Again, this option only makes sense when the daemon is started with <code>--cache-failures</code>. Otherwise, it does nothing.
+</p></li>
+
+<li id="<code>--list-dead</code>">Show the list of dead files and directories still present in the store&#x2014;i.e., files and directories no longer reachable from any root.</li>
+
+<li id="<code>--list-live</code>">Show the list of live store files and directories.</li>
+</ul>
+
+<p>
+In addition, the references among existing store files can be queried:
+</p>
+
+<ul class="org-ul">
+<li><code>--references</code> <br />
+<code>--referrers</code> :: List the references (respectively, the referrers) of store files given as arguments.</li>
+
+<li><p>
+<code>--requisites</code> <br />
+<code>-R</code> :: List the requisites of the store files passed as arguments. Requisites include the store files themselves, their references, and the references of these, recursively. In other words, the returned list is the <i>transitive closure</i> of the store files.
+</p>
+
+<p>
+See <a href="docs/guix--Invoking-guix-size.html">Invoking <code>guix size</code></a>, for a tool to profile the size of the closure of an element. See <a href="docs/guix--Invoking-guix-graph.html">Invoking <code>guix graph</code></a>, for a tool to visualize the graph of references.
+</p></li>
+
+<li id="<code>--derivers</code> "><p>
+Return the derivation(s) leading to the given store items (see <a href="docs/guix--Derivations.html">Derivations</a>).
+</p>
+
+<p>
+For example, this command:
+</p>
+
+<pre class="example" id="orgb83343a">
+guix gc --derivers $(guix package -I ^emacs$ | cut -f4)
+</pre>
+
+<p>
+returns the <code>.drv</code> file(s) leading to the <code>emacs</code> package installed in your profile.
+</p>
+
+<p>
+Note that there may be zero matching <code>.drv</code> files, for instance because these files have been garbage-collected. There can also be more than one matching <code>.drv</code> due to fixed-output derivations.
+</p></li>
+</ul>
+
+<p>
+Lastly, the following options allow you to check the integrity of the store and to control disk usage.
+</p>
+
+<dl class="org-dl">
+<dt><code>--verify[===options==]</code> </dt><dd><p>
+<a id="index-integrity-checking"></a>
+</p>
+
+<p>
+Verify the integrity of the store.
+</p>
+
+<p>
+By default, make sure that all the store items marked as valid in the database of the daemon actually exist in <code>/gnu/store</code>.
+</p>
+
+<p>
+When provided, <code>options</code> must be a comma-separated list containing one or more of <code>contents</code> and <code>repair</code>.
+</p>
+
+<p>
+When passing <code>--verify=contents</code>, the daemon computes the content hash of each store item and compares it against its hash in the database. Hash mismatches are reported as data corruptions. Because it traverses <i>all the files in the store</i>, this command can take a long time, especially on systems with a slow disk drive.
+</p>
+
+<p>
+<a id="index-repairing-the-store"></a> <a id="index-corruption_002c-recovering-from"></a>
+</p>
+
+<p>
+Using <code>--verify=repair</code> or <code>--verify=contents,repair</code> causes the daemon to try to repair corrupt store items by fetching substitutes for them (see <a href="docs/guix--Substitutes.html">Substitutes</a>). Because repairing is not atomic, and thus potentially dangerous, it is available only to the system administrator. A lightweight alternative, when you know exactly which items in the store are corrupt, is <code>guix build --repair</code> (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>).
+</p></dd>
+
+<dt><code>--optimize</code> </dt><dd><p>
+Optimize the store by hard-linking identical files&#x2014;this is <i>deduplication</i>.
+</p>
+
+<p>
+The daemon performs deduplication after each successful build or archive import, unless it was started with <code>--disable-deduplication</code> (see <a href="docs/guix--Invoking-guix_002ddaemon.html"><code>--disable-deduplication</code></a>). Thus, this option is primarily useful when the daemon was running with <code>--disable-deduplication</code>.
+</p></dd>
+
+<dt><code>--vacuum-database</code> </dt><dd>Guix uses an sqlite database to keep track of the items in the store (see <a href="docs/guix--The-Store.html">The Store</a>). Over time it is possible that the database may grow to a large size and become fragmented. As a result, one may wish to clear the freed space and join the partially used pages in the database left behind from removed packages or after running the garbage collector. Running <code>sudo guix gc --vacuum-database</code> will lock the database and <code>VACUUM</code> the store, defragmenting the database and purging freed pages, unlocking the database when it finishes.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>, Previous: <a href="docs/guix--Invoking-guix-locate.html">Invoking <code>guix locate</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

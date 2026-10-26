@@ -1,0 +1,193 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#name-service-switch">1.0.1. 11.13 Name Service Switch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Name-Service-Switch"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>, Previous: <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Name-Service-Switch-2"></a>
+</p>
+</div>
+<div id="outline-container-name-service-switch" class="outline-4">
+<h4 id="name-service-switch"><span class="section-number-4">1.0.1.</span> 11.13 Name Service Switch</h4>
+<div class="outline-text-4" id="text-name-service-switch">
+<p>
+<a id="index-name-service-switch"></a> <a id="index-NSS"></a>
+The <code>(gnu system nss)</code> module provides bindings to the configuration file of the libc <i>name service switch</i> or <i>NSS</i> (see <a href="https://www.gnu.org/software/libc/manual/html_node/NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a> in The GNU C Library Reference Manual). In a nutshell, the NSS is a mechanism that allows libc to be extended with new “name” lookup methods for system databases, which includes host names, service names, user accounts, and more (see <a href="https://www.gnu.org/software/libc/manual/html_node/Name-Service-Switch.html#Name-Service-Switch">System Databases and Name Service Switch</a> in The GNU C Library Reference Manual).
+</p>
+
+<p>
+The NSS configuration specifies, for each system database, which lookup method is to be used, and how the various methods are chained together&#x2014;for instance, under which circumstances NSS should try the next method in the list. The NSS configuration is given in the <code>name-service-switch</code> field of <code>operating-system</code> declarations (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>name-service-switch</code></a>).
+</p>
+
+<p>
+<a id="index-nss_002dmdns"></a> <a id="index-_002elocal_002c-host-name-lookup"></a>
+As an example, the declaration below configures the NSS to use the <a href="https://0pointer.de/lennart/projects/nss-mdns/"><code>nss-mdns</code> back-end</a>, which supports host name lookups over multicast DNS (mDNS) for host names ending in <code>.local</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(name-service-switch
+   (hosts (list %files    ;first, check /etc/hosts
+
+                ;; If the above did not succeed, try
+                ;; with 'mdns_minimal'.
+                (name-service
+                  (name "mdns_minimal")
+
+                  ;; 'mdns_minimal' is authoritative for
+                  ;; '.local'.  When it returns "not found",
+                  ;; no need to try the next methods.
+                  (reaction (lookup-specification
+                             (not-found =&gt; return))))
+
+                ;; Then fall back to DNS.
+                (name-service
+                  (name "dns"))
+
+                ;; Finally, try with the "full" 'mdns'.
+                (name-service
+                  (name "mdns")))))
+</pre>
+</div>
+
+<p>
+Do not worry: the <code>%mdns-host-lookup-nss</code> variable (see below) contains this configuration, so you will not have to type it if all you want is to have <code>.local</code> host lookup working.
+</p>
+
+<p>
+Note that, in this case, in addition to setting the <code>name-service-switch</code> of the <code>operating-system</code> declaration, you also need to use <code>avahi-service-type</code> (see <a href="docs/guix--Networking-Services.html"><code>avahi-service-type</code></a>), or <code>%desktop-services</code>, which includes it (see <a href="docs/guix--Desktop-Services.html">Desktop Services</a>). Doing this makes <code>nss-mdns</code> accessible to the name service cache daemon (see <a href="docs/guix--Base-Services.html"><code>nscd-service</code></a>).
+</p>
+
+<p>
+For convenience, the following variables provide typical NSS configurations.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: %default-nss </dt><dd>This is the default name service switch configuration, a <code>name-service-switch</code> object.</dd>
+
+<dt>Variable: %mdns-host-lookup-nss </dt><dd>This is the name service switch configuration with support for host name lookup over multicast DNS (mDNS) for host names ending in <code>.local</code>.</dd>
+</dl>
+
+<p>
+Furthermore, mDNS lookups could be restricted to IPv4 or IPv6 protocols using the procedure <code>mdns-host-lookup-nss</code>.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: mdns-host-lookup-nss [#:ipv6? #t] [#:ipv4? #t]</dt><dd>Return a <code>name-service-switch</code> object with mDNS lookup restricted to specified protocols.</dd>
+</dl>
+
+<p>
+The reference for name service switch configuration is given below. It is a direct mapping of the configuration file format of the C library , so please refer to the C library manual for more information (see <a href="https://www.gnu.org/software/libc/manual/html_node/NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a> in The GNU C Library Reference Manual). Compared to the configuration file format of libc NSS, it has the advantage not only of adding this warm parenthetic feel that we like, but also static checks: you will know about syntax errors and typos as soon as you run <code>guix system</code>.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: name-service-switch </dt><dd>This is the data type representation the configuration of libc's name service switch (NSS). Each field below represents one of the supported system databases.
+
+<ul class="org-ul">
+<li><code>aliases</code><br />
+<code>ethers</code><br />
+<code>group</code><br />
+<code>gshadow</code><br />
+<code>hosts</code><br />
+<code>initgroups</code><br />
+<code>netgroup</code><br />
+<code>networks</code><br />
+<code>password</code><br />
+<code>public-key</code><br />
+<code>rpc</code><br />
+<code>services</code><br />
+<code>shadow</code> :: The system databases handled by the NSS. Each of these fields must be a list of <code>&lt;name-service&gt;</code> objects (see below).</li>
+</ul></dd>
+
+<dt>Data Type: name-service </dt><dd>This is the data type representing an actual name service and the associated lookup action.
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd><p>
+A string denoting the name service (see <a href="https://www.gnu.org/software/libc/manual/html_node/Services-in-the-NSS-configuration.html#Services-in-the-NSS-configuration">Services in the NSS configuration</a> in The GNU C Library Reference Manual).
+</p>
+
+<p>
+Note that name services listed here must be visible to nscd. This is achieved by passing the <code>#:name-services</code> argument to <code>nscd-service</code> the list of packages providing the needed name services (see <a href="docs/guix--Base-Services.html"><code>nscd-service</code></a>).
+</p></dd>
+
+<dt><code>reaction</code></dt><dd><p>
+An action specified using the <code>lookup-specification</code> macro (see <a href="https://www.gnu.org/software/libc/manual/html_node/Actions-in-the-NSS-configuration.html#Actions-in-the-NSS-configuration">Actions in the NSS configuration</a> in The GNU C Library Reference Manual). For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(lookup-specification (unavailable =&gt; continue)
+                      (success =&gt; return))
+</pre>
+</div></dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Initial-RAM-Disk.html">Initial RAM Disk</a>, Previous: <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

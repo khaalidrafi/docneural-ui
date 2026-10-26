@@ -1,0 +1,235 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#mapped-devices">1.0.1. 11.5 Mapped Devices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Mapped-Devices"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Swap-Space.html">Swap Space</a>, Previous: <a href="docs/guix--File-Systems.html">File Systems</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Mapped-Devices-1"></a>
+</p>
+</div>
+<div id="outline-container-mapped-devices" class="outline-4">
+<h4 id="mapped-devices"><span class="section-number-4">1.0.1.</span> 11.5 Mapped Devices</h4>
+<div class="outline-text-4" id="text-mapped-devices">
+<p>
+<a id="index-device-mapping"></a> <a id="index-mapped-devices"></a>
+The Linux kernel has a notion of <i>device mapping</i>: a block device, such as a hard disk partition, can be <i>mapped</i> into another device, usually in <code>/dev/mapper/</code>, with additional processing over the data that flows through it. A typical example is encryption device mapping: all writes to the mapped device are encrypted, and all reads are deciphered, transparently. Guix extends this notion by considering any device or set of devices that are <i>transformed</i> in some way to create a new device; for instance, RAID devices are obtained by <i>assembling</i> several other devices, such as hard disks or partitions, into a new one that behaves as one partition.
+</p>
+
+<p>
+Mapped devices are declared using the <code>mapped-device</code> form, defined as follows; for examples, see below.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: mapped-device </dt><dd>Objects of this type represent device mappings that will be made when the system boots up.
+
+<dl class="org-dl">
+<dt><code>source</code></dt><dd>This is either a string specifying the name of the block device to be mapped, such as <code>"/dev/sda3"</code>, or a list of such strings when several devices need to be assembled for creating a new one. In case of LVM this is a string specifying name of the volume group to be mapped.</dd>
+
+<dt><code>target</code></dt><dd>This string specifies the name of the resulting mapped device. For kernel mappers such as encrypted devices of type <code>luks-device-mapping</code>, specifying <code>"my-partition"</code> leads to the creation of the <code>"/dev/mapper/my-partition"</code> device. For RAID devices of type <code>raid-device-mapping</code>, the full device name such as <code>"/dev/md0"</code> needs to be given. LVM logical volumes of type <code>lvm-device-mapping</code> need to be specified as <code>"VGNAME-LVNAME"</code>.</dd>
+
+<dt><code>targets</code></dt><dd>This list of strings specifies names of the resulting mapped devices in case there are several. The format is identical to <code>target</code>.</dd>
+
+<dt><code>type</code></dt><dd>This must be a <code>mapped-device-kind</code> object, which specifies how <code>source</code> is mapped to <code>target</code>.</dd>
+
+<dt><code>arguments</code></dt><dd><p>
+This is a list of arguments specific to <code>type</code> that are passed to its <code>open</code>, <code>close</code>, and <code>check</code> procedures.
+</p>
+
+<p>
+As an example, <code>luks-device-mapping</code> supports keyword arguments&#x2014;see below for details.
+</p></dd>
+</dl></dd>
+
+<dt>Variable: luks-device-mapping </dt><dd><p>
+This defines LUKS block device encryption using the <code>cryptsetup</code> command from the package with the same name. It relies on the <code>dm-crypt</code> Linux kernel module.
+</p>
+
+<p>
+The following options may be passed <i>via</i> the <code>arguments</code> field of a mapped device:
+</p>
+
+<dl class="org-dl">
+<dt><code>#:key-file</code></dt><dd><p>
+If <code>file</code> is provided, unlocking is first attempted using that key file. This has an advantage of not requiring a password entry, so it can be used (for example) to unlock RAID arrays automatically on boot. If key file unlock fails, password unlock is attempted as well. Key file is not stored in the store and needs to be available at the given location at the time of the unlock attempt.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Following definition would be equivalent to running:
+;;   cryptsetup open --key-file /crypto.key /dev/sdb1 data
+(mapped-device
+ (source "/dev/sdb1")
+ (target "data")
+ (type luks-device-mapping)
+ (arguments '(#:key-file "/crypto.key")))
+</pre>
+</div></dd>
+
+<dt><code>#:allow-discards?</code></dt><dd><code>allow-discards?</code> allows the use of discard (TRIM) requests for the underlying device. This is useful for solid state drives. However, this option can have a negative security impact because it can make file system level operations visible on the physical device. For more information, refer to the description of the <code>--allow-discards</code> option in the <code>cryptsetup-open(8)</code> man page.</dd>
+
+<dt><code>#:extra-options</code></dt><dd><p>
+List of additional command-line options for the <code>cryptsetup open</code> command. See the <code>cryptsetup-open(8)</code> man page for a list of supported options.
+</p>
+
+<p>
+For example, here is how you could specify the <code>--perf-no_read_workqueue</code> and <code>--perf-no_write_workqueue</code> options, along with <code>--allow-discards</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(mapped-device
+  (source "/dev/sdb1")
+  (target "data")
+  (type luks-device-mapping)
+  (arguments '(#:allow-discards? #t
+               #:extra-options
+               ("--perf-no_read_workqueue"
+                "--perf-no_write_workqueue"))))
+</pre>
+</div></dd>
+</dl></dd>
+
+<dt>Variable: raid-device-mapping </dt><dd>This defines a RAID device, which is assembled using the <code>mdadm</code> command from the package with the same name. It requires a Linux kernel module for the appropriate RAID level to be loaded, such as <code>raid456</code> for RAID-4, RAID-5 or RAID-6, or <code>raid10</code> for RAID-10.</dd>
+</dl>
+
+<p>
+<a id="index-LVM_002c-logical-volume-manager"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: lvm-device-mapping </dt><dd>This defines one or more logical volumes for the Linux <a href="https://www.sourceware.org/lvm2/">Logical Volume Manager (LVM)</a>. The volume group is activated by the <code>vgchange</code> command from the <code>lvm2</code> package.</dd>
+</dl>
+
+<p>
+<a id="index-disk-encryption"></a> <a id="index-LUKS"></a>
+The following example specifies a mapping from <code>/dev/sda3</code> to <code>/dev/mapper/home</code> using LUKS&#x2014;the <a href="https://gitlab.com/cryptsetup/cryptsetup">Linux Unified Key Setup</a>, a standard mechanism for disk encryption. The <code>/dev/mapper/home</code> device can then be used as the <code>device</code> of a <code>file-system</code> declaration (see <a href="docs/guix--File-Systems.html">File Systems</a>).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(mapped-device
+  (source "/dev/sda3")
+  (target "home")
+  (type luks-device-mapping))
+</pre>
+</div>
+
+<p>
+Alternatively, to become independent of device numbering, one may obtain the LUKS UUID (<i>unique identifier</i>) of the source device by a command like:
+</p>
+
+<pre class="example" id="org91dc4d0">
+cryptsetup luksUUID /dev/sda3
+</pre>
+
+<p>
+and use it as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(mapped-device
+  (source (uuid "cb67fc72-0d54-4c88-9d4b-b225f30b0f44"))
+  (target "home")
+  (type luks-device-mapping))
+</pre>
+</div>
+
+<p>
+<a id="index-swap-encryption"></a>
+It is also desirable to encrypt swap space, since swap space may contain sensitive data. One way to accomplish that is to use a swap file in a file system on a device mapped via LUKS encryption. In this way, the swap file is encrypted because the entire device is encrypted. See <a href="docs/guix--Swap-Space.html">Swap Space</a>, or See <a href="docs/guix--Preparing-for-Installation.html">Disk Partitioning</a>, for an example.
+</p>
+
+<p>
+A RAID device formed of the partitions <code>/dev/sda1</code> and <code>/dev/sdb1</code> may be declared as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(mapped-device
+  (source (list "/dev/sda1" "/dev/sdb1"))
+  (target "/dev/md0")
+  (type raid-device-mapping))
+</pre>
+</div>
+
+<p>
+The <code>/dev/md0</code> device can then be used as the <code>device</code> of a <code>file-system</code> declaration (see <a href="docs/guix--File-Systems.html">File Systems</a>). Note that the RAID level need not be given; it is chosen during the initial creation and formatting of the RAID device and is determined automatically later.
+</p>
+
+<p>
+LVM logical volumes “alpha” and “beta” from volume group “vg0” can be declared as follows:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(mapped-device
+  (source "vg0")
+  (targets (list "vg0-alpha" "vg0-beta"))
+  (type lvm-device-mapping))
+</pre>
+</div>
+
+<p>
+Devices <code>/dev/mapper/vg0-alpha</code> and <code>/dev/mapper/vg0-beta</code> can then be used as the <code>device</code> of a <code>file-system</code> declaration (see <a href="docs/guix--File-Systems.html">File Systems</a>).
+</p>
+
+<hr />
+</div>
+</div>
+</div>

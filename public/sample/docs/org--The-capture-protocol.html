@@ -1,0 +1,74 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-capture-protocol-1">1. 17.16.2 The <code>capture</code> protocol ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="The-capture-protocol"></a>
+Next: <a href="docs/org--The-open_002dsource-protocol.html">The <code>open-source</code> protocol</a>, Previous: <a href="docs/org--The-store_002dlink-protocol.html">The <code>store-link</code> protocol</a>, Up: <a href="docs/org--Protocols.html">Protocols for External Access</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-The-capture-protocol-1" class="outline-2">
+<h2 id="The-capture-protocol-1"><span class="section-number-2">1.</span> 17.16.2 The <code>capture</code> protocol <a href="#The-capture-protocol-1">¶</a></h2>
+<div class="outline-text-2" id="text-The-capture-protocol-1">
+<p>
+Activating the “capture” handler pops up a ‘=Capture=' buffer in Emacs, using a capture template.
+</p>
+
+<pre class="example" id="orgc9ba599">
+emacsclient "org-protocol://capture?template=X&amp;url=URL&amp;title=TITLE&amp;body=BODY"
+</pre>
+
+<p>
+To use this feature, add a bookmark with an arbitrary name, e.g., ‘=Org: capture=', and enter this as ‘=Location=':
+</p>
+
+<pre class="example" id="orge349f7f">
+javascript:location.href='org-protocol://capture?' +
+      new URLSearchParams({
+            template: 'x', url: window.location.href,
+            title: document.title, body: window.getSelection()});
+      void(0);
+</pre>
+
+<p>
+You might have seen another expression:
+</p>
+
+<pre class="example" id="org4570314">
+javascript:location.href='org-protocol://capture?template=x'+
+      '&amp;url='+encodeURIComponent(window.location.href)+
+      '&amp;title='+encodeURIComponent(document.title)+
+      '&amp;body='+encodeURIComponent(window.getSelection());void(0);
+</pre>
+
+<p>
+It is a bit more cluttered than the former one, but it is compatible with previous Org versions 9.0-9.4. In these versions encoding of space as “+” character was not supported by URI decoder.
+</p>
+
+<p>
+The capture template to be used can be specified in the bookmark (like ‘=X=' above). If unspecified, the template key is set in the variable <code>org-protocol-default-template-key</code>. The following template placeholders are available:
+</p>
+
+<pre class="example" id="orgbfb954d">
+%:link          The URL
+%:description   The webpage title
+%:annotation    Equivalent to [[%:link][%:description]]
+%i              The selected text
+</pre>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--The-open_002dsource-protocol.html">The <code>open-source</code> protocol</a>, Previous: <a href="docs/org--The-store_002dlink-protocol.html">The <code>store-link</code> protocol</a>, Up: <a href="docs/org--Protocols.html">Protocols for External Access</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

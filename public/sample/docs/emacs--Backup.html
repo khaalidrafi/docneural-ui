@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Backup-Files">1. 20.3.2 Backup Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Customize-Save.html">Customizing Saving of Files</a>   Previous: <a href="docs/emacs--Save-Commands.html">Commands for Saving Files</a>   Up: <a href="docs/emacs--Saving.html">Saving Files</a>
+</p>
+
+<p>
+<a id="Backup"></a>
+</p>
+
+<hr />
+<div id="outline-container-Backup-Files" class="outline-2">
+<h2 id="Backup-Files"><span class="section-number-2">1.</span> 20.3.2 Backup Files <a href="#Backup-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Backup-Files">
+<p>
+On most operating systems, rewriting a file automatically destroys all record of what the file used to contain. Thus, saving a file from Emacs throws away the old contents of the file&#x2014;or it would, except that Emacs carefully copies the old contents to another file, called the <i>backup</i> file, before actually saving.
+</p>
+
+<p>
+Emacs makes a backup for a file only the first time the file is saved from the buffer that visits it. No matter how many times you subsequently save the file, its backup remains unchanged. However, if you kill the buffer and then visit the file again, a new backup file will be made.
+</p>
+
+<p>
+For most files, the variable <code>make-backup-files</code> determines whether to make backup files. On most operating systems, its default value is <code>t</code>, so that Emacs does write backup files.
+</p>
+
+<p>
+For files managed by a version control system (see <a href="docs/emacs--Version-Control.html">Version Control</a>), the variable <code>vc-make-backup-files</code> determines whether to make backup files. By default it is <code>nil</code>, since backup files are redundant when you store all the previous versions in a version control system. See <a href="docs/emacs--General-VC-Options.html">General Options</a>.
+</p>
+
+<p>
+At your option, Emacs can keep either a single backup for each file, or make a series of numbered backup files for each file that you edit. See <a href="docs/emacs--Backup-Names.html">Single or Numbered Backups</a>.
+</p>
+
+<p>
+The default value of the <code>backup-enable-predicate</code> variable prevents backup files being written for files in the directories used for temporary files, specified by <code>temporary-file-directory</code> or <code>small-temporary-file-directory</code>.
+</p>
+
+<p>
+You can explicitly tell Emacs to make another backup file from a buffer, even though that buffer has been saved before. If you save the buffer with C-u C-x C-s, the version thus saved will be made into a backup file if you save the buffer again. C-u C-u C-x C-s saves the buffer, but first makes the previous file contents into a new backup file. C-u C-u C-u C-x C-s does both things: it makes a backup from the previous contents, and arranges to make another from the newly saved contents if you save again.
+</p>
+
+<p>
+You can customize the variable <code>backup-directory-alist</code> to specify that files matching certain patterns should be backed up in specific directories. A typical use is to add an element <code>("." . ==dir=</code>)= to make all backups in the directory with absolute name <code>dir</code>. Emacs modifies the backup file names to avoid clashes between files with the same names originating in different directories. Alternatively, adding, <code>("." . ".~")</code> would make backups in the invisible subdirectory <code>.~</code> of the original file's directory. Emacs creates the directory, if necessary, to make the backup.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Backup-Names.html">Single or Numbered Backups</a></li>
+<li><a href="docs/emacs--Backup-Deletion.html">Automatic Deletion of Backups</a></li>
+<li><a href="docs/emacs--Backup-Copying.html">Copying vs. Renaming</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

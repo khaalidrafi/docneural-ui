@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Files-1">1. 9.5 Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Basic-Help.html">Help</a>   Previous: <a href="docs/emacs--Basic-Undo.html">Undoing Changes</a>   Up: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>
+</p>
+
+<p>
+<a id="Basic-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Files-1" class="outline-2">
+<h2 id="Files-1"><span class="section-number-2">1.</span> 9.5 Files <a href="#Files-1">¶</a></h2>
+<div class="outline-text-2" id="text-Files-1">
+<p>
+Text that you insert in an Emacs buffer lasts only as long as the Emacs session. To keep any text permanently, you must put it in a <i>file</i>.
+</p>
+
+<p>
+Suppose there is a file named <code>test.emacs</code> in your home directory. To begin editing this file in Emacs, type
+</p>
+
+<pre class="example" id="orgde88bf0">
+C-x C-f test.emacs RET
+</pre>
+
+<p>
+Here the file name is given as an <i>argument</i> to the command C-x C-f (<code>find-file</code>). That command uses the <i>minibuffer</i> to read the argument, and you type RET to terminate the argument (see <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>).
+</p>
+
+<p>
+Emacs obeys this command by <i>visiting</i> the file: it creates a buffer, copies the contents of the file into the buffer, and then displays the buffer for editing. If you alter the text, you can <i>save</i> the new text in the file by typing C-x C-s (<code>save-buffer</code>). This copies the altered buffer contents back into the file <code>test.emacs</code>, making them permanent. Until you save, the changed text exists only inside Emacs, and the file <code>test.emacs</code> is unaltered.
+</p>
+
+<p>
+To create a file, just visit it with C-x C-f as if it already existed. This creates an empty buffer, in which you can insert the text you want to put in the file. Emacs actually creates the file the first time you save this buffer with C-x C-s.
+</p>
+
+<p>
+To learn more about using files in Emacs, see <a href="docs/emacs--Files.html">File Handling</a>.
+</p>
+</div>
+</div>

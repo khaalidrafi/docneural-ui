@@ -1,0 +1,97 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Media-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--mpv-Media-Player.html">mpv Media Player</a>, Previous: <a href="docs/guix--Messaging-Home-Services.html">Messaging Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Media-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="media-home-services"></a>13.3.15 Media Home Services<br />
+<div class="outline-text-5" id="text-media-home-services">
+<p>
+<a id="index-kodi"></a>
+The <a href="https://kodi.tv">Kodi media center</a> can be run as a daemon on a media server. With the <code>(gnu home services kodi)</code> service, you can configure Kodi to run upon login.
+</p>
+
+<p>
+Here is an example of a service and its configuration that you could add to the <code>services</code> field of your <code>home-environment</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-kodi-service-type
+  (home-kodi-configuration
+   (extra-options '("--settings="&lt;settings-file&gt;"))))
+</pre>
+</div>
+
+<dl class="org-dl">
+<dt>Variable: home-kodi-service-type </dt><dd>This is the type of the Kodi home service, whose value is a <code>home-kodi-configuration</code> object.</dd>
+
+<dt>Data Type: home-kodi-configuration </dt><dd>Available <code>home-kodi-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>kodi</code> (default: <code>kodi</code>) (type: file-like)</dt><dd>The Kodi package to use.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options will be passed to <code>kodi</code>, please run <code>man kodi</code> for more information.</dd>
+</dl></dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>

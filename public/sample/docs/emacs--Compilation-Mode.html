@@ -1,0 +1,120 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Compilation-Mode-1">1. 29.2 Compilation Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Compilation-Shell.html">Subshells for Compilation</a>   Previous: <a href="docs/emacs--Compilation.html">Running Compilations under Emacs</a>   Up: <a href="docs/emacs--Building.html">Compiling and Testing Programs</a>
+</p>
+
+<p>
+<a id="Compilation-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Compilation-Mode-1" class="outline-2">
+<h2 id="Compilation-Mode-1"><span class="section-number-2">1.</span> 29.2 Compilation Mode <a href="#Compilation-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Compilation-Mode-1">
+<p>
+The <code>*compilation*</code> buffer uses a major mode called Compilation mode. Compilation mode turns each error message in the buffer into a hyperlink; you can move point to it and type RET, or click on it with the mouse (see <a href="docs/emacs--Mouse-References.html">Following References with the Mouse</a>), to visit the <i>locus</i> of the error message in a separate window. The locus is the specific position in a file where that error occurred.
+</p>
+
+<p>
+The appearance of the <code>*compilation*</code> buffer can be controlled by customizing the faces which are used to highlight parts of the <code>*compilation*</code> buffer, e.g., <code>compilation-error</code> or <code>compilation-warning</code>, for error and warning messages respectively. Note that since those faces inherit from the <code>error</code> and <code>warning</code> faces, it is also possible to customize the parent face directly instead.
+</p>
+
+<p>
+Use M-x customize-group RET compilation to see the entire list of customization variables and faces.
+</p>
+
+<p>
+If you change the variable <code>compilation-auto-jump-to-first-error</code> to a non-<code>nil</code> value, Emacs automatically visits the locus of the first error message that appears in the <code>*compilation*</code> buffer. (This variable can also have the values <code>if-location-known</code> and <code>first-known</code>, which modify the conditions for automatically visiting the error locus.)
+</p>
+
+<p>
+Compilation mode provides the following additional commands. These commands can also be used in <code>*grep*</code> buffers, where the hyperlinks are search matches rather than error messages (see <a href="docs/emacs--Grep-Searching.html">Searching with Grep under Emacs</a>).
+</p>
+
+<ul class="org-ul">
+<li>M-g M-n<br />
+M-g n<br />
+C-x ` :: Visit the locus of the next error message or match (<code>next-error</code>).</li>
+
+<li>M-g M-p<br />
+M-g p :: Visit the locus of the previous error message or match (<code>previous-error</code>).</li>
+
+<li id="M-n">Move point to the next error message or match, without visiting its locus (<code>compilation-next-error</code>).</li>
+
+<li id="M-p">Move point to the previous error message or match, without visiting its locus (<code>compilation-previous-error</code>).</li>
+
+<li id="M-}">Move point to the next error message or match occurring in a different file (<code>compilation-next-file</code>).</li>
+
+<li id="M-{">Move point to the previous error message or match occurring in a different file (<code>compilation-previous-file</code>).</li>
+
+<li id="C-c C-f">Toggle Next Error Follow minor mode, which makes cursor motion in the compilation buffer produce automatic source display.</li>
+
+<li id="g">Re-run the last command whose output is shown in the <code>*compilation*</code> buffer.</li>
+
+<li id="M-x next-error-select-buffer">Select a buffer to be used by next invocation of <code>next-error</code> and <code>previous-error</code>.</li>
+</ul>
+
+<p>
+To visit errors sequentially, type C-x ` (<code>next-error</code>), or equivalently M-g M-n or M-g n. This command can be invoked from any buffer, not just a Compilation mode buffer. The first time you invoke it after a compilation, it visits the locus of the first error message. Each subsequent M-g M-n visits the next error, in a similar fashion. If you visit a specific error with RET or a mouse click in the <code>*compilation*</code> buffer, subsequent M-g M-n commands advance from there. When M-g M-n finds no more error messages to visit, it signals an error. C-u M-g M-n starts again from the beginning of the compilation buffer, and visits the first locus.
+</p>
+
+<p>
+M-g M-p or M-g p (<code>previous-error</code>) iterates through errors in the opposite direction.
+</p>
+
+<p>
+The <code>next-error</code> and <code>previous-error</code> commands don't just act on the errors or matches listed in <code>*compilation*</code> and <code>*grep*</code> buffers; they also know how to iterate through error or match lists produced by other commands, such as M-x occur (see <a href="docs/emacs--Other-Repeating-Search.html">Other Search-and-Loop Commands</a>). If the current buffer contains error messages or matches, these commands will iterate through them; otherwise, Emacs looks for a buffer containing error messages or matches amongst the windows of the selected frame (if the variable <code>next-error-find-buffer-function</code> is customized to the value <code>next-error-buffer-on-selected-frame</code>), then for a buffer used previously by <code>next-error</code> or <code>previous-error</code>, and finally all other buffers. Any buffer these commands iterate through that is not currently displayed in a window will be displayed. You can use the <code>next-error-select-buffer</code> command to switch to a different buffer to be used by the subsequent invocation of <code>next-error</code>.
+</p>
+
+<p>
+By default, the <code>next-error</code> and <code>previous-error</code> commands skip less important messages. The variable <code>compilation-skip-threshold</code> controls this. The default value, 1, means to skip anything less important than a warning. A value of 2 means to skip anything less important than an error, while 0 means not to skip any messages.
+</p>
+
+<p>
+When Emacs visits the locus of an error message, it momentarily highlights the relevant source line. The duration of this highlight is determined by the variable <code>next-error-highlight</code> for the locus in the selected buffer, and <code>next-error-highlight-no-select</code> for the locus in non-selected buffers. Also you can customize the variable <code>next-error-message-highlight</code> that defines how to highlight the current error message in the buffer that contains messages.
+</p>
+
+<p>
+If the <code>*compilation*</code> buffer is shown in a window with a left fringe (see <a href="docs/emacs--Fringes.html">Window Fringes</a>), the locus-visiting commands put an arrow in the fringe, pointing to the current error message. If the window has no left fringe, such as on a text terminal, these commands scroll the window so that the current message is at the top of the window. If you change the variable <code>compilation-context-lines</code> to <code>t</code>, a visible arrow is inserted before column zero instead. If you change the variable to an integer value <code>n</code>, these commands scroll the window so that the current error message is <code>n</code> lines from the top, whether or not there is a fringe; the default value, <code>nil</code>, gives the behavior described above.
+</p>
+
+<p>
+Compilation output can sometimes be very verbose, and much of it isn't of particular interest to a user. The <code>compilation-hidden-output</code> user option should either be a regexp or a list of regexps, and output that matches will be made invisible. For instance, to hide the verbose output from recursive makefiles, you can say something like:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq compilation-hidden-output
+      '("^make[^\n]+\n"))
+</pre>
+</div>
+
+<p>
+To parse messages from the compiler, Compilation mode uses the variable <code>compilation-error-regexp-alist</code> which lists various error message formats and tells Emacs how to extract the locus from each. A similar variable, <code>grep-regexp-alist</code>, tells Emacs how to parse output from a <code>grep</code> command (see <a href="docs/emacs--Grep-Searching.html">Searching with Grep under Emacs</a>).
+</p>
+
+<p>
+Sometimes <code>compilation-error-regexp-alist</code> doesn't correctly determine the filename that is the source of the error. Use user option <code>compilation-transform-file-match-alist</code> to make any necessary adjustments, such as adding or changing a directory component, or even considering certain compiler messages not error messages at all.
+</p>
+
+<p>
+Compilation mode also defines the keys SPC and DEL to scroll by screenfuls; M-n (<code>compilation-next-error</code>) and M-p (<code>compilation-previous-error</code>) to move to the next or previous error message; and M-{ (<code>compilation-next-file</code>) and M-} (<code>compilation-previous-file</code>) to move to the next or previous error message for a different source file.
+</p>
+
+<p>
+You can type C-c C-f to toggle Next Error Follow mode. In this minor mode, ordinary cursor motion in the compilation buffer automatically updates the source buffer, i.e., moving the cursor over an error message causes the locus of that error to be displayed.
+</p>
+
+<p>
+The features of Compilation mode are also available in a minor mode called Compilation Minor mode. This lets you parse error messages in any buffer, not just a normal compilation output buffer. Type M-x compilation-minor-mode to enable the minor mode. For instance, in an Rlogin buffer (see <a href="docs/emacs--Remote-Host.html">Remote Host Shell</a>), Compilation minor mode automatically accesses remote source files by FTP (see <a href="docs/emacs--File-Names.html">File Names</a>).
+</p>
+
+<hr />
+</div>
+</div>

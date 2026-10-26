@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Frames-and-Blocks-in-Beamer-1">1. 13.8.3 Frames and Blocks in Beamer ¶</a>
+<ul>
+<li><a href="#section">1.1. (137)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Frames-and-Blocks-in-Beamer"></a>
+Next: <a href="docs/org--Beamer-specific-syntax.html">Beamer specific syntax</a>, Previous: <a href="docs/org--Beamer-specific-export-settings.html">Beamer specific export settings</a>, Up: <a href="docs/org--Beamer-Export.html">Beamer Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Frames-and-Blocks-in-Beamer-1" class="outline-2">
+<h2 id="Frames-and-Blocks-in-Beamer-1"><span class="section-number-2">1.</span> 13.8.3 Frames and Blocks in Beamer <a href="#Frames-and-Blocks-in-Beamer-1">¶</a></h2>
+<div class="outline-text-2" id="text-Frames-and-Blocks-in-Beamer-1">
+<p>
+Org transforms heading levels into Beamer's sectioning elements, frames and blocks. Any Org tree with a not-too-deep-level nesting should in principle be exportable as a Beamer presentation.
+</p>
+
+<ul class="org-ul">
+<li><p>
+Org headlines become Beamer frames when the heading level in Org is equal to <code>org-beamer-frame-level</code> or ‘=H=' value in a ‘=OPTIONS=' line (see <a href="docs/org--Export-Settings.html">Export Settings</a>).
+</p>
+
+<p>
+Org overrides headlines to frames conversion for the current tree of an Org file if it encounters the ‘=BEAMER<sub>ENV</sub>=' property set to ‘=frame=' or ‘=fullframe='. Org ignores whatever <code>org-beamer-frame-level</code> happens to be for that headline level in the Org tree. In Beamer terminology, a full frame is a frame without its title.
+</p></li>
+
+<li>Org exports a Beamer frame's objects as block environments. Org can enforce wrapping in special block types when ‘=BEAMER<sub>ENV</sub>=' property is set. For valid values see <code>org-beamer-environments-default</code>. To add more values, see <code>org-beamer-environments-extra</code>.</li>
+
+<li><p>
+If ‘=BEAMER<sub>ENV</sub>=' is set to ‘=appendix=', Org exports the entry as an appendix. When set to ‘=note=', Org exports the entry as a note within the frame or between frames, depending on the entry's heading level. When set to ‘=noteNH=', Org exports the entry as a note without its title. When set to ‘=againframe=', Org exports the entry with ‘=\againframe=' command, which makes setting the ‘=BEAMER<sub>REF</sub>=' property mandatory because ‘=\againframe=' needs frame to resume.
+</p>
+
+<p>
+When ‘=ignoreheading=' is set, Org export ignores the entry's headline but not its content. This is useful for inserting content between frames. It is also useful for properly closing a ‘=column=' environment.
+</p>
+
+<p>
+If ‘=BEAMER<sub>SUBTITLE</sub>=' is set, Org exports its value as the subtitle for the headline's frame. This property has no effect on headlines which are not exported as frames.
+</p>
+
+<p>
+When ‘=BEAMER<sub>ACT</sub>=' is set for a headline, Org export translates that headline as an overlay or action specification. When enclosed in square brackets, Org export makes the overlay specification a default. Use ‘=BEAMER<sub>OPT</sub>=' to set any options applicable to the current Beamer frame or block. The Beamer export backend wraps with appropriate angular or square brackets. It also adds the ‘=fragile=' option for any code that may require a verbatim block.
+</p>
+
+<p>
+To create a column on the Beamer slide, use the ‘=BEAMER<sub>COL</sub>=' property for its headline in the Org file. Set the value of ‘=BEAMER<sub>COL</sub>=' to a decimal number representing the fraction of the total text width. Beamer export uses this value to set the column's width and fills the column with the contents of the Org entry. If the Org entry has no specific environment defined, Beamer export ignores the heading. If the Org entry has a defined environment, Beamer export uses the heading as title. Behind the scenes, Beamer export automatically handles LaTeX column separations for contiguous headlines. To manually adjust them for any unique configurations needs, use the ‘=BEAMER<sub>ENV</sub>=' property.
+</p></li>
+</ul>
+
+<hr />
+</div>
+</div>

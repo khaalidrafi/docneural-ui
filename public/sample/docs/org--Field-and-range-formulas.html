@@ -1,0 +1,58 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Field-and-range-formulas-1">1. 3.5.5 Field and range formulas ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Field-and-range-formulas"></a>
+Next: <a href="docs/org--Column-formulas.html">Column formulas</a>, Previous: <a href="docs/org--Durations-and-time-values.html">Durations and time values</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Field-and-range-formulas-1" class="outline-2">
+<h2 id="Field-and-range-formulas-1"><span class="section-number-2">1.</span> 3.5.5 Field and range formulas <a href="#Field-and-range-formulas-1">¶</a></h2>
+<div class="outline-text-2" id="text-Field-and-range-formulas-1">
+<p>
+To assign a formula to a particular field, type it directly into the field, preceded by ‘=:==', for example ‘=vsum(@II..III)='. When you press TAB or RET or C-c C-c with point still in the field, the formula is stored as the formula for this field, evaluated, and the current field is replaced with the result.
+</p>
+
+<p>
+Formulas are stored in a special ‘=TBLFM=' keyword located directly below the table. If you type the equation in the fourth field of the third data line in the table, the formula looks like ‘=@3$4=$1+\(2='. When inserting/deleting/swapping column and rows with the appropriate commands, /absolute references/ (but not relative ones) in stored formulas are modified in order to still reference the same field. To avoid this from happening, in particular in range references, anchor ranges at the table borders (using ‘=@<=', ‘=@>=', ‘=\)&lt;=', ‘=$&gt;='), or at hlines using the ‘=@I=' notation. Automatic adaptation of field references does not happen if you edit the table structure with normal editing commands&#x2014;you must fix the formulas yourself.
+</p>
+
+<p>
+Instead of typing an equation into the field, you may also use the following command
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002du-C_002dc-_003d"></a>C-u C-c = (<code>org-table-eval-formula</code>) </dt><dd>Install a new formula for the current field. The command prompts for a formula with default taken from the ‘=TBLFM=' keyword, applies it to the current field, and stores it.</dd>
+</dl>
+
+<p>
+The left-hand side of a formula can also be a special expression in order to assign the formula to a number of different fields. There is no keyboard shortcut to enter such range formulas. To add them, use the formula editor (see <a href="docs/org--Editing-and-debugging-formulas.html">Editing and debugging formulas</a>) or edit the ‘=TBLFM=' keyword directly.
+</p>
+
+<dl class="org-dl">
+<dt>‘=$2=='</dt><dd>Column formula, valid for the entire column. This is so common that Org treats these formulas in a special way, see <a href="docs/org--Column-formulas.html">Column formulas</a>.</dd>
+
+<dt>‘=@3=='</dt><dd>Row formula, applies to all fields in the specified row. ‘=@&gt;==' means the last row.</dd>
+
+<dt>‘=@1$2..@4$3=='</dt><dd>Range formula, applies to all fields in the given rectangular range. This can also be used to assign a formula to some but not all fields in a row.</dd>
+
+<dt>‘=$NAME=='</dt><dd>Named field, see <a href="docs/org--Advanced-features.html">Advanced features</a>.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Column-formulas.html">Column formulas</a>, Previous: <a href="docs/org--Durations-and-time-values.html">Durations and time values</a>, Up: <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Project-Commands-That-Operate-on-Buffers">1. 30.2.2 Project Commands That Operate on Buffers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Switching-Projects.html">Switching Projects</a>   Previous: <a href="docs/emacs--Project-File-Commands.html">Project Commands That Operate on Files</a>   Up: <a href="docs/emacs--Projects.html">Working with Projects</a>
+</p>
+
+<p>
+<a id="Project-Buffer-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Project-Commands-That-Operate-on-Buffers" class="outline-2">
+<h2 id="Project-Commands-That-Operate-on-Buffers"><span class="section-number-2">1.</span> 30.2.2 Project Commands That Operate on Buffers <a href="#Project-Commands-That-Operate-on-Buffers">¶</a></h2>
+<div class="outline-text-2" id="text-Project-Commands-That-Operate-on-Buffers">
+<dl class="org-dl">
+<dt>C-x p b</dt><dd>Switch to another buffer belonging to the current project (<code>project-switch-to-buffer</code>).</dd>
+
+<dt>C-x p C-b</dt><dd>List the project buffers (<code>project-list-buffers</code>).</dd>
+
+<dt>C-x p k</dt><dd>Kill all live buffers that belong to the current project (<code>project-kill-buffers</code>).</dd>
+
+<dt>C-x p o</dt><dd>Run the next command in the current project (<code>project-any-command</code>).</dd>
+</dl>
+
+<p>
+Working on a project could potentially involve having many buffers visiting files that belong to the project, and also buffers that belong to the project, but don't visit any files (like the <code>*compilation*</code> buffer created by <code>project-compile</code>). The command C-x p b (<code>project-switch-to-buffer</code>) helps you switch between buffers that belong to the current project by prompting for a buffer to switch and considering only the current project's buffers as candidates for completion.
+</p>
+
+<p>
+Like the command <code>list-buffers</code> (see <a href="docs/emacs--List-Buffers.html">Listing Existing Buffers</a>), the command C-x p C-b (<code>project-list-buffers</code>) displays a list of existing buffers, but only belonging to the current project.
+</p>
+
+<p>
+When you finish working on the project, you may wish to kill all the buffers that belong to the project, to keep your Emacs session smaller. The command C-x p k (<code>project-kill-buffers</code>) accomplishes that: it kills all the buffers that belong to the current project that satisfy any of <code>project-kill-buffer-conditions</code>. If <code>project-kill-buffers-display-buffer-list</code> is non-<code>nil</code>, the buffers to be killed will be displayed first.
+</p>
+
+<p>
+Finally, the command C-x p o (<code>project-any-command</code>) will run the next command you type, whether related to buffers or not, in the current project.
+</p>
+
+<hr />
+</div>
+</div>

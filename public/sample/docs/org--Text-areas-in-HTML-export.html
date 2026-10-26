@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Text-areas-in-HTML-export-1">1. 13.9.12 Text areas in HTML export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Text-areas-in-HTML-export"></a>
+Next: <a href="docs/org--CSS-support.html">CSS support</a>, Previous: <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Text-areas-in-HTML-export-1" class="outline-2">
+<h2 id="Text-areas-in-HTML-export-1"><span class="section-number-2">1.</span> 13.9.12 Text areas in HTML export <a href="#Text-areas-in-HTML-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Text-areas-in-HTML-export-1">
+<p>
+Before Org mode's Babel, one popular approach to publishing code in HTML was by using ‘=:textarea='. The advantage of this approach was that copying and pasting was built into browsers with simple JavaScript commands. Even editing before pasting was made simple.
+</p>
+
+<p>
+The HTML export backend can create such text areas. It requires an ‘=#+ATTR<sub>HTML</sub>=' line as shown in the example below with the ‘=:textarea=' option. This must be followed by either an example or a source code block. Other Org block types do not honor the ‘=:textarea=' option.
+</p>
+
+<p>
+By default, the HTML export backend creates a text area 80 characters wide and height just enough to fit the content. Override these defaults with ‘=:width=' and ‘=:height=' options on the ‘=#+ATTR<sub>HTML</sub>=' line.
+</p>
+
+<pre class="example" id="org8e35ab4">
+#+ATTR_HTML: :textarea t :width 40
+#+BEGIN_EXAMPLE
+  (defun org-xor (a b)
+     "Exclusive or."
+     (if a (not b) b))
+</pre>
+<p>
+#+end<sub>example</sub>
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--CSS-support.html">CSS support</a>, Previous: <a href="docs/org--Math-formatting-in-HTML-export.html">Math formatting in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

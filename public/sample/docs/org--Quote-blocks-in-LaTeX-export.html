@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Quote-blocks-in-LaTeX-export-1">1. 13.10.13 Quote blocks in LaTeX export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Quote-blocks-in-LaTeX-export"></a>
+Next: <a href="docs/org--Controlling-the-way-the-table-of-contents-is-generated.html">Controlling the way the table of contents is generated</a>, Previous: <a href="docs/org--Verse-blocks-in-LaTeX-export.html">Verse blocks in LaTeX export</a>, Up: <a href="docs/org--LaTeX-Export.html">LaTeX Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Quote-blocks-in-LaTeX-export-1" class="outline-2">
+<h2 id="Quote-blocks-in-LaTeX-export-1"><span class="section-number-2">1.</span> 13.10.13 Quote blocks in LaTeX export <a href="#Quote-blocks-in-LaTeX-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Quote-blocks-in-LaTeX-export-1">
+<p>
+The LaTeX export backend accepts two attributes for quote blocks: ‘=:environment=', for an arbitrary quoting environment (the default value is that of <code>org-latex-default-quote-environment</code>: <code>"quote"</code>) and ‘=:options='. For example, to choose the environment ‘=quotation=', included as an alternative to ‘=quote=' in standard LaTeX classes:
+</p>
+
+<pre class="example" id="org02d49b9">
+#+ATTR_LATEX: :environment quotation
+#+BEGIN_QUOTE
+some text...
+#+END_QUOTE
+</pre>
+
+<p>
+To choose the ‘=foreigndisplayquote=' environment, included in the LaTeX package ‘=csquotes=', with the ‘=german=' option, use this syntax:
+</p>
+
+<pre class="example" id="orga711bb1">
+#+LATEX_HEADER:\usepackage[autostyle=true]{csquotes}
+#+ATTR_LATEX: :environment foreigndisplayquote :options {german}
+#+BEGIN_QUOTE
+some text in German...
+#+END_QUOTE
+</pre>
+
+<p>
+which is exported to LaTeX as
+</p>
+
+<pre class="example" id="org46b8e11">
+\begin{foreigndisplayquote}{german}
+some text in German...
+\end{foreigndisplayquote}
+</pre>
+</div>
+</div>

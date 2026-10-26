@@ -1,0 +1,181 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#declaring-the-home-environment">1.0.1. 13.1 Declaring the Home Environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Declaring-the-Home-Environment"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Declaring-the-Home-Environment-1"></a>
+</p>
+</div>
+<div id="outline-container-declaring-the-home-environment" class="outline-4">
+<h4 id="declaring-the-home-environment"><span class="section-number-4">1.0.1.</span> 13.1 Declaring the Home Environment</h4>
+<div class="outline-text-4" id="text-declaring-the-home-environment">
+<p>
+The home environment is configured by providing a <code>home-environment</code> declaration in a file that can be passed to the <code>guix home</code> command (see <a href="docs/guix--Invoking-guix-home.html">Invoking <code>guix home</code></a>). The easiest way to get started is by generating an initial configuration with <code>guix home import</code>:
+</p>
+
+<pre class="example" id="org63e55ce">
+guix home import ~/src/guix-config
+</pre>
+
+<p>
+The <code>guix home import</code> command reads some of the “dot files” such as <code>~/.bashrc</code> found in your home directory and copies them to the given directory, <code>~/src/guix-config</code> in this case; it also reads the contents of your profile, <code>~/.guix-profile</code>, and, based on that, it populates <code>~/src/guix-config/home-configuration.scm</code> with a Home configuration that resembles your current configuration.
+</p>
+
+<p>
+A simple setup can include Bash and a custom text configuration, like in the example below. Don't be afraid to declare home environment parts, which overlaps with your current dot files: before installing any configuration files, Guix Home will back up existing config files to a separate place in the home directory.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> It is highly recommended that you manage your shell or shells with Guix Home, because it will make sure that all the necessary scripts are sourced by the shell configuration file. Otherwise you will need to do it manually. (see <a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a>).
+</p>
+</blockquote>
+
+<p>
+<a id="index-home_002denvironment"></a> <a id="index-_0025base_002dhome_002dservices"></a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu home)
+             (gnu home services)
+             (gnu home services shells)
+             (gnu services)
+             (gnu packages admin)
+             (guix gexp))
+
+
+(home-environment
+  (packages (list htop))
+  (services
+   (append (list
+            (service home-bash-service-type
+                     (home-bash-configuration
+                      (guix-defaults? #t)
+                      (variables
+                       `(("HISTFILE" . "$XDG_CACHE_HOME/.bash_history")
+                         ("HISTSIZE" . "50000")))))
+
+            (simple-service 'test-config
+                            home-xdg-configuration-files-service-type
+                            (list `("test.conf"
+                                    ,(plain-file "tmp-file.txt"
+                                                 "the content of
+                                          ~/.config/test.conf")))))
+           %base-home-services)))
+</pre>
+</div>
+
+<p>
+The <code>packages</code> field should be self-explanatory, it will install the list of packages into the user's profile. The most important field is <code>services</code>, it contains a list of <i>home services</i>, which are the basic building blocks of a home environment.
+</p>
+
+<p>
+There is no daemon (at least not necessarily) related to a home service, a home service is just an element that is used to declare part of home environment and extend other parts of it. The extension mechanism discussed in the previous chapter (see <a href="docs/guix--Defining-Services.html">Defining Services</a>) should not be confused with Shepherd services (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>). Using this extension mechanism and some Scheme code that glues things together gives the user the freedom to declare their own, very custom, home environments.
+</p>
+
+<p>
+<a id="index-container_002c-for-guix-home"></a>
+Once the configuration looks good, you can first test it in a throw-away “container”:
+</p>
+
+<pre class="example" id="org93c4b63">
+guix home container config.scm
+</pre>
+
+<p>
+The command above spawns a shell where your home environment is running. The shell runs in a container, meaning it's isolated from the rest of the system, so it's a good way to try out your configuration&#x2014;you can see if configuration bits are missing or misbehaving, if daemons get started, and so on. Once you exit that shell, you're back to the prompt of your original shell “in the real world”.
+</p>
+
+<p>
+Once you have a configuration file that suits your needs, you can reconfigure your home by running:
+</p>
+
+<pre class="example" id="orgfced4e2">
+guix home reconfigure config.scm
+</pre>
+
+<p>
+This “builds” your home environment and creates <code>~/.guix-home</code> pointing to it. Voilà!
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Make sure the operating system has elogind, systemd, or a similar mechanism to create the XDG run-time directory and has the <code>XDG_RUNTIME_DIR</code> variable set. Failing that, the <code>on-first-login</code> script will not execute anything, and processes like user Shepherd and its descendants will not start.
+</p>
+</blockquote>
+
+<p>
+If you're using Guix System, you can embed your home configuration in your system configuration such that <code>guix system reconfigure</code> will deploy both the system <i>and</i> your home at once! See <a href="docs/guix--Guix-Services.html#guix_002dhome_002dservice_002dtype"><code>guix-home-service-type</code></a>, for how to do that.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Configuring-the-Shell.html">Configuring the Shell</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

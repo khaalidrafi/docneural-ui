@@ -1,0 +1,39 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tabs-vs_002e-Spaces">1. 26.3 Tabs vs. Spaces ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Indent-Convenience.html">Convenience Features for Indentation</a>   Previous: <a href="docs/emacs--Tab-Stops.html">Tab Stops</a>   Up: <a href="docs/emacs--Indentation.html">Indentation</a>
+</p>
+
+<p>
+<a id="Just-Spaces"></a>
+</p>
+
+<hr />
+<div id="outline-container-Tabs-vs_002e-Spaces" class="outline-2">
+<h2 id="Tabs-vs_002e-Spaces"><span class="section-number-2">1.</span> 26.3 Tabs vs. Spaces <a href="#Tabs-vs_002e-Spaces">¶</a></h2>
+<div class="outline-text-2" id="text-Tabs-vs_002e-Spaces">
+<p>
+Normally, indentation commands insert (or remove) the shortest possible series of tab and space characters so as to align to the desired column. Tab characters are displayed as a stretch of empty space extending to the next <i>display tab stop</i>. By default, there is one display tab stop every <code>tab-width</code> columns (the default is 8). See <a href="docs/emacs--Text-Display.html">How Text Is Displayed</a>.
+</p>
+
+<p>
+If you prefer, all indentation can be made from spaces only. To request this, set the buffer-local variable <code>indent-tabs-mode</code> to <code>nil</code>. See <a href="docs/emacs--Locals.html">Local Variables</a>, for information about setting buffer-local variables. Note, however, that C-q TAB always inserts a tab character, regardless of the value of <code>indent-tabs-mode</code>.
+</p>
+
+<p>
+One reason to set <code>indent-tabs-mode</code> to <code>nil</code> is that not all editors display tab characters in the same way. Emacs users, too, may have different customized values of <code>tab-width</code>. By using spaces only, you can make sure that your file always looks the same. If you only care about how it looks within Emacs, another way to tackle this problem is to set the <code>tab-width</code> variable in a file-local variable (see <a href="docs/emacs--File-Variables.html">Local Variables in Files</a>).
+</p>
+
+<p>
+There are also commands to convert tabs to spaces or vice versa, always preserving the columns of all non-whitespace text. M-x tabify scans the region for sequences of spaces, and converts sequences of at least two spaces to tabs if that can be done without changing indentation. M-x untabify changes all tabs in the region to appropriate numbers of spaces.
+</p>
+
+<hr />
+</div>
+</div>

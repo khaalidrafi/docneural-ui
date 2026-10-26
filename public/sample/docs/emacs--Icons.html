@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Icons-1">1. 16.11 Icons ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Text-Scale.html">Text Scale</a>   Previous: <a href="docs/emacs--Standard-Faces.html">Standard Faces</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Icons"></a>
+</p>
+
+<hr />
+<div id="outline-container-Icons-1" class="outline-2">
+<h2 id="Icons-1"><span class="section-number-2">1.</span> 16.11 Icons <a href="#Icons-1">¶</a></h2>
+<div class="outline-text-2" id="text-Icons-1">
+<p>
+Emacs sometimes displays clickable buttons (or other informative icons), and you can customize how these look on display.
+</p>
+
+<p>
+The main customization point here is the <code>icon-preference</code> user option. By using this, you can tell Emacs your overall preferences for icons. This is a list of icon types, and the first icon type that's supported will be used. The supported types are:
+</p>
+
+<dl class="org-dl">
+<dt><code>image</code></dt><dd>Use an image for the icon.</dd>
+
+<dt><code>emoji</code></dt><dd>Use a colorful emoji for the icon.</dd>
+
+<dt><code>symbol</code></dt><dd>Use a monochrome symbol for the icon.</dd>
+
+<dt><code>text</code></dt><dd>Use a simple text for the icon.</dd>
+</dl>
+
+<p>
+In addition, each individual icon can be customized with M-x customize-icon, and themes can further alter the looks of the icons.
+</p>
+
+<p>
+To get a quick description of an icon, use the M-x describe-icon command.
+</p>
+</div>
+</div>

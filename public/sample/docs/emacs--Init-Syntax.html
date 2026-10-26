@@ -1,0 +1,77 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Init-File-Syntax">1. 51.4.1 Init File Syntax ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Init-Examples.html">Init File Examples</a>   Up: <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>
+</p>
+
+<p>
+<a id="Init-Syntax"></a>
+</p>
+
+<hr />
+<div id="outline-container-Init-File-Syntax" class="outline-2">
+<h2 id="Init-File-Syntax"><span class="section-number-2">1.</span> 51.4.1 Init File Syntax <a href="#Init-File-Syntax">¶</a></h2>
+<div class="outline-text-2" id="text-Init-File-Syntax">
+<p>
+The init file contains one or more Lisp expressions. Each of these consists of a function name followed by arguments, all surrounded by parentheses. For example, <code>(setq fill-column 60)</code> calls the function <code>setq</code> to set the variable <code>fill-column</code> (see <a href="docs/emacs--Filling.html">Filling Text</a>) to 60.
+</p>
+
+<p>
+You can set any Lisp variable with <code>setq</code>, but with certain variables <code>setq</code> won't do what you probably want in the init file. Some variables automatically become buffer-local when set with <code>setq</code>; what you want in the init file is to set the default value, using <code>setq-default</code>. (The following section has examples of both of these methods.)
+</p>
+
+<p>
+Some customizable minor mode variables do special things to enable the mode when you set them with Customize, but ordinary <code>setq</code> won't do that; to enable the mode in your init file, call the minor mode command. Finally, a few customizable user options are initialized in complex ways, and these have to be set either via the customize interface (see <a href="docs/emacs--Customization.html">Customization</a>), or by using <code>customize-set-variable=/=setopt</code> (see <a href="docs/emacs--Examining.html">Examining and Setting Variables</a>).
+</p>
+
+<p>
+The second argument to <code>setq</code> is an expression for the new value of the variable. This can be a constant, a variable, or a function call expression. In the init file, constants are used most of the time. They can be:
+</p>
+
+<dl class="org-dl">
+<dt>Numbers:</dt><dd>Numbers are written in decimal, with an optional initial minus sign.</dd>
+
+<dt><a id="index-Lisp-string-syntax"></a>Strings: </dt><dd><p>
+Lisp string syntax is the same as C string syntax with a few extra features. Use a double-quote character to begin and end a string constant.
+</p>
+
+<p>
+In a string, you can include newlines and special characters literally. But often it is cleaner to use backslash sequences for them: ‘=\n=' for newline, ‘=\b=' for backspace, ‘=\r=' for carriage return, ‘=\t=' for tab, ‘=\f=' for formfeed (control-L), ‘=\e=' for escape, ‘=\\=' for a backslash, ‘=\"<code>' for a double-quote, or ‘</code>\==ooo=' for the character whose octal code is <code>ooo</code>. Backslash and double-quote are the only characters for which backslash sequences are mandatory.
+</p>
+
+<p>
+‘=\C-<code>' can be used as a prefix for a control character, as in ‘</code>\C-s=' for ASCII control-S, and ‘=\M-<code>' can be used as a prefix for a Meta character, as in ‘</code>\M-a=' for Meta-A or ‘=\M-\C-a=' for Ctrl-Meta-A.
+</p>
+
+<p>
+See <a href="docs/emacs--Init-Non_002dASCII.html">Non-ASCII Characters in Init Files</a>, for information about including non-ASCII in your init file.
+</p></dd>
+
+<dt><a id="index-Lisp-character-syntax"></a>Characters: </dt><dd><p>
+Lisp character constant syntax consists of a ‘=?=' followed by either a character or an escape sequence starting with ‘=\='. Examples: <code>?x</code>, <code>?\n</code>, <code>?\"</code>, <code>?\)</code>. Note that strings and characters are not interchangeable in Lisp; some contexts require one and some contexts require the other.
+</p>
+
+<p>
+See <a href="docs/emacs--Init-Non_002dASCII.html">Non-ASCII Characters in Init Files</a>, for information about binding commands to keys which send non-ASCII characters.
+</p></dd>
+
+<dt>True:</dt><dd><code>t</code> stands for “true”.</dd>
+
+<dt>False:</dt><dd><code>nil</code> stands for “false”.</dd>
+
+<dt><a id="index-Lisp-object-syntax"></a>Other Lisp objects: </dt><dd>Write a single-quote (<code>'</code>) followed by the Lisp object you want.</dd>
+</dl>
+
+<p>
+For more information on the Emacs Lisp syntax, see <a href="../elisp_html/Introduction.html#Introduction">Introduction</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<hr />
+</div>
+</div>

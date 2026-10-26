@@ -1,0 +1,49 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Special-blocks-in-Texinfo-export-1">1. 13.14.14 Special blocks in Texinfo export ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Special-blocks-in-Texinfo-export"></a>
+Next: <a href="docs/org--A-Texinfo-example.html">A Texinfo example</a>, Previous: <a href="docs/org--Key-bindings-in-Texinfo-export.html">Key bindings in Texinfo export</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Special-blocks-in-Texinfo-export-1" class="outline-2">
+<h2 id="Special-blocks-in-Texinfo-export-1"><span class="section-number-2">1.</span> 13.14.14 Special blocks in Texinfo export <a href="#Special-blocks-in-Texinfo-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Special-blocks-in-Texinfo-export-1">
+<p>
+The Texinfo export backend supports two approaches to writing Texinfo definition commands. One of them is described here, the other in <a href="docs/org--Plain-lists-in-Texinfo-export.html">Plain lists in Texinfo export</a>.
+</p>
+
+<p>
+The Texinfo export backend converts special blocks to commands with the same name. It also adds any ‘=:options=' attributes to the end of the command, as shown in this example:
+</p>
+
+<pre class="example" id="orge055f9f">
+#+ATTR_TEXINFO: :options org-org-export-to-org ...
+#+BEGIN_defun
+  A somewhat obsessive function name.
+</pre>
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+becomes
+</p>
+
+<pre class="example" id="orga7640c9">
+@defun org-org-export-to-org ...
+  A somewhat obsessive function name.
+@end defun
+</pre>
+</div>
+</div>

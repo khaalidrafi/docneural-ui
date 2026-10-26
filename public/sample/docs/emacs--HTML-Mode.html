@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#SGML-and-HTML-Modes">1. 27.12 SGML and HTML Modes ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Nroff-Mode.html">Nroff Mode</a>   Previous: <a href="docs/emacs--TeX-Mode.html">TeX Mode</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="HTML-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-SGML-and-HTML-Modes" class="outline-2">
+<h2 id="SGML-and-HTML-Modes"><span class="section-number-2">1.</span> 27.12 SGML and HTML Modes <a href="#SGML-and-HTML-Modes">¶</a></h2>
+<div class="outline-text-2" id="text-SGML-and-HTML-Modes">
+<p>
+The major modes for SGML and HTML provide indentation support and commands for operating on tags.
+</p>
+
+<p>
+HTML consists of two modes&#x2014;one, a basic mode called <code>html-mode</code> is a slightly customized variant of SGML mode. The other, which is used by default for HTML files, is called <code>mhtml-mode</code>, and attempts to properly handle Javascript enclosed in a <code>&lt;script&gt;</code> element and CSS embedded in a <code>&lt;style&gt;</code> element.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dn-_0028SGML-mode_0029"></a>C-c C-n </dt><dd>Interactively specify a special character and insert the SGML ‘=&amp;='-command for that character (<code>sgml-name-char</code>).</dd>
+
+<dt><a id="index-C_002dc-C_002dt-_0028SGML-mode_0029"></a>C-c C-t </dt><dd><p>
+Interactively specify a tag and its attributes (<code>sgml-tag</code>). This command asks you for a tag name and for the attribute values, then inserts both the opening tag and the closing tag, leaving point between them.
+</p>
+
+<p>
+With a prefix argument <code>n</code>, the command puts the tag around the <code>n</code> words already present in the buffer after point. Whenever a region is active, it puts the tag around the region (when Transient Mark mode is off, it does this when a numeric argument of −1 is supplied.)
+</p></dd>
+
+<dt><a id="index-C_002dc-C_002da-_0028SGML-mode_0029"></a>C-c C-a </dt><dd>Interactively insert attribute values for the current tag (<code>sgml-attributes</code>).</dd>
+
+<dt><a id="index-C_002dc-C_002df-_0028SGML-mode_0029"></a>C-c C-f </dt><dd>Skip across a balanced tag group (which extends from an opening tag through its corresponding closing tag) (<code>sgml-skip-tag-forward</code>). A numeric argument acts as a repeat count.</dd>
+
+<dt><a id="index-C_002dc-C_002db-_0028SGML-mode_0029"></a>C-c C-b </dt><dd>Skip backward across a balanced tag group (which extends from an opening tag through its corresponding closing tag) (<code>sgml-skip-tag-backward</code>). A numeric argument acts as a repeat count.</dd>
+
+<dt><a id="index-C_002dc-C_002dd-_0028SGML-mode_0029"></a>C-c C-d </dt><dd>Delete the tag at or after point, and delete the matching tag too (<code>sgml-delete-tag</code>). If the tag at or after point is an opening tag, delete the closing tag too; if it is a closing tag, delete the opening tag too.</dd>
+
+<dt><a id="index-C_002dc-_003f-_0028SGML-mode_0029"></a>C-c ? <code>tag</code> RET </dt><dd>Display a description of the meaning of tag <code>tag</code> (<code>sgml-tag-help</code>). If the argument <code>tag</code> is empty, describe the tag at point.</dd>
+
+<dt><a id="index-C_002dc-_002f-_0028SGML-mode_0029"></a>C-c / </dt><dd>Insert a close tag for the innermost unterminated tag (<code>sgml-close-tag</code>). If called within a tag or a comment, close it instead of inserting a close tag.</dd>
+
+<dt><a id="index-C_002dc-8-_0028SGML-mode_0029"></a>C-c 8 </dt><dd>Toggle a minor mode in which Latin-1 characters insert the corresponding SGML commands that stand for them, instead of the characters themselves (<code>sgml-name-8bit-mode</code>).</dd>
+
+<dt><a id="index-C_002dc-C_002dv-_0028SGML-mode_0029"></a>C-c C-v </dt><dd>Run a shell command (which you must specify) to validate the current buffer as SGML (<code>sgml-validate</code>). (In HTML mode this key sequence runs a different command.)</dd>
+
+<dt><a id="index-C_002dc-TAB-_0028SGML-mode_0029"></a>C-c TAB </dt><dd>Toggle the visibility of existing tags in the buffer. This can be used as a cheap preview (<code>sgml-tags-invisible</code>).</dd>
+</dl>
+
+<p>
+The major mode for editing XML documents is called nXML mode. This is a powerful major mode that can recognize many existing XML schemas and use them to provide completion of XML elements via M-TAB, as well as on-the-fly XML validation with error highlighting. To enable nXML mode in an existing buffer, type M-x nxml-mode, or, equivalently, M-x xml-mode. Emacs uses nXML mode for files which have the extension <code>.xml</code>. For XHTML files, which have the extension <code>.xhtml</code>, Emacs uses HTML mode by default; you can make it use nXML mode by customizing the variable <code>auto-mode-alist</code> (see <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>). nXML mode is described in an Info manual, which is distributed with Emacs.
+</p>
+
+<p>
+You may choose to use the less powerful SGML mode for editing XML, since XML is a strict subset of SGML. To enable SGML mode in an existing buffer, type M-x sgml-mode. On enabling SGML mode, Emacs examines the buffer to determine whether it is XML; if so, it sets the variable <code>sgml-xml-mode</code> to a non-<code>nil</code> value. This causes SGML mode's tag insertion commands, described above, to always insert explicit closing tags as well.
+</p>
+
+<hr />
+</div>
+</div>

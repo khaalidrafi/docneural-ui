@@ -1,0 +1,80 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Displaying-the-Diary-1">1. 33.10.2 Displaying the Diary ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Date-Formats.html">Date Formats</a>   Previous: <a href="docs/emacs--Format-of-Diary-File.html">The Diary File</a>   Up: <a href="docs/emacs--Diary.html">The Diary</a>
+</p>
+
+<p>
+<a id="Displaying-the-Diary"></a>
+</p>
+
+<hr />
+<div id="outline-container-Displaying-the-Diary-1" class="outline-2">
+<h2 id="Displaying-the-Diary-1"><span class="section-number-2">1.</span> 33.10.2 Displaying the Diary <a href="#Displaying-the-Diary-1">¶</a></h2>
+<div class="outline-text-2" id="text-Displaying-the-Diary-1">
+<p>
+Once you have created a diary file, you can use the calendar to view it. You can also view today's events outside of Calendar mode. In the following, key bindings refer to the Calendar buffer.
+</p>
+
+<ul class="org-ul">
+<li>mouse-3 Diary<br />
+d :: Display all diary entries for the selected date (<code>diary-view-entries</code>).</li>
+
+<li id="s">Display the entire diary file (<code>diary-show-all-entries</code>).</li>
+
+<li id="m">Mark all visible dates that have diary entries (<code>diary-mark-entries</code>).</li>
+
+<li id="u">Unmark the calendar window (<code>calendar-unmark</code>).</li>
+
+<li id="M-x diary-print-entries">Print hard copy of the diary display as it appears.</li>
+
+<li id="M-x diary">Display all diary entries for today's date.</li>
+
+<li id="M-x diary-mail-entries">Mail yourself email reminders about upcoming diary entries.</li>
+</ul>
+
+<p>
+Displaying the diary entries with d (<code>diary-view-entries</code>) shows in a separate buffer the diary entries for the selected date in the calendar. The mode line of the new buffer shows the date of the diary entries. Holidays are shown either in the buffer or in the mode line, depending on the display method you choose (see <a href="docs/emacs--Diary-Display.html">Diary Display</a>). If you specify a numeric argument with d, it shows all the diary entries for that many successive days. Thus, 2 d displays all the entries for the selected date and for the following day.
+</p>
+
+<p>
+Another way to display the diary entries for a date is to click mouse-3 on the date, and then choose Diary entries from the menu that appears. If the variable <code>calendar-view-diary-initially-flag</code> is non-<code>nil</code>, creating the calendar lists the diary entries for the current date (provided the current date is visible).
+</p>
+
+<p>
+To get a broader view of which days are mentioned in the diary, use the m (<code>diary-mark-entries</code>) command. This marks the dates that have diary entries in a different face. See <a href="docs/emacs--Calendar-Customizing.html">diary-entry-marker</a>.
+</p>
+
+<p>
+This command applies both to the months that are currently visible and to those that subsequently become visible after scrolling. To turn marking off and erase the current marks, type u (<code>calendar-unmark</code>), which also turns off holiday marks (see <a href="docs/emacs--Holidays.html">Holidays</a>). If the variable <code>calendar-mark-diary-entries-flag</code> is non-<code>nil</code>, creating or updating the calendar marks diary dates automatically.
+</p>
+
+<p>
+To prevent an individual diary entry from being marked in the calendar, insert the string that <code>diary-nonmarking-symbol</code> specifies (the default is ‘=&amp;=') at the beginning of the entry, before the date. This has no effect on display of the entry in the diary buffer; it only affects marks on dates in the calendar. Nonmarking entries can be useful for generic entries that would otherwise mark many different dates.
+</p>
+
+<p>
+To see the full diary file, rather than just some of the entries, use the s (<code>diary-show-all-entries</code>) command.
+</p>
+
+<p>
+The command M-x diary displays the diary entries for the current date, independently of the calendar display, and optionally for the next few days as well; the variable <code>diary-number-of-entries</code> specifies how many days to include. See <a href="docs/emacs--Diary-Customizing.html">diary-number-of-entries</a>.
+</p>
+
+<p>
+If you put <code>(diary)</code> in your <code>.emacs</code> file, this automatically displays a window with the day's diary entries when you start Emacs.
+</p>
+
+<p>
+Some people like to receive email notifications of events in their diary. To send such mail to yourself, use the command M-x diary-mail-entries. A prefix argument specifies how many days (starting with today) to check; otherwise, the variable <code>diary-mail-days</code> says how many days.
+</p>
+
+<hr />
+</div>
+</div>

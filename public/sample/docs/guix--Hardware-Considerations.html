@@ -1,0 +1,99 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#hardware-considerations">1.0.1. 3.2 Hardware Considerations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Hardware-Considerations"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--USB-Stick-and-DVD-Installation.html">USB Stick and DVD Installation</a>, Previous: <a href="docs/guix--Limitations.html">Limitations</a>, Up: <a href="docs/guix--System-Installation.html">System Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Hardware-Considerations-1"></a>
+</p>
+</div>
+<div id="outline-container-hardware-considerations" class="outline-4">
+<h4 id="hardware-considerations"><span class="section-number-4">1.0.1.</span> 3.2 Hardware Considerations</h4>
+<div class="outline-text-4" id="text-hardware-considerations">
+<p>
+<a id="index-hardware-support-on-Guix-System"></a>
+GNU Guix focuses on respecting the user's computing freedom. It builds around the kernel Linux-libre, which means that only hardware for which free software drivers and firmware exist is supported. Nowadays, a wide range of off-the-shelf hardware is supported on GNU/Linux-libre&#x2014;from keyboards to graphics cards to scanners and Ethernet controllers. Unfortunately, there are still areas where hardware vendors deny users control over their own computing, and such hardware is not supported on Guix System.
+</p>
+
+<p>
+<a id="index-WiFi_002c-hardware-support"></a>
+One of the main areas where free drivers or firmware are lacking is WiFi devices. WiFi devices known to work include those using Atheros chips (AR9271 and AR7010), which corresponds to the <code>ath9k</code> Linux-libre driver, and those using Broadcom/AirForce chips (BCM43xx with Wireless-Core Revision 5), which corresponds to the <code>b43-open</code> Linux-libre driver. Free firmware exists for both and is available out-of-the-box on Guix System, as part of <code>%base-firmware</code> (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>firmware</code></a>).
+</p>
+
+<p>
+The installer warns you early on if it detects devices that are known <i>not</i> to work due to the lack of free firmware or free drivers.
+</p>
+
+<p>
+<a id="index-RYF_002c-Respects-Your-Freedom"></a>
+The <a href="https://www.fsf.org/">Free Software Foundation</a> runs <a href="https://www.fsf.org/ryf"><i>Respects Your Freedom</i></a> (RYF), a certification program for hardware products that respect your freedom and your privacy and ensure that you have control over your device. We encourage you to check the list of RYF-certified devices.
+</p>
+
+<p>
+Another useful resource is the <a href="https://www.h-node.org/">H-Node</a> web site. It contains a catalog of hardware devices with information about their support in GNU/Linux.
+</p>
+</div>
+</div>
+</div>

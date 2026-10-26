@@ -1,0 +1,149 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#gnu-distribution">1.0.1. 1.2 GNU Distribution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="GNU-Distribution"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Managing-Software-the-Guix-Way.html">Managing Software the Guix Way</a>, Up: <a href="docs/guix--Introduction.html">Introduction</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="GNU-Distribution-1"></a>
+</p>
+</div>
+<div id="outline-container-gnu-distribution" class="outline-4">
+<h4 id="gnu-distribution"><span class="section-number-4">1.0.1.</span> 1.2 GNU Distribution</h4>
+<div class="outline-text-4" id="text-gnu-distribution">
+<p>
+<a id="index-Guix-System-1"></a>
+Guix comes with a distribution of the GNU system consisting entirely of free software. The distribution can be installed on its own (see <a href="docs/guix--System-Installation.html">System Installation</a>), but it is also possible to install Guix as a package manager on top of an installed GNU/Linux system (see <a href="docs/guix--Installation.html">Installation</a>). When we need to distinguish between the two, we refer to the standalone distribution as Guix System.
+</p>
+
+<p>
+The distribution provides core GNU packages such as GNU libc, GCC, and Binutils, as well as many GNU and non-GNU applications. The complete list of available packages can be browsed <a href="https://www.gnu.org/software/guix/packages">on-line</a> or by running <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>):
+</p>
+
+<pre class="example" id="orgb3d3c4f">
+guix package --list-available
+</pre>
+
+<p>
+Our goal is to provide a practical 100% free software distribution of Linux-based and other variants of GNU, with a focus on the promotion and tight integration of GNU components, and an emphasis on programs and tools that help users exert that freedom.
+</p>
+
+<p>
+Packages are currently available on the following platforms:
+</p>
+
+<dl class="org-dl">
+<dt><code>x86_64-linux</code></dt><dd>Intel/AMD <code>x86_64</code> architecture, Linux-Libre kernel.</dd>
+
+<dt><code>i686-linux</code></dt><dd>Intel 32-bit architecture (IA32), Linux-Libre kernel.</dd>
+
+<dt><code>armhf-linux</code></dt><dd>ARMv7-A architecture with hard float, Thumb-2 and NEON, using the EABI hard-float application binary interface (ABI), and Linux-Libre kernel.</dd>
+
+<dt><code>aarch64-linux</code></dt><dd>little-endian 64-bit ARMv8-A processors, Linux-Libre kernel.</dd>
+
+<dt><code>i586-gnu</code></dt><dd><p>
+<a href="https://hurd.gnu.org">GNU/Hurd</a> on the Intel 32-bit architecture (IA32).
+</p>
+
+<p>
+This configuration is experimental and under development. The easiest way for you to give it a try is by setting up an instance of <code>hurd-vm-service-type</code> on your GNU/Linux machine (see <a href="docs/guix--Virtualization-Services.html#transparent_002demulation_002dqemu"><code>hurd-vm-service-type</code></a>). See <a href="docs/guix--Contributing.html">Contributing</a>, on how to help!
+</p></dd>
+
+<dt><code>x86_64-gnu</code></dt><dd><p>
+<a href="https://hurd.gnu.org">GNU/Hurd</a> on the <code>x86_64</code> Intel/AMD 64-bit architecture.
+</p>
+
+<p>
+This configuration is even more experimental and under heavy upstream development.
+</p></dd>
+
+<dt><code>mips64el-linux (unsupported)</code></dt><dd>little-endian 64-bit MIPS processors, specifically the Loongson series, n32 ABI, and Linux-Libre kernel. This configuration is no longer fully supported; in particular, there is no ongoing work to ensure that this architecture still works. Should someone decide they wish to revive this architecture then the code is still available.</dd>
+
+<dt><code>powerpc-linux (unsupported)</code></dt><dd>big-endian 32-bit PowerPC processors, specifically the PowerPC G4 with AltiVec support, and Linux-Libre kernel. This configuration is not fully supported and there is no ongoing work to ensure this architecture works.</dd>
+
+<dt><code>powerpc64le-linux</code></dt><dd>little-endian 64-bit Power ISA processors, Linux-Libre kernel. This includes POWER9 systems such as the <a href="https://www.fsf.org/news/talos-ii-mainboard-and-talos-ii-lite-mainboard-now-fsf-certified-to-respect-your-freedom">RYF Talos II mainboard</a>. This platform is available as a "technology preview": although it is supported, substitutes are not yet available from the build farm (see <a href="docs/guix--Substitutes.html">Substitutes</a>), and some packages may fail to build (see <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>). That said, the Guix community is actively working on improving this support, and now is a great time to try it and get involved!</dd>
+
+<dt><code>riscv64-linux</code></dt><dd>little-endian 64-bit RISC-V processors, specifically RV64GC, and Linux-Libre kernel. This platform is available as a "technology preview": although it is supported, substitutes are not yet available from the build farm (see <a href="docs/guix--Substitutes.html">Substitutes</a>), and some packages may fail to build (see <a href="docs/guix--Tracking-Bugs-and-Changes.html">Tracking Bugs and Changes</a>). That said, the Guix community is actively working on improving this support, and now is a great time to try it and get involved!</dd>
+</dl>
+
+<p>
+With Guix System, you <i>declare</i> all aspects of the operating system configuration and Guix takes care of instantiating the configuration in a transactional, reproducible, and stateless fashion (see <a href="docs/guix--System-Configuration.html">System Configuration</a>). Guix System uses the Linux-libre kernel, the Shepherd initialization system (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Introduction.html#Introduction">Introduction</a> in The GNU Shepherd Manual), the well-known GNU utilities and tool chain, as well as the graphical environment or system services of your choice.
+</p>
+
+<p>
+Guix System is available on all the above platforms except <code>mips64el-linux</code>, <code>powerpc-linux</code>, <code>powerpc64le-linux</code> and <code>riscv64-linux</code>.
+</p>
+
+<p>
+For information on porting to other architectures or kernels, see <a href="docs/guix--Porting.html">Porting to a New Platform</a>.
+</p>
+
+<p>
+Building this distribution is a cooperative effort, and you are invited to join! See <a href="docs/guix--Contributing.html">Contributing</a>, for information about how you can help.
+</p>
+
+<hr />
+</div>
+</div>
+</div>

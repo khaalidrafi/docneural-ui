@@ -1,0 +1,73 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Math-formatting-in-HTML-export-1">1. 13.9.11 Math formatting in HTML export ¶</a>
+<ul>
+<li><a href="#section">1.1. (138)</a></li>
+<li><a href="#section-1">1.2. (139)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Math-formatting-in-HTML-export"></a>
+Next: <a href="docs/org--Text-areas-in-HTML-export.html">Text areas in HTML export</a>, Previous: <a href="docs/org--Images-in-HTML-export.html">Images in HTML export</a>, Up: <a href="docs/org--HTML-Export.html">HTML Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Math-formatting-in-HTML-export-1" class="outline-2">
+<h2 id="Math-formatting-in-HTML-export-1"><span class="section-number-2">1.</span> 13.9.11 Math formatting in HTML export <a href="#Math-formatting-in-HTML-export-1">¶</a></h2>
+<div class="outline-text-2" id="text-Math-formatting-in-HTML-export-1">
+<p>
+LaTeX math snippets (see <a href="docs/org--LaTeX-fragments.html">LaTeX fragments</a>) can be displayed in two different ways on HTML pages. The default is to use the <a href="https://www.mathjax.org">MathJax</a>, which should work out of the box with Org. Some MathJax options can be configured via <code>org-html-mathjax-options</code>, or in the buffer. For example, with the following settings,
+</p>
+
+<pre class="example" id="orgd8ed5c2">
+#+HTML_MATHJAX: align: left indent: 5em tagside: left
+</pre>
+
+<p>
+equation labels are displayed on the left margin and equations are five ems from the left margin.
+</p>
+
+<p>
+To use a local copy of MathJax, use ‘=path=' option:
+</p>
+
+<pre class="example" id="orgee2a4fa">
+#+HTML_MATHJAX: path:the/path/to/mathjax.js
+</pre>
+
+<p>
+See the docstring of <code>org-html-mathjax-options</code> for all supported variables. The MathJax template can be configured via <code>org-html-mathjax-template</code>.
+</p>
+
+<p>
+If you prefer, you can also request that LaTeX fragments are processed into small images that will be inserted into the browser page. Before the availability of MathJax, this was the default method for Org files. This method requires that the dvipng program, dvisvgm or ImageMagick suite is available on your system. You can still get this processing with
+</p>
+
+<pre class="example" id="orgb57239f">
+#+OPTIONS: tex:dvipng
+</pre>
+
+<pre class="example" id="org39acd7d">
+#+OPTIONS: tex:dvisvgm
+</pre>
+
+<p>
+or
+</p>
+
+<pre class="example" id="org0000995">
+#+OPTIONS: tex:imagemagick
+</pre>
+
+<hr />
+</div>
+</div>

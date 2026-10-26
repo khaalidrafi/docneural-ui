@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Document-Viewing">1. 39 Document Viewing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Shell.html">Running Shell Commands from Emacs</a>   Previous: <a href="docs/emacs--Network-Security.html">Network Security</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Document-View"></a>
+</p>
+
+<hr />
+<div id="outline-container-Document-Viewing" class="outline-2">
+<h2 id="Document-Viewing"><span class="section-number-2">1.</span> 39 Document Viewing <a href="#Document-Viewing">¶</a></h2>
+<div class="outline-text-2" id="text-Document-Viewing">
+<p>
+DocView mode is a major mode for viewing DVI, PostScript (PS), PDF, OpenDocument, Microsoft Office, EPUB, CBZ, FB2, XPS and OXPS documents. It provides features such as slicing, zooming, and searching inside documents. It works by converting the document to a set of images using the <code>gs</code> (GhostScript) or <code>pdfdraw=/=mutool draw</code> (MuPDF) commands and other external tools, and then displays those converted images.
+</p>
+
+<p>
+When you visit a document file that can be displayed with DocView mode, Emacs automatically uses that mode . As an exception, when you visit a PostScript file, Emacs switches to PS mode, a major mode for editing PostScript files as text; however, it also enables DocView minor mode, so you can type C-c C-c to view the document with DocView. In either DocView mode or DocView minor mode, repeating C-c C-c (<code>doc-view-toggle-display</code>) toggles between DocView and the underlying file contents.
+</p>
+
+<p>
+When you visit a file which would normally be handled by DocView mode but some requirement is not met (e.g., you operate in a terminal frame or Emacs has no PNG support), you are queried if you want to view the document's contents as plain text. If you confirm, the buffer is put in text mode and DocView minor mode is activated. Thus, by typing C-c C-c you switch to the fallback mode. With another C-c C-c you return to DocView mode. The plain text contents can also be displayed from within DocView mode by typing C-c C-t (<code>doc-view-open-text</code>).
+</p>
+
+<p>
+You can explicitly enable DocView mode with the command M-x doc-view-mode. You can toggle DocView minor mode with M-x doc-view-minor-mode.
+</p>
+
+<p>
+When DocView mode starts, it displays a welcome screen and begins formatting the file, page by page. It displays the first page once that has been formatted.
+</p>
+
+<p>
+To kill the DocView buffer, type k (<code>doc-view-kill-proc-and-buffer</code>). To bury it, type q (<code>quit-window</code>).
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--DocView-Navigation.html">DocView Navigation</a></li>
+<li><a href="docs/emacs--DocView-Searching.html">DocView Searching</a></li>
+<li><a href="docs/emacs--DocView-Slicing.html">DocView Slicing</a></li>
+<li><a href="docs/emacs--DocView-Conversion.html">DocView Conversion</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

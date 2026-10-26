@@ -1,0 +1,89 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Help-Summary-1">1. 12.1 Help Summary ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>   Up: <a href="docs/emacs--Help.html">Help</a>
+</p>
+
+<p>
+<a id="Help-Summary"></a>
+</p>
+
+<hr />
+<div id="outline-container-Help-Summary-1" class="outline-2">
+<h2 id="Help-Summary-1"><span class="section-number-2">1.</span> 12.1 Help Summary <a href="#Help-Summary-1">¶</a></h2>
+<div class="outline-text-2" id="text-Help-Summary-1">
+<p>
+Here is a summary of help commands for accessing the built-in documentation. Most of these are described in more detail in the following sections.
+</p>
+
+<dl class="org-dl">
+<dt>C-h a <code>topics</code> RET</dt><dd>Display a list of commands whose names match <code>topics</code> (<code>apropos-command</code>). See <a href="docs/emacs--Apropos.html">Apropos</a>.</dd>
+
+<dt>C-h b</dt><dd>Display all active key bindings; minor mode bindings first, then those of the major mode, then global bindings (<code>describe-bindings</code>). See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h C-q</dt><dd>Toggle display of a window showing popular commands and their key bindings. See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h c <code>key</code></dt><dd>Show the name of the command that the key sequence <code>key</code> is bound to (<code>describe-key-briefly</code>). Here c stands for “character”. For more extensive information on <code>key</code>, use C-h k. See <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>.</dd>
+
+<dt>C-h d <code>topics</code> RET</dt><dd>Display the commands and variables whose documentation matches <code>topics</code> (<code>apropos-documentation</code>). See <a href="docs/emacs--Apropos.html">Apropos</a>.</dd>
+
+<dt>C-h e</dt><dd>Display the <code>*Messages*</code> buffer (<code>view-echo-area-messages</code>). See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h f <code>function</code> RET</dt><dd>Display documentation on the Lisp function named <code>function</code> (<code>describe-function</code>). Since commands are Lisp functions, this works for commands too, but you can also use <code>C-h x</code>. See <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>.</dd>
+
+<dt>C-h h</dt><dd>Display the <code>HELLO</code> file, which shows examples of various character sets.</dd>
+
+<dt>C-h i</dt><dd>Run Info, the GNU documentation browser (<code>info</code>). The Emacs manual is available in Info. See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h k <code>key</code></dt><dd>Display the name and documentation of the command that <code>key</code> runs (<code>describe-key</code>). See <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>.</dd>
+
+<dt>C-h l</dt><dd>Display a description of your last 300 keystrokes (<code>view-lossage</code>). See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h m</dt><dd>Display documentation of the current major mode and minor modes (<code>describe-mode</code>). See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h n</dt><dd>Display news of recent Emacs changes (<code>view-emacs-news</code>). See <a href="docs/emacs--Help-Files.html">Help Files</a>.</dd>
+
+<dt>C-h o <code>symbol</code></dt><dd>Display documentation of the Lisp symbol named <code>symbol</code> (<code>describe-symbol</code>). This will show the documentation of all kinds of symbols: functions, variables, and faces. See <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>.</dd>
+
+<dt>C-h p</dt><dd>Find packages by topic keyword (<code>finder-by-keyword</code>). See <a href="docs/emacs--Package-Keywords.html">Keyword Search for Packages</a>. This lists packages using a package menu buffer. See <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>.</dd>
+
+<dt>C-h P <code>package</code> RET</dt><dd>Display documentation about the specified package (<code>describe-package</code>). See <a href="docs/emacs--Package-Keywords.html">Keyword Search for Packages</a>.</dd>
+
+<dt>C-h r</dt><dd>Display the Emacs manual in Info (<code>info-emacs-manual</code>).</dd>
+
+<dt>C-h s</dt><dd>Display the contents of the current <i>syntax table</i> (<code>describe-syntax</code>). See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>. The syntax table says which characters are opening delimiters, which are parts of words, and so on. See <a href="../elisp_html/Syntax-Tables.html#Syntax-Tables">Syntax Tables</a> in The Emacs Lisp Reference Manual, for details.</dd>
+
+<dt>C-h t</dt><dd>Enter the Emacs interactive tutorial (<code>help-with-tutorial</code>).</dd>
+
+<dt>C-h v <code>var</code> RET</dt><dd>Display the documentation of the Lisp variable <code>var</code> (<code>describe-variable</code>). See <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>.</dd>
+
+<dt>C-h w <code>command</code> RET</dt><dd>Show which keys run the command named <code>command</code> (<code>where-is</code>). See <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>.</dd>
+
+<dt>C-h x <code>command</code> RET</dt><dd>Display documentation on the named <code>command</code> (<code>describe-command</code>). See <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>.</dd>
+
+<dt>C-h C <code>coding</code> RET</dt><dd>Describe the coding system <code>coding</code> (<code>describe-coding-system</code>). See <a href="docs/emacs--Coding-Systems.html">Coding Systems</a>.</dd>
+
+<dt>C-h C RET</dt><dd>Describe the coding systems currently in use.</dd>
+
+<dt>C-h F <code>command</code> RET</dt><dd>Enter Info and go to the node that documents the Emacs command <code>command</code> (<code>Info-goto-emacs-command-node</code>). See <a href="docs/emacs--Name-Help.html">Help by Command or Variable Name</a>.</dd>
+
+<dt>C-h I <code>method</code> RET</dt><dd>Describe the input method <code>method</code> (<code>describe-input-method</code>). See <a href="docs/emacs--Select-Input-Method.html">Selecting an Input Method</a>.</dd>
+
+<dt>C-h K <code>key</code></dt><dd>Enter Info and go to the node that documents the key sequence <code>key</code> (<code>Info-goto-emacs-key-command-node</code>). See <a href="docs/emacs--Key-Help.html">Documentation for a Key</a>.</dd>
+
+<dt>C-h L <code>language-env</code> RET</dt><dd>Display information on the character sets, coding systems, and input methods used in language environment <code>language-env</code> (<code>describe-language-environment</code>). See <a href="docs/emacs--Language-Environments.html">Language Environments</a>.</dd>
+
+<dt>C-h S <code>symbol</code> RET</dt><dd>Display the Info documentation on symbol <code>symbol</code> according to the programming language you are editing (<code>info-lookup-symbol</code>). See <a href="docs/emacs--Misc-Help.html">Other Help Commands</a>.</dd>
+
+<dt>C-h .</dt><dd>Display the help message for a special text area, if point is in one (<code>display-local-help</code>). (These include, for example, links in <code>*Help*</code> buffers.) See <a href="docs/emacs--Help-Echo.html">Help on Active Text and Tooltips</a>. If you invoke this command with a prefix argument, C-u C-h ., and point is on a button or a widget, this command will pop a new buffer that describes that button/widget.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

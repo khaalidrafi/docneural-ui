@@ -1,0 +1,152 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Filtering_002flimiting-agenda-items-1">1. 11.4.4 Filtering/limiting agenda items ¶</a></li>
+<li><a href="#Filtering-in-the-agenda-1">2. Filtering in the agenda ¶</a></li>
+<li><a href="#Computed-tag-filtering-1">3. Computed tag filtering ¶</a></li>
+<li><a href="#Setting-limits-for-the-agenda-1">4. Setting limits for the agenda ¶</a>
+<ul>
+<li><a href="#section">4.1. (99)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Filtering_002flimiting-agenda-items"></a>
+Previous: <a href="docs/org--Sorting-of-agenda-items.html">Sorting of agenda items</a>, Up: <a href="docs/org--Presentation-and-Sorting.html">Presentation and Sorting</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Filtering_002flimiting-agenda-items-1" class="outline-2">
+<h2 id="Filtering_002flimiting-agenda-items-1"><span class="section-number-2">1.</span> 11.4.4 Filtering/limiting agenda items <a href="#Filtering_002flimiting-agenda-items-1">¶</a></h2>
+<div class="outline-text-2" id="text-Filtering_002flimiting-agenda-items-1">
+<p>
+Agenda built-in or custom commands are statically defined. Agenda filters and limits allow flexibly narrowing down the list of agenda entries.
+</p>
+
+<p>
+<i>Filters</i> only change the visibility of items, are very fast and are mostly used interactively. You can switch quickly between different filters without having to recreate the agenda. <i>Limits</i> on the other hand take effect before the agenda buffer is populated, so they are mostly useful when defined as local variables within custom agenda commands.
+</p>
+</div>
+</div>
+<div id="outline-container-Filtering-in-the-agenda-1" class="outline-2">
+<h2 id="Filtering-in-the-agenda-1"><span class="section-number-2">2.</span> Filtering in the agenda <a href="#Filtering-in-the-agenda-1">¶</a></h2>
+<div class="outline-text-2" id="text-Filtering-in-the-agenda-1">
+<p>
+The general filtering command is <code>org-agenda-filter</code>, bound to /. Before we introduce it, we describe commands for individual filter types. All filtering commands handle prefix arguments in the same way: A single C-u prefix negates the filter, so it removes lines selected by the filter. A double prefix adds the new filter condition to the one(s) already in place, so filter elements are accumulated.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dagenda_002dfilter_002dby_002dtag"></a>\ (<code>org-agenda-filter-by-tag</code>) </dt><dd>Filter the agenda view with respect to a tag. You are prompted for a tag selection letter; SPC means any tag at all. Pressing TAB at that prompt offers completion to select a tag, including any tags that do not have a selection character. The command then hides all entries that do not contain or inherit this tag. Pressing + or - at the prompt switches between filtering for and against the next tag. To clear the filter, press \ twice (once to call the command again, and once at the prompt).</dd>
+
+<dt><a id="index-org_002dagenda_002dfilter_002dby_002dcategory"></a>&lt; (<code>org-agenda-filter-by-category</code>) </dt><dd>Filter by category of the line at point, and show only entries with this category. When called with a prefix argument, hide all entries with the category at point. To clear the filter, call this command again by pressing &lt;.</dd>
+
+<dt><a id="index-org_002dagenda_002dfilter_002dby_002dregexp"></a>= (<code>org-agenda-filter-by-regexp</code>) </dt><dd>Filter the agenda view by a regular expression: only show agenda entries matching the regular expression the user entered. To clear the filter, call the command again by pressing =.</dd>
+
+<dt><a id="index-org_002dagenda_002dfilter_002dby_002deffort"></a>_ (<code>org-agenda-filter-by-effort</code>) </dt><dd><p>
+Filter the agenda view with respect to effort estimates, so select tasks that take the right amount of time. You first need to set up a list of efforts globally, for example
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-global-properties
+      '(("Effort_ALL". "0 0:10 0:30 1:00 2:00 3:00 4:00")))
+</pre>
+</div>
+
+<p>
+You can then filter for an effort by first typing an operator, one of &lt;, &gt; and <code>, and then the one-digit index of an effort estimate in your array of allowed values, where 0 means the 10th value. The filter then restricts to entries with effort smaller-or-equal, equal, or larger-or-equal than the selected value. For application of the operator, entries without a defined effort are treated according to the value of =org-agenda-sort-noeffort-is-high</code>. To clear the filter, press _ twice (once to call the command again, and once at the first prompt).
+</p></dd>
+
+<dt><a id="index-org_002dagenda_002dfilter_002dby_002dtop_002dheadline"></a>^ (<code>org-agenda-filter-by-top-headline</code>) </dt><dd>Filter the current agenda view and only display items that fall under the same top-level headline as the current entry. To clear the filter, call this command again by pressing ^.</dd>
+
+<dt><a id="index-org_002dagenda_002dfilter"></a>/ (<code>org-agenda-filter</code>) </dt><dd><p>
+This is the unified interface to four of the five filter methods described above. At the prompt, specify different filter elements in a single string, with full completion support. For example,
+</p>
+
+<pre class="example" id="orgb716b34">
++work-John+&lt;0:10-/plot/
+</pre>
+
+<p>
+selects entries with category ‘=work=' and effort estimates below 10 minutes, and deselects entries with tag ‘=John=' or matching the regexp ‘=plot=' (see <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>). You can leave ‘=+=' out if that does not lead to ambiguities. The sequence of elements is arbitrary. The filter syntax assumes that there is no overlap between categories and tags. Otherwise, tags take priority. If you reply to the prompt with the empty string, all filtering is removed. If a filter is specified, it replaces all current filters. But if you call the command with a double prefix argument, or if you add an additional ‘=+=' (e.g., ‘=++work=') to the front of the string, the new filter elements are added to the active ones. A single prefix argument applies the entire filter in a negative sense.
+</p></dd>
+
+<dt>| (<code>org-agenda-filter-remove-all</code>)</dt><dd>Remove all filters in the current agenda view.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Computed-tag-filtering-1" class="outline-2">
+<h2 id="Computed-tag-filtering-1"><span class="section-number-2">3.</span> Computed tag filtering <a href="#Computed-tag-filtering-1">¶</a></h2>
+<div class="outline-text-2" id="text-Computed-tag-filtering-1">
+<p>
+If the variable <code>org-agenda-auto-exclude-function</code> is set to a user-defined function, that function can select tags that should be used as a tag filter when requested. The function will be called with lower-case versions of all tags represented in the current view. The function should return ‘="-tag"<code>' if the filter should remove entries with that tag, ‘</code>"+tag"<code>' if only entries with this tag should be kept, or ‘=nil</code>' if that tag is irrelevant. For example, let's say you use a ‘=Net=' tag to identify tasks which need network access, an ‘=Errand=' tag for errands in town, and a ‘=Call=' tag for making phone calls. You could auto-exclude these tags based on the availability of the Internet, and outside of business hours, with something like this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(defun my-auto-exclude-fn (tag)
+  (when (cond ((string= tag "net")
+               (/= 0 (call-process "/sbin/ping" nil nil nil
+                                   "-c1" "-q" "-t1" "mail.gnu.org")))
+              ((member tag '("errand" "call"))
+               (let ((hr (nth 2 (decode-time))))
+                 (or (&lt; hr 8) (&gt; hr 21)))))
+    (concat "-" tag)))
+
+(setq org-agenda-auto-exclude-function #'my-auto-exclude-fn)
+</pre>
+</div>
+
+<p>
+You can apply this self-adapting filter by using a triple prefix argument to <code>org-agenda-filter</code>, i.e. press C-u C-u C-u /, or by pressing RET in <code>org-agenda-filter-by-tag</code>.
+</p>
+</div>
+</div>
+<div id="outline-container-Setting-limits-for-the-agenda-1" class="outline-2">
+<h2 id="Setting-limits-for-the-agenda-1"><span class="section-number-2">4.</span> Setting limits for the agenda <a href="#Setting-limits-for-the-agenda-1">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-limits-for-the-agenda-1">
+<p>
+Here is a list of options that you can set, either globally, or locally in your custom agenda views (see <a href="docs/org--Custom-Agenda-Views.html">Custom Agenda Views</a>).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dagenda_002dmax_002dentries"></a>=org-agenda-max-entries= </dt><dd>Limit the number of entries.</dd>
+
+<dt><a id="index-org_002dagenda_002dmax_002deffort"></a>=org-agenda-max-effort= </dt><dd>Limit the duration of accumulated efforts (as minutes).</dd>
+
+<dt><a id="index-org_002dagenda_002dmax_002dtodos"></a>=org-agenda-max-todos= </dt><dd>Limit the number of entries with TODO keywords.</dd>
+
+<dt><a id="index-org_002dagenda_002dmax_002dtags"></a>=org-agenda-max-tags= </dt><dd>Limit the number of tagged entries.</dd>
+</dl>
+
+<p>
+When set to a positive integer, each option excludes entries from other categories: for example, ‘=(setq org-agenda-max-effort 100)=' limits the agenda to 100 minutes of effort and exclude any entry that has no effort property. If you want to include entries with no effort property, use a negative value for <code>org-agenda-max-effort</code>. One useful setup is to use <code>org-agenda-max-entries</code> locally in a custom command. For example, this custom command displays the next five entries with a ‘=NEXT=' TODO keyword.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(setq org-agenda-custom-commands
+      '(("n" todo "NEXT"
+         ((org-agenda-max-entries 5)))))
+</pre>
+</div>
+
+<p>
+Once you mark one of these five entries as DONE, rebuilding the agenda will show the next five entries again, including the first entry that was excluded so far.
+</p>
+
+<p>
+You can also dynamically set temporary limits, which are lost when rebuilding the agenda:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dagenda_002dlimit_002dinteractively"></a>~ (<code>org-agenda-limit-interactively</code>) </dt><dd>This prompts for the type of limit to apply and its value.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

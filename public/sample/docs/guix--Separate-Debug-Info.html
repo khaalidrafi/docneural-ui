@@ -1,0 +1,135 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#separate-debug-info">1.0.1. 17.1 Separate Debug Info</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Separate-Debug-Info"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Rebuilding-Debug-Info.html">Rebuilding Debug Info</a>, Up: <a href="docs/guix--Installing-Debugging-Files.html">Installing Debugging Files</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Separate-Debug-Info-1"></a>
+</p>
+</div>
+<div id="outline-container-separate-debug-info" class="outline-4">
+<h4 id="separate-debug-info"><span class="section-number-4">1.0.1.</span> 17.1 Separate Debug Info</h4>
+<div class="outline-text-4" id="text-separate-debug-info">
+<p>
+The problem with debugging information is that it takes up a fair amount of disk space. For example, debugging information for the GNU C Library weighs in at more than 60 MiB. Thus, as a user, keeping all the debugging info of all the installed programs is usually not an option. Yet, space savings should not come at the cost of an impediment to debugging&#x2014;especially in the GNU system, which should make it easier for users to exert their computing freedom (see <a href="docs/guix--GNU-Distribution.html">GNU Distribution</a>).
+</p>
+
+<p>
+Thankfully, the GNU Binary Utilities (Binutils) and GDB provide a mechanism that allows users to get the best of both worlds: debugging information can be stripped from the binaries and stored in separate files. GDB is then able to load debugging information from those files, when they are available (see <a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Separate-Debug-Files.html#Separate-Debug-Files">Separate Debug Files</a> in Debugging with GDB).
+</p>
+
+<p>
+The GNU distribution takes advantage of this by storing debugging information in the <code>lib/debug</code> sub-directory of a separate package output unimaginatively called <code>debug</code> (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>). Users can choose to install the <code>debug</code> output of a package when they need it. For instance, the following command installs the debugging information for the GNU C Library and for GNU Guile:
+</p>
+
+<pre class="example" id="org56038bd">
+guix install glibc:debug guile:debug
+</pre>
+
+<p>
+GDB must then be told to look for debug files in the user's profile, by setting the <code>debug-file-directory</code> variable (consider setting it from the <code>~/.gdbinit</code> file, see <a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Startup.html#Startup">Startup</a> in Debugging with GDB):
+</p>
+
+<pre class="example" id="org46c805a">
+(gdb) set debug-file-directory ~/.guix-profile/lib/debug
+</pre>
+
+<p>
+From there on, GDB will pick up debugging information from the <code>.debug</code> files under <code>~/.guix-profile/lib/debug</code>.
+</p>
+
+<p>
+Below is an alternative GDB script which is useful when working with other profiles. It takes advantage of the optional Guile integration in GDB. This snippet is included by default on Guix System in the <code>~/.gdbinit</code> file.
+</p>
+
+<pre class="example" id="org57cfa63">
+guile
+(use-modules (gdb))
+(execute (string-append "set debug-file-directory "
+                        (or (getenv "GDB_DEBUG_FILE_DIRECTORY")
+                            "~/.guix-profile/lib/debug")))
+end
+</pre>
+
+<p>
+In addition, you will most likely want GDB to be able to show the source code being debugged. To do that, you will have to unpack the source code of the package of interest (obtained with <code>guix build --source</code>, see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>), and to point GDB to that source directory using the <code>directory</code> command (see <a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Source-Path.html#Source-Path"><code>directory</code></a> in Debugging with GDB).
+</p>
+
+<p>
+The <code>debug</code> output mechanism in Guix is implemented by the <code>gnu-build-system</code> (see <a href="docs/guix--Build-Systems.html">Build Systems</a>). Currently, it is opt-in&#x2014;debugging information is available only for the packages with definitions explicitly declaring a <code>debug</code> output. To check whether a package has a <code>debug</code> output, use <code>guix package --list-available</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+Read on for how to deal with packages lacking a <code>debug</code> output.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Rebuilding-Debug-Info.html">Rebuilding Debug Info</a>, Up: <a href="docs/guix--Installing-Debugging-Files.html">Installing Debugging Files</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

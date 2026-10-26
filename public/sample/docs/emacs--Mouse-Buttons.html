@@ -1,0 +1,111 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Rebinding-Mouse-Buttons">1. 51.3.10 Rebinding Mouse Buttons ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Disabling.html">Disabling Commands</a>   Previous: <a href="docs/emacs--Named-ASCII-Chars.html">Named ASCII Control Characters</a>   Up: <a href="docs/emacs--Key-Bindings.html">Customizing Key Bindings</a>
+</p>
+
+<p>
+<a id="Mouse-Buttons"></a>
+</p>
+
+<hr />
+<div id="outline-container-Rebinding-Mouse-Buttons" class="outline-2">
+<h2 id="Rebinding-Mouse-Buttons"><span class="section-number-2">1.</span> 51.3.10 Rebinding Mouse Buttons <a href="#Rebinding-Mouse-Buttons">¶</a></h2>
+<div class="outline-text-2" id="text-Rebinding-Mouse-Buttons">
+<p>
+Emacs uses Lisp symbols to designate mouse buttons, too. The ordinary mouse events in Emacs are <i>click</i> events; these happen when you press a button and release it without moving the mouse. You can also get <i>drag</i> events, when you move the mouse while holding the button down. Drag events happen when you finally let go of the button.
+</p>
+
+<p>
+The symbols for basic click events are <code>mouse-1</code> for the leftmost button, <code>mouse-2</code> for the next, and so on. Here is how you can redefine the second mouse button to split the current window:
+</p>
+
+<pre class="example" id="org7078158">
+(keymap-global-set "&lt;mouse-2&gt;" 'split-window-below)
+</pre>
+
+<p>
+The symbols for drag events are similar, but have the prefix ‘=drag-<code>' before the word ‘=mouse</code>'. For example, dragging the first button generates a <code>drag-mouse-1</code> event.
+</p>
+
+<p>
+You can also define bindings for events that occur when a mouse button is pressed down. These events start with ‘=down-<code>' instead of ‘=drag-</code>'. Such events are generated only if they have key bindings. When you get a button-down event, a corresponding click or drag event will always follow.
+</p>
+
+<p>
+If you wish, you can distinguish single, double, and triple clicks. A double click means clicking a mouse button twice in approximately the same place. The first click generates an ordinary click event. The second click, if it comes soon enough, generates a double-click event instead. The event type for a double-click event starts with ‘=double-<code>': for example, =double-mouse-3</code>.
+</p>
+
+<p>
+This means that you can give a special meaning to the second click at the same place, but it must act on the assumption that the ordinary single click definition has run when the first click was received.
+</p>
+
+<p>
+This constrains what you can do with double clicks, but user interface designers say that this constraint ought to be followed in any case. A double click should do something similar to the single click, only more so. The command for the double-click event should perform the extra work for the double click.
+</p>
+
+<p>
+If a double-click event has no binding, it changes to the corresponding single-click event. Thus, if you don't define a particular double click specially, it executes the single-click command twice.
+</p>
+
+<p>
+Emacs also supports triple-click events whose names start with ‘=triple-='. Emacs does not distinguish quadruple clicks as event types; clicks beyond the third generate additional triple-click events. However, the full number of clicks is recorded in the event list, so if you know Emacs Lisp you can distinguish if you really want to (see <a href="../elisp_html/Click-Events.html#Click-Events">Click Events</a> in The Emacs Lisp Reference Manual). We don't recommend distinct meanings for more than three clicks, but sometimes it is useful for subsequent clicks to cycle through the same set of three meanings, so that four clicks are equivalent to one click, five are equivalent to two, and six are equivalent to three.
+</p>
+
+<p>
+Emacs also records multiple presses in drag and button-down events. For example, when you press a button twice, then move the mouse while holding the button, Emacs gets a ‘=double-drag-<code>' event. And at the moment when you press it down for the second time, Emacs gets a ‘=double-down-</code>' event (which is ignored, like all button-down events, if it has no binding).
+</p>
+
+<p>
+The variable <code>double-click-time</code> specifies how much time can elapse between clicks and still allow them to be grouped as a multiple click. Its value is in units of milliseconds. If the value is <code>nil</code>, double clicks are not detected at all. If the value is <code>t</code>, then there is no time limit. The default is 500.
+</p>
+
+<p>
+The variable <code>double-click-fuzz</code> specifies how much the mouse can move between clicks and still allow them to be grouped as a multiple click. Its value is in units of pixels on windowed displays and in units of 1/8 of a character cell on text-mode terminals; the default is 3.
+</p>
+
+<p>
+The symbols for mouse events also indicate the status of the modifier keys, with the usual prefixes ‘=C-<code>', ‘=M-</code>', ‘=H-<code>', ‘=s-</code>', ‘=A-<code>', and ‘=S-</code>'. These always precede ‘=double-<code>' or ‘=triple-</code>', which always precede ‘=drag-<code>' or ‘=down-</code>'.
+</p>
+
+<p>
+A frame includes areas that don't show text from the buffer, such as the mode line and the scroll bar. You can tell whether a mouse button comes from a special area of the screen by means of dummy prefix keys. For example, if you click the mouse in the mode line, you get the prefix key <code>mode-line</code> before the ordinary mouse-button symbol. Thus, here is how to define the command for clicking the first button in a mode line to run <code>scroll-up-command</code>:
+</p>
+
+<pre class="example" id="orgddbb308">
+(keymap-global-set "&lt;mode-line&gt; &lt;mouse-1&gt;" 'scroll-up-command)
+</pre>
+
+<p>
+Here is the complete list of these dummy prefix keys and their meanings:
+</p>
+
+<dl class="org-dl">
+<dt><code>mode-line</code></dt><dd>The mouse was in the mode line of a window.</dd>
+
+<dt><code>vertical-line</code></dt><dd>The mouse was in the vertical line separating side-by-side windows. (If you use scroll bars, they appear in place of these vertical lines.)</dd>
+
+<dt><code>vertical-scroll-bar</code></dt><dd>The mouse was in a vertical scroll bar. (This is the only kind of scroll bar Emacs currently supports.)</dd>
+
+<dt><code>menu-bar</code></dt><dd>The mouse was in the menu bar.</dd>
+
+<dt><code>tab-bar</code></dt><dd>The mouse was in a tab bar.</dd>
+
+<dt><code>tab-line</code></dt><dd>The mouse was in a tab line.</dd>
+
+<dt><code>header-line</code></dt><dd>The mouse was in a header line.</dd>
+</dl>
+
+<p>
+You can put more than one mouse button in a key sequence, but it isn't usual to do so.
+</p>
+
+<hr />
+</div>
+</div>

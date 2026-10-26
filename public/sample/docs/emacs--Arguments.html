@@ -1,0 +1,87 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Numeric-Arguments">1. 9.10 Numeric Arguments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Repeating.html">Repeating a Command</a>   Previous: <a href="docs/emacs--Position-Info.html">Cursor Position Information</a>   Up: <a href="docs/emacs--Basic.html">Basic Editing Commands</a>
+</p>
+
+<p>
+<a id="Arguments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Numeric-Arguments" class="outline-2">
+<h2 id="Numeric-Arguments"><span class="section-number-2">1.</span> 9.10 Numeric Arguments <a href="#Numeric-Arguments">¶</a></h2>
+<div class="outline-text-2" id="text-Numeric-Arguments">
+<p>
+In the terminology of mathematics and computing, <i>argument</i> means “data provided to a function or operation”. You can give any Emacs command a <i>numeric argument</i> (also called a <i>prefix argument</i>). Some commands interpret the argument as a repetition count. For example, giving C-f an argument of ten causes it to move point forward by ten characters instead of one. With these commands, no argument is equivalent to an argument of one, and negative arguments cause them to move or act in the opposite direction.
+</p>
+
+<p>
+The easiest way to specify a numeric argument is to type a digit and/or a minus sign while holding down the Meta key. For example,
+</p>
+
+<pre class="example" id="org4571465">
+M-5 C-n
+</pre>
+
+<p>
+moves down five lines. The keys M-1, M-2, and so on, as well as M&#x2013;, are bound to commands (<code>digit-argument</code> and <code>negative-argument</code>) that set up an argument for the next command. M&#x2013; without digits normally means −1.
+</p>
+
+<p>
+If you enter more than one digit, you need not hold down the Meta key for the second and subsequent digits. Thus, to move down fifty lines, type
+</p>
+
+<pre class="example" id="org20e5ea2">
+M-5 0 C-n
+</pre>
+
+<p>
+Note that this <i>does not</i> insert five copies of ‘=0=' and move down one line, as you might expect&#x2014;the ‘=0=' is treated as part of the prefix argument.
+</p>
+
+<p>
+(What if you do want to insert five copies of ‘=0='? Type M-5 C-u 0. Here, C-u terminates the prefix argument, so that the next keystroke begins the command that you want to execute. Note that this meaning of C-u applies only to this case. For the usual role of C-u, see below.)
+</p>
+
+<p>
+Instead of typing M-1, M-2, and so on, another way to specify a numeric argument is to type C-u (<code>universal-argument</code>) followed by some digits, or (for a negative argument) a minus sign followed by digits. A minus sign without digits normally means −1.
+</p>
+
+<p>
+C-u alone has the special meaning of “four times”: it multiplies the argument for the next command by four. C-u C-u multiplies it by sixteen. Thus, C-u C-u C-f moves forward sixteen characters. Other useful combinations are C-u C-n, C-u C-u C-n (move down a good fraction of a screen), C-u C-u C-o (make sixteen blank lines), and C-u C-k (kill four lines).
+</p>
+
+<p>
+You can use a numeric argument before a self-inserting character to insert multiple copies of it. This is straightforward when the character is not a digit; for example, C-u 6 4 a inserts 64 copies of the character ‘=a='. But this does not work for inserting digits; C-u 6 4 1 specifies an argument of 641. You can separate the argument from the digit to insert with another C-u; for example, C-u 6 4 C-u 1 does insert 64 copies of the character ‘=1='.
+</p>
+
+<p>
+Some commands care whether there is an argument, but ignore its value. For example, the command M-q (<code>fill-paragraph</code>) fills text; with an argument, it justifies the text as well. (See <a href="docs/emacs--Filling.html">Filling Text</a>, for more information on M-q.) For these commands, it is enough to specify the argument with a single C-u.
+</p>
+
+<p>
+Some commands use the value of the argument as a repeat count but do something special when there is no argument. For example, the command C-k (<code>kill-line</code>) with argument <code>n</code> kills <code>n</code> lines, including their terminating newlines. But C-k with no argument is special: it kills the text up to the next newline, or, if point is right at the end of the line, it kills the newline itself. Thus, two C-k commands with no arguments can kill a nonblank line, just like C-k with an argument of one. (See <a href="docs/emacs--Killing.html">Killing and Moving Text</a>, for more information on C-k.)
+</p>
+
+<p>
+A few commands treat a plain C-u differently from an ordinary argument. A few others may treat an argument of just a minus sign differently from an argument of −1. These unusual cases are described when they come up; they exist to make an individual command more convenient, and they are documented in that command's documentation string.
+</p>
+
+<p>
+We use the term <i>prefix argument</i> to emphasize that you type such arguments <i>before</i> the command, and to distinguish them from minibuffer arguments (see <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>), which are entered <i>after</i> invoking the command.
+</p>
+
+<p>
+On graphical displays, C-0, C-1, etc. act the same as M-0, M-1, etc.
+</p>
+
+<hr />
+</div>
+</div>

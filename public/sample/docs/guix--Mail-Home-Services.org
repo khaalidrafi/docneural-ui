@@ -1,0 +1,118 @@
+:PROPERTIES:
+:ID: guix--Mail-Home-Services
+:END:
+#+filetags: :guix:
+#+title: Mail Home Services
+
+Next:
+
+* [[file:..][]]
+:PROPERTIES:
+:CUSTOM_ID: section
+:END:
+- VersionVersion
+
+  <<navbar-submenu>>
+
+  - [[/manual/1.5.0/en/html_node][1.5.0]]
+  - [[/manual/devel/en/html_node][development]]
+  - [[../guix.html][single page]]
+  - [[../guix.pdf][PDF]]
+
+- 
+
+  <<navbar-submenu>>
+
+  - [[../../de/html_node][Deutsch]]
+  - [[../../en/html_node][English]]
+  - [[../../es/html_node][Español]]
+  - [[../../fr/html_node][Français]]
+  - [[../../it/html_node][Italiano]]
+  - [[../../pt-br/html_node][Português]]
+  - [[../../ru/html_node][русский]]
+  - [[../../zh-cn/html_node][中文; 汉语; 华语]]
+  - [[https://translate.codeberg.org/projects/guix/documentation-manual/][⊕]]
+
+[[../..][]]
+
+<<Mail-Home-Services>>
+
+Next: [[id:guix--Messaging-Home-Services][Messaging Home Services]], Previous: [[id:guix--Sound-Home-Services][Sound Home Services]], Up: [[id:guix--Home-Services][Home Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]
+
+--------------
+
+<<Mail-Home-Services-1>>
+**** 13.3.13 Mail Home Services
+:PROPERTIES:
+:CUSTOM_ID: mail-home-services
+:CLASS: subsection
+:END:
+The =(gnu home services mail)= module provides services that help you set up the tools to work with emails in your home environment.
+
+<<index-msmtp>>
+[[https://marlam.de/msmtp][MSMTP]] is a SMTP (Simple Mail Transfer Protocol) client. It sends mail to a predefined SMTP server that takes care of proper delivery.
+
+The service reference is given below.
+
+- Variable: home-msmtp-service-type  :: This is the service type for =msmtp=. Its value must be a =home-msmtp-configuration=, as shown below. It provides the =~/.config/msmtp/config= file.
+
+  As an example, here is how you would configure =msmtp= for a single account:
+
+  #+begin_src lisp
+  (service home-msmtp-service-type
+           (home-msmtp-configuration
+            (accounts
+             (list
+              (msmtp-account
+               (name "alice")
+               (configuration
+                (msmtp-configuration
+                 (host "mail.example.org")
+                 (port 587)
+                 (user "alice")
+                 (password-eval "pass Mail/alice"))))))))
+  #+end_src
+
+- Data Type: home-msmtp-configuration  :: Available =home-msmtp-configuration= fields are:
+
+  - =defaults= (type: msmtp-configuration) :: The configuration that will be set as default for all accounts.
+
+  - =accounts= (default: ='()=) (type: list-of-msmtp-accounts) :: A list of =msmtp-account= records which contain information about all your accounts.
+
+  - =default-account= (type: maybe-string) :: Set the default account.
+
+  - =extra-content= (default: =""=) (type: string) :: Extra content appended as-is to the configuration file. Run =man msmtp= for more information about the configuration file format.
+
+- Data Type: msmtp-account  :: Available =msmtp-account= fields are:
+
+  - =name= (type: string) :: The unique name of the account.
+
+  - =configuration= (type: msmtp-configuration) :: The configuration for this given account.
+
+- Data Type: msmtp-configuration  :: Available =msmtp-configuration= fields are:
+
+  - =auth?= (type: maybe-boolean) :: Enable or disable authentication.
+
+  - =tls?= (type: maybe-boolean) :: Enable or disable TLS (also known as SSL) for secured connections.
+
+  - =tls-starttls?= (type: maybe-boolean) :: Choose the TLS variant: start TLS from within the session (‘on', default), or tunnel the session through TLS (‘off').
+
+  - =tls-trust-file= (type: maybe-string) :: Activate server certificate verification using a list of trusted Certification Authorities (CAs).
+
+  - =log-file= (type: maybe-string) :: Enable logging to the specified file. An empty argument disables logging. The file name ‘-' directs the log information to standard output.
+
+  - =host= (type: maybe-string) :: The SMTP server to send the mail to.
+
+  - =port= (type: maybe-integer) :: The port that the SMTP server listens on. The default is 25 ("smtp"), unless TLS without STARTTLS is used, in which case it is 465 ("smtps").
+
+  - =user= (type: maybe-string) :: Set the user name for authentication.
+
+  - =from= (type: maybe-string) :: Set the envelope-from address.
+
+  - =password-eval= (type: maybe-string) :: Set the password for authentication to the output (stdout) of the command cmd.
+
+  - =extra-content= (default: =""=) (type: string) :: Extra content appended as-is to the configuration block. Run =man msmtp= for more information about the configuration file format.
+
+--------------
+
+Next: [[id:guix--Messaging-Home-Services][Messaging Home Services]], Previous: [[id:guix--Sound-Home-Services][Sound Home Services]], Up: [[id:guix--Home-Services][Home Services]]   [[[id:guix--index::#SEC_Contents][Contents]]][[[id:guix--Concept-Index][Index]]]

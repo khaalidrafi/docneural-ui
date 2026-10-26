@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#File-Archives-1">1. 20.14 File Archives ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Remote-Files.html">Remote Files</a>   Previous: <a href="docs/emacs--Compressed-Files.html">Accessing Compressed Files</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="File-Archives"></a>
+</p>
+
+<hr />
+<div id="outline-container-File-Archives-1" class="outline-2">
+<h2 id="File-Archives-1"><span class="section-number-2">1.</span> 20.14 File Archives <a href="#File-Archives-1">¶</a></h2>
+<div class="outline-text-2" id="text-File-Archives-1">
+<p>
+A file whose name ends in ‘=.tar=' is normally an <i>archive</i> made by the <code>tar</code> program. Emacs views these files in a special mode called Tar mode which provides a Dired-like list of the contents (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>). You can move around through the list just as you would in Dired, and visit the subfiles contained in the archive. However, not all Dired commands are available in Tar mode.
+</p>
+
+<p>
+If Auto Compression mode is enabled (see <a href="docs/emacs--Compressed-Files.html">Accessing Compressed Files</a>), then Tar mode is used also for compressed archives&#x2014;files with extensions ‘=.tgz=', <code>.tar.Z</code> and <code>.tar.gz</code>.
+</p>
+
+<p>
+The keys e, f and RET all extract a component file into its own buffer. You can edit it there, and if you save the buffer, the edited version will replace the version in the Tar buffer. Clicking with the mouse on the file name in the Tar buffer does likewise. v extracts a file into a buffer in View mode (see <a href="docs/emacs--View-Mode.html">View Mode</a>). o extracts the file and displays it in another window, so you could edit the file and operate on the archive simultaneously.
+</p>
+
+<p>
+The I key adds a new (regular) file to the archive. The file is initially empty, but can readily be edited using the commands above. The command inserts the new file before the current one, so that using it on the topmost line of the Tar buffer makes the new file the first one in the archive, and using it at the end of the buffer makes it the last one.
+</p>
+
+<p>
+d marks a file for deletion when you later use x, and u unmarks a file, as in Dired. C copies a file from the archive to disk and R renames a file within the archive. g reverts the buffer from the archive on disk. The keys M, G, and O change the file's permission bits, group, and owner, respectively.
+</p>
+
+<p>
+Saving the Tar buffer writes a new version of the archive to disk with the changes you made to the components.
+</p>
+
+<p>
+You don't need the <code>tar</code> program to use Tar mode&#x2014;Emacs reads the archives directly. However, accessing compressed archives requires the appropriate uncompression program.
+</p>
+
+<p>
+A separate but similar Archive mode is used for <code>arc</code>, <code>jar</code>, <code>lzh</code>, <code>zip</code>, <code>rar</code>, <code>7z</code>, and <code>zoo</code> archives, as well as <code>exe</code> files that are self-extracting executables.
+</p>
+
+<p>
+The key bindings of Archive mode are similar to those in Tar mode, with the addition of the m key which marks a file for subsequent operations, and M-DEL which unmarks all the marked files. Also, the a key toggles the display of detailed file information, for those archive types where it won't fit in a single line. Operations such as renaming a subfile, or changing its mode or owner, are supported only for some of the archive formats.
+</p>
+
+<p>
+Unlike Tar mode, Archive mode runs the archiving programs to unpack and repack archives. However, you don't need these programs to look at the archive table of contents, only to extract or manipulate the subfiles in the archive. Details of the program names and their options can be set in the ‘=Archive=' Customize group (see <a href="docs/emacs--Customization-Groups.html">Customization Groups</a>).
+</p>
+
+<hr />
+</div>
+</div>

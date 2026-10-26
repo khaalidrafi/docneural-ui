@@ -1,0 +1,24 @@
+:PROPERTIES:
+:ID: emacs--Defuns
+:END:
+#+filetags: :emacs:
+#+title: Defuns
+
+Next: [[id:emacs--Program-Indent][Indentation for Programs]]   Previous: [[id:emacs--Program-Modes][Major Modes for Programming Languages]]   Up: [[id:emacs--Programs][Editing Programs]]
+
+<<Defuns>>
+
+--------------
+
+*** 28.2 Top-Level Definitions, or Defuns [[#Top_002dLevel-Definitions_002c-or-Defuns][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Top_002dLevel-Definitions_002c-or-Defuns
+:CLASS: section
+:END:
+In Emacs, a major definition at the top level in the buffer, such as a function, is called a /defun/. The name comes from Lisp, but in Emacs we use it for all languages.
+
+- [[id:emacs--Left-Margin-Paren][Left Margin Convention]]
+- [[id:emacs--Moving-by-Defuns][Moving by Defuns]]
+- [[id:emacs--Moving-by-Sentences][Moving by Sentences]]
+- [[id:emacs--Imenu][Imenu]]
+- [[id:emacs--Which-Function][Which Function Mode]]

@@ -1,0 +1,53 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org22e62a6">1. Concept Index</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Indices"></a>
+Next: <a href="docs/org--Quoting-Texinfo-code.html">Quoting Texinfo code</a>, Previous: <a href="docs/org--Headings-and-sectioning-structure.html">Headings and sectioning structure</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="Indices-1"></a>13.14.7 Indices <a href="#Indices-1">¶</a><br />
+<div class="outline-text-5" id="text-Indices-1">
+<p>
+The Texinfo export backend recognizes these indexing keywords if used in the Org file: ‘=CINDEX=', ‘=FINDEX=', ‘=KINDEX=', ‘=PINDEX=', ‘=TINDEX=' and ‘=VINDEX='. Write their value as verbatim Texinfo code; in particular, ‘={<code>', ‘</code>}=' and ‘=@=' characters need to be escaped with ‘=@=' if they do not belong to a Texinfo command.
+</p>
+
+<pre class="example" id="orgfcb45b5">
+#+CINDEX: Defining indexing entries
+</pre>
+
+<p>
+For the backend to generate an index entry for a headline, set the ‘=INDEX=' property to ‘=cp=' or ‘=vr='. These abbreviations come from Texinfo that stand for concept index and variable index. The Texinfo manual has abbreviations for all other kinds of indexes. The backend exports the headline as an unnumbered chapter or section command, and then inserts the index after its contents.
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-org22e62a6" class="outline-2">
+<h2 id="org22e62a6"><span class="section-number-2">1.</span> Concept Index</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Quoting-Texinfo-code.html">Quoting Texinfo code</a>, Previous: <a href="docs/org--Headings-and-sectioning-structure.html">Headings and sectioning structure</a>, Up: <a href="docs/org--Texinfo-Export.html">Texinfo Export</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

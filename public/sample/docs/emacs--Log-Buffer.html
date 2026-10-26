@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Features-of-the-Log-Entry-Buffer">1. 30.1.4 Features of the Log Entry Buffer ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Registering.html">Registering a File for Version Control</a>   Previous: <a href="docs/emacs--Basic-VC-Editing.html">Basic Editing under Version Control</a>   Up: <a href="docs/emacs--Version-Control.html">Version Control</a>
+</p>
+
+<p>
+<a id="Log-Buffer"></a>
+</p>
+
+<hr />
+<div id="outline-container-Features-of-the-Log-Entry-Buffer" class="outline-2">
+<h2 id="Features-of-the-Log-Entry-Buffer"><span class="section-number-2">1.</span> 30.1.4 Features of the Log Entry Buffer <a href="#Features-of-the-Log-Entry-Buffer">¶</a></h2>
+<div class="outline-text-2" id="text-Features-of-the-Log-Entry-Buffer">
+<p>
+When you tell VC to commit a change, it pops up a buffer named <code>*vc-log*</code>. In this buffer, you should write a <i>log entry</i> describing the changes you have made (see <a href="docs/emacs--Why-Version-Control_003f.html">Understanding the Problems it Addresses</a>). After you are done, type C-c C-c (<code>log-edit-done</code>) to exit the buffer and commit the change, together with your log entry.
+</p>
+
+<p>
+The major mode for the <code>*vc-log*</code> buffer is Log Edit mode, a variant of Text mode (see <a href="docs/emacs--Text-Mode.html">Text Mode</a>). On entering Log Edit mode, Emacs runs the hooks <code>text-mode-hook</code> and <code>vc-log-mode-hook</code> (see <a href="docs/emacs--Hooks.html">Hooks</a>).
+</p>
+
+<p>
+In the <code>*vc-log*</code> buffer, you can write one or more <i>header lines</i>, specifying additional information to be supplied to the version control system. Each header line must occupy a single line at the top of the buffer; the first line that is not a header line is treated as the start of the log entry. For example, the following header line states that the present change was not written by you, but by another developer:
+</p>
+
+<pre class="example" id="org8f24fa4">
+Author: J. R. Hacker &lt;jrh@example.com&gt;
+</pre>
+
+<p>
+Apart from the ‘=Author=' header, Emacs recognizes the headers ‘=Summary=' (a one-line summary of the changeset), ‘=Date=' (a manually-specified commit time), and ‘=Fixes=' (a reference to a bug fixed by the change). Not all version control systems recognize all headers. If you specify a header for a system that does not support it, the header is treated as part of the log entry.
+</p>
+
+<p>
+While in the <code>*vc-log*</code> buffer, the current VC fileset is considered to be the fileset that will be committed if you type C-c C-c. To view a list of the files in the VC fileset, type C-c C-f (<code>log-edit-show-files</code>). To view a diff of changes between the VC fileset and the version from which you started editing (see <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>), type C-c C-d (<code>log-edit-show-diff</code>).
+</p>
+
+<p>
+To help generate ChangeLog entries, type C-c C-w (<code>log-edit-generate-changelog-from-diff</code>), to generate skeleton ChangeLog entries, listing all changed file and function names based on the diff of the VC fileset. Consecutive entries left empty will be combined by M-q (<code>fill-paragraph</code>). By default the skeleton will just include the file name, without any leading directories. If you wish to prepend the leading directories up to the VC root, customize <code>diff-add-log-use-relative-names</code>.
+</p>
+
+<p>
+If the VC fileset includes one or more <code>ChangeLog</code> files (see <a href="docs/emacs--Change-Log.html">Change Logs</a>), type C-c C-a (<code>log-edit-insert-changelog</code>) to pull the relevant entries into the <code>*vc-log*</code> buffer. If the topmost item in each <code>ChangeLog</code> was made under your user name on the current date, this command searches that item for entries matching the file(s) to be committed, and inserts them. If you are using CVS or RCS, see <a href="docs/emacs--Change-Logs-and-VC.html">Change Logs and VC</a>, for the opposite way of working&#x2014;generating ChangeLog entries from the Log Edit buffer.
+</p>
+
+<p>
+To abort a commit, just <i>don't</i> type C-c C-c in that buffer. You can switch buffers and do other editing. As long as you don't try to make another commit, the entry you were editing remains in the <code>*vc-log*</code> buffer, and you can go back to that buffer at any time to complete the commit.
+</p>
+
+<p>
+You can also browse the history of previous log entries to duplicate a commit comment. This can be useful when you want to make several commits with similar comments. The commands M-n, M-p, M-s and M-r for doing this work just like the minibuffer history commands (see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>), except that they are used outside the minibuffer.
+</p>
+
+<hr />
+</div>
+</div>

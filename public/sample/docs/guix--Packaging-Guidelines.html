@@ -1,0 +1,141 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#packaging-guidelines">1.0.1. 22.8 Packaging Guidelines</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Packaging-Guidelines"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Coding-Style.html">Coding Style</a>, Previous: <a href="docs/guix--Source-Tree-Structure.html">Source Tree Structure</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Packaging-Guidelines-1"></a>
+</p>
+</div>
+<div id="outline-container-packaging-guidelines" class="outline-4">
+<h4 id="packaging-guidelines"><span class="section-number-4">1.0.1.</span> 22.8 Packaging Guidelines</h4>
+<div class="outline-text-4" id="text-packaging-guidelines">
+<p>
+<a id="index-packages_002c-creating"></a>
+The GNU distribution is nascent and may well lack some of your favorite packages. This section describes how you can help make the distribution grow.
+</p>
+
+<p>
+Free software packages are usually distributed in the form of <i>source code tarballs</i>&#x2014;typically <code>tar.gz</code> files that contain all the source files. Adding a package to the distribution means essentially two things: adding a <i>recipe</i> that describes how to build the package, including a list of other packages required to build it, and adding <i>package metadata</i> along with that recipe, such as a description and licensing information.
+</p>
+
+<p>
+In Guix all this information is embodied in <i>package definitions</i>. Package definitions provide a high-level view of the package. They are written using the syntax of the Scheme programming language; in fact, for each package we define a variable bound to the package definition, and export that variable from a module (see <a href="docs/guix--Package-Modules.html">Package Modules</a>). However, in-depth Scheme knowledge is <i>not</i> a prerequisite for creating packages. For more information on package definitions, see <a href="docs/guix--Defining-Packages.html">Defining Packages</a>.
+</p>
+
+<p>
+Once a package definition is in place, stored in a file in the Guix source tree, it can be tested using the <code>guix build</code> command (see <a href="docs/guix--Invoking-guix-build.html">Invoking <code>guix build</code></a>). For example, assuming the new package is called <code>gnew</code>, you may run this command from the Guix build tree (see <a href="docs/guix--Running-Guix-Before-It-Is-Installed.html">Running Guix Before It Is Installed</a>):
+</p>
+
+<pre class="example" id="orga74587b">
+./pre-inst-env guix build gnew --keep-failed
+</pre>
+
+<p>
+Using <code>--keep-failed</code> makes it easier to debug build failures since it provides access to the failed build tree. Another useful command-line option when debugging is <code>--log-file</code>, to access the build log.
+</p>
+
+<p>
+If the package is unknown to the <code>guix</code> command, it may be that the source file contains a syntax error, or lacks a <code>define-public</code> clause to export the package variable. To figure it out, you may load the module from Guile to get more information about the actual error:
+</p>
+
+<pre class="example" id="org453e398">
+./pre-inst-env guile -c '(use-modules (gnu packages gnew))'
+</pre>
+
+<p>
+Once your package builds correctly, please send us a patch (see <a href="docs/guix--Submitting-Patches.html">Submitting Patches</a>). Well, if you need help, we will be happy to help you too. Once the patch is committed in the Guix repository, the new package automatically gets built on the supported platforms by <a href="https://bordeaux.guix.gnu.org">our continuous integration system</a>.
+</p>
+
+<p>
+<a id="index-substituter"></a>
+Users can obtain the new package definition simply by running <code>guix pull</code> (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>). When <code>bordeaux.guix.gnu.org</code> is done building the package, installing the package automatically downloads binaries from there (see <a href="docs/guix--Substitutes.html">Substitutes</a>). The only place where human intervention is needed is to review and apply the patch.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Software-Freedom.html">Software Freedom</a></li>
+<li><a href="docs/guix--Package-Naming.html">Package Naming</a></li>
+<li><a href="docs/guix--Version-Numbers.html">Version Numbers</a></li>
+<li><a href="docs/guix--Synopses-and-Descriptions.html">Synopses and Descriptions</a></li>
+<li><a href="docs/guix--Snippets-versus-Phases.html">Snippets versus Phases</a></li>
+<li><a href="docs/guix--Cyclic-Module-Dependencies.html">Cyclic Module Dependencies</a></li>
+<li><a href="docs/guix--Bulk-Updates.html">Bulk Updates</a></li>
+<li><a href="docs/guix--Emacs-Packages.html">Emacs Packages</a></li>
+<li><a href="docs/guix--Python-Modules.html">Python Modules</a></li>
+<li><a href="docs/guix--Perl-Modules.html">Perl Modules</a></li>
+<li><a href="docs/guix--Java-Packages.html">Java Packages</a></li>
+<li><a href="docs/guix--Rust-Crates.html">Rust Crates</a></li>
+<li><a href="docs/guix--Elm-Packages.html">Elm Packages</a></li>
+<li><a href="docs/guix--Fonts.html">Fonts</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Coding-Style.html">Coding Style</a>, Previous: <a href="docs/guix--Source-Tree-Structure.html">Source Tree Structure</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

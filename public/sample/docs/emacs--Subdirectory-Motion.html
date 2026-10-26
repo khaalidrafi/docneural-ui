@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Moving-Over-Subdirectories">1. 32.14 Moving Over Subdirectories ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Hiding-Subdirectories.html">Hiding Subdirectories</a>   Previous: <a href="docs/emacs--Subdir-Switches.html">Subdirectory Switches in Dired</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Subdirectory-Motion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Moving-Over-Subdirectories" class="outline-2">
+<h2 id="Moving-Over-Subdirectories"><span class="section-number-2">1.</span> 32.14 Moving Over Subdirectories <a href="#Moving-Over-Subdirectories">¶</a></h2>
+<div class="outline-text-2" id="text-Moving-Over-Subdirectories">
+<p>
+When a Dired buffer lists subdirectories, you can use the page motion commands C-x [ and C-x ] to move by entire directories (see <a href="docs/emacs--Pages.html">Pages</a>).
+</p>
+
+<p>
+The following commands move across, up and down in the tree of directories within one Dired buffer. They move to <i>directory header lines</i>, which are the lines that give a directory's name, at the beginning of the directory's contents.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-dired_002dnext_002dsubdir"></a>C-M-n </dt><dd>Go to next subdirectory header line, regardless of level (<code>dired-next-subdir</code>).</dd>
+
+<dt><a id="index-dired_002dprev_002dsubdir"></a>C-M-p </dt><dd>Go to previous subdirectory header line, regardless of level (<code>dired-prev-subdir</code>).</dd>
+
+<dt><a id="index-dired_002dtree_002dup"></a>C-M-u </dt><dd>Go up to the parent directory's header line (<code>dired-tree-up</code>).</dd>
+
+<dt><a id="index-dired_002dtree_002ddown"></a>C-M-d </dt><dd>Go down in the directory tree, to the first subdirectory's header line (<code>dired-tree-down</code>).</dd>
+
+<dt><a id="index-dired_002dprev_002ddirline"></a>&lt; </dt><dd>Move up to the previous directory-file line (<code>dired-prev-dirline</code>). These lines are the ones that describe a directory as a file in its parent directory.</dd>
+
+<dt><a id="index-dired_002dnext_002ddirline"></a>&gt; </dt><dd>Move down to the next directory-file line (<code>dired-next-dirline</code>).</dd>
+
+<dt><a id="index-dired_002dgoto_002dsubdir"></a>M-G </dt><dd>Prompt for a directory and move to its directory-file line (<code>dired-goto-subdir</code>).</dd>
+</dl>
+</div>
+</div>

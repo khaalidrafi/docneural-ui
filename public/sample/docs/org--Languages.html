@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Languages-1">1. 16.9 Languages ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Languages"></a>
+Next: <a href="docs/org--Editing-Source-Code.html">Editing Source Code</a>, Previous: <a href="docs/org--Extracting-Source-Code.html">Extracting Source Code</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Languages-1" class="outline-2">
+<h2 id="Languages-1"><span class="section-number-2">1.</span> 16.9 Languages <a href="#Languages-1">¶</a></h2>
+<div class="outline-text-2" id="text-Languages-1">
+<p>
+Code blocks in dozens of languages are supported. See Worg website for <a href="https://orgmode.org/worg/org-contrib/babel/languages/index.html">language-specific documentation</a>.
+</p>
+
+<p>
+By default, only Emacs Lisp is enabled for evaluation. To enable or disable other languages, customize the <code>org-babel-load-languages</code> variable either through the Emacs customization interface, or by adding code to the init file as shown next.
+</p>
+
+<p>
+In this example, evaluation is disabled for Emacs Lisp, and enabled for R.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . nil)
+   (R . t)))
+</pre>
+</div>
+
+<p>
+Note that this is not the only way to enable a language. Org also enables languages when loaded with <code>require</code> statement. For example, the following enables execution of Clojure code blocks:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp-preformatted">(require 'ob-clojure)
+</pre>
+</div>
+</div>
+</div>

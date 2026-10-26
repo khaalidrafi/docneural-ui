@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Quoted-File-Names-1">1. 20.16 Quoted File Names ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--File-Name-Cache.html">File Name Cache</a>   Previous: <a href="docs/emacs--Remote-Files.html">Remote Files</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Quoted-File-Names"></a>
+</p>
+
+<hr />
+<div id="outline-container-Quoted-File-Names-1" class="outline-2">
+<h2 id="Quoted-File-Names-1"><span class="section-number-2">1.</span> 20.16 Quoted File Names <a href="#Quoted-File-Names-1">¶</a></h2>
+<div class="outline-text-2" id="text-Quoted-File-Names-1">
+<p>
+You can <i>quote</i> an absolute file name to prevent special characters and syntax in it from having their special effects. The way to do this is to add ‘=/:=' at the beginning.
+</p>
+
+<p>
+For example, you can quote a local file name which appears remote, to prevent it from being treated as a remote file name. Thus, if you have a directory named <code>/foo:</code> and a file named <code>bar</code> in it, you can refer to that file in Emacs as ‘=/:/foo:/bar='.
+</p>
+
+<p>
+If you want to quote only special characters in the local part of a remote file name, you can quote just the local part. ‘=/ssh:baz:/:/foo:/bar=' refers to the file <code>bar</code> of directory <code>/foo:</code> on the host <code>baz</code>.
+</p>
+
+<p>
+‘=/:=' can also prevent ‘=~=' from being treated as a special character for a user's home directory. For example, <code>/:/tmp/~hack</code> refers to a file whose name is <code>~hack</code> in directory <code>/tmp</code>.
+</p>
+
+<p>
+Quoting with ‘=/:=' is also a way to enter in the minibuffer a file name that contains ‘=$='. In order for this to work, the ‘=/:=' must be at the beginning of the minibuffer contents. (You can also double each ‘=$='; see <a href="docs/emacs--File-Names.html#File-Names-with-_0024">File Names with $</a>.)
+</p>
+
+<p>
+You can also quote wildcard characters with ‘=/:=', for visiting. For example, <code>/:/tmp/foo*bar</code> visits the file <code>/tmp/foo*bar</code>.
+</p>
+
+<p>
+Another method of getting the same result is to enter <code>/tmp/foo[*]bar</code>, which is a wildcard specification that matches only <code>/tmp/foo*bar</code>. However, in many cases there is no need to quote the wildcard characters because even unquoted they give the right result. For example, if the only file name in <code>/tmp</code> that starts with ‘=foo=' and ends with ‘=bar=' is <code>foo*bar</code>, then specifying <code>/tmp/foo*bar</code> will visit only <code>/tmp/foo*bar</code>.
+</p>
+
+<hr />
+</div>
+</div>

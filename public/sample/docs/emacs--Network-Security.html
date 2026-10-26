@@ -1,0 +1,107 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Network-Security-1">1. 38 Network Security ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Document-View.html">Document Viewing</a>   Previous: <a href="docs/emacs--Host-Security.html">Host Security</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Network-Security"></a>
+</p>
+
+<hr />
+<div id="outline-container-Network-Security-1" class="outline-2">
+<h2 id="Network-Security-1"><span class="section-number-2">1.</span> 38 Network Security <a href="#Network-Security-1">¶</a></h2>
+<div class="outline-text-2" id="text-Network-Security-1">
+<p>
+Whenever Emacs establishes any network connection, it passes the established connection to the <i>Network Security Manager</i> (NSM). NSM is responsible for enforcing the network security under your control. Currently, this works by using the Transport Layer Security (TLS) features.
+</p>
+
+<p>
+The <code>network-security-level</code> variable determines the security level that NSM enforces. If its value is <code>low</code>, no security checks are performed. This is not recommended, and will basically mean that your network connections can't be trusted. However, the setting can be useful in limited circumstances, as when testing network issues.
+</p>
+
+<p>
+If this variable is <code>medium</code> (which is the default), a number of checks will be performed. If as result NSM determines that the network connection might not be trustworthy, it will make you aware of that, and will ask you what to do about the network connection.
+</p>
+
+<p>
+You can decide to register a permanent security exception for an unverified connection, a temporary exception, or refuse the connection entirely.
+</p>
+
+<p>
+In addition to the basic certificate correctness checks, several TLS algorithm checks are available. Some encryption technologies that were previously thought to be secure have shown themselves to be fragile, so Emacs (by default) warns you about some of these problems.
+</p>
+
+<p>
+The protocol network checks is controlled via the <code>network-security-protocol-checks</code> variable.
+</p>
+
+<p>
+It's an alist where the first element of each association is the name of the check, and the second element is the security level where the check should be used.
+</p>
+
+<p>
+An element like <code>(rc4 medium)</code> will result in the function <code>nsm-protocol-check--rc4</code> being called like thus: <code>(nsm-protocol-check--rc4 host port status settings)</code>. The function should return non-<code>nil</code> if the connection should proceed and <code>nil</code> otherwise.
+</p>
+
+<p>
+Below is a list of the checks done on the default <code>medium</code> level.
+</p>
+
+<dl class="org-dl">
+<dt>unable to verify a TLS certificate</dt><dd><p>
+If the connection is a TLS, SSL or STARTTLS connection, NSM will check whether the certificate used to establish the identity of the server we're connecting to can be verified.
+</p>
+
+<p>
+While an invalid certificate is often the cause for concern (there could be a Man-in-the-Middle hijacking your network connection and stealing your password), there may be valid reasons for going ahead with the connection anyway. For instance, the server may be using a self-signed certificate, or the certificate may have expired. It's up to you to determine whether it's acceptable to continue with the connection.
+</p></dd>
+
+<dt>a self-signed certificate has changed</dt><dd>If you've previously accepted a self-signed certificate, but it has now changed, that could mean that the server has just changed the certificate, but it might also mean that the network connection has been hijacked.</dd>
+
+<dt>previously encrypted connection now unencrypted</dt><dd>If the connection is unencrypted, but it was encrypted in previous sessions, this might mean that there is a proxy between you and the server that strips away STARTTLS announcements, leaving the connection unencrypted. This is usually very suspicious.</dd>
+
+<dt>talking to an unencrypted service when sending a password</dt><dd>When connecting to an IMAP or POP3 server, these should usually be encrypted, because it's common to send passwords over these connections. Similarly, if you're sending email via SMTP that requires a password, you usually want that connection to be encrypted. If the connection isn't encrypted, NSM will warn you.</dd>
+
+<dt>Diffie-Hellman low prime bits</dt><dd>When doing the public key exchange, the number of prime bits should be high enough to ensure that the channel can't be eavesdropped on by third parties. If this number is too low, Emacs will warn you. (This is the <code>diffie-hellman-prime-bits</code> check in <code>network-security-protocol-checks</code>).</dd>
+
+<dt>RC4 stream cipher</dt><dd>The RC4 stream cipher is believed to be of low quality and may allow eavesdropping by third parties. (This is the <code>rc4</code> check in <code>network-security-protocol-checks</code>).</dd>
+
+<dt>SHA1 in the host certificate or in intermediate certificates</dt><dd>It is believed that if an intermediate certificate uses the SHA1 hashing algorithm, then third parties can issue certificates pretending to be that issuing instance. These connections are therefore vulnerable to man-in-the-middle attacks. (These are the <code>signature-sha1</code> and <code>intermediate-sha1</code> checks in <code>network-security-protocol-checks</code>).</dd>
+
+<dt>SSL1, SSL2 and SSL3</dt><dd>The protocols older than TLS1.0 are believed to be vulnerable to a variety of attacks, and you may want to avoid using these if what you're doing requires higher security. (This is the <code>ssl</code> check in <code>network-security-protocol-checks</code>).</dd>
+
+<dt>Triple DES (or 3DES) cipher</dt><dd>The 3DES stream cipher provides at most 112 bits of effective security, and a major security vulnerability in it was disclosed in 2016 (CVE-2016-2183). It has been deprecated by NIST in all applications from late 2023 onwards. (This is the <code>3des-cipher</code> check in <code>network-security-protocol-checks</code>).</dd>
+</dl>
+
+<p>
+If <code>network-security-level</code> is <code>high</code>, the following checks will be made, in addition to the above:
+</p>
+
+<dl class="org-dl">
+<dt>a validated certificate changes the public key</dt><dd>Servers change their keys occasionally, and that is normally nothing to be concerned about. However, if you are worried that your network connections are being hijacked by agencies who have access to pliable Certificate Authorities which issue new certificates for third-party services, you may want to keep track of these changes.</dd>
+</dl>
+
+<p>
+Finally, if <code>network-security-level</code> is <code>paranoid</code>, you will also be notified the first time NSM sees any new certificate. This will allow you to inspect all the certificates from all the connections that Emacs makes.
+</p>
+
+<p>
+The following additional variables can be used to control details of NSM operation:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-nsm_002dsettings_002dfile"></a>=nsm-settings-file= </dt><dd>This is the file where NSM stores details about connections. It defaults to <code>~/.emacs.d/network-security.data</code>.</dd>
+
+<dt><a id="index-nsm_002dsave_002dhost_002dnames"></a>=nsm-save-host-names= </dt><dd>By default, host names will not be saved for non-<code>STARTTLS</code> connections. Instead a host/port hash is used to identify connections. This means that one can't casually read the settings file to see what servers the user has connected to. If this variable is <code>t</code>, NSM will also save host names in the <code>nsm-settings-file</code>.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

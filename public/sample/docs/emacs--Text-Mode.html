@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Text-Mode-1">1. 27.8 Text Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Outline-Mode.html">Outline Mode</a>   Previous: <a href="docs/emacs--Case.html">Case Conversion Commands</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="Text-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-Text-Mode-1" class="outline-2">
+<h2 id="Text-Mode-1"><span class="section-number-2">1.</span> 27.8 Text Mode <a href="#Text-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-Text-Mode-1">
+<p>
+Text mode is a major mode for editing files of text in a human language. Files which have names ending in the extension <code>.txt</code> are usually opened in Text mode (see <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>). To explicitly switch to Text mode, type M-x text-mode.
+</p>
+
+<p>
+In Text mode, only blank lines and page delimiters separate paragraphs. As a result, paragraphs can be indented, and adaptive filling determines what indentation to use when filling a paragraph. See <a href="docs/emacs--Adaptive-Fill.html">Adaptive Filling</a>.
+</p>
+
+<p>
+In Text mode, the TAB (<code>indent-for-tab-command</code>) command usually inserts whitespace up to the next tab stop, instead of indenting the current line. See <a href="docs/emacs--Indentation.html">Indentation</a>, for details.
+</p>
+
+<p>
+Text mode turns off the features concerned with comments except when you explicitly invoke them. It changes the syntax table so that apostrophes are considered part of words (e.g., ‘=don't=' is considered one word). However, if a word starts with an apostrophe, it is treated as a prefix for the purposes of capitalization (e.g., M-c converts ‘='hello'<code>' into ‘</code>'Hello'=', as expected).
+</p>
+
+<p>
+If you indent the first lines of paragraphs, then you should use Paragraph-Indent Text mode (M-x paragraph-indent-text-mode) rather than Text mode. In that mode, you do not need to have blank lines between paragraphs, because the first-line indentation is sufficient to start a paragraph; however paragraphs in which every line is indented are not supported. Use M-x paragraph-indent-minor-mode to enable an equivalent minor mode for situations where you shouldn't change the major mode&#x2014;in mail composition, for instance.
+</p>
+
+<p>
+The command M-TAB (<code>completion-at-point</code>) performs completion of the partial word in the buffer before point, using the spelling dictionary as the space of possible words by default. See <a href="docs/emacs--Spelling.html">Checking and Correcting Spelling</a>. If your window manager defines M-TAB to switch windows, you can type ESC TAB or C-M-i instead. To disable this completion, customize the variable <code>text-mode-ispell-word-completion</code> to the <code>nil</code> value.
+</p>
+
+<p>
+Entering Text mode runs the mode hook <code>text-mode-hook</code> (see <a href="docs/emacs--Major-Modes.html">Major Modes</a>).
+</p>
+
+<p>
+The following sections describe several major modes that are <i>derived</i> from Text mode. These derivatives share most of the features of Text mode described above. In particular, derivatives of Text mode run <code>text-mode-hook</code> prior to running their own mode hooks.
+</p>
+
+<hr />
+</div>
+</div>

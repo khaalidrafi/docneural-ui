@@ -1,0 +1,81 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Fortran-Comments-1">1. 28.14.3 Fortran Comments ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fortran-Autofill.html">Auto Fill in Fortran Mode</a>   Previous: <a href="docs/emacs--Fortran-Indent.html">Fortran Indentation</a>   Up: <a href="docs/emacs--Fortran.html">Fortran Mode</a>
+</p>
+
+<p>
+<a id="Fortran-Comments"></a>
+</p>
+
+<hr />
+<div id="outline-container-Fortran-Comments-1" class="outline-2">
+<h2 id="Fortran-Comments-1"><span class="section-number-2">1.</span> 28.14.3 Fortran Comments <a href="#Fortran-Comments-1">¶</a></h2>
+<div class="outline-text-2" id="text-Fortran-Comments-1">
+<p>
+The usual Emacs comment commands assume that a comment can follow a line of code. In Fortran 77, the standard comment syntax requires an entire line to be just a comment. Therefore, Fortran mode replaces the standard Emacs comment commands and defines some new variables.
+</p>
+
+<p>
+Fortran mode can also handle the Fortran 90 comment syntax where comments start with ‘=!=' and can follow other text. Because only some Fortran 77 compilers accept this syntax, Fortran mode will not insert such comments unless you have said in advance to do so. To do this, set the variable <code>fortran-comment-line-start</code> to ‘="!"<code>'. If you use an unusual value, you may need to change =fortran-comment-line-start-skip</code>.
+</p>
+
+<dl class="org-dl">
+<dt>M-;</dt><dd>Align comment or insert new comment (<code>comment-dwim</code>).</dd>
+
+<dt>C-x ;</dt><dd>Applies to nonstandard ‘=!=' comments only (<code>comment-set-column</code>).</dd>
+
+<dt>C-c ;</dt><dd>Turn all lines of the region into comments, or (with argument) turn them back into real code (<code>fortran-comment-region</code>).</dd>
+</dl>
+
+<p>
+M-; in Fortran mode runs the standard <code>comment-dwim</code>. This recognizes any kind of existing comment and aligns its text appropriately; if there is no existing comment, a comment is inserted and aligned. Inserting and aligning comments are not the same in Fortran mode as in other modes.
+</p>
+
+<p>
+When a new comment must be inserted, if the current line is blank, a full-line comment is inserted. On a non-blank line, a nonstandard ‘=!=' comment is inserted if you have said you want to use them. Otherwise, a full-line comment is inserted on a new line before the current line.
+</p>
+
+<p>
+Nonstandard ‘=!=' comments are aligned like comments in other languages, but full-line comments are different. In a standard full-line comment, the comment delimiter itself must always appear in column zero. What can be aligned is the text within the comment. You can choose from three styles of alignment by setting the variable <code>fortran-comment-indent-style</code> to one of these values:
+</p>
+
+<dl class="org-dl">
+<dt><code>fixed</code></dt><dd><p>
+Align the text at a fixed column, which is the sum of <code>fortran-comment-line-extra-indent</code> and the minimum statement indentation. This is the default.
+</p>
+
+<p>
+The minimum indentation is <code>fortran-minimum-statement-indent-tab</code> for tab format continuation line style and <code>fortran-minimum-statement-indent-fixed</code> for fixed form style.
+</p></dd>
+
+<dt><code>relative</code></dt><dd>Align the text as if it were a line of code, but with an additional <code>fortran-comment-line-extra-indent</code> columns of indentation.</dd>
+
+<dt><code>nil</code></dt><dd>Don't move text in full-line comments automatically.</dd>
+</dl>
+
+<p>
+In addition, you can specify the character to be used to indent within full-line comments by setting the variable <code>fortran-comment-indent-char</code> to the single-character string you want to use.
+</p>
+
+<p>
+Compiler directive lines, or preprocessor lines, have much the same appearance as comment lines. It is important, though, that such lines never be indented at all, no matter what the value of <code>fortran-comment-indent-style</code>. The variable <code>fortran-directive-re</code> is a regular expression that specifies which lines are directives. Matching lines are never indented, and receive distinctive font-locking.
+</p>
+
+<p>
+The normal Emacs comment command C-x ; (<code>comment-set-column</code>) has not been redefined. If you use ‘=!=' comments, this command can be used with them. Otherwise, it is useless in Fortran mode.
+</p>
+
+<p>
+The command C-c ; (<code>fortran-comment-region</code>) turns all the lines of the region into comments by inserting the string ‘=c\[$=' at the front of each one. With a numeric argument, it turns the region back into live code by deleting ‘=c\]$=' from the front of each line in it. The string used for these comments can be controlled by setting the variable <code>fortran-comment-region</code>. Note that here we have an example of a command and a variable with the same name; these two uses of the name never conflict because in Lisp and in Emacs it is always clear from the context which one is meant.
+</p>
+
+<hr />
+</div>
+</div>

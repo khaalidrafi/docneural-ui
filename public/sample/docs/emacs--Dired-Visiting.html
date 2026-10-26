@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Visiting-Files-in-Dired">1. 32.5 Visiting Files in Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Marks-vs-Flags.html">Dired Marks vs. Flags</a>   Previous: <a href="docs/emacs--Flagging-Many-Files.html">Flagging Many Files at Once</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Dired-Visiting"></a>
+</p>
+
+<hr />
+<div id="outline-container-Visiting-Files-in-Dired" class="outline-2">
+<h2 id="Visiting-Files-in-Dired"><span class="section-number-2">1.</span> 32.5 Visiting Files in Dired <a href="#Visiting-Files-in-Dired">¶</a></h2>
+<div class="outline-text-2" id="text-Visiting-Files-in-Dired">
+<p>
+There are several Dired commands for visiting or examining the files listed in the Dired buffer. All of them apply to the current line's file; if that file is really a directory, these commands invoke Dired on that subdirectory (making a separate Dired buffer).
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-f-_0028Dired_0029"></a>f </dt><dd>Visit the file described on the current line, like typing C-x C-f and supplying that file name (<code>dired-find-file</code>). See <a href="docs/emacs--Visiting.html">Visiting Files</a>.</dd>
+
+<dt>(no term)</dt><dd><a id="index-RET-_0028Dired_0029"></a>RET <br />
+e :: Equivalent to f.</dd>
+
+<dt><a id="index-o-_0028Dired_0029"></a>o </dt><dd>Like f, but uses another window to display the file's buffer (<code>dired-find-file-other-window</code>). The Dired buffer remains visible in the first window. This is like using C-x 4 C-f to visit the file. See <a href="docs/emacs--Windows.html">Multiple Windows</a>.</dd>
+
+<dt><a id="index-C_002do-_0028Dired_0029"></a>C-o </dt><dd>Visit the file described on the current line, and display the buffer in another window, but do not select that window (<code>dired-display-file</code>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-dired_002dmouse_002dfind_002dfile_002dother_002dwindow"></a>mouse-1 <br />
+mouse-2 :: Visit the file whose name you clicked on (<code>dired-mouse-find-file-other-window</code>). This uses another window to display the file, like the o command.</dd>
+
+<dt><a id="index-v-_0028Dired_0029"></a>v </dt><dd>View the file described on the current line, with View mode (<code>dired-view-file</code>). View mode provides convenient commands to navigate the buffer but forbids changing it; See <a href="docs/emacs--View-Mode.html">View Mode</a>.</dd>
+
+<dt><a id="index-_005e-_0028Dired_0029"></a>^ </dt><dd>Visit the parent directory of the current directory (<code>dired-up-directory</code>). This is equivalent to moving to the line for <code>..</code> and typing f there.</dd>
+
+<dt>User Option: <b>dired-kill-when-opening-new-dired-buffer</b> </dt><dd>When visiting a new sub-directory in Dired, Emacs will (by default) open a new buffer to display this new directory, and leave the old Dired buffer as is. If this user option is non-<code>nil</code>, the old Dired buffer will be killed after selecting the new directory. This means that if you're traversing a directory structure in Dired, you won't end up with more than a single Dired buffer.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

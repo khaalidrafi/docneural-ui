@@ -1,0 +1,388 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-home">1.0.1. 13.4 Invoking <code>guix home</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-home"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Home-Services.html">Home Services</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-home-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-home" class="outline-4">
+<h4 id="invoking-guix-home"><span class="section-number-4">1.0.1.</span> 13.4 Invoking <code>guix home</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-home">
+<p>
+<a id="index-guix-home"></a>
+Once you have written a home environment declaration (see <a href="docs/guix--Declaring-the-Home-Environment.html">Declaring the Home Environment</a>, it can be <i>instantiated</i> using the <code>guix home</code> command. The synopsis is:
+</p>
+
+<pre class="example" id="orgc7cd5b7">
+guix home options… action file
+</pre>
+
+<p>
+<code>file</code> must be the name of a file containing a <code>home-environment</code> declaration. <code>action</code> specifies how the home environment is instantiated, but there are few auxiliary actions which don't instantiate it. Currently the following values are supported:
+</p>
+
+<dl class="org-dl">
+<dt><code>search</code></dt><dd><p>
+Display available home service type definitions that match the given regular expressions, sorted by relevance:
+</p>
+
+<p>
+<a id="index-shell-1"></a> <a id="index-shell_002dprofile"></a> <a id="index-bash-1"></a> <a id="index-zsh-1"></a>
+</p>
+
+<pre class="example" id="org1fd51dd">
+$ guix home search shell
+name: home-shell-profile
+location: gnu/home/services/shells.scm:100:2
+extends: home-files
+description: Create `~/.profile', which is used for environment initialization of POSIX compliant login shells.
++ This service type can be extended with a list of file-like objects.
+relevance: 6
+
+name: home-fish
+location: gnu/home/services/shells.scm:640:2
+extends: home-files home-profile
+description: Install and configure Fish, the friendly interactive shell.
+relevance: 3
+
+name: home-zsh
+location: gnu/home/services/shells.scm:290:2
+extends: home-files home-profile
+description: Install and configure Zsh.
+relevance: 1
+
+name: home-bash
+location: gnu/home/services/shells.scm:508:2
+extends: home-files home-profile
+description: Install and configure GNU Bash.
+relevance: 1
+
+…
+</pre>
+
+<p>
+As for <code>guix search</code>, the result is written in <code>recutils</code> format, which makes it easy to filter the output (see <a href="https://www.gnu.org/software/recutils/manual/html_node/index.html#Top">GNU recutils databases</a> in GNU recutils manual).
+</p>
+
+<p>
+<a id="index-container_002c-for-guix-home-1"></a>
+</p></dd>
+
+<dt><code>container</code></dt><dd><p>
+Spawn a shell in an isolated environment&#x2014;a <i>container</i>&#x2014;containing your home as specified by <code>file</code>.
+</p>
+
+<p>
+For example, this is how you would start an interactive shell in a container with your home:
+</p>
+
+<pre class="example" id="org9fb831a">
+guix home container config.scm
+</pre>
+
+<p>
+This is a throw-away container where you can lightheartedly fiddle with files; any changes made within the container, any process started&#x2014;all this disappears as soon as you exit that shell.
+</p>
+
+<p>
+As with <code>guix shell</code>, several options control that container:
+</p>
+
+<ul class="org-ul">
+<li><code>--network</code><br />
+<code>-N</code> :: Enable networking within the container (it is disabled by default).</li>
+
+<li><code>--expose===source=</code>[===target==]=<br />
+<code>--share===source=</code>[===target==]= :: As with <code>guix shell</code>, make directory <code>source</code> of the host system available as <code>target</code> inside the container&#x2014;read-only if you pass <code>--expose</code>, and writable if you pass <code>--share</code> (see <a href="docs/guix--Invoking-guix-shell.html"><code>--expose</code> and <code>--share</code></a>).</li>
+</ul>
+
+<p>
+Additionally, you can run a command in that container, instead of spawning an interactive shell. For instance, here is how you would check which Shepherd services are started in a throw-away home container:
+</p>
+
+<pre class="example" id="org560b891">
+guix home container config.scm -- herd status
+</pre>
+
+<p>
+The command to run in the container must come after <code>--</code> (double hyphen).
+</p>
+
+<p>
+<a id="index-service-type-definition_002c-editing-1"></a> <a id="index-editing_002c-service-type-definition-1"></a>
+</p></dd>
+
+<dt><code>edit</code></dt><dd><p>
+Edit or view the definition of the given Home service types.
+</p>
+
+<p>
+For example, the command below opens your editor, as specified by the <code>EDITOR</code> environment variable, on the definition of the <code>home-mcron</code> service type:
+</p>
+
+<pre class="example" id="orgf2a7e22">
+guix home edit home-mcron
+</pre></dd>
+
+<dt><code>reconfigure</code></dt><dd><p>
+Build the home environment described in <code>file</code>, and switch to it. Switching means that the activation script will be evaluated and (in basic scenario) symlinks to configuration files generated from <code>home-environment</code> declaration will be created in <code>~</code>. If the file with the same path already exists in home folder it will be moved to <code>~/==timestamp=</code>-guix-home-legacy-configs-backup=, where <code>timestamp</code> is a current UNIX epoch time.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> It is highly recommended to run <code>guix pull</code> once before you run <code>guix home reconfigure</code> for the first time (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>).
+</p>
+</blockquote>
+
+<p>
+This effects all the configuration specified in <code>file</code>. The command starts Shepherd services specified in <code>file</code> that are not currently running; if a service is currently running, this command will arrange for it to be upgraded the next time it is stopped (e.g. by <code>herd stop ==service</code> or <code>herd restart ==service</code>).
+</p>
+
+<p>
+This command creates a new generation whose number is one greater than the current generation (as reported by <code>guix home list-generations</code>). If that generation already exists, it will be overwritten. This behavior mirrors that of <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+<a id="index-provenance-tracking_002c-of-the-home-environment"></a>
+</p>
+
+<p>
+Upon completion, the new home is deployed under <code>~/.guix-home</code>. This directory contains <i>provenance meta-data</i>: the list of channels in use (see <a href="docs/guix--Channels.html">Channels</a>) and <code>file</code> itself, when available. You can view the provenance information by running:
+</p>
+
+<pre class="example" id="orga1b084b">
+guix home describe
+</pre>
+
+<p>
+This information is useful should you later want to inspect how this particular generation was built. In fact, assuming <code>file</code> is self-contained, you can later rebuild generation <code>n</code> of your home environment with:
+</p>
+
+<pre class="example" id="orgf8e6e74">
+guix time-machine \
+  -C /var/guix/profiles/per-user/USER/guix-home-n-link/channels.scm -- \
+  home reconfigure \
+  /var/guix/profiles/per-user/USER/guix-home-n-link/configuration.scm
+</pre>
+
+<p>
+You can think of it as some sort of built-in version control! Your home is not just a binary artifact: <i>it carries its own source</i>.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> If you're using Guix System, <a href="docs/guix--Guix-Services.html#guix_002dhome_002dservice_002dtype"><code>guix-home-service-type</code></a>, on how to embed your home configuration in your system configuration such that <code>guix system reconfigure</code> deploys both your system and your home.
+</p>
+</blockquote></dd>
+
+<dt><code>switch-generation</code> </dt><dd><p>
+Switch to an existing home generation. This action atomically switches the home profile to the specified home generation.
+</p>
+
+<p>
+The target generation can be specified explicitly by its generation number. For example, the following invocation would switch to home generation 7:
+</p>
+
+<pre class="example" id="org87bfd90">
+guix home switch-generation 7
+</pre>
+
+<p>
+The target generation can also be specified relative to the current generation with the form <code>+N</code> or <code>-N</code>, where <code>+3</code> means “3 generations ahead of the current generation,” and <code>-1</code> means “1 generation prior to the current generation.” When specifying a negative value such as <code>-1</code>, you must precede it with <code>--</code> to prevent it from being parsed as an option. For example:
+</p>
+
+<pre class="example" id="org002943f">
+guix home switch-generation -- -1
+</pre>
+
+<p>
+This action will fail if the specified generation does not exist.
+</p></dd>
+
+<dt><code>roll-back</code> </dt><dd>Switch to the preceding home generation. This is the inverse of <code>reconfigure</code>, and it is exactly the same as invoking <code>switch-generation</code> with an argument of <code>-1</code>.</dd>
+
+<dt><code>delete-generations</code> </dt><dd><p>
+<a id="index-saving-space-1"></a>
+</p>
+
+<p>
+Delete home generations, making them candidates for garbage collection (see <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, for information on how to run the “garbage collector”).
+</p>
+
+<p>
+This works in the same way as ‘=guix package &#x2013;delete-generations=' (see <a href="docs/guix--Invoking-guix-package.html"><code>--delete-generations</code></a>). With no arguments, all home generations but the current one are deleted:
+</p>
+
+<pre class="example" id="org9391cd4">
+guix home delete-generations
+</pre>
+
+<p>
+You can also select the generations you want to delete. The example below deletes all the home generations that are more than two months old:
+</p>
+
+<pre class="example" id="org6701115">
+guix home delete-generations 2m
+</pre></dd>
+
+<dt><code>build</code></dt><dd>Build the derivation of the home environment, which includes all the configuration files and programs needed. This action does not actually install anything.</dd>
+
+<dt><code>describe</code></dt><dd><p>
+Describe the current home generation: its file name, as well as provenance information when available.
+</p>
+
+<p>
+To show installed packages in the current home generation's profile, the <code>--list-installed</code> flag is provided, with the same syntax that is used in <code>guix package --list-installed</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). For instance, the following command shows a table of all the packages with “emacs” in their name that are installed in the current home generation's profile:
+</p>
+
+<pre class="example" id="orgb1c0357">
+guix home describe --list-installed=emacs
+</pre></dd>
+
+<dt><code>list-generations</code></dt><dd><p>
+List a summary of each generation of the home environment available on disk, in a human-readable way. This is similar to the <code>--list-generations</code> option of <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+Optionally, one can specify a pattern, with the same syntax that is used in <code>guix package --list-generations</code>, to restrict the list of generations displayed. For instance, the following command displays generations that are up to 10 days old:
+</p>
+
+<pre class="example" id="orgb852217">
+guix home list-generations 10d
+</pre>
+
+<p>
+The <code>--list-installed</code> flag may also be specified, with the same syntax that is used in <code>guix home describe</code>. This may be helpful if trying to determine when a package was added to the home profile.
+</p></dd>
+
+<dt><code>import</code></dt><dd><p>
+Generate a <i>home environment</i> from the packages in the default profile and configuration files found in the user's home directory. The configuration files will be copied to the specified directory, and a <code>home-configuration.scm</code> will be populated with the home environment. Note that not every home service that exists is supported (see <a href="docs/guix--Home-Services.html">Home Services</a>).
+</p>
+
+<pre class="example" id="org3e3db11">
+$ guix home import ~/guix-config
+guix home: '/home/alice/guix-config' populated with all the Home configuration files
+</pre></dd>
+</dl>
+
+<p>
+And there's more! <code>guix home</code> also provides the following sub-commands to visualize how the services of your home environment relate to one another:
+</p>
+
+<p>
+<a id="index-service-extension-graph_002c-of-a-home-environment"></a>
+<code>extension-graph</code>
+Emit to standard output the <i>service extension graph</i> of the home environment defined in <code>file</code> (see <a href="docs/guix--Service-Composition.html">Service Composition</a>, for more information on service extensions). By default the output is in Dot/Graphviz format, but you can choose a different format with <code>--graph-backend</code>, as with <code>guix graph</code> (see <a href="docs/guix--Invoking-guix-graph.html"><code>--backend</code></a>):
+</p>
+
+<p>
+The command:
+</p>
+
+<pre class="example" id="orga3c985d">
+guix home extension-graph file | xdot -
+</pre>
+
+<p>
+shows the extension relations among services.
+</p>
+
+<p>
+<a id="index-Shepherd-dependency-graph_002c-for-a-home-environment"></a>
+<code>shepherd-graph</code>
+Emit to standard output the <i>dependency graph</i> of shepherd services of the home environment defined in <code>file</code>. See <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>, for more information and for an example graph.
+</p>
+
+<p>
+Again, the default output format is Dot/Graphviz, but you can pass <code>--graph-backend</code> to select a different one.
+</p>
+
+<p>
+<code>options</code> can contain any of the common build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>). In addition, <code>options</code> can contain one of the following:
+</p>
+
+<ul class="org-ul">
+<li><code>--expression===expr</code><br />
+<code>-e ==expr</code> :: Consider the home-environment <code>expr</code> evaluates to. This is an alternative to specifying a file which evaluates to a home environment.</li>
+
+<li id="<code>--allow-downgrades</code>"><p>
+Instruct <code>guix home reconfigure</code> to allow system downgrades.
+</p>
+
+<p>
+Just like <code>guix system</code>, <code>guix home reconfigure</code>, by default, prevents you from downgrading your home to older or unrelated revisions compared to the channel revisions that were used to deploy it&#x2014;those shown by <code>guix home describe</code>. Using <code>--allow-downgrades</code> allows you to bypass that check, at the risk of downgrading your home&#x2014;be careful!
+</p></li>
+</ul>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Home-Services.html">Home Services</a>, Up: <a href="docs/guix--Home-Configuration.html">Home Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

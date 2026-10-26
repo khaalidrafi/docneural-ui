@@ -1,0 +1,20 @@
+:PROPERTIES:
+:ID: emacs--Managing-Projects
+:END:
+#+filetags: :emacs:
+#+title: Managing Projects
+
+Next:   Previous: [[id:emacs--Switching-Projects][Switching Projects]]   Up: [[id:emacs--Projects][Working with Projects]]
+
+<<Managing-Projects>>
+
+--------------
+
+**** 30.2.4 Managing the Project List File [[#Managing-the-Project-List-File][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Managing-the-Project-List-File
+:CLASS: subsection
+:END:
+- M-x project-forget-project :: Remove a known project from the =project-list-file=.
+
+Normally Emacs automatically adds and removes projects to and from the =project-list-file=, but sometimes you may want to manually edit the available projects. M-x project-forget-project prompts you to choose one of the available projects, and then removes it from the file.

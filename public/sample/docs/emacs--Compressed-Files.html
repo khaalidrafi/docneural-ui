@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Accessing-Compressed-Files">1. 20.13 Accessing Compressed Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--File-Archives.html">File Archives</a>   Previous: <a href="docs/emacs--Misc-File-Ops.html">Miscellaneous File Operations</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Compressed-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Accessing-Compressed-Files" class="outline-2">
+<h2 id="Accessing-Compressed-Files"><span class="section-number-2">1.</span> 20.13 Accessing Compressed Files <a href="#Accessing-Compressed-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Accessing-Compressed-Files">
+<p>
+Emacs automatically uncompresses compressed files when you visit them, and automatically recompresses them if you alter them and save them. Emacs recognizes compressed files by their file names. File names ending in ‘=.gz=' indicate a file compressed with <code>gzip</code>. Other endings indicate other compression programs.
+</p>
+
+<p>
+Automatic uncompression and compression apply to all the operations in which Emacs uses the contents of a file. This includes visiting it, saving it, inserting its contents into a buffer, loading it, and byte compiling it.
+</p>
+
+<p>
+To disable this feature, type the command M-x auto-compression-mode. You can disable it permanently by customizing the variable <code>auto-compression-mode</code>.
+</p>
+</div>
+</div>

@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Controlling-Abbrev-Expansion">1. 31.3 Controlling Abbrev Expansion ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Abbrevs-Suggestions.html">Abbrevs Suggestions</a>   Previous: <a href="docs/emacs--Defining-Abbrevs.html">Defining Abbrevs</a>   Up: <a href="docs/emacs--Abbrevs.html">Abbrevs</a>
+</p>
+
+<p>
+<a id="Expanding-Abbrevs"></a>
+</p>
+
+<hr />
+<div id="outline-container-Controlling-Abbrev-Expansion" class="outline-2">
+<h2 id="Controlling-Abbrev-Expansion"><span class="section-number-2">1.</span> 31.3 Controlling Abbrev Expansion <a href="#Controlling-Abbrev-Expansion">¶</a></h2>
+<div class="outline-text-2" id="text-Controlling-Abbrev-Expansion">
+<p>
+When Abbrev mode is enabled, an abbrev expands whenever it is present in the buffer just before point and you type a self-inserting whitespace or punctuation character (SPC, comma, etc.). More precisely, any character that is not a word constituent expands an abbrev, and any word-constituent character can be part of an abbrev. The most common way to use an abbrev is to insert it and then insert a punctuation or whitespace character to expand it.
+</p>
+
+<p>
+Abbrev expansion preserves case: ‘=foo=' expands to ‘=find outer otter=', and ‘=Foo=' to ‘=Find outer otter='. ‘=FOO=' expands to ‘=Find Outer Otter=' by default, but if you change the variable <code>abbrev-all-caps</code> to a non-<code>nil</code> value, it expands to ‘=FIND OUTER OTTER='.
+</p>
+
+<p>
+These commands are used to control abbrev expansion:
+</p>
+
+<dl class="org-dl">
+<dt>M-'</dt><dd>Separate a prefix from a following abbrev to be expanded (<code>abbrev-prefix-mark</code>).</dd>
+
+<dt><a id="index-expand_002dabbrev"></a>C-x a e </dt><dd>Expand the abbrev before point (<code>expand-abbrev</code>). This is effective even when Abbrev mode is not enabled.</dd>
+
+<dt><a id="index-unexpand_002dabbrev"></a>M-x unexpand-abbrev </dt><dd>Undo the expansion of the last expanded abbrev.</dd>
+
+<dt>M-x expand-region-abbrevs</dt><dd>Expand some or all abbrevs found in the region.</dd>
+</dl>
+
+<p>
+You may wish to expand an abbrev and attach a prefix to the expansion; for example, if ‘=cnst=' expands into ‘=construction=', you might want to use it to enter ‘=reconstruction='. It does not work to type recnst, because that is not necessarily a defined abbrev. What you can do is use the command M-' (<code>abbrev-prefix-mark</code>) in between the prefix ‘=re=' and the abbrev ‘=cnst='. First, insert ‘=re='. Then type M-'; this inserts a hyphen in the buffer to indicate that it has done its work. Then insert the abbrev ‘=cnst='; the buffer now contains ‘=re-cnst='. Now insert a non-word character to expand the abbrev ‘=cnst=' into ‘=construction='. This expansion step also deletes the hyphen that indicated M-' had been used. The result is the desired ‘=reconstruction='.
+</p>
+
+<p>
+If you actually want the text of the abbrev in the buffer, rather than its expansion, you can accomplish this by inserting the following punctuation with C-q. Thus, foo C-q , leaves ‘=foo,=' in the buffer, not expanding it.
+</p>
+
+<p>
+If you expand an abbrev by mistake, you can undo the expansion by typing C-/ (<code>undo</code>). See <a href="docs/emacs--Undo.html">Undo</a>. This undoes the insertion of the abbrev expansion and brings back the abbrev text. If the result you want is the terminating non-word character plus the unexpanded abbrev, you must reinsert the terminating character, quoting it with C-q. You can also use the command M-x unexpand-abbrev to cancel the last expansion without deleting the terminating character.
+</p>
+
+<p>
+M-x expand-region-abbrevs searches through the region for defined abbrevs, and for each one found offers to replace it with its expansion. This command is useful if you have typed in text using abbrevs but forgot to turn on Abbrev mode first. It may also be useful together with a special set of abbrev definitions for making several global replacements at once. This command is effective even if Abbrev mode is not enabled.
+</p>
+
+<p>
+The function <code>expand-abbrev</code> performs the expansion by calling the function that <code>abbrev-expand-function</code> specifies. By changing this function you can make arbitrary changes to the abbrev expansion. See <a href="../elisp_html/Abbrev-Expansion.html#Abbrev-Expansion">Abbrev Expansion</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<hr />
+</div>
+</div>

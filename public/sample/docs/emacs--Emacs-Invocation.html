@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Command-Line-Arguments-for-Emacs-Invocation">1. Appendix C Command Line Arguments for Emacs Invocation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--X-Resources.html">X Options and Resources</a>   Previous: <a href="docs/emacs--GNU-Free-Documentation-License.html">GNU Free Documentation License</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Emacs-Invocation"></a>
+</p>
+
+<hr />
+<div id="outline-container-Command-Line-Arguments-for-Emacs-Invocation" class="outline-2">
+<h2 id="Command-Line-Arguments-for-Emacs-Invocation"><span class="section-number-2">1.</span> Appendix C Command Line Arguments for Emacs Invocation <a href="#Command-Line-Arguments-for-Emacs-Invocation">¶</a></h2>
+<div class="outline-text-2" id="text-Command-Line-Arguments-for-Emacs-Invocation">
+<p>
+Emacs supports command line arguments to request various actions when invoking Emacs. These are for compatibility with other editors and for sophisticated activities. We don't recommend using them for ordinary editing (See <a href="docs/emacs--Emacs-Server.html">Using Emacs as a Server</a>, for a way to access an existing Emacs job from the command line).
+</p>
+
+<p>
+Arguments starting with ‘=-<code>' are /options/, and so is ‘=+==linenum</code>'. All other arguments specify files to visit. Emacs visits the specified files while it starts up. The last file specified on the command line becomes the current buffer; the other files are also visited in other buffers. As with most programs, the special argument ‘=--<code>' says that all subsequent arguments are file names, not options, even if they start with ‘</code>-='.
+</p>
+
+<p>
+Emacs command options can specify many things, such as the size and position of the X window Emacs uses, its colors, and so on. A few options support advanced usage, such as running Lisp functions on files in batch mode. The sections of this chapter describe the available options, arranged according to their purpose.
+</p>
+
+<p>
+There are two ways of writing options: the short forms that start with a single ‘=-<code>', and the long forms that start with ‘</code>--<code>'. For example, ‘</code>-d=' is a short form and ‘=&#x2013;display=' is the corresponding long form.
+</p>
+
+<p>
+The long forms with ‘=--<code>' are easier to remember, but longer to type. However, you don't have to spell out the whole option name; any unambiguous abbreviation is enough. When a long option requires an argument, you can use either a space or an equal sign to separate the option name and the argument. Thus, for the option ‘</code>&#x2013;display=', you can write either ‘=&#x2013;display sugar-bombs:0.0=' or ‘=&#x2013;display=sugar-bombs:0.0='. We recommend an equal sign because it makes the relationship clearer, and the tables below always show an equal sign.
+</p>
+
+<p>
+Most options specify how to initialize Emacs, or set parameters for the Emacs session. We call them <i>initial options</i>. A few options specify things to do, such as loading libraries or calling Lisp functions. These are called <i>action options</i>. These and file names together are called <i>action arguments</i>. The action arguments are stored as a list of strings in the variable <code>command-line-args</code>. (Actually, when Emacs starts up, <code>command-line-args</code> contains all the arguments passed from the command line; during initialization, the initial arguments are removed from this list when they are processed, leaving only the action arguments.)
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Action-Arguments.html">Action Arguments</a></li>
+<li><a href="docs/emacs--Initial-Options.html">Initial Options</a></li>
+<li><a href="docs/emacs--Command-Example.html">Command Argument Example</a></li>
+<li><a href="docs/emacs--Environment.html">Environment Variables</a></li>
+<li><a href="docs/emacs--Display-X.html">Specifying the Display Name</a></li>
+<li><a href="docs/emacs--Font-X.html">Font Specification Options</a></li>
+<li><a href="docs/emacs--Colors-X.html">Window Color Options</a></li>
+<li><a href="docs/emacs--Window-Size-X.html">Options for Window Size and Position</a></li>
+<li><a href="docs/emacs--Borders-X.html">Internal and Outer Borders</a></li>
+<li><a href="docs/emacs--Title-X.html">Frame Titles</a></li>
+<li><a href="docs/emacs--Icons-X.html">Icons</a></li>
+<li><a href="docs/emacs--Misc-X.html">Other Display Options</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

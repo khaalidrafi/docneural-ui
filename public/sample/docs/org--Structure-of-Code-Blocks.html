@@ -1,0 +1,87 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Structure-of-Code-Blocks-1">1. 16.2 Structure of Code Blocks ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Structure-of-Code-Blocks"></a>
+Next: <a href="docs/org--Using-Header-Arguments.html">Using Header Arguments</a>, Previous: <a href="docs/org--Features-Overview.html">Features Overview</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Structure-of-Code-Blocks-1" class="outline-2">
+<h2 id="Structure-of-Code-Blocks-1"><span class="section-number-2">1.</span> 16.2 Structure of Code Blocks <a href="#Structure-of-Code-Blocks-1">¶</a></h2>
+<div class="outline-text-2" id="text-Structure-of-Code-Blocks-1">
+<p>
+Org offers two ways to structure source code in Org documents: in a source code block, and directly inline. Both specifications are shown below.
+</p>
+
+<p>
+A source code block conforms to this structure:
+</p>
+
+<pre class="example" id="org4d57776">
+#+NAME: &lt;name&gt;
+#+BEGIN_SRC &lt;language&gt; &lt;switches&gt; &lt;header arguments&gt;
+  &lt;body&gt;
+#+END_SRC
+</pre>
+
+<p>
+Do not be put off by having to remember the source block syntax. Org mode offers a command for wrapping existing text in a block (see <a href="docs/org--Structure-Templates.html">Structure Templates</a>). Org also works with other completion systems in Emacs, some of which predate Org and have custom domain-specific languages for defining templates. Regular use of templates reduces errors, increases accuracy, and maintains consistency.
+</p>
+
+<p>
+An inline code block conforms to this structure:
+</p>
+
+<pre class="example" id="org6423414">
+src_&lt;language&gt;{&lt;body&gt;}
+</pre>
+
+<p>
+or
+</p>
+
+<pre class="example" id="org4c53f4e">
+src_&lt;language&gt;[&lt;header arguments&gt;]{&lt;body&gt;}
+</pre>
+
+<dl class="org-dl">
+<dt>‘=#+NAME: &lt;name&gt;='</dt><dd>Optional. Names the source block, so it can be called, like a function, from other source blocks or inline code to evaluate or to capture the results. Code from other blocks, other files, and from table formulas (see <a href="docs/org--The-Spreadsheet.html">The Spreadsheet</a>) can use the name to reference a source block. This naming serves the same purpose as naming Org tables. Org mode requires unique names. For duplicate names, Org mode's behavior is undefined. Inline code blocks cannot have a name.</dd>
+
+<dt>‘=#+BEGIN<sub>SRC</sub>=' &#x2026; ‘=#+END<sub>SRC</sub>='</dt><dd>Mandatory. They mark the start and end of a block that Org requires. The ‘=#+BEGIN<sub>SRC</sub>=' line takes additional arguments, as described next.</dd>
+
+<dt><a id="index-language_002c-in-code-blocks"></a>‘=&lt;language&gt;=' </dt><dd><p>
+Optional. It is the identifier of the source code language in the block. See <a href="docs/org--Languages.html">Languages</a>, for identifiers of supported languages.
+</p>
+
+<p>
+When ‘=&lt;language&gt;=' identifier is omitted, the block also cannot have ‘=&lt;switches&gt;=' and ‘=&lt;header arguments&gt;='. Otherwise, the first switch/argument will be treated as ‘=&lt;language&gt;='.
+</p>
+
+<p>
+Language identifier is also used to fontify code blocks in Org buffers, when <code>org-src-fontify-natively</code> is set to non-<code>nil</code>. See <a href="docs/org--Editing-Source-Code.html">Editing Source Code</a>.
+</p></dd>
+
+<dt><a id="index-switches_002c-in-code-blocks"></a>‘=&lt;switches&gt;=' </dt><dd>Optional. Switches provide finer control of the code execution, export, and format (see the discussion of switches in <a href="docs/org--Literal-Examples.html">Literal Examples</a>).</dd>
+
+<dt><a id="index-header-arguments_002c-in-code-blocks"></a>‘=&lt;header arguments&gt;=' </dt><dd>Optional. Heading arguments control many aspects of evaluation, export and tangling of code blocks (see <a href="docs/org--Using-Header-Arguments.html">Using Header Arguments</a>). Using Org's properties feature, header arguments can be selectively applied to the entire buffer or specific subtrees of the Org document.</dd>
+
+<dt>‘=&lt;body&gt;='</dt><dd>Source code in the dialect of the specified language identifier.</dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Using-Header-Arguments.html">Using Header Arguments</a>, Previous: <a href="docs/org--Features-Overview.html">Features Overview</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

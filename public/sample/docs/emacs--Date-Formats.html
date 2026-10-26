@@ -1,0 +1,59 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Date-Formats-1">1. 33.10.3 Date Formats ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Adding-to-Diary.html">Commands to Add to the Diary</a>   Previous: <a href="docs/emacs--Displaying-the-Diary.html">Displaying the Diary</a>   Up: <a href="docs/emacs--Diary.html">The Diary</a>
+</p>
+
+<p>
+<a id="Date-Formats"></a>
+</p>
+
+<hr />
+<div id="outline-container-Date-Formats-1" class="outline-2">
+<h2 id="Date-Formats-1"><span class="section-number-2">1.</span> 33.10.3 Date Formats <a href="#Date-Formats-1">¶</a></h2>
+<div class="outline-text-2" id="text-Date-Formats-1">
+<p>
+Here are some sample diary entries, illustrating different ways of formatting a date. The examples all show dates in American order (month, day, year), but Calendar mode supports European order (day, month, year) and ISO order (year, month, day) as options.
+</p>
+
+<pre class="example" id="org0ed74e8">
+4/20/12  Switch-over to new tabulation system
+apr. 25  Start tabulating annual results
+4/30  Results for April are due
+*/25  Monthly cycle finishes
+Friday  Don't leave without backing up files
+</pre>
+
+<p>
+The first entry appears only once, on April 20, 2012. The second and third appear every year on the specified dates, and the fourth uses a wildcard (asterisk) for the month, so it appears on the 25th of every month. The final entry appears every week on Friday.
+</p>
+
+<p>
+You can use just numbers to express a date, as in ‘=month==/==day=' or ‘=month==/==day==/==year='. This must be followed by a nondigit. In the date itself, <code>month</code> and <code>day</code> are numbers of one or two digits. The optional <code>year</code> is also a number, and may be abbreviated to the last two digits; that is, you can use ‘=11/12/2012=' or ‘=11/12/12='.
+</p>
+
+<p>
+Dates can also have the form ‘=monthname== <code>=day</code>' or ‘=monthname== <code>=day=</code>, <code>=year</code>', where the month's name can be spelled in full or abbreviated (with or without a period). The preferred abbreviations for month and day names can be set using the variables <code>calendar-abbrev-length</code>, <code>calendar-month-abbrev-array</code>, and <code>calendar-day-abbrev-array</code>. The default is to use the first three letters of a name as its abbreviation. Case is not significant.
+</p>
+
+<p>
+A date may be <i>generic</i>; that is, partially unspecified. Then the entry applies to all dates that match the specification. If the date does not contain a year, it is generic and applies to any year. Alternatively, <code>month</code>, <code>day</code>, or <code>year</code> can be ‘=*='; this matches any month, day, or year, respectively. Thus, a diary entry ‘=3/*/*=' matches any day in March of any year; so does ‘=march *='.
+</p>
+
+<p>
+If you prefer the European style of writing dates (in which the day comes before the month), or the ISO style (in which the order is year, month, day), type M-x calendar-set-date-style while in the calendar, or customize the variable <code>calendar-date-style</code>. This affects how diary dates are interpreted, date display, and the order in which some commands expect their arguments to be given.
+</p>
+
+<p>
+You can use the name of a day of the week as a generic date which applies to any date falling on that day of the week. You can abbreviate the day of the week as described above, or spell it in full; case is not significant.
+</p>
+
+<hr />
+</div>
+</div>

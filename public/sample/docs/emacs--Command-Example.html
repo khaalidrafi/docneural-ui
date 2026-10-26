@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Command-Argument-Example">1. C.3 Command Argument Example ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Environment.html">Environment Variables</a>   Previous: <a href="docs/emacs--Initial-Options.html">Initial Options</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Command-Example"></a>
+</p>
+
+<hr />
+<div id="outline-container-Command-Argument-Example" class="outline-2">
+<h2 id="Command-Argument-Example"><span class="section-number-2">1.</span> C.3 Command Argument Example <a href="#Command-Argument-Example">¶</a></h2>
+<div class="outline-text-2" id="text-Command-Argument-Example">
+<p>
+Here is an example of using Emacs with arguments and options. It assumes you have a Lisp program file called <code>hack-c.el</code> which, when loaded, performs some useful operation on the current buffer, expected to be a C program.
+</p>
+
+<pre class="example" id="org2cf2492">
+emacs --batch foo.c -l hack-c -f save-buffer &gt;&amp; log
+</pre>
+
+<p>
+This says to visit <code>foo.c</code>, load <code>hack-c.el</code> (which makes changes in the visited file), save <code>foo.c</code> (note that <code>save-buffer</code> is the function that C-x C-s is bound to), and then exit back to the shell (because of ‘=&#x2013;batch='). ‘=&#x2013;batch=' also guarantees there will be no problem redirecting output to <code>log</code>, because Emacs will not assume that it has a display terminal to work with.
+</p>
+</div>
+</div>

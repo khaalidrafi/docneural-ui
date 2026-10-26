@@ -1,0 +1,279 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#application-setup">1.0.1. 2.4 Application Setup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Application-Setup"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Upgrading-Guix.html">Upgrading Guix</a>, Previous: <a href="docs/guix--Invoking-guix_002ddaemon.html">Invoking <code>guix-daemon</code></a>, Up: <a href="docs/guix--Installation.html">Installation</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Application-Setup-1"></a>
+</p>
+</div>
+<div id="outline-container-application-setup" class="outline-4">
+<h4 id="application-setup"><span class="section-number-4">1.0.1.</span> 2.4 Application Setup</h4>
+<div class="outline-text-4" id="text-application-setup">
+<p>
+<a id="index-foreign-distro-1"></a>
+When using Guix on top of GNU/Linux distribution other than Guix System&#x2014;a so-called <i>foreign distro</i>&#x2014;a few additional steps are needed to get everything in place. Here are some of them.
+</p>
+
+<ul class="org-ul">
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<p>
+<a id="Locales-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="locales"></a>2.4.1 Locales<br />
+<div class="outline-text-5" id="text-locales">
+<p>
+<a id="locales_002dand_002dlocpath"></a><a id="index-locales_002c-when-not-on-Guix-System"></a> <a id="index-LOCPATH"></a> <a id="index-GUIX_005fLOCPATH"></a>
+Packages installed <i>via</i> Guix will not use the locale data of the host system. Instead, you must first install one of the locale packages available with Guix and then define the <code>GUIX_LOCPATH</code> environment variable:
+</p>
+
+<pre class="example" id="org8c4d0ff">
+$ guix install glibc-locales
+$ export GUIX_LOCPATH=$HOME/.guix-profile/lib/locale
+</pre>
+
+<p>
+Note that the <code>glibc-locales</code> package contains data for all the locales supported by the GNU libc and weighs in at around 930 MiB. If you only need a few locales, you can define your custom locales package via the <code>make-glibc-utf8-locales</code> procedure from the <code>(gnu packages base)</code> module. The following example defines a package containing the various Canadian UTF-8 locales known to the GNU libc, that weighs around 14 MiB:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu packages base))
+
+(define my-glibc-locales
+  (make-glibc-utf8-locales
+   glibc
+   #:locales (list "en_CA" "fr_CA" "ik_CA" "iu_CA" "shs_CA")
+   #:name "glibc-canadian-utf8-locales"))
+</pre>
+</div>
+
+<p>
+The <code>GUIX_LOCPATH</code> variable plays a role similar to <code>LOCPATH</code> (see <a href="https://www.gnu.org/software/libc/manual/html_node/Locale-Names.html#Locale-Names"><code>LOCPATH</code></a> in The GNU C Library Reference Manual). There are two important differences though:
+</p>
+
+<ol class="org-ol">
+<li><code>GUIX_LOCPATH</code> is honored only by the libc in Guix, and not by the libc provided by foreign distros. Thus, using <code>GUIX_LOCPATH</code> allows you to make sure the programs of the foreign distro will not end up loading incompatible locale data.</li>
+<li>libc suffixes each entry of <code>GUIX_LOCPATH</code> with <code>/X.Y</code>, where <code>X.Y</code> is the libc version&#x2014;e.g., <code>2.22</code>. This means that, should your Guix profile contain a mixture of programs linked against different libc version, each libc version will only try to load locale data in the right format.</li>
+</ol>
+
+<p>
+This is important because the locale data format used by different libc versions may be incompatible.
+</p>
+
+<p>
+<a id="Name-Service-Switch-1"></a>
+</p>
+</div>
+</li>
+<li><a id="name-service-switch"></a>2.4.2 Name Service Switch<br />
+<div class="outline-text-5" id="text-name-service-switch">
+<p>
+<a id="index-name-service-switch_002c-glibc"></a> <a id="index-NSS-_0028name-service-switch_0029_002c-glibc"></a> <a id="index-nscd"></a>
+When using Guix on a foreign distro, we <i>strongly recommend</i> that the system run the GNU C library's <i>name service cache daemon</i>, <code>nscd</code>, which should be listening on the <code>/var/run/nscd/socket</code> socket. Failing to do that, applications installed with Guix may fail to look up host names or user accounts, or may even crash. The next paragraphs explain why.
+</p>
+
+<p>
+<a id="index-nsswitch_002econf"></a>
+The GNU C library implements a <i>name service switch</i> (NSS), which is an extensible mechanism for “name lookups” in general: host name resolution, user accounts, and more (see <a href="https://www.gnu.org/software/libc/manual/html_node/Name-Service-Switch.html#Name-Service-Switch">Name Service Switch</a> in The GNU C Library Reference Manual).
+</p>
+
+<p>
+<a id="index-Network-information-service-_0028NIS_0029"></a> <a id="index-NIS-_0028Network-information-service_0029"></a>
+Being extensible, the NSS supports <i>plugins</i>, which provide new name lookup implementations: for example, the <code>nss-mdns</code> plugin allow resolution of <code>.local</code> host names, the <code>nis</code> plugin allows user account lookup using the Network information service (NIS), and so on. These extra “lookup services” are configured system-wide in <code>/etc/nsswitch.conf</code>, and all the programs running on the system honor those settings (see <a href="https://www.gnu.org/software/libc/manual/html_node/NSS-Configuration-File.html#NSS-Configuration-File">NSS Configuration File</a> in The GNU C Reference Manual).
+</p>
+
+<p>
+When they perform a name lookup&#x2014;for instance by calling the <code>getaddrinfo</code> function in C&#x2014;applications first try to connect to the nscd; on success, nscd performs name lookups on their behalf. If the nscd is not running, then they perform the name lookup by themselves, by loading the name lookup services into their own address space and running it. These name lookup services&#x2014;the <code>libnss_*.so</code> files&#x2014;are <code>dlopen</code>'d, but they may come from the host system's C library, rather than from the C library the application is linked against (the C library coming from Guix).
+</p>
+
+<p>
+And this is where the problem is: if your application is linked against Guix's C library (say, glibc 2.24) and tries to load NSS plugins from another C library (say, <code>libnss_mdns.so</code> for glibc 2.22), it will likely crash or have its name lookups fail unexpectedly.
+</p>
+
+<p>
+Running <code>nscd</code> on the system, among other advantages, eliminates this binary incompatibility problem because those <code>libnss_*.so</code> files are loaded in the <code>nscd</code> process, not in applications themselves.
+</p>
+
+<p>
+<a id="index-nsncd_002c-replacement-for-nscd"></a>
+Note that <code>nscd</code> is no longer provided on some GNU/Linux distros, such as Arch Linux (as of Dec. 2024). <code>nsncd</code> can be used as a drop-in-replacement. See <a href="https://github.com/twosigma/nsncd">the nsncd repository</a> and <a href="https://flokli.de/posts/2022-11-18-nsncd/">this blog post</a> for more information.
+</p>
+
+<p>
+<a id="X11-Fonts"></a>
+</p>
+</div>
+</li>
+<li><a id="x11-fonts"></a>2.4.3 X11 Fonts<br />
+<div class="outline-text-5" id="text-x11-fonts">
+<p>
+<a id="index-fonts"></a>
+The majority of graphical applications use Fontconfig to locate and load fonts and perform X11-client-side rendering. The <code>fontconfig</code> package in Guix looks for fonts in <code>$HOME/.guix-profile</code> by default. Thus, to allow graphical applications installed with Guix to display fonts, you have to install fonts with Guix as well. Essential font packages include <code>font-ghostscript</code>, <code>font-dejavu</code>, and <code>font-gnu-freefont</code>.
+</p>
+
+<p>
+<a id="index-fc_002dcache"></a> <a id="index-font-cache"></a>
+Once you have installed or removed fonts, or when you notice an application that does not find fonts, you may need to install Fontconfig and to force an update of its font cache by running:
+</p>
+
+<pre class="example" id="orgc9bdd3d">
+guix install fontconfig
+fc-cache -rv
+</pre>
+
+<p>
+To display text written in Chinese languages, Japanese, or Korean in graphical applications, consider installing <code>font-adobe-source-han-sans</code> or <code>font-wqy-zenhei</code>. The former has multiple outputs, one per language family (see <a href="docs/guix--Packages-with-Multiple-Outputs.html">Packages with Multiple Outputs</a>). For instance, the following command installs fonts for Chinese languages:
+</p>
+
+<pre class="example" id="orgd33b6e8">
+guix install font-adobe-source-han-sans:cn
+</pre>
+
+<p>
+<a id="index-xterm"></a>
+Older programs such as <code>xterm</code> do not use Fontconfig and instead rely on server-side font rendering. Such programs require to specify a full name of a font using XLFD (X Logical Font Description), like this:
+</p>
+
+<pre class="example" id="orgd308096">
+-*-dejavu sans-medium-r-normal-*-*-100-*-*-*-*-*-1
+</pre>
+
+<p>
+To be able to use such full names for the TrueType fonts installed in your Guix profile, you need to extend the font path of the X server:
+</p>
+
+<pre class="example" id="orgb78aca0">
+xset +fp $(dirname $(readlink -f ~/.guix-profile/share/fonts/truetype/fonts.dir))
+</pre>
+
+<p>
+<a id="index-xlsfonts"></a>
+After that, you can run <code>xlsfonts</code> (from <code>xlsfonts</code> package) to make sure your TrueType fonts are listed there.
+</p>
+
+<p>
+<a id="X_002e509-Certificates-1"></a>
+</p>
+</div>
+</li>
+<li><a id="x.509-certificates"></a>2.4.4 X.509 Certificates<br />
+<div class="outline-text-5" id="text-x.509-certificates">
+<p>
+<a id="index-nss_002dcerts"></a>
+The <code>nss-certs</code> package provides X.509 certificates, which allow programs to authenticate Web servers accessed over HTTPS.
+</p>
+
+<p>
+When using Guix on a foreign distro, you can install this package and define the relevant environment variables so that packages know where to look for certificates. See <a href="docs/guix--X_002e509-Certificates.html">X.509 Certificates</a>, for detailed information.
+</p>
+
+<p>
+<a id="Emacs-Packages-1"></a>
+</p>
+</div>
+</li>
+<li><a id="emacs-packages"></a>2.4.5 Emacs Packages<br />
+<div class="outline-text-5" id="text-emacs-packages">
+<p>
+<a id="index-emacs"></a>
+When you install Emacs packages with Guix, the Elisp files are placed under the <code>share/emacs/site-lisp/</code> directory of the profile in which they are installed. The Elisp libraries are made available to Emacs through the <code>EMACSLOADPATH</code> environment variable, which is set when installing Emacs itself.
+</p>
+
+<p>
+<a id="index-guix_002demacs_002dautoload_002dpackages_002c-refreshing-Emacs-packages"></a>
+Additionally, autoload definitions are automatically evaluated at the initialization of Emacs, by the Guix-specific <code>guix-emacs-autoload-packages</code> procedure. This procedure can be interactively invoked to have newly installed Emacs packages discovered, without having to restart Emacs. If, for some reason, you want to avoid auto-loading the Emacs packages installed with Guix, you can do so by running Emacs with the <code>--no-site-file</code> option (see <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File">Init File</a> in The GNU Emacs Manual).
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Most Emacs variants are now capable of doing native compilation. The approach taken by Guix Emacs however differs greatly from the approach taken upstream.
+</p>
+
+<p>
+Upstream Emacs compiles packages just-in-time and typically places shared object files in a special folder within your <code>user-emacs-directory</code>. These shared objects within said folder are organized in a flat hierarchy, and their file names contain two hashes to verify the original file name and contents of the source code.
+</p>
+
+<p>
+Guix Emacs on the other hand prefers to compile packages ahead-of-time. Shared objects retain much of the original file name and no hashes are added to verify the original file name or the contents of the file. Crucially, this allows Guix Emacs and packages built against it to be grafted (see <a href="docs/guix--Security-Updates.html">grafts</a>), but at the same time, Guix Emacs lacks the hash-based verification of source code baked into upstream Emacs. As this naming schema is trivial to exploit, we disable just-in-time compilation.
+</p>
+
+<p>
+Further note, that <code>emacs-minimal</code>&#x2014;the default Emacs for building packages&#x2014;has been configured without native compilation. To natively compile your emacs packages ahead of time, use a transformation like <code>--with-input=emacs-minimal=emacs</code>.
+</p>
+</blockquote>
+
+<hr />
+</div>
+</li>
+</div>
+</div>

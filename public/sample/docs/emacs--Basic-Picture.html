@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Basic-Editing-in-Picture-Mode">1. 44.1 Basic Editing in Picture Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Insert-in-Picture.html">Controlling Motion after Insert</a>   Up: <a href="docs/emacs--Picture-Mode.html">Editing Pictures</a>
+</p>
+
+<p>
+<a id="Basic-Picture"></a>
+</p>
+
+<hr />
+<div id="outline-container-Basic-Editing-in-Picture-Mode" class="outline-2">
+<h2 id="Basic-Editing-in-Picture-Mode"><span class="section-number-2">1.</span> 44.1 Basic Editing in Picture Mode <a href="#Basic-Editing-in-Picture-Mode">¶</a></h2>
+<div class="outline-text-2" id="text-Basic-Editing-in-Picture-Mode">
+<p>
+Most keys do the same thing in Picture mode that they usually do, but do it in a quarter-plane style. For example, C-f is rebound to run <code>picture-forward-column</code>, a command which moves point one column to the right, inserting a space if necessary so that the actual end of the line makes no difference. C-b is rebound to run <code>picture-backward-column</code>, which always moves point left one column, converting a tab to multiple spaces if necessary. C-n and C-p are rebound to run <code>picture-move-down</code> and <code>picture-move-up</code>, which can either insert spaces or convert tabs as necessary to make sure that point stays in exactly the same column. C-e runs <code>picture-end-of-line</code>, which moves to after the last nonblank character on the line. C-a runs <code>picture-beginning-of-line</code>. (The choice of screen model does not affect beginnings of lines; the only extra thing this command does is update the current picture column to 0.)
+</p>
+
+<p>
+Insertion of text is adapted to the quarter-plane screen model through the use of Overwrite mode (see <a href="docs/emacs--Minor-Modes.html">Minor Modes</a>.) Self-inserting characters replace existing text, column by column, rather than pushing existing text to the right. RET runs <code>picture-newline</code>, which just moves to the beginning of the following line so that new text will replace that line.
+</p>
+
+<p>
+In Picture mode, the commands that normally delete or kill text, instead erase text (replacing it with spaces). DEL (<code>picture-backward-clear-column</code>) replaces the preceding character with a space rather than removing it; this moves point backwards. C-d (<code>picture-clear-column</code>) replaces the next character or characters with spaces, but does not move point. (If you want to clear characters to spaces and move forward over them, use SPC.) C-k (<code>picture-clear-line</code>) really kills the contents of lines, but does not delete the newlines from the buffer.
+</p>
+
+<p>
+To do actual insertion, you must use special commands. C-o (<code>picture-open-line</code>) creates a blank line after the current line; it never splits a line. C-M-o (<code>split-line</code>) makes sense in Picture mode, so it is not changed. C-j (<code>picture-duplicate-line</code>) inserts another line with the same contents below the current line.
+</p>
+
+<p>
+To do actual deletion in Picture mode, use C-w, C-c C-d (which is defined as <code>delete-char</code>, as C-d is in other modes), or one of the picture rectangle commands (see <a href="docs/emacs--Rectangles-in-Picture.html">Picture Mode Rectangle Commands</a>).
+</p>
+
+<hr />
+</div>
+</div>

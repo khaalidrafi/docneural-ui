@@ -1,0 +1,114 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgbe04317">1. <span class="todo TODO">TODO</span> Blocked until (two) is done</a>
+<ul>
+<li><a href="#org075d9c2">1.1. <span class="done DONE">DONE</span> one</a></li>
+<li><a href="#org12d8994">1.2. <span class="todo TODO">TODO</span> two</a></li>
+</ul>
+</li>
+<li><a href="#orgadf3e06">2. Parent</a>
+<ul>
+<li><a href="#org2cb8930">2.1. <span class="todo TODO">TODO</span> a</a></li>
+<li><a href="#org0aa79ff">2.2. <span class="todo TODO">TODO</span> b, needs to wait for (a)</a></li>
+<li><a href="#orga013435">2.3. <span class="todo TODO">TODO</span> c, needs to wait for (a) and (b)</a></li>
+</ul>
+</li>
+<li><a href="#orga6ecd83">3. This entry is never blocked</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="TODO-dependencies"></a>
+Previous: <a href="docs/org--Faces-for-TODO-keywords.html">Faces for TODO keywords</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="TODO-dependencies-1"></a>5.2.7 TODO dependencies <a href="#TODO-dependencies-1">¶</a><br />
+<div class="outline-text-5" id="text-TODO-dependencies-1">
+<p>
+The structure of Org files&#x2014;hierarchy and lists&#x2014;makes it easy to define TODO dependencies. Usually, a parent TODO task should not be marked as done until all TODO subtasks, or children tasks, are marked as done. Sometimes there is a logical sequence to (sub)tasks, so that one subtask cannot be acted upon before all siblings above it have been marked as done. If you customize the variable <code>org-enforce-todo-dependencies</code>, Org blocks entries from changing state to DONE while they have TODO children that are not DONE. Furthermore, if an entry has a property ‘=ORDERED=', each of its TODO children is blocked until all earlier siblings are marked as done. Here is an example:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-orgbe04317" class="outline-2">
+<h2 id="orgbe04317"><span class="section-number-2">1.</span> <span class="todo TODO">TODO</span> Blocked until (two) is done</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org075d9c2" class="outline-3">
+<h3 id="org075d9c2"><span class="section-number-3">1.1.</span> <span class="done DONE">DONE</span> one</h3>
+</div>
+<div id="outline-container-org12d8994" class="outline-3">
+<h3 id="org12d8994"><span class="section-number-3">1.2.</span> <span class="todo TODO">TODO</span> two</h3>
+</div>
+</div>
+<div id="outline-container-orgadf3e06" class="outline-2">
+<h2 id="orgadf3e06"><span class="section-number-2">2.</span> Parent</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org2cb8930" class="outline-3">
+<h3 id="org2cb8930"><span class="section-number-3">2.1.</span> <span class="todo TODO">TODO</span> a</h3>
+</div>
+<div id="outline-container-org0aa79ff" class="outline-3">
+<h3 id="org0aa79ff"><span class="section-number-3">2.2.</span> <span class="todo TODO">TODO</span> b, needs to wait for (a)</h3>
+</div>
+<div id="outline-container-orga013435" class="outline-3">
+<h3 id="orga013435"><span class="section-number-3">2.3.</span> <span class="todo TODO">TODO</span> c, needs to wait for (a) and (b)</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+You can ensure an entry is never blocked by using the ‘=NOBLOCKING=' property (see <a href="docs/org--Properties-and-Columns.html">Properties and Columns</a>):
+</p>
+
+<p>
+#+begin<sub>example</sub>
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orga6ecd83" class="outline-2">
+<h2 id="orga6ecd83"><span class="section-number-2">3.</span> This entry is never blocked</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dx-o"></a>C-c C-x o (<code>org-toggle-ordered-property</code>) </dt><dd>Toggle the ‘=ORDERED=' property of the current entry. A property is used for this behavior because this should be local to the current entry, not inherited from entries above like a tag (see <a href="docs/org--Tags.html">Tags</a>). However, if you would like to <i>track</i> the value of this property with a tag for better visibility, customize the variable <code>org-track-ordered-property-with-tag</code>.</dd>
+
+<dt><a id="index-C_002du-C_002du-C_002du-C_002du-C_002dc-C_002dt"></a>C-u C-u C-u C-c C-t </dt><dd>Change TODO state, regardless of any state blocking.</dd>
+</dl>
+
+<p>
+If you set the variable <code>org-agenda-dim-blocked-tasks</code>, TODO entries that cannot be marked as done because of unmarked children are shown in a dimmed font or even made invisible in agenda views (see <a href="docs/org--Agenda-Views.html">Agenda Views</a>).
+</p>
+
+<p>
+You can also block changes of TODO states by using checkboxes (see <a href="docs/org--Checkboxes.html">Checkboxes</a>). If you set the variable <code>org-enforce-todo-checkbox-dependencies</code>, an entry that has unchecked checkboxes is blocked from switching to DONE.
+</p>
+
+<p>
+If you need more complex dependency structures, for example dependencies between entries in different trees or files, check out the module ‘=org-depend.el=' in the ‘=org-contrib=' repository.
+</p>
+
+<hr />
+
+<p>
+Previous: <a href="docs/org--Faces-for-TODO-keywords.html">Faces for TODO keywords</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

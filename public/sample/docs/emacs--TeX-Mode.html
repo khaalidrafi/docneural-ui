@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#TeX-Mode-1">1. 27.11 TeX Mode ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (13)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--HTML-Mode.html">SGML and HTML Modes</a>   Previous: <a href="docs/emacs--Org-Mode.html">Org Mode</a>   Up: <a href="docs/emacs--Text.html">Commands for Human Languages</a>
+</p>
+
+<p>
+<a id="TeX-Mode"></a>
+</p>
+
+<hr />
+<div id="outline-container-TeX-Mode-1" class="outline-2">
+<h2 id="TeX-Mode-1"><span class="section-number-2">1.</span> 27.11 TeX Mode <a href="#TeX-Mode-1">¶</a></h2>
+<div class="outline-text-2" id="text-TeX-Mode-1">
+<p>
+TeX is a powerful text formatter written by Donald Knuth; like GNU Emacs, it is free software. The TeX format has several variants, including LaTeX, a simplified input format for TeX; DocTeX, a special file format in which the LaTeX sources are written, combining sources with documentation; and SliTeX, an obsolete special form of LaTeX.
+</p>
+
+<p>
+Emacs provides a TeX major mode for each of these variants: Plain TeX mode, LaTeX mode, DocTeX mode, and SliTeX mode. Emacs selects the appropriate mode by looking at the contents of the buffer. (This is done by invoking the <code>tex-mode</code> command, which is normally called automatically when you visit a TeX-like file. See <a href="docs/emacs--Choosing-Modes.html">Choosing File Modes</a>.) If the contents are insufficient to determine this, Emacs chooses the mode specified by the variable <code>tex-default-mode</code>; its default value is <code>latex-mode</code>. If Emacs does not guess right, you can select the correct variant of TeX mode using the commands <code>plain-tex-mode</code>, <code>latex-mode</code>, <code>slitex-mode</code>, or <code>doctex-mode</code>.
+</p>
+
+<p>
+The following sections document the features of TeX mode and its variants. There are several other TeX-related Emacs packages, which are not documented in this manual:
+</p>
+
+<ul class="org-ul">
+<li>BibTeX mode is a major mode for BibTeX files, which are commonly used for keeping bibliographic references for LaTeX documents. For more information, see the documentation string for the command <code>bibtex-mode</code>.</li>
+<li>The RefTeX package provides a minor mode which can be used with LaTeX mode to manage bibliographic references. For more information, see the RefTeX Info manual, which is distributed with Emacs.</li>
+<li>The AUCTeX package provides more advanced features for editing TeX and its related formats, including the ability to preview TeX equations within Emacs buffers. Unlike BibTeX mode and the RefTeX package, AUCTeX is not distributed with Emacs by default. It can be downloaded via the Package Menu (see <a href="docs/emacs--Packages.html">Emacs Lisp Packages</a>); once installed, see the AUCTeX manual, which is included with the package.</li>
+
+<li><a href="docs/emacs--TeX-Editing.html">TeX Editing Commands</a></li>
+<li><a href="docs/emacs--LaTeX-Editing.html">LaTeX Editing Commands</a></li>
+<li><a href="docs/emacs--TeX-Print.html">TeX Printing Commands</a></li>
+<li><a href="docs/emacs--TeX-Misc.html">TeX Mode Miscellany</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

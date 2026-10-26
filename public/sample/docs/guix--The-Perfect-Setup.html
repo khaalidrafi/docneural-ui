@@ -1,0 +1,160 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#the-perfect-setup">1.0.1. 22.5 The Perfect Setup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="The-Perfect-Setup"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Alternative-Setups.html">Alternative Setups</a>, Previous: <a href="docs/guix--Running-Guix-Before-It-Is-Installed.html">Running Guix Before It Is Installed</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="The-Perfect-Setup-1"></a>
+</p>
+</div>
+<div id="outline-container-the-perfect-setup" class="outline-4">
+<h4 id="the-perfect-setup"><span class="section-number-4">1.0.1.</span> 22.5 The Perfect Setup</h4>
+<div class="outline-text-4" id="text-the-perfect-setup">
+<p>
+The Perfect Setup to hack on Guix is basically the perfect setup used for Guile hacking (see <a href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-in-Emacs.html#Using-Guile-in-Emacs">Using Guile in Emacs</a> in Guile Reference Manual). First, you need more than an editor, you need <a href="https://www.gnu.org/software/emacs">Emacs</a>, empowered by the wonderful <a href="https://nongnu.org/geiser/">Geiser</a>. To set that up, run:
+</p>
+
+<pre class="example" id="orgb6ae5b3">
+guix install emacs guile emacs-geiser emacs-geiser-guile
+</pre>
+
+<p>
+Geiser allows for interactive and incremental development from within Emacs: code compilation and evaluation from within buffers, access to on-line documentation (docstrings), context-sensitive completion, M-. to jump to an object definition, a REPL to try out your code, and more (see <a href="http://geiser.nongnu.org/Introduction.html#Introduction">Introduction</a> in Geiser User Manual). If you allow Emacs to load the <code>.dir-locals.el</code> file at the root of the project checkout, it will cause Geiser to automatically add the local Guix sources to the Guile load path.
+</p>
+
+<p>
+To actually edit the code, Emacs already has a neat Scheme mode. But in addition to that, you must not miss <a href="https://www.emacswiki.org/emacs/ParEdit">Paredit</a>. It provides facilities to directly operate on the syntax tree, such as raising an s-expression or wrapping it, swallowing or rejecting the following s-expression, etc.
+</p>
+
+<p>
+<a id="index-code-snippets"></a> <a id="index-templates"></a> <a id="index-reducing-boilerplate"></a>
+We also provide templates for common git commit messages and package definitions in the <code>etc/snippets</code> directory. These templates can be used to expand short trigger strings to interactive text snippets. If you use <a href="https://joaotavora.github.io/yasnippet/">YASnippet</a>, you may want to add the <code>etc/snippets/yas</code> snippets directory to the <code>yas-snippet-dirs</code> variable. If you use <a href="https://github.com/minad/tempel/">Tempel</a>, you may want to add the <code>etc/snippets/tempel/*</code> path to the <code>tempel-path</code> variable in Emacs.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">;; Assuming the Guix checkout is in ~/src/guix.
+;; Yasnippet configuration
+(with-eval-after-load 'yasnippet
+  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets/yas"))
+;; Tempel configuration
+(with-eval-after-load 'tempel
+   ;; Ensure tempel-path is a list -- it may also be a string.
+   (unless (listp 'tempel-path)
+     (setq tempel-path (list tempel-path)))
+   (add-to-list 'tempel-path "~/src/guix/etc/snippets/tempel/*"))
+</pre>
+</div>
+
+<p>
+The commit message snippets depend on <a href="https://magit.vc/">Magit</a> to display staged files. When editing a commit message type <code>add</code> followed by TAB to insert a commit message template for adding a package; type <code>update</code> followed by TAB to insert a template for updating a package; type <code>https</code> followed by TAB to insert a template for changing the home page URI of a package to HTTPS.
+</p>
+
+<p>
+The main snippet for <code>scheme-mode</code> is triggered by typing <code>package...</code> followed by TAB. This snippet also inserts the trigger string <code>origin...</code>, which can be expanded further. The <code>origin</code> snippet in turn may insert other trigger strings ending on <code>...</code>, which also can be expanded further.
+</p>
+
+<p>
+<a id="index-insert-or-update-copyright"></a> <a id="index-M_002dx-guix_002dcopyright"></a> <a id="index-M_002dx-copyright_002dupdate"></a>
+We additionally provide insertion and automatic update of a copyright in <code>etc/copyright.el</code>. You may want to set your full name, mail, and load a file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(setq user-full-name "Alice Doe")
+(setq user-mail-address "alice@mail.org")
+;; Assuming the Guix checkout is in ~/src/guix.
+(load-file "~/src/guix/etc/copyright.el")
+</pre>
+</div>
+
+<p>
+To insert a copyright at the current line invoke <code>M-x guix-copyright</code>.
+</p>
+
+<p>
+To update a copyright you need to specify a <code>copyright-names-regexp</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(setq copyright-names-regexp
+      (format "%s &lt;%s&gt;" user-full-name user-mail-address))
+</pre>
+</div>
+
+<p>
+You can check if your copyright is up to date by evaluating <code>M-x copyright-update</code>. If you want to do it automatically after each buffer save then add <code>(add-hook 'after-save-hook 'copyright-update)</code> in Emacs.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/guix--Viewing-Bugs-within-Emacs.html">Viewing Bugs within Emacs</a></li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Alternative-Setups.html">Alternative Setups</a>, Previous: <a href="docs/guix--Running-Guix-Before-It-Is-Installed.html">Running Guix Before It Is Installed</a>, Up: <a href="docs/guix--Contributing.html">Contributing</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

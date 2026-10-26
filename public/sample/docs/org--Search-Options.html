@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Search-Options-in-File-Links">1. 4.8 Search Options in File Links ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (36)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Search-Options"></a>
+Next: <a href="docs/org--Custom-Searches.html">Custom Searches</a>, Previous: <a href="docs/org--Link-Abbreviations.html">Link Abbreviations</a>, Up: <a href="docs/org--Hyperlinks.html">Hyperlinks</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Search-Options-in-File-Links" class="outline-2">
+<h2 id="Search-Options-in-File-Links"><span class="section-number-2">1.</span> 4.8 Search Options in File Links <a href="#Search-Options-in-File-Links">¶</a></h2>
+<div class="outline-text-2" id="text-Search-Options-in-File-Links">
+<p>
+File links can contain additional information to make Emacs jump to a particular location in the file when following a link. This can be a line number or a search option after a double colon. For example, when the command <code>org-store-link</code> creates a link (see <a href="docs/org--Handling-Links.html">Handling Links</a>) to a file, it encodes the words in the current line as a search string that can be used to find this line back later when following the link with C-c C-o.
+</p>
+
+<p>
+Note that all search options apply for Attachment and ID links in the same way that they apply for File links.
+</p>
+
+<p>
+Here is the syntax of the different ways to attach a search to a file link, together with explanations for each:
+</p>
+
+<pre class="example" id="org8328dc2">
+[[file:~/code/main.c::255]]
+[[file:~/xx.org::My Target]]
+[[file:~/xx.org::*My Target]]
+[[file:~/xx.org::#my-custom-id]]
+[[file:~/xx.org::/regexp/]]
+[[attachment:main.c::255]]
+</pre>
+
+<dl class="org-dl">
+<dt>‘=255='</dt><dd>Jump to line 255.</dd>
+
+<dt>‘=My Target='</dt><dd>Search for a link target ‘=<a id="My Target"></a>=', or do a text search for ‘=my target=', similar to the search in internal links, see <a href="docs/org--Internal-Links.html">Internal Links</a>. In HTML export (see <a href="docs/org--HTML-Export.html">HTML Export</a>), such a file link becomes an HTML reference to the corresponding named anchor in the linked file.</dd>
+
+<dt>‘=*My Target='</dt><dd>In an Org file, restrict search to headlines.</dd>
+
+<dt>‘=#my-custom-id='</dt><dd>Link to a heading with a ‘=CUSTOM<sub>ID</sub>=' property</dd>
+
+<dt>‘=/REGEXP/='</dt><dd>Do a regular expression search for <code>REGEXP</code> (see <a href="docs/org--Regular-Expressions.html">Regular Expressions</a>). This uses the Emacs command <code>occur</code> to list all matches in a separate window. If the target file is in Org mode, <code>org-occur</code> is used to create a sparse tree with the matches.</dd>
+</dl>
+
+<p>
+As a degenerate case, a file link with an empty file name can be used to search the current file. For example, ‘==' does a search for ‘=find me=' in the current file, just as ‘==' would.
+</p>
+
+<hr />
+</div>
+</div>

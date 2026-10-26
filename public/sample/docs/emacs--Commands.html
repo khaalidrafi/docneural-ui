@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keys-and-Commands">1. 5 Keys and Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Other-Input.html">Touchscreen Input and Virtual Keyboards</a>   Previous: <a href="docs/emacs--Mouse-Input.html">Mouse Input</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keys-and-Commands" class="outline-2">
+<h2 id="Keys-and-Commands"><span class="section-number-2">1.</span> 5 Keys and Commands <a href="#Keys-and-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Keys-and-Commands">
+<p>
+This manual is full of passages that tell you what particular keys do. But Emacs does not assign meanings to keys directly. Instead, Emacs assigns meanings to named <i>commands</i>, and then gives keys their meanings by <i>binding</i> them to commands.
+</p>
+
+<p>
+Every command has a name chosen by a programmer. The name is usually made of a few English words separated by dashes; for example, <code>next-line</code> or <code>forward-word</code>. Internally, each command is a special type of Lisp <i>function</i>, and the actions associated with the command are performed by running the function. See <a href="../elisp_html/What-Is-a-Function.html#What-Is-a-Function">What Is a Function</a> in The Emacs Lisp Reference Manual.
+</p>
+
+<p>
+The bindings between keys and commands are recorded in tables called <i>keymaps</i>. See <a href="docs/emacs--Keymaps.html">Keymaps</a>.
+</p>
+
+<p>
+When we say that “C-n moves down vertically one line” we are glossing over a subtle distinction that is irrelevant in ordinary use, but vital for Emacs customization. The command <code>next-line</code> does a vertical move downward. C-n has this effect <i>because</i> it is bound to <code>next-line</code>. If you rebind C-n to the command <code>forward-word</code>, C-n will move forward one word instead.
+</p>
+
+<p>
+In this manual, we will often speak of keys like C-n as commands, even though strictly speaking the key is bound to a command. Usually, we state the name of the command which really does the work in parentheses after mentioning the key that runs it. For example, we will say that “The command C-n (<code>next-line</code>) moves point vertically down”, meaning that the command <code>next-line</code> moves vertically down, and the key C-n is normally bound to it.
+</p>
+
+<p>
+Since we are discussing customization, we should tell you about <i>variables</i>. Often the description of a command will say, “To change this, set the variable <code>mumble-foo</code>.” A variable is a name used to store a value. Most of the variables documented in this manual are meant for customization: some command or other part of Emacs examines the variable and behaves differently according to the value that you set. You can ignore the information about variables until you are interested in customizing them. Then read the basic information on variables (see <a href="docs/emacs--Variables.html">Variables</a>) and the information about specific variables will make sense.
+</p>
+
+<hr />
+</div>
+</div>

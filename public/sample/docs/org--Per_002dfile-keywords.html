@@ -1,0 +1,62 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Setting-up-keywords-for-individual-files">1. 5.2.5 Setting up keywords for individual files ¶</a>
+<ul>
+<li><a href="#section">1.1. (41)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Per_002dfile-keywords"></a>
+Next: <a href="docs/org--Faces-for-TODO-keywords.html">Faces for TODO keywords</a>, Previous: <a href="docs/org--Fast-access-to-TODO-states.html">Fast access to TODO states</a>, Up: <a href="docs/org--TODO-Extensions.html">Extended Use of TODO Keywords</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Setting-up-keywords-for-individual-files" class="outline-2">
+<h2 id="Setting-up-keywords-for-individual-files"><span class="section-number-2">1.</span> 5.2.5 Setting up keywords for individual files <a href="#Setting-up-keywords-for-individual-files">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-up-keywords-for-individual-files">
+<p>
+It can be very useful to use different aspects of the TODO mechanism in different files. For file-local settings, you need to add special lines to the file which set the keywords and interpretation for that file only. For example, to set one of the two examples discussed above, you need one of the following lines, starting in column zero anywhere in the file:
+</p>
+
+<pre class="example" id="org7e04491">
+#+TODO: TODO FEEDBACK VERIFY | DONE CANCELED
+</pre>
+
+<p>
+You may also write ‘=#+SEQ<sub>TODO</sub>=' to be explicit about the interpretation, but it means the same as ‘=#+TODO=', or
+</p>
+
+<pre class="example" id="orgfff2011">
+#+TYP_TODO: Fred Sara Lucy Mike | DONE
+</pre>
+
+<p>
+A setup for using several sets in parallel would be:
+</p>
+
+<pre class="example" id="org71849fb">
+#+TODO: TODO(t) | DONE(d)
+#+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED(f)
+#+TODO: | CANCELED(c)
+</pre>
+
+<p>
+To make sure you are using the correct keyword, type ‘=#+=' into the buffer and then use M-TAB to complete it (see <a href="docs/org--Completion.html">Completion</a>).
+</p>
+
+<p>
+Remember that the keywords after the vertical bar&#x2014;or the last keyword if no bar is there&#x2014;must always mean that the item is DONE, although you may use a different word. After changing one of these lines, use C-c C-c with point still in the line to make the changes known to Org mode.
+</p>
+
+<hr />
+</div>
+</div>

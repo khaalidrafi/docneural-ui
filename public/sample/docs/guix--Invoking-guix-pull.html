@@ -1,0 +1,314 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-pull">1.0.1. 5.7 Invoking <code>guix pull</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-pull"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-time_002dmachine.html">Invoking <code>guix time-machine</code></a>, Previous: <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-pull-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-pull" class="outline-4">
+<h4 id="invoking-guix-pull"><span class="section-number-4">1.0.1.</span> 5.7 Invoking <code>guix pull</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-pull">
+<p>
+<a id="index-upgrading-Guix"></a> <a id="index-updating-Guix"></a> <a id="index-guix-pull"></a> <a id="index-pull"></a> <a id="index-security_002c-guix-pull"></a> <a id="index-authenticity_002c-of-code-obtained-with-guix-pull"></a>
+Packages are installed or upgraded to the latest version available in the distribution currently available on your local machine. To update that distribution, along with the Guix tools, you must run <code>guix pull</code>: the command downloads the latest Guix source code and package descriptions, and deploys it. Source code is downloaded from a <a href="https://git-scm.com/book/en/">Git</a> repository, by default the official GNU Guix repository, though this can be customized. <code>guix pull</code> ensures that the code it downloads is <i>authentic</i> by verifying that commits are signed by Guix developers.
+</p>
+
+<p>
+Specifically, <code>guix pull</code> downloads code from the <i>channels</i> (see <a href="docs/guix--Channels.html">Channels</a>) specified by one of the following, in this order:
+</p>
+
+<ol class="org-ol">
+<li>the <code>--channels</code> option;</li>
+<li>the user's <code>~/.config/guix/channels.scm</code> file, unless <code>-q</code> is passed;</li>
+<li>the system-wide <code>/etc/guix/channels.scm</code> file, unless <code>-q</code> is passed (on Guix System, this file can be declared in the operating system configuration, see <a href="docs/guix--Base-Services.html#guix_002dconfiguration_002dchannels"><code>channels</code> field of <code>guix-configuration</code></a>);</li>
+<li>the built-in default channels specified in the <code>%default-channels</code> variable.</li>
+</ol>
+
+<p>
+On completion, <code>guix package</code> will use packages and package versions from this just-retrieved copy of Guix. Not only that, but all the Guix commands and Scheme modules will also be taken from that latest version. New <code>guix</code> sub-commands added by the update also become available.
+</p>
+
+<p>
+Any user can update their Guix copy using <code>guix pull</code>, and the effect is limited to the user who ran <code>guix pull</code>. For instance, when user <code>root</code> runs <code>guix pull</code>, this has no effect on the version of Guix that user <code>alice</code> sees, and vice versa.
+</p>
+
+<p>
+The result of running <code>guix pull</code> is a <i>profile</i> available under <code>~/.config/guix/current</code> containing the latest Guix.
+</p>
+
+<p>
+The <code>--list-generations</code> or <code>-l</code> option lists past generations produced by <code>guix pull</code>, along with details about their provenance:
+</p>
+
+<pre class="example" id="org1ff5e0e">
+$ guix pull -l
+Generation 1    Jun 10 2018 00:18:18
+  guix 65956ad
+    repository URL: https://git.guix.gnu.org/guix.git
+    branch: origin/master
+    commit: 65956ad3526ba09e1f7a40722c96c6ef7c0936fe
+
+Generation 2    Jun 11 2018 11:02:49
+  guix e0cc7f6
+    repository URL: https://git.guix.gnu.org/guix.git
+    branch: origin/master
+    commit: e0cc7f669bec22c37481dd03a7941c7d11a64f1d
+
+Generation 3    Jun 13 2018 23:31:07    (current)
+  guix 844cc1c
+    repository URL: https://git.guix.gnu.org/guix.git
+    branch: origin/master
+    commit: 844cc1c8f394f03b404c5bb3aee086922373490c
+</pre>
+
+<p>
+See <a href="docs/guix--Invoking-guix-describe.html"><code>guix describe</code></a>, for other ways to describe the current status of Guix.
+</p>
+
+<p>
+This <code>~/.config/guix/current</code> profile works exactly like the profiles created by <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>). That is, you can list generations, roll back to the previous generation&#x2014;i.e., the previous Guix&#x2014;and so on:
+</p>
+
+<pre class="example" id="org6cfba1c">
+$ guix pull --roll-back
+switched from generation 3 to 2
+$ guix pull --delete-generations=1
+deleting /var/guix/profiles/per-user/charlie/current-guix-1-link
+</pre>
+
+<p>
+You can also use <code>guix package</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>) to manage the profile by naming it explicitly:
+</p>
+
+<pre class="example" id="orga2a4962">
+$ guix package -p ~/.config/guix/current --roll-back
+switched from generation 3 to 2
+$ guix package -p ~/.config/guix/current --delete-generations=1
+deleting /var/guix/profiles/per-user/charlie/current-guix-1-link
+</pre>
+
+<p>
+The <code>guix pull</code> command is usually invoked with no arguments, but it supports the following options:
+</p>
+
+<ul class="org-ul">
+<li><p>
+<code>--url===url</code><br />
+<code>--commit===commit</code><br />
+<code>--branch===branch</code> :: Download code for the <code>guix</code> channel from the specified <code>url</code>, at the given <code>commit</code> (a valid Git commit ID represented as a hexadecimal string or the name of a tag), or <code>branch</code>.
+</p>
+
+<p>
+<a id="index-channels_002escm_002c-configuration-file"></a> <a id="index-configuration-file-for-channels"></a>
+</p>
+
+<p>
+These options are provided for convenience, but you can also specify your configuration in the <code>~/.config/guix/channels.scm</code> file or using the <code>--channels</code> option (see below).
+</p></li>
+
+<li><code>--channels===file</code><br />
+<code>-C ==file</code> :: Read the list of channels from <code>file</code> instead of <code>~/.config/guix/channels.scm</code> or <code>/etc/guix/channels.scm</code>. <code>file</code> must contain Scheme code that evaluates to a list of channel objects. See <a href="docs/guix--Channels.html">Channels</a>, for more information.</li>
+
+<li><p>
+<code>--no-channel-files</code><br />
+<code>-q</code> :: Inhibit loading of the user and system channel files, <code>~/.config/guix/channels.scm</code> and <code>/etc/guix/channels.scm</code>.
+</p>
+
+<p>
+<a id="index-channel-news"></a>
+</p></li>
+
+<li><p>
+<code>--news</code><br />
+<code>-N</code> :: Display news written by channel authors for their users for changes made since the previous generation (see <a href="docs/guix--Channels.html">Writing Channel News</a>). When <code>--details</code> is passed, additionally display new and upgraded packages.
+</p>
+
+<p>
+You can view that information for previous generations with <code>guix pull -l</code>.
+</p></li>
+
+<li><p>
+<code>--list-generations[===pattern==]</code><br />
+<code>-l [==pattern==]</code> :: List all the generations of <code>~/.config/guix/current</code> or, if <code>pattern</code> is provided, the subset of generations that match <code>pattern</code>. The syntax of <code>pattern</code> is the same as with <code>guix package --list-generations</code> (see <a href="docs/guix--Invoking-guix-package.html">Invoking <code>guix package</code></a>).
+</p>
+
+<p>
+By default, this prints information about the channels used in each revision as well as the corresponding news entries. If you pass <code>--details</code>, it will also print the list of packages added and upgraded in each generation compared to the previous one.
+</p></li>
+
+<li id="<code>--details</code>">Instruct <code>--list-generations</code> or <code>--news</code> to display more information about the differences between subsequent generations&#x2014;see above.</li>
+
+<li id="<code>--roll-back</code> "><p>
+<a id="index-undoing-transactions-1"></a> <a id="index-transactions_002c-undoing-1"></a>
+</p>
+
+<p>
+Roll back to the previous <i>generation</i> of <code>~/.config/guix/current</code>&#x2014;i.e., undo the last transaction.
+</p></li>
+
+<li><p>
+<code>--switch-generation===pattern</code> <br />
+<code>-S ==pattern</code> :: Switch to a particular generation defined by <code>pattern</code>.
+</p>
+
+<p>
+<code>pattern</code> may be either a generation number or a number prefixed with “+” or “-”. The latter means: move forward/backward by a specified number of generations. For example, if you want to return to the latest generation after <code>--roll-back</code>, use <code>--switch-generation=+1</code>.
+</p></li>
+
+<li><p>
+<code>--delete-generations[===pattern==]</code><br />
+<code>-d [==pattern==]</code> :: When <code>pattern</code> is omitted, delete all generations except the current one.
+</p>
+
+<p>
+This command accepts the same patterns as <code>--list-generations</code>. When <code>pattern</code> is specified, delete the matching generations. When <code>pattern</code> specifies a duration, generations <i>older</i> than the specified duration match. For instance, <code>--delete-generations=1m</code> deletes generations that are more than one month old.
+</p>
+
+<p>
+If the current generation matches, it is <i>not</i> deleted.
+</p>
+
+<p>
+Note that deleting generations prevents rolling back to them. Consequently, this command must be used with care.
+</p>
+
+<p>
+See <a href="docs/guix--Invoking-guix-describe.html">Invoking <code>guix describe</code></a>, for a way to display information about the current generation only.
+</p></li>
+
+<li><code>--profile===profile</code><br />
+<code>-p ==profile</code> :: Use <code>profile</code> instead of <code>~/.config/guix/current</code>.</li>
+
+<li><code>--dry-run</code><br />
+<code>-n</code> :: Show which channel commit(s) would be used and what would be built or substituted but do not actually do it.</li>
+
+<li id="<code>--allow-downgrades</code>"><p>
+Allow pulling older or unrelated revisions of channels than those currently in use.
+</p>
+
+<p>
+<a id="index-downgrade-attacks_002c-protection-against"></a>
+</p>
+
+<p>
+By default, <code>guix pull</code> protects against so-called “downgrade attacks” whereby the Git repository of a channel would be reset to an earlier or unrelated revision of itself, potentially leading you to install older, known-vulnerable versions of software packages.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Make sure you understand its security implications before using <code>--allow-downgrades</code>.
+</p>
+</blockquote></li>
+
+<li id="<code>--disable-authentication</code>"><p>
+Allow pulling channel code without authenticating it.
+</p>
+
+<p>
+<a id="index-authentication_002c-of-channel-code"></a>
+</p>
+
+<p>
+By default, <code>guix pull</code> authenticates code downloaded from channels by verifying that its commits are signed by authorized developers, and raises an error if this is not the case. This option instructs it to not perform any such verification.
+</p>
+
+<blockquote>
+<p>
+<b>Note:</b> Make sure you understand its security implications before using <code>--disable-authentication</code>.
+</p>
+</blockquote></li>
+
+<li id="<code>--no-check-certificate</code>"><p>
+Do not validate the X.509 certificates of HTTPS servers.
+</p>
+
+<p>
+When using this option, you have <i>absolutely no guarantee</i> that you are communicating with the authentic server responsible for the given URL. Unless the channel is authenticated, this makes you vulnerable to “man-in-the-middle” attacks.
+</p></li>
+
+<li><code>--system===system</code><br />
+<code>-s ==system</code> :: Attempt to build for <code>system</code>&#x2014;e.g., <code>i686-linux</code>&#x2014;instead of the system type of the build host.</li>
+
+<li id="<code>--bootstrap</code>">Use the bootstrap Guile to build the latest Guix. This option is only useful to Guix developers.</li>
+</ul>
+
+<p>
+The <i>channel</i> mechanism allows you to instruct <code>guix pull</code> which repository and branch to pull from, as well as <i>additional</i> repositories containing package modules that should be deployed. See <a href="docs/guix--Channels.html">Channels</a>, for more information.
+</p>
+
+<p>
+In addition, <code>guix pull</code> supports all the common build options (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>).
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-time_002dmachine.html">Invoking <code>guix time-machine</code></a>, Previous: <a href="docs/guix--Invoking-guix-gc.html">Invoking <code>guix gc</code></a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

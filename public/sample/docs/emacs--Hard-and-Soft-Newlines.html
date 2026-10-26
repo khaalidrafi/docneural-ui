@@ -1,0 +1,33 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Hard-and-Soft-Newlines-1">1. 27.14.2 Hard and Soft Newlines ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Editing-Format-Info.html">Editing Format Information</a>   Previous: <a href="docs/emacs--Enriched-Mode.html">Enriched Mode</a>   Up: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>
+</p>
+
+<p>
+<a id="Hard-and-Soft-Newlines"></a>
+</p>
+
+<hr />
+<div id="outline-container-Hard-and-Soft-Newlines-1" class="outline-2">
+<h2 id="Hard-and-Soft-Newlines-1"><span class="section-number-2">1.</span> 27.14.2 Hard and Soft Newlines <a href="#Hard-and-Soft-Newlines-1">¶</a></h2>
+<div class="outline-text-2" id="text-Hard-and-Soft-Newlines-1">
+<p>
+In Enriched mode, Emacs distinguishes between two different kinds of newlines, <i>hard</i> newlines and <i>soft</i> newlines. You can also enable or disable this feature in other buffers, by typing M-x use-hard-newlines.
+</p>
+
+<p>
+Hard newlines are used to separate paragraphs, or anywhere there needs to be a line break regardless of how the text is filled; soft newlines are used for filling. The RET (<code>newline</code>) and C-o (<code>open-line</code>) commands insert hard newlines. The fill commands, including Auto Fill (see <a href="docs/emacs--Auto-Fill.html">Auto Fill Mode</a>), insert only soft newlines and delete only soft newlines, leaving hard newlines alone.
+</p>
+
+<p>
+Thus, when editing with Enriched mode, you should not use RET or C-o to break lines in the middle of filled paragraphs. Use Auto Fill mode or explicit fill commands (see <a href="docs/emacs--Fill-Commands.html">Explicit Fill Commands</a>) instead. Use RET or C-o where line breaks should always remain, such as in tables and lists. For such lines, you may also want to set the justification style to <code>unfilled</code> (see <a href="docs/emacs--Enriched-Justification.html">Justification in Enriched Text</a>).
+</p>
+</div>
+</div>

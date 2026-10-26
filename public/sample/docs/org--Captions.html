@@ -1,0 +1,44 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Captions-1">1. 12.8 Captions ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Captions"></a>
+Next: <a href="docs/org--Horizontal-Rules.html">Horizontal Rules</a>, Previous: <a href="docs/org--Images-and-link-previews.html">Images and link previews</a>, Up: <a href="docs/org--Markup-for-Rich-Contents.html">Markup for Rich Contents</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Captions-1" class="outline-2">
+<h2 id="Captions-1"><span class="section-number-2">1.</span> 12.8 Captions <a href="#Captions-1">¶</a></h2>
+<div class="outline-text-2" id="text-Captions-1">
+<p>
+You can assign a caption to a specific part of a document by inserting a ‘=CAPTION=' keyword immediately before it:
+</p>
+
+<pre class="example" id="org87d5f4a">
+#+CAPTION: This is the caption for the next table (or link)
+| ... | ... |
+|-----+-----|
+</pre>
+
+<p>
+Optionally, the caption can take the form:
+</p>
+
+<pre class="example" id="org9f2d857">
+#+CAPTION[Short caption]: Longer caption.
+</pre>
+
+<p>
+Even though images and tables are prominent examples of captioned structures, the same caption mechanism can apply to many others&#x2014;e.g., LaTeX equations, source code blocks. Depending on the export backend, those may or may not be handled.
+</p>
+</div>
+</div>

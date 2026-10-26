@@ -1,0 +1,70 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-C-Indentation">1. 28.3.5 Customizing C Indentation ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--C-Indent.html">Commands for C Indentation</a>   Up: <a href="docs/emacs--Program-Indent.html">Indentation for Programs</a>
+</p>
+
+<p>
+<a id="Custom-C-Indent"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-C-Indentation" class="outline-2">
+<h2 id="Customizing-C-Indentation"><span class="section-number-2">1.</span> 28.3.5 Customizing C Indentation <a href="#Customizing-C-Indentation">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-C-Indentation">
+<p>
+C mode and related modes use a flexible mechanism for customizing indentation. C mode indents a source line in two steps: first it classifies the line syntactically according to its contents and context; second, it determines the indentation offset associated by your selected <i>style</i> with the syntactic construct and adds this onto the indentation of the <i>anchor statement</i>.
+</p>
+
+<dl class="org-dl">
+<dt>C-c . <code>style</code> RET</dt><dd>Select a predefined style <code>style</code> (<code>c-set-style</code> in CC mode, <code>c-ts-mode-set-style</code> in <code>c-ts-mode</code> based on tree-sitter).</dd>
+</dl>
+
+<p>
+A <i>style</i> is a named collection of customizations that can be used in C mode and the related modes. <a href="../ccmode_html/Styles.html#Styles">Styles</a> in The CC Mode Manual, for a complete description. Emacs comes with several predefined styles, including <code>gnu</code>, <code>k&amp;r</code>, <code>bsd</code>, <code>stroustrup</code>, <code>linux</code>, <code>python</code>, <code>java</code>, <code>whitesmith</code>, <code>ellemtel</code>, and <code>awk</code>. Some of these styles are primarily intended for one language, but any of them can be used with any of the languages supported by these modes. To find out what a style looks like, select it and reindent some code, e.g., by typing C-M-q at the start of a function definition.
+</p>
+
+<p>
+To choose a style for the current buffer, use the command C-c .. Specify a style name as an argument (case is not significant). This command affects the current buffer only, and it affects only future invocations of the indentation commands; it does not reindent the code already in the buffer. To reindent the whole buffer in the new style, you can type C-x h C-M-\.
+</p>
+
+<p>
+When using CC mode, you can also set the variable <code>c-default-style</code> to specify the default style for various major modes. Its value should be either the style's name (a string) or an alist, in which each element specifies one major mode and which indentation style to use for it. For example,
+</p>
+
+<pre class="example" id="org6a98a5f">
+(setq c-default-style
+      '((java-mode . "java")
+        (awk-mode . "awk")
+        (other . "gnu")))
+</pre>
+
+<p>
+specifies explicit choices for Java and AWK modes, and the default ‘=gnu=' style for the other C-like modes. (These settings are actually the defaults.) This variable takes effect when you select one of the C-like major modes; thus, if you specify a new default style for Java mode, you can make it take effect in an existing Java mode buffer by typing M-x java-mode there.
+</p>
+
+<p>
+When using the tree-sitter based <code>c-ts-mode</code>, you can set the default indentation style by customizing the variable <code>c-ts-mode-indent-style</code>.
+</p>
+
+<p>
+The <code>gnu</code> style specifies the formatting recommended by the GNU Project for C; it is the default, so as to encourage use of our recommended style.
+</p>
+
+<p>
+See <a href="../ccmode_html/Indentation-Engine-Basics.html#Indentation-Engine-Basics">Indentation Engine Basics</a> in the CC Mode Manual, and <a href="../ccmode_html/Customizing-Indentation.html#Customizing-Indentation">Customizing Indentation</a> in the CC Mode Manual, for more information on customizing indentation for C and related modes, including how to override parts of an existing style and how to define your own styles.
+</p>
+
+<p>
+As an alternative to specifying a style, you can tell Emacs to guess a style by typing M-x c-guess in a sample code buffer. You can then apply the guessed style to other buffers with M-x c-guess-install. See <a href="../ccmode_html/Guessing-the-Style.html#Guessing-the-Style">Guessing the Style</a> in the CC Mode Manual, for details.
+</p>
+
+<hr />
+</div>
+</div>

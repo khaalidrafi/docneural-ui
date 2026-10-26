@@ -1,0 +1,111 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Keyboard-Usage-on-MS_002dWindows">1. I.6 Keyboard Usage on MS-Windows ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (32)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Windows-Mouse.html">Mouse Usage on MS-Windows</a>   Previous: <a href="docs/emacs--Windows-HOME.html">HOME and Startup Directories on MS-Windows</a>   Up: <a href="docs/emacs--Microsoft-Windows.html">Emacs and Microsoft Windows/MS-DOS</a>
+</p>
+
+<p>
+<a id="Windows-Keyboard"></a>
+</p>
+
+<hr />
+<div id="outline-container-Keyboard-Usage-on-MS_002dWindows" class="outline-2">
+<h2 id="Keyboard-Usage-on-MS_002dWindows"><span class="section-number-2">1.</span> I.6 Keyboard Usage on MS-Windows <a href="#Keyboard-Usage-on-MS_002dWindows">¶</a></h2>
+<div class="outline-text-2" id="text-Keyboard-Usage-on-MS_002dWindows">
+<p>
+This section describes the Windows-specific features related to keyboard input in Emacs.
+</p>
+
+<p>
+Many key combinations (known as “keyboard shortcuts”) that have conventional uses in MS-Windows programs conflict with traditional Emacs key bindings. (These Emacs key bindings were established years before Microsoft was founded.) Examples of conflicts include C-c, C-x, C-z, and C-a. You can redefine some of them with meanings more like the MS-Windows meanings by enabling CUA Mode (see <a href="docs/emacs--CUA-Bindings.html">CUA Bindings</a>). Another optional feature which will make Emacs behave like other Windows applications is Delete Selection mode (see <a href="docs/emacs--Using-Region.html">Operating on the Region</a>).
+</p>
+
+<p>
+By default, the key labeled Alt is mapped as the Meta key. If you wish it to produce the <code>Alt</code> modifier instead, set the variable <code>w32-alt-is-meta</code> to a <code>nil</code> value.
+</p>
+
+<p>
+MS-Windows reserves certain key combinations, such as Alt-TAB and a number of Windows key combinations, for its own use. These key combinations are intercepted by the system before Emacs can see them. Also, on Windows 10, all Windows key combinations are reserved by the system in such a way that they are never propagated to applications, even if the system does not currently define a hotkey on the specific combination. You can use the <code>w32-register-hot-key</code> function to allow a key sequence to be seen by Emacs instead of being grabbed by Windows. When registered as a hot key, the key combination is pulled out of the system's input queue before it is handled by Windows, effectively overriding the special meaning of that key sequence for Windows. The override is only effective when Emacs is active; with other applications on the foreground the keys behave normally.
+</p>
+
+<p>
+The argument to <code>w32-register-hot-key</code> must be a single key with a single modifier, in vector form that would be acceptable to <code>define-key</code>. The control and shift modifiers have no effect on the argument. The meta modifier is interpreted as the Alt key if <code>w32-alt-is-meta</code> is <code>t</code> (the default), and the super and hyper modifiers are interpreted according to the bindings of <code>w32-lwindow-modifier</code> and <code>w32-rwindow-modifier</code>. Additionally, a modifier with the trailing dash but with no key indicates that all Windows defined hotkeys for that modifier are to be overridden in the favor of Emacs.
+</p>
+
+<p>
+For example, <code>(w32-register-hot-key [M-tab])</code> lets you use M-TAB normally in Emacs; for instance, to complete the word or symbol at point at top level, or to complete the current search string against previously sought strings during incremental search. <code>(w32-register-hot-key [s-])</code> with <code>w32-lwindow-modifier</code> bound to <code>super</code> disables all the Windows' own Windows key based shortcuts.
+</p>
+
+<p>
+Note that <code>w32-register-hot-key</code> checks the <code>w32-[lr]window-modifier</code> values at the time of the function call. Thus, you can set <code>w32-lwindow-modifier</code> as <code>super</code>, then call <code>(w32-register-hot-key [s-r])</code>, and finally set <code>w32-rwindow-modifier</code> as <code>super</code> as well. The result is that the left Windows key together with R invokes whichever function you have bound for the combination in Emacs, and the right Windows key and R opens the Windows <code>Run</code> dialog.
+</p>
+
+<p>
+The hotkey registrations always also include all the shift and control modifier combinations for the given hotkey; that is, registering s-a as a hotkey gives you S-s-a, C-s-a and C-S-s-a as well.
+</p>
+
+<p>
+On Windows 98 and ME, the hotkey registration is more restricted. The desired hotkey must always be fully specified, and <code>w32-phantom-key-code</code> can be customized to achieve desired results.
+</p>
+
+<p>
+The function <code>w32-unregister-hot-key</code> reverses the effect of <code>w32-register-hot-key</code> for its argument key sequence.
+</p>
+
+<p>
+By default, the CapsLock key only affects normal character keys (it converts lower-case characters to their upper-case variants). However, if you set the variable <code>w32-capslock-is-shiftlock</code> to a non-<code>nil</code> value, the CapsLock key will affect non-character keys as well, as if you pressed the SHIFT key while typing the non-character key.
+</p>
+
+<p>
+If the variable <code>w32-enable-caps-lock</code> is set to a <code>nil</code> value, the CapsLock key produces the symbol <code>capslock</code> instead of the shifted version of typed keys. The default value is <code>t</code>.
+</p>
+
+<p>
+Similarly, if <code>w32-enable-num-lock</code> is <code>nil</code>, the NumLock key will produce the symbol <code>kp-numlock</code>. The default is <code>t</code>, which causes NumLock to work as expected: toggle the meaning of the keys on the numeric keypad.
+</p>
+
+<p>
+The variable <code>w32-apps-modifier</code> controls the effect of the Apps key (usually located between the right Alt and the right Ctrl keys). Its value can be one of the symbols <code>hyper</code>, <code>super</code>, <code>meta</code>, <code>alt</code>, <code>control</code>, or <code>shift</code> for the respective modifier, or <code>nil</code> to appear as the key <code>apps</code>. The default is <code>nil</code>.
+</p>
+
+<p>
+The variable <code>w32-lwindow-modifier</code> determines the effect of the left Windows key (usually labeled with start and the Windows logo). If its value is <code>nil</code> (the default), the key will produce the symbol <code>lwindow</code>. Setting it to one of the symbols <code>hyper</code>, <code>super</code>, <code>meta</code>, <code>alt</code>, <code>control</code>, or <code>shift</code> will produce the respective modifier. A similar variable <code>w32-rwindow-modifier</code> controls the effect of the right Windows key, and <code>w32-scroll-lock-modifier</code> does the same for the ScrLock key. If these variables are set to <code>nil</code>, the right Windows key produces the symbol <code>rwindow</code> and ScrLock produces the symbol <code>scroll</code>. If you want ScrLock to produce the same effect as in other applications, i.e. toggle the Scroll Lock LED indication on the keyboard, set <code>w32-scroll-lock-modifier</code> to <code>t</code> or any non-<code>nil</code> value other than the above modifier symbols.
+</p>
+
+<p>
+Emacs compiled as a native Windows application normally turns off the Windows feature that tapping the Alt key invokes the Windows menu. The reason is that the Alt serves as Meta in Emacs. When using Emacs, users often press the Meta key temporarily and then change their minds; if this has the effect of bringing up the Windows menu, it alters the meaning of subsequent commands. Many users find this frustrating.
+</p>
+
+<p>
+You can re-enable Windows's default handling of tapping the Alt key by setting <code>w32-pass-alt-to-system</code> to a non-<code>nil</code> value.
+</p>
+
+<p>
+The variables <code>w32-pass-lwindow-to-system</code> and <code>w32-pass-rwindow-to-system</code> determine whether the respective keys are passed to Windows or swallowed by Emacs. If the value is <code>nil</code>, the respective key is silently swallowed by Emacs, otherwise it is passed to Windows. The default is <code>t</code> for both of these variables. Passing each of these keys to Windows produces its normal effect: for example, Lwindow opens the <code>Start</code> menu, etc.
+</p>
+
+<p>
+The variable <code>w32-recognize-altgr</code> controls whether the AltGr key (if it exists on your keyboard), or its equivalent, the combination of the right Alt and left Ctrl keys pressed together, is recognized as the AltGr key. The default is <code>t</code>, which means these keys produce <code>AltGr</code>; setting it to <code>nil</code> causes AltGr or the equivalent key combination to be interpreted as the combination of Ctrl and Meta modifiers.
+</p>
+
+<p>
+Some versions of MS-Windows, typically East Asian localized Windows, enable the Input Method Manager (IMM) that allows applications to communicate with the Input Method Editor (IME), the native Windows input method service. Emacs uses the IME when available to allow users to input East Asian non-ASCII characters, similarly to Emacs's built-in input methods (see <a href="docs/emacs--Input-Methods.html">Input Methods</a>). However, in some situations the IME can get in the way if it interprets simple ASCII keys you input as part of a key sequence that designates a non-ASCII character. The IME can be temporarily turned off and then on again by using the <code>w32-set-ime-open-status</code> function.
+</p>
+
+<hr />
+</div>
+</div>

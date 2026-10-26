@@ -1,0 +1,82 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Attachment-options-1">1. 10.2.2 Attachment options ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Attachment-options"></a>
+Next: <a href="docs/org--Attachment-links.html">Attachment links</a>, Previous: <a href="docs/org--Attachment-defaults-and-dispatcher.html">Attachment defaults and dispatcher</a>, Up: <a href="docs/org--Attachments.html">Attachments</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Attachment-options-1" class="outline-2">
+<h2 id="Attachment-options-1"><span class="section-number-2">1.</span> 10.2.2 Attachment options <a href="#Attachment-options-1">¶</a></h2>
+<div class="outline-text-2" id="text-Attachment-options-1">
+<p>
+There are a couple of options for attachments that are worth mentioning.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-org_002dattach_002did_002ddir"></a>=org-attach-id-dir= </dt><dd>The directory where attachments are stored when ‘=ID=' is used as method.</dd>
+
+<dt><a id="index-org_002dattach_002ddir_002drelative"></a>=org-attach-dir-relative= </dt><dd>When setting the ‘=DIR=' property on a node using C-c C-a s (<code>org-attach-set-directory</code>), absolute links are entered by default. This option changes that to relative links.</dd>
+
+<dt><a id="index-org_002dattach_002duse_002dinheritance"></a>=org-attach-use-inheritance= </dt><dd><p>
+By default folders attached to a heading are inherited from parents according to <code>org-use-property-inheritance</code>. If one instead want to set inheritance specifically for Org attach that can be done using <code>org-attach-use-inheritance</code>. Inheriting documents through the node hierarchy makes a lot of sense in most cases. Especially when using attachment links (see <a href="docs/org--Attachment-links.html">Attachment links</a>). The following example shows one use case for attachment inheritance:
+</p>
+
+<pre class="example" id="org7e766b1">
+* Chapter A ...
+  :PROPERTIES:
+  :DIR: Chapter A/
+  :END:
+** Introduction
+Some text
+
+#+NAME: Image 1
+[[attachment:image 1.jpg]]
+</pre>
+
+<p>
+Without inheritance one would not be able to resolve the link to ‘=image 1.jpg=', since the link is inside a sub-heading to ‘=Chapter A='.
+</p>
+
+<p>
+Inheritance works the same way for both ‘=ID=' and ‘=DIR=' property. If both properties are defined on the same headline then ‘=DIR=' takes precedence. This is also true if inheritance is enabled. If ‘=DIR=' is inherited from a parent node in the outline, that property still takes precedence over an ‘=ID=' property defined on the node itself.
+</p></dd>
+
+<dt><a id="index-org_002dattach_002dmethod-1"></a>=org-attach-method= </dt><dd>When attaching files using the dispatcher C-c C-a it defaults to copying files. The behavior can be changed by customizing <code>org-attach-method</code>. Options are Copy, Move/Rename, Hard link or Symbolic link.</dd>
+
+<dt><a id="index-org_002dattach_002dpreferred_002dnew_002dmethod"></a>=org-attach-preferred-new-method= </dt><dd>This customization lets you choose the default way to attach to nodes without existing ‘=ID=' and ‘=DIR=' property. It defaults to <code>id</code> but can also be set to <code>dir</code>, <code>ask</code> or <code>nil</code>.</dd>
+
+<dt><a id="index-org_002dattach_002darchive_002ddelete"></a>=org-attach-archive-delete= </dt><dd>Configure this to determine if attachments should be deleted or not when a subtree that has attachments is archived.</dd>
+
+<dt><a id="index-org_002dattach_002dauto_002dtag"></a>=org-attach-auto-tag= </dt><dd>When attaching files to a heading it will be assigned a tag according to what is set here.</dd>
+
+<dt><a id="index-org_002dattach_002did_002dto_002dpath_002dfunction_002dlist"></a>=org-attach-id-to-path-function-list= </dt><dd>When ‘=ID=' is used for attachments, the ID is parsed into a part of a directory-path. See <code>org-attach-id-uuid-folder-format</code> for the default function. Define a new one and add it as first element in <code>org-attach-id-to-path-function-list</code> if you want the folder structure in any other way. All functions in this list will be tried when resolving existing ID's into paths, to maintain backward compatibility with existing folders in your system.</dd>
+
+<dt><a id="index-org_002dattach_002dstore_002dlink_002dp"></a>=org-attach-store-link-p= </dt><dd>Stores a link to the file that is being attached. The link is stored in <code>org-stored-links</code> for later insertion with C-c C-l (see <a href="docs/org--Handling-Links.html">Handling Links</a>). Depending on what option is set in <code>org-attach-store-link-p</code>, the link is stored to either the original location as a file link, the attachment location as an attachment link or to the attachment location as a file link.</dd>
+
+<dt><a id="index-org_002dattach_002dcommands"></a>=org-attach-commands= </dt><dd>List of all commands used in the attach dispatcher.</dd>
+
+<dt><a id="index-org_002dattach_002dexpert"></a>=org-attach-expert= </dt><dd>Do not show the splash buffer with the attach dispatcher when <code>org-attach-expert</code> is set to non-<code>nil</code>.</dd>
+</dl>
+
+<p>
+See customization group ‘=Org Attach=' if you want to change the default settings.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Attachment-links.html">Attachment links</a>, Previous: <a href="docs/org--Attachment-defaults-and-dispatcher.html">Attachment defaults and dispatcher</a>, Up: <a href="docs/org--Attachments.html">Attachments</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

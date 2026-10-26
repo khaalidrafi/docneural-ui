@@ -1,0 +1,28 @@
+:PROPERTIES:
+:ID: emacs--Diary
+:END:
+#+filetags: :emacs:
+#+title: Diary
+
+Next: [[id:emacs--Daylight-Saving][Daylight Saving Time]]   Previous: [[id:emacs--Other-Calendars][Conversion To and From Other Calendars]]   Up: [[id:emacs--Calendar_002fDiary][The Calendar and the Diary]]
+
+<<Diary>>
+
+--------------
+
+*** 33.10 The Diary [[#The-Diary][¶]]
+:PROPERTIES:
+:CUSTOM_ID: The-Diary
+:CLASS: section
+:END:
+The Emacs diary keeps track of appointments or other events on a daily basis, in conjunction with the calendar. To use the diary feature, you must first create a diary file containing a list of events and their dates. Then Emacs can automatically pick out and display the events for today, for the immediate future, or for any specified date.
+
+Although you probably will start by creating a diary manually, Emacs provides a number of commands to let you view, add, and change diary entries.
+
+- [[id:emacs--Format-of-Diary-File][The Diary File]]
+- [[id:emacs--Displaying-the-Diary][Displaying the Diary]]
+- [[id:emacs--Date-Formats][Date Formats]]
+- [[id:emacs--Adding-to-Diary][Commands to Add to the Diary]]
+- [[id:emacs--Special-Diary-Entries][Special Diary Entries]]
+- [[id:emacs--Appointments][Appointments]]
+- [[id:emacs--Importing-Diary][Importing and Exporting Diary Entries]]

@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Yes-or-No-Prompts-1">1. 10.8 Yes or No Prompts ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Passwords.html">Entering passwords</a>   Up: <a href="docs/emacs--Minibuffer.html">The Minibuffer</a>
+</p>
+
+<p>
+<a id="Yes-or-No-Prompts"></a>
+</p>
+
+<hr />
+<div id="outline-container-Yes-or-No-Prompts-1" class="outline-2">
+<h2 id="Yes-or-No-Prompts-1"><span class="section-number-2">1.</span> 10.8 Yes or No Prompts <a href="#Yes-or-No-Prompts-1">¶</a></h2>
+<div class="outline-text-2" id="text-Yes-or-No-Prompts-1">
+<p>
+An Emacs command may require you to answer a yes-or-no question during the course of its execution. Such queries come in two main varieties.
+</p>
+
+<p>
+For the first type of yes-or-no query, the prompt ends with ‘=(y or n)='. You answer the query by typing a single key, either ‘=y=' or ‘=n=', which immediately exits the minibuffer and delivers the response. For example, if you type C-x C-w (write-file) to save a buffer, and enter the name of an existing file, Emacs issues a prompt like this:
+</p>
+
+<pre class="example" id="orgaa199b1">
+File ‘foo.el’ exists; overwrite? (y or n)
+</pre>
+
+<p>
+The second type of yes-or-no query is typically employed if giving the wrong answer would have serious consequences; it thus features a longer prompt ending with ‘=(yes or no)=' (or the value of <code>yes-or-no-prompt</code> if you've customized that). For example, if you invoke C-x k (<code>kill-buffer</code>) on a file-visiting buffer with unsaved changes, Emacs activates the minibuffer with a prompt like this:
+</p>
+
+<pre class="example" id="orgf13607e">
+Buffer foo.el modified; kill anyway? (yes or no)
+</pre>
+
+<p>
+To answer, you must type ‘=yes=' or ‘=no=' into the minibuffer, followed by RET.
+</p>
+
+<p>
+With both types of yes-or-no query the minibuffer behaves as described in the previous sections; you can recenter the selected window with C-l, scroll that window (C-v or PageDown scrolls forward, M-v or PageUp scrolls backward), switch to another window with C-x o, use the history commands M-p and M-n, etc. Type C-g to dismiss the query, and quit the minibuffer and the querying command (see <a href="docs/emacs--Quitting.html">Quitting and Aborting</a>).
+</p>
+
+<hr />
+</div>
+</div>

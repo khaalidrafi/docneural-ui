@@ -1,0 +1,104 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Column-Width-and-Alignment-1">1. 3.2 Column Width and Alignment ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Column-Width-and-Alignment"></a>
+Next: <a href="docs/org--Column-Groups.html">Column Groups</a>, Previous: <a href="docs/org--Built_002din-Table-Editor.html">Built-in Table Editor</a>, Up: <a href="docs/org--Tables.html">Tables</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Column-Width-and-Alignment-1" class="outline-2">
+<h2 id="Column-Width-and-Alignment-1"><span class="section-number-2">1.</span> 3.2 Column Width and Alignment <a href="#Column-Width-and-Alignment-1">¶</a></h2>
+<div class="outline-text-2" id="text-Column-Width-and-Alignment-1">
+<p>
+The width of columns is automatically determined by the table editor. The alignment of a column is determined automatically from the fraction of number-like versus non-number fields in the column.
+</p>
+
+<p>
+Editing a field may modify the alignment of the table. Moving a contiguous row or column&#x2014;i.e., using TAB or RET&#x2014;automatically re-aligns it. If you want to disable this behavior, set <code>org-table-automatic-realign</code> to <code>nil</code>. In any case, you can always align manually a table:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dc-2"></a>C-c C-c (<code>org-table-align</code>) </dt><dd>Align the current table.</dd>
+</dl>
+
+<p>
+Setting the option <code>org-startup-align-all-tables</code> re-aligns all tables in a file upon visiting it. You can also set this option on a per-file basis with:
+</p>
+
+<pre class="example" id="org02d6b7d">
+#+STARTUP: align
+#+STARTUP: noalign
+</pre>
+
+<p>
+Sometimes a single field or a few fields need to carry more text, leading to inconveniently wide columns. Maybe you want to hide away several columns or display them with a fixed width, regardless of content, as shown in the following example.
+</p>
+
+<pre class="example" id="orgfffb4ba">
+|---+---------------------+--------|           |---+-------…+…|
+|   | &lt;6&gt;                 |        |           |   | &lt;6&gt;   …|…|
+| 1 | one                 | some   |   ----\   | 1 | one   …|…|
+| 2 | two                 | boring |   ----/   | 2 | two   …|…|
+| 3 | This is a long text | column |           | 3 | This i…|…|
+|---+---------------------+--------|           |---+-------…+…|
+</pre>
+
+<p>
+To set the width of a column, one field anywhere in the column may contain just the string ‘=&lt;N&gt;=' where <code>N</code> specifies the width as a number of characters. You control displayed width of columns with the following tools:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-TAB-1"></a>C-c TAB (<code>org-table-toggle-column-width</code>) </dt><dd><p>
+Shrink or expand current column.
+</p>
+
+<p>
+If a width cookie specifies a width W for the column, shrinking it displays the first W visible characters only. Otherwise, the column is shrunk to a single character.
+</p>
+
+<p>
+When called before the first column or after the last one, ask for a list of column ranges to operate on.
+</p></dd>
+
+<dt><a id="index-C_002du-C_002dc-TAB"></a>C-u C-c TAB (<code>org-table-shrink</code>) </dt><dd>Shrink all columns with a column width. Expand the others.</dd>
+
+<dt><a id="index-C_002du-C_002du-C_002dc-TAB"></a>C-u C-u C-c TAB (<code>org-table-expand</code>) </dt><dd>Expand all columns.</dd>
+</dl>
+
+<p>
+To see the full text of a shrunk field, hold the mouse over it: a tooltip window then shows the full contents of the field. Alternatively, C-h . (<code>display-local-help</code>) reveals them, too. For convenience, any change near the shrunk part of a column expands it.
+</p>
+
+<p>
+Setting the option <code>org-startup-shrink-all-tables</code> shrinks all columns containing a width cookie in a file the moment it is visited. You can also set this option on a per-file basis with:
+</p>
+
+<pre class="example" id="orgfcb3dc0">
+#+STARTUP: shrink
+</pre>
+
+<p>
+If you would like to overrule the automatic alignment of number-rich columns to the right and of string-rich columns to the left, you can use ‘=&lt;r&gt;=', ‘=&lt;c&gt;=' or ‘=&lt;l&gt;=' in a similar fashion. You may also combine alignment and field width like this: ‘=&lt;r10&gt;='.
+</p>
+
+<p>
+Lines which only contain these formatting cookies are removed automatically upon exporting the document.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Column-Groups.html">Column Groups</a>, Previous: <a href="docs/org--Built_002din-Table-Editor.html">Built-in Table Editor</a>, Up: <a href="docs/org--Tables.html">Tables</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

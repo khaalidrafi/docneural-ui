@@ -1,0 +1,42 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Justification-in-Enriched-Text">1. 27.14.6 Justification in Enriched Text ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Enriched-Properties.html">Setting Other Text Properties</a>   Previous: <a href="docs/emacs--Enriched-Indentation.html">Indentation in Enriched Text</a>   Up: <a href="docs/emacs--Enriched-Text.html">Enriched Text</a>
+</p>
+
+<p>
+<a id="Enriched-Justification"></a>
+</p>
+
+<hr />
+<div id="outline-container-Justification-in-Enriched-Text" class="outline-2">
+<h2 id="Justification-in-Enriched-Text"><span class="section-number-2">1.</span> 27.14.6 Justification in Enriched Text <a href="#Justification-in-Enriched-Text">¶</a></h2>
+<div class="outline-text-2" id="text-Justification-in-Enriched-Text">
+<p>
+In Enriched mode, you can use the following commands to specify various <i>justification styles</i> for filling. These commands apply to the paragraph containing point, or, if the region is active, to all paragraphs overlapping the region.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-M_002dj-l-_0028Enriched-mode_0029"></a>M-j l </dt><dd>Align lines to the left margin (<code>set-justification-left</code>).</dd>
+
+<dt><a id="index-M_002dj-r-_0028Enriched-mode_0029"></a>M-j r </dt><dd>Align lines to the right margin (<code>set-justification-right</code>).</dd>
+
+<dt><a id="index-M_002dj-b-_0028Enriched-mode_0029"></a>M-j b </dt><dd>Align lines to both margins, inserting spaces in the middle of the line to achieve this (<code>set-justification-full</code>).</dd>
+
+<dt>(no term)</dt><dd><a id="index-M_002dj-c-_0028Enriched-mode_0029"></a>M-j c <br />
+M-S :: Center lines between the margins (<code>set-justification-center</code>).</dd>
+
+<dt><a id="index-M_002dj-u-_0028Enriched-mode_0029"></a>M-j u </dt><dd>Turn off filling entirely (<code>set-justification-none</code>). The fill commands do nothing on text with this setting. You can, however, still indent the left margin.</dd>
+</dl>
+
+<p>
+You can also specify justification styles using the Justification submenu in the Text Properties menu. The default justification style is specified by the per-buffer variable <code>default-justification</code>. Its value should be one of the symbols <code>left</code>, <code>right</code>, <code>full</code>, <code>center</code>, or <code>none</code>; their meanings correspond to the commands above.
+</p>
+</div>
+</div>

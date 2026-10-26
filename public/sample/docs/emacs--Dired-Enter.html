@@ -1,0 +1,96 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Entering-Dired">1. 32.1 Entering Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Dired-Navigation.html">Navigation in the Dired Buffer</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Dired-Enter"></a>
+</p>
+
+<hr />
+<div id="outline-container-Entering-Dired" class="outline-2">
+<h2 id="Entering-Dired"><span class="section-number-2">1.</span> 32.1 Entering Dired <a href="#Entering-Dired">¶</a></h2>
+<div class="outline-text-2" id="text-Entering-Dired">
+<p>
+To invoke Dired, type C-x d (<code>dired</code>). This reads a directory's name using the minibuffer, and opens a <i>Dired buffer</i> listing the files in that directory. You can also supply a wildcard file name pattern as the minibuffer argument, in which case the Dired buffer lists all files matching that pattern. A wildcard may appear in the directory part as well. For instance,
+</p>
+
+<pre class="example" id="org6c283d0">
+C-x d  ~/foo/*.el  RET
+C-x d  ~/foo/*/*.el  RET
+</pre>
+
+<p>
+The former lists all the files with extension ‘=.el=' in directory ‘=foo='. The latter lists the files with extension ‘=.el=' in all the subdirectories of ‘=foo='.
+</p>
+
+<p>
+On Posix systems, when the system shell supports <i>globstar</i>, a recursive globbing feature, and that support is enabled, you can use recursive globbing in Dired:
+</p>
+
+<pre class="example" id="orgb4e1040">
+C-x d  ~/foo/**/*.el  RET
+</pre>
+
+<p>
+This command produces a directory listing with all the files with extension ‘=.el=', descending recursively in all the subdirectories of ‘=foo='. Note that there are small differences in the implementation of globstar between different shells. Check your shell manual to know the expected behavior.
+</p>
+
+<p>
+If the shell supports globstar, but that support is disabled by default, you can still let Dired use this feature by customizing <code>dired-maybe-use-globstar</code> to a non-<code>nil</code> value; then Dired will enable globstar for those shells for which it knows how (see <code>dired-enable-globstar-in-shell</code> for the list of those shells).
+</p>
+
+<p>
+The usual history and completion commands can be used in the minibuffer; in particular, M-n puts the name of the visited file (if any) in the minibuffer (see <a href="docs/emacs--Minibuffer-History.html">Minibuffer History</a>).
+</p>
+
+<p>
+You can also invoke Dired by giving C-x C-f (<code>find-file</code>) a directory's name.
+</p>
+
+<p>
+You can ask Emacs to invoke Dired on the default-directory (see <a href="docs/emacs--File-Names.html">default-directory</a>) of any buffer, by typing C-x C-j (<code>dired-jump</code>). If the buffer visits a file, this command will move point to that file's line in the Dired buffer it shows; otherwise, point will end up on the first file in the directory listing. As an exception, if you type C-x C-j in a Dired buffer, Emacs displays the directory listing of the parent directory and places point on the line that corresponds to the directory where you invoked <code>dired-jump</code>. Typing C-x 4 C-j (<code>dired-jump-other-window</code>) has the same effect, but displays the Dired buffer in a new window.
+</p>
+
+<p>
+The variable <code>dired-listing-switches</code> specifies the options to give to <code>ls</code> for listing the directory; this string <i>must</i> contain ‘=-l='. If you use a prefix argument with the <code>dired</code> command, you can specify the <code>ls</code> switches with the minibuffer before you enter the directory specification. No matter how they are specified, the <code>ls</code> switches can include short options (that is, single characters) requiring no arguments, and long options (starting with ‘=--<code>') whose arguments are specified with ‘==</code>'.
+</p>
+
+<p>
+Dired does not handle files that have names with embedded newline characters well. If you have many such files, you may consider adding ‘=-b=' to <code>dired-listing-switches</code>. This will quote all special characters and allow Dired to handle them better. (You can also use the C-u C-x d command to add ‘=-b=' temporarily.)
+</p>
+
+<p>
+<code>dired-listing-switches</code> can be declared as connection-local variable to adjust it to match what a remote system expects (see <a href="docs/emacs--Connection-Variables.html">Per-Connection Local Variables</a>).
+</p>
+
+<p>
+Dired displays in the mode line an indication of what were the switches used to invoke <code>ls</code>. By default, Dired will try to determine whether the switches indicate sorting by name or date, and will say so in the mode line. If the <code>dired-switches-in-mode-line</code> variable is <code>as-is</code>, the switches will be shown verbatim. If this variable's value is an integer, the switch display will be truncated to that length. This variable can also be a function, which will be called with <code>dired-actual-switches</code> as the only parameter, and should return a string to display in the mode line.
+</p>
+
+<p>
+If your <code>ls</code> program supports the ‘=&#x2013;dired=' option, Dired automatically passes it that option; this causes <code>ls</code> to emit special escape sequences for certain unusual file names, without which Dired will not be able to parse those names. The first time you run Dired in an Emacs session, it checks whether <code>ls</code> supports the ‘=&#x2013;dired=' option by calling it once with that option. If the exit code is 0, Dired will subsequently use the ‘=&#x2013;dired=' option; otherwise it will not. You can inhibit this check by customizing the variable <code>dired-use-ls-dired</code>. The value <code>unspecified</code> (the default) means to perform the check; any other non-<code>nil</code> value means to use the ‘=&#x2013;dired=' option; and <code>nil</code> means not to use the ‘=&#x2013;dired=' option.
+</p>
+
+<p>
+On MS-Windows and MS-DOS systems, and also on some remote systems, Emacs emulates <code>ls</code>. See <a href="docs/emacs--ls-in-Lisp.html">Emulation of <code>ls</code> on MS-Windows</a>, for options and peculiarities of this emulation.
+</p>
+
+<p>
+To display the Dired buffer in another window, use C-x 4 d (<code>dired-other-window</code>). C-x 5 d (<code>dired-other-frame</code>) displays the Dired buffer in a separate frame.
+</p>
+
+<p>
+Typing q (<code>quit-window</code>) buries the Dired buffer, and deletes its window if the window was created just for that buffer.
+</p>
+
+<hr />
+</div>
+</div>

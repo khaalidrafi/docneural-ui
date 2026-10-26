@@ -1,0 +1,119 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Citations-1">1. 15.1 Citations ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Citations"></a>
+Next: <a href="docs/org--Citation-export-processors.html">Citation export processors</a>, Up: <a href="docs/org--Citation-handling.html">Citation handling</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Citations-1" class="outline-2">
+<h2 id="Citations-1"><span class="section-number-2">1.</span> 15.1 Citations <a href="#Citations-1">¶</a></h2>
+<div class="outline-text-2" id="text-Citations-1">
+<p>
+Before adding citations, first set one-or-more bibliographies, either globally with <code>org-cite-global-bibliography</code>, or locally using one or more “bibliography” keywords.
+</p>
+
+<pre class="example" id="orgbf72d0c">
+#+bibliography: SomeFile.bib
+#+bibliography: /some/other/file.json
+#+bibliography: "/some/file/with spaces/in its name.bib"
+</pre>
+
+<p>
+Org mode uses all the local and global bibliographies combined to search for citation keys.
+</p>
+
+<p>
+One can then insert and edit citations using <code>org-cite-insert</code>, called with C-c C-x @.
+</p>
+
+<p>
+A <i>citation</i> requires one or more citation <i>key(s)</i>, elements identifying a reference in the bibliography.
+</p>
+
+<ul class="org-ul">
+<li>Each citation is surrounded by brackets and uses the ‘=cite=' type.</li>
+
+<li><p>
+Each key starts with the character ‘=@='.
+</p>
+
+<pre class="example" id="org923b24e">
+[cite:@key]
+</pre></li>
+
+<li><p>
+Each key can be qualified by a <i>prefix</i> (e.g. “see ”) and/or a <i>suffix</i> (e.g. “p. 123”), giving information useful or necessary for the comprehension of the citation but not included in the reference.
+</p>
+
+<pre class="example" id="orgb3e357b">
+[cite:see @key p. 123]
+</pre></li>
+
+<li><p>
+A single citation can cite more than one reference ; the keys are separated by semicolons ; the formatting of such citation groups is specified by the style.
+</p>
+
+<pre class="example" id="org3f885a6">
+[cite:@key1;@key2;@key3]
+</pre></li>
+
+<li><p>
+One can also specify a stylistic variation for the citations by inserting a ‘=/=' and a style name between the ‘=cite=' keyword and the colon; this usually makes sense only for the author-year styles.
+</p>
+
+<pre class="example" id="orgba1cdb7">
+[cite/style:common prefix ;prefix @key suffix; ... ; common suffix]
+</pre>
+
+<p>
+When ‘=style=' is not specified, one of the two default styles are used
+</p>
+
+<ul class="org-ul">
+<li><p>
+either the default style specified in the ‘=CITE<sub>EXPORT</sub>=' keyword (see <a href="docs/org--Citation-export-processors.html">Citation export processors</a>)
+</p>
+
+<pre class="example" id="orgff7f508">
+#+cite_export: basic numeric noauthor/bare
+[cite:@key] is the same as [cite/noauthor/bare:@key]
+</pre></li>
+
+<li><p>
+or, if ‘=CITE<sub>EXPORT</sub>=' is not set, using the default ‘=nil=' style
+</p>
+
+<pre class="example" id="org054f5e2">
+[cite:@key] is the same as [cite/nil:@key]
+</pre></li>
+</ul></li>
+</ul>
+
+<p>
+The only mandatory elements are:
+</p>
+
+<ul class="org-ul">
+<li>The ‘=cite=' keyword and the colon.</li>
+<li>The ‘=@=' character immediately preceding each key.</li>
+<li>The brackets surrounding the citation(s) (group).</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Citation-export-processors.html">Citation export processors</a>, Up: <a href="docs/org--Citation-handling.html">Citation handling</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

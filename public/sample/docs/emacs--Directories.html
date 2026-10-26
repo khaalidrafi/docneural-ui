@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#File-Directories">1. 20.8 File Directories ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Comparing-Files.html">Comparing Files</a>   Previous: <a href="docs/emacs--File-Aliases.html">File Name Aliases</a>   Up: <a href="docs/emacs--Files.html">File Handling</a>
+</p>
+
+<p>
+<a id="Directories"></a>
+</p>
+
+<hr />
+<div id="outline-container-File-Directories" class="outline-2">
+<h2 id="File-Directories"><span class="section-number-2">1.</span> 20.8 File Directories <a href="#File-Directories">¶</a></h2>
+<div class="outline-text-2" id="text-File-Directories">
+<p>
+The file system groups files into <i>directories</i>. A <i>directory listing</i> is a list of all the files in a directory. Emacs provides commands to create and delete directories, and to make directory listings in brief format (file names only) and verbose format (sizes, dates, and other attributes included). Emacs also includes a directory browser feature called Dired, which you can invoke with C-x d; see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>.
+</p>
+
+<dl class="org-dl">
+<dt>C-x C-d <code>dir-or-pattern</code> RET</dt><dd>Display a brief directory listing (<code>list-directory</code>).</dd>
+
+<dt>C-u C-x C-d <code>dir-or-pattern</code> RET</dt><dd>Display a verbose directory listing.</dd>
+
+<dt>M-x make-directory RET <code>dirname</code> RET</dt><dd>Create a new directory named <code>dirname</code>.</dd>
+
+<dt>M-x delete-directory RET <code>dirname</code> RET</dt><dd>Delete the directory named <code>dirname</code>. If it isn't empty, you will be asked whether you want to delete it recursively.</dd>
+</dl>
+
+<p>
+The command to display a directory listing is C-x C-d (<code>list-directory</code>). It reads using the minibuffer a file name which is either a directory to be listed or a wildcard-containing pattern for the files to be listed. For example,
+</p>
+
+<pre class="example" id="org21e1c4a">
+C-x C-d /u2/emacs/etc RET
+</pre>
+
+<p>
+lists all the files in directory <code>/u2/emacs/etc</code>. Here is an example of specifying a file name pattern:
+</p>
+
+<pre class="example" id="org14cb0c5">
+C-x C-d /u2/emacs/src/*.c RET
+</pre>
+
+<p>
+Normally, C-x C-d displays a brief directory listing containing just file names. A numeric argument (regardless of value) tells it to make a verbose listing including sizes, dates, and owners (like ‘=ls -l=').
+</p>
+
+<p>
+The text of a directory listing is mostly obtained by running <code>ls</code> in an inferior process. Two Emacs variables control the switches passed to <code>ls</code>: <code>list-directory-brief-switches</code> is a string giving the switches to use in brief listings (<code>"-CF"</code> by default), and <code>list-directory-verbose-switches</code> is a string giving the switches to use in a verbose listing (<code>"-l"</code> by default).
+</p>
+
+<p>
+In verbose directory listings, Emacs adds information about the amount of free space on the disk that contains the directory.
+</p>
+
+<p>
+The command M-x delete-directory prompts for a directory's name using the minibuffer, and deletes the directory if it is empty. If the directory is not empty, you will be asked whether you want to delete it recursively. On systems that have a “Trash” (or “Recycle Bin”) feature, you can make this command move the specified directory to the Trash instead of deleting it outright, by changing the variable <code>delete-by-moving-to-trash</code> to <code>t</code>. See <a href="docs/emacs--Misc-File-Ops.html">Miscellaneous File Operations</a>, for more information about using the Trash.
+</p>
+
+<hr />
+</div>
+</div>

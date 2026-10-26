@@ -1,0 +1,163 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Shepherd-Home-Service"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Secure-Shell.html">Secure Shell</a>, Previous: <a href="docs/guix--Power-Management-Home-Services.html">Power Management Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Managing-User-Daemons"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="managing-user-daemons"></a>13.3.5 Managing User Daemons<br />
+<div class="outline-text-5" id="text-managing-user-daemons">
+<p>
+<a id="index-shepherd-services_002c-for-users"></a>
+The <code>(gnu home services shepherd)</code> module supports the definitions of per-user Shepherd services (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Introduction.html#Introduction">Introduction</a> in The GNU Shepherd Manual). You extend <code>home-shepherd-service-type</code> with new services; Guix Home then takes care of starting the <code>shepherd</code> daemon for you when you log in, which in turns starts the services you asked for.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-shepherd-service-type </dt><dd><p>
+The service type for the userland Shepherd, which allows one to manage long-running processes or one-shot tasks. User's Shepherd is not an init process (PID 1), but almost all other information described in (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>) is applicable here too.
+</p>
+
+<p>
+This is the service type that extensions target when they want to create shepherd services (see <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, for an example). Each extension must pass a list of <code>&lt;shepherd-service&gt;</code>. Its value must be a <code>home-shepherd-configuration</code>, as described below.
+</p></dd>
+
+<dt>Data Type: home-shepherd-configuration </dt><dd>This data type represents the Shepherd's configuration.
+
+<dl class="org-dl">
+<dt><code>shepherd (default: ==shepherd=</code>)=</dt><dd>The Shepherd package to use.</dd>
+
+<dt><code>auto-start? (default: ==#t=</code>)=</dt><dd>Whether or not to start Shepherd on first login.</dd>
+
+<dt><code>daemonize? (default: ==#t=</code>)=</dt><dd>Whether or not to run Shepherd in the background.</dd>
+
+<dt><code>silent? (default: ==#t=</code>)=</dt><dd>When true, the <code>shepherd</code> process does not write anything to standard output when started automatically.</dd>
+
+<dt><code>services (default: =</code>'()==)=</dt><dd>A list of <code>&lt;shepherd-service&gt;</code> to start. You should probably use the service extension mechanism instead (see <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>).</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="index-timers_002c-per_002duser"></a>
+The Shepherd allows you to define <i>timers</i>, a special type of service that performs a given task periodically. Just like you can define timers at the system level (see <a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a>), you can do so in your home environment.
+</p>
+
+<p>
+The example below defines a home environment where a Shepherd timer runs the <code>mkid</code> command twice per day (see <a href="https://www.gnu.org/software/idutils/manual/html_node/mkid-invocation.html#mkid-invocation">mkid invocation</a> in ID Database Utilities). It does so by extending <code>home-shepherd-service-type</code> with <code>simple-service</code>; the Shepherd timer itself is produced by the <code>shepherd-timer</code> procedure (see <a href="docs/guix--Scheduled-Job-Execution.html#shepherd_002dtimer_002dprocedure"><code>shepherd-timer</code></a>), which is given the service name, a gexp specifying its schedule, and a gexp specifying the command to run.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (gnu) (guix)
+             (gnu home services shepherd)
+             (gnu packages idutils))
+
+(define idutils-service
+  ;; Index my 'doc' directory everyday at 12:15PM and 7:15PM.
+  (simple-service
+   'update-idutils-database home-shepherd-service-type
+   (list (shepherd-timer '(update-idutils-database)
+                         #~(calendar-event #:hours '(12 19)
+                                           #:minutes '(15))
+                         #~(#$(file-append idutils "/bin/mkid")
+                            "doc")))))
+
+(home-environment
+  ;; …
+  (services (append (list idutils-service)
+                    %base-home-services)))
+</pre>
+</div>
+
+<p>
+See <a href="https://www.gnu.org/software/shepherd/manual/html_node/Timers.html#Timers">Timers</a> in The GNU Shepherd Manual for more information on Shepherd timers.
+</p>
+
+<p>
+<a id="index-log-rotation_002c-for-user-services"></a>
+The Shepherd also comes with a <i>log rotation service</i>, which compresses and then deletes old log files produced by services and daemons that it runs. This service is made available through <code>home-log-rotation-service-type</code> as described below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-log-rotation-service-type </dt><dd><p>
+This is the service type for the user Shepherd log rotation service (see <a href="https://www.gnu.org/software/shepherd/manual/html_node/Log-Rotation-Service.html#Log-Rotation-Service">Log Rotation Service</a> in The GNU Shepherd Manual). Its value must be a <code>log-rotation-configuration</code> record, exactly as for its system-wide counterpart. See <a href="docs/guix--Log-Rotation.html#log_002drotation_002dconfiguration">log-rotation-configuration</a>, for its reference.
+</p>
+
+<p>
+This service is part of <code>%base-home-services</code>.
+</p></dd>
+
+<dt>(no term)</dt><dd><p>
+Variable: home-shepherd-transient-service-type <br />
+Variable: home-shepherd-timer-service-type  :: These are the <code>timer</code> and <code>transient</code> Shepherd services. The former lets you schedule command execution for later, while the latter can run commands in the background as a regular service.
+</p>
+
+<p>
+See <a href="docs/guix--Shepherd-Services.html#shepherd_002dtransient_002dtimer_002dservices">the system <code>timer</code> and <code>transient</code> services</a>, which are their Guix System counterparts, for more info.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Secure-Shell.html">Secure Shell</a>, Previous: <a href="docs/guix--Power-Management-Home-Services.html">Power Management Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

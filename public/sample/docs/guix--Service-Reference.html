@@ -1,0 +1,377 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Service-Reference"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>, Previous: <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Service-Reference-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="service-reference"></a>11.19.3 Service Reference<br />
+<div class="outline-text-5" id="text-service-reference">
+<p>
+We have seen an overview of service types (see <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>). This section provides a reference on how to manipulate services and service types. This interface is provided by the <code>(gnu services)</code> module.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: service type [value]</dt><dd><p>
+Return a new service of <code>type</code>, a <code>&lt;service-type&gt;</code> object (see below). <code>value</code> can be any object; it represents the parameters of this particular service instance.
+</p>
+
+<p>
+When <code>value</code> is omitted, the default value specified by <code>type</code> is used; if <code>type</code> does not specify a default value, an error is raised.
+</p>
+
+<p>
+For instance, this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service openssh-service-type)
+</pre>
+</div>
+
+<p>
+is equivalent to this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service openssh-service-type
+         (openssh-configuration))
+</pre>
+</div>
+
+<p>
+In both cases the result is an instance of <code>openssh-service-type</code> with the default configuration.
+</p></dd>
+
+<dt>Procedure: service? obj</dt><dd>Return true if <code>obj</code> is a service.</dd>
+
+<dt>Procedure: service-kind service</dt><dd>Return the type of <code>service</code>&#x2014;i.e., a <code>&lt;service-type&gt;</code> object.</dd>
+
+<dt>Procedure: service-value service</dt><dd>Return the value associated with <code>service</code>. It represents its parameters.</dd>
+</dl>
+
+<p>
+Here is an example of how a service is created and manipulated:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(define s
+  (service nginx-service-type
+           (nginx-configuration
+            (nginx nginx)
+            (log-directory log-directory)
+            (run-directory run-directory)
+            (file config-file))))
+
+(service? s)
+⇒ #t
+
+(eq? (service-kind s) nginx-service-type)
+⇒ #t
+</pre>
+</div>
+
+<p>
+The <code>modify-services</code> form provides a handy way to change the parameters of some of the services of a list such as <code>%base-services</code> (see <a href="docs/guix--Base-Services.html"><code>%base-services</code></a>). It evaluates to a list of services. Of course, you could always use standard list combinators such as <code>map</code> and <code>fold</code> to do that (see <a href="https://www.gnu.org/software/guile/manual/html_node/SRFI_002d1.html#SRFI_002d1">List Library</a> in GNU Guile Reference Manual); <code>modify-services</code> simply provides a more concise form for this common pattern.
+</p>
+
+<dl class="org-dl">
+<dt>Special Form: modify-services services (type variable =&gt; body) &#x2026;</dt><dd><p>
+Modify the services listed in <code>services</code> according to the given clauses. Each clause has the form:
+</p>
+
+<pre class="example" id="org2e89e41">
+(type variable =&gt; body)
+</pre>
+
+<p>
+where <code>type</code> is a service type&#x2014;e.g., <code>guix-service-type</code>&#x2014;and <code>variable</code> is an identifier that is bound within the <code>body</code> to the service parameters&#x2014;e.g., a <code>guix-configuration</code> instance&#x2014;of the original service of that <code>type</code>.
+</p>
+
+<p>
+The <code>body</code> should evaluate to the new service parameters, which will be used to configure the new service. This new service will replace the original in the resulting list. Because a service's service parameters are created using <code>define-record-type*</code>, you can write a succinct <code>body</code> that evaluates to the new service parameters by using the <code>inherit</code> feature that <code>define-record-type*</code> provides.
+</p>
+
+<p>
+Clauses can also have the following form:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(delete type)
+</pre>
+</div>
+
+<p>
+Such a clause removes all services of the given <code>type</code> from <code>services</code>.
+</p>
+
+<p>
+See <a href="docs/guix--Using-the-Configuration-System.html">Using the Configuration System</a>, for example usage.
+</p></dd>
+</dl>
+
+<p>
+Next comes the programming interface for service types. This is something you want to know when writing new service definitions, but not necessarily when simply looking for ways to customize your <code>operating-system</code> declaration.
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: service-type </dt><dd><p>
+<a id="index-service-type"></a>
+</p>
+
+<p>
+This is the representation of a <i>service type</i> (see <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>).
+</p>
+
+<dl class="org-dl">
+<dt><code>name</code></dt><dd>This is a symbol, used only to simplify inspection and debugging.</dd>
+
+<dt><code>extensions</code></dt><dd>A non-empty list of <code>&lt;service-extension&gt;</code> objects (see below).</dd>
+
+<dt><code>compose</code> (default: <code>#f</code>)</dt><dd><p>
+If this is <code>#f</code>, then the service type denotes services that cannot be extended&#x2014;i.e., services that do not receive “values” from other services.
+</p>
+
+<p>
+Otherwise, it must be a one-argument procedure. The procedure is called by <code>fold-services</code> and is passed a list of values collected from extensions. It may return any single value.
+</p></dd>
+
+<dt><code>extend</code> (default: <code>#f</code>)</dt><dd><p>
+If this is <code>#f</code>, services of this type cannot be extended.
+</p>
+
+<p>
+Otherwise, it must be a two-argument procedure: <code>fold-services</code> calls it, passing it the initial value of the service as the first argument and the result of applying <code>compose</code> to the extension values as the second argument. It must return a value that is a valid parameter value for the service instance.
+</p></dd>
+
+<dt><code>description</code></dt><dd>This is a string, possibly using Texinfo markup, describing in a couple of sentences what the service is about. This string allows users to find about the service through <code>guix system search</code> (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>).</dd>
+
+<dt><code>default-value</code> (default: <code>&amp;no-default-value</code>)</dt><dd><p>
+The default value associated for instances of this service type. This allows users to use the <code>service</code> form without its second argument:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service type)
+</pre>
+</div>
+
+<p>
+The returned service in this case has the default value specified by <code>type</code>.
+</p></dd>
+</dl>
+
+<p>
+See <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, for examples.
+</p></dd>
+
+<dt>Procedure: service-extension target-type compute</dt><dd>Return a new extension for services of type <code>target-type</code>. <code>compute</code> must be a one-argument procedure: <code>fold-services</code> calls it, passing it the value associated with the service that provides the extension; it must return a valid value for the target service.</dd>
+
+<dt>Procedure: service-extension? obj</dt><dd>Return true if <code>obj</code> is a service extension.</dd>
+</dl>
+
+<p>
+Occasionally, you might want to simply extend an existing service. This involves creating a new service type and specifying the extension of interest, which can be verbose; the <code>simple-service</code> procedure provides a shorthand for this.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: simple-service name target value</dt><dd><p>
+Return a service that extends <code>target</code> with <code>value</code>. This works by creating a singleton service type <code>name</code>, of which the returned service is an instance.
+</p>
+
+<p>
+For example, this extends mcron (see <a href="docs/guix--Scheduled-Job-Execution.html">Scheduled Job Execution</a>) with an additional job:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'my-mcron-job mcron-service-type
+                #~(job '(next-hour (3)) "guix gc -F 2G"))
+</pre>
+</div></dd>
+</dl>
+
+<p>
+At the core of the service abstraction lies the <code>fold-services</code> procedure, which is responsible for “compiling” a list of services down to a single directory that contains everything needed to boot and run the system&#x2014;the directory shown by the <code>guix system build</code> command (see <a href="docs/guix--Invoking-guix-system.html">Invoking <code>guix system</code></a>). In essence, it propagates service extensions down the service graph, updating each node parameters on the way, until it reaches the root node.
+</p>
+
+<dl class="org-dl">
+<dt>Procedure: fold-services services [#:target-type system-service-type]</dt><dd>Fold <code>services</code> by propagating their extensions down to the root of type <code>target-type</code>; return the root service adjusted accordingly.</dd>
+</dl>
+
+<p>
+Lastly, the <code>(gnu services)</code> module also defines several essential service types, some of which are listed below.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: system-service-type </dt><dd>This is the root of the service graph. It produces the system directory as returned by the <code>guix system build</code> command.</dd>
+
+<dt>Variable: boot-service-type </dt><dd>The type of the “boot service”, which produces the <i>boot script</i>. The boot script is what the initial RAM disk runs when booting.</dd>
+
+<dt>Variable: etc-service-type </dt><dd><p>
+The type of the <code>/etc</code> service. This service is used to create files under <code>/etc</code> and can be extended by passing it name/file tuples such as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(list `("issue" ,(plain-file "issue" "Welcome!\n")))
+</pre>
+</div>
+
+<p>
+In this example, the effect would be to add an <code>/etc/issue</code> file pointing to the given file.
+</p></dd>
+
+<dt>Variable: etc-profile-d-service-type </dt><dd><p>
+The type of the <code>/etc/profile.d</code> service. This service is used to create files under <code>/etc/profile.d</code>. It takes as value a list of file-like objects, as can be produced with <code>local-file</code>, <code>plain-file</code>, etc. Note that provided files whose file names do not end with <code>.sh</code> are <i>not</i> added to <code>/etc/profile.d/</code> and are silently dropped. Package objects can also be provided directly to have their <code>etc/profile.d/*.sh</code> prefixed files added. A simple usage may look like:
+</p>
+
+<pre class="example" id="org6f8af8a">
+(simple-service 'my-important-profile-file etc-profile-d-service-type
+                (list (plain-file "youppi.sh" "HOW_IMPORTANT=very")))
+</pre></dd>
+
+<dt>Variable: etc-bashrc-d-service-type </dt><dd><p>
+The type of the <code>/etc/bashrc.d</code> service. This service is used to create files under <code>/etc/bashrc.d</code>. It takes as value a list of file-like objects, as can be produced with <code>local-file</code>, <code>plain-file</code>, etc. Note that provided files whose file names do not end with <code>.sh</code> are <i>not</i> added to <code>/etc/profile.d/</code> and are silently dropped. The default value is made available via the <code>%default-etc-bashrc-d-files</code> variable for users to extended. Package objects can also be provided directly to have their <code>etc/bashrc.d/*.sh</code> prefixed files added. Since the service is part <code>%base-services</code>, it can be extended via <code>simple-service</code> like so:
+</p>
+
+<pre class="example" id="org68509b6">
+(use-package-modules gnome)     ;for the `vte' package
+
+(simple-service 'vte-integration etc-bashrc-d-service-type
+                (list (file-append vte "/etc/profile.d/vte.sh")))
+</pre></dd>
+
+<dt>Variable: vte-integration-service-type </dt><dd><p>
+This services adds the <code>/etc/bashrc.d/vte.sh</code> to your system, which improves the Bash and Zsh experience when using VTE-powered terminal emulators. This causes for example the current directory to be displayed in the terminal emulator's tab title, and the current directory to be preserved when creating a new tab, among other features. The value of the service is the <code>vte</code> package to use.
+</p>
+
+<pre class="example" id="org07d2b6a">
+(use-package-modules gnome)     ;for the `vte' package
+
+(service vte-integration-service-type vte)
+</pre></dd>
+
+<dt>Variable: privileged-program-service-type </dt><dd>Type for the “privileged-program service”. This service collects lists of executable file names, passed as gexps, and adds them to the set of privileged programs on the system (see <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>).</dd>
+
+<dt>Variable: profile-service-type </dt><dd>Type of the service that populates the <i>system profile</i>&#x2014;i.e., the programs under <code>/run/current-system/profile</code>. Other services can extend it by passing it lists of packages to add to the system profile.</dd>
+</dl>
+
+<p>
+<a id="index-provenance-tracking_002c-of-the-operating-system-2"></a> <a id="provenance_002dservice_002dtype"></a>
+</p>
+<dl class="org-dl">
+<dt>Variable: provenance-service-type </dt><dd><p>
+This is the type of the service that records <i>provenance meta-data</i> in the system itself. It creates several files under <code>/run/current-system</code>:
+</p>
+
+<dl class="org-dl">
+<dt><code>channels.scm</code></dt><dd>This is a “channel file” that can be passed to <code>guix pull -C</code> or <code>guix time-machine -C</code>, and which describes the channels used to build the system, if that information was available (see <a href="docs/guix--Channels.html">Channels</a>).</dd>
+
+<dt><code>configuration.scm</code></dt><dd>This is the file that was passed as the value for this <code>provenance-service-type</code> service. By default, <code>guix system reconfigure</code> automatically passes the OS configuration file it received on the command line.</dd>
+
+<dt><code>provenance</code></dt><dd>This contains the same information as the two other files but in a format that is more readily processable.</dd>
+</dl>
+
+<p>
+In general, these two pieces of information (channels and configuration file) are enough to reproduce the operating system “from source”.
+</p>
+
+<blockquote>
+<p>
+<b>Caveats:</b> This information is necessary to rebuild your operating system, but it is not always sufficient. In particular, <code>configuration.scm</code> itself is insufficient if it is not self-contained&#x2014;if it refers to external Guile modules or to extra files. If you want <code>configuration.scm</code> to be self-contained, we recommend that modules or files it refers to be part of a channel.
+</p>
+
+<p>
+Besides, provenance meta-data is “silent” in the sense that it does not change the bits contained in your system, <i>except for the meta-data bits themselves</i>. Two different OS configurations or sets of channels can lead to the same system, bit-for-bit; when <code>provenance-service-type</code> is used, these two systems will have different meta-data and thus different store file names, which makes comparison less trivial.
+</p>
+</blockquote>
+
+<p>
+This service is automatically added to your operating system configuration when you use <code>guix system reconfigure</code>, <code>guix system init</code>, or <code>guix deploy</code>.
+</p></dd>
+
+<dt>Variable: linux-loadable-module-service-type </dt><dd><p>
+Type of the service that collects lists of packages containing kernel-loadable modules, and adds them to the set of kernel-loadable modules.
+</p>
+
+<p>
+This service type is intended to be extended by other service types, such as below:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(simple-service 'installing-module
+                linux-loadable-module-service-type
+                (list module-to-install-1
+                      module-to-install-2))
+</pre>
+</div>
+
+<p>
+This does not actually load modules at bootup, only adds it to the kernel profile so that it <i>can</i> be loaded by other means.
+</p></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Shepherd-Services.html">Shepherd Services</a>, Previous: <a href="docs/guix--Service-Types-and-Services.html">Service Types and Services</a>, Up: <a href="docs/guix--Defining-Services.html">Defining Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

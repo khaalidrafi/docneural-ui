@@ -1,0 +1,128 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#x.509-certificates">1.0.1. 11.12 X.509 Certificates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="X_002e509-Certificates"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a>, Previous: <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="X_002e509-Certificates-2"></a>
+</p>
+</div>
+<div id="outline-container-x.509-certificates" class="outline-4">
+<h4 id="x.509-certificates"><span class="section-number-4">1.0.1.</span> 11.12 X.509 Certificates</h4>
+<div class="outline-text-4" id="text-x.509-certificates">
+<p>
+<a id="index-HTTPS_002c-certificates"></a> <a id="index-X_002e509-certificates"></a> <a id="index-TLS"></a>
+Web servers available over HTTPS (that is, HTTP over the transport-layer security mechanism, TLS) send client programs an <i>X.509 certificate</i> that the client can then use to <i>authenticate</i> the server. To do that, clients verify that the server's certificate is signed by a so-called <i>certificate authority</i> (CA). But to verify the CA's signature, clients must have first acquired the CA's certificate.
+</p>
+
+<p>
+Web browsers such as GNU IceCat include their own set of CA certificates, such that they are able to verify CA signatures out-of-the-box.
+</p>
+
+<p>
+However, most other programs that can talk HTTPS---<code>wget</code>, <code>git</code>, <code>w3m</code>, etc.&#x2014;need to be told where CA certificates can be found.
+</p>
+
+<p>
+<a id="index-nss_002dcerts-1"></a>
+For users of Guix System, this is done by adding a package that provides certificates to the <code>packages</code> field of the <code>operating-system</code> declaration (see <a href="docs/guix--operating_002dsystem-Reference.html"><code>operating-system</code> Reference</a>). Guix includes one such package, <code>nss-certs</code>, which is a set of CA certificates provided as part of Mozilla's Network Security Services.
+</p>
+
+<p>
+This package is part of <code>%base-packages</code>, so there is no need to explicitly add it. The <code>/etc/ssl/certs</code> directory, which is where most applications and libraries look for certificates by default, points to the certificates installed globally.
+</p>
+
+<p>
+Unprivileged users, including users of Guix on a foreign distro, can also install their own certificate package in their profile. A number of environment variables need to be defined so that applications and libraries know where to find them. Namely, the OpenSSL library honors the <code>SSL_CERT_DIR</code> and <code>SSL_CERT_FILE</code> variables. Some applications add their own environment variables; for instance, the Git version control system honors the certificate bundle pointed to by the <code>GIT_SSL_CAINFO</code> environment variable. Thus, you would typically run something like:
+</p>
+
+<pre class="example" id="orgffdbd04">
+guix install nss-certs
+export SSL_CERT_DIR="$HOME/.guix-profile/etc/ssl/certs"
+export SSL_CERT_FILE="$HOME/.guix-profile/etc/ssl/certs/ca-certificates.crt"
+export GIT_SSL_CAINFO="$SSL_CERT_FILE"
+</pre>
+
+<p>
+As another example, R requires the <code>CURL_CA_BUNDLE</code> environment variable to point to a certificate bundle, so you would have to run something like this:
+</p>
+
+<pre class="example" id="orgbed1eca">
+guix install nss-certs
+export CURL_CA_BUNDLE="$HOME/.guix-profile/etc/ssl/certs/ca-certificates.crt"
+</pre>
+
+<p>
+For other applications you may want to look up the required environment variable in the relevant documentation.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Name-Service-Switch.html">Name Service Switch</a>, Previous: <a href="docs/guix--Privileged-Programs.html">Privileged Programs</a>, Up: <a href="docs/guix--System-Configuration.html">System Configuration</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

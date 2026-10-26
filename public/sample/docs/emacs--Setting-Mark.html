@@ -1,0 +1,85 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Setting-the-Mark">1. 13.1 Setting the Mark ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (5)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Marking-Objects.html">Commands to Mark Textual Objects</a>   Up: <a href="docs/emacs--Mark.html">The Mark and the Region</a>
+</p>
+
+<p>
+<a id="Setting-Mark"></a>
+</p>
+
+<hr />
+<div id="outline-container-Setting-the-Mark" class="outline-2">
+<h2 id="Setting-the-Mark"><span class="section-number-2">1.</span> 13.1 Setting the Mark <a href="#Setting-the-Mark">¶</a></h2>
+<div class="outline-text-2" id="text-Setting-the-Mark">
+<p>
+Here are some commands for setting the mark:
+</p>
+
+<dl class="org-dl">
+<dt>C-SPC</dt><dd>Set the mark at point, and activate it (<code>set-mark-command</code>).</dd>
+
+<dt>C-@</dt><dd>The same.</dd>
+
+<dt>C-x C-x</dt><dd>Set the mark at point, and activate it; then move point where the mark used to be (<code>exchange-point-and-mark</code>).</dd>
+
+<dt>Drag-mouse-1</dt><dd>Set point and the mark around the text you drag across.</dd>
+
+<dt>mouse-3</dt><dd>Set the mark at point, then move point to where you click (<code>mouse-save-then-kill</code>).</dd>
+
+<dt>Shifted cursor motion keys</dt><dd>Set the mark at point if the mark is inactive, then move point. See <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>.</dd>
+</dl>
+
+<p>
+The most common way to set the mark is with C-SPC (<code>set-mark-command</code>). This sets the mark where point is, and activates it. You can then move point away, leaving the mark behind. If the mark is already set where point is, this command doesn't set another mark, but only activates the existing mark.
+</p>
+
+<p>
+For example, suppose you wish to convert part of the buffer to upper case. To accomplish this, go to one end of the desired text, type C-SPC, and move point until the desired portion of text is highlighted. Now type C-x C-u (<code>upcase-region</code>). This converts the text in the region to upper case, and then deactivates the mark.
+</p>
+
+<p>
+Whenever the mark is active, you can deactivate it by typing C-g (see <a href="docs/emacs--Quitting.html">Quitting and Aborting</a>). Most commands that operate on the region also automatically deactivate the mark, like C-x C-u in the above example.
+</p>
+
+<p>
+Instead of setting the mark in order to operate on a region, you can also use it to remember a position in the buffer (by typing C-SPC C-SPC), and later jump back there (by typing C-u C-SPC). See <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>, for details.
+</p>
+
+<p>
+The command C-x C-x (<code>exchange-point-and-mark</code>) exchanges the positions of point and the mark. C-x C-x is useful when you are satisfied with the position of point but want to move the other end of the region (where the mark is). Using C-x C-x a second time, if necessary, puts the mark at the new position with point back at its original position. Normally, if the mark is inactive, this command first reactivates the mark wherever it was last set, to ensure that the region is left highlighted. However, if you call it with a prefix argument, it leaves the mark inactive and the region unhighlighted; you can use this to jump to the mark in a manner similar to C-u C-SPC.
+</p>
+
+<p>
+You can also set the mark with the mouse. If you press the left mouse button (down-mouse-1) and drag the mouse across a range of text, this sets the mark where you first pressed the mouse button and puts point where you release it. Alternatively, clicking the right mouse button (mouse-3) sets the mark at point and then moves point to where you clicked. See <a href="docs/emacs--Mouse-Commands.html">Mouse Commands for Editing</a>, for a more detailed description of these mouse commands.
+</p>
+
+<p>
+Finally, you can set the mark by holding down the shift key while typing certain cursor motion commands (such as S-RIGHT, S-C-f, S-C-n, etc.). This is called <i>shift-selection</i>. It sets the mark at point before moving point, but only if there is no active mark set via a previous shift-selection or mouse commands. The mark set by mouse commands and by shift-selection behaves slightly differently from the usual mark: any subsequent unshifted cursor motion command deactivates it automatically. For details, see <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>.
+</p>
+
+<p>
+Many commands that insert text, such as C-y (<code>yank</code>), set the mark at the other end of the inserted text, without activating it. This lets you easily return to that position (see <a href="docs/emacs--Mark-Ring.html">The Mark Ring</a>). You can tell that a command does this when it shows ‘=Mark set=' in the echo area.
+</p>
+
+<p>
+Under X, every time the active region changes, Emacs saves the text in the region to the <i>primary selection</i>. This lets you insert that text into other X applications with mouse-2 clicks. See <a href="docs/emacs--Primary-Selection.html">Cut and Paste with Other Window Applications</a>.
+</p>
+
+<hr />
+</div>
+</div>

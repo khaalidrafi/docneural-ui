@@ -1,0 +1,1 @@
+{"emacs--Emacs-Invocation>emacs--Command-Example":"- Command Argument Example","emacs--Initial-Options>emacs--Command-Example":"- ‘--batch' :: Run Emacs in /batch mode/. Batch mode is used for running programs written in Emacs Lisp from shell scripts, makefiles, and so on. To invoke a","emacs--index>emacs--Command-Example":"- C.3 Command Argument Example"}

@@ -1,0 +1,116 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#VC-Directory-Commands-1">1. 30.1.10.2 VC Directory Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--VC-Directory-Buffer.html">The VC Directory Buffer</a>   Up: <a href="docs/emacs--VC-Directory-Mode.html">VC Directory Mode</a>
+</p>
+
+<p>
+<a id="VC-Directory-Commands"></a>
+</p>
+
+<hr />
+<div id="outline-container-VC-Directory-Commands-1" class="outline-2">
+<h2 id="VC-Directory-Commands-1"><span class="section-number-2">1.</span> 30.1.10.2 VC Directory Commands <a href="#VC-Directory-Commands-1">¶</a></h2>
+<div class="outline-text-2" id="text-VC-Directory-Commands-1">
+<p>
+Emacs provides several commands for navigating the VC Directory buffer, and for marking files as belonging to the current VC fileset.
+</p>
+
+<ul class="org-ul">
+<li>n<br />
+SPC :: Move point to the next entry (<code>vc-dir-next-line</code>).</li>
+
+<li id="p">Move point to the previous entry (<code>vc-dir-previous-line</code>).</li>
+
+<li id="TAB">Move to the next directory entry (<code>vc-dir-next-directory</code>).</li>
+
+<li id="S-TAB">Move to the previous directory entry (<code>vc-dir-previous-directory</code>).</li>
+
+<li>RET<br />
+f :: Visit the file or directory listed on the current line (<code>vc-dir-find-file</code>).</li>
+
+<li id="o">Visit the file or directory on the current line, in a separate window (<code>vc-dir-find-file-other-window</code>).</li>
+
+<li id="m"><p>
+Mark the file or directory on the current line (<code>vc-dir-mark</code>), putting it in the current VC fileset. If the region is active, mark all files in the region.
+</p>
+
+<p>
+A file cannot be marked with this command if it is already in a marked directory, or one of its subdirectories. Similarly, a directory cannot be marked with this command if any file in its tree is marked.
+</p></li>
+
+<li id="M">If point is on a file entry, mark all files with the same status; if point is on a directory entry, mark all files in that directory tree (<code>vc-dir-mark-all-files</code>). With a prefix argument, mark all listed files and directories.</li>
+
+<li><a id="index-vc_002ddir_002dmark_002dby_002dregexp"></a>% m <br />
+​* % :: You can use this command to mark files by regexp (<code>vc-dir-mark-by-regexp</code>). If given a prefix, unmark files instead.</li>
+
+<li id="<a id="index-vc_002ddir_002dmark_002dregistered_002dfiles"></a>* r ">You can use this command to mark files that are in one of registered states, including edited, added or removed. (<code>vc-dir-mark-registered-files</code>).</li>
+
+<li id="G">Add the file under point to the list of files that the VC should ignore (<code>vc-dir-ignore</code>). For instance, if the VC is Git, it will append this file to the <code>.gitignore</code> file. If given a prefix, do this with all the marked files.</li>
+
+<li id="q">Quit the VC Directory buffer, and bury it (<code>quit-window</code>).</li>
+
+<li id="u">Unmark the file or directory on the current line. If the region is active, unmark all the files in the region (<code>vc-dir-unmark</code>).</li>
+
+<li id="U">If point is on a file entry, unmark all files with the same status; if point is on a directory entry, unmark all files in that directory tree (<code>vc-dir-unmark-all-files</code>). With a prefix argument, unmark all files and directories.</li>
+
+<li id="x">Hide files with ‘=up-to-date=' or ‘=ignored=' status (<code>vc-dir-hide-up-to-date</code>). With a prefix argument, hide items whose state is that of the item at point.</li>
+</ul>
+
+<p>
+While in the VC Directory buffer, all the files that you mark with m (<code>vc-dir-mark</code>) or M (<code>vc-dir-mark-all-files</code>) are in the current VC fileset. If you mark a directory entry with m, all the listed files in that directory tree are in the current VC fileset. The files and directories that belong to the current VC fileset are indicated with a ‘=*=' character in the VC Directory buffer, next to their VC status. In this way, you can set up a multi-file VC fileset to be acted on by VC commands like C-x v v (see <a href="docs/emacs--Basic-VC-Editing.html">Basic Editing under Version Control</a>), C-x v = (see <a href="docs/emacs--Old-Revisions.html">Examining And Comparing Old Revisions</a>), and C-x v u (see <a href="docs/emacs--VC-Undo.html">Undoing Version Control Actions</a>).
+</p>
+
+<p>
+The VC Directory buffer also defines some single-key shortcuts for VC commands with the C-x v prefix: =, +, l, i, D, L, G, I, O, and v.
+</p>
+
+<p>
+For example, you can commit a set of edited files by opening a VC Directory buffer, where the files are listed with the ‘=edited=' status; marking the files; and typing v or C-x v v (<code>vc-next-action</code>). If the version control system is changeset-based, Emacs will commit the files in a single revision.
+</p>
+
+<p>
+While in the VC Directory buffer, you can also perform search and replace on the current VC fileset, with the following commands:
+</p>
+
+<dl class="org-dl">
+<dt>S</dt><dd>Search the fileset (<code>vc-dir-search</code>).</dd>
+
+<dt>Q</dt><dd>Do a regular expression query replace on the fileset (<code>vc-dir-query-replace-regexp</code>).</dd>
+
+<dt>M-s a C-s</dt><dd>Do an incremental search on the fileset (<code>vc-dir-isearch</code>).</dd>
+
+<dt>M-s a C-M-s</dt><dd>Do an incremental regular expression search on the fileset (<code>vc-dir-isearch-regexp</code>).</dd>
+</dl>
+
+<p>
+Apart from acting on multiple files, these commands behave much like their single-buffer counterparts (see <a href="docs/emacs--Search.html">Searching and Replacement</a>).
+</p>
+
+<p>
+The VC Directory buffer additionally defines some branch-related commands starting with the prefix b:
+</p>
+
+<dl class="org-dl">
+<dt>b c</dt><dd>Create a new branch (<code>vc-create-branch</code>). See <a href="docs/emacs--Creating-Branches.html">Creating New Branches</a>.</dd>
+
+<dt>b l</dt><dd>Prompt for the name of a branch and display the change history of that branch (<code>vc-print-branch-log</code>).</dd>
+
+<dt>b s</dt><dd>Switch to a branch (<code>vc-switch-branch</code>). See <a href="docs/emacs--Switching-Branches.html">Switching between Branches</a>.</dd>
+
+<dt>d</dt><dd>Delete the marked files, or the current file if no marks (<code>vc-dir-clean-delete)</code>. The files will not be marked as deleted in the version control system, so this function is mostly useful for unregistered files.</dd>
+</dl>
+
+<p>
+The above commands are also available via the menu bar, and via a context menu invoked by mouse-2. Furthermore, some VC backends use the menu to provide extra backend-specific commands. For example, Git and Bazaar allow you to manipulate <i>stashes</i> and <i>shelves</i> (which are a way to temporarily put aside uncommitted changes, and bring them back at a later time).
+</p>
+
+<hr />
+</div>
+</div>

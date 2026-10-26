@@ -1,0 +1,47 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Creating-New-Branches">1. 30.1.11.4 Creating New Branches ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Merging.html">Merging Branches</a>   Up: <a href="docs/emacs--Branches.html">Version Control Branches</a>
+</p>
+
+<p>
+<a id="Creating-Branches"></a>
+</p>
+
+<hr />
+<div id="outline-container-Creating-New-Branches" class="outline-2">
+<h2 id="Creating-New-Branches"><span class="section-number-2">1.</span> 30.1.11.4 Creating New Branches <a href="#Creating-New-Branches">¶</a></h2>
+<div class="outline-text-2" id="text-Creating-New-Branches">
+<p>
+On centralized version control systems like CVS, Emacs supports creating new branches as part of a commit operation. When committing a modified VC fileset, type C-u C-x v v (<code>vc-next-action</code> with a prefix argument; see <a href="docs/emacs--Advanced-C_002dx-v-v.html">Advanced Control in C-x v v</a>). Then Emacs prompts for a revision ID for the new revision. You should specify a suitable branch ID for a branch starting at the current revision. For example, if the current revision is 2.5, the branch ID should be 2.5.1, 2.5.2, and so on, depending on the number of existing branches at that point.
+</p>
+
+<p>
+This procedure will not work for distributed version control systems like git or Mercurial. For those systems you should use the command <code>vc-create-branch</code> (C-x v b c <code>branch-name</code> RET) instead.
+</p>
+
+<p>
+To create a new branch at an older revision (one that is no longer the head of a branch), first select that revision (see <a href="docs/emacs--Switching-Branches.html">Switching between Branches</a>). Your procedure will then differ depending on whether you are using a locking or merging-based VCS.
+</p>
+
+<p>
+On a locking VCS, you will need to lock the old revision branch with C-x v v. You'll be asked to confirm, when you lock the old revision, that you really mean to create a new branch&#x2014;if you say no, you'll be offered a chance to lock the latest revision instead. On a merging-based VCS you will skip this step.
+</p>
+
+<p>
+Then make your changes and type C-x v v again to commit a new revision. This creates a new branch starting from the selected revision.
+</p>
+
+<p>
+After the branch is created, subsequent commits create new revisions on that branch. To leave the branch, you must explicitly select a different revision with C-u C-x v v.
+</p>
+
+<hr />
+</div>
+</div>

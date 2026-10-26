@@ -1,0 +1,79 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Other-Dired-Features">1. 32.20 Other Dired Features ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Image_002dDired.html">Viewing Image Thumbnails in Dired</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Misc-Dired-Features"></a>
+</p>
+
+<hr />
+<div id="outline-container-Other-Dired-Features" class="outline-2">
+<h2 id="Other-Dired-Features"><span class="section-number-2">1.</span> 32.20 Other Dired Features <a href="#Other-Dired-Features">¶</a></h2>
+<div class="outline-text-2" id="text-Other-Dired-Features">
+<p>
+By default, Dired displays the available space on the directory's disk on the first line of that directory's listing, following the directory name. You can control this display by customizing the variable <code>dired-free-space</code>. Its default value is <code>first</code>, which produces the available space after the directory name. If you customize it to the value <code>separate</code> instead, Dired will display the disk space information on a separate line, following the line with the directory name, and will include in that line the space used by the files in the current directory as well as the available disk space. If you set this to <code>nil</code>, the available disk space information will not be displayed at all.
+</p>
+
+<p>
+The command + (<code>dired-create-directory</code>) reads a directory's name, and creates that directory. It signals an error if the directory already exists.
+</p>
+
+<p>
+The command (<code>dired-create-empty-file</code>) reads a file name, and creates that file. It signals an error if the file already exists.
+</p>
+
+<p>
+The command M-s a C-s (<code>dired-do-isearch</code>) begins a multi-file incremental search on the marked files. If a search fails at the end of a file, typing C-s advances to the next marked file and repeats the search; at the end of the last marked file, the search wraps around to the first marked file. The command M-s a M-C-s (<code>dired-do-isearch-regexp</code>) does the same with a regular expression search. See <a href="docs/emacs--Repeat-Isearch.html">Repeating Incremental Search</a>, for information about search repetition.
+</p>
+
+<p>
+The command w (<code>dired-copy-filename-as-kill</code>) puts the names of the marked (or next <code>n</code>) files into the kill ring, as if you had killed them with C-w. The names are separated by a space.
+</p>
+
+<p>
+With a zero prefix argument, this uses the absolute file name of each marked file. With just C-u as the prefix argument, it uses file names relative to the Dired buffer's default directory. (This can still contain slashes if in a subdirectory.) As a special case, if point is on a directory header line, w gives you the absolute name of that directory. Any prefix argument or marked files are ignored in this case.
+</p>
+
+<p>
+The main purpose of this command is so that you can yank the file names into arguments for other Emacs commands. It also displays what it added to the kill ring, so you can use it to display the list of currently marked files in the echo area.
+</p>
+
+<p>
+If you have an HTML file in the file listing, it can be useful to view that file with a browser. The W (<code>browse-url-of-dired-file</code>) command will use the standard configured browser to view that file.
+</p>
+
+<p>
+The command ( (<code>dired-hide-details-mode</code>) toggles whether details, such as ownership or file permissions, are visible in the current Dired buffer. By default, it also hides the targets of symbolic links, and all lines other than the header line and file/directory listings. To change this, customize the options <code>dired-hide-details-hide-symlink-targets</code> and <code>dired-hide-details-hide-information-lines</code>, respectively.
+</p>
+
+<p>
+If the directory you are visiting is under version control (see <a href="docs/emacs--Version-Control.html">Version Control</a>), then the normal VC diff and log commands will operate on the selected files.
+</p>
+
+<p>
+The command M-x dired-compare-directories is used to compare the current Dired buffer with another directory. It marks all the files that differ between the two directories. It puts these marks in all Dired buffers where these files are listed, which of course includes the current buffer.
+</p>
+
+<p>
+The default comparison method (used if you type RET at the prompt) is to compare just the file names&#x2014;file names differ if they do not appear in the other directory. You can specify more stringent comparisons by entering a Lisp expression, which can refer to the variables <code>size1</code> and <code>size2</code>, the respective file sizes; <code>mtime1</code> and <code>mtime2</code>, the last modification times in seconds, as floating point numbers; and <code>fa1</code> and <code>fa2</code>, the respective file attribute lists (as returned by the function <code>file-attributes</code>). This expression is evaluated for each pair of like-named files, and files differ if the expression's value is non-<code>nil</code>.
+</p>
+
+<p>
+For instance, the sequence M-x dired-compare-directories RET (&gt; mtime1 mtime2) RET marks files newer in this directory than in the other, and marks files older in the other directory than in this one. It also marks files with no counterpart, in both directories, as always.
+</p>
+
+<p>
+On the X Window System, Emacs supports the drag and drop protocol. You can drag a file object from another program, and drop it onto a Dired buffer; this either moves, copies, or creates a link to the file in that directory. Precisely which action is taken is determined by the originating program. Dragging files out of a Dired buffer is also supported, by enabling the user option <code>dired-mouse-drag-files</code>, the mouse can be used to drag files onto other programs. When set to <code>link</code>, it will make the other program (typically a file manager) create a symbolic link to the file; when set to <code>move</code>, it will make the other program move the file to a new location, and setting it to any other non-<code>nil</code> value will make the other program open or create a copy of the file. The keyboard modifiers pressed during the drag-and-drop operation can also control what action the other program takes towards the file.
+</p>
+
+<hr />
+</div>
+</div>

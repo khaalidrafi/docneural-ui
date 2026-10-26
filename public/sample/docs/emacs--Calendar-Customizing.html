@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Customizing-the-Calendar">1. 33.13.1 Customizing the Calendar ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Holiday-Customizing.html">Customizing the Holidays</a>   Up: <a href="docs/emacs--Advanced-Calendar_002fDiary-Usage.html">More advanced features of the Calendar and Diary</a>
+</p>
+
+<p>
+<a id="Calendar-Customizing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Customizing-the-Calendar" class="outline-2">
+<h2 id="Customizing-the-Calendar"><span class="section-number-2">1.</span> 33.13.1 Customizing the Calendar <a href="#Customizing-the-Calendar">¶</a></h2>
+<div class="outline-text-2" id="text-Customizing-the-Calendar">
+<p>
+The calendar display unfortunately cannot be changed from three months, but you can customize the whitespace used by setting the variables: <code>calendar-left-margin</code>, <code>calendar-day-header-width</code>, <code>calendar-day-digit-width</code>, <code>calendar-column-width</code>, and <code>calendar-intermonth-spacing</code>. To display text <i>between</i> the months, for example week numbers, customize the variables <code>calendar-intermonth-header</code> and <code>calendar-intermonth-text</code> as described in their documentation.
+</p>
+
+<p>
+The variable <code>calendar-month-header</code> controls the text that appears above each month in the calendar. By default, it shows the month and year. The variable <code>calendar-day-header-array</code> controls the text that appears above each day's column in every month. By default, it shows the first two letters of each day's name.
+</p>
+
+<p>
+The variable <code>calendar-holiday-marker</code> specifies how to mark a date that is a holiday. Its value may be a single-character string to insert next to the date, or a face name to use for displaying the date. Likewise, the variable <code>diary-entry-marker</code> specifies how to mark a date that has diary entries. The function <code>calendar-mark-today</code> uses <code>calendar-today-marker</code> to mark today's date. By default, the calendar uses faces named <code>holiday</code>, <code>diary</code>, and <code>calendar-today</code> for these purposes.
+</p>
+
+<p>
+Starting the calendar runs the normal hook <code>calendar-initial-window-hook</code>. Recomputation of the calendar display does not run this hook. But if you leave the calendar with the q command and reenter it, the hook runs again.
+</p>
+
+<p>
+The variable <code>calendar-today-visible-hook</code> is a normal hook run after the calendar buffer has been prepared with the calendar, when the current date is visible in the window. One use of this hook is to mark today's date; to do that use either of the functions <code>calendar-mark-today</code> or <code>calendar-star-date</code>:
+</p>
+
+<pre class="example" id="orgaebce42">
+(add-hook 'calendar-today-visible-hook 'calendar-mark-today)
+</pre>
+
+<p>
+A similar normal hook, <code>calendar-today-invisible-hook</code> is run if the current date is <i>not</i> visible in the window.
+</p>
+
+<p>
+Each of the calendar cursor motion commands runs the hook <code>calendar-move-hook</code> after it moves the cursor.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Motion-Commands">1. 28.14.1 Motion Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Fortran-Indent.html">Fortran Indentation</a>   Up: <a href="docs/emacs--Fortran.html">Fortran Mode</a>
+</p>
+
+<p>
+<a id="Fortran-Motion"></a>
+</p>
+
+<hr />
+<div id="outline-container-Motion-Commands" class="outline-2">
+<h2 id="Motion-Commands"><span class="section-number-2">1.</span> 28.14.1 Motion Commands <a href="#Motion-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-Motion-Commands">
+<p>
+In addition to the normal commands for moving by and operating on defuns (Fortran subprograms&#x2014;functions and subroutines, as well as modules for F90 mode, using the commands <code>fortran-end-of-subprogram</code> and <code>fortran-beginning-of-subprogram</code>), Fortran mode provides special commands to move by statements and other program units.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dn-_0028Fortran-mode_0029"></a>C-c C-n </dt><dd>Move to the beginning of the next statement (<code>fortran-next-statement=/=f90-next-statement</code>).</dd>
+
+<dt><a id="index-C_002dc-C_002dp-_0028Fortran-mode_0029"></a>C-c C-p </dt><dd>Move to the beginning of the previous statement (<code>fortran-previous-statement=/=f90-previous-statement</code>). If there is no previous statement (i.e., if called from the first statement in the buffer), move to the start of the buffer.</dd>
+
+<dt><a id="index-C_002dc-C_002de-_0028F90-mode_0029"></a>C-c C-e </dt><dd>Move point forward to the start of the next code block, or the end of the current one, whichever comes first (<code>f90-next-block</code>). A code block is a subroutine, <code>if</code>--<code>endif</code> statement, and so forth. This command exists for F90 mode only, not Fortran mode. With a numeric argument, it moves forward that many blocks.</dd>
+
+<dt><a id="index-C_002dc-C_002da-_0028F90-mode_0029"></a>C-c C-a </dt><dd>Move point backward to the previous block (<code>f90-previous-block</code>). This is like <code>f90-next-block</code>, but moves backwards.</dd>
+
+<dt><a id="index-C_002dM_002dn-_0028Fortran-mode_0029"></a>C-M-n </dt><dd>Move to the end of the current code block (<code>fortran-end-of-block=/=f90-end-of-block</code>). With a numeric argument, move forward that number of blocks. The mark is set before moving point. The F90 mode version of this command checks for consistency of block types and labels (if present), but it does not check the outermost block since that may be incomplete.</dd>
+
+<dt><a id="index-C_002dM_002dp-_0028Fortran-mode_0029"></a>C-M-p </dt><dd>Move to the start of the current code block (<code>fortran-beginning-of-block=/=f90-beginning-of-block</code>). This is like <code>fortran-end-of-block</code>, but moves backwards.</dd>
+</dl>
+
+<p>
+The commands <code>fortran-beginning-of-subprogram</code> and <code>fortran-end-of-subprogram</code> move to the start or end of the current subprogram, respectively. The commands <code>fortran-mark-do</code> and <code>fortran-mark-if</code> mark the end of the current <code>do</code> or <code>if</code> block, and move point to the start.
+</p>
+
+<hr />
+</div>
+</div>

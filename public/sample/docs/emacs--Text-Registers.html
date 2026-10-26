@@ -1,0 +1,64 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Saving-Text-in-Registers">1. 15.2 Saving Text in Registers ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rectangle-Registers.html">Saving Rectangles in Registers</a>   Previous: <a href="docs/emacs--Position-Registers.html">Saving Positions in Registers</a>   Up: <a href="docs/emacs--Registers.html">Registers</a>
+</p>
+
+<p>
+<a id="Text-Registers"></a>
+</p>
+
+<hr />
+<div id="outline-container-Saving-Text-in-Registers" class="outline-2">
+<h2 id="Saving-Text-in-Registers"><span class="section-number-2">1.</span> 15.2 Saving Text in Registers <a href="#Saving-Text-in-Registers">¶</a></h2>
+<div class="outline-text-2" id="text-Saving-Text-in-Registers">
+<p>
+When you want to insert a copy of the same piece of text several times, it may be inconvenient to yank it from the kill ring, since each subsequent kill moves that entry further down the ring. An alternative is to store the text in a register and later retrieve it.
+</p>
+
+<dl class="org-dl">
+<dt>C-x r s <code>r</code></dt><dd>Copy region into register <code>r</code> (<code>copy-to-register</code>).</dd>
+
+<dt>C-x r i <code>r</code></dt><dd>Insert text from register <code>r</code> (<code>insert-register</code>).</dd>
+
+<dt>M-x append-to-register RET <code>r</code></dt><dd><p>
+Append region to text in register <code>r</code>.
+</p>
+
+<p>
+When register <code>r</code> contains text, you can use C-x r + (<code>increment-register</code>) to append to that register. Note that command C-x r + behaves differently if <code>r</code> contains a number. See <a href="docs/emacs--Number-Registers.html">Keeping Numbers in Registers</a>.
+</p></dd>
+
+<dt>M-x prepend-to-register RET <code>r</code></dt><dd>Prepend region to text in register <code>r</code>.</dd>
+</dl>
+
+<p>
+C-x r s <code>r</code> stores a copy of the text of the region into the register named <code>r</code>. If the mark is inactive, Emacs first reactivates the mark where it was last set. The mark is deactivated at the end of this command. See <a href="docs/emacs--Mark.html">The Mark and the Region</a>. C-u C-x r s <code>r</code>, the same command with a prefix argument, copies the text into register <code>r</code> and deletes the text from the buffer as well; you can think of this as moving the region text into the register.
+</p>
+
+<p>
+M-x append-to-register RET <code>r</code> appends the copy of the text in the region to the text already stored in the register named <code>r</code>. If invoked with a prefix argument, it deletes the region after appending it to the register. The command <code>prepend-to-register</code> is similar, except that it <i>prepends</i> the region text to the text in the register instead of <i>appending</i> it.
+</p>
+
+<p>
+When you are collecting text using <code>append-to-register</code> and <code>prepend-to-register</code>, you may want to separate individual collected pieces using a separator. In that case, configure a <code>register-separator</code> and store the separator text in to that register. For example, to get double newlines as text separator during the collection process, you can use the following setting.
+</p>
+
+<pre class="example" id="orgf7085fd">
+(setq register-separator ?+)
+(set-register register-separator "\n\n")
+</pre>
+
+<p>
+C-x r i <code>r</code> inserts in the buffer the text from register <code>r</code>. Normally it leaves point after the text and sets the mark before, without activating it. With a prefix argument, it instead puts point before the text and the mark after.
+</p>
+
+<hr />
+</div>
+</div>

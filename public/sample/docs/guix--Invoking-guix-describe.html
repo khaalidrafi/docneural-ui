@@ -1,0 +1,152 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#invoking-guix-describe">1.0.1. 5.10 Invoking <code>guix describe</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Invoking-guix-describe"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>, Previous: <a href="docs/guix--Inferiors.html">Inferiors</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Invoking-guix-describe-1"></a>
+</p>
+</div>
+<div id="outline-container-invoking-guix-describe" class="outline-4">
+<h4 id="invoking-guix-describe"><span class="section-number-4">1.0.1.</span> 5.10 Invoking <code>guix describe</code></h4>
+<div class="outline-text-4" id="text-invoking-guix-describe">
+<p>
+<a id="index-reproducibility-1"></a> <a id="index-replicating-Guix-1"></a> <a id="index-guix-describe"></a>
+Often you may want to answer questions like: “Which revision of Guix am I using?” or “Which channels am I using?” This is useful information in many situations: if you want to <i>replicate</i> an environment on a different machine or user account, if you want to report a bug or to determine what change in the channels you are using caused it, or if you want to record your system state for reproducibility purposes. The <code>guix describe</code> command answers these questions.
+</p>
+
+<p>
+When run from a <code>guix pull=ed =guix</code>, <code>guix describe</code> displays the channel(s) that it was built from, including their repository URL and commit IDs (see <a href="docs/guix--Channels.html">Channels</a>):
+</p>
+
+<pre class="example" id="org205b455">
+$ guix describe
+Generation 10   Sep 03 2018 17:32:44    (current)
+  guix e0fa68c
+    repository URL: https://git.guix.gnu.org/guix.git
+    branch: master
+    commit: e0fa68c7718fffd33d81af415279d6ddb518f727
+</pre>
+
+<p>
+If you're familiar with the Git version control system, this is similar in spirit to <code>git describe</code>; the output is also similar to that of <code>guix pull --list-generations</code>, but limited to the current generation (see <a href="docs/guix--Invoking-guix-pull.html">the <code>--list-generations</code> option</a>). Because the Git commit ID shown above unambiguously refers to a snapshot of Guix, this information is all it takes to describe the revision of Guix you're using, and also to replicate it.
+</p>
+
+<p>
+To make it easier to replicate Guix, <code>guix describe</code> can also be asked to return a list of channels instead of the human-readable description above:
+</p>
+
+<pre class="example" id="org5048a8b">
+$ guix describe -f channels
+(list (channel
+        (name 'guix)
+        (url "https://git.guix.gnu.org/guix.git")
+        (commit
+          "e0fa68c7718fffd33d81af415279d6ddb518f727")
+        (introduction
+          (make-channel-introduction
+            "9edb3f66fd807b096b48283debdcddccfea34bad"
+            (openpgp-fingerprint
+              "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA")))))
+</pre>
+
+<p>
+You can save this to a file and feed it to <code>guix pull -C</code> on some other machine or at a later point in time, which will instantiate <i>this exact Guix revision</i> (see <a href="docs/guix--Invoking-guix-pull.html">the <code>-C</code> option</a>). From there on, since you're able to deploy the same revision of Guix, you can just as well <i>replicate a complete software environment</i>. We humbly think that this is <i>awesome</i>, and we hope you'll like it too!
+</p>
+
+<p>
+The details of the options supported by <code>guix describe</code> are as follows:
+</p>
+
+<ul class="org-ul">
+<li><code>--format===format</code><br />
+<code>-f ==format</code> :: Produce output in the specified <code>format</code>, one of:
+
+<dl class="org-dl">
+<dt><code>human</code></dt><dd>produce human-readable output;</dd>
+
+<dt><code>channels</code></dt><dd>produce a list of channel specifications that can be passed to <code>guix pull -C</code> or installed as <code>~/.config/guix/channels.scm</code> (see <a href="docs/guix--Invoking-guix-pull.html">Invoking <code>guix pull</code></a>);</dd>
+
+<dt><code>channels-sans-intro</code></dt><dd>like <code>channels</code>, but omit the <code>introduction</code> field; use it to produce a channel specification suitable for Guix version 1.1.0 or earlier&#x2014;the <code>introduction</code> field has to do with channel authentication (see <a href="docs/guix--Channels.html">Channel Authentication</a>) and is not supported by these older versions;</dd>
+
+<dt><code>json</code> </dt><dd>produce a list of channel specifications in JSON format;</dd>
+
+<dt><code>recutils</code></dt><dd>produce a list of channel specifications in Recutils format.</dd>
+</dl></li>
+
+<li id="<code>--list-formats</code>">Display available formats for <code>--format</code> option.</li>
+
+<li><code>--profile===profile</code><br />
+<code>-p ==profile</code> :: Display information about <code>profile</code>.</li>
+</ul>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Invoking-guix-archive.html">Invoking <code>guix archive</code></a>, Previous: <a href="docs/guix--Inferiors.html">Inferiors</a>, Up: <a href="docs/guix--Package-Management.html">Package Management</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,54 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#The-Organization-of-the-Screen">1. 1 The Organization of the Screen ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--User-Input.html">Kinds of User Input</a>   Previous: <a href="docs/emacs--Intro.html">Introduction</a>   Up: <a href="docs/emacs--index.html">The Emacs Editor</a>
+</p>
+
+<p>
+<a id="Screen"></a>
+</p>
+
+<hr />
+<div id="outline-container-The-Organization-of-the-Screen" class="outline-2">
+<h2 id="The-Organization-of-the-Screen"><span class="section-number-2">1.</span> 1 The Organization of the Screen <a href="#The-Organization-of-the-Screen">¶</a></h2>
+<div class="outline-text-2" id="text-The-Organization-of-the-Screen">
+<p>
+On a graphical display, such as on GNU/Linux using the X Window System, Emacs occupies a graphical window. On a text terminal, Emacs occupies the entire terminal screen. We will use the term <i>frame</i> to mean a graphical window or terminal screen occupied by Emacs. Emacs behaves very similarly on both kinds of frames. It normally starts out with just one frame, but you can create additional frames if you wish (see <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>).
+</p>
+
+<p>
+Each frame consists of several distinct regions. At the top of the frame is a <i>menu bar</i>, which allows you to access commands via a series of menus. On a graphical display, directly below the menu bar is a <i>tool bar</i>, a row of icons that perform editing commands when you click on them. At the very bottom of the frame is an <i>echo area</i>, where informative messages are displayed and where you enter information when Emacs asks for it.
+</p>
+
+<p>
+The main area of the frame, below the tool bar (if one exists) and above the echo area, is called <i>the window</i>. Henceforth in this manual, we will use the word “window” in this sense. Graphical display systems commonly use the word “window” with a different meaning; but, as stated above, we refer to those graphical windows as “frames”.
+</p>
+
+<p>
+An Emacs window is where the <i>buffer</i>&#x2014;the text or other graphics you are editing or viewing&#x2014;is displayed. On a graphical display, the window possesses a <i>scroll bar</i> on one side, which can be used to scroll through the buffer. The last line of the window is a <i>mode line</i>. This displays various information about what is going on in the buffer, such as whether there are unsaved changes, the editing modes that are in use, the current line number, and so forth.
+</p>
+
+<p>
+When you start Emacs, there is normally only one window in the frame. However, you can subdivide this window horizontally or vertically to create multiple windows, each of which can independently display a buffer (see <a href="docs/emacs--Windows.html">Multiple Windows</a>).
+</p>
+
+<p>
+At any time, one window is the <i>selected window</i>. On a graphical display, the selected window shows a more prominent cursor (usually solid and blinking); other windows show a less prominent cursor (usually a hollow box). On a text terminal, there is only one cursor, which is shown in the selected window. The buffer displayed in the selected window is called the <i>current buffer</i>, and it is where editing happens. Most Emacs commands implicitly apply to the current buffer; the text displayed in unselected windows is mostly visible for reference. If you use multiple frames on a graphical display, selecting a particular frame selects a window in that frame.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--Point.html">Point</a></li>
+<li><a href="docs/emacs--Echo-Area.html">The Echo Area</a></li>
+<li><a href="docs/emacs--Mode-Line.html">The Mode Line</a></li>
+<li><a href="docs/emacs--Menu-Bar.html">The Menu Bar</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,63 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Multiple-Rmail-Files">1. 35.6 Multiple Rmail Files ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Rmail-Output.html">Copying Messages Out to Files</a>   Previous: <a href="docs/emacs--Rmail-Inbox.html">Rmail Files and Inboxes</a>   Up: <a href="docs/emacs--Rmail.html">Reading Mail with Rmail</a>
+</p>
+
+<p>
+<a id="Rmail-Files"></a>
+</p>
+
+<hr />
+<div id="outline-container-Multiple-Rmail-Files" class="outline-2">
+<h2 id="Multiple-Rmail-Files"><span class="section-number-2">1.</span> 35.6 Multiple Rmail Files <a href="#Multiple-Rmail-Files">¶</a></h2>
+<div class="outline-text-2" id="text-Multiple-Rmail-Files">
+<p>
+Rmail operates by default on your <i>primary Rmail file</i>, which is named <code>~/RMAIL</code> and receives your incoming mail from your system inbox file. But you can also have other Rmail files and edit them with Rmail. These files can receive mail through their own inboxes, or you can move messages into them with explicit Rmail commands (see <a href="docs/emacs--Rmail-Output.html">Copying Messages Out to Files</a>).
+</p>
+
+<dl class="org-dl">
+<dt>i <code>file</code> RET</dt><dd>Read <code>file</code> into Emacs and run Rmail on it (<code>rmail-input</code>).</dd>
+
+<dt>g</dt><dd>Merge new mail from current Rmail file's inboxes (<code>rmail-get-new-mail</code>).</dd>
+
+<dt>C-u g <code>file</code> RET</dt><dd>Merge new mail from inbox file <code>file</code>.</dd>
+</dl>
+
+<p>
+To run Rmail on a file other than your primary Rmail file, you can use the i (<code>rmail-input</code>) command in Rmail. This visits the file in Rmail mode. You can use M-x rmail-input even when not in Rmail, but it is easier to type C-u M-x rmail, which does the same thing.
+</p>
+
+<p>
+The file you read with i should normally be a valid mbox file. If it is not, Rmail tries to convert its text to mbox format, and visits the converted text in the buffer. If you save the buffer, that converts the file.
+</p>
+
+<p>
+If you specify a file name that doesn't exist, i initializes a new buffer for creating a new Rmail file.
+</p>
+
+<p>
+You can also select an Rmail file from a menu. In the Classify menu, choose the Input Rmail File item; then choose the Rmail file you want. The variables <code>rmail-secondary-file-directory</code> and <code>rmail-secondary-file-regexp</code> specify which files to offer in the menu: the first variable says which directory to find them in; the second says which files in that directory to offer (all those that match the regular expression). If no files match, you cannot select this menu item. These variables also apply to choosing a file for output (see <a href="docs/emacs--Rmail-Output.html">Copying Messages Out to Files</a>).
+</p>
+
+<p>
+The inbox files to use are specified by the variable <code>rmail-inbox-list</code>, which is buffer-local in Rmail mode. As a special exception, if you have specified no inbox files for your primary Rmail file, it uses the <code>MAIL</code> environment variable, or your standard system inbox.
+</p>
+
+<p>
+The g command (<code>rmail-get-new-mail</code>) merges mail into the current Rmail file from its inboxes. If the Rmail file has no inboxes, g does nothing. The command M-x rmail also merges new mail into your primary Rmail file.
+</p>
+
+<p>
+To merge mail from a file that is not the usual inbox, give the g key a numeric argument, as in C-u g. Then it reads a file name and merges mail from that file. The inbox file is not deleted or changed in any way when g with an argument is used. This is, therefore, a general way of merging one file of messages into another.
+</p>
+
+<hr />
+</div>
+</div>

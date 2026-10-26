@@ -1,0 +1,234 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Sound-Home-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Mail-Home-Services.html">Mail Home Services</a>, Previous: <a href="docs/guix--Fonts-Home-Services.html">Fonts Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Sound-Home-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="sound-home-services"></a>13.3.12 Sound Home Services<br />
+<div class="outline-text-5" id="text-sound-home-services">
+<p>
+The <code>(gnu home services sound)</code> module provides services related to sound support.
+</p>
+
+<p>
+<a id="index-PulseAudio_002c-home-service"></a> <a id="index-RTP_002c-for-PulseAudio"></a> <a id="PulseAudio-RTP-Streaming-Services"></a>
+</p>
+</div>
+</li>
+<li><a id="pulseaudio-rtp-streaming-services"></a>PulseAudio RTP Streaming Services<br />
+<div class="outline-text-5" id="text-pulseaudio-rtp-streaming-services">
+<p>
+The following services dynamically reconfigure the <a href="https://pulseaudio.org">PulseAudio sound server</a>: they let you toggle broadcast of audio output over the network using the RTP (real-time transport protocol) and, correspondingly, playback of sound received over RTP. Once <code>home-pulseaudio-rtp-sink-service-type</code> is among your home services, you can start broadcasting audio output by running this command:
+</p>
+
+<pre class="example" id="orge169cf2">
+herd start pulseaudio-rtp-sink
+</pre>
+
+<p>
+You can then run a PulseAudio-capable mixer, such as <code>pavucontrol</code> or <code>pulsemixer</code> (both from the same-named package) to control which audio stream(s) should be sent to the RTP “sink”.
+</p>
+
+<p>
+By default, audio is broadcasted to a multicast address: any device on the LAN (local area network) receives it and may play it. Using multicast in this way puts a lot of pressure on the network and degrades its performance, so you may instead prefer sending to specifically one device. The first way to do that is by specifying the IP address of the target device when starting the service:
+</p>
+
+<pre class="example" id="orgb0ebe75">
+herd start pulseaudio-rtp-sink 192.168.1.42
+</pre>
+
+<p>
+The other option is to specify this IP address as the one to use by default in your home environment configuration:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-pulseaudio-rtp-sink-service-type
+         "192.168.1.42")
+</pre>
+</div>
+
+<p>
+On the device where you intend to receive and play the RTP stream, you can use <code>home-pulseaudio-rtp-source-service-type</code>, like so:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-pulseaudio-rtp-source-service-type)
+</pre>
+</div>
+
+<p>
+This will then let you start the receiving module for PulseAudio:
+</p>
+
+<pre class="example" id="org4c7c510">
+herd start pulseaudio-rtp-source
+</pre>
+
+<p>
+Again, by default it will listen on the multicast address. If, instead, you'd like it to listen for direct incoming connections, you can do that by running:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-pulseaudio-rtp-source-service-type
+         "0.0.0.0")
+</pre>
+</div>
+
+<p>
+The reference of these services is given below.
+</p>
+
+<ul class="org-ul">
+<li><p>
+Variable: home-pulseaudio-rtp-sink-service-type <br />
+Variable: home-pulseaudio-rtp-source-service-type  :: This is the type of the service to send, respectively receive, audio streams over RTP (real-time transport protocol).
+</p>
+
+<p>
+The value associated with this service is the IP address (a string) where to send, respectively receive, the audio stream. By default, audio is sent/received on multicast address <code>%pulseaudio-rtp-multicast-address</code>.
+</p>
+
+<p>
+This service defines one Shepherd service: <code>pulseaudio-rtp-sink</code>, respectively <code>pulseaudio-rtp-source</code>. The service is not started by default, so you have to explicitly start it when you want to turn it on, as in this example:
+</p>
+
+<pre class="example" id="org8d1e2e2">
+herd start pulseaudio-rtp-sink
+</pre>
+
+<p>
+Stopping the Shepherd service turns off broadcasting.
+</p></li>
+
+<li id="Variable: %pulseaudio-rtp-multicast-address ">This is the multicast address used by default by the two services above.</li>
+</ul>
+
+<p>
+<a id="index-PipeWire_002c-home-service"></a> <a id="PipeWire-Home-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="pipewire-home-service"></a>PipeWire Home Service<br />
+<div class="outline-text-5" id="text-pipewire-home-service">
+<p>
+<a href="https://pipewire.org">PipeWire</a> provides a low-latency, graph-based audio and video processing service. In addition to its native protocol, it can also be used as a replacement for both JACK and PulseAudio.
+</p>
+
+<p>
+While PipeWire provides the media processing and API, it does not, directly, know about devices such as sound cards, nor how you might want to connect applications, hardware, and media processing filters. Instead, PipeWire relies on a <i>session manager</i> to specify all these relationships. While you may use any session manager you wish, for most people the <a href="https://pipewire.pages.freedesktop.org/wireplumber/">WirePlumber</a> session manager, a reference implementation provided by the PipeWire project itself, suffices, and that is the one <code>home-pipewire-service-type</code> uses.
+</p>
+
+<p>
+PipeWire can be used as a replacement for PulseAudio by setting <code>enable-pulseaudio?</code> to <code>#t</code> in <code>home-pipewire-configuration</code>, so that existing PulseAudio clients may use it without any further configuration.
+</p>
+
+<p>
+In addition, JACK clients may connect to PipeWire by using the <code>pw-jack</code> program, which comes with PipeWire. Simply prefix the command with <code>pw-jack</code> when you run it, and audio data should go through PipeWire:
+</p>
+
+<pre class="example" id="orgb20c8d7">
+pw-jack mpv -ao=jack sound-file.wav
+</pre>
+
+<p>
+For more information on PulseAudio emulation, see <a href="https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PulseAudio">https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PulseAudio</a>, for JACK, see <a href="https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-JACK">https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-JACK</a>.
+</p>
+
+<p>
+As PipeWire does not use <code>dbus</code> to start its services on demand (as PulseAudio does), <code>home-pipewire-service-type</code> uses Shepherd to start services when logged in, provisioning the <code>pipewire</code>, <code>wireplumber</code>, and, if configured, <code>pipewire-pulseaudio</code> services. See <a href="docs/guix--Shepherd-Home-Service.html">Managing User Daemons</a>.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: home-pipewire-service-type </dt><dd><p>
+This provides the service definition for <code>pipewire</code>, which will run on login. Its value is a <code>home-pipewire-configuration</code> object.
+</p>
+
+<p>
+To start the service, add it to the <code>service</code> field of your <code>home-environment</code>, such as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service home-pipewire-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: home-pipewire-configuration </dt><dd>Available <code>home-pipewire-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>pipewire</code> (default: <code>pipewire</code>) (type: file-like)</dt><dd>The PipeWire package to use.</dd>
+
+<dt><code>wireplumber</code> (default: <code>wireplumber</code>) (type: file-like)</dt><dd>The WirePlumber package to use.</dd>
+
+<dt><code>enable-pulseaudio?</code> (default: <code>#t</code>) (type: boolean)</dt><dd>When true, enable PipeWire's PulseAudio emulation support, allowing PulseAudio clients to use PipeWire transparently.</dd>
+
+<dt><code>extra-content</code> (default: <code>""</code>) (type: string)</dt><dd>Extra content to add to the end of <code>~/.config/alsa/asoundrc</code>.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Mail-Home-Services.html">Mail Home Services</a>, Previous: <a href="docs/guix--Fonts-Home-Services.html">Fonts Home Services</a>, Up: <a href="docs/guix--Home-Services.html">Home Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>

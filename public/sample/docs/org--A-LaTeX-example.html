@@ -1,0 +1,100 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#A-LaTeX-example-of-radio-tables">1. A.6.2 A LaTeX example of radio tables ¶</a>
+<ul>
+<li><a href="#section">1.1. (174)</a></li>
+<li><a href="#section-1">1.2. (175)</a></li>
+<li><a href="#section-2">1.3. (176)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="A-LaTeX-example"></a>
+Next: <a href="docs/org--Translator-functions.html">Translator functions</a>, Previous: <a href="docs/org--Radio-tables.html">Radio tables</a>, Up: <a href="docs/org--Tables-in-Arbitrary-Syntax.html">Tables in Arbitrary Syntax</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-A-LaTeX-example-of-radio-tables" class="outline-2">
+<h2 id="A-LaTeX-example-of-radio-tables"><span class="section-number-2">1.</span> A.6.2 A LaTeX example of radio tables <a href="#A-LaTeX-example-of-radio-tables">¶</a></h2>
+<div class="outline-text-2" id="text-A-LaTeX-example-of-radio-tables">
+<p>
+To wrap a source table in LaTeX, use the ‘=comment=' environment provided by ‘=comment.sty='. To activate it, put <code>\usepackage{comment}</code> in the document header. Orgtbl mode inserts a radio table skeleton with the command M-x orgtbl-insert-radio-table, which prompts for a table name. For example, if ‘=salesfigures=' is the name, the template inserts:
+</p>
+
+<pre class="example" id="org76f8f4f">
+% BEGIN RECEIVE ORGTBL salesfigures
+% END RECEIVE ORGTBL salesfigures
+\begin{comment}
+#+ORGTBL: SEND salesfigures orgtbl-to-latex
+| | |
+\end{comment}
+</pre>
+
+<p>
+The line ‘=#+ORGTBL: SEND=' tells Orgtbl mode to use the function <code>orgtbl-to-latex</code> to convert the table to LaTeX format, then insert the table at the target (receive) location named ‘=salesfigures='. Now the table is ready for data entry. It can even use spreadsheet features:
+</p>
+
+<pre class="example" id="org5b28c34">
+% BEGIN RECEIVE ORGTBL salesfigures
+% END RECEIVE ORGTBL salesfigures
+\begin{comment}
+#+ORGTBL: SEND salesfigures orgtbl-to-latex
+| Month | Days | Nr sold | per day |
+|-------+------+---------+---------|
+| Jan   |   23 |      55 |     2.4 |
+| Feb   |   21 |      16 |     0.8 |
+| March |   22 |     278 |    12.6 |
+#+TBLFM: $4=$3/$2;%.1f
+% $ (optional extra dollar to keep Font Lock happy, see footnote)
+\end{comment}
+</pre>
+
+<p>
+After editing, C-c C-c inserts the translated table at the target location, between the two marker lines.
+</p>
+
+<p>
+For hand-made custom tables, note that the translator needs to skip the first two lines of the source table. Also, the command has to <i>splice</i> out the target table without the header and footer.
+</p>
+
+<pre class="example" id="orgafc165d">
+\begin{tabular}{lrrr}
+Month &amp; \multicolumn{1}{c}{Days} &amp; Nr.\ sold &amp; per day\\
+% BEGIN RECEIVE ORGTBL salesfigures
+% END RECEIVE ORGTBL salesfigures
+\end{tabular}
+%
+\begin{comment}
+#+ORGTBL: SEND salesfigures orgtbl-to-latex :splice t :skip 2
+| Month | Days | Nr sold | per day |
+|-------+------+---------+---------|
+| Jan   |   23 |      55 |     2.4 |
+| Feb   |   21 |      16 |     0.8 |
+| March |   22 |     278 |    12.6 |
+#+TBLFM: $4=$3/$2;%.1f
+\end{comment}
+</pre>
+
+<p>
+The LaTeX translator function <code>orgtbl-to-latex</code> is already part of Orgtbl mode and uses a ‘=tabular=' environment to typeset the table and marks horizontal lines with <code>\hline</code>. For additional parameters to control output, see <a href="docs/org--Translator-functions.html">Translator functions</a>:
+</p>
+
+<dl class="org-dl">
+<dt>‘=:splice BOOLEAN='</dt><dd>When {{{var(BOOLEAN}}} is non-<code>nil</code>, return only table body lines; i.e., not wrapped in ‘=tabular=' environment. Default is <code>nil</code>.</dd>
+
+<dt>‘=:fmt FMT='</dt><dd>Format string to warp each field. It should contain ‘=%s=' for the original field value. For example, to wrap each field value in dollar symbol, you could use ‘=:fmt "\(%s\)"<code>'. Format can also wrap a property list with column numbers and formats, for example ‘</code>:fmt (2 "\(%s\)" 4 "%s\\%%")='. In place of a string, a function of one argument can be used; the function must return a formatted string.</dd>
+
+<dt>‘=:efmt EFMT='</dt><dd>Format numbers as exponentials. The spec should have ‘=%s=' twice for inserting mantissa and exponent, for example ‘="%s\&times;10<sup>%s</sup>"<code>'. This may also be a property list with column numbers and formats, for example ‘</code>:efmt (2 "\(%s\\times10^{%s}\)" 4 "\(%s\\cdot10^{%s}\)")='. After <code>EFMT</code> has been applied to a value, <code>FMT</code>&#x2014;see above&#x2014;is also applied. Functions with two arguments can be supplied instead of strings. By default, no special formatting is applied.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

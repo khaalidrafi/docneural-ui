@@ -1,0 +1,61 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Environment-Variables">1. C.4 Environment Variables ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Display-X.html">Specifying the Display Name</a>   Previous: <a href="docs/emacs--Command-Example.html">Command Argument Example</a>   Up: <a href="docs/emacs--Emacs-Invocation.html">Command Line Arguments for Emacs Invocation</a>
+</p>
+
+<p>
+<a id="Environment"></a>
+</p>
+
+<hr />
+<div id="outline-container-Environment-Variables" class="outline-2">
+<h2 id="Environment-Variables"><span class="section-number-2">1.</span> C.4 Environment Variables <a href="#Environment-Variables">¶</a></h2>
+<div class="outline-text-2" id="text-Environment-Variables">
+<p>
+The <i>environment</i> is a feature of the operating system; it consists of a collection of variables with names and values. Each variable is called an <i>environment variable</i>; environment variable names are case-sensitive, and it is conventional to use upper case letters only. The values are all text strings.
+</p>
+
+<p>
+What makes the environment useful is that subprocesses inherit the environment automatically from their parent process. This means you can set up an environment variable in your login shell, and all the programs you run (including Emacs) will automatically see it. Subprocesses of Emacs (such as shells, compilers, and version control programs) inherit the environment from Emacs, too.
+</p>
+
+<p>
+Inside Emacs, the command M-x getenv reads the name of an environment variable, and prints its value in the echo area. M-x setenv sets a variable in the Emacs environment, and C-u M-x setenv removes a variable. (Environment variable substitutions with ‘=$=' work in the value just as in file names; see <a href="docs/emacs--File-Names.html#File-Names-with-_0024">File Names with $</a>.) The variable <code>initial-environment</code> stores the initial environment inherited by Emacs.
+</p>
+
+<p>
+The way to set environment variables outside of Emacs depends on the operating system, and especially the shell that you are using. For example, here's how to set the environment variable <code>ORGANIZATION</code> to ‘=not very much=' using Bash:
+</p>
+
+<pre class="example" id="orgbe60c93">
+export ORGANIZATION="not very much"
+</pre>
+
+<p>
+and here's how to do it in csh or tcsh:
+</p>
+
+<pre class="example" id="org5acf1e5">
+setenv ORGANIZATION "not very much"
+</pre>
+
+<p>
+When Emacs is using the X Window System, various environment variables that control X work for Emacs as well. See the X documentation for more information.
+</p>
+
+<ul class="org-ul">
+<li><a href="docs/emacs--General-Variables.html">General Variables</a></li>
+<li><a href="docs/emacs--Misc-Variables.html">Miscellaneous Variables</a></li>
+<li><a href="docs/emacs--MS_002dWindows-Registry.html">The MS-Windows System Registry</a></li>
+</ul>
+
+<hr />
+</div>
+</div>

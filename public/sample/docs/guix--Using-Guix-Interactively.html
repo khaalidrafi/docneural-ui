@@ -1,0 +1,218 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a>
+<ul>
+<li>
+<ul>
+<li><a href="#using-guix-interactively">1.0.1. 8.14 Using Guix Interactively</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Using-Guix-Interactively"></a>
+</p>
+
+<p>
+Previous: <a href="docs/guix--Invoking-guix-repl.html">Invoking <code>guix repl</code></a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Using-Guix-Interactively-1"></a>
+</p>
+</div>
+<div id="outline-container-using-guix-interactively" class="outline-4">
+<h4 id="using-guix-interactively"><span class="section-number-4">1.0.1.</span> 8.14 Using Guix Interactively</h4>
+<div class="outline-text-4" id="text-using-guix-interactively">
+<p>
+<a id="index-interactive-use"></a> <a id="index-REPL_002c-read_002deval_002dprint-loop"></a>
+The <code>guix repl</code> command gives you access to a warm and friendly <i>read-eval-print loop</i> (REPL) (see <a href="docs/guix--Invoking-guix-repl.html">Invoking <code>guix repl</code></a>). If you're getting into Guix programming&#x2014;defining your own packages, writing manifests, defining services for Guix System or Guix Home, etc.&#x2014;you will surely find it convenient to toy with ideas at the REPL.
+</p>
+
+<p>
+If you use Emacs, the most convenient way to do that is with Geiser (see <a href="docs/guix--The-Perfect-Setup.html">The Perfect Setup</a>), but you do not have to use Emacs to enjoy the REPL. When using <code>guix repl</code> or <code>guile</code> in the terminal, we recommend using Readline for completion and Colorized to get colorful output. To do that, you can run:
+</p>
+
+<pre class="example" id="org7c75417">
+guix install guile guile-readline guile-colorized
+</pre>
+
+<p>
+&#x2026; and then create a <code>.guile</code> file in your home directory containing this:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(use-modules (ice-9 readline) (ice-9 colorized))
+
+(activate-readline)
+(activate-colorized)
+</pre>
+</div>
+
+<p>
+The REPL lets you evaluate Scheme code; you type a Scheme expression at the prompt, and the REPL prints what it evaluates to:
+</p>
+
+<pre class="example" id="org52fbf0b">
+$ guix repl
+scheme@(guix-user)&gt; (+ 2 3)
+$1 = 5
+scheme@(guix-user)&gt; (string-append "a" "b")
+$2 = "ab"
+</pre>
+
+<p>
+It becomes interesting when you start fiddling with Guix at the REPL. The first thing you'll want to do is to “import” the <code>(guix)</code> module, which gives access to the main part of the programming interface, and perhaps a bunch of useful Guix modules. You could type <code>(use-modules (guix))</code>, which is valid Scheme code to import a module (see <a href="https://www.gnu.org/software/guile/manual/html_node/Using-Guile-Modules.html#Using-Guile-Modules">Using Guile Modules</a> in GNU Guile Reference Manual), but the REPL provides the <code>use</code> <i>command</i> as a shorthand notation (see <a href="https://www.gnu.org/software/guile/manual/html_node/REPL-Commands.html#REPL-Commands">REPL Commands</a> in GNU Guile Reference Manual):
+</p>
+
+<pre class="example" id="org3b8501e">
+scheme@(guix-user)&gt; ,use (guix)
+scheme@(guix-user)&gt; ,use (gnu packages base)
+</pre>
+
+<p>
+Notice that REPL commands are introduced by a leading comma. A REPL command like <code>use</code> is not valid Scheme code; it's interpreted specially by the REPL.
+</p>
+
+<p>
+Guix extends the Guile REPL with additional commands for convenience. Among those, the <code>build</code> command comes in handy: it ensures that the given file-like object is built, building it if needed, and returns its output file name(s). In the example below, we build the <code>coreutils</code> and <code>grep</code> packages, as well as a “computed file” (see <a href="docs/guix--G_002dExpressions.html"><code>computed-file</code></a>), and we use the <code>scandir</code> procedure to list the files in Grep's <code>/bin</code> directory:
+</p>
+
+<pre class="example" id="orga90cc89">
+scheme@(guix-user)&gt; ,build coreutils
+$1 = "/gnu/store/…-coreutils-8.32-debug"
+$2 = "/gnu/store/…-coreutils-8.32"
+scheme@(guix-user)&gt; ,build grep
+$3 = "/gnu/store/…-grep-3.6"
+scheme@(guix-user)&gt; ,build (computed-file "x" #~(mkdir #$output))
+building /gnu/store/…-x.drv...
+$4 = "/gnu/store/…-x"
+scheme@(guix-user)&gt; ,use(ice-9 ftw)
+scheme@(guix-user)&gt; (scandir (string-append $3 "/bin"))
+$5 = ("." ".." "egrep" "fgrep" "grep")
+</pre>
+
+<p>
+As a packager, you may be willing to inspect the build phases or flags of a given package; this is particularly useful when relying a lot on inheritance to define package variants (see <a href="docs/guix--Defining-Package-Variants.html">Defining Package Variants</a>) or when package arguments are a result of some computation, both of which can make it harder to foresee what ends up in the package arguments. Additional commands let you inspect those package arguments:
+</p>
+
+<pre class="example" id="org8d9425f">
+scheme@(guix-user)&gt; ,phases grep
+$1 = (modify-phases %standard-phases
+       (add-after 'install 'fix-egrep-and-fgrep
+         (lambda* (#:key outputs #:allow-other-keys)
+           (let* ((out (assoc-ref outputs "out"))
+                  (bin (string-append out "/bin")))
+             (substitute* (list (string-append bin "/egrep")
+                                (string-append bin "/fgrep"))
+               (("^exec grep")
+                (string-append "exec " bin "/grep")))))))
+scheme@(guix-user)&gt; ,configure-flags findutils
+$2 = (list "--localstatedir=/var")
+scheme@(guix-user)&gt; ,make-flags binutils
+$3 = '("MAKEINFO=true")
+</pre>
+
+<p>
+At a lower-level, a useful command is <code>lower</code>: it takes a file-like object and “lowers” it into a derivation (see <a href="docs/guix--Derivations.html">Derivations</a>) or a store file:
+</p>
+
+<pre class="example" id="orgc446f3a">
+scheme@(guix-user)&gt; ,lower grep
+$6 = #&lt;derivation /gnu/store/…-grep-3.6.drv =&gt; /gnu/store/…-grep-3.6 7f0e639115f0&gt;
+scheme@(guix-user)&gt; ,lower (plain-file "x" "Hello!")
+$7 = "/gnu/store/…-x"
+</pre>
+
+<p>
+The full list of REPL commands can be seen by typing <code>,help guix</code> and is given below for reference.
+</p>
+
+<dl class="org-dl">
+<dt>REPL command: build <code>object</code></dt><dd>Lower <code>object</code> and build it if it's not already built, returning its output file name(s).</dd>
+
+<dt>REPL command: build-options <code>options</code></dt><dd><p>
+Set build options for rest of the REPL commands to <code>options</code>. Must be a list of keywords with values accepted by procedure <code>(@ (guix store) set-build-options)</code>. An example would be:
+</p>
+
+<pre class="example" id="org6c5660d">
+,build-options '(#:offload? #f)
+</pre></dd>
+
+<dt>REPL command: graft? <code>graft?</code></dt><dd>Set whether grafts should be performed as part of the build. Equivalent to <code>--no-grafts</code> argument to <code>guix build</code>.</dd>
+
+<dt>REPL command: lower <code>object</code></dt><dd>Lower <code>object</code> into a derivation or store file name and return it.</dd>
+
+<dt>REPL command: verbosity <code>level</code></dt><dd><p>
+Change build verbosity to <code>level</code>.
+</p>
+
+<p>
+This is similar to the <code>--verbosity</code> command-line option (see <a href="docs/guix--Common-Build-Options.html">Common Build Options</a>): level 0 means total silence, level 1 shows build events only, and higher levels print build logs.
+</p></dd>
+
+<dt>(no term)</dt><dd>REPL command: phases <code>package</code><br />
+REPL command: configure-flags <code>package</code><br />
+REPL command: make-flags <code>package</code> :: These REPL commands return the value of one element of the <code>arguments</code> field of <code>package</code> (see <a href="docs/guix--package-Reference.html"><code>package</code> Reference</a>): the first one show the staged code associated with <code>#:phases</code> (see <a href="docs/guix--Build-Phases.html">Build Phases</a>), the second shows the code for <code>#:configure-flags</code>, and <code>,make-flags</code> returns the code for <code>#:make-flags</code>.</dd>
+
+<dt>REPL command: run-in-store <code>exp</code></dt><dd>Run <code>exp</code>, a monadic expression, through the store monad. See <a href="docs/guix--The-Store-Monad.html">The Store Monad</a>, for more information.</dd>
+
+<dt>REPL command: enter-store-monad </dt><dd>Enter a new REPL to evaluate monadic expressions (see <a href="docs/guix--The-Store-Monad.html">The Store Monad</a>). You can quit this “inner” REPL by typing <code>,q</code>.</dd>
+</dl>
+
+<hr />
+
+<p>
+Previous: <a href="docs/guix--Invoking-guix-repl.html">Invoking <code>guix repl</code></a>, Up: <a href="docs/guix--Programming-Interface.html">Programming Interface</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</div>
+</div>

@@ -1,0 +1,98 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Structure-Editing-1">1. 2.4 Structure Editing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Structure-Editing"></a>
+Next: <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>, Previous: <a href="docs/org--Motion.html">Motion</a>, Up: <a href="docs/org--Document-Structure.html">Document Structure</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Structure-Editing-1" class="outline-2">
+<h2 id="Structure-Editing-1"><span class="section-number-2">1.</span> 2.4 Structure Editing <a href="#Structure-Editing-1">¶</a></h2>
+<div class="outline-text-2" id="text-Structure-Editing-1">
+<dl class="org-dl">
+<dt><a id="index-M_002dRET"></a>M-RET (<code>org-meta-return</code>) </dt><dd><p>
+Insert a new heading, item, or row.
+</p>
+
+<p>
+If the command is used at the <i>beginning</i> of a line, and if there is a heading or a plain list item (see <a href="docs/org--Plain-Lists.html">Plain Lists</a>) at point, the new heading/item is created <i>before</i> the current line. When used at the beginning of a regular line of text, turn that line into a heading.
+</p>
+
+<p>
+When this command is used in the middle of a line, the line is split and the rest of the line becomes the new item or headline. If you do not want the line to be split, customize <code>org-M-RET-may-split-line</code>.
+</p>
+
+<p>
+Calling the command with a C-u prefix unconditionally inserts a new heading at the end of the current subtree, thus preserving its contents. With a double C-u C-u prefix, the new heading is created at the end of the parent subtree instead.
+</p></dd>
+
+<dt><a id="index-C_002dRET"></a>C-RET (<code>org-insert-heading-respect-content</code>) </dt><dd>Insert a new heading at the end of the current subtree.</dd>
+
+<dt><a id="index-M_002dS_002dRET"></a>M-S-RET (<code>org-insert-todo-heading</code>) </dt><dd>Insert new TODO entry with same level as current heading. See also the variable <code>org-treat-insert-todo-heading-as-state-change</code>.</dd>
+
+<dt><a id="index-C_002dS_002dRET"></a>C-S-RET (<code>org-insert-todo-heading-respect-content</code>) </dt><dd>Insert new TODO entry with same level as current heading. Like C-RET, the new headline is inserted after the current subtree.</dd>
+
+<dt><a id="index-TAB-1"></a>TAB (<code>org-cycle</code>) </dt><dd>In a new entry with no text yet, the first TAB demotes the entry to become a child of the previous one. The next TAB makes it a parent, and so on, all the way to top level. Yet another TAB, and you are back to the initial level.</dd>
+
+<dt><a id="index-M_002dLEFT"></a>M-LEFT (<code>org-do-promote</code>), M-RIGHT (<code>org-do-demote</code>) </dt><dd><p>
+Promote or demote current heading by one level.
+</p>
+
+<p>
+When there is an active region&#x2014;i.e., when Transient Mark mode is active&#x2014;promotion and demotion work on all headlines in the region. To select a region of headlines, it is best to set mark at the beginning of the first headline, and point at the line just after the last headline to change.
+</p></dd>
+
+<dt><a id="index-M_002dS_002dLEFT"></a>M-S-LEFT (<code>org-promote-subtree</code>) </dt><dd>Promote the current subtree by one level.</dd>
+
+<dt><a id="index-M_002dS_002dRIGHT"></a>M-S-RIGHT (<code>org-demote-subtree</code>) </dt><dd>Demote the current subtree by one level.</dd>
+
+<dt><a id="index-M_002dUP"></a>M-UP (<code>org-move-subtree-up</code>) </dt><dd>Move subtree up, i.e., swap with previous subtree of same level.</dd>
+
+<dt><a id="index-M_002dDOWN"></a>M-DOWN (<code>org-move-subtree-down</code>) </dt><dd>Move subtree down, i.e., swap with next subtree of same level.</dd>
+
+<dt><a id="index-C_002dc-_0040"></a>C-c @ (<code>org-mark-subtree</code>) </dt><dd>Mark the subtree at point. Hitting it repeatedly marks subsequent subtrees of the same level as the marked subtree.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-C_002dw"></a>C-c C-x C-w (<code>org-cut-subtree</code>) </dt><dd>Kill subtree, i.e., remove it from the buffer but save in kill ring. With a numeric prefix argument N, kill N sequential subtrees.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-M_002dw"></a>C-c C-x M-w (<code>org-copy-subtree</code>) </dt><dd>Copy subtree to kill ring. With a numeric prefix argument N, copy the N sequential subtrees.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-C_002dy"></a>C-c C-x C-y (<code>org-paste-subtree</code>) </dt><dd>Yank subtree from kill ring. This does modify the level of the subtree to make sure the tree fits in nicely at the yank position. The yank level can also be specified with a numeric prefix argument, or by yanking after a headline marker like ‘=****='. With C-u prefix, force inserting as a sibling. With C-u C-u prefix argument, force inserting as a child.</dd>
+
+<dt><a id="index-C_002dy"></a>C-y (<code>org-yank</code>) </dt><dd>Depending on the variables <code>org-yank-adjusted-subtrees</code> and <code>org-yank-folded-subtrees</code>, Org's internal <code>yank</code> command pastes subtrees folded and in a clever way, using the same command as C-c C-x C-y. With the default settings, no level adjustment takes place, but the yanked tree is folded unless doing so would swallow text previously visible. Any prefix argument to this command forces a normal <code>yank</code> to be executed, with the prefix passed along. A good way to force a normal yank is C-u C-y. If you use <code>yank-pop</code> after a yank, it yanks previous kill items plainly, without adjustment and folding.</dd>
+
+<dt><a id="index-C_002dc-C_002dx-c"></a>C-c C-x c (<code>org-clone-subtree-with-time-shift</code>) </dt><dd>Clone a subtree by making a number of sibling copies of it. You are prompted for the number of copies to make, and you can also specify whether any timestamps in the entry should be shifted. This can be useful, for example, to create a number of tasks related to a series of lectures to prepare. For more details, see the docstring of the command <code>org-clone-subtree-with-time-shift</code>.</dd>
+
+<dt><a id="index-C_002dc-C_002dw"></a>C-c C-w (<code>org-refile</code>) </dt><dd>Refile entry or region to a different location. See <a href="docs/org--Refile-and-Copy.html">Refile and Copy</a>.</dd>
+
+<dt><a id="index-C_002dc-_005e"></a>C-c ^ (<code>org-sort</code>) </dt><dd>Sort same-level entries. When there is an active region, all entries in the region are sorted. Otherwise, the children of the current headline are sorted. The command prompts for the sorting method, which can be alphabetically, numerically, by time&#x2014;first timestamp with active preferred, creation time, scheduled time, deadline time&#x2014;by priority, by TODO keyword&#x2014;in the sequence the keywords have been defined in the setup&#x2014;or by the value of a property. Reverse sorting is possible as well. You can also supply your own function to extract the sorting key. With a C-u prefix, sorting is case-sensitive.</dd>
+
+<dt><a id="index-C_002dx-n-s"></a>C-x n s (<code>org-narrow-to-subtree</code>) </dt><dd>Narrow buffer to current subtree.</dd>
+
+<dt><a id="index-C_002dx-n-b"></a>C-x n b (<code>org-narrow-to-block</code>) </dt><dd>Narrow buffer to current block.</dd>
+
+<dt><a id="index-C_002dx-n-w"></a>C-x n w (<code>widen</code>) </dt><dd>Widen buffer to remove narrowing.</dd>
+
+<dt><a id="index-C_002dc-_002a"></a>C-c * (<code>org-toggle-heading</code>) </dt><dd>Turn a normal line or plain list item into a headline&#x2014;so that it becomes a subheading at its location. Also turn a headline into a normal line by removing the stars. If there is an active region, turn all lines in the region into headlines. If the first line in the region was an item, turn only the item lines into headlines. Finally, if the first line is a headline, remove the stars from all headlines in the region.</dd>
+</dl>
+
+<p>
+Note that when point is inside a table (see <a href="docs/org--Tables.html">Tables</a>), the Meta-Cursor keys have different functionality.
+</p>
+
+<hr />
+
+<p>
+Next: <a href="docs/org--Sparse-Trees.html">Sparse Trees</a>, Previous: <a href="docs/org--Motion.html">Motion</a>, Up: <a href="docs/org--Document-Structure.html">Document Structure</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+</div>
+</div>

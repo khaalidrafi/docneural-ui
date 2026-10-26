@@ -1,0 +1,323 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Results-of-Evaluation-1">1. 16.6 Results of Evaluation ¶</a>
+<ul>
+<li><a href="#Collection-1">1.1. Collection ¶</a></li>
+<li><a href="#Type-1">1.2. Type ¶</a></li>
+<li><a href="#Format-1">1.3. Format ¶</a></li>
+<li><a href="#Handling-1">1.4. Handling ¶</a></li>
+<li><a href="#Post_002dprocessing-1">1.5. Post-processing ¶</a>
+<ul>
+<li><a href="#section">1.5.1. (158)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Results-of-Evaluation"></a>
+Next: <a href="docs/org--Exporting-Code-Blocks.html">Exporting Code Blocks</a>, Previous: <a href="docs/org--Evaluating-Code-Blocks.html">Evaluating Code Blocks</a>, Up: <a href="docs/org--Working-with-Source-Code.html">Working with Source Code</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Results-of-Evaluation-1" class="outline-2">
+<h2 id="Results-of-Evaluation-1"><span class="section-number-2">1.</span> 16.6 Results of Evaluation <a href="#Results-of-Evaluation-1">¶</a></h2>
+<div class="outline-text-2" id="text-Results-of-Evaluation-1">
+<p>
+How Org handles results of a code block execution depends on many header arguments working together. The primary determinant, however, is the ‘=results=' header argument. It accepts four classes of options. Each code block can take only one option per class:
+</p>
+
+<dl class="org-dl">
+<dt>Collection</dt><dd>For how the results should be collected from the code block;</dd>
+
+<dt>Type</dt><dd>For which type of result the code block will return; affects how Org processes and inserts results in the Org buffer;</dd>
+
+<dt>Format</dt><dd>For the result; affects how Org processes results;</dd>
+
+<dt>Handling</dt><dd>For inserting results once they are properly formatted.</dd>
+</dl>
+</div>
+<div id="outline-container-Collection-1" class="outline-3">
+<h3 id="Collection-1"><span class="section-number-3">1.1.</span> Collection <a href="#Collection-1">¶</a></h3>
+<div class="outline-text-3" id="text-Collection-1">
+<p>
+Collection options specify the results. Choose one of the options; they are mutually exclusive.
+</p>
+
+<dl class="org-dl">
+<dt>‘=value='</dt><dd><p>
+Default for most Babel libraries. Functional mode. Org gets the value by wrapping the code in a function definition in the language of the source block. That is why when using ‘=:results value=', code should execute like a function and return a value. For languages like Python, an explicit <code>return</code> statement is mandatory when using ‘=:results value='. Result is the value returned by the last statement in the code block.
+</p>
+
+<p>
+When evaluating the code block in a session (see <a href="docs/org--Environment-of-a-Code-Block.html">Environment of a Code Block</a>), Org passes the code to an interpreter running as an interactive Emacs inferior process. Org gets the value from the source code interpreter's last statement output. Org has to use language-specific methods to obtain the value. For example, from the variable <code>_</code> in Ruby, and the value of <code>.Last.value</code> in R.
+</p></dd>
+
+<dt>‘=output='</dt><dd><p>
+Scripting mode. Org passes the code to an external process running the interpreter. Org returns the contents of the standard output stream as text results.
+</p>
+
+<p>
+When using a session, Org passes the code to the interpreter running as an interactive Emacs inferior process. Org concatenates any text output from the interpreter and returns the collection as a result.
+</p></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Type-1" class="outline-3">
+<h3 id="Type-1"><span class="section-number-3">1.2.</span> Type <a href="#Type-1">¶</a></h3>
+<div class="outline-text-3" id="text-Type-1">
+<p>
+Type tells what result types to expect from the execution of the code block. Choose one of the options; they are mutually exclusive.
+</p>
+
+<p>
+The default behavior is to automatically determine the result type. The result type detection depends on the code block language, as described in the documentation for individual languages. See <a href="docs/org--Languages.html">Languages</a>.
+</p>
+
+<dl class="org-dl">
+<dt>‘=table=', ‘=vector='</dt><dd><p>
+Interpret the results as an Org table. If the result is a single value, create a table with one row and one column. Usage example: ‘=:results value table='.
+</p>
+
+<p>
+In-between each table row or below the table headings, sometimes results have horizontal lines, which are also known as “hlines”. The ‘=hlines=' argument with the default ‘=no=' value strips such lines from the input table. For most code, this is desirable, or else those ‘=hline=' symbols raise unbound variable errors. A ‘=yes=' accepts such lines, as demonstrated in the following example.
+</p>
+
+<pre class="example" id="orgcc408c3">
+#+NAME: many-cols
+| a | b | c |
+|---+---+---|
+| d | e | f |
+|---+---+---|
+| g | h | i |
+
+#+NAME: no-hline
+#+BEGIN_SRC python :var tab=many-cols :hlines no
+return tab
+#+END_SRC
+
+#+RESULTS: no-hline
+| a | b | c |
+| d | e | f |
+| g | h | i |
+
+#+NAME: hlines
+#+BEGIN_SRC python :var tab=many-cols :hlines yes
+return tab
+#+END_SRC
+
+#+RESULTS: hlines
+| a | b | c |
+|---+---+---|
+| d | e | f |
+|---+---+---|
+| g | h | i |
+</pre></dd>
+
+<dt>‘=list='</dt><dd>Interpret the results as an Org list. If the result is a single value, create a list of one element.</dd>
+
+<dt>‘=scalar=', ‘=verbatim='</dt><dd>Interpret literally and insert as quoted text. Do not create a table. Usage example: ‘=:results value verbatim='.</dd>
+
+<dt>‘=file='</dt><dd><p>
+Interpret as a filename. Save the results of execution of the code block to that file, then insert a link to it. You can control both the filename and the description associated to the link.
+</p>
+
+<p>
+Org first tries to generate the filename from the value of the ‘=file=' header argument and the directory specified using the ‘=output-dir=' header arguments. If ‘=output-dir=' is not specified, Org assumes it is the current directory.
+</p>
+
+<pre class="example" id="org07495dc">
+#+BEGIN_SRC asymptote :results value file :file circle.pdf :output-dir img/
+  size(2cm);
+  draw(unitcircle);
+#+END_SRC
+</pre>
+
+<p>
+If ‘=file=' header argument is missing, Org generates the base name of the output file from the name of the code block, and its extension from the ‘=file-ext=' header argument. In that case, both the name and the extension are mandatory.
+</p>
+
+<p>
+Result can also be interpreted as path to file. See ‘=:results link='.
+</p>
+
+<pre class="example" id="org724424a">
+#+name: circle
+#+BEGIN_SRC asymptote :results value file :file-ext pdf
+  size(2cm);
+  draw(unitcircle);
+#+END_SRC
+</pre>
+
+<p>
+The ‘=file-desc=' header argument defines the description (see <a href="docs/org--Link-Format.html">Link Format</a>) for the link. If ‘=file-desc=' is present but has no value, the ‘=file=' value is used as the link description. When this argument is not present, the description is omitted. If you want to provide the ‘=file-desc=' argument but omit the description, you can provide it with an empty vector (i.e., :file-desc []).
+</p>
+
+<p>
+By default, Org assumes that a table written to a file has TAB-delimited output. You can choose a different separator with the ‘=sep=' header argument.
+</p>
+
+<p>
+The ‘=file-mode=' header argument defines the file permissions. To make it executable, use ‘=:file-mode (identity #o755)='.
+</p>
+
+<pre class="example" id="orgc267ecf">
+#+BEGIN_SRC shell :results file :file script.sh :file-mode (identity #o755)
+  echo "#!/bin/bash"
+  echo "echo Hello World"
+#+END_SRC
+</pre></dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Format-1" class="outline-3">
+<h3 id="Format-1"><span class="section-number-3">1.3.</span> Format <a href="#Format-1">¶</a></h3>
+<div class="outline-text-3" id="text-Format-1">
+<p>
+Format pertains to the type of the result returned by the code block. Choose one of the options; they are mutually exclusive. The default follows from the type specified above.
+</p>
+
+<dl class="org-dl">
+<dt>‘=raw='</dt><dd>Interpreted as raw Org mode. Inserted directly into the buffer. Aligned if it is a table. Usage example: ‘=:results value raw='.</dd>
+
+<dt>‘=code='</dt><dd>Result enclosed in a code block. Useful for parsing. Usage example: ‘=:results value code='.</dd>
+
+<dt>‘=drawer='</dt><dd>Results are added directly to the Org file as with ‘=raw=', but are wrapped in a ‘=RESULTS=' drawer or results macro (for inline code blocks), for later scripting and automated processing. Usage example: ‘=:results value drawer='.</dd>
+
+<dt>‘=html='</dt><dd>Results enclosed in a ‘=BEGIN<sub>EXPORT</sub> html=' block. Usage example: ‘=:results value html='.</dd>
+
+<dt>‘=latex='</dt><dd>Results enclosed in a ‘=BEGIN<sub>EXPORT</sub> latex=' block. Usage example: ‘=:results value latex='.</dd>
+
+<dt>‘=link=', ‘=graphics='</dt><dd><p>
+When used along with ‘=file=' type, the result is a link to the file specified in ‘=:file=' header argument. However, unlike plain ‘=file=' type, code block output is not written to the disk. The block is expected to generate the file by its side effects only, as in the following example:
+</p>
+
+<pre class="example" id="orgb4ecb6c">
+#+begin_src shell :results file link :file "org-mode-unicorn.svg"
+  wget -c "https://orgmode.org/resources/img/org-mode-unicorn.svg"
+#+end_src
+
+#+RESULTS:
+[[file:org-mode-unicorn.svg]]
+</pre>
+
+<p>
+If ‘=:file=' header argument is omitted, interpret source block result as the file path.
+</p></dd>
+
+<dt>‘=org='</dt><dd>Results enclosed in a ‘=BEGIN<sub>SRC</sub> org=' block. For comma-escape, either TAB in the block, or export the file. Usage example: ‘=:results value org='.</dd>
+
+<dt>‘=pp='</dt><dd>Result converted to pretty-print source code. Enclosed in a code block. Languages supported: Emacs Lisp, Python, and Ruby. Usage example: ‘=:results value pp='.</dd>
+</dl>
+
+<p>
+The ‘=wrap=' header argument unconditionally marks the results block by appending strings to ‘=#+BEGIN_=' and ‘=#+END_=', except if the value is ‘=nil=' or ‘=no='. If no string is specified, Org wraps the results in a ‘=#+BEGIN<sub>results</sub>=' &#x2026; ‘=#+END<sub>results</sub>=' block. It takes precedent over the ‘=results=' value listed above. E.g.,
+</p>
+
+<pre class="example" id="org8052344">
+#+BEGIN_SRC emacs-lisp :results html :wrap EXPORT markdown
+"&lt;blink&gt;Welcome back to the 90's&lt;/blink&gt;"
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXPORT markdown
+&lt;blink&gt;Welcome back to the 90's&lt;/blink&gt;
+#+END_EXPORT
+</pre>
+</div>
+</div>
+<div id="outline-container-Handling-1" class="outline-3">
+<h3 id="Handling-1"><span class="section-number-3">1.4.</span> Handling <a href="#Handling-1">¶</a></h3>
+<div class="outline-text-3" id="text-Handling-1">
+<p>
+Handling options after collecting the results. Choose one of the options; they are mutually exclusive.
+</p>
+
+<dl class="org-dl">
+<dt>‘=replace='</dt><dd>Default. Insert results in the Org buffer. Remove previous results. Usage example: ‘=:results output replace='.</dd>
+
+<dt>‘=silent='</dt><dd>Do not insert results in the Org mode buffer, but echo them in the minibuffer. Usage example: ‘=:results output silent='.</dd>
+
+<dt>‘=none='</dt><dd>Compute results, but do not do anything with them. No inserting in the Org mode buffer nor echo them in the minibuffer. The results can still be used when referenced from another code block. Usage example: ‘=:results none='.</dd>
+
+<dt>‘=discard='</dt><dd>Ignore the results completely. This option is similar to ‘=none=', but no processing is performed on the return value. Calling the code block programmatically (see <a href="docs/org--Evaluating-Code-Blocks.html#How-to-evaluate-source-code">How to evaluate source code</a>) or by reference (see <a href="docs/org--Environment-of-a-Code-Block.html#Passing-arguments">Passing arguments</a> and <a href="docs/org--Noweb-Reference-Syntax.html">Noweb Reference Syntax</a>) will always yield <code>nil</code>.</dd>
+
+<dt>‘=append='</dt><dd>Append results to the Org buffer. Latest results are at the bottom. Does not remove previous results. Usage example: ‘=:results output append='.</dd>
+
+<dt>‘=prepend='</dt><dd>Prepend results to the Org buffer. Latest results are at the top. Does not remove previous results. Usage example: ‘=:results output prepend='.</dd>
+</dl>
+</div>
+</div>
+<div id="outline-container-Post_002dprocessing-1" class="outline-3">
+<h3 id="Post_002dprocessing-1"><span class="section-number-3">1.5.</span> Post-processing <a href="#Post_002dprocessing-1">¶</a></h3>
+<div class="outline-text-3" id="text-Post_002dprocessing-1">
+<p>
+The ‘=post=' header argument is for post-processing results from block evaluation. When ‘=post=' has any value, Org binds the results to <code>*this*</code> variable for easy passing to ‘=var=' header argument specifications (see <a href="docs/org--Environment-of-a-Code-Block.html">Environment of a Code Block</a>). That makes results available to other code blocks, or even for direct Emacs Lisp code execution.
+</p>
+
+<p>
+The following two examples illustrate ‘=post=' header argument in action. The first one shows how to attach an ‘=ATTR<sub>LATEX</sub>=' keyword using ‘=post='.
+</p>
+
+<pre class="example" id="org08fb416">
+#+NAME: attr_wrap
+#+BEGIN_SRC sh :var data="" :var width="\\textwidth" :results output
+  echo "#+ATTR_LATEX: :width $width"
+  echo "$data"
+#+END_SRC
+
+#+HEADER: :file /tmp/it.png
+#+BEGIN_SRC dot :post attr_wrap(width="5cm", data=*this*) :results drawer
+  digraph{
+          a -&gt; b;
+          b -&gt; c;
+          c -&gt; a;
+  }
+#+end_src
+
+#+RESULTS:
+:RESULTS:
+#+ATTR_LATEX :width 5cm
+[[file:/tmp/it.png]]
+:END:
+</pre>
+
+<p>
+The second example shows use of ‘=colnames=' header argument in ‘=post=' to pass data between code blocks.
+</p>
+
+<pre class="example" id="orgbfe69a5">
+#+NAME: round-tbl
+#+BEGIN_SRC emacs-lisp :var tbl="" fmt="%.3f"
+  (mapcar (lambda (row)
+            (mapcar (lambda (cell)
+                      (if (numberp cell)
+                          (format fmt cell)
+                        cell))
+                    row))
+          tbl)
+#+end_src
+
+#+BEGIN_SRC R :colnames yes :post round-tbl[:colnames yes](*this*)
+  set.seed(42)
+  data.frame(foo=rnorm(1))
+#+END_SRC
+
+#+RESULTS:
+|   foo |
+|-------|
+| 1.371 |
+</pre>
+
+<hr />
+</div>
+</div>
+</div>

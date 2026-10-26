@@ -1,0 +1,122 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Game-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--PAM-Mount-Service.html">PAM Mount Service</a>, Previous: <a href="docs/guix--Version-Control-Services.html">Version Control Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Game-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="game-services"></a>11.10.33 Game Services<br />
+<div class="outline-text-5" id="text-game-services">
+<p>
+<a id="Joycond-service"></a>
+</p>
+</div>
+</li>
+<li><a id="joycond-service"></a>Joycond service<br />
+<div class="outline-text-5" id="text-joycond-service">
+<p>
+<a id="index-joycond"></a> <a id="index-nintendo-controllers"></a>
+The joycond service allows the pairing of Nintendo joycon game controllers over Bluetooth. (see <a href="docs/guix--Desktop-Services.html">Desktop Services</a> for setting up Bluetooth.)
+</p>
+
+<dl class="org-dl">
+<dt>Data Type: joycond-configuration </dt><dd>Data type representing the configuration of <code>joycond</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>joycond</code>)</dt><dd>The joycond package to use.</dd>
+</dl></dd>
+
+<dt>Variable: joycond-service-type </dt><dd>Service type for the joycond service. It also extends the <code>udev-service-type</code> with the <code>joycond</code> package (provided via the <code>joycond-configuration</code> configuration), so that joycond controllers can be detected and used by an unprivileged user.</dd>
+</dl>
+
+<p>
+<a id="The-Battle-for-Wesnoth-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="the-battle-for-wesnoth-service"></a>The Battle for Wesnoth Service<br />
+<div class="outline-text-5" id="text-the-battle-for-wesnoth-service">
+<p>
+<a id="index-wesnothd"></a>
+<a href="https://wesnoth.org">The Battle for Wesnoth</a> is a fantasy, turn based tactical strategy game, with several single player campaigns, and multiplayer games (both networked and local).
+</p>
+
+<dl class="org-dl">
+<dt>Variable: wesnothd-service-type </dt><dd><p>
+Service type for the wesnothd service. Its value must be a <code>wesnothd-configuration</code> object. To run wesnothd in the default configuration, instantiate it as:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service wesnothd-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: wesnothd-configuration </dt><dd>Data type representing the configuration of <code>wesnothd</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>wesnoth-server</code>)</dt><dd>The wesnoth server package to use.</dd>
+
+<dt><code>port</code> (default: <code>15000</code>)</dt><dd>The port to bind the server to.</dd>
+</dl></dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>

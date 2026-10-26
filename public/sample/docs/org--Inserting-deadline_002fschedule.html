@@ -1,0 +1,50 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Inserting-deadlines-or-schedules">1. 8.3.1 Inserting deadlines or schedules ¶</a>
+<ul>
+<li><a href="#section">1.1. (67)</a></li>
+<li><a href="#section-1">1.2. (68)</a></li>
+<li><a href="#section-2">1.3. (69)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Inserting-deadline_002fschedule"></a>
+Next: <a href="docs/org--Repeated-tasks.html">Repeated tasks</a>, Up: <a href="docs/org--Deadlines-and-Scheduling.html">Deadlines and Scheduling</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Inserting-deadlines-or-schedules" class="outline-2">
+<h2 id="Inserting-deadlines-or-schedules"><span class="section-number-2">1.</span> 8.3.1 Inserting deadlines or schedules <a href="#Inserting-deadlines-or-schedules">¶</a></h2>
+<div class="outline-text-2" id="text-Inserting-deadlines-or-schedules">
+<p>
+The following commands allow you to quickly insert a deadline or to schedule an item:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dd"></a>C-c C-d (<code>org-deadline</code>) </dt><dd>Insert ‘=DEADLINE=' keyword along with a stamp. The insertion happens in the line directly following the headline. Remove any ‘=CLOSED=' timestamp. When called with a prefix argument, also remove any existing deadline from the entry. Depending on the variable <code>org-log-redeadline</code>, take a note when changing an existing deadline.</dd>
+
+<dt><a id="index-C_002dc-C_002ds"></a>C-c C-s (<code>org-schedule</code>) </dt><dd>Insert ‘=SCHEDULED=' keyword along with a stamp. The insertion happens in the line directly following the headline. Remove any ‘=CLOSED=' timestamp. When called with a prefix argument, also remove the scheduling date from the entry. Depending on the variable <code>org-log-reschedule</code>, take a note when changing an existing scheduling time.</dd>
+
+<dt><a id="index-C_002dc-_002f-d"></a>C-c / d (<code>org-check-deadlines</code>) </dt><dd>Create a sparse tree with all deadlines that are either past-due, or which will become due within <code>org-deadline-warning-days</code>. With C-u prefix, show all deadlines in the file. With a numeric prefix, check that many days. For example, C-1 C-c / d shows all deadlines due tomorrow.</dd>
+
+<dt><a id="index-C_002dc-_002f-b"></a>C-c / b (<code>org-check-before-date</code>) </dt><dd>Sparse tree for deadlines and scheduled items before a given date.</dd>
+
+<dt><a id="index-C_002dc-_002f-a"></a>C-c / a (<code>org-check-after-date</code>) </dt><dd>Sparse tree for deadlines and scheduled items after a given date.</dd>
+</dl>
+
+<p>
+Note that <code>org-schedule</code> and <code>org-deadline</code> supports setting the date by indicating a relative time e.g., ‘=+1d=' sets the date to the next day after today, and ‘=&#x2013;1w=' sets the date to the previous week before any current timestamp.
+</p>
+
+<hr />
+</div>
+</div>

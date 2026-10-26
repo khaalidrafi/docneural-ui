@@ -1,0 +1,45 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#LaTeX-Editing-Commands">1. 27.11.2 LaTeX Editing Commands ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--TeX-Print.html">TeX Printing Commands</a>   Previous: <a href="docs/emacs--TeX-Editing.html">TeX Editing Commands</a>   Up: <a href="docs/emacs--TeX-Mode.html">TeX Mode</a>
+</p>
+
+<p>
+<a id="LaTeX-Editing"></a>
+</p>
+
+<hr />
+<div id="outline-container-LaTeX-Editing-Commands" class="outline-2">
+<h2 id="LaTeX-Editing-Commands"><span class="section-number-2">1.</span> 27.11.2 LaTeX Editing Commands <a href="#LaTeX-Editing-Commands">¶</a></h2>
+<div class="outline-text-2" id="text-LaTeX-Editing-Commands">
+<p>
+LaTeX mode provides a few extra features not applicable to plain TeX:
+</p>
+
+<dl class="org-dl">
+<dt>C-c C-o</dt><dd>Insert ‘=\begin=' and ‘=\end=' for LaTeX block and position point on a line between them (<code>latex-insert-block</code>).</dd>
+
+<dt>C-c C-e</dt><dd>Close the innermost LaTeX block not yet closed (<code>latex-close-block</code>).</dd>
+</dl>
+
+<p>
+In LaTeX input, ‘=\begin=' and ‘=\end=' tags are used to group blocks of text. To insert a block, type C-c C-o (<code>latex-insert-block</code>). This prompts for a block type, and inserts the appropriate matching ‘=\begin=' and ‘=\end=' tags, leaving a blank line between the two and moving point there.
+</p>
+
+<p>
+When entering the block type argument to C-c C-o, you can use the usual completion commands (see <a href="docs/emacs--Completion.html">Completion</a>). The default completion list contains the standard LaTeX block types. If you want additional block types for completion, customize the list variable <code>latex-block-names</code>.
+</p>
+
+<p>
+In LaTeX input, ‘=\begin=' and ‘=\end=' tags must balance. You can use C-c C-e (<code>latex-close-block</code>) to insert an ‘=\end=' tag which matches the last unmatched ‘=\begin='. It also indents the ‘=\end=' to match the corresponding ‘=\begin=', and inserts a newline after the ‘=\end=' tag if point is at the beginning of a line. The minor mode <code>latex-electric-env-pair-mode</code> automatically inserts an ‘=\end=' or ‘=\begin=' tag for you when you type the corresponding one.
+</p>
+
+<hr />
+</div>
+</div>

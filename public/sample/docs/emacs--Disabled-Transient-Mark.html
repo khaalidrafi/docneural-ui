@@ -1,0 +1,57 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Disabling-Transient-Mark-Mode">1. 13.7 Disabling Transient Mark Mode ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>   Up: <a href="docs/emacs--Mark.html">The Mark and the Region</a>
+</p>
+
+<p>
+<a id="Disabled-Transient-Mark"></a>
+</p>
+
+<hr />
+<div id="outline-container-Disabling-Transient-Mark-Mode" class="outline-2">
+<h2 id="Disabling-Transient-Mark-Mode"><span class="section-number-2">1.</span> 13.7 Disabling Transient Mark Mode <a href="#Disabling-Transient-Mark-Mode">¶</a></h2>
+<div class="outline-text-2" id="text-Disabling-Transient-Mark-Mode">
+<p>
+The default behavior of the mark and region, in which setting the mark activates it and highlights the region, is called Transient Mark mode. This is a minor mode that is enabled by default in interactive sessions. It can be toggled with M-x transient-mark-mode, or with the ‘=Highlight Active Region=' menu item in the ‘=Options=' menu. Turning it off switches Emacs to an alternative mode of operation:
+</p>
+
+<ul class="org-ul">
+<li><p>
+Setting the mark, with commands like C-SPC or C-x C-x, does not highlight the region. Therefore, you can't tell by looking where the mark is located; you have to remember.
+</p>
+
+<p>
+The usual solution to this problem is to set the mark and then use it soon, before you forget where it is. You can also check where the mark is by using C-x C-x, which exchanges the positions of the point and the mark (see <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>).
+</p></li>
+
+<li>Some commands, which ordinarily act on the region when the mark is active, no longer do so. For example, normally M-% (<code>query-replace</code>) performs replacements within the region, if the mark is active. When Transient Mark mode is off, it always operates from point to the end of the buffer. Commands that act this way are identified in their own documentation.</li>
+</ul>
+
+<p>
+While Transient Mark mode is off, you can activate it temporarily using C-SPC C-SPC or C-u C-x C-x.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dSPC-C_002dSPC_002c-enabling-Transient-Mark-mode-temporarily"></a>C-SPC C-SPC </dt><dd>Set the mark at point (like plain C-SPC) and enable Transient Mark mode just once, until the mark is deactivated. (This is not really a separate command; you are using the C-SPC command twice.)</dd>
+
+<dt><a id="index-C_002du-C_002dx-C_002dx"></a>C-u C-x C-x </dt><dd>Exchange point and mark, activate the mark and enable Transient Mark mode temporarily, until the mark is next deactivated. (This is the C-x C-x command, <code>exchange-point-and-mark</code>, with a prefix argument.)</dd>
+</dl>
+
+<p>
+These commands set or activate the mark, and enable Transient Mark mode only until the mark is deactivated. One reason you may want to use them is that some commands operate on the entire buffer instead of the region when Transient Mark mode is off. Enabling Transient Mark mode momentarily gives you a way to use these commands on the region.
+</p>
+
+<p>
+When you specify a region with the mouse (see <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>), or with shift-selection (see <a href="docs/emacs--Shift-Selection.html">Shift Selection</a>), this likewise activates Transient Mark mode temporarily and highlights the region.
+</p>
+
+<hr />
+</div>
+</div>

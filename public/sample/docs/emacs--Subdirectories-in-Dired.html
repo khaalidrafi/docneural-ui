@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Subdirectories-in-Dired-1">1. 32.12 Subdirectories in Dired ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Subdir-Switches.html">Subdirectory Switches in Dired</a>   Previous: <a href="docs/emacs--Comparison-in-Dired.html">File Comparison with Dired</a>   Up: <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>
+</p>
+
+<p>
+<a id="Subdirectories-in-Dired"></a>
+</p>
+
+<hr />
+<div id="outline-container-Subdirectories-in-Dired-1" class="outline-2">
+<h2 id="Subdirectories-in-Dired-1"><span class="section-number-2">1.</span> 32.12 Subdirectories in Dired <a href="#Subdirectories-in-Dired-1">¶</a></h2>
+<div class="outline-text-2" id="text-Subdirectories-in-Dired-1">
+<p>
+A Dired buffer usually displays just one directory, but you can optionally include its subdirectories as well.
+</p>
+
+<p>
+The simplest way to include multiple directories in one Dired buffer is to specify the options ‘=-lR=' for running <code>ls</code>. (If you give a numeric argument when you run Dired, then you can specify these options in the minibuffer.) That produces a recursive directory listing showing all subdirectories at all levels.
+</p>
+
+<p>
+More often, you will want to show only specific subdirectories. You can do this with i (<code>dired-maybe-insert-subdir</code>):
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-inserted-subdirectory-_0028Dired_0029"></a>i </dt><dd>Insert the contents of a subdirectory later in the buffer.</dd>
+</dl>
+
+<p>
+If you use this command on a line that describes a file which is a directory, it inserts the contents of that directory into the same Dired buffer, and moves there. Inserted subdirectory contents follow the top-level directory of the Dired buffer, just as they do in ‘=ls -lR=' output.
+</p>
+
+<p>
+If the subdirectory's contents are already present in the buffer, the i command just moves to it.
+</p>
+
+<p>
+In either case, i sets the Emacs mark before moving, so C-u C-SPC returns to your previous position in the Dired buffer (see <a href="docs/emacs--Setting-Mark.html">Setting the Mark</a>). You can also use ‘=^=' to return to the parent directory in the same Dired buffer (see <a href="docs/emacs--Dired-Visiting.html">Visiting Files in Dired</a>).
+</p>
+
+<p>
+Use the l command (<code>dired-do-redisplay</code>) to update the subdirectory's contents, and use C-u k on the subdirectory header line to remove the subdirectory listing (see <a href="docs/emacs--Dired-Updating.html">Updating the Dired Buffer</a>). You can also hide and show inserted subdirectories (see <a href="docs/emacs--Hiding-Subdirectories.html">Hiding Subdirectories</a>).
+</p>
+
+<hr />
+</div>
+</div>

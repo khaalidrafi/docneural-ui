@@ -1,0 +1,22 @@
+:PROPERTIES:
+:ID: emacs--Calendar-Motion
+:END:
+#+filetags: :emacs:
+#+title: Calendar Motion
+
+Next: [[id:emacs--Scroll-Calendar][Scrolling in the Calendar]]   Up: [[id:emacs--Calendar_002fDiary][The Calendar and the Diary]]
+
+<<Calendar-Motion>>
+
+--------------
+
+*** 33.1 Movement in the Calendar [[#Movement-in-the-Calendar][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Movement-in-the-Calendar
+:CLASS: section
+:END:
+Calendar mode provides commands to move through the calendar in logical units of time such as days, weeks, months, and years. If you move outside the three months originally displayed, the calendar display scrolls automatically through time to make the selected date visible. Moving to a date lets you view its holidays or diary entries, or convert it to other calendars; moving by long time periods is also useful simply to scroll the calendar.
+
+- [[id:emacs--Calendar-Unit-Motion][Motion by Standard Lengths of Time]]
+- [[id:emacs--Move-to-Beginning-or-End][Beginning or End of Week, Month or Year]]
+- [[id:emacs--Specified-Dates][Specified Dates]]

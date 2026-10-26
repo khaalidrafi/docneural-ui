@@ -1,0 +1,32 @@
+:PROPERTIES:
+:ID: emacs--Incremental-Search
+:END:
+#+filetags: :emacs:
+#+title: Incremental Search
+
+Next: [[id:emacs--Nonincremental-Search][Nonincremental Search]]   Up: [[id:emacs--Search][Searching and Replacement]]
+
+<<Incremental-Search>>
+
+--------------
+
+*** 17.1 Incremental Search [[#Incremental-Search-1][¶]]
+:PROPERTIES:
+:CUSTOM_ID: Incremental-Search-1
+:CLASS: section
+:END:
+The principal search command in Emacs is /incremental/: it begins searching as soon as you type the first character of the search string. As you type in the search string, Emacs shows you where the string (as you have typed it so far) would be found. When you have typed enough characters to identify the place you want, you can stop. Depending on what you plan to do next, you may or may not need to terminate the search explicitly with RET.
+
+- C-s :: Incremental search forward (=isearch-forward=).
+
+- C-r :: Incremental search backward (=isearch-backward=).
+
+You can also invoke incremental search from the menu bar's ‘=Edit->Search=' menu.
+
+- [[id:emacs--Basic-Isearch][Basics of Incremental Search]]
+- [[id:emacs--Repeat-Isearch][Repeating Incremental Search]]
+- [[id:emacs--Isearch-Yank][Isearch Yanking]]
+- [[id:emacs--Error-in-Isearch][Errors in Incremental Search]]
+- [[id:emacs--Special-Isearch][Special Input for Incremental Search]]
+- [[id:emacs--Not-Exiting-Isearch][Not Exiting Incremental Search]]
+- [[id:emacs--Isearch-Minibuffer][Searching the Minibuffer]]

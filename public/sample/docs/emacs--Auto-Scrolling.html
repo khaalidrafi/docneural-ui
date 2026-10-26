@@ -1,0 +1,51 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Automatic-Scrolling">1. 16.3 Automatic Scrolling ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Horizontal-Scrolling.html">Horizontal Scrolling</a>   Previous: <a href="docs/emacs--Recentering.html">Recentering</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Auto-Scrolling"></a>
+</p>
+
+<hr />
+<div id="outline-container-Automatic-Scrolling" class="outline-2">
+<h2 id="Automatic-Scrolling"><span class="section-number-2">1.</span> 16.3 Automatic Scrolling <a href="#Automatic-Scrolling">¶</a></h2>
+<div class="outline-text-2" id="text-Automatic-Scrolling">
+<p>
+Emacs performs <i>automatic scrolling</i> when point moves out of the visible portion of the text. Normally, automatic scrolling centers point vertically in the window, but there are several ways to alter this behavior.
+</p>
+
+<p>
+If you set <code>scroll-conservatively</code> to a small number <code>n</code>, then moving point just a little off the screen (no more than <code>n</code> lines) causes Emacs to scroll just enough to bring point back on screen; if doing so fails to make point visible, Emacs scrolls just far enough to center point in the window. If you set <code>scroll-conservatively</code> to a large number (larger than 100), automatic scrolling never centers point, no matter how far point moves; Emacs always scrolls text just enough to bring point into view, either at the top or bottom of the window depending on the scroll direction. By default, <code>scroll-conservatively</code> is 0, which means to always center point in the window. This said, in minibuffer windows, scrolling is always conservative by default because <code>scroll-minibuffer-conservatively</code> is non-<code>nil</code>, which takes precedence over <code>scroll-conservatively</code>.
+</p>
+
+<p>
+Another way to control automatic scrolling is to customize the variable <code>scroll-step</code>. Its value determines the number of lines by which to automatically scroll, when point moves off the screen. If scrolling by that number of lines fails to bring point back into view, point is centered instead. The default value is zero, which (by default) causes point to always be centered after scrolling.
+</p>
+
+<p>
+A third way to control automatic scrolling is to customize the variables <code>scroll-up-aggressively</code> and <code>scroll-down-aggressively</code>, which directly specify the vertical position of point after scrolling. The value of <code>scroll-up-aggressively</code> should be either <code>nil</code> (the default), or a floating point number <code>f</code> between 0 and 1. The latter means that when point goes below the bottom window edge (i.e., scrolling forward), Emacs scrolls the window so that point is <code>f</code> parts of the window height from the bottom window edge. Thus, larger <code>f</code> means more aggressive scrolling: more new text is brought into view. The default value, <code>nil</code>, is equivalent to 0.5.
+</p>
+
+<p>
+Likewise, <code>scroll-down-aggressively</code> is used when point goes above the top window edge (i.e., scrolling backward). The value specifies how far point should be from the top margin of the window after scrolling. Thus, as with <code>scroll-up-aggressively</code>, a larger value is more aggressive.
+</p>
+
+<p>
+Note that the variables <code>scroll-conservatively</code>, <code>scroll-step</code>, and <code>scroll-up-aggressively</code> / <code>scroll-down-aggressively</code> control automatic scrolling in contradictory ways. Therefore, you should pick no more than one of these methods to customize automatic scrolling. In case you customize multiple variables, the order of priority is: <code>scroll-conservatively</code>, then <code>scroll-step</code>, and finally <code>scroll-up-aggressively</code> / <code>scroll-down-aggressively</code>.
+</p>
+
+<p>
+The variable <code>scroll-margin</code> restricts how close point can come to the top or bottom of a window (even if aggressive scrolling specifies a fraction <code>f</code> that is larger than the window portion between the top and the bottom margins). Its value is a number of screen lines; if point comes within that many lines of the top or bottom of the window, Emacs performs automatic scrolling. By default, <code>scroll-margin</code> is 0. The effective margin size is limited to a quarter of the window height by default, but this limit can be increased up to half (or decreased down to zero) by customizing <code>maximum-scroll-margin</code>.
+</p>
+
+<hr />
+</div>
+</div>

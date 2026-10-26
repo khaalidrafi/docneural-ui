@@ -1,0 +1,55 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Troubleshooting-Startup-Problems-on-Android">1. H.8 Troubleshooting Startup Problems on Android ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Android-Software.html">Installing Extra Software on Android</a>   Previous: <a href="docs/emacs--Android-Fonts.html">Font Backends and Selection under Android</a>   Up: <a href="docs/emacs--Android.html">Emacs and Android</a>
+</p>
+
+<p>
+<a id="Android-Troubleshooting"></a>
+</p>
+
+<hr />
+<div id="outline-container-Troubleshooting-Startup-Problems-on-Android" class="outline-2">
+<h2 id="Troubleshooting-Startup-Problems-on-Android"><span class="section-number-2">1.</span> H.8 Troubleshooting Startup Problems on Android <a href="#Troubleshooting-Startup-Problems-on-Android">¶</a></h2>
+<div class="outline-text-2" id="text-Troubleshooting-Startup-Problems-on-Android">
+<p>
+Since Android has no command line, there is normally no way to specify command-line arguments when starting Emacs. This is very nasty when you make a mistake in your Emacs initialization files that prevents Emacs from starting up at all, as the system generally prohibits other programs from accessing Emacs's home directory. See <a href="docs/emacs--Initial-Options.html">Initial Options</a>.
+</p>
+
+<p>
+However, Emacs can be started with the equivalent of either the option <code>--quick</code>, or <code>--debug-init</code> through a special preferences screen. Under Android 7.0 and later, this can be accessed through the Emacs “app info” page in the system settings program; on older systems, this is displayed as a separate icon on the desktop labeled “Emacs options”.
+</p>
+
+<p>
+Consult the manufacturer of your device for more details, as how to do this varies by device.
+</p>
+
+<p>
+The first time any given copy of Emacs starts on a device, it spends a while loading the preloaded Lisp files which normally come with Emacs. This produces a “dump file” (see <a href="docs/emacs--Initial-Options.html">Initial Options</a>) in the files directory, containing an identifier unique to that copy of Emacs.
+</p>
+
+<p>
+The next time that same copy of Emacs starts up, it simply loads the data contained in that dump file, greatly reducing start up time.
+</p>
+
+<p>
+If by some unforeseen circumstance the dump file is corrupted, Emacs can crash. If that happens, the dump file stored in the Emacs files directory can be erased through the preferences screen described above.
+</p>
+
+<p>
+Emacs supports an alternative method of rescuing broken Emacs installations on Android 4.4 and later: Emacs exports a “documents provider” which accesses the contents of Emacs's home directory, that can then be accessed by any file manager program.
+</p>
+
+<p>
+If you can find out how to open that documents provider in the file manager that comes with your device, you can rename, delete, or edit your initialization or dump files from there instead.
+</p>
+
+<hr />
+</div>
+</div>

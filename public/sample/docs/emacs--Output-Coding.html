@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Choosing-Coding-Systems-for-Output">1. 24.8 Choosing Coding Systems for Output ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Text-Coding.html">Specifying a Coding System for File Text</a>   Previous: <a href="docs/emacs--Specify-Coding.html">Specifying a File&amp;rsquo;s Coding System</a>   Up: <a href="docs/emacs--International.html">International Character Set Support</a>
+</p>
+
+<p>
+<a id="Output-Coding"></a>
+</p>
+
+<hr />
+<div id="outline-container-Choosing-Coding-Systems-for-Output" class="outline-2">
+<h2 id="Choosing-Coding-Systems-for-Output"><span class="section-number-2">1.</span> 24.8 Choosing Coding Systems for Output <a href="#Choosing-Coding-Systems-for-Output">¶</a></h2>
+<div class="outline-text-2" id="text-Choosing-Coding-Systems-for-Output">
+<p>
+Once Emacs has chosen a coding system for a buffer, it stores that coding system in <code>buffer-file-coding-system</code>. That makes it the default for operations that write from this buffer into a file, such as <code>save-buffer</code> and <code>write-region</code>. You can specify a different coding system for further file output from the buffer using <code>set-buffer-file-coding-system</code> (see <a href="docs/emacs--Text-Coding.html">Specifying a Coding System for File Text</a>).
+</p>
+
+<p>
+You can insert any character Emacs supports into any Emacs buffer, but most coding systems can only handle a subset of these characters. Therefore, it's possible that the characters you insert cannot be encoded with the coding system that will be used to save the buffer. For example, you could visit a text file in Polish, encoded in <code>iso-8859-2</code>, and add some Russian words to it. When you save that buffer, Emacs cannot use the current value of <code>buffer-file-coding-system</code>, because the characters you added cannot be encoded by that coding system.
+</p>
+
+<p>
+When that happens, Emacs tries the most-preferred coding system (set by M-x prefer-coding-system or M-x set-language-environment). If that coding system can safely encode all of the characters in the buffer, Emacs uses it, and stores its value in <code>buffer-file-coding-system</code>. Otherwise, Emacs displays a list of coding systems suitable for encoding the buffer's contents, and asks you to choose one of those coding systems.
+</p>
+
+<p>
+If you insert the unsuitable characters in a mail message, Emacs behaves a bit differently. It additionally checks whether the most-preferred coding system is recommended for use in MIME messages; if not, it informs you of this fact and prompts you for another coding system. This is so you won't inadvertently send a message encoded in a way that your recipient's mail software will have difficulty decoding. (You can still use an unsuitable coding system if you enter its name at the prompt.)
+</p>
+
+<p>
+When you send a mail message (see <a href="docs/emacs--Sending-Mail.html">Sending Mail</a>), Emacs has four different ways to determine the coding system to use for encoding the message text. It first tries the buffer's own value of <code>buffer-file-coding-system</code>, if that is non-<code>nil</code>. Otherwise, it uses the value of <code>sendmail-coding-system</code>, if that is non-<code>nil</code>. Thirdly, it uses the value of <code>default-sendmail-coding-system</code>. If all of these three values are <code>nil</code>, Emacs encodes outgoing mail using the default coding system for new files (i.e., the default value of <code>buffer-file-coding-system</code>), which is controlled by your choice of language environment.
+</p>
+
+<hr />
+</div>
+</div>

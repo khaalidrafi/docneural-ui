@@ -1,0 +1,60 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Refile-and-Copy-1">1. 9.1 Refile and Copy ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (84)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+
+<p>
+<a id="Refile-and-Copy"></a>
+Next: <a href="docs/org--Archiving.html">Archiving</a>, Up: <a href="docs/org--Refiling-and-Archiving.html">Refiling and Archiving</a>   [<a href="docs/org--index.html#SEC_Contents">Contents</a>][<a href="docs/org--Variable-Index.html">Index</a>]
+</p>
+
+<hr />
+<div id="outline-container-Refile-and-Copy-1" class="outline-2">
+<h2 id="Refile-and-Copy-1"><span class="section-number-2">1.</span> 9.1 Refile and Copy <a href="#Refile-and-Copy-1">¶</a></h2>
+<div class="outline-text-2" id="text-Refile-and-Copy-1">
+<p>
+When reviewing the captured data, you may want to refile or to copy some of the entries into a different list, for example into a project. Cutting, finding the right location, and then pasting the note is cumbersome. To simplify this process, you can use the following special command:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dc-C_002dw-1"></a>C-c C-w (<code>org-refile</code>) </dt><dd><p>
+Refile the entry or region at point. This command offers possible locations for refiling the entry and lets you select one with completion. The item (or all items in the region) is filed below the target heading as a sub-item. Depending on <code>org-reverse-note-order</code>, it is either the first or last sub-item.
+</p>
+
+<p>
+By default, all level 1 headlines in the current buffer are considered to be targets, but you can have more complex definitions across a number of files. See the variable <code>org-refile-targets</code> for details. If you would like to select a location via a file-path-like completion along the outline path, see the variables <code>org-refile-use-outline-path</code> and <code>org-outline-path-complete-in-steps</code>. If you would like to be able to create new nodes as new parents for refiling on the fly, check the variable <code>org-refile-allow-creating-parent-nodes</code>. When the variable <code>org-log-refile</code>is set, a timestamp or a note is recorded whenever an entry is refiled.
+</p></dd>
+
+<dt><a id="index-C_002du-C_002dc-C_002dw"></a>C-u C-c C-w </dt><dd>Use the refile interface to jump to a heading.</dd>
+
+<dt><a id="index-C_002du-C_002du-C_002dc-C_002dw"></a>C-u C-u C-c C-w (<code>org-refile-goto-last-stored</code>) </dt><dd>Jump to the location where <code>org-refile</code> last moved a tree to.</dd>
+
+<dt><a id="index-C_002d2-C_002dc-C_002dw"></a>C-2 C-c C-w </dt><dd>Refile as the child of the item currently being clocked.</dd>
+
+<dt><a id="index-C_002d3-C_002dc-C_002dw"></a>C-3 C-c C-w </dt><dd>Refile and keep the entry in place. Also see <code>org-refile-keep</code> to make this the default behavior, and beware that this may result in duplicated ‘=ID=' properties.</dd>
+
+<dt><a id="index-C_002du-C_002du-C_002du-C_002dc-C_002dw"></a>C-0 C-c C-w or C-u C-u C-u C-c C-w (<code>org-refile-cache-clear</code>) </dt><dd>Clear the target cache. Caching of refile targets can be turned on by setting <code>org-refile-use-cache</code>. To make the command see new possible targets, you have to clear the cache with this command.</dd>
+
+<dt><a id="index-C_002dc-M_002dw"></a>C-c M-w (<code>org-refile-copy</code>) </dt><dd>Copying works like refiling, except that the original note is not deleted.</dd>
+
+<dt><a id="index-C_002dc-C_002dM_002dw"></a>C-c C-M-w (<code>org-refile-reverse</code>) </dt><dd>Works like refiling, except that it temporarily toggles how the value of <code>org-reverse-note-order</code> applies to the current buffer. So if <code>org-refile</code> would append the entry as the last entry under the target header, <code>org-refile-reverse</code> will prepend it as the first entry, and vice versa.</dd>
+</dl>
+
+<hr />
+</div>
+</div>

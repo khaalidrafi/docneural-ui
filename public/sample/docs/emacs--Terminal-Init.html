@@ -1,0 +1,43 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Terminal_002dspecific-Initialization">1. 51.4.3 Terminal-specific Initialization ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Find-Init.html">How Emacs Finds Your Init File</a>   Previous: <a href="docs/emacs--Init-Examples.html">Init File Examples</a>   Up: <a href="docs/emacs--Init-File.html">The Emacs Initialization File</a>
+</p>
+
+<p>
+<a id="Terminal-Init"></a>
+</p>
+
+<hr />
+<div id="outline-container-Terminal_002dspecific-Initialization" class="outline-2">
+<h2 id="Terminal_002dspecific-Initialization"><span class="section-number-2">1.</span> 51.4.3 Terminal-specific Initialization <a href="#Terminal_002dspecific-Initialization">¶</a></h2>
+<div class="outline-text-2" id="text-Terminal_002dspecific-Initialization">
+<p>
+Each terminal type can have a Lisp library to be loaded into Emacs when it is run on that type of terminal. For a terminal type named <code>termtype</code>, the library is called <code>term/==termtype</code>. (If there is an entry of the form <code>(==termtype=</code> . <code>=alias=</code>)= in the <code>term-file-aliases</code> association list, Emacs uses <code>alias</code> in place of <code>termtype</code>.) The library is found by searching the directories <code>load-path</code> as usual and trying the suffixes ‘=.elc=' and ‘=.el='. Normally it appears in the subdirectory <code>term</code> of the directory where most Emacs libraries are kept.
+</p>
+
+<p>
+The usual purpose of the terminal-specific library is to map the escape sequences used by the terminal's function keys onto more meaningful names, using <code>input-decode-map</code>. See the file <code>term/lk201.el</code> for an example of how this is done. Many function keys are mapped automatically according to the information in the Termcap data base; the terminal-specific library needs to map only the function keys that Termcap does not specify.
+</p>
+
+<p>
+When the terminal type contains a hyphen, only the part of the name before the first hyphen is significant in choosing the library name. Thus, terminal types ‘=aaa-48=' and ‘=aaa-30-rv=' both use the library <code>term/aaa</code>. The code in the library can use <code>(getenv "TERM")</code> to find the full terminal type name.
+</p>
+
+<p>
+The library's name is constructed by concatenating the value of the variable <code>term-file-prefix</code> and the terminal type. Your <code>.emacs</code> file can prevent the loading of the terminal-specific library by setting <code>term-file-prefix</code> to <code>nil</code>.
+</p>
+
+<p>
+Emacs runs the hook <code>tty-setup-hook</code> at the end of initialization, after both your <code>.emacs</code> file and any terminal-specific library have been read in. Add hook functions to this hook if you wish to override part of any of the terminal-specific libraries and to define initializations for terminals that do not have a library. See <a href="docs/emacs--Hooks.html">Hooks</a>.
+</p>
+
+<hr />
+</div>
+</div>

@@ -1,0 +1,1 @@
+{"guix--Concept-Index>guix--Emacs-Packages":"| | emacs, packaging:","guix--Emacs-Packages>guix--Build-Systems":"Emacs packages should preferably use the Emacs build system (see emacs-build-system), for uniformity an","guix--Packaging-Guidelines>guix--Emacs-Packages":"- Emacs Packages","guix--index>guix--Emacs-Packages":"- 22.8.8 Emacs Packages"}

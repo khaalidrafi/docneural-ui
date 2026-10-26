@@ -1,0 +1,65 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Narrowing-1">1. 16.5 Narrowing ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--View-Mode.html">View Mode</a>   Previous: <a href="docs/emacs--Horizontal-Scrolling.html">Horizontal Scrolling</a>   Up: <a href="docs/emacs--Display.html">Controlling the Display</a>
+</p>
+
+<p>
+<a id="Narrowing"></a>
+</p>
+
+<hr />
+<div id="outline-container-Narrowing-1" class="outline-2">
+<h2 id="Narrowing-1"><span class="section-number-2">1.</span> 16.5 Narrowing <a href="#Narrowing-1">¶</a></h2>
+<div class="outline-text-2" id="text-Narrowing-1">
+<p>
+<i>Narrowing</i> means focusing in on some portion of the buffer, making the rest temporarily inaccessible. The portion which you can still get to is called the <i>accessible portion</i>. Canceling the narrowing, which makes the entire buffer once again accessible, is called <i>widening</i>. The bounds of narrowing in effect in a buffer are called the buffer's <i>restriction</i>.
+</p>
+
+<p>
+Narrowing can make it easier to concentrate on a single subroutine or paragraph by eliminating clutter. It can also be used to limit the range of operation of a replace command or repeating keyboard macro.
+</p>
+
+<dl class="org-dl">
+<dt>C-x n n</dt><dd>Narrow down to between point and mark (<code>narrow-to-region</code>).</dd>
+
+<dt>C-x n w</dt><dd>Widen to make the entire buffer accessible again (<code>widen</code>).</dd>
+
+<dt>C-x n p</dt><dd>Narrow down to the current page (<code>narrow-to-page</code>).</dd>
+
+<dt>C-x n d</dt><dd>Narrow down to the current defun (<code>narrow-to-defun</code>).</dd>
+</dl>
+
+<p>
+When you have narrowed down to a part of the buffer, that part appears to be all there is. You can't see the rest, you can't move into it (motion commands won't go outside the accessible part), you can't change it in any way. However, it is not gone, and if you save the file all the inaccessible text will be saved. The word ‘=Narrow=' appears in the mode line whenever narrowing is in effect.
+</p>
+
+<p>
+The primary narrowing command is C-x n n (<code>narrow-to-region</code>). It sets the current buffer's restrictions so that the text in the current region remains accessible, but all text before the region or after the region is inaccessible. Point and mark do not change.
+</p>
+
+<p>
+Alternatively, use C-x n p (<code>narrow-to-page</code>) to narrow down to the current page. See <a href="docs/emacs--Pages.html">Pages</a>, for the definition of a page. C-x n d (<code>narrow-to-defun</code>) narrows down to the defun containing point (see <a href="docs/emacs--Defuns.html">Top-Level Definitions, or Defuns</a>).
+</p>
+
+<p>
+The way to cancel narrowing is to widen with C-x n w (<code>widen</code>). This makes all text in the buffer accessible again.
+</p>
+
+<p>
+You can get information on what part of the buffer you are narrowed down to using the C-x = command. See <a href="docs/emacs--Position-Info.html">Cursor Position Information</a>.
+</p>
+
+<p>
+Because narrowing can easily confuse users who do not understand it, <code>narrow-to-region</code> is normally a disabled command. Attempting to use this command asks for confirmation and gives you the option of enabling it; if you enable the command, confirmation will no longer be required for it. See <a href="docs/emacs--Disabling.html">Disabling Commands</a>.
+</p>
+
+<hr />
+</div>
+</div>

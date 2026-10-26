@@ -1,0 +1,76 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org5d9aa4b">1. added            README</a></li>
+<li><a href="#org0f98718">2. edited           src/main.c</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--VC-Directory-Commands.html">VC Directory Commands</a>   Up: <a href="docs/emacs--VC-Directory-Mode.html">VC Directory Mode</a>
+</p>
+
+<p>
+<a id="VC-Directory-Buffer"></a>
+</p>
+
+<hr />
+<ol class="org-ol">
+<li><a id="The-VC-Directory-Buffer"></a>30.1.10.1 The VC Directory Buffer <a href="#The-VC-Directory-Buffer">¶</a><br />
+<div class="outline-text-5" id="text-The-VC-Directory-Buffer">
+<p>
+The VC Directory buffer contains a list of version-controlled files and their version control statuses. It lists files in the current directory (the one specified when you called C-x v d) and its subdirectories, but only those with a noteworthy status. Files that are up-to-date (i.e., the same as in the repository) are omitted. If all the files in a subdirectory are up-to-date, the subdirectory is not listed either. As an exception, if a file has become up-to-date as a direct result of a VC command, it is listed.
+</p>
+
+<p>
+Here is an example of a VC Directory buffer listing:
+</p>
+
+<p>
+#+begin<sub>example</sub>
+                     ./
+    edited           configure.ac
+</p>
+</div>
+</li>
+</ol>
+<div id="outline-container-org5d9aa4b" class="outline-2">
+<h2 id="org5d9aa4b"><span class="section-number-2">1.</span> added            README</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+unregistered     temp.txt
+		 src/
+</p>
+</div>
+</div>
+<div id="outline-container-org0f98718" class="outline-2">
+<h2 id="org0f98718"><span class="section-number-2">2.</span> edited           src/main.c</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+#+end<sub>src</sub>
+</p>
+
+<p>
+Two work files have been modified but not committed: <code>configure.ac</code> in the current directory, and <code>main.c</code> in the <code>src/</code> subdirectory. The file named <code>README</code> has been added but is not yet committed, while <code>temp.txt</code> is not under version control (see <a href="docs/emacs--Registering.html">Registering a File for Version Control</a>).
+</p>
+
+<p>
+The ‘=*=' characters next to the entries for <code>README</code> and <code>src/main.c</code> indicate that the user has marked these files as the current VC fileset (see <a href="docs/emacs--VC-Directory-Commands.html">VC Directory Commands</a>).
+</p>
+
+<p>
+The above example is typical for a decentralized version control system like Bazaar, Git, or Mercurial. Other systems can show other statuses. For instance, CVS shows the ‘=needs-update=' status if the repository has changes that have not been applied to the work file. RCS and SCCS show the name of the user locking a file as its status.
+</p>
+
+<p>
+On CVS, the <code>vc-dir</code> command normally contacts the repository, which may be on a remote machine, to check for updates. If you change the variable <code>vc-cvs-stay-local</code> to <code>nil</code> (see <a href="docs/emacs--CVS-Options.html">Options specific for CVS</a>), then Emacs avoids contacting a remote repository when generating the VC Directory buffer (it will still contact it when necessary, e.g., when doing a commit). This may be desirable if you are working offline or the network is slow.
+</p>
+
+<p>
+The VC Directory buffer omits subdirectories listed in the variable <code>vc-directory-exclusion-list</code>. Its default value contains directories that are used internally by version control systems.
+</p>
+
+<hr />
+</div>
+</div>

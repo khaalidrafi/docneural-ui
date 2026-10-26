@@ -1,0 +1,152 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tab-Bars-1">1. 23.17 Tab Bars ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Dialog-Boxes.html">Using Dialog Boxes</a>   Previous: <a href="docs/emacs--Tool-Bars.html">Tool Bars</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Tab-Bars"></a>
+</p>
+
+<hr />
+<div id="outline-container-Tab-Bars-1" class="outline-2">
+<h2 id="Tab-Bars-1"><span class="section-number-2">1.</span> 23.17 Tab Bars <a href="#Tab-Bars-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tab-Bars-1">
+<p>
+On graphical displays and on text terminals, Emacs can optionally display a <i>Tab Bar</i> at the top of each frame, just below the menu bar (see <a href="docs/emacs--Menu-Bars.html">Menu Bars</a>) and above or below the tool bar (see <a href="docs/emacs--Tool-Bars.html">Tool Bars</a>) depending on the variable <code>tab-bar-position</code>. The Tab Bar is a row of <i>tabs</i>&#x2014;buttons that you can click to switch between window configurations.
+</p>
+
+<p>
+Each tab on the Tab Bar represents a named persistent window configuration of its frame, i.e., how that frame is partitioned into windows and which buffer is displayed in each window. The tab's name is composed from the list of names of buffers shown in windows of that window configuration. Clicking on the tab switches to the window configuration recorded by the tab; it is a configuration of windows and buffers which was previously used in the frame when that tab was the current tab.
+</p>
+
+<p>
+If you are using the desktop library to save and restore your sessions (see <a href="docs/emacs--Saving-Emacs-Sessions.html">Saving Emacs Sessions</a>), the tabs from the Tab Bar are recorded in the desktop file, together with their associated window configurations, and will be available after restoring the session.
+</p>
+
+<p>
+Note that the Tab Bar is different from the Tab Line (see <a href="docs/emacs--Tab-Line.html">Window Tab Line</a>). Whereas tabs on the Tab Line at the top of each window are used to switch between buffers in the window, tabs on the Tab Bar at the top of each frame are used to switch between window configurations containing several windows showing one or more buffers.
+</p>
+
+<p>
+To toggle the use of Tab Bars, type M-x tab-bar-mode. This command applies to all frames, including frames yet to be created. To control the use of tab bars at startup, customize the variable <code>tab-bar-mode</code> and save your customization.
+</p>
+
+<p>
+The variable <code>tab-bar-show</code> controls whether the Tab Bar mode is turned on automatically. If the value is <code>t</code>, then <code>tab-bar-mode</code> is enabled when using the commands that create new tabs. The value <code>1</code> hides the tab bar when it has only one tab, and shows it again when more tabs are created. More generally, a value that is a non-negative integer causes the Tab Bar to be displayed only if the number of tabs is greater than that integer. The value <code>nil</code> always keeps the Tab Bar hidden; in this case it's still possible to switch between named window configurations without displaying the Tab Bar by using M-x tab-next, M-x tab-switcher, and other commands that provide completion on tab names. Also it's possible to create and close tabs without the Tab Bar by using commands M-x tab-new, M-x tab-close, etc.
+</p>
+
+<p>
+Note that a numerical value of <code>tab-bar-show</code> can cause the Tab Bar to be displayed on some frames, but not on others, depending on the number of tabs created on each frame.
+</p>
+
+<p>
+To toggle the use of the Tab Bar only on the selected frame, type M-x toggle-frame-tab-bar. This command facilitates selectively enabling the Tab Bar on some frames while keeping it disabled on others, irrespective of the values of <code>tab-bar-mode</code> and <code>tab-bar-show</code>.
+</p>
+
+<p>
+The prefix key C-x t is analogous to C-x 5. Whereas each C-x 5 command pops up a buffer in a different frame (see <a href="docs/emacs--Creating-Frames.html">Creating Frames</a>), the C-x t commands use a different tab with a different window configuration in the selected frame.
+</p>
+
+<p>
+The various C-x t commands differ in how they find or create the buffer to select. The following commands can be used to select a buffer in a new tab:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-t-2"></a>C-x t 2 </dt><dd>Add a new tab (<code>tab-new</code>). You can control the choice of the buffer displayed in a new tab by customizing the variable <code>tab-bar-new-tab-choice</code>. You can control the names given by default to new tabs by customizing the variable <code>tab-bar-tab-name-function</code>.</dd>
+
+<dt><a id="index-C_002dx-t-b"></a>C-x t b <code>bufname</code> RET </dt><dd>Select buffer <code>bufname</code> in another tab. This runs <code>switch-to-buffer-other-tab</code>.</dd>
+
+<dt><a id="index-C_002dx-t-f"></a>C-x t f <code>filename</code> RET </dt><dd>Visit the file <code>filename</code> (see <a href="docs/emacs--Visiting.html">Visiting Files</a>) and select its buffer in another tab. This runs <code>find-file-other-tab</code>.</dd>
+
+<dt><a id="index-C_002dx-t-d"></a>C-x t d <code>directory</code> RET </dt><dd>Edit the specified <code>directory</code> (see <a href="docs/emacs--Dired.html">Dired, the Directory Editor</a>) in another tab. This runs <code>dired-other-tab</code>.</dd>
+
+<dt><a id="index-C_002dx-t-t"></a>C-x t t </dt><dd>This is a prefix command (<code>other-tab-prefix</code>) that affects the next command invoked immediately after this prefix command. It requests the buffer displayed by the next command to be shown in another tab.</dd>
+</dl>
+
+<p>
+By default, a new tab starts with the buffer that was current before calling the command that adds a new tab. To start a new tab with other buffers, customize the variable <code>tab-bar-new-tab-choice</code>.
+</p>
+
+<p>
+The variable <code>tab-bar-new-tab-to</code> defines where to place a new tab. By default, a new tab is added on the right side of the current tab.
+</p>
+
+<p>
+The following commands can be used to delete tabs:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-t-0"></a>C-x t 0 </dt><dd>Close the selected tab (<code>tab-close</code>). This has no effect if there is only one tab, unless the variable <code>tab-bar-close-last-tab-choice</code> is customized to a non-default value.</dd>
+
+<dt><a id="index-C_002dx-t-1"></a>C-x t 1 </dt><dd>Close all tabs, except the selected tab, on the selected frame.</dd>
+</dl>
+
+<p>
+The variable <code>tab-bar-close-tab-select</code> defines what tab to select after closing the current tab. By default, it selects a recently used tab.
+</p>
+
+<p>
+The command <code>tab-undo</code> restores the last closed tab.
+</p>
+
+<p>
+The following commands can be used to switch between tabs:
+</p>
+
+<ul class="org-ul">
+<li><a id="index-C_002dx-t-o"></a>C-x t o <br />
+C-TAB :: Switch to the next tab (<code>tab-next</code>). If you repeat this command, it cycles through all the tabs on the selected frame. With a positive numeric argument <code>n</code>, it switches to the <code>n=th next tab; with a negative argument −=n</code>, it switches back to the =n=th previous tab.</li>
+
+<li id="<a id="index-S_002dC_002dTAB"></a>S-C-TAB ">Switch to the previous tab (<code>tab-previous</code>). With a positive numeric argument <code>n</code>, it switches to the <code>n=th previous tab; with a negative argument −=n</code>, it switches to the =n=th next tab.</li>
+
+<li id="<a id="index-C_002dx-t-RET"></a>C-x t RET <code>tabname</code> RET ">Switch to the tab by its name (<code>tab-switch</code>), with completion on all tab names. The default value and the “future history” of tab names is sorted by recency, so you can use M-n (<code>next-history-element</code>) to get the name of the last visited tab, the second last, and so on.</li>
+
+<li id="<a id="index-C_002d1_002c-tab-bar"></a>=modifier=-<code>tab-number</code> ">Switch to the tab by its number <code>tab-number</code> (<code>tab-select</code>). After customizing the variable <code>tab-bar-select-tab-modifiers</code> to specify one or more <code>modifier</code> keys, you can select a tab by its ordinal number using one of the specified modifiers in combination with the tab number to select. The number 9 can be used to select the last tab. You can select any modifiers supported by Emacs, see <a href="docs/emacs--Modifier-Keys.html">Modifier Keys</a>. To display the tab number alongside the tab name, you can customize another variable <code>tab-bar-tab-hints</code>. This will help you decide which numerical key to press to select the tab by its number.</li>
+
+<li id="<a id="index-C_002d9_002c-tab-bar"></a>=modifier=-9 ">Switch to the last tab (<code>tab-last</code>). The key combination is the modifier key defined by <code>tab-bar-select-tab-modifiers</code> and the key 9. With a numeric argument <code>n</code>, switch to the =n=th last tab.</li>
+
+<li id="<a id="index-C_002d0_002c-tab-bar"></a>=modifier=-0 ">Switch to the recent tab (<code>tab-recent</code>). The key combination is the modifier key defined by <code>tab-bar-select-tab-modifiers</code> and the key 0. With a numeric argument <code>n</code>, switch to the =n=th recent tab.</li>
+</ul>
+
+<p>
+The following commands can be used to operate on tabs:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-t-r"></a>C-x t r <code>tabname</code> RET </dt><dd>Rename the current tab to <code>tabname</code> (<code>tab-rename</code>).</dd>
+
+<dt><a id="index-C_002dx-t-m"></a>C-x t m </dt><dd>Move the current tab one position to the right (<code>tab-move</code>). With a positive numeric argument <code>n</code>, move it that many positions to the right; with a negative argument −=n=, move it <code>n</code> positions to the left.</dd>
+</dl>
+
+<p>
+You can use the mouse to operate on tabs. Clicking mouse-2 closes the tab. Clicking mouse-3 pops up the context menu with the items that operate on the clicked tab. Dragging the tab with mouse-1 moves it to another position on the tab bar. Mouse wheel scrolling switches to the next or previous tab. Holding down the SHIFT key during scrolling moves the tab to the left or right.
+</p>
+
+<p>
+Touch screen input (see <a href="docs/emacs--Other-Input.html">Touchscreen Input and Virtual Keyboards</a>) can also be used to operate on tabs. Long-pressing (see <a href="docs/emacs--Touchscreens.html">Using Emacs on Touchscreens</a>) a tab will display a context menu with items that operate on the tab that was pressed, and long-pressing the tab bar itself will display a context menu which lets you create and remove tabs; tapping a tab itself will result in that tab's window configuration being selected, and tapping a button on the tab bar will behave as if it was clicked with mouse-1.
+</p>
+
+<p>
+You can enable <code>tab-bar-history-mode</code> to remember window configurations used in every tab, and later restore them.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-tab_002dbar_002dhistory_002dback"></a>M-x tab-bar-history-back </dt><dd>Restore a previous window configuration used in the current tab. This navigates back in the history of window configurations.</dd>
+
+<dt><a id="index-tab_002dbar_002dhistory_002dforward"></a>M-x tab-bar-history-forward </dt><dd>Cancel restoration of the previous window configuration. This moves forward in the history of window configurations.</dd>
+</dl>
+
+<p>
+It's possible to customize the items displayed on the tab bar by the user option <code>tab-bar-format</code>.
+</p>
+
+<hr />
+</div>
+</div>

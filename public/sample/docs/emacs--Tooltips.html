@@ -1,0 +1,68 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Tooltips-1">1. 23.19 Tooltips ¶</a>
+<ul>
+<li>
+<ul>
+<li><a href="#section">1.0.1. (8)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Next: <a href="docs/emacs--Mouse-Avoidance.html">Mouse Avoidance</a>   Previous: <a href="docs/emacs--Dialog-Boxes.html">Using Dialog Boxes</a>   Up: <a href="docs/emacs--Frames.html">Frames and Graphical Displays</a>
+</p>
+
+<p>
+<a id="Tooltips"></a>
+</p>
+
+<hr />
+<div id="outline-container-Tooltips-1" class="outline-2">
+<h2 id="Tooltips-1"><span class="section-number-2">1.</span> 23.19 Tooltips <a href="#Tooltips-1">¶</a></h2>
+<div class="outline-text-2" id="text-Tooltips-1">
+<p>
+<i>Tooltips</i> are small special frames that display text information at the current mouse position. They activate when there is a pause in mouse movement over some significant piece of text in a window, or the mode line, or some other part of the Emacs frame such as a tool bar button or menu item.
+</p>
+
+<p>
+You can toggle the use of tooltips with the command M-x tooltip-mode. When Tooltip mode is disabled, the help text is displayed in the echo area instead. To control the use of tooltips at startup, customize the variable <code>tooltip-mode</code>.
+</p>
+
+<p>
+The following variables provide customization options for tooltip display:
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-tooltip_002ddelay"></a>=tooltip-delay= </dt><dd>This variable specifies how long Emacs should wait before displaying the first tooltip. The value is in seconds.</dd>
+
+<dt><a id="index-tooltip_002dshort_002ddelay"></a>=tooltip-short-delay= </dt><dd>This variable specifies how long Emacs should wait before displaying subsequent tooltips on different items, having already displayed the first tooltip. The value is in seconds.</dd>
+
+<dt><a id="index-tooltip_002dhide_002ddelay"></a>=tooltip-hide-delay= </dt><dd>The number of seconds since displaying a tooltip to hide it, if the mouse doesn't move.</dd>
+
+<dt>(no term)</dt><dd><a id="index-tooltip_002dx_002doffset"></a>=tooltip-x-offset= <br />
+<a id="index-tooltip_002dy_002doffset"></a>=tooltip-y-offset= :: The X and Y offsets, in pixels, of the left top corner of the tooltip from the mouse pointer position. Note that these are ignored if <code>tooltip-frame-parameters</code> was customized to include, respectively, the <code>left</code> and <code>top</code> parameters. The values of the offsets should be chosen so that the tooltip doesn't cover the mouse pointer's hot spot, or it might interfere with clicking the mouse.</dd>
+
+<dt><a id="index-tooltip_002dframe_002dparameters"></a>=tooltip-frame-parameters= </dt><dd>The frame parameters used for displaying tooltips. See <a href="../elisp_html/Frame-Parameters.html#Frame-Parameters">Frame Parameters</a> in The Emacs Lisp Reference Manual, and also <a href="../elisp_html/Tooltips.html#Tooltips">Tooltips</a> in The Emacs Lisp Reference Manual.</dd>
+</dl>
+
+<p>
+For additional customization options for displaying tooltips, use M-x customize-group RET tooltip RET.
+</p>
+
+<p>
+If Emacs is built with the GTK+ toolkit, Nextstep windowing, or Haiku windowing support, it displays tooltips via the toolkit, using the default appearance of the toolkit's tooltips. To disable this, change the variable <code>use-system-tooltips</code> to <code>nil</code>. If you do this, or if Emacs is built without the appropriate windowing support, most attributes of the tooltip text are specified by the <code>tooltip</code> face, and by X resources (see <a href="docs/emacs--X-Resources.html">X Options and Resources</a>).
+</p>
+
+<p>
+<i>GUD tooltips</i> are special tooltips that show the values of variables when debugging a program with GUD. See <a href="docs/emacs--Debugger-Operation.html">Debugger Operation</a>.
+</p>
+
+<hr />
+</div>
+</div>

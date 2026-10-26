@@ -1,0 +1,69 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Finding-Files-and-URLs-at-Point">1. 48.5 Finding Files and URLs at Point ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Goto-Address-mode.html">Activating URLs</a>   Up: <a href="docs/emacs--Hyperlinking.html">Hyperlinking and Web Navigation Features</a>
+</p>
+
+<p>
+<a id="FFAP"></a>
+</p>
+
+<hr />
+<div id="outline-container-Finding-Files-and-URLs-at-Point" class="outline-2">
+<h2 id="Finding-Files-and-URLs-at-Point"><span class="section-number-2">1.</span> 48.5 Finding Files and URLs at Point <a href="#Finding-Files-and-URLs-at-Point">¶</a></h2>
+<div class="outline-text-2" id="text-Finding-Files-and-URLs-at-Point">
+<p>
+The FFAP package replaces certain key bindings for finding files, such as C-x C-f, with commands that provide more sensible defaults. These commands behave like the ordinary ones when given a prefix argument. Otherwise, they get the default file name or URL from the text around point. If what is found in the buffer has the form of a URL rather than a file name, the commands use <code>browse-url</code> to view it (see <a href="docs/emacs--Browse_002dURL.html">Following URLs</a>).
+</p>
+
+<p>
+This feature is useful for following references in mail or news buffers, <code>README</code> files, <code>MANIFEST</code> files, and so on. For more information, view the package commentary by typing C-h P ffap RET.
+</p>
+
+<p>
+To enable FFAP, type M-x ffap-bindings. This makes the following key bindings, and also installs hooks for additional FFAP functionality in Rmail, Gnus and VM article buffers.
+</p>
+
+<dl class="org-dl">
+<dt><a id="index-C_002dx-C_002df-_0028FFAP_0029"></a>C-x C-f <code>filename</code> RET </dt><dd>Find <code>filename</code>, guessing a default from text around point (<code>find-file-at-point</code>).</dd>
+
+<dt><a id="index-C_002dx-C_002dr-_0028FFAP_0029"></a>C-x C-r <code>filename</code> RET </dt><dd><code>ffap-read-only</code>, analogous to <code>find-file-read-only</code>.</dd>
+
+<dt><a id="index-C_002dx-C_002dv-_0028FFAP_0029"></a>C-x C-v <code>filename</code> RET </dt><dd><code>ffap-alternate-file</code>, analogous to <code>find-alternate-file</code>.</dd>
+
+<dt><a id="index-C_002dx-d-_0028FFAP_0029"></a>C-x d <code>directory</code> RET </dt><dd>Start Dired on <code>directory</code>, defaulting to the directory at point (<code>dired-at-point</code>).</dd>
+
+<dt>C-x C-d <code>directory</code> RET</dt><dd><code>ffap-list-directory</code>, analogous to <code>list-directory</code>.</dd>
+
+<dt><a id="index-C_002dx-4-f-_0028FFAP_0029"></a>C-x 4 f <code>filename</code> RET </dt><dd><code>ffap-other-window</code>, analogous to <code>find-file-other-window</code>.</dd>
+
+<dt>C-x 4 r <code>filename</code> RET</dt><dd><code>ffap-read-only-other-window</code>, analogous to <code>find-file-read-only-other-window</code>.</dd>
+
+<dt>C-x 4 d <code>directory</code> RET</dt><dd><code>ffap-dired-other-window</code>, like <code>dired-other-window</code>.</dd>
+
+<dt><a id="index-C_002dx-5-f-_0028FFAP_0029"></a>C-x 5 f <code>filename</code> RET </dt><dd><code>ffap-other-frame</code>, analogous to <code>find-file-other-frame</code>.</dd>
+
+<dt>C-x 5 r <code>filename</code> RET</dt><dd><code>ffap-read-only-other-frame</code>, analogous to <code>find-file-read-only-other-frame</code>.</dd>
+
+<dt>C-x 5 d <code>directory</code> RET</dt><dd><code>ffap-dired-other-frame</code>, analogous to <code>dired-other-frame</code>.</dd>
+
+<dt>C-x t C-f <code>filename</code> return</dt><dd><code>ffap-other-tab</code>, analogous to <code>find-file-other-tab</code>.</dd>
+
+<dt>C-x t C-r <code>filename</code> return</dt><dd><code>ffap-read-only-other-tab</code>, analogous to <code>find-file-read-only-other-tab</code>.</dd>
+
+<dt>M-x ffap-next</dt><dd>Search buffer for next file name or URL, then find that file or URL.</dd>
+
+<dt><a id="index-S_002dmouse_002d3-_0028FFAP_0029"></a>S-mouse-3 </dt><dd><code>ffap-at-mouse</code> finds the file guessed from text around the position of a mouse click.</dd>
+
+<dt><a id="index-C_002dS_002dmouse_002d3-_0028FFAP_0029"></a>C-S-mouse-3 </dt><dd>Display a menu of files and URLs mentioned in current buffer, then find the one you select (<code>ffap-menu</code>).</dd>
+</dl>
+
+<hr />
+</div>
+</div>

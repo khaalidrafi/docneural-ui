@@ -1,0 +1,37 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#Preparing-Patches-1">1. 30.1.12.6 Preparing Patches ¶</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:   Previous: <a href="docs/emacs--Editing-VC-Commands.html">Editing VC Commands</a>   Up: <a href="docs/emacs--Miscellaneous-VC.html">Miscellaneous Commands and Features of VC</a>
+</p>
+
+<p>
+<a id="Preparing-Patches"></a>
+</p>
+
+<hr />
+<div id="outline-container-Preparing-Patches-1" class="outline-2">
+<h2 id="Preparing-Patches-1"><span class="section-number-2">1.</span> 30.1.12.6 Preparing Patches <a href="#Preparing-Patches-1">¶</a></h2>
+<div class="outline-text-2" id="text-Preparing-Patches-1">
+<p>
+When collaborating on projects it is common to send patches via email, to share changes. You can do this using VC with the <code>vc-prepare-patch</code> command. This will prompt you for the revisions you wish to share, and which destination email address(es) to use. Separate the revisions using the value of <code>crm-separator</code>, commas by default. The command will then prepare those revisions using your MUA (Mail User Agent) for you to review and send.
+</p>
+
+<p>
+When invoked interactively in a Log View buffer with marked revisions, those marked revisions will be used.
+</p>
+
+<p>
+Depending on the value of the user option <code>vc-prepare-patches-separately</code>, <code>vc-prepare-patch</code> will generate one or more messages. The default value <code>t</code> means prepare and display a message for each revision, one after another. A value of <code>nil</code> means to generate a single message with all patches attached in the body.
+</p>
+
+<p>
+If you expect to contribute patches on a regular basis, you can set the user option <code>vc-default-patch-addressee</code> to the address(es) you wish to use. This will be used as the default value when invoking <code>vc-prepare-patch</code>. Project maintainers may consider setting this as a directory local variable (see <a href="docs/emacs--Directory-Variables.html">Per-Directory Local Variables</a>).
+</p>
+</div>
+</div>

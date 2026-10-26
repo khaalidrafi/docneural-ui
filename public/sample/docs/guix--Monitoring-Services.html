@@ -1,0 +1,412 @@
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#section">1. [[file:..][]]</a></li>
+</ul>
+</div>
+</div>
+<p>
+Next:
+</p>
+<div id="outline-container-section" class="outline-2">
+<h2 id="section"><span class="section-number-2">1.</span> [[file:..][]]</h2>
+<div class="outline-text-2" id="text-section">
+<ul class="org-ul">
+<li><p>
+VersionVersion
+</p>
+
+<p>
+<a id="navbar-submenu"></a>
+</p>
+
+<ul class="org-ul">
+<li><a href="file:///manual/1.5.0/en/html_node">1.5.0</a></li>
+<li><a href="file:///manual/devel/en/html_node">development</a></li>
+<li><a href="../guix.html">single page</a></li>
+<li><a href="../guix.pdf">PDF</a></li>
+</ul></li>
+
+<li><a id="navbar-submenu"></a>
+
+<ul class="org-ul">
+<li><a href="../../de/html_node">Deutsch</a></li>
+<li><a href="../../en/html_node">English</a></li>
+<li><a href="../../es/html_node">Español</a></li>
+<li><a href="../../fr/html_node">Français</a></li>
+<li><a href="../../it/html_node">Italiano</a></li>
+<li><a href="../../pt-br/html_node">Português</a></li>
+<li><a href="../../ru/html_node">русский</a></li>
+<li><a href="../../zh-cn/html_node">中文; 汉语; 华语</a></li>
+<li><a href="https://translate.codeberg.org/projects/guix/documentation-manual/">⊕</a></li>
+</ul></li>
+</ul>
+
+<p>
+[[../..][]]
+</p>
+
+<p>
+<a id="Monitoring-Services"></a>
+</p>
+
+<p>
+Next: <a href="docs/guix--Kerberos-Services.html">Kerberos Services</a>, Previous: <a href="docs/guix--File_002dSharing-Services.html">File-Sharing Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+
+<hr />
+
+<p>
+<a id="Monitoring-Services-1"></a>
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="monitoring-services"></a>11.10.17 Monitoring Services<br />
+<div class="outline-text-5" id="text-monitoring-services">
+<p>
+<a id="Darkstat-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="darkstat-service"></a>Darkstat Service<br />
+<div class="outline-text-5" id="text-darkstat-service">
+<p>
+<a id="index-darkstat"></a>
+Darkstat is a packet sniffer that captures network traffic, calculates statistics about usage, and serves reports over HTTP.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: darkstat-service-type </dt><dd><p>
+This is the service type for the <a href="https://unix4lyfe.org/darkstat/">darkstat</a> service, its value must be a <code>darkstat-configuration</code> record as in this example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service darkstat-service-type
+         (darkstat-configuration
+           (interface "eno1")))
+</pre>
+</div></dd>
+
+<dt>Data Type: darkstat-configuration </dt><dd>Data type representing the configuration of <code>darkstat</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>darkstat</code>)</dt><dd>The darkstat package to use.</dd>
+
+<dt><code>interface</code></dt><dd>Capture traffic on the specified network interface.</dd>
+
+<dt><code>port</code> (default: <code>"667"</code>)</dt><dd>Bind the web interface to the specified port.</dd>
+
+<dt><code>bind-address</code> (default: <code>"127.0.0.1"</code>)</dt><dd>Bind the web interface to the specified address.</dd>
+
+<dt><code>base</code> (default: <code>"/"</code>)</dt><dd>Specify the path of the base URL. This can be useful if <code>darkstat</code> is accessed via a reverse proxy.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="prometheus_002dnode_002dexporter"></a><a id="Prometheus-Node-Exporter-Service"></a>
+</p>
+</div>
+</li>
+<li><a id="prometheus-node-exporter-service"></a>Prometheus Node Exporter Service<br />
+<div class="outline-text-5" id="text-prometheus-node-exporter-service">
+<p>
+<a id="index-prometheus_002dnode_002dexporter"></a>
+The Prometheus “node exporter” makes hardware and operating system statistics provided by the Linux kernel available for the Prometheus monitoring system. This service should be deployed on all physical nodes and virtual machines, where monitoring these statistics is desirable.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: prometheus-node-exporter-service-type </dt><dd><p>
+This is the service type for the <a href="https://github.com/prometheus/node_exporter/">prometheus-node-exporter</a> service, its value must be a <code>prometheus-node-exporter-configuration</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service prometheus-node-exporter-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: prometheus-node-exporter-configuration </dt><dd>Data type representing the configuration of <code>node_exporter</code>.
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>go-github-com-prometheus-node-exporter</code>)</dt><dd>The prometheus-node-exporter package to use.</dd>
+
+<dt><code>web-listen-address</code> (default: <code>":9100"</code>)</dt><dd>Bind the web interface to the specified address.</dd>
+
+<dt><code>textfile-directory</code> (default: <code>"/var/lib/prometheus/node-exporter"</code>)</dt><dd>This directory can be used to export metrics specific to this machine. Files containing metrics in the text format, with the filename ending in <code>.prom</code> should be placed in this directory.</dd>
+
+<dt><code>extra-options</code> (default: <code>'()</code>)</dt><dd>Extra options to pass to the Prometheus node exporter.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="vnstat"></a><a id="vnStat-Network-Traffic-Monitor"></a>
+</p>
+</div>
+</li>
+<li><a id="vnstat-network-traffic-monitor"></a>vnStat Network Traffic Monitor<br />
+<div class="outline-text-5" id="text-vnstat-network-traffic-monitor">
+<p>
+<a id="index-vnstat"></a>
+vnStat is a network traffic monitor that uses interface statistics provided by the kernel rather than traffic sniffing. This makes it a light resource monitor, regardless of network traffic rate.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: vnstat-service-type </dt><dd><p>
+This is the service type for the <a href="https://humdi.net/vnstat/">vnStat</a> daemon and accepts a <code>vnstat-configuration</code> value.
+</p>
+
+<p>
+The following example will configure the service with default values:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(service vnstat-service-type)
+</pre>
+</div></dd>
+
+<dt>Data Type: vnstat-configuration </dt><dd>Available <code>vnstat-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>package</code> (default: <code>vnstat</code>) (type: file-like)</dt><dd>The vnstat package.</dd>
+
+<dt><code>database-directory</code> (default: <code>"/var/lib/vnstat"</code>) (type: string)</dt><dd>Specifies the directory where the database is to be stored. A full path must be given and a leading '/' isn't required.</dd>
+
+<dt><code>5-minute-hours</code> (default: <code>48</code>) (type: maybe-integer)</dt><dd>Data retention duration for the 5 minute resolution entries. The configuration defines for how many past hours entries will be stored. Set to <code>-1</code> for unlimited entries or to <code>0</code> to disable the data collection of this resolution.</dd>
+
+<dt><code>64bit-interface-counters</code> (default: <code>-2</code>) (type: maybe-integer)</dt><dd>Select interface counter handling. Set to <code>1</code> for defining that all interfaces use 64-bit counters on the kernel side and <code>0</code> for defining 32-bit counter. Set to <code>-1</code> for using the old style logic used in earlier versions where counter values within 32-bits are assumed to be 32-bit and anything larger is assumed to be a 64-bit counter. This may produce false results if a 64-bit counter is reset within the 32-bits. Set to <code>-2</code> for using automatic detection based on available kernel datastructures.</dd>
+
+<dt><code>always-add-new-interfaces?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Enable or disable automatic creation of new database entries for interfaces not currently in the database even if the database file already exists when the daemon is started. New database entries will also get created for new interfaces seen while the daemon is running. Pseudo interfaces ‘=lo=', ‘=lo0=' and ‘=sit0=' are always excluded from getting added.</dd>
+
+<dt><code>bandwidth-detection?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Try to automatically detect <code>max-bandwidth</code> value for each monitored interface. Mostly only ethernet interfaces support this feature. <code>max-bandwidth</code> will be used as fallback value if detection fails. Any interface specific <code>max-BW</code> configuration will disable the detection for the specified interface. In Linux, the detection is disabled for tun interfaces due to the Linux kernel always reporting 10 Mbit regardless of the used real interface.</dd>
+
+<dt><code>bandwidth-detection-interval</code> (default: <code>5</code>) (type: maybe-integer)</dt><dd>How often in minutes interface specific detection of <code>max-bandwidth</code> is done for detecting possible changes when <code>bandwidth-detection</code> is enabled. Can be disabled by setting to <code>0</code>. Value range: ‘=0='..‘=30='</dd>
+
+<dt><code>boot-variation</code> (default: <code>15</code>) (type: maybe-integer)</dt><dd>Time in seconds how much the boot time reported by system kernel can variate between updates. Value range: ‘=0='..‘=300='</dd>
+
+<dt><code>check-disk-space?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Enable or disable the availability check of at least some free disk space before a database write.</dd>
+
+<dt><code>create-directories?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Enable or disable the creation of directories when a configured path doesn't exist. This includes <code>database-directory</code>.</dd>
+
+<dt><code>daemon-group</code> (type: maybe-user-group)</dt><dd>Specify the group to which the daemon process should switch during startup. Set to <code>%unset-value</code> to disable group switching.</dd>
+
+<dt><code>daemon-user</code> (type: maybe-user-account)</dt><dd>Specify the user to which the daemon process should switch during startup. Set to <code>%unset-value</code> to disable user switching.</dd>
+
+<dt><code>daily-days</code> (default: <code>62</code>) (type: maybe-integer)</dt><dd>Data retention duration for the one day resolution entries. The configuration defines for how many past days entries will be stored. Set to <code>-1</code> for unlimited entries or to <code>0</code> to disable the data collection of this resolution.</dd>
+
+<dt><code>database-synchronous</code> (default: <code>-1</code>) (type: maybe-integer)</dt><dd>Change the setting of the SQLite "synchronous" flag which controls how much care is taken to ensure disk writes have fully completed when writing data to the database before continuing other actions. Higher values take extra steps to ensure data safety at the cost of slower performance. A value of <code>0</code> will result in all handling being left to the filesystem itself. Set to <code>-1</code> to select the default value according to database mode controlled by <code>database-write-ahead-logging</code> setting. See SQLite documentation for more details regarding values from <code>1</code> to <code>3</code>. Value range: ‘=-1='..‘=3='</dd>
+
+<dt><code>database-write-ahead-logging?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Enable or disable SQLite Write-Ahead Logging mode for the database. See SQLite documentation for more details and note that support for read-only operations isn't available in older SQLite versions.</dd>
+
+<dt><code>hourly-days</code> (default: <code>4</code>) (type: maybe-integer)</dt><dd>Data retention duration for the one hour resolution entries. The configuration defines for how many past days entries will be stored. Set to <code>-1</code> for unlimited entries or to <code>0</code> to disable the data collection of this resolution.</dd>
+
+<dt><code>log-file</code> (type: maybe-string)</dt><dd>Specify log file path and name to be used if <code>use-logging</code> is set to <code>1</code>.</dd>
+
+<dt><code>max-bandwidth</code> (type: maybe-integer)</dt><dd>Maximum bandwidth for all interfaces. If the interface specific traffic exceeds the given value then the data is assumed to be invalid and rejected. Set to 0 in order to disable the feature. Value range: ‘=0='..‘=50000='</dd>
+
+<dt><code>max-bw</code> (type: maybe-alist)</dt><dd><p>
+Same as <code>max-bandwidth</code> but can be used for setting individual limits for selected interfaces. This is an association list of interfaces as strings to integer values. For example,
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(max-bw `(("eth0" .  15000)
+          ("ppp0" .  10000)))
+</pre>
+</div>
+
+<p>
+<code>bandwidth-detection</code> is disabled on an interface specific level for each <code>max-bw</code> configuration. Value range: ‘=0='..‘=50000='
+</p></dd>
+
+<dt><code>monthly-months</code> (default: <code>25</code>) (type: maybe-integer)</dt><dd>Data retention duration for the one month resolution entries. The configuration defines for how many past months entries will be stored. Set to <code>-1</code> for unlimited entries or to <code>0</code> to disable the data collection of this resolution.</dd>
+
+<dt><code>month-rotate</code> (default: <code>1</code>) (type: maybe-integer)</dt><dd>Day of month that months are expected to change. Usually set to 1 but can be set to alternative values for example for tracking monthly billed traffic where the billing period doesn't start on the first day. For example, if set to 7, days of February up to and including the 6th will count for January. Changing this option will not cause existing data to be recalculated. Value range: ‘=1='..‘=28='</dd>
+
+<dt><code>month-rotate-affects-years?</code> (default: <code>#f</code>) (type: maybe-boolean)</dt><dd>Enable or disable <code>month-rotate</code> also affecting yearly data. Applicable only when <code>month-rotate</code> has a value greater than one.</dd>
+
+<dt><code>offline-save-interval</code> (default: <code>30</code>) (type: maybe-integer)</dt><dd>How often in minutes cached interface data is saved to file when all monitored interfaces are offline. Value range: <code>save-interval</code>..‘=60='</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/vnstatd.pid"</code>) (type: maybe-string)</dt><dd>Specify pid file path and name to be used.</dd>
+
+<dt><code>poll-interval</code> (default: <code>5</code>) (type: maybe-integer)</dt><dd>How often in seconds interfaces are checked for status changes. Value range: ‘=2='..‘=60='</dd>
+
+<dt><code>rescan-database-on-save?</code> (type: maybe-boolean)</dt><dd>Automatically discover added interfaces from the database and start monitoring. The rescan is done every <code>save-interval</code> or <code>offline-save-interval</code> minutes depending on the current activity state.</dd>
+
+<dt><code>save-interval</code> (default: <code>5</code>) (type: maybe-integer)</dt><dd>How often in minutes cached interface data is saved to file. Value range: ( <code>update-interval</code> / 60 )..‘=60='</dd>
+
+<dt><code>save-on-status-change?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Enable or disable the additional saving to file of cached interface data when the availability of an interface changes, i.e., when an interface goes offline or comes online.</dd>
+
+<dt><code>time-sync-wait</code> (default: <code>5</code>) (type: maybe-integer)</dt><dd>How many minutes to wait during daemon startup for system clock to sync if most recent database update appears to be in the future. This may be needed in systems without a real-time clock (RTC) which require some time after boot to query and set the correct time. <code>0</code> = wait disabled. Value range: ‘=0='..‘=60='</dd>
+
+<dt><code>top-day-entries</code> (default: <code>20</code>) (type: maybe-integer)</dt><dd>Data retention duration for the top day entries. The configuration defines how many of the past top day entries will be stored. Set to <code>-1</code> for unlimited entries or to <code>0</code> to disable the data collection of this resolution.</dd>
+
+<dt><code>trafficless-entries?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Create database entries even when there is no traffic during the entry's time period.</dd>
+
+<dt><code>update-file-owner?</code> (default: <code>#t</code>) (type: maybe-boolean)</dt><dd>Enable or disable the update of file ownership during daemon process startup. During daemon startup, only database, log and pid files will be modified if the user or group change feature ( <code>daemon-user</code> or <code>daemon-group</code> ) is enabled and the files don't match the requested user or group. During manual database creation, this option will cause file ownership to be inherited from the database directory if the directory already exists. This option only has effect when the process is started as root or via sudo.</dd>
+
+<dt><code>update-interval</code> (default: <code>20</code>) (type: maybe-integer)</dt><dd>How often in seconds the interface data is updated. Value range: <code>poll-interval</code>..‘=300='</dd>
+
+<dt><code>use-logging</code> (default: <code>2</code>) (type: maybe-integer)</dt><dd>Enable or disable logging. Accepted values are: <code>0</code> = disabled, <code>1</code> = logfile and <code>2</code> = syslog.</dd>
+
+<dt><code>use-utc?</code> (type: maybe-boolean)</dt><dd>Enable or disable using UTC as timezone in the database for all entries. When enabled, all entries added to the database will use UTC regardless of the configured system timezone. When disabled, the configured system timezone will be used. Changing this setting will not result in already existing data to be modified.</dd>
+
+<dt><code>yearly-years</code> (default: <code>-1</code>) (type: maybe-integer)</dt><dd>Data retention duration for the one year resolution entries. The configuration defines for how many past years entries will be stored. Set to <code>-1</code> for unlimited entries or to <code>0</code> to disable the data collection of this resolution.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="Zabbix-server"></a>
+</p>
+</div>
+</li>
+<li><a id="zabbix-server"></a>Zabbix server<br />
+<div class="outline-text-5" id="text-zabbix-server">
+<p>
+<a id="index-zabbix-zabbix_002dserver"></a>
+Zabbix is a high performance monitoring system that can collect data from a variety of sources and provide the results in a web-based interface. Alerting and reporting is built-in, as well as <i>templates</i> for common operating system metrics such as network utilization, CPU load, and disk space consumption.
+</p>
+
+<p>
+This service provides the central Zabbix monitoring service; you also need to configure Zabbix and display results, and optionally on machines that should be monitored (other data sources are supported, such as ).
+</p>
+
+<dl class="org-dl">
+<dt>Variable: zabbix-server-service-type </dt><dd>This is the service type for the Zabbix server service. Its value must be a <code>zabbix-server-configuration</code> record, shown below.</dd>
+
+<dt>Data Type: zabbix-server-configuration </dt><dd>Available <code>zabbix-server-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>zabbix-server</code> (default: <code>zabbix-server</code>) (type: file-like)</dt><dd>The zabbix-server package.</dd>
+
+<dt><code>user</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>User who will run the Zabbix server.</dd>
+
+<dt><code>group</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>Group who will run the Zabbix server.</dd>
+
+<dt><code>db-host</code> (default: <code>"127.0.0.1"</code>) (type: string)</dt><dd>Database host name.</dd>
+
+<dt><code>db-name</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>Database name.</dd>
+
+<dt><code>db-user</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>Database user.</dd>
+
+<dt><code>db-password</code> (default: <code>""</code>) (type: string)</dt><dd>Database password. Please, use <code>include-files</code> with <code>DBPassword=SECRET</code> inside a specified file instead.</dd>
+
+<dt><code>db-port</code> (default: <code>5432</code>) (type: number)</dt><dd>Database port.</dd>
+
+<dt><code>log-type</code> (default: <code>""</code>) (type: string)</dt><dd>Specifies where log messages are written to:
+
+<ul class="org-ul">
+<li><code>system</code> - syslog.</li>
+<li><code>file</code> - file specified with <code>log-file</code> parameter.</li>
+<li><code>console</code> - standard output.</li>
+</ul></dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/zabbix/server.log"</code>) (type: string)</dt><dd>Log file name for <code>log-type</code> <code>file</code> parameter.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/zabbix/zabbix_server.pid"</code>) (type: string)</dt><dd>Name of PID file.</dd>
+
+<dt><code>ssl-ca-location</code> (default: <code>"/etc/ssl/certs/ca-certificates.crt"</code>) (type: string)</dt><dd>The location of certificate authority (CA) files for SSL server certificate verification.</dd>
+
+<dt><code>ssl-cert-location</code> (default: <code>"/etc/ssl/certs"</code>) (type: string)</dt><dd>Location of SSL client certificates.</dd>
+
+<dt><code>extra-options</code> (default: <code>""</code>) (type: extra-options)</dt><dd>Extra options will be appended to Zabbix server configuration file.</dd>
+
+<dt><code>include-files</code> (default: <code>'()</code>) (type: include-files)</dt><dd>You may include individual files or all files in a directory in the configuration file.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="zabbix_002dagent"></a><a id="Zabbix-agent"></a>
+</p>
+</div>
+</li>
+<li><a id="zabbix-agent"></a>Zabbix agent<br />
+<div class="outline-text-5" id="text-zabbix-agent">
+<p>
+<a id="index-zabbix-zabbix_002dagent"></a>
+The Zabbix agent gathers information about the running system for the Zabbix monitoring server. It has a variety of built-in checks, and can be extended with custom <a href="https://www.zabbix.com/documentation/current/en/manual/config/items/userparameters"><i>user parameters</i></a>.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: zabbix-agent-service-type </dt><dd>This is the service type for the Zabbix agent service. Its value must be a <code>zabbix-agent-configuration</code> record, shown below.</dd>
+
+<dt>Data Type: zabbix-agent-configuration </dt><dd>Available <code>zabbix-agent-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>zabbix-agent</code> (default: <code>zabbix-agentd</code>) (type: file-like)</dt><dd>The zabbix-agent package.</dd>
+
+<dt><code>user</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>User who will run the Zabbix agent.</dd>
+
+<dt><code>group</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>Group who will run the Zabbix agent.</dd>
+
+<dt><code>hostname</code> (default: <code>""</code>) (type: string)</dt><dd>Unique, case sensitive hostname which is required for active checks and must match hostname as configured on the server.</dd>
+
+<dt><code>log-type</code> (default: <code>""</code>) (type: string)</dt><dd>Specifies where log messages are written to:
+
+<ul class="org-ul">
+<li><code>system</code> - syslog.</li>
+<li><code>file</code> - file specified with <code>log-file</code> parameter.</li>
+<li><code>console</code> - standard output.</li>
+</ul></dd>
+
+<dt><code>log-file</code> (default: <code>"/var/log/zabbix/agent.log"</code>) (type: string)</dt><dd>Log file name for <code>log-type</code> <code>file</code> parameter.</dd>
+
+<dt><code>pid-file</code> (default: <code>"/var/run/zabbix/zabbix_agent.pid"</code>) (type: string)</dt><dd>Name of PID file.</dd>
+
+<dt><code>server</code> (default: <code>'("127.0.0.1")</code>) (type: list)</dt><dd>List of IP addresses, optionally in CIDR notation, or hostnames of Zabbix servers and Zabbix proxies. Incoming connections will be accepted only from the hosts listed here.</dd>
+
+<dt><code>server-active</code> (default: <code>'("127.0.0.1")</code>) (type: list)</dt><dd>List of IP:port (or hostname:port) pairs of Zabbix servers and Zabbix proxies for active checks. If port is not specified, default port is used. If this parameter is not specified, active checks are disabled.</dd>
+
+<dt><code>extra-options</code> (default: <code>""</code>) (type: extra-options)</dt><dd>Extra options will be appended to Zabbix server configuration file.</dd>
+
+<dt><code>include-files</code> (default: <code>'()</code>) (type: include-files)</dt><dd>You may include individual files or all files in a directory in the configuration file.</dd>
+</dl></dd>
+</dl>
+
+<p>
+<a id="zabbix_002dfront_002dend"></a><a id="Zabbix-front_002dend"></a>
+</p>
+</div>
+</li>
+<li><a id="zabbix-front-end"></a>Zabbix front-end<br />
+<div class="outline-text-5" id="text-zabbix-front-end">
+<p>
+<a id="index-zabbix-zabbix_002dfront_002dend"></a>
+The Zabbix front-end provides a web interface to Zabbix. It does not need to run on the same machine as the Zabbix server. This service works by extending the <a href="docs/guix--Web-Services.html#PHP_002dFPM">PHP-FPM</a> and <a href="docs/guix--Web-Services.html#NGINX">NGINX</a> services with the configuration necessary for loading the Zabbix user interface.
+</p>
+
+<dl class="org-dl">
+<dt>Variable: zabbix-front-end-service-type </dt><dd>This is the service type for the Zabbix web frontend. Its value must be a <code>zabbix-front-end-configuration</code> record, shown below.</dd>
+
+<dt>Data Type: zabbix-front-end-configuration </dt><dd>Available <code>zabbix-front-end-configuration</code> fields are:
+
+<dl class="org-dl">
+<dt><code>zabbix-server</code> (default: <code>zabbix-server</code>) (type: file-like)</dt><dd>The Zabbix server package to use.</dd>
+
+<dt><code>nginx</code> (default: <code>'()</code>) (type: list)</dt><dd>List of <a href="docs/guix--Web-Services.html#nginx_002dserver_002dconfiguration"><code>nginx-server-configuration</code></a> blocks for the Zabbix front-end. When empty, a default that listens on port 80 is used.</dd>
+
+<dt><code>db-host</code> (default: <code>"localhost"</code>) (type: string)</dt><dd>Database host name.</dd>
+
+<dt><code>db-port</code> (default: <code>5432</code>) (type: number)</dt><dd>Database port.</dd>
+
+<dt><code>db-name</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>Database name.</dd>
+
+<dt><code>db-user</code> (default: <code>"zabbix"</code>) (type: string)</dt><dd>Database user.</dd>
+
+<dt><code>db-password</code> (default: <code>""</code>) (type: string)</dt><dd>Database password. Please, use <code>db-secret-file</code> instead.</dd>
+
+<dt><code>db-secret-file</code> (default: <code>""</code>) (type: string)</dt><dd>Secret file which will be appended to <code>zabbix.conf.php</code> file. This file contains credentials for use by Zabbix front-end. You are expected to create it manually.</dd>
+
+<dt><code>zabbix-host</code> (default: <code>"localhost"</code>) (type: string)</dt><dd>Zabbix server hostname.</dd>
+
+<dt><code>zabbix-port</code> (default: <code>10051</code>) (type: number)</dt><dd>Zabbix server port.</dd>
+</dl></dd>
+</dl>
+
+<hr />
+
+<p>
+Next: <a href="docs/guix--Kerberos-Services.html">Kerberos Services</a>, Previous: <a href="docs/guix--File_002dSharing-Services.html">File-Sharing Services</a>, Up: <a href="docs/guix--Services.html">Services</a>   [<a href="docs/guix--index.html#SEC_Contents">Contents</a>][<a href="docs/guix--Concept-Index.html">Index</a>]
+</p>
+</div>
+</li>
+</ol>
+</div>
