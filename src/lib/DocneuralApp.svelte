@@ -441,7 +441,7 @@
   .seg .bracket { color: var(--dn-border-strong); }
   .seg:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .seg.active {
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
     font-weight: 600;
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
     /* Active label at full brightness: the glow IS the on-state. The lit

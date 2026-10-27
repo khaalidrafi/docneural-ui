@@ -87,7 +87,7 @@
     .peek { animation: none; }
   }
   .pk-src {
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
     font-size: 0.62rem;
     letter-spacing: var(--dn-track);
   }

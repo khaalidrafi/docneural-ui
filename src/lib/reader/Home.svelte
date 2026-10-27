@@ -402,7 +402,7 @@
   }
   .lede { color: var(--dn-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
   .lede strong { color: var(--dn-fg); }
-  .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2); }
+  .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2-text); }
   /* The hero readout: a bordered panel of real numbers, left-aligned inside a
      centered hero and wide enough that the columns never wrap on a laptop.
      SIGNAL pass: darker glass, accent edge — and the numbers are the hero's
@@ -506,7 +506,7 @@
     text-transform: uppercase;
     letter-spacing: var(--dn-track);
     font-size: 0.68rem;
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
   }
   .resume .r-to { color: var(--dn-fg); overflow-wrap: anywhere; }
   .resume:hover .r-to { text-decoration: underline; }
@@ -545,7 +545,7 @@
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, transparent);
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
   }
-  .mk .mk-src { color: var(--dn-src, var(--dn-accent)); }
+  .mk .mk-src { color: var(--dn-accent); }
   .mk .mk-to { color: var(--dn-fg-faint); }
   .sources h2, .section-h { color: var(--dn-fg-muted); margin: 0 0 0.7rem; }
   .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
@@ -584,7 +584,7 @@
       0 6px 18px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
     transform: translateY(-2px);
   }
-  .src-name { font-size: 0.85rem; font-weight: 600; color: var(--dn-src, var(--dn-fg)); letter-spacing: 0.03em; }
+  .src-name { font-size: 0.85rem; font-weight: 600; color: var(--dn-accent); letter-spacing: 0.03em; }
   .src-meta { font-size: 0.68rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
   .src-open {
     position: absolute;
@@ -592,7 +592,7 @@
     top: 0.7em;
     font-size: 0.68rem;
     font-family: var(--dn-font-mono);
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
     opacity: 0;
     transition: opacity 120ms;
   }
@@ -657,7 +657,7 @@
     padding: 0.45em 0.7em;
     cursor: pointer;
   }
-  .results li button:hover { background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent); color: var(--dn-src, var(--dn-accent)); }
+  .results li button:hover { background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent); color: var(--dn-accent); }
   /* The source's hue as a dot: you see which corpus a hit belongs to before
      you read its title. */
   .results .dot {
@@ -715,7 +715,7 @@
       0 0 26px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
       0 8px 22px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
   }
-  .cta-k { font-size: 1.1rem; color: var(--dn-src, var(--dn-accent-2)); }
+  .cta-k { font-size: 1.1rem; color: var(--dn-accent-2-text); }
   .cta-k.spark { color: var(--dn-hot); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
   .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
@@ -792,12 +792,12 @@
   }
   .card-title { font-size: 0.88rem; }
   .card-deg { align-self: flex-end; font-size: 0.66rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
-  .card:hover .card-deg { color: var(--dn-src, var(--dn-accent)); }
+  .card:hover .card-deg { color: var(--dn-accent); }
 
   .foot { max-width: 60ch; text-align: center; font-size: 0.7rem; color: var(--dn-fg-faint); line-height: 1.9; letter-spacing: 0.04em; }
   .foot .sym { color: var(--dn-accent-dim); }
   .foot .mach {
-    color: var(--dn-accent-2);
+    color: var(--dn-accent-2-text);
     text-decoration: none;
     border-bottom: 1px dotted color-mix(in srgb, var(--dn-accent-2) 45%, transparent);
     padding-bottom: 1px;

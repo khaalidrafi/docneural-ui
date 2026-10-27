@@ -138,7 +138,7 @@
      the SIGNAL pass): body ~16:1, muted ~9:1, faint ~5.5:1, borders 3:1. */
   --dn-fg-muted: #a9bfd6;
   --dn-fg-faint: #8ba3bd;
-  --dn-border: #2e4a68;
+  --dn-border: #416487;
   --dn-border-strong: #5d89b4;
 
   /* Signals — the cyberpunk set (designer r3): cyan is the wire, hot pink
@@ -147,6 +147,7 @@
   --dn-accent: #00f0ff;   /* primary: links, focus, active chrome */
   --dn-accent-dim: #2cc4e3; /* accent, safe as text on ink */
   --dn-accent-2: #ff3366; /* secondary: tags, counts, the firing set */
+  --dn-accent-2-text: #ff3366;
   --dn-hot: #ffdf3f;      /* attention: hover, backlink arrows, reticle */
   --dn-amber: #ffb347;    /* TODO markers, warnings */
   --dn-acid: #39ff14;     /* live/online readouts: LED, uplink kicker */
@@ -229,11 +230,12 @@
   --dn-fg: #0b1524;
   --dn-fg-muted: #38506a;
   --dn-fg-faint: #556a80;
-  --dn-border: #6d89a2;
+  --dn-border: #66839c;
   --dn-border-strong: #47647f;
   --dn-accent: #00688f;
   --dn-accent-dim: #056a8a;
   --dn-accent-2: #c91375;
+  --dn-accent-2-text: #a80e5f;
   --dn-hot: #7a5c00;
   --dn-amber: #8f5600;
   /* Ink-jet versions of the two new signals: readable as text on paper. */
@@ -270,11 +272,12 @@
     --dn-fg: #0b1524;
     --dn-fg-muted: #38506a;
     --dn-fg-faint: #556a80;
-    --dn-border: #6d89a2;
+    --dn-border: #66839c;
     --dn-border-strong: #47647f;
     --dn-accent: #00688f;
     --dn-accent-dim: #056a8a;
     --dn-accent-2: #c91375;
+    --dn-accent-2-text: #a80e5f;
     --dn-hot: #7a5c00;
     --dn-amber: #8f5600;
     --dn-acid: #0b7a12;
@@ -739,7 +742,7 @@ body.dn-body::after {
   animation: dn-glitch-a 6s steps(1, end) infinite;
 }
 .dn-glitch::after {
-  color: var(--dn-accent-2);
+  color: var(--dn-accent-2-text);
   clip-path: inset(55% 0 0 0);
   animation: dn-glitch-b 6s steps(1, end) infinite;
 }
@@ -924,7 +927,7 @@ body.dn-body::after {
 }
 .dn-nav a.active,
 .dn-nav a[aria-current] {
-  color: var(--dn-src, var(--dn-accent));
+  color: var(--dn-accent);
   border-bottom-color: var(--dn-src, var(--dn-accent));
 }
 
@@ -1159,7 +1162,7 @@ body.dn-body::after {
   border-radius: var(--dn-radius-sm);
   padding: 0.1em 0.55em;
   margin-left: 0.35em;
-  color: var(--dn-accent-2);
+  color: var(--dn-accent-2-text);
   white-space: nowrap;
 }
 
@@ -1241,7 +1244,7 @@ body.dn-body::after {
   font-size: 0.85em;
   letter-spacing: var(--dn-track-tight);
   text-transform: uppercase;
-  color: var(--dn-src, var(--dn-accent));
+  color: var(--dn-accent);
   border-bottom: 2px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, var(--dn-border-strong));
 }
 /* Zebra: every second body row sits on the raised surface — the stripe
@@ -1290,3 +1293,31 @@ body.dn-body::after {
    stay hidden, the title takes the display face — the one place in the
    reader where the brand voice is allowed. */
 .dn-org .title { font-family: var(--dn-font-mono); }
+
+/* Graph hues remain on edges and markers; readable labels use verified
+   foreground colors so every source stays AA-safe in both themes. */
+.dn-body .src-name,
+.dn-body .src-open,
+.dn-body .mk-src,
+.dn-body .chapter.active,
+.dn-body .pager-btn .pt,
+.dn-body .src-chip {
+  color: var(--dn-accent);
+}
+.dn-body .seg.active { color: var(--dn-accent); }
+
+/* Keep interactive chrome comfortable on touch screens without stretching
+   prose links or dense data rows. */
+:where(.dn-body .seg, .dn-body .tool, .dn-body .menu, .dn-body .cpy,
+  .dn-body .raw, .dn-body .pager-btn, .dn-body .resume, .dn-body .src-card,
+  .dn-body .cta, .dn-body .card, .dn-body .mk, .dn-body .tab,
+  .dn-body .tag-chip, .dn-body .link-btn, .dn-body .more, .dn-body .expand,
+  .dn-body .chapter, .dn-body .home, .dn-body .pinned button) {
+  min-height: 2.5rem;
+}
+
+@media (max-width: 700px) {
+  .dn-org { line-height: 1.72; }
+  .dn-org h1 { font-size: clamp(1.45rem, 7vw, var(--dn-text-2xl)); }
+  .dn-org h2 { font-size: clamp(1.15rem, 5.5vw, var(--dn-text-xl)); }
+}
