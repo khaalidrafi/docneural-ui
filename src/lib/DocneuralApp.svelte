@@ -372,7 +372,9 @@
       0 2px 18px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
   }
   /* The signal rail: a thin cyan→magenta gradient line under the whole bar —
-     the header is now visibly the top of the instrument, not just a strip. */
+     the header is now visibly the top of the instrument, not just a strip.
+     IGNITION: a bright data pulse rides the rail on a loop (background-position
+     on a 2px bar — negligible paint), so the chrome itself reads as wired. */
   .shell::after {
     content: "";
     position: absolute;
@@ -381,13 +383,23 @@
     bottom: -1px;
     height: 2px;
     pointer-events: none;
-    background: linear-gradient(90deg,
-      transparent 2%,
-      color-mix(in srgb, var(--dn-accent) 85%, transparent) 28%,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, var(--dn-accent-2)) 55%,
-      color-mix(in srgb, var(--dn-accent-2) 85%, transparent) 78%,
-      transparent 98%);
+    background:
+      linear-gradient(90deg,
+        transparent 2%,
+        color-mix(in srgb, var(--dn-accent) 85%, transparent) 28%,
+        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, var(--dn-accent-2)) 55%,
+        color-mix(in srgb, var(--dn-accent-2) 85%, transparent) 78%,
+        transparent 98%),
+      repeating-linear-gradient(90deg,
+        transparent 0 170px,
+        color-mix(in srgb, var(--dn-fg) 60%, transparent) 176px,
+        transparent 184px 340px);
+    background-size: 100% 100%, 340px 100%;
+    animation: dn-rail-flow 5.6s linear infinite;
     opacity: 0.9;
+  }
+  @keyframes dn-rail-flow {
+    to { background-position: 0 0, 340px 0; }
   }
   .brand {
     font-family: var(--dn-font-display);
