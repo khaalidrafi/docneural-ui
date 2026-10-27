@@ -25,6 +25,8 @@
       uses lives here, so downstream sites can re-skin with one block.
    2. Base/reset — page chrome: circuit grid, scanlines, links, caret.
    2b. HUD vocabulary — notches, brackets, glitch, chips, source tint.
+   2c. Machine output — key/value grids, selection.
+   2d. Chrome — header, nav, status rows, section headers, footer.
    3. `.dn-org` — styling for raw org-export HTML (headings, tables, src
       blocks, TODO badges…). The site injects unmodified Org HTML here; the
       theme must NOT depend on any JS.
@@ -90,8 +92,38 @@
      and cramped small, so nothing readable is set in it — one file, 17 kB. */
   --dn-font-display: "Electrolize", "JetBrains Mono", ui-monospace, monospace;
   /* Tracking for the uppercase micro-labels that make this read as an
-     instrument panel. */
+     instrument panel. The ramp: tight for code-ish tags, base for labels,
+     wide for overline kickers and the status bar. */
   --dn-track: 0.16em;
+  --dn-track-tight: 0.08em;
+  --dn-track-wide: 0.28em;
+
+  /* Type-size ramp (rem). Only what the chrome + prose actually use; the
+     prose section sizes off these so heading rhythm is one scale. */
+  --dn-text-xs: 0.7rem;   /* micro-labels, chips */
+  --dn-text-sm: 0.85rem;  /* table headers, code wells */
+  --dn-text-md: 1rem;     /* body */
+  --dn-text-lg: 1.12rem;  /* h3 */
+  --dn-text-xl: 1.3rem;   /* h2 */
+  --dn-text-2xl: 1.7rem;  /* h1 / page title */
+
+  /* Spacing ramp — 4px base unit, 8 steps. Chrome rhythm (nav gaps, panel
+     padding, section margins) reads off this so everything lands on the
+     same grid the circuit pattern draws. */
+  --dn-space-1: 0.25rem;
+  --dn-space-2: 0.5rem;
+  --dn-space-3: 0.75rem;
+  --dn-space-4: 1rem;
+  --dn-space-5: 1.5rem;
+  --dn-space-6: 2rem;
+  --dn-space-7: 3rem;
+  --dn-space-8: 4rem;
+
+  /* Radii — the HUD is sharp; radii exist only to take the pixel-sting off
+     filled elements (chips, wells). Never above 4px, never on panels. */
+  --dn-radius-sm: 2px;
+  --dn-radius: 3px;
+  --dn-radius-lg: 4px;
 
   /* Surfaces — VOID black (designer round-3 spec: "deeper pit, so emissive
      elements breathe"), keeping the SIGNAL pass's raised text tiers so the
@@ -131,6 +163,17 @@
     0 0 26px color-mix(in srgb, var(--dn-accent) 30%, transparent);
   --dn-glow-2: 0 0 7px color-mix(in srgb, var(--dn-accent-2) 70%, transparent),
     0 0 26px color-mix(in srgb, var(--dn-accent-2) 30%, transparent);
+  /* The acid readout gets its own small halo (status LEDs, LIVE kickers). */
+  --dn-glow-acid: 0 0 6px color-mix(in srgb, var(--dn-acid) 75%, transparent),
+    0 0 18px color-mix(in srgb, var(--dn-acid) 35%, transparent);
+
+  /* Corner-bracket recipe, as tokens: stroke width, arm length, and the
+     neon bleed under the strokes. .dn-hud and .dn-brackets both read these,
+     so "a bracket" is a constant across pseudo-element and gradient
+     implementations. */
+  --dn-bracket-w: 2px;
+  --dn-bracket-l: 14px;
+  --dn-bracket-bleed: drop-shadow(0 0 4px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, transparent));
 
   /* Graph wires, as a LITERAL color: the force-graph canvas cannot read
      custom properties or parse color-mix(), so the embed bridges
@@ -162,7 +205,6 @@
 
   /* Geometry — sharp. The one notch is the signature; --dn-notch feeds the
      clip-path shapes in §2b. */
-  --dn-radius: 3px;
   --dn-notch: 9px;
   --dn-max-prose: 74ch;
   --dn-header-h: 3.2rem;
@@ -177,7 +219,9 @@
    The neon darkens into ink-jet colour so the HUD survives a bright room.
    SIGNAL pass: this is a first-class look now, not an afterthought — real
    paper (brighter floor), real ink (darker text), saturated signal colours,
-   and every token re-checked against WCAG AA (text >= 4.5:1, borders >= 3:1). */
+   and every token re-checked against WCAG AA (text >= 4.5:1, borders >= 3:1).
+   Full parity: the glow recipes and bracket bleed are re-tuned for paper
+   too, because a dark-theme bloom on white reads as a dirty smudge. */
 :root[data-theme='light'] {
   --dn-bg: #f4f7fb;
   --dn-bg-raise: #ffffff;
@@ -198,6 +242,15 @@
   /* The wordmark keeps its decay on paper with the darkened stops. */
   --dn-wordmark: linear-gradient(135deg,
     #056a8a 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
+  /* Glows on paper: shorter throw, tighter core — a printed halo, not a
+     lamp. Keeps focus rings and hover states legible in a bright room. */
+  --dn-glow: 0 0 4px color-mix(in srgb, var(--dn-accent) 45%, transparent),
+    0 0 12px color-mix(in srgb, var(--dn-accent) 18%, transparent);
+  --dn-glow-2: 0 0 4px color-mix(in srgb, var(--dn-accent-2) 45%, transparent),
+    0 0 12px color-mix(in srgb, var(--dn-accent-2) 18%, transparent);
+  --dn-glow-acid: 0 0 4px color-mix(in srgb, var(--dn-acid) 50%, transparent),
+    0 0 10px color-mix(in srgb, var(--dn-acid) 22%, transparent);
+  --dn-bracket-bleed: drop-shadow(0 0 3px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 35%, transparent));
   --dn-graph-link: rgba(0, 104, 143, 0.5);
   --dn-graph-bg: #ffffff;
   --dn-dish-dot-1: rgba(0, 104, 143, 0.16);
@@ -228,6 +281,13 @@
     --dn-violet: #8a00d1;
     --dn-wordmark: linear-gradient(135deg,
       #056a8a 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
+    --dn-glow: 0 0 4px color-mix(in srgb, var(--dn-accent) 45%, transparent),
+      0 0 12px color-mix(in srgb, var(--dn-accent) 18%, transparent);
+    --dn-glow-2: 0 0 4px color-mix(in srgb, var(--dn-accent-2) 45%, transparent),
+      0 0 12px color-mix(in srgb, var(--dn-accent-2) 18%, transparent);
+    --dn-glow-acid: 0 0 4px color-mix(in srgb, var(--dn-acid) 50%, transparent),
+      0 0 10px color-mix(in srgb, var(--dn-acid) 22%, transparent);
+    --dn-bracket-bleed: drop-shadow(0 0 3px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 35%, transparent));
     --dn-graph-link: rgba(0, 104, 143, 0.5);
     --dn-graph-bg: #ffffff;
     --dn-dish-dot-1: rgba(0, 104, 143, 0.16);
@@ -373,6 +433,12 @@ body.dn-body::after {
   color: var(--dn-hot);
   text-shadow: 0 0 12px color-mix(in srgb, var(--dn-hot) 65%, transparent);
 }
+:root[data-theme='light'] .dn-body a:hover {
+  /* On paper the hot-yellow halo reads as a stain; a firmer underline does
+     the hovering instead. */
+  text-shadow: none;
+  text-decoration-color: var(--dn-hot);
+}
 
 :where(a, button, input, [tabindex]):focus-visible {
   outline: 1px solid var(--dn-accent);
@@ -386,7 +452,7 @@ body.dn-body::after {
 
 /* Motion vocabulary. `.spark` (the ⌁ glyph) breathes; content rises in on
    mount; a landed anchor flashes so a stub→section redirect is visible.
-   All opt out under prefers-reduced-motion (block at the end of § 2). */
+   All opt out under prefers-reduced-motion (block at the end of § 2b). */
 @keyframes dn-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.35; }
@@ -504,7 +570,7 @@ body.dn-body::after {
    replaces a soft drop shadow. SIGNAL pass took the strokes to 2px/12px;
    R3 extends the arms to 14px and adds the designer's neon bleed under the
    strokes. Needs position:relative on the host, and the host must not clip
-   its own overflow. */
+   its own overflow. Stroke/arms/bleed all come from the §1 bracket tokens. */
 .dn-hud {
   position: relative;
 }
@@ -512,24 +578,51 @@ body.dn-body::after {
 .dn-hud::after {
   content: "";
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: var(--dn-bracket-l);
+  height: var(--dn-bracket-l);
   pointer-events: none;
   color: var(--dn-src, var(--dn-accent));
   opacity: 0.9;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, currentColor 60%, transparent));
+  filter: var(--dn-bracket-bleed);
 }
 .dn-hud::before {
   top: -1px;
   left: -1px;
-  border-top: 2px solid currentColor;
-  border-left: 2px solid currentColor;
+  border-top: var(--dn-bracket-w) solid currentColor;
+  border-left: var(--dn-bracket-w) solid currentColor;
 }
 .dn-hud::after {
   right: -1px;
   bottom: -1px;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  border-right: var(--dn-bracket-w) solid currentColor;
+  border-bottom: var(--dn-bracket-w) solid currentColor;
+}
+
+/* Four-corner brackets as a pure background — for hosts that already spend
+   both pseudo-elements (or clip their overflow and can't use .dn-hud). Eight
+   gradient strokes, one per corner-arm, drawn from the same tokens. No
+   pseudo-elements, no extra markup; composites once and never repaints. */
+.dn-brackets {
+  background-image:
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent)));
+  background-repeat: no-repeat;
+  background-size:
+    var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
+    var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
+    var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
+    var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l);
+  background-position:
+    0 0, 0 0,
+    100% 0, 100% 0,
+    0 100%, 0 100%,
+    100% 100%, 100% 100%;
 }
 
 /* The notched edge: one corner cut at 45°, the silhouette of a hardware
@@ -546,16 +639,37 @@ body.dn-body::after {
     0 calc(100% - var(--dn-notch))
   );
 }
+/* The half-notch: only the leading corner cut — for elements already in a
+   row (tabs, breadcrumb segments) where two cuts fight the neighbours. */
+.dn-notch-lead {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--dn-notch)) 0,
+    100% var(--dn-notch),
+    100% 100%,
+    0 100%
+  );
+}
 
 /* Uppercase micro-label — the small caps of the HUD. Anything that is a
    caption rather than content goes through this so "SYSTEM // NODES" and a
    sentence never look like the same kind of text. */
 .dn-label {
   font-family: var(--dn-font-mono);
-  font-size: 0.7rem;
+  font-size: var(--dn-text-xs);
   letter-spacing: var(--dn-track);
   text-transform: uppercase;
   color: var(--dn-fg-muted);
+}
+/* The kicker: the widest-tracking tier, for the one line above a page or
+   panel title ("CORPUS // GNU EMACS"). Wider than a label, dimmer than a
+   heading — the hierarchy is track width, not size. */
+.dn-kicker {
+  font-family: var(--dn-font-mono);
+  font-size: var(--dn-text-xs);
+  letter-spacing: var(--dn-track-wide);
+  text-transform: uppercase;
+  color: var(--dn-fg-faint);
 }
 
 /* Chip: the tag/source pill. Square-ish, 1px edge, colour from --dn-src when
@@ -568,9 +682,16 @@ body.dn-body::after {
   color: var(--dn-src, var(--dn-accent-2));
   background: color-mix(in srgb, var(--dn-src, var(--dn-accent-2)) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent-2)) 45%, transparent);
-  border-radius: 2px;
+  border-radius: var(--dn-radius-sm);
   padding: 0.12em 0.6em;
   white-space: nowrap;
+}
+/* The lit chip: for the one active filter/tab in a row of chips. Same hue,
+   but the fill doubles and the edge goes solid, so "selected" is weight,
+   not a second colour. */
+.dn-chip.active {
+  background: color-mix(in srgb, var(--dn-src, var(--dn-accent-2)) 24%, transparent);
+  border-color: var(--dn-src, var(--dn-accent-2));
 }
 
 /* The lit edge: a bar that grows out of an element when it becomes active —
@@ -622,20 +743,22 @@ body.dn-body::after {
   clip-path: inset(55% 0 0 0);
   animation: dn-glitch-b 6s steps(1, end) infinite;
 }
-/* The bulk of the cycle is "no glitch": each burst lasts ~300 ms of 6 s. */
+/* The bulk of the cycle is "no glitch": each burst lasts ~300 ms of 6 s.
+   The split now skews as well as translates — a mistracking head, not a
+   nudged layer — which is what makes it read as signal damage. */
 @keyframes dn-glitch-a {
   0%, 82%, 100% { transform: none; opacity: 0; }
-  84% { transform: translate(-2px, -1px); opacity: 0.85; }
-  87% { transform: translate(2px, 1px); opacity: 0.7; }
-  90% { transform: translate(-1px, 1px); opacity: 0.8; }
+  84% { transform: translate(-2px, -1px) skewX(-2deg); opacity: 0.85; }
+  87% { transform: translate(2px, 1px) skewX(1.5deg); opacity: 0.7; }
+  90% { transform: translate(-1px, 1px) skewX(-1deg); opacity: 0.8; }
   93% { transform: translate(1px, -1px); opacity: 0.5; }
   96% { opacity: 0; }
 }
 @keyframes dn-glitch-b {
   0%, 82%, 100% { transform: none; opacity: 0; }
-  85% { transform: translate(2px, 1px); opacity: 0.8; }
-  88% { transform: translate(-2px, -1px); opacity: 0.65; }
-  91% { transform: translate(1px, 0); opacity: 0.75; }
+  85% { transform: translate(2px, 1px) skewX(2deg); opacity: 0.8; }
+  88% { transform: translate(-2px, -1px) skewX(-1.5deg); opacity: 0.65; }
+  91% { transform: translate(1px, 0) skewX(1deg); opacity: 0.75; }
   94% { opacity: 0; }
 }
 
@@ -661,6 +784,11 @@ body.dn-body::after {
 @keyframes dn-sweep {
   0%, 100% { background-position: 0% 0; }
   50% { background-position: 100% 0; }
+}
+:root[data-theme='light'] .dn-gradient-text {
+  /* On paper the aberration fringe is noise, not neon: drop the offsets and
+     keep only the faintest cool halo so the wordmark stays ink-crisp. */
+  text-shadow: 0 0 18px color-mix(in srgb, var(--dn-accent) 18%, transparent);
 }
 
 /* Hairline rule that reads as a trace on the board: a 1px line with a lit
@@ -714,7 +842,7 @@ body.dn-body::after {
   .dn-gradient-text { animation: none; }
   .dn-trace::after { animation: none; }
   .dn-neuron-mark { animation: none; }
-  body.dn-body::before { animation: none; }
+  .dn-led-dot { animation: none; }
   /* The glitch is the one effect that cannot merely stop: a frozen chromatic
      split looks like misrendered text, so the ghosts go entirely. */
   .dn-glitch::before,
@@ -737,6 +865,7 @@ body.dn-body::after {
   display: grid;
   grid-template-columns: max-content 1fr;
   column-gap: 1.4em;
+  row-gap: var(--dn-space-1);
 }
 .dn-kv > span:nth-child(odd) { color: var(--dn-fg-faint); }
 .dn-kv > span { overflow-wrap: anywhere; }
@@ -748,6 +877,113 @@ body.dn-body::after {
   background: var(--dn-accent);
   color: var(--dn-bg-sunken);
 }
+
+/* ---------- 2d. Chrome --------------------------------------------------
+   Header, nav, status rows, section headers, footer. The hierarchy rule:
+   track width and border weight do the ranking, not size jumps — an
+   instrument panel reads top-to-bottom as kicker > label > value.         */
+
+/* The header bar: a glass strip with a neon-tinted bottom hairline, the
+   board's top edge. Height comes from --dn-header-h so every
+   `calc(100dvh - var(--dn-header-h))` stays honest. */
+.dn-header {
+  min-height: var(--dn-header-h);
+  display: flex;
+  align-items: center;
+  gap: var(--dn-space-4);
+  padding: 0 var(--dn-space-4);
+  background: color-mix(in srgb, var(--dn-bg-raise) 82%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--dn-accent) 28%, var(--dn-border));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--dn-accent) 10%, transparent);
+}
+.dn-header .dn-label { color: var(--dn-fg-faint); }
+
+/* Primary nav: mono, uppercase, base tracking. The active link is lit by an
+   underline trace in the source hue — no pills, no background fill, so the
+   row keeps one rhythm and "where you are" is a wire, not a badge. */
+.dn-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--dn-space-5);
+  font-family: var(--dn-font-mono);
+  font-size: var(--dn-text-sm);
+  letter-spacing: var(--dn-track);
+  text-transform: uppercase;
+}
+.dn-nav a {
+  color: var(--dn-fg-muted);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: color 120ms, border-color 120ms;
+}
+.dn-nav a:hover {
+  color: var(--dn-fg);
+  text-shadow: none;
+  border-bottom-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
+}
+.dn-nav a.active,
+.dn-nav a[aria-current] {
+  color: var(--dn-src, var(--dn-accent));
+  border-bottom-color: var(--dn-src, var(--dn-accent));
+}
+
+/* A status row: the LED-and-readout strip ("LIVE · 1,386 NODES · SYNCED").
+   Widest tracking tier; the LED beats in acid. */
+.dn-status {
+  display: flex;
+  align-items: center;
+  gap: var(--dn-space-3);
+  font-family: var(--dn-font-mono);
+  font-size: var(--dn-text-xs);
+  letter-spacing: var(--dn-track-wide);
+  text-transform: uppercase;
+  color: var(--dn-fg-faint);
+}
+.dn-status b { color: var(--dn-fg-muted); font-weight: 600; }
+.dn-led-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dn-acid);
+  box-shadow: var(--dn-glow-acid);
+  animation: dn-led 1.6s ease-in-out infinite;
+}
+
+/* Section header: kicker over a mono title over a trace. The bus-line under
+   it carries the source hue, matching the h1 rule in §3, so "a new section"
+   looks the same in chrome and in prose. */
+.dn-section-head {
+  margin: var(--dn-space-6) 0 var(--dn-space-4);
+  padding-bottom: var(--dn-space-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, var(--dn-border));
+}
+.dn-section-head .dn-kicker { display: block; margin-bottom: var(--dn-space-1); }
+.dn-section-head h2 {
+  margin: 0;
+  font-family: var(--dn-font-mono);
+  font-size: var(--dn-text-xl);
+  font-weight: 600;
+  letter-spacing: var(--dn-track-tight);
+  text-transform: uppercase;
+  color: var(--dn-fg);
+}
+
+/* The footer: quiet ink, one trace on top, mono meta row. It closes the
+   instrument — no glow, nothing firing. */
+.dn-footer {
+  margin-top: var(--dn-space-7);
+  padding: var(--dn-space-4);
+  border-top: 1px solid var(--dn-border);
+  font-family: var(--dn-font-mono);
+  font-size: var(--dn-text-xs);
+  letter-spacing: var(--dn-track-tight);
+  color: var(--dn-fg-faint);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--dn-space-2) var(--dn-space-5);
+}
+.dn-footer a { color: var(--dn-fg-muted); }
 
 /* ---------- 3. Org content (.dn-org) -----------------------------------
    org-export produces plain semantic HTML (div.outline-N, h1..h4, table,
@@ -762,6 +998,15 @@ body.dn-body::after {
   max-width: var(--dn-max-prose);
   animation: dn-rise 220ms ease-out both;
 }
+
+/* Paragraph rhythm: no indent, one blank line's worth of air. Text is the
+   quiet tier — nothing here glows, ever. */
+.dn-org p {
+  margin: 0 0 1em;
+  orphans: 3;
+  widows: 3;
+}
+.dn-org p:last-child { margin-bottom: 0; }
 
 /* When the reader lands on a heading (TOC click, prev/next, or a stub
    redirect into a chapter), flash it so the eye finds the spot. Org-export
@@ -789,9 +1034,14 @@ body.dn-body::after {
   margin: 1.8em 0 0.6em;
   scroll-margin-top: calc(var(--dn-header-h) + 12px);
 }
+/* The first heading of a chapter doesn't need the top margin — the outline
+   wrapper already supplies the air. */
+.dn-org h1:first-child, .dn-org h2:first-child, .dn-org h3:first-child {
+  margin-top: 0;
+}
 
 .dn-org h1 {
-  font-size: 1.7rem;
+  font-size: var(--dn-text-2xl);
   color: var(--dn-fg);
   /* The page title is the one place a glow earns its keep: it is a header,
      not a paragraph, and it marks the top of the doc. Under it, a neon rule
@@ -801,10 +1051,14 @@ body.dn-body::after {
   box-shadow: 0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent);
   padding-bottom: 0.35em;
 }
+:root[data-theme='light'] .dn-org h1 {
+  /* On paper the title glow is a halo smudge; the bus line alone carries it. */
+  text-shadow: none;
+}
 /* h2/h3 carry a mono sigil in the source's hue (set --dn-src by the reader):
    a heading level is legible from the margin before you read a word. */
 .dn-org h2 {
-  font-size: 1.3rem;
+  font-size: var(--dn-text-xl);
   letter-spacing: 0.005em;
   padding-bottom: 0.2em;
   /* Overline rule in the section's own hue — quiet (mostly border ink) but
@@ -816,19 +1070,37 @@ body.dn-body::after {
   color: var(--dn-src, var(--dn-accent));
   text-shadow: 0 0 10px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, transparent);
 }
-.dn-org h3 { font-size: 1.12rem; }
+:root[data-theme='light'] .dn-org h2::before { text-shadow: none; }
+.dn-org h3 { font-size: var(--dn-text-lg); }
 .dn-org h3::before {
   content: "» ";
   color: var(--dn-src, var(--dn-border-strong));
 }
-.dn-org h4 { font-size: 1rem; color: var(--dn-fg-muted); }
+.dn-org h4 { font-size: var(--dn-text-md); color: var(--dn-fg-muted); }
+/* Deep levels go small-caps rather than smaller-and-smaller: at h5 the
+   hierarchy flips to weight+tracking, which keeps the scale from shrinking
+   into unreadability. */
+.dn-org h5 {
+  font-size: var(--dn-text-sm);
+  letter-spacing: var(--dn-track-tight);
+  text-transform: uppercase;
+  color: var(--dn-fg-muted);
+}
+.dn-org h6 {
+  font-size: var(--dn-text-sm);
+  letter-spacing: var(--dn-track-tight);
+  text-transform: uppercase;
+  color: var(--dn-fg-faint);
+}
 
 /* A heading with an id is a link target: clicking it copies a deep link to
    that section (DocReader labels them and handles the click). The # only
    appears on hover/focus so the margin stays quiet while you read. */
 .dn-org h2[id], .dn-org h3[id] {
   cursor: pointer;
-  scroll-margin-top: 0.6rem;
+  /* Keep the same header offset as every other target — an earlier revision
+     set this to 0.6rem and landed headings slid under the fixed header. */
+  scroll-margin-top: calc(var(--dn-header-h) + 12px);
 }
 .dn-org h2[id]::after, .dn-org h3[id]::after {
   content: " #";
@@ -843,21 +1115,38 @@ body.dn-body::after {
 }
 
 /* Org TODO keywords on headlines: org exports <span class="todo">TODO</span>
-   and DONE; status classes come as .todo/.done on the headline wrapper. */
-.dn-org .todo {
+   and <span class="done">DONE</span> — note .done does NOT also carry .todo,
+   so the base badge styles must cover both (an earlier revision only styled
+   .todo and DONE rendered as bare amber text). Both are filled badges with a
+   single notched corner: status you can read from the margin, mid-scroll. */
+.dn-org .todo, .dn-org .done {
   font-family: var(--dn-font-mono);
+  font-weight: 600;
   font-size: 0.74em;
   letter-spacing: 0.06em;
-  padding: 0.15em 0.5em;
-  border: 1px solid var(--dn-amber);
-  color: var(--dn-amber);
-  border-radius: 2px;
+  padding: 0.15em 0.55em;
+  border: 1px solid;
+  border-radius: var(--dn-radius-sm);
   margin-right: 0.6em;
   white-space: nowrap;
+  vertical-align: 0.08em;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 4px) 0,
+    100% 4px,
+    100% 100%,
+    0 100%
+  );
+}
+.dn-org .todo {
+  border-color: var(--dn-amber);
+  color: var(--dn-amber);
+  background: color-mix(in srgb, var(--dn-amber) 10%, transparent);
 }
 .dn-org .done {
   border-color: var(--dn-accent-dim);
   color: var(--dn-accent-dim);
+  background: color-mix(in srgb, var(--dn-accent-dim) 10%, transparent);
 }
 
 /* Tags as #chips — the same chip the rest of the HUD uses, because a tag
@@ -867,7 +1156,7 @@ body.dn-body::after {
   font-size: 0.72em;
   background: color-mix(in srgb, var(--dn-accent-2) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--dn-accent-2) 30%, transparent);
-  border-radius: 2px;
+  border-radius: var(--dn-radius-sm);
   padding: 0.1em 0.55em;
   margin-left: 0.35em;
   color: var(--dn-accent-2);
@@ -881,9 +1170,17 @@ body.dn-body::after {
   font-size: 0.88em;
   background: var(--dn-bg-raise);
   border: 1px solid color-mix(in srgb, var(--dn-accent) 26%, var(--dn-border));
-  border-radius: 2px;
+  border-radius: var(--dn-radius-sm);
   padding: 0.08em 0.4em;
   color: var(--dn-accent);
+}
+/* Code inside a pre is not a chip — strip the inline treatment so the well
+   owns the styling. */
+.dn-org pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
 }
 
 /* Source blocks: a well sunk into the page, with a NEON left rail (the
@@ -891,16 +1188,25 @@ body.dn-body::after {
    even mid-scroll. */
 .dn-org pre {
   font-family: var(--dn-font-mono);
-  font-size: 0.85rem;
+  font-size: var(--dn-text-sm);
   line-height: 1.5;
+  tab-size: 4;
   background: var(--dn-bg-sunken);
   border: 1px solid var(--dn-border);
   border-left: 3px solid var(--dn-src, var(--dn-accent));
-  border-radius: 2px;
+  border-radius: var(--dn-radius-sm);
   padding: 0.9em 1.1em;
+  margin: 1.2em 0;
   overflow-x: auto;
   box-shadow:
     -3px 0 10px -4px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent),
+    inset 0 0 24px color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.dn-org pre:hover {
+  border-left-color: var(--dn-src, var(--dn-accent));
+  box-shadow:
+    -3px 0 14px -3px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent),
     inset 0 0 24px color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent);
 }
 .dn-org pre.example {
@@ -909,6 +1215,11 @@ body.dn-body::after {
     -3px 0 10px -4px color-mix(in srgb, var(--dn-accent-2) 55%, transparent),
     inset 0 0 24px color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent);
 }
+:root[data-theme='light'] .dn-org pre,
+:root[data-theme='light'] .dn-org pre.example {
+  /* On paper the rail's glow becomes a clean edge; the well shades instead. */
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--dn-bg-sunken) 55%, transparent);
+}
 
 /* Org tables: borderless grids with hairlines; header row is a column of
    uppercase mono under a NEON rule — the instrument look for data. */
@@ -916,6 +1227,7 @@ body.dn-body::after {
   border-collapse: collapse;
   margin: 1.2em 0;
   font-size: 0.92rem;
+  max-width: 100%;
 }
 .dn-org th, .dn-org td {
   padding: 0.35em 0.9em 0.35em 0;
@@ -927,10 +1239,15 @@ body.dn-body::after {
   font-family: var(--dn-font-mono);
   font-weight: 600;
   font-size: 0.85em;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--dn-track-tight);
   text-transform: uppercase;
   color: var(--dn-src, var(--dn-accent));
   border-bottom: 2px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, var(--dn-border-strong));
+}
+/* Zebra: every second body row sits on the raised surface — the stripe
+   reads as a panel seam, not a fill, so the data stays quiet. */
+.dn-org tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--dn-bg-raise) 55%, transparent);
 }
 .dn-org tr:hover td {
   background: color-mix(in srgb, var(--dn-accent) 6%, transparent);
@@ -947,9 +1264,11 @@ body.dn-body::after {
 
 .dn-org ul, .dn-org ol { padding-left: 1.4em; }
 .dn-org li { margin: 0.25em 0; }
+.dn-org li::marker { color: var(--dn-border-strong); }
 
 /* Org footnotes and targets */
 .dn-org .footref a, .dn-org .target { scroll-margin-top: 100px; }
+.dn-org .footref { font-size: 0.8em; vertical-align: super; }
 .dn-org .footdefined, .dn-org .figure { margin: 1.4em 0; }
 .dn-org .caption {
   font-family: var(--dn-font-mono);
@@ -967,5 +1286,7 @@ body.dn-body::after {
   margin: 2em 0;
 }
 
-/* Org exports property drawers as hidden spans; leave them out. */
+/* Org exports the document title and property drawers as spans; drawers
+   stay hidden, the title takes the display face — the one place in the
+   reader where the brand voice is allowed. */
 .dn-org .title { font-family: var(--dn-font-mono); }
