@@ -204,11 +204,11 @@
   }
   .chapter:hover { color: var(--dn-fg); background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent); }
   .chapter.active {
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
     border-left-color: var(--dn-src, var(--dn-accent));
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
     font-weight: 600;
   }
-  .chapter.active::before { color: var(--dn-src, var(--dn-accent)); }
+  .chapter.active::before { color: var(--dn-accent); }
   .empty { color: var(--dn-fg-faint); font-size: 0.78rem; padding: 0.5em; }
 </style>

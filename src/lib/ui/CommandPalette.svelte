@@ -225,8 +225,8 @@
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
     border-left-color: var(--dn-src, var(--dn-accent));
   }
-  .row.active .label { color: var(--dn-src, var(--dn-accent)); }
-  .row.active .hint { color: var(--dn-src, var(--dn-accent)); }
+  .row.active .label { color: var(--dn-accent); }
+  .row.active .hint { color: var(--dn-accent); }
   .row.cmd .hint { color: var(--dn-accent-2); }
   .empty { padding: 0.7em; color: var(--dn-fg-faint); font-size: 0.85rem; }
   .bar {

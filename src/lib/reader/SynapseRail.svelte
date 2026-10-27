@@ -226,7 +226,7 @@
     letter-spacing: 0.04em;
   }
   .spark { color: var(--dn-accent); animation: dn-pulse 2.4s ease-in-out infinite; }
-  .synapse-head { color: var(--dn-src, var(--dn-accent-dim)); }
+  .synapse-head { color: var(--dn-accent); }
   .spark-mark { width: 0.62em; height: 0.62em; }
 
   .toc { list-style: none; margin: 0; padding: 0; }

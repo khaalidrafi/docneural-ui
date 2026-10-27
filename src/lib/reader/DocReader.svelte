@@ -633,7 +633,7 @@
   /* the channel you are on, as a path — and a path is never uppercased */
   .src-chip {
     font: inherit;
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
     border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent);
     border-radius: 2px;
@@ -740,5 +740,5 @@
   }
   .pager-btn.next { text-align: right; align-items: flex-end; margin-left: auto; }
   .pager-btn .dir { font-size: 0.62rem; color: var(--dn-fg-faint); letter-spacing: var(--dn-track); text-transform: uppercase; }
-  .pager-btn .pt { font-size: 0.85rem; color: var(--dn-src, var(--dn-accent)); }
+  .pager-btn .pt { font-size: 0.85rem; color: var(--dn-accent); }
 </style>

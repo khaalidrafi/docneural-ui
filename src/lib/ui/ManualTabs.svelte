@@ -55,7 +55,7 @@
   /* Active = lit in the source's own hue, never the generic accent: two tabs
      can look different from each other at a glance. */
   .tab.active {
-    color: var(--dn-src, var(--dn-accent));
+    color: var(--dn-accent);
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, transparent);
     box-shadow: 0 0 12px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 20%, transparent);

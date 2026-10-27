@@ -220,7 +220,7 @@
       bottom: auto;
     }
   }
-  .kicker { color: var(--dn-src, var(--dn-accent)); margin: 0 0 0.3rem; }
+  .kicker { color: var(--dn-accent); margin: 0 0 0.3rem; }
   header h2 {
     font-family: var(--dn-font-mono);
     font-size: 1.1rem;
@@ -243,7 +243,7 @@
   /* The corpus label wears the source hue: which manual this page came from,
      stated by colour before it is stated by words. */
   .src {
-    color: var(--dn-src, var(--dn-fg));
+    color: var(--dn-accent);
     border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent);
     border-radius: 2px;
     padding: 0.1em 0.5em;
