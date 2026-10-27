@@ -146,10 +146,82 @@
 
 <div class="home">
   <header class="hero dn-hud" style={sourceVars(store.manual)}>
+    <!-- IGNITION pass: the front door is now a live instrument. The beam is a
+       slow scan sweep; the constellation is a real (static, decorative) slice
+       of the corpus graph — wires carry travelling pulses, nodes breathe —
+       so the hero reads as SIGNAL ON before a single word is read. Both are
+       aria-hidden garnish; the words carry the meaning. -->
+    <span class="beam" aria-hidden="true"></span>
+    <svg
+      class="constellation"
+      viewBox="0 0 640 360"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <!-- wires: the corpus graph, dimmed -->
+      <g class="wires">
+        <line class="w" x1="38" y1="62" x2="120" y2="32" />
+        <line class="w" x1="120" y1="32" x2="210" y2="74" />
+        <line class="w" x1="210" y1="74" x2="300" y2="40" />
+        <line class="w" x1="300" y1="40" x2="320" y2="88" />
+        <line class="w" x1="320" y1="88" x2="470" y2="102" />
+        <line class="w" x1="470" y1="102" x2="520" y2="54" />
+        <line class="w" x1="520" y1="54" x2="610" y2="118" />
+        <line class="w" x1="210" y1="74" x2="320" y2="88" />
+        <line class="w" x1="38" y1="62" x2="40" y2="152" />
+        <line class="w" x1="40" y1="152" x2="60" y2="242" />
+        <line class="w" x1="60" y1="242" x2="140" y2="300" />
+        <line class="w" x1="140" y1="300" x2="240" y2="312" />
+        <line class="w" x1="240" y1="312" x2="320" y2="332" />
+        <line class="w" x1="320" y1="332" x2="480" y2="308" />
+        <line class="w" x1="480" y1="308" x2="560" y2="248" />
+        <line class="w" x1="560" y1="248" x2="610" y2="318" />
+        <line class="w" x1="560" y1="248" x2="470" y2="102" />
+        <line class="w" x1="120" y1="32" x2="40" y2="152" />
+      </g>
+      <!-- pulses: action potentials travelling the wires -->
+      <g class="pulses">
+        <line class="p p1" x1="38" y1="62" x2="120" y2="32" />
+        <line class="p p2" x1="120" y1="32" x2="210" y2="74" />
+        <line class="p p3" x1="300" y1="40" x2="320" y2="88" />
+        <line class="p p1" x1="320" y1="88" x2="470" y2="102" />
+        <line class="p p2" x1="470" y1="102" x2="520" y2="54" />
+        <line class="p p1" x1="520" y1="54" x2="610" y2="118" />
+        <line class="p p3" x1="210" y1="74" x2="320" y2="88" />
+        <line class="p p2" x1="40" y1="152" x2="60" y2="242" />
+        <line class="p p1" x1="60" y1="242" x2="140" y2="300" />
+        <line class="p p3" x1="240" y1="312" x2="320" y2="332" />
+        <line class="p p2" x1="480" y1="308" x2="560" y2="248" />
+        <line class="p p1" x1="560" y1="248" x2="470" y2="102" />
+      </g>
+      <!-- nodes: somas, breathing -->
+      <g class="nodes">
+        <circle class="nc" cx="38" cy="62" r="3" />
+        <circle class="nv" cx="120" cy="32" r="2.2" />
+        <circle class="nk" cx="210" cy="74" r="2.6" />
+        <circle class="nc" cx="300" cy="40" r="2.2" />
+        <circle class="nc" cx="320" cy="88" r="3.6" />
+        <circle class="nc" cx="470" cy="102" r="2.4" />
+        <circle class="nk" cx="520" cy="54" r="2.8" />
+        <circle class="nc" cx="610" cy="118" r="2.4" />
+        <circle class="nv" cx="40" cy="152" r="2.2" />
+        <circle class="nk" cx="60" cy="242" r="2.4" />
+        <circle class="nc" cx="140" cy="300" r="2.8" />
+        <circle class="nk" cx="240" cy="312" r="2.2" />
+        <circle class="nc" cx="320" cy="332" r="2.2" />
+        <circle class="nk" cx="480" cy="308" r="2.6" />
+        <circle class="nv" cx="560" cy="248" r="2.8" />
+        <circle class="nc" cx="610" cy="318" r="2.4" />
+      </g>
+    </svg>
     <p class="kicker dn-label">// knowledge uplink · online</p>
     <div class="wordmark dn-mono dn-glitch" data-text={title.toUpperCase()}>
       <span class="dn-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
     </div>
+    <!-- The power rail: the wordmark's neon-sign power feed, with a bright
+       segment forever running the loop (transform-only, cheap). -->
+    <div class="rail" aria-hidden="true"></div>
     <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
     <p class="feed dn-mono" aria-hidden="true">{feedText}<span class="feed-caret">▌</span></p>
     <p class="lede">
@@ -165,6 +237,9 @@
          so the numbers get a panel of their own — but as a panel, not as a
          pretend shell session: no prompt, no window buttons, no "[ ok ]". -->
     <div class="stats dn-hud" role="status" aria-live="polite">
+      <!-- The data bus: dashed readout strip across the panel's brow — the
+           corpus counts ride in on it. -->
+      <span class="bus" aria-hidden="true"></span>
       <div class="stats-hd dn-label">
         <span class="dn-neuron-mark" aria-hidden="true"></span>
         <span>this corpus</span>
@@ -461,16 +536,24 @@
     font-size: 0.66rem;
     padding-top: 0.45em;
   }
-  /* Big neon count-up numbers: the corpus size IS the pitch. */
+  /* Big neon count-up numbers: the corpus size IS the pitch. IGNITION: the
+     digits wear a white-hot -> signal-cyan decay; the fringe shadow paints
+     the glyph silhouette so the neon reads even mid-gradient. */
   .stats .dn-kv .num {
     font-size: 1.6rem;
     line-height: 1.05;
-    color: var(--dn-fg);
+    background: linear-gradient(180deg, var(--dn-fg) 18%, var(--dn-accent-dim) 96%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     text-shadow: 0 0 16px color-mix(in srgb, var(--dn-accent) 26%, transparent);
   }
   .stats .dn-kv .num b {
     font-weight: 600;
     color: var(--dn-hot);
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
     text-shadow: 0 0 16px color-mix(in srgb, var(--dn-hot) 42%, transparent);
   }
   .stats .dn-kv .num em {
@@ -479,6 +562,9 @@
     letter-spacing: var(--dn-track);
     text-transform: uppercase;
     color: var(--dn-fg-muted);
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
     text-shadow: none;
   }
   .stats .dn-kv .files { font-size: 0.84rem; }
@@ -568,16 +654,31 @@
     gap: 0.25em;
     text-align: left;
     color: var(--dn-fg);
-    background: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
+    background-color: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
+    /* IGNITION: the holographic sheen is a background LAYER, so the sweep is
+       clipped by the card box itself — no extra element, no overflow clip
+       fighting the corner brackets. It slides across on hover via
+       background-position and slides back when you leave. */
+    background-image: linear-gradient(115deg,
+      transparent 40%,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent) 47%,
+      color-mix(in srgb, var(--dn-fg) 7%, transparent) 50%,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent) 53%,
+      transparent 60%);
+    background-size: 280% 100%;
+    background-position: 135% 0;
+    background-repeat: no-repeat;
     border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 32%, transparent);
     border-left: 3px solid var(--dn-src, var(--dn-accent));
     border-radius: 2px;
     padding: 0.7em 0.8em;
     cursor: pointer;
-    transition: border-color 120ms, box-shadow 120ms, background 120ms, transform 120ms;
+    transition: border-color 120ms, box-shadow 120ms, background-color 120ms,
+      transform 120ms, background-position 600ms ease;
   }
   .src-card:hover {
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    background-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
+    background-position: -135% 0;
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent);
     box-shadow:
       0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
@@ -719,15 +820,31 @@
   .cta-k.spark { color: var(--dn-hot); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
   .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
+  /* IGNITION: the door to the canvas carries a ROTATING conic ring —
+     voltage circulating the highest-voltage control. @property registers
+     the angle so the spin is a real custom-property animation; browsers
+     without @property simply hold the first frame (a static ring), so the
+     fallback is the old gradient border, not a broken one. */
+  @property --dn-spin {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
   .cta.graph {
     /* The synapses CTA is the door to the canvas: gradient border, not a
        dashed outline — it should read as the highest-voltage control here. */
     border: 1px solid transparent;
     background:
       linear-gradient(180deg,
-        color-mix(in srgb, var(--dn-accent) 10%, transparent), transparent 55%),
-      var(--dn-bg-raise) padding-box,
-      linear-gradient(135deg, var(--dn-accent), var(--dn-violet), var(--dn-accent-2)) border-box;
+        color-mix(in srgb, var(--dn-accent) 10%, transparent), transparent 55%)
+        padding-box,
+      conic-gradient(from var(--dn-spin),
+        var(--dn-accent), var(--dn-violet) 32%, var(--dn-accent-2) 58%,
+        var(--dn-hot) 82%, var(--dn-accent)) border-box;
+    animation: dn-ring 7s linear infinite;
+  }
+  @keyframes dn-ring {
+    to { --dn-spin: 360deg; }
   }
   .cta.graph:hover {
     box-shadow: 0 0 26px color-mix(in srgb, var(--dn-violet) 35%, transparent);
@@ -781,6 +898,26 @@
     transform: translateY(-2px);
   }
   .card:hover::before { height: 72%; }
+  /* IGNITION: a lit hairline along the card's brow — the row announces its
+     source hue across the top edge before the spine even grows. */
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent) 38%,
+      var(--dn-fg) 50%,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent) 62%,
+      transparent);
+    opacity: 0;
+    transition: opacity 160ms ease;
+    pointer-events: none;
+  }
+  .card:hover::after { opacity: 0.9; }
   .show-all {
     align-items: center;
     justify-content: center;
@@ -804,4 +941,163 @@
   }
   .foot .mach:hover { color: var(--dn-hot); border-bottom-style: solid; }
   @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* ---------- IGNITION pass -----------------------------------------------
+     The front door as a live instrument: a scan beam sweeping the hero, a
+     neural constellation breathing behind the wordmark, a power rail under
+     it, a data bus across the stats brow. Every effect is transform /
+     opacity / background-position on a small layer — nothing lays out,
+     nothing repaints the page — and every one re-tunes for paper and parks
+     under prefers-reduced-motion. */
+
+  .beam {
+    position: absolute;
+    top: -6%;
+    bottom: -6%;
+    left: 0;
+    width: 22%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in srgb, var(--dn-accent) 9%, transparent) 42%,
+      color-mix(in srgb, var(--dn-fg) 5%, transparent) 50%,
+      color-mix(in srgb, var(--dn-accent) 9%, transparent) 58%,
+      transparent);
+    transform: translateX(-140%) skewX(-14deg);
+    animation: dn-beam 8.5s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  }
+  @keyframes dn-beam {
+    0% { transform: translateX(-140%) skewX(-14deg); opacity: 0; }
+    6% { opacity: 1; }
+    46% { opacity: 1; }
+    54%, 100% { transform: translateX(640%) skewX(-14deg); opacity: 0; }
+  }
+  :global([data-theme='light']) .beam {
+    /* On paper the beam is a tint wash, not a light bar. */
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in srgb, var(--dn-accent) 8%, transparent) 46%,
+      transparent);
+  }
+
+  .constellation {
+    position: absolute;
+    inset: -4% -2%;
+    z-index: -1;
+    pointer-events: none;
+    /* glm-5v-turbo vet round-1 flagged the wires as visual noise behind the
+       wordmark — tuned down a step so the graph reads as ambience, not
+       interference. */
+    opacity: 0.75;
+  }
+  .constellation .w {
+    stroke: color-mix(in srgb, var(--dn-accent) 26%, transparent);
+    stroke-width: 1;
+    fill: none;
+  }
+  .constellation .p {
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 12 150;
+    animation: dn-flow 5.2s linear infinite;
+  }
+  .constellation .p.p1 { stroke: var(--dn-accent); }
+  .constellation .p.p2 { stroke: var(--dn-accent-2); }
+  .constellation .p.p3 { stroke: var(--dn-violet); }
+  .constellation .p:nth-of-type(2n) { animation-duration: 6.6s; animation-delay: -2.2s; }
+  .constellation .p:nth-of-type(3n) { animation-duration: 7.8s; animation-delay: -3.9s; }
+  @keyframes dn-flow {
+    to { stroke-dashoffset: -162; }
+  }
+  .constellation circle {
+    transform-box: fill-box;
+    transform-origin: center;
+    filter: drop-shadow(0 0 4px currentColor);
+    animation: dn-node 4.4s ease-in-out infinite;
+  }
+  .constellation circle:nth-of-type(2n) { animation-delay: -1.5s; }
+  .constellation circle:nth-of-type(3n) { animation-delay: -2.7s; animation-duration: 5.3s; }
+  @keyframes dn-node {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.32); }
+  }
+  .constellation .nc { fill: var(--dn-accent); color: var(--dn-accent); }
+  .constellation .nk { fill: var(--dn-accent-2); color: var(--dn-accent-2); }
+  .constellation .nv { fill: var(--dn-violet); color: var(--dn-violet); }
+  :global([data-theme='light']) .constellation {
+    /* Ink-jet constellation: same network, printed fainter — and fainter
+       still than dark, so the subtitle line keeps its clean paper read. */
+    opacity: 0.4;
+  }
+  :global([data-theme='light']) .stats .dn-kv .num b {
+    /* glm-5v-turbo round-1: the gold halo is heavy on white. Printed halo. */
+    text-shadow: 0 0 10px color-mix(in srgb, var(--dn-hot) 25%, transparent);
+  }
+
+  .rail {
+    position: relative;
+    width: min(24rem, 76%);
+    height: 2px;
+    margin: 0.7rem auto 0;
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in srgb, var(--dn-accent) 65%, transparent) 22%,
+      var(--dn-violet) 50%,
+      color-mix(in srgb, var(--dn-accent-2) 65%, transparent) 78%,
+      transparent);
+    opacity: 0.85;
+    overflow: hidden;
+  }
+  .rail::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 34%;
+    background: linear-gradient(90deg, transparent, var(--dn-fg) 50%, transparent);
+    transform: translateX(-120%);
+    animation: dn-rail 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @keyframes dn-rail {
+    0% { transform: translateX(-120%); opacity: 0; }
+    12% { opacity: 1; }
+    88% { opacity: 1; }
+    100% { transform: translateX(410%); opacity: 0; }
+  }
+  :global([data-theme='light']) .rail { opacity: 0.7; }
+
+  .bus {
+    display: block;
+    height: 3px;
+    margin: -0.35rem -1.3rem 0.7rem;
+    background: repeating-linear-gradient(90deg,
+      color-mix(in srgb, var(--dn-accent) 55%, transparent) 0 14px,
+      transparent 14px 26px,
+      color-mix(in srgb, var(--dn-accent-2) 42%, transparent) 26px 31px,
+      transparent 31px 48px);
+    background-size: 48px 100%;
+    animation: dn-bus 1.7s linear infinite;
+    opacity: 0.55;
+    border-radius: 2px;
+  }
+  @keyframes dn-bus {
+    to { background-position: 48px 0; }
+  }
+  :global([data-theme='light']) .bus { opacity: 0.4; }
+  @media (max-width: 700px) {
+    .bus { margin: -0.3rem -1rem 0.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The beam is pure motion — park it. Everything else freezes on its
+       first frame (the global reduced-motion block zeroes durations too). */
+    .beam { display: none; }
+    .constellation .p,
+    .constellation circle,
+    .rail::before,
+    .bus { animation: none; }
+  }
 </style>
