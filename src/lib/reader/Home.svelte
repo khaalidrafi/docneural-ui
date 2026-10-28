@@ -186,6 +186,10 @@
       {/if}
     </div>
     </div>
+    <!-- COOLER-3 OP-32: the seam is a composed element now — a gradient
+         hairline with two reticle nodes (bright top, faint bottom). The
+         gap between the columns is theater, not leftover space. -->
+    <div class="seam" aria-hidden="true"></div>
     <!-- The Corpus Plate: the product itself, drawn once (see CorpusField). -->
     <div class="plate">
       <CorpusField {store} />
@@ -197,8 +201,8 @@
        five sections that matter to today's task are already in one place. -->
   {#if marks.length}
     <section class="saved" data-idx="01">
-      <h2 class="section-h dn-label">
-        // marked <span class="hint">{marks.length} section{marks.length === 1 ? '' : 's'} · b in the reader</span>
+      <h2 class="section-h dn-label" data-kicker="// 01 · marks">
+        marked <span class="hint">{marks.length} section{marks.length === 1 ? '' : 's'} · b in the reader</span>
       </h2>
       <div class="mk-row">
         {#each marks as m (m.slug + '#' + (m.anchor ?? ''))}
@@ -217,7 +221,7 @@
   {/if}
 
   <section class="sources" data-idx="02">
-    <h2 class="dn-label section-h">// sources <span class="hint">each corpus wears its graph hue</span></h2>
+    <h2 class="dn-label section-h" data-kicker="// 02 · corpora">sources <span class="hint">each corpus wears its graph hue</span></h2>
     <div class="src-row">
       {#each sources as s, si (s.name)}
         <button class="src-card" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
@@ -262,8 +266,8 @@
 
   <section class="chapters-grid" data-idx="04">
     <div class="contents-head">
-      <h2 class="section-h dn-label">
-        contents // {DocneuralStore.manualTitle(store.manual) || 'all sources'}
+      <h2 class="section-h dn-label" data-kicker="// 04 · contents">
+        {DocneuralStore.manualTitle(store.manual) || 'all sources'}
       </h2>
       <ManualTabs {store} />
     </div>
@@ -282,13 +286,25 @@
     </div>
   </section>
 
+  <!-- COOLER-3 OP-28: the footer is a colophon — three labeled columns
+       (method / contract / machine) closed by the same 22px accent tick the
+       section heads wear. The instrument ends the way it opens. -->
   <footer class="foot dn-mono">
-    exported by an Emacs batch <span class="sym">org-export</span> · graph modeled on
-    <span class="sym">org-roam</span> · stable <span class="sym">id:</span> citations,
-    readable by humans and LLMs alike —
-    <a class="mach" href="{store.base}/llms.txt">llms.txt</a>
-    <a class="mach" href="{store.base}/llms-full.txt">llms-full.txt</a>
-    <a class="mach" href="{store.base}/graph.json">graph.json</a>
+    <div class="col">
+      <span class="col-h">method</span>
+      exported by an Emacs batch <span class="sym">org-export</span> · graph modeled on
+      <span class="sym">org-roam</span>
+    </div>
+    <div class="col">
+      <span class="col-h">contract</span>
+      stable <span class="sym">id:</span> citations, readable by humans and LLMs alike
+    </div>
+    <div class="col">
+      <span class="col-h">machine</span>
+      <a class="mach" href="{store.base}/llms.txt">llms.txt</a>
+      <a class="mach" href="{store.base}/llms-full.txt">llms-full.txt</a>
+      <a class="mach" href="{store.base}/graph.json">graph.json</a>
+    </div>
   </footer>
 </div>
 
@@ -309,9 +325,11 @@
 
 
   /* ---------- hero ---------- */
-  /* DS-COOLEST directive 9: the hero is a two-column instrument, not a
-     centered poster. Left = identity column with a hairline seam; right =
-     the Corpus Plate. Asymmetric split reads as hardware. */
+  /* DS-COOLEST directive 9 + COOLER-3 OP-21/OP-32: the hero is a composed
+     instrument, not a balanced split — the Plate column is wider (1.08 vs
+     0.92) because the Plate is the product, and the seam between the
+     columns is a designed element: a gradient hairline with two reticle
+     nodes. The identity column captions the constellation. */
   .hero {
     position: relative;
     max-width: none;
@@ -319,18 +337,47 @@
     text-align: left;
     isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    gap: var(--dn-space-7);
-    align-items: start;
+    grid-template-columns: minmax(0, 0.92fr) 1px minmax(0, 1.08fr);
+    gap: var(--dn-space-6);
+    align-items: stretch;
     padding: var(--dn-space-5) 0 0;
   }
   .id {
-    border-right: 1px solid var(--dn-hairline);
-    padding-right: var(--dn-space-7);
+    /* The seam owns the divide now — no border, no padding hacks. */
+    border-right: 0;
+    padding-right: 0;
     min-width: 0;
   }
+  .seam {
+    position: relative;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--dn-hairline) 12%,
+      var(--dn-hairline) 88%,
+      transparent
+    );
+  }
+  .seam::before,
+  .seam::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: var(--dn-accent);
+  }
+  .seam::before { top: 18%; }
+  .seam::after { bottom: 18%; opacity: 0.4; }
   .plate {
     min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .kicker {
@@ -453,12 +500,22 @@
     font-size: var(--dn-text-2xs);
     padding-top: 0.45em;
   }
-  /* Big count-up numbers in solid ink (DS-COOLEST directive 5): the corpus
-     size IS the pitch — size and weight carry it now, not neon. */
+  /* Big count-up numbers in solid ink (DS-COOLEST directive 5), promoted to
+     LEDGER numerals by COOLER-3 OP-24: tabular lining figures so the sweep
+     never jitters horizontally — a machine's count, not a sentence. */
   .stats .dn-kv .num {
     font-size: var(--dn-text-2xl);
     line-height: 1.05;
     color: var(--dn-fg);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+    letter-spacing: -0.01em;
+  }
+  /* OP-24: the keys carry a ledger glyph — the kv grid reads as a telemetry
+     column, not a definition list. (› is already in the glyph budget.) */
+  .stats .dn-kv > span:nth-child(odd)::before {
+    content: "› ";
+    color: var(--dn-border-strong);
   }
   .stats .dn-kv .num b {
     font-weight: 600;
@@ -547,31 +604,69 @@
   .mk .mk-to { color: var(--dn-fg-faint); }
   .sources h2, .section-h { color: var(--dn-fg-muted); margin: 0 0 0.7rem; }
   .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: var(--dn-track-tight); font-size: var(--dn-text-2xs); }
-  /* DS-COOLEST directive 18 — the tick rule: every section header ends in a
-     rule whose first 2px are lit in the accent. A reticle mark drawn with
-     alignment, not effects; costs one gradient. */
+  /* DS-COOLEST directive 18 + COOLER-3 OP-23 — the drop-line: every section
+     head reads kicker → title → 2px accent tick in one vertical motion. The
+     kicker rides data-kicker (mega-tracked, faint); the tick replaces the
+     old full-width hairline (which read as a row separator, not a mark). */
+  .section-h {
+    display: inline-block;
+  }
+  .section-h::before {
+    content: attr(data-kicker);
+    display: block;
+    font: 400 var(--dn-text-2xs)/1 var(--dn-font-mono);
+    letter-spacing: var(--dn-track-mega);
+    text-transform: uppercase;
+    color: var(--dn-fg-faint);
+    margin-bottom: var(--dn-space-2);
+  }
   .section-h::after {
     content: "";
     display: block;
-    height: 1px;
+    width: 22px;
+    height: 2px;
     margin-top: var(--dn-space-2);
-    background: linear-gradient(90deg, var(--dn-accent) 0 2px, var(--dn-hairline) 2px 100%);
+    background: var(--dn-accent);
   }
-  /* Directive 18 — the mono index gutter: each Home section announces its
-     position like a manual page (01–04). Pure alignment, one text node. */
+  /* Directive 18 + COOLER-3 OP-22 — the mono index gutter becomes a real
+     drop figure: hollow-stroked numerals at display size (stroke, not fill,
+     keeps them quiet against the void while the size does the drama).
+     3:1 non-text holds: #6b9dc6 strokes on #05090f = 6.8:1. */
+  .home > section {
+    position: relative;
+    padding-left: 4.2rem;
+  }
   .home > section::before {
     content: attr(data-idx);
-    font: 400 var(--dn-text-2xs)/1 var(--dn-font-mono);
-    letter-spacing: var(--dn-track-wide);
-    color: var(--dn-fg-faint);
-    display: block;
-    margin-bottom: var(--dn-space-2);
+    position: absolute;
+    left: 0;
+    top: -0.55rem;
+    font: 400 var(--dn-text-3xl)/1 var(--dn-font-display);
+    letter-spacing: 0;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--dn-border-strong);
   }
-  /* Entrance choreography: a 24ms-per-card rise, capped so a 200-row grid
-     does not turn into a slow curtain. Reduced motion is killed globally. */
-  .card, .src-card {
-    animation: dn-rise 340ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  /* COOLER-3 OP-25 — two-beat entrance: the card lifts, then its source
+     rail draws in 120ms later. Capped so a 200-row grid resolves in ~520ms.
+     Finite animations only — the loop budget is untouched. The mark-in runs
+     on .src-card alone: its resting rail IS the keyframe's end state, so
+     nothing changes at rest (the contents rows keep their hover-only rails,
+     per directive 14). */
+  .card {
+    animation: dn-rise 300ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
     animation-delay: calc(min(var(--i, 0), 16) * 24ms);
+  }
+  .src-card {
+    animation:
+      dn-rise 300ms cubic-bezier(0.2, 0.7, 0.3, 1) both,
+      dn-mark-in 220ms ease-out both;
+    animation-delay:
+      calc(min(var(--i, 0), 16) * 24ms),
+      calc(min(var(--i, 0), 16) * 24ms + 120ms);
+  }
+  @keyframes dn-mark-in {
+    from { border-left-color: transparent; }
+    to { border-left-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border)); }
   }
   .src-row {
     display: grid;
@@ -771,9 +866,46 @@
   .card-deg { align-self: flex-end; font-size: var(--dn-text-2xs); color: var(--dn-fg-faint); letter-spacing: var(--dn-track-tight); }
   .card:hover .card-deg { color: var(--dn-accent); }
 
-  .foot { width: 100%; text-align: left; font-size: var(--dn-text-xs); color: var(--dn-fg-faint); line-height: 1.9; letter-spacing: var(--dn-track-tight); }
+  /* COOLER-3 OP-28 — the colophon: three labeled columns (method /
+     contract / machine) with the same mega-tracked kickers and the same
+     22px accent tick the section heads wear, sitting ON the top hairline.
+     Content aligns with the section drop numerals (4.2rem gutter spine). */
+  .foot {
+    width: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: var(--dn-space-6);
+    text-align: left;
+    font-size: var(--dn-text-xs);
+    color: var(--dn-fg-faint);
+    line-height: 1.9;
+    letter-spacing: var(--dn-track-tight);
+    padding: var(--dn-space-6) 0 var(--dn-space-5) 4.2rem;
+    border-top: 1px solid var(--dn-hairline);
+    border-bottom: 1px solid var(--dn-hairline);
+  }
+  .foot::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    background: var(--dn-accent);
+  }
+  .foot .col-h {
+    display: block;
+    font-size: var(--dn-text-2xs);
+    letter-spacing: var(--dn-track-mega);
+    text-transform: uppercase;
+    color: var(--dn-fg-faint);
+    margin-bottom: var(--dn-space-2);
+  }
   .foot .sym { color: var(--dn-accent-dim); }
   .foot .mach {
+    display: inline-block;
+    margin-right: var(--dn-space-3);
     color: var(--dn-fg-muted);
     text-decoration: none;
     border-bottom: 1px dotted var(--dn-border-strong);
@@ -898,6 +1030,23 @@
   .feed-caret,
   .card,
   .src-card { animation: none; }
+
+  /* COOLER-3 phone step-downs: the desktop furniture collapses to static
+     rhythm — the seam is a desktop idea; drop numerals shrink one ramp
+     step; the mega-tracked kickers step down to wide (per cool-pass OP-16);
+     the colophon stacks in one column aligned with the section content. */
+  .seam { display: none; }
+  .home > section { padding-left: 2.9rem; }
+  .home > section::before {
+    font-size: var(--dn-text-xl);
+    top: -0.3rem;
+  }
+  .section-h::before { letter-spacing: var(--dn-track-wide); }
+  .foot {
+    grid-template-columns: 1fr;
+    gap: var(--dn-space-4);
+    padding: var(--dn-space-5) 0 var(--dn-space-4) 2.9rem;
+  }
 }
 
 /* Anchor landing under the sticky header (directive 23) — global, both

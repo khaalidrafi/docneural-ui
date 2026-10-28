@@ -283,8 +283,11 @@
     --dn-hairline: #dde3ea;
     --dn-border: #a3afbd;
     --dn-border-strong: #60738a;
-    --dn-accent: #00617f;
-    --dn-accent-dim: #005068;
+    /* cool-pass OP-5 unified across BOTH light arms (COOLER-3 fidelity fix:
+       the auto-light arm had kept the old #00617f while the toggle arm moved
+       to the wire-lineage #005a78 — toggle-light and auto-light must agree). */
+    --dn-accent: #005a78;
+    --dn-accent-dim: #00455c;
     --dn-accent-2: #a30d55;
     --dn-accent-2-text: #98084e;
     --dn-hot: #7a4a00;
@@ -344,12 +347,72 @@ body.dn-body {
 }
 
 :root[data-theme='light'] body.dn-body {
-  /* Light paper (DS-COOLEST directive 17): the vignette layer is deleted —
-     a shadowed edge on bright paper reads as dirt — and the grid neutralises
-     to ink 4% so prose sits on clean stock, not graph paper. */
+  /* Light paper (DS-COOLEST directive 17 + COOLER-3 OP-31): no vignette —
+     but paper now has its OWN identity, not a bleached dark theme: a quiet
+     ink grid (3%) plus a 4% cyan wash bleeding from the top edge — ink
+     meeting the wire, once, where the eye lands first. */
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 4%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--dn-accent) 4%, transparent) 0, transparent 60%);
+  background-size: 72px 72px, 72px 72px, 100% 40%;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) body.dn-body {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
+      radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--dn-accent) 4%, transparent) 0, transparent 60%);
+    background-size: 72px 72px, 72px 72px, 100% 40%;
+  }
+}
+
+/* COOLER-3 OP-31 — wire-on-paper component identity. Dark = void + cyan
+   wire; light = paper + ink rule. The h1 bus line becomes a solid ink rule,
+   h2 a muted hairline; brackets read as drawn ink; the trace node drops its
+   glow (glow on paper = dirt) for a clean ink dot. Dual arm like everything
+   else that is material rather than token. */
+:root[data-theme='light'] .dn-org h1 {
+  border-bottom: 2px solid var(--dn-fg);
+  box-shadow: none;
+  padding-bottom: 0.4em;
+}
+:root[data-theme='light'] .dn-org h2 {
+  border-bottom: 1px solid var(--dn-fg-muted);
+}
+:root[data-theme='light'] .dn-brackets {
+  border-color: var(--dn-fg-muted);
+}
+:root[data-theme='light'] .dn-trace {
+  background: linear-gradient(90deg,
+    transparent, var(--dn-border-strong) 10%, var(--dn-fg-muted) 50%,
+    var(--dn-border-strong) 90%, transparent);
+}
+:root[data-theme='light'] .dn-trace::after {
+  background: var(--dn-accent);
+  box-shadow: none;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .dn-org h1 {
+    border-bottom: 2px solid var(--dn-fg);
+    box-shadow: none;
+    padding-bottom: 0.4em;
+  }
+  :root:not([data-theme]) .dn-org h2 {
+    border-bottom: 1px solid var(--dn-fg-muted);
+  }
+  :root:not([data-theme]) .dn-brackets {
+    border-color: var(--dn-fg-muted);
+  }
+  :root:not([data-theme]) .dn-trace {
+    background: linear-gradient(90deg,
+      transparent, var(--dn-border-strong) 10%, var(--dn-fg-muted) 50%,
+      var(--dn-border-strong) 90%, transparent);
+  }
+  :root:not([data-theme]) .dn-trace::after {
+    background: var(--dn-accent);
+    box-shadow: none;
+  }
 }
 
 
@@ -401,16 +464,29 @@ body.dn-body::after {
 
 .dn-body a {
   color: var(--dn-accent);
-  text-decoration-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--dn-accent) 38%, transparent);
+  text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  transition: color 120ms;
+  transition: text-decoration-color 140ms, text-decoration-thickness 140ms;
 }
 .dn-body a:hover {
-  /* DS-COOLEST directive 20: no glow on links — the hover state is the
-     underline firming up, not a halo. Hot is banned from chrome. */
+  /* DS-COOLEST directive 20 + COOLER-3 OP-29: no glow on links — the wire
+     FIRMS UP: the underline thickens 1px→2px and goes solid accent. Hot is
+     banned from chrome. */
   color: var(--dn-accent);
   text-decoration-color: var(--dn-accent);
-  text-decoration-thickness: from-font;
+  text-decoration-thickness: 2px;
+}
+.dn-body a:visited {
+  /* OP-29: where you have been is a designed state — dim cyan, never the
+     browser's purple. #2cc4e3 on raise = 8.8:1, #00455c on paper = 10.2:1. */
+  color: var(--dn-accent-dim);
+  text-decoration-color: color-mix(in srgb, var(--dn-accent-dim) 35%, transparent);
+}
+.dn-body a:visited:hover {
+  color: var(--dn-accent-dim);
+  text-decoration-color: var(--dn-accent-dim);
 }
 
 :where(a, button, input, [tabindex]):focus-visible {
@@ -576,34 +652,55 @@ body.dn-body::after {
 }
 
 /* Four-corner brackets as a pure background — for hosts that already spend
-   both pseudo-elements (or clip their overflow and can't use .dn-hud). Eight
-   gradient strokes, one per corner-arm, drawn from the same tokens. No
-   pseudo-elements, no extra markup; composites once and never repaints. */
+   both pseudo-elements (or clip their overflow and can't use .dn-hud).
+   COOLER-3 OP-30 — the recipe evolves from eight L-arms to a sixteen-arm
+   DOUBLE RETICLE: outer long arms in the element's source hue, inner short
+   arms in border-strong, offset 3px inside — a camera-reticle read ("this
+   is being targeted/measured"). Same paint model: gradients composite once,
+   no pseudo-elements, no extra DOM, never repaints. */
 .dn-brackets {
   /* Structural plate (cool-pass OP-11): the arms anchor to a real hairline
      edge, so bracket framing reads as intentional HUD framing, not floating
      ticks. The bleed token stays reserved at 0px (arms sit ON the edge). */
   border: 1px solid var(--dn-hairline);
+  --dn-bracket-l2: 6px;
+  --dn-bracket-gap: 3px;
   background-image:
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
-    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent)));
+    linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong)),
+    linear-gradient(var(--dn-border-strong), var(--dn-border-strong));
   background-repeat: no-repeat;
   background-size:
     var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
+    var(--dn-bracket-l2) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l2),
     var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
+    var(--dn-bracket-l2) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l2),
     var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
-    var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l);
+    var(--dn-bracket-l2) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l2),
+    var(--dn-bracket-l) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l),
+    var(--dn-bracket-l2) var(--dn-bracket-w), var(--dn-bracket-w) var(--dn-bracket-l2);
   background-position:
     0 0, 0 0,
+    var(--dn-bracket-gap) var(--dn-bracket-gap), var(--dn-bracket-gap) var(--dn-bracket-gap),
     100% 0, 100% 0,
+    calc(100% - var(--dn-bracket-gap)) var(--dn-bracket-gap), calc(100% - var(--dn-bracket-gap)) var(--dn-bracket-gap),
     0 100%, 0 100%,
-    100% 100%, 100% 100%;
+    var(--dn-bracket-gap) calc(100% - var(--dn-bracket-gap)), var(--dn-bracket-gap) calc(100% - var(--dn-bracket-gap)),
+    100% 100%, 100% 100%,
+    calc(100% - var(--dn-bracket-gap)) calc(100% - var(--dn-bracket-gap)), calc(100% - var(--dn-bracket-gap)) calc(100% - var(--dn-bracket-gap));
 }
 
 /* The notched edge: one corner cut at 45°, the silhouette of a hardware
