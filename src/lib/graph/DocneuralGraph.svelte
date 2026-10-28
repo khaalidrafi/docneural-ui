@@ -310,11 +310,12 @@
   .skel .o4 { top: 70%; left: 76%; width: 8px; height: 8px; animation-delay: 0.75s; }
   .skel .o5 { top: 74%; left: 15%; width: 7px; height: 7px; animation-delay: 1s; }
   .skel .sweep {
-    position: absolute;
-    inset: -20% -60%;
-    background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--dn-accent) 10%, transparent) 50%, transparent 65%);
-    animation: sk-sweep 2.2s linear infinite;
+    /* The sweep is gone: a full-bleed animated gradient on the loading
+       state is exactly when the phone can least afford it. The orbs
+       resting on their lit frame are the whole skeleton. */
+    display: none;
   }
+
   .skel .skel-line {
     position: absolute;
     left: 0.9rem;

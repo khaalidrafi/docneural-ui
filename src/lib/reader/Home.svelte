@@ -394,12 +394,13 @@
   .home {
     height: calc(100dvh - var(--dn-header-h));
     overflow-y: auto;
-    padding: 2.6rem 1.5rem 4rem;
+    padding: var(--dn-space-7) var(--dn-space-5) var(--dn-space-8);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.2rem;
+    gap: var(--dn-space-6);
   }
+
 
   /* ---------- hero ---------- */
   /* Framed by .dn-hud corner brackets in the source's hue: the front door is
@@ -408,74 +409,89 @@
      signal rather than on empty page. */
   .hero {
     position: relative;
-    max-width: 68ch;
+    /* Hero composition: a single centered column, max 62ch, with a
+       deliberate vertical rhythm. The ::before halo is gone (see below). */
+    max-width: 62ch;
+    width: 100%;
     text-align: center;
     isolation: isolate;
-    padding: 1.6rem 1.4rem 0.4rem;
+    padding: var(--dn-space-5) var(--dn-space-4) var(--dn-space-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--dn-space-3);
   }
+
   .kicker {
-    /* Acid: this line is the site's "online" lamp — // knowledge uplink ·
-       online — so it wears the live signal, with a matching glow. */
     color: var(--dn-acid);
-    letter-spacing: 0.2em;
-    margin: 0 0 0.9rem;
-    text-shadow: 0 0 12px color-mix(in srgb, var(--dn-acid) 45%, transparent);
+    letter-spacing: var(--dn-track-wide);
+    margin: 0;
+    text-shadow: none;
+    font-size: var(--dn-text-xs);
   }
+
   .wordmark {
     font-family: var(--dn-font-display);
-    /* SIGNAL pass: bigger, tighter — the front door announces itself. */
-    font-size: clamp(2.7rem, 9vw, 5.2rem);
-    /* Electrolize is single-weight; asking for 700 here only gets the
-       browser's fake bold, which is ugly at display size. */
+    /* Hero display: one step above the page title, clamped so phones get
+       a legible size and desktops get presence. */
+    font-size: clamp(2.4rem, 8vw, 4.4rem);
     font-weight: 400;
-    /* Display face, tight tracking, uppercase: the brand mark. The letters
-       are the glitch's real text — the ::before/::after ghosts in .dn-glitch
-       carry the same string from data-text. R2: the fill is the neon-sign
-       decay gradient with the chromatic fringe under it. */
     letter-spacing: 0.02em;
-    /* R3: the fill is the neon-sign decay gradient (cyan -> violet -> hot
-       pink) with the chromatic fringe under it — the SIGNAL split-glow,
-       extended into a full gradient. background-clip keeps the letters
-       selectable and the accessible name intact. */
+    line-height: var(--dn-lh-tight);
     background: var(--dn-wordmark);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    /* Chromatic fringe only — the 34px halo is gone (it was a paint cost
+       with no legibility gain). */
     text-shadow:
-      -2px 0 color-mix(in srgb, var(--dn-accent-2) 50%, transparent),
-      2px 0 color-mix(in srgb, var(--dn-accent) 40%, transparent),
-      0 0 34px color-mix(in srgb, var(--dn-accent) 28%, transparent);
+      -1px 0 color-mix(in srgb, var(--dn-accent-2) 45%, transparent),
+      1px 0 color-mix(in srgb, var(--dn-accent) 35%, transparent);
     display: inline-flex;
     align-items: center;
-    gap: 0.4em;
+    gap: 0.35em;
+    margin: 0;
   }
+
   .wordmark .mark { width: 0.55em; height: 0.55em; flex: none; }
   .tagline {
-    color: var(--dn-accent);
-    letter-spacing: 0.14em;
-    font-size: 0.75rem;
+    color: var(--dn-accent-dim);
+    letter-spacing: 0.12em;
+    font-size: var(--dn-text-xs);
     text-transform: lowercase;
-    margin: 0.5rem 0 0.35rem;
+    margin: 0;
+    text-shadow: none;
   }
+
   /* The terminal status line: types real corpus facts, caret blinking.
      aria-hidden in the markup; its facts are duplicated in the stats. */
   .feed {
-    min-height: 1.3em;
-    margin: 0 0 1.1rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    color: var(--dn-accent);
-    text-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 35%, transparent);
+    min-height: 1.2em;
+    margin: 0;
+    font-size: var(--dn-text-xs);
+    letter-spacing: var(--dn-track-tight);
+    color: var(--dn-fg-faint);
+    text-shadow: none;
   }
+
   .feed-caret {
     color: var(--dn-hot);
-    text-shadow: 0 0 9px color-mix(in srgb, var(--dn-hot) 70%, transparent);
+    /* The blink is the one surviving desktop loop on Home: a 1.1s steps()
+       opacity toggle on a single glyph. Phones park it (see PHONE). */
     animation: dn-blink 1.1s steps(1, end) infinite;
   }
+
   @media (prefers-reduced-motion: reduce) {
     .feed-caret { animation: none; }
   }
-  .lede { color: var(--dn-fg-muted); font-size: 1rem; line-height: 1.65; margin: 0; }
+  .lede {
+    color: var(--dn-fg-muted);
+    font-size: var(--dn-text-md);
+    line-height: var(--dn-lh-body);
+    margin: 0;
+    max-width: 54ch;
+  }
+
   .lede strong { color: var(--dn-fg); }
   .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2-text); }
   /* The hero readout: a bordered panel of real numbers, left-aligned inside a
@@ -483,37 +499,31 @@
      SIGNAL pass: darker glass, accent edge — and the numbers are the hero's
      second voice: big mono digits with a neon keyline, not a data table. */
   .stats {
-    width: min(46rem, 100%);
-    margin-top: 1.4rem;
+    width: min(44rem, 100%);
+    margin-top: var(--dn-space-4);
     text-align: left;
     display: grid;
-    gap: 0.55rem;
-    padding: 1.1rem 1.3rem 1.2rem;
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--dn-accent) 4%, transparent), transparent 46%),
-      color-mix(in srgb, var(--dn-bg-raise) 94%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 42%, var(--dn-border-strong));
+    gap: var(--dn-space-3);
+    padding: var(--dn-space-4) var(--dn-space-5) var(--dn-space-5);
+    /* Layered flat: raise surface + one hairline border + one inset
+       keyline. No gradient overlay, no 40px drop shadow. */
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border-strong);
     border-left: 3px solid var(--dn-src, var(--dn-accent));
-    border-radius: 3px;
-    box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 14%, transparent),
-      0 14px 40px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
+    border-radius: 0;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 12%, transparent);
   }
+
   /* The glow behind the wordmark: three radial blooms in the signal hues
      (cyan left, hot pink right, violet top), blurred — the night-city
      ambience. Sits under the hero (z-index -1) and never repaints. */
   .hero::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -30% -12% -20%;
-    background:
-      radial-gradient(45% 55% at 30% 40%, color-mix(in srgb, var(--dn-accent) 13%, transparent), transparent 70%),
-      radial-gradient(40% 50% at 70% 60%, color-mix(in srgb, var(--dn-accent-2) 10%, transparent), transparent 70%),
-      radial-gradient(30% 40% at 55% 20%, color-mix(in srgb, var(--dn-violet) 8%, transparent), transparent 70%);
-    filter: blur(8px);
-    pointer-events: none;
+    /* Hero halo removed. It was three radial gradients + filter: blur(8px)
+       on a viewport-sized layer — the single most expensive paint on Home.
+       The constellation SVG already carries the "signal on" read. */
+    content: none;
   }
+
   .stats-hd {
     display: flex;
     align-items: center;
@@ -651,31 +661,24 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.25em;
+    gap: var(--dn-space-1);
     text-align: left;
     color: var(--dn-fg);
-    background-color: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
-    /* IGNITION: the holographic sheen is a background LAYER, so the sweep is
-       clipped by the card box itself — no extra element, no overflow clip
-       fighting the corner brackets. It slides across on hover via
-       background-position and slides back when you leave. */
-    background-image: linear-gradient(115deg,
-      transparent 40%,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent) 47%,
-      color-mix(in srgb, var(--dn-fg) 7%, transparent) 50%,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent) 53%,
-      transparent 60%);
-    background-size: 280% 100%;
-    background-position: 135% 0;
-    background-repeat: no-repeat;
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 32%, transparent);
+    /* Flat card: solid fill + hairline border + source-hue left rail.
+       The 280%-wide sheen background layer is gone. */
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border);
     border-left: 3px solid var(--dn-src, var(--dn-accent));
-    border-radius: 2px;
-    padding: 0.7em 0.8em;
+    border-radius: 0;
+    padding: var(--dn-space-3) var(--dn-space-4);
     cursor: pointer;
-    transition: border-color 120ms, box-shadow 120ms, background-color 120ms,
-      transform 120ms, background-position 600ms ease;
+    transition: border-color 120ms, background-color 120ms;
   }
+  .src-card:hover {
+    background-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, var(--dn-bg-raise));
+    border-color: var(--dn-src, var(--dn-accent));
+  }
+
   .src-card:hover {
     background-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
     background-position: -135% 0;
@@ -779,65 +782,37 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.2em;
+    gap: var(--dn-space-1);
     min-width: 15rem;
     text-align: left;
     color: var(--dn-fg);
-    background:
-      linear-gradient(180deg,
-        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 11%, transparent),
-        transparent 55%),
-      var(--dn-bg-raise);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 42%, transparent);
-    padding: 0.9em 1.1em;
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border-strong);
+    border-left: 3px solid var(--dn-src, var(--dn-accent));
+    padding: var(--dn-space-3) var(--dn-space-4);
     cursor: pointer;
-    overflow: hidden;
-    transition: transform 120ms, box-shadow 120ms, border-color 120ms;
+    transition: border-color 120ms, background-color 120ms;
   }
-  /* Sheen: a hard-edged light sweep, clipped to the notched shape — the
-     "charge" before you follow the link. Transform-only, so it stays cheap. */
-  .cta::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(115deg,
-      transparent 38%,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent) 50%,
-      transparent 62%);
-    transform: translateX(-130%);
-    transition: transform 500ms ease;
-    pointer-events: none;
-  }
-  .cta:hover::after { transform: translateX(130%); }
   .cta:hover {
-    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, var(--dn-bg-raise));
     border-color: var(--dn-src, var(--dn-accent));
-    box-shadow:
-      0 0 26px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
-      0 8px 22px color-mix(in srgb, var(--dn-bg-sunken) 75%, transparent);
   }
+  /* The ::after sheen and the translateY(-2px) lift are gone. */
+
   .cta-k { font-size: 1.1rem; color: var(--dn-accent-2-text); }
   .cta-k.spark { color: var(--dn-hot); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
   .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
-  /* PERF-MOBILE: the conic voltage ring holds its first frame — a static
-     four-hue gradient border, zero spin. The spin was heavy GPU work on the
-     one control a phone owner touches most. */
+  /* DS-DESIGN review fix (glm-5v-turbo): the conic voltage border read as
+     leftover eye candy. The synapses CTA now wears the same flat language
+     as every card: raise fill, hairline border, source-hue left rail - the
+     glyph keeps the hot accent so it still reads first. */
   .cta.graph {
-    /* The synapses CTA is the door to the canvas: gradient border, not a
-       dashed outline — it should read as the highest-voltage control here. */
-    border: 1px solid transparent;
-    background:
-      linear-gradient(180deg,
-        color-mix(in srgb, var(--dn-accent) 10%, transparent), transparent 55%)
-        padding-box,
-      conic-gradient(from 0deg,
-        var(--dn-accent), var(--dn-violet) 32%, var(--dn-accent-2) 58%,
-        var(--dn-hot) 82%, var(--dn-accent)) border-box;
+    border: 1px solid var(--dn-border-strong);
+    border-left: 3px solid var(--dn-src, var(--dn-accent));
+    background: var(--dn-bg-raise);
   }
-  .cta.graph:hover {
-    box-shadow: 0 0 26px color-mix(in srgb, var(--dn-violet) 35%, transparent);
-  }
+  .cta.graph .cta-k { color: var(--dn-hot); }
 
   /* ---------- contents grid ---------- */
   .chapters-grid { width: min(68rem, 100%); }
@@ -854,18 +829,24 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.4em;
+    gap: var(--dn-space-1);
     text-align: left;
     font-family: var(--dn-font-prose);
     color: var(--dn-fg);
-    background: color-mix(in srgb, var(--dn-bg-raise) 72%, transparent);
+    background: var(--dn-bg-raise);
     border: 1px solid var(--dn-border);
-    border-radius: 2px;
-    padding: 0.75em 0.85em 0.75em 1em;
+    border-radius: 0;
+    padding: var(--dn-space-3) var(--dn-space-4);
     cursor: pointer;
-    overflow: hidden;
-    transition: border-color 120ms, background 120ms, box-shadow 120ms, transform 120ms;
+    transition: border-color 120ms, background-color 120ms;
   }
+  .card:hover {
+    border-color: var(--dn-src, var(--dn-accent));
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, var(--dn-bg-raise));
+  }
+  /* The ::before spine and ::after brow hairline are removed — the left
+     rail on the base state carries the source hue at rest. */
+
   /* The lit edge: a hairline bar grows out of the card's left edge on hover,
      in that chapter's source hue — the DOM echo of an axon leaving a soma. */
   .card::before {
@@ -1057,22 +1038,35 @@
       height: auto;
       overflow: visible;
       min-height: 0;
-      padding: 1.4rem 1rem 3rem;
-      gap: 1.5rem;
+      padding: var(--dn-space-5) var(--dn-space-4) var(--dn-space-7);
+      gap: var(--dn-space-5);
     }
-    .hero { padding: 1.1rem 0.8rem 0.3rem; }
-    /* The halo shrinks with the viewport: one small painted layer instead
-       of a viewport-overflowing blur. */
-    .hero::before { inset: -14% -8% -10%; filter: blur(5px); }
-    /* Designer spec: wordmark clamps to 8vw on phones. */
-    .wordmark { font-size: clamp(2.5rem, 8vw, 4rem); }
-    .lede { line-height: 1.7; }
+    .hero {
+      padding: var(--dn-space-4) var(--dn-space-3) var(--dn-space-2);
+      gap: var(--dn-space-3);
+      max-width: 100%;
+    }
+    .wordmark { font-size: clamp(2.2rem, 9vw, 3.4rem); }
+    .lede { line-height: var(--dn-lh-loose); max-width: 100%; }
+    .stats {
+      padding: var(--dn-space-3) var(--dn-space-4);
+      width: 100%;
+    }
     .stats .dn-kv .num { font-size: 1.3rem; }
-    /* Thumb law: every control clears 40px of touch target. */
-    .resume, .mk { min-height: 40px; align-items: center; }
+
+    /* Thumb law: every control clears 44px. */
+    .resume, .mk { min-height: 44px; align-items: center; }
     .cta { min-height: 48px; }
-    /* The 0-loop lock: survivors park on their resting frame. */
+    .src-card { min-height: 44px; }
+    .card { min-height: 44px; }
+
+    /* Zero loops on phone. */
     .rail::before { animation: none; transform: translateX(-120%); }
     .feed-caret { animation: none; }
+
+    /* The rail and bus are static strips — they already are, but restated
+       here so a future edit does not reintroduce a loop. */
+    .rail, .bus { animation: none; }
   }
+
 </style>
