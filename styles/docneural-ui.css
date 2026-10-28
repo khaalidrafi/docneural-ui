@@ -158,8 +158,16 @@
      Cyan is the wire (links, focus, active chrome). Everything else is
      restrained: pink for tags/counts, amber for warnings, acid for the one
      LIVE readout. No violet in the body — only in the wordmark gradient. */
-  --dn-accent: #00e5f5;
-  --dn-accent-dim: #2cc4e3;
+  /* OWNER LAW 2026-10-28 — "Use neon blue, add electric vibe" on the WHOLE
+     site. The consult-C electric wire (#1f6bff, chrome-tier 4.1-4.5:1) is
+     promoted to the site's primary axis: --dn-accent takes the text-safe
+     electric stop #4f8bff (6.3:1 void / 5.8:1 raise), --dn-accent-dim the
+     deeper tier #3f78f0 (5.0/4.6). Cyan retires from chrome — the graph
+     palette keeps one blue slot for source identity. Pink/acid/hot/amber
+     hold their posts: neon blue leads, the electric cast discharges around
+     it, not a mono-blue mush. */
+  --dn-accent: #4f8bff;
+  --dn-accent-dim: #3f78f0;
   --dn-accent-2: #ff3366;
   --dn-accent-2-text: #ff3366;
   --dn-hot: #ffd93f;
@@ -183,7 +191,7 @@
   /* Wordmark: the one gradient in the system — a filament, not a neon sign
      (DS-COOLEST directive 7). White -> cyan value ramp; no violet, no pink. */
   --dn-wordmark: linear-gradient(100deg,
-    #e8f1fb 0%, var(--dn-accent) 50%, #9de8f0 100%);
+    #e8f1fb 0%, var(--dn-accent) 50%, #a7c4ff 100%);
 
   /* Glow: two recipes, both short-throw. Used on focus rings and the one
      active chip — never on body text, never on large surfaces. */
@@ -197,11 +205,11 @@
   --dn-bracket-bleed: 0px;
 
   /* Graph literals (canvas cannot parse var()/color-mix()). */
-  --dn-graph-link: rgba(0, 229, 245, 0.26);
+  --dn-graph-link: rgba(31, 107, 255, 0.30);
   --dn-graph-bg: #0a1524;
-  --dn-dish-dot-1: rgba(0, 229, 245, 0.09);
+  --dn-dish-dot-1: rgba(31, 107, 255, 0.10);
   --dn-dish-dot-2: rgba(255, 51, 102, 0.05);
-  --dn-graph-palette: #00e5f5, #ff3366, #ffd93f, #bd00ff, #3ef04a, #ff7a45, #56c8ff, #ff5c8a;
+  --dn-graph-palette: #2f7bff, #ff3366, #ffd93f, #bd00ff, #3ef04a, #ff7a45, #56c8ff, #ff5c8a;
 
   /* Geometry. */
   --dn-notch: 9px;
@@ -252,8 +260,8 @@
   /* Signals darken into ink-jet colour. Every signal here clears 4.5:1 on
      paper as text, and every text signal also carries an underline or a
      glyph so colour is never the only cue. */
-  --dn-accent: #005a78;
-  --dn-accent-dim: #00455c;
+  --dn-accent: #004299;   /* the paper arm of the electric wire (9.1:1) */
+  --dn-accent-dim: #003380;
   --dn-accent-2: #a30d55;
   --dn-accent-2-text: #98084e;
   --dn-hot: #7a4a00;
@@ -279,11 +287,11 @@
   /* Wires: darker and more opaque than the dark theme so the graph still
      reads as "wired together" on paper without becoming a barcode. The
      dish grid is a faint grey graph-paper instead of signal-tinted dots. */
-  --dn-graph-link: rgba(0, 97, 127, 0.55);
+  --dn-graph-link: rgba(0, 66, 153, 0.5);
   --dn-graph-bg: #ffffff;
   --dn-dish-dot-1: rgba(96, 115, 138, 0.14);
   --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
-  --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
+  --dn-graph-palette: #1e50c8, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
 
   color-scheme: light;
 }
@@ -303,8 +311,8 @@
     /* cool-pass OP-5 unified across BOTH light arms (COOLER-3 fidelity fix:
        the auto-light arm had kept the old #00617f while the toggle arm moved
        to the wire-lineage #005a78 — toggle-light and auto-light must agree). */
-    --dn-accent: #005a78;
-    --dn-accent-dim: #00455c;
+    --dn-accent: #004299;   /* the paper arm of the electric wire (9.1:1) */
+    --dn-accent-dim: #003380;
     --dn-accent-2: #a30d55;
     --dn-accent-2-text: #98084e;
     --dn-hot: #7a4a00;
@@ -319,11 +327,11 @@
     --dn-glow-2: none;
     --dn-glow-acid: none;
     --dn-bracket-bleed: 0px;
-    --dn-graph-link: rgba(0, 97, 127, 0.55);
+    --dn-graph-link: rgba(0, 66, 153, 0.5);
     --dn-graph-bg: #ffffff;
     --dn-dish-dot-1: rgba(96, 115, 138, 0.14);
     --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
-    --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
+    --dn-graph-palette: #1e50c8, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
     color-scheme: light;
   }
 }
