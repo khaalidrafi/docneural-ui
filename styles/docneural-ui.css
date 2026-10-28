@@ -799,10 +799,8 @@ body.dn-body::after {
   .dn-trace::after { animation: none; }
   .dn-neuron-mark { animation: none; }
   .dn-led-dot { animation: none; }
-  /* The glitch is the one effect that cannot merely stop: a frozen chromatic
-     split looks like misrendered text, so the ghosts go entirely. */
-  .dn-glitch::before,
-  .dn-glitch::after { animation: none; opacity: 0; }
+  /* The glitch layer is deleted outright (DS-COOLEST directive 8) — nothing
+     to park here anymore. */
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
