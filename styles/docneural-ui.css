@@ -515,11 +515,9 @@ body.dn-body::after {
     color-mix(in srgb, var(--dn-accent) 6%, transparent) 62%,
     transparent 100%);
   box-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent) 38%, transparent);
-  animation: dn-membrane 3.2s ease-in-out infinite;
-}
-@keyframes dn-membrane {
-  0%, 100% { box-shadow: 0 0 8px color-mix(in srgb, var(--dn-accent) 38%, transparent); }
-  50% { box-shadow: 0 0 20px 1px color-mix(in srgb, var(--dn-accent) 70%, transparent); }
+  /* PERF-MOBILE: the membrane pulse is gone — animating box-shadow repaints
+     every frame, on every surface the mark sits on (brand, stats head,
+     controls). The static glow IS the look. */
 }
 .dn-neuron-mark::before {
   content: "";
@@ -729,40 +727,26 @@ body.dn-body::after {
   position: relative;
   display: inline-block;
 }
+/* PERF-MOBILE: the ghosts park at opacity 0 — same treatment reduced-motion
+   already gave them, because "a frozen chromatic split looks like misrendered
+   text" (this file's own words). The wordmark keeps its chromatic fringe via
+   the text-shadow under the gradient; the 6s steps() loops are gone from
+   every page load. */
 .dn-glitch::before,
 .dn-glitch::after {
   content: attr(data-text);
   position: absolute;
   inset: 0;
   pointer-events: none;
+  opacity: 0;
   clip-path: inset(0 0 60% 0);
 }
 .dn-glitch::before {
   color: var(--dn-accent);
-  animation: dn-glitch-a 6s steps(1, end) infinite;
 }
 .dn-glitch::after {
   color: var(--dn-accent-2-text);
   clip-path: inset(55% 0 0 0);
-  animation: dn-glitch-b 6s steps(1, end) infinite;
-}
-/* The bulk of the cycle is "no glitch": each burst lasts ~300 ms of 6 s.
-   The split now skews as well as translates — a mistracking head, not a
-   nudged layer — which is what makes it read as signal damage. */
-@keyframes dn-glitch-a {
-  0%, 82%, 100% { transform: none; opacity: 0; }
-  84% { transform: translate(-2px, -1px) skewX(-2deg); opacity: 0.85; }
-  87% { transform: translate(2px, 1px) skewX(1.5deg); opacity: 0.7; }
-  90% { transform: translate(-1px, 1px) skewX(-1deg); opacity: 0.8; }
-  93% { transform: translate(1px, -1px); opacity: 0.5; }
-  96% { opacity: 0; }
-}
-@keyframes dn-glitch-b {
-  0%, 82%, 100% { transform: none; opacity: 0; }
-  85% { transform: translate(2px, 1px) skewX(2deg); opacity: 0.8; }
-  88% { transform: translate(-2px, -1px) skewX(-1.5deg); opacity: 0.65; }
-  91% { transform: translate(1px, 0) skewX(1deg); opacity: 0.75; }
-  94% { opacity: 0; }
 }
 
 /* Brand gradient text — the wordmark and section headers. R2: the gradient
@@ -782,11 +766,10 @@ body.dn-body::after {
     -2px 0 color-mix(in srgb, var(--dn-accent-2) 55%, transparent),
     2px 0 color-mix(in srgb, var(--dn-accent) 45%, transparent),
     0 0 30px color-mix(in srgb, var(--dn-accent) 30%, transparent);
-  animation: dn-sweep 9s ease-in-out infinite;
-}
-@keyframes dn-sweep {
-  0%, 100% { background-position: 0% 0; }
-  50% { background-position: 100% 0; }
+  /* PERF-MOBILE: the 9s background-position sweep is parked — a gradient
+     that never stops repainting the wordmark bought little; the decay
+     gradient at rest is the look. */
+  background-position: 0% 0;
 }
 :root[data-theme='light'] .dn-gradient-text {
   /* On paper the aberration fringe is noise, not neon: drop the offsets and
@@ -815,11 +798,8 @@ body.dn-body::after {
   border-radius: 50%;
   background: var(--dn-accent);
   box-shadow: 0 0 12px 2px color-mix(in srgb, var(--dn-accent) 65%, transparent);
-  animation: dn-drift 7s ease-in-out infinite;
-}
-@keyframes dn-drift {
-  0%, 100% { transform: translateX(-30%); opacity: 0.7; }
-  50% { transform: translateX(30%); opacity: 1; }
+  /* PERF-MOBILE: the lit node rests mid-trace instead of drifting forever. */
+  transform: translateX(0);
 }
 
 /* A halo behind a hero/panel: two stacked rings, so a DOM surface reads as
@@ -1320,4 +1300,20 @@ body.dn-body::after {
   .dn-org { line-height: 1.72; }
   .dn-org h1 { font-size: clamp(1.45rem, 7vw, var(--dn-text-2xl)); }
   .dn-org h2 { font-size: clamp(1.15rem, 5.5vw, var(--dn-text-xl)); }
+}
+
+/* ---------- PERF-MOBILE (≤700px): the static phone board -----------------
+   Designer: glm-5v-turbo (design-forge crown, FINAL 9.0/9). Owner law:
+   performance beats eye candy; phones get "performance, responsiveness,
+   lightweight and simplicity". Desktop keeps its five cheap survivors
+   (aurora, shell rail, power rail, caret, spark); the phone keeps none of
+   them — every surface rests on its composed frame. Last in the cascade so
+   the parks outrank every base rule above. The body's fixed attachment also
+   drops on phones: a background-attachment: fixed layer forces repaints
+   into every scroll frame on mobile GPUs (and iOS ignores it anyway), so
+   the vignette rides the grid like the rest. */
+@media (max-width: 700px) {
+  body.dn-body::before { animation: none; }
+  .spark, .dn-firing, .dn-led-dot { animation: none; }
+  body.dn-body { background-attachment: scroll, scroll, scroll, scroll, scroll; }
 }

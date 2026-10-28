@@ -334,6 +334,11 @@
   @media (prefers-reduced-motion: reduce) {
     .skel .orb, .skel .sweep { animation: none; }
   }
+  /* PERF-MOBILE (≤700px): the skeleton rests on its lit frame — a phone
+     loading the graph is exactly when it can least afford decorative loops. */
+  @media (max-width: 700px) {
+    .skel .orb, .skel .sweep { animation: none; }
+  }
 
   .roam-wrap {
     position: absolute;

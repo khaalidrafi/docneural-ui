@@ -805,4 +805,23 @@
   }
   .close:hover { background: var(--dn-hot); }
   @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* PERF-MOBILE (≤700px): the phone gets the static board. The home page
+     scrolls the DOCUMENT natively (no more nested 100dvh scroller inside a
+     100dvh shell — that is what made the phone feel like a shrunken desktop:
+     trapped scroll, URL-bar fights, clipped content), so the header sticks
+     like a real mobile nav. DocReader's section keeps its own established
+     phone scroller. Last in the cascade so the parks outrank the base loops.
+     Desktop is untouched. */
+  @media (max-width: 700px) {
+    .reader-mode { overflow-y: auto; }
+    /* The home page now scrolls the DOCUMENT (native phone scroll), so the
+       header sticks like a real mobile nav — glass over the passing board.
+       z 40: under the scanline overlay (60), over all page content. */
+    .shell { position: sticky; top: 0; z-index: 40; }
+    .shell::after { animation: none; }
+    .spark { animation: none; }
+    .status .led { animation: none; }
+    .panel .dots { animation: none; }
+  }
 </style>
