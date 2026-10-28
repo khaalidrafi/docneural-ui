@@ -590,10 +590,10 @@
           <tbody>
             <tr><td>text contrast</td><td>WCAG AA 4.5:1 normal / 3.0:1 large, both themes</td><td>0 failures; min 6.09:1 dark / 6.41:1 light</td><td>pass</td></tr>
             <tr><td>focus visibility</td><td>WCAG 2.4.7 + 1.4.11 non-text bar</td><td>14/14 tab stops show an indicator; min ring 10.76:1</td><td>pass</td></tr>
-            <tr><td>motion budget</td><td>WCAG 2.2.2 + reduced-motion honored</td><td>3 desktop loops, 0 phone; 2 finite entrances excluded</td><td>pass</td></tr>
+            <tr><td>motion budget</td><td>WCAG 2.2.2 + reduced-motion honored</td><td>4 desktop loops (cap 4 — consult C bus rider is the 4th, transform-only), 0 phone; 2 finite entrances excluded</td><td>pass — at cap</td></tr>
             <tr><td>tap targets</td><td>44px minimum on phone</td><td>44px floor met</td><td>pass</td></tr>
             <tr><td>structure</td><td>semantic landmarks, skip link, native controls</td><td>header/nav/main/footer, skip link, native details</td><td>pass</td></tr>
-            <tr><td>decorative exception</td><td>WCAG 1.4.11 exempts pure decoration</td><td>55%-alpha brackets: 1.60:1 dark / 2.62:1 light (seg ticks); solid variants 6.39:1 / 4.71:1; prefers-contrast path lifts all to accent (OP-55)</td><td>disclosed — exempt</td></tr>
+            <tr><td>decorative exception</td><td>WCAG 1.4.11 exempts pure decoration</td><td>55%-alpha seg brackets (electric): 1.49:1 dark / 4.17:1 light; caret ▌ electric: 4.38:1 dark — decorative non-text, 3:1 floor; solid variants 6.39:1 / 4.71:1; prefers-contrast path lifts all to accent (OP-55)</td><td>disclosed — exempt</td></tr>
             <tr><td>gradient-clip wordmark</td><td>WCAG 1.4.3 via worst gradient stop + legacy ink</td><td>worst stop 12.8:1 dark / ink 19:1 light; engines without background-clip get --dn-fg, never invisible text (consult B F1/F2)</td><td>pass</td></tr>
           </tbody>
         </table>
@@ -756,7 +756,7 @@
     position: absolute;
     top: 0.55rem;
     right: 0.55rem;
-    color: var(--dn-accent);
+    color: var(--dn-electric);   /* CONSULT C: the calibration mark matches the chrome rail */
     opacity: 0.9;
   }
 
@@ -805,7 +805,9 @@
   }
 
   .feed-caret {
-    color: var(--dn-hot);
+    /* CONSULT C (E5): the caret is the hero's terminal-live beat — it rides
+       the chrome's electric hue now; amber is freed to mean warning only. */
+    color: var(--dn-electric);
     /* The blink is the one surviving desktop loop on Home: a 1.1s steps()
        opacity toggle on a single glyph. Phones park it (see PHONE). */
     animation: dn-blink 1.1s steps(1, end) infinite;

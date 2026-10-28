@@ -171,6 +171,15 @@
   --dn-acid-dim: #2bb533;
   --dn-violet: #bd00ff;
 
+  /* CONSULT C — NEON BLUE: the header's electric wire. Distinct from the
+     cyan accent (the body wire / focus ring) AND from the canvas-pinned
+     #56c8ff source hue, so the top chrome reads as its own rail, not a
+     reuse. Carries the brand rail, the active seg, the status reticle,
+     the caret hue. */
+  --dn-electric: #1f6bff;
+  --dn-electric-dim: #4f8bff;
+  --dn-glow-electric: 0 0 6px color-mix(in srgb, var(--dn-electric) 60%, transparent);
+
   /* Wordmark: the one gradient in the system — a filament, not a neon sign
      (DS-COOLEST directive 7). White -> cyan value ramp; no violet, no pink. */
   --dn-wordmark: linear-gradient(100deg,
@@ -252,6 +261,9 @@
   --dn-acid: #04610c;
   --dn-acid-dim: #3a7a16;
   --dn-violet: #6b1fa8;
+  --dn-electric: #004299;
+  --dn-electric-dim: #0a3a7a;
+  --dn-glow-electric: none;
 
   /* Paper: ink is the whole idea — the wordmark carries no gradient fill
      (the .dn-gradient-text paper arm forces plain fg text). */
@@ -299,6 +311,9 @@
     --dn-amber: #7a3f00;
     --dn-acid: #04610c;
     --dn-violet: #6b1fa8;
+    --dn-electric: #004299;
+    --dn-electric-dim: #0a3a7a;
+    --dn-glow-electric: none;
     --dn-wordmark: none;
     --dn-glow: none;
     --dn-glow-2: none;
@@ -966,6 +981,8 @@ body.dn-body::after {
   .dn-trace::after { animation: none; }
   .dn-neuron-mark { animation: none; }
   .dn-led-dot { animation: none; }
+  /* CONSULT C: the header bus rider is parked for reduced-motion users. */
+  .bus-rail::before { animation: none; opacity: 0; }
   /* The glitch layer is deleted outright (DS-COOLEST directive 8) — nothing
      to park here anymore. */
   * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
@@ -1582,4 +1599,8 @@ body.dn-body::after {
   .dn-hud::after { display: none; }
   .dn-org pre,
   .dn-org table { break-inside: avoid; }
+  /* CONSULT C (R7): the header prints as a clean black hairline, not a
+     neon blue bar — the electric bus and scan stripe are screen chrome. */
+  .bus-rail, .shell::after { display: none; }
+  .shell { border-bottom: 1px solid #000; box-shadow: none; }
 }
