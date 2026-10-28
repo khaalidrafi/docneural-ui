@@ -131,7 +131,7 @@
         {#each doc.tags as tag (tag)}<span class="tag">#{tag}</span>{/each}
         <span class="deg" title="synapses touching this neuron">⌁ {ins} IN · {outs} OUT</span>
         <button class="open-reader dn-mono" onclick={() => store.setMode('reader')}>
-          open in docs ↗
+          open in docs ›
         </button>
       </div>
     </header>

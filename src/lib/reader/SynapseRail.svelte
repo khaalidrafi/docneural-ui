@@ -120,14 +120,14 @@
         <GraphView store={roam} onNodeClick={(n) => go(n.id)} loadEngine={minimapLoad} />
       </div>
       <button class="expand dn-mono" onclick={() => store.setMode('graph')}>
-        open full graph ↗
+        open full graph ›
       </button>
     </section>
   {/if}
 
   <section>
     <h3 class="dn-mono">
-      ⇤ afferent <span class="count">{ins.length}</span>
+      ← afferent <span class="count">{ins.length}</span>
       {#if insG.length !== ins.length}<span class="from">from {insG.length} chapters</span>{/if}
     </h3>
     {#if ins.length === 0}
@@ -153,7 +153,7 @@
   {#if outs.length > 0}
     <section>
       <h3 class="dn-mono">
-        ⇥ efferent <span class="count">{outs.length}</span>
+        → efferent <span class="count">{outs.length}</span>
         {#if outsG.length !== outs.length}<span class="from">to {outsG.length} chapters</span>{/if}
       </h3>
       <ul>
@@ -211,7 +211,8 @@
     gap: 0.4em;
   }
   section:first-child h3 { margin-top: 0; }
-  .count { color: var(--dn-accent-2); }
+  /* DS-COOLEST directive 5: counts are chrome text — quiet ink, not pink. */
+  .count { color: var(--dn-fg-muted); }
   /* "×612" — how much one chapter leans on this one. Kept quiet: it is a
      weight, not a headline, and the title is what you click. */
   .multi {
