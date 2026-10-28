@@ -196,6 +196,158 @@
     </div>
   </header>
 
+  <!-- CB-EXHAUST consult 2 (deepseek-v4.1-flash@codebuddy): the Plate Ledger —
+       the Corpus Plate's caption. Same 96 nodes, same degree rule
+       (degreesOf()), laid out as a readout. Static rows document THIS export
+       (stamped in the colophon); graph.json stays the source of truth. -->
+  <section class="plate-ledger">
+    <details class="ledger">
+      <summary class="ledger-summary">
+        <span class="ledger-sum-label dn-mono">plate ledger</span>
+        <span class="ledger-sum-count dn-mono">› 96 rows · top degree · 3 corpora</span>
+        <span class="ledger-sum-note">collapsible readout of the top-96 highest-degree nodes plotted in the Corpus Plate above — one row per node, degree = real wire count</span>
+      </summary>
+      <div class="ledger-legend dn-mono" role="note">
+        <span class="lg-item"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span>
+        <span class="lg-item"><i class="dot dot-org" aria-hidden="true"></i>org</span>
+        <span class="lg-item"><i class="dot dot-guix" aria-hidden="true"></i>guix</span>
+        <span class="lg-meta">▤ degree = real wire count · corpora wear their graph hue · source of truth: graph.json</span>
+      </div>
+      <table class="ledger-table">
+        <thead>
+          <tr><th scope="col" class="ledger-rank">#</th><th scope="col" class="ledger-corpus">corpus</th><th scope="col" class="ledger-node">index node</th><th scope="col" class="ledger-deg">degree</th></tr>
+        </thead>
+        <tbody>
+                        <tr class="ledger-row"><td class="ledger-rank">1</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Concept Index</td><td class="ledger-deg">4189</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">2</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Command Index</td><td class="ledger-deg">3771</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">3</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Programming Index</td><td class="ledger-deg">3505</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">4</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Variable Index</td><td class="ledger-deg">2460</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">5</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Concept Index</td><td class="ledger-deg">2298</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">6</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Key Index</td><td class="ledger-deg">2258</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">7</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Main Index (The Org Manual)</td><td class="ledger-deg">2037</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">8</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Variable Index (The Org Manual)</td><td class="ledger-deg">1260</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">9</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Key Index (The Org Manual)</td><td class="ledger-deg">1170</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">10</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Command and Function Index (The Org Manual)</td><td class="ledger-deg">989</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">11</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Top</td><td class="ledger-deg">767</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">12</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Mail Services</td><td class="ledger-deg">514</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">13</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Agenda Commands (The Org Manual)</td><td class="ledger-deg">431</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">14</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Top (The Org Manual)</td><td class="ledger-deg">417</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">15</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Top</td><td class="ledger-deg">392</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">16</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Version Control Services</td><td class="ledger-deg">275</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">17</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Glossary</td><td class="ledger-deg">219</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">18</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Base Services</td><td class="ledger-deg">197</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">19</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Printing Services</td><td class="ledger-deg">194</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">20</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Messaging Services</td><td class="ledger-deg">192</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">21</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Operating on Files</td><td class="ledger-deg">186</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">22</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Option Index</td><td class="ledger-deg">185</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">23</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Networking Services</td><td class="ledger-deg">184</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">24</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Miscellaneous Services</td><td class="ledger-deg">181</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">25</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Power Management Services</td><td class="ledger-deg">176</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">26</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Virtualization Services</td><td class="ledger-deg">171</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">27</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Build Systems</td><td class="ledger-deg">169</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">28</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Language Environments</td><td class="ledger-deg">155</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">29</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Built-in Table Editor (The Org Manual)</td><td class="ledger-deg">155</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">30</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Key bindings and Useful Functions (The Org Manual)</td><td class="ledger-deg">153</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">31</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">File-Sharing Services</td><td class="ledger-deg">151</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">32</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">G-Expressions</td><td class="ledger-deg">147</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">33</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Export Settings (The Org Manual)</td><td class="ledger-deg">145</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">34</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Initial Options</td><td class="ledger-deg">139</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">35</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Moving Point</td><td class="ledger-deg">134</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">36</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Structure Editing (The Org Manual)</td><td class="ledger-deg">134</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">37</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Image Mode</td><td class="ledger-deg">131</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">38</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Web Services</td><td class="ledger-deg">131</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">39</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Several Buffers</td><td class="ledger-deg">121</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">40</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Tab Bars</td><td class="ledger-deg">121</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">41</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Invoking guix package</td><td class="ledger-deg">120</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">42</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">LDAP Services</td><td class="ledger-deg">117</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">43</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Marks vs Flags</td><td class="ledger-deg">116</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">44</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Package Menu</td><td class="ledger-deg">111</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">45</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Desktop Services</td><td class="ledger-deg">109</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">46</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Editing and debugging formulas (The Org Manual)</td><td class="ledger-deg">109</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">47</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">General Variables</td><td class="ledger-deg">104</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">48</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Build Utilities</td><td class="ledger-deg">104</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">49</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Visiting</td><td class="ledger-deg">103</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">50</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">In-buffer Settings (The Org Manual)</td><td class="ledger-deg">103</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">51</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Shell Mode</td><td class="ledger-deg">102</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">52</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Handling Links (The Org Manual)</td><td class="ledger-deg">101</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">53</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Networking Setup</td><td class="ledger-deg">96</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">54</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Invoking guix system</td><td class="ledger-deg">94</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">55</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Plain Lists (The Org Manual)</td><td class="ledger-deg">93</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">56</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Program Modes</td><td class="ledger-deg">91</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">57</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Special Isearch</td><td class="ledger-deg">91</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">58</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Clocking commands (The Org Manual)</td><td class="ledger-deg">87</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">59</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Spelling</td><td class="ledger-deg">84</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">60</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Using column view (The Org Manual)</td><td class="ledger-deg">84</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">61</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Amusements</td><td class="ledger-deg">83</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">62</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Using the Configuration System</td><td class="ledger-deg">83</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">63</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Mouse Commands</td><td class="ledger-deg">82</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">64</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Global and local cycling (The Org Manual)</td><td class="ledger-deg">82</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">65</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Optional Mode Line</td><td class="ledger-deg">81</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">66</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Defining Packages</td><td class="ledger-deg">81</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">67</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Diff Mode</td><td class="ledger-deg">80</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">68</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Compilation Mode</td><td class="ledger-deg">79</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">69</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Invoking guix-daemon</td><td class="ledger-deg">77</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">70</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Highlight Interactively</td><td class="ledger-deg">76</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">71</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">X Window</td><td class="ledger-deg">76</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">72</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Init File</td><td class="ledger-deg">74</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">73</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Outline Visibility</td><td class="ledger-deg">74</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">74</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">HTML Mode</td><td class="ledger-deg">73</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">75</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Lax Search</td><td class="ledger-deg">73</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">76</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Linux Services</td><td class="ledger-deg">72</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">77</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Sexp Diary Entries</td><td class="ledger-deg">71</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">78</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Service Reference</td><td class="ledger-deg">71</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">79</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Display Custom</td><td class="ledger-deg">70</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">80</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Rectangles</td><td class="ledger-deg">70</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">81</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Table of Resources</td><td class="ledger-deg">70</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">82</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Invoking guix import</td><td class="ledger-deg">70</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">83</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">package Reference</td><td class="ledger-deg">70</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">84</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Minor Modes</td><td class="ledger-deg">68</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">85</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Invoking guix shell</td><td class="ledger-deg">68</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">86</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">Shepherd Services</td><td class="ledger-deg">67</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">87</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">The Store Monad</td><td class="ledger-deg">67</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">88</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Misc Help</td><td class="ledger-deg">66</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">89</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">TeX Print</td><td class="ledger-deg">66</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">90</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-guix" aria-hidden="true"></i>guix</span></td><td class="ledger-node">operating-system Reference</td><td class="ledger-deg">66</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">91</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Checkboxes (The Org Manual)</td><td class="ledger-deg">65</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">92</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Creating Timestamps (The Org Manual)</td><td class="ledger-deg">65</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">93</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-org" aria-hidden="true"></i>org</span></td><td class="ledger-node">Filtering/limiting agenda items (The Org Manual)</td><td class="ledger-deg">64</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">94</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Commands of GUD</td><td class="ledger-deg">63</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">95</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Other Repeating Search</td><td class="ledger-deg">63</td></tr>
+                        <tr class="ledger-row"><td class="ledger-rank">96</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Text Scale</td><td class="ledger-deg">63</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <!-- CB-EXHAUST consult 5: "how to read this corpus" — a static 3-step
+       reading contract. Every step states a verifiable mechanic; the 00
+       index marks it as pre-flow orientation outside the 01-04 corpus
+       sections. -->
+  <section class="how" data-idx="00" aria-labelledby="how-read-corpus">
+    <h2 class="section-h dn-label" data-kicker="// 00 · how to read this corpus" id="how-read-corpus">how to read this corpus <span class="hint">three steps, all mechanical</span></h2>
+    <ol class="how-steps">
+      <li class="how-step">
+        <span class="how-num" aria-hidden="true">01</span>
+        <h3 class="how-verb dn-mono">Orient</h3>
+        <p class="how-line">This page is the map: the Corpus Plate plots the 96 most-connected of 1386 nodes, and the ledger below it counts every wire.</p>
+        <p class="how-next"><span aria-hidden="true">›</span> next: where the 1386 live</p>
+      </li>
+      <li class="how-step">
+        <span class="how-num" aria-hidden="true">02</span>
+        <h3 class="how-verb dn-mono">Navigate</h3>
+        <p class="how-line">The sources strip lists three corpora, each in its graph hue — open a card to read that corpus; tabs hop between its manuals.</p>
+        <p class="how-next"><span aria-hidden="true">›</span> next: walk the citations</p>
+      </li>
+      <li class="how-step">
+        <span class="how-num" aria-hidden="true">03</span>
+        <h3 class="how-verb dn-mono">Trace</h3>
+        <p class="how-line">Each page is a real org-export fragment; its links are the manual's own cross-references — the same graph that wires the Plate.</p>
+        <p class="how-next"><span aria-hidden="true">›</span> the citation network is the navigation</p>
+      </li>
+    </ol>
+    <p class="how-foot dn-mono"><span aria-hidden="true">—</span> the three corpora sit in the strip below</p>
+  </section>
+
   <!-- The marks you made with `b`, straight off the front door. This is the
        whole point of a bookmark list on a reference site: you return, and the
        five sections that matter to today's task are already in one place. -->
@@ -227,6 +379,17 @@
         <button class="src-card" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
           <span class="src-name dn-mono">{DocneuralStore.manualTitle(s.name)}</span>
           <span class="src-meta dn-mono">{s.pages} pages · {s.links} wires</span>
+          <!-- CB-EXHAUST consult 6: per-corpus body copy (facts re-verified
+               against the real graph: 569/1386 = 41%, hubs = the indexes). -->
+          {#if s.name === 'emacs'}
+            <span class="src-body">The GNU Emacs manual as a navigable node graph: editing, modes, and shell integration, edition-agnostic. Index hubs dominate the wire graph — the Concept Index alone wires 41% of the corpus.</span>
+          {:else if s.name === 'org'}
+            <span class="src-body">The Org mode manual as a node graph: capture, agenda, tables, and export pipelines, edition-agnostic. The Main Index concentrates the manual's busiest surface — one dense book, fully crossed.</span>
+          {:else if s.name === 'guix'}
+            <span class="src-body">The GNU Guix manual as a node graph: package definition, system configuration, and profiles, edition-agnostic. The Programming Index pulls the heaviest degree outside the Emacs indexes.</span>
+          {:else}
+            <span class="src-body">An aggregated corpus: real cross-references from every manual, computed into one wire graph. 39 nodes carry no wires and float at the edge.</span>
+          {/if}
           <span class="src-open">read ›</span>
         </button>
       {:else}
@@ -286,25 +449,121 @@
     </div>
   </section>
 
-  <!-- COOLER-3 OP-28: the footer is a colophon — three labeled columns
-       (method / contract / machine) closed by the same 22px accent tick the
-       section heads wear. The instrument ends the way it opens. -->
+  <!-- CB-EXHAUST consults 1+3+4+6 (deepseek-v4.1-flash@codebuddy): the
+       colophon becomes the design-system ledger — provenance columns, the
+       token manifest, the chrome contract, and the measured accessibility
+       ledger. The instrument documents itself; facts injected from the real
+       export (1386/30915, per-corpus counts, measured AA numbers). -->
   <footer class="foot dn-mono">
-    <div class="col">
-      <span class="col-h">method</span>
-      exported by an Emacs batch <span class="sym">org-export</span> · graph modeled on
-      <span class="sym">org-roam</span>
+    <p class="colo-lead">› a static reader for a public corpus. 1386 nodes, 30915 wires, three GNU manuals — and this aggregator, the reading instrument. every page is a pre-exported org fragment, served read-only.</p>
+    <div class="colo-grid">
+      <section class="colo-col" aria-labelledby="colo-method">
+        <span class="col-h" id="colo-method">method</span>
+        <dl class="colo-list">
+          <dt>export</dt><dd>one batch <span class="sym">org-export</span> pass: a graph plus one body-only HTML fragment per node. the shell mounts that data; it never re-parses org at runtime.</dd>
+          <dt>wire graph</dt><dd>30915 edges drawn from the corpus' real cross-references — computed, not curated. a wire exists here only if the citation exists in the source manuals.</dd>
+          <dt>plate</dt><dd>a single reading surface over the graph: the 96 most-connected nodes on a phyllotaxis field. navigation is graph traversal — no crawl, no rebuild on load.</dd>
+          <dt>provenance</dt><dd>GNU Emacs · 791 nodes — Org · 319 — Guix · 276. <span class="sym">graph.json</span> is the source of truth.</dd>
+        </dl>
+      </section>
+      <section class="colo-col" aria-labelledby="colo-contract">
+        <span class="col-h" id="colo-contract">contract</span>
+        <dl class="colo-list">
+          <dt>the site owes</dt><dd>read-only pages. no accounts, no cookies, no trackers, no external requests. both themes meet WCAG AA — measured, not asserted (ledger below).</dd>
+          <dt>the reader owes</dt><dd>a browser that runs the SPA once. nothing is stored, nothing is sent back.</dd>
+          <dt>themes</dt><dd>dark = night terminal, primary. light = clean paper, one click. no third surface.</dd>
+          <dt>canon</dt><dd>the corpus ships whole or not at all — the manuals are never rewritten here.</dd>
+        </dl>
+      </section>
+      <section class="colo-col" aria-labelledby="colo-machine">
+        <span class="col-h" id="colo-machine">machine</span>
+        <dl class="colo-list">
+          <dt>built with</dt><dd>svelte 5 + vite, hosted on github pages. 9-step type ramp, four tracking tokens, cyan+acid chrome, three hairline tiers, 16-arm reticle brackets, 3 desktop loops, 0 phone animations.</dd>
+          <dt>design</dt><dd>deepseek-v4.1-flash@codebuddy — audit 6.1/10, re-audit 7.2/10, consults 0-6 on the free tier ($0). implementation: glm-5.3-flash@chat.z.ai.</dd>
+          <dt>review</dt><dd>independent review glm-4.7-flash@zai — cycle-2 verdict READY, zero blockers.</dd>
+          <dt>data</dt><dd class="colo-links"><a class="mach" href="{store.base}/llms.txt">llms.txt</a><a class="mach" href="{store.base}/llms-full.txt">llms-full.txt</a><a class="mach" href="{store.base}/graph.json">graph.json</a></dd>
+          <dt>licenses</dt><dd>each upstream manual carries the GNU Free Documentation License — see the upstream editions.</dd>
+          <dt>stamp</dt><dd>export 2026-10-28 · plate ledger rows document this export</dd>
+        </dl>
+      </section>
     </div>
-    <div class="col">
-      <span class="col-h">contract</span>
-      stable <span class="sym">id:</span> citations, readable by humans and LLMs alike
-    </div>
-    <div class="col">
-      <span class="col-h">machine</span>
-      <a class="mach" href="{store.base}/llms.txt">llms.txt</a>
-      <a class="mach" href="{store.base}/llms-full.txt">llms-full.txt</a>
-      <a class="mach" href="{store.base}/graph.json">graph.json</a>
-    </div>
+
+    <details class="colo-details">
+      <summary>design system — token manifest · chrome contract</summary>
+      <div class="colo-details-body">
+        <table class="colo-manifest">
+          <thead><tr><th scope="col">token</th><th scope="col">dark</th><th scope="col">light</th><th scope="col">job</th></tr></thead>
+          <tbody>
+            <tr><th scope="rowgroup" colspan="4">fonts</th></tr>
+            <tr><td>--dn-font-mono</td><td colspan="2">"JetBrains Mono"</td><td>identity: headings, nav, labels, code</td></tr>
+            <tr><td>--dn-font-prose</td><td colspan="2">"Inter"</td><td>prose body text</td></tr>
+            <tr><td>--dn-font-display</td><td colspan="2">"Electrolize"</td><td>wordmark only</td></tr>
+            <tr><th scope="rowgroup" colspan="4">tracking</th></tr>
+            <tr><td>--dn-track-tight</td><td colspan="2">0.05em</td><td>code, tags</td></tr>
+            <tr><td>--dn-track</td><td colspan="2">0.14em</td><td>labels</td></tr>
+            <tr><td>--dn-track-wide</td><td colspan="2">0.26em</td><td>kickers, status</td></tr>
+            <tr><td>--dn-track-mega</td><td colspan="2">0.40em</td><td>hero kicker only</td></tr>
+            <tr><th scope="rowgroup" colspan="4">type ramp — 9 steps</th></tr>
+            <tr><td>--dn-text-2xs</td><td colspan="2">0.625rem</td><td>micro-legend, readout rows</td></tr>
+            <tr><td>--dn-text-xs</td><td colspan="2">0.75rem</td><td>micro-labels, chips, meta</td></tr>
+            <tr><td>--dn-text-sm</td><td colspan="2">0.875rem</td><td>table headers, code wells, nav</td></tr>
+            <tr><td>--dn-text-md</td><td colspan="2">1rem</td><td>body</td></tr>
+            <tr><td>--dn-text-lg</td><td colspan="2">1.25rem</td><td>h3, section heads</td></tr>
+            <tr><td>--dn-text-xl</td><td colspan="2">1.625rem</td><td>h2</td></tr>
+            <tr><td>--dn-text-2xl</td><td colspan="2">2.125rem</td><td>h1 / page title</td></tr>
+            <tr><td>--dn-text-3xl</td><td colspan="2">3rem</td><td>hero display</td></tr>
+            <tr><td>--dn-text-4xl</td><td colspan="2">clamp(3rem, 7.2vw, 5.25rem)</td><td>wordmark display — the real top</td></tr>
+            <tr><th scope="rowgroup" colspan="4">theme</th></tr>
+            <tr><td>--dn-bg</td><td>#05090f</td><td>#fbfbfd</td><td>page ground</td></tr>
+            <tr><td>--dn-bg-sunken</td><td>#03060a</td><td>#eef1f5</td><td>sunken tier</td></tr>
+            <tr><td>--dn-bg-raise</td><td>#0d1520</td><td>#ffffff</td><td>raised tier</td></tr>
+            <tr><td>--dn-fg</td><td>#e8f1fb</td><td>#0d1117</td><td>primary text</td></tr>
+            <tr><td>--dn-fg-muted</td><td>#a6bcd4</td><td>#2a3a4d</td><td>secondary text</td></tr>
+            <tr><td>--dn-fg-faint</td><td>#7f97b3</td><td>#4a5b6e</td><td>meta text (6.1:1 / 6.4:1 min measured)</td></tr>
+            <tr><td>--dn-hairline</td><td>#14202d</td><td>#dde3ea</td><td>rules, tier 1</td></tr>
+            <tr><td>--dn-accent</td><td>#00e5f5</td><td>#005a78</td><td>accent (light arm unified)</td></tr>
+            <tr><td>--dn-acid</td><td>#3ef04a</td><td>#04610c</td><td>signal</td></tr>
+            <tr><th scope="rowgroup" colspan="4">chrome laws</th></tr>
+            <tr><td>palette</td><td colspan="2">cyan + acid only in chrome</td><td>never in prose</td></tr>
+            <tr><td>glyph budget</td><td colspan="2">8</td><td>the full decorative set</td></tr>
+            <tr><td>desktop loops</td><td colspan="2">3</td><td>rail sweep · caret blink · pulse spark</td></tr>
+            <tr><td>phone loops</td><td colspan="2">0</td><td>no ambient motion on phone</td></tr>
+            <tr><td>entrances</td><td colspan="2">mark-in · rise</td><td>finite — not loops</td></tr>
+          </tbody>
+        </table>
+        <dl class="colo-chrome">
+          <dt>reticle brackets — 16-arm, double</dt><dd>frames viewport edges and registration corners of chrome panels. never crops into prose, never animates, never enters article body.</dd>
+          <dt>hairline tiers — three</dt><dd>separate chrome bands, section gutters, surface steps. never thicken, never multiply into grids, never carry color beyond the chrome set.</dd>
+          <dt>tick rules + mono indexes (00-04)</dt><dd>number chrome sections and align kickers to the baseline. never renumber per article, never replace semantic headings.</dd>
+          <dt>glyph budget — eight</dt><dd>the fixed set (› · — ▤ among them) is the only decorative marks. never a ninth glyph, no emoji, no icon-font substitutes.</dd>
+          <dt>loops contract — desktop only</dt><dd>rail sweep, caret blink, pulse spark. never on phone, never a fourth, never a looped entrance.</dd>
+          <dt>entrances — mark-in, rise</dt><dd>finite one-shots for chrome. never repeat, never loop, never play on phone.</dd>
+          <dt>light identity — paper arm</dt><dd>#fbfbfd ground, near-black ink, same surface discipline, accent unified to #005a78. never diverges tiers, never breaks AA on paper.</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="colo-details">
+      <summary>accessibility — conformance ledger, measured 2026-10-28</summary>
+      <div class="colo-details-body">
+        <table class="colo-a11y">
+          <thead><tr><th scope="col">dimension</th><th scope="col">contract</th><th scope="col">measured</th><th scope="col">status</th></tr></thead>
+          <tbody>
+            <tr><td>text contrast</td><td>WCAG AA 4.5:1 normal / 3.0:1 large, both themes</td><td>0 failures; min 6.09:1 dark / 6.41:1 light</td><td>pass</td></tr>
+            <tr><td>focus visibility</td><td>WCAG 2.4.7 + 1.4.11 non-text bar</td><td>14/14 tab stops show an indicator; min ring 10.76:1</td><td>pass</td></tr>
+            <tr><td>motion budget</td><td>WCAG 2.2.2 + reduced-motion honored</td><td>3 desktop loops, 0 phone; 2 finite entrances excluded</td><td>pass</td></tr>
+            <tr><td>tap targets</td><td>44px minimum on phone</td><td>44px floor met</td><td>pass</td></tr>
+            <tr><td>structure</td><td>semantic landmarks, skip link, native controls</td><td>header/nav/main/footer, skip link, native details</td><td>pass</td></tr>
+            <tr><td>decorative exception</td><td>WCAG 1.4.11 exempts pure decoration</td><td>55%-alpha brackets: 2.91:1 dark / 1.57-1.69:1 light; solid variants 6.39:1 / 4.71:1</td><td>disclosed — exempt</td></tr>
+          </tbody>
+        </table>
+        <p>the audit runs in chromium against the live site, sweeping every visible text leaf in both themes. theme is toggle-verified per sample, not assumed: each leaf is measured twice, once per theme, colors alpha-composited over their actual render background. keyboard sweeps a 14-stop tab order; focus indicators are read as non-text contrast against the element backdrop.</p>
+        <p>the decorative exception concerns the corner-bracket frame glyphs at 55% alpha. they carry no information — no state, no label, no affordance, no link. they are purely ornamental framing, so WCAG 1.4.11 exempts them from the non-text contrast requirement. solid-ink bracket variants, where the frame is load-bearing, pass the bar at 6.39:1 dark and 4.71:1 light. the ledger states the exception plainly: a disclosed, measured deviation is honest conformance; an undisclosed one is a defect.</p>
+        <p>cadence: every ship re-measures. the numbers above are a per-release re-audit — a change to theme, markup, or corpus invalidates the row and triggers a fresh chromium sweep before the ship lands. the date in the summary line is the last re-measure, not a blanket attestation.</p>
+      </div>
+    </details>
+
+    <p class="colo-tick"><span aria-hidden="true">▤</span> docneural · static · public · canon intact <span aria-hidden="true">▤</span></p>
   </footer>
 </div>
 
@@ -913,6 +1172,151 @@
   }
   .foot .mach:hover { color: var(--dn-accent); border-bottom-style: solid; }
 
+  /* ---------- CB-EXHAUST (consults 1-6, deepseek-v4.1-flash@codebuddy) ----
+     The plate ledger, the reading steps, and the colophon v2: the instrument
+     documents itself. Markup/CSS only — script blocks untouched. */
+  .plate-ledger { width: 100%; margin: 0 0 var(--dn-space-6); }
+  .ledger { border: 1px solid var(--dn-hairline); background: color-mix(in srgb, var(--dn-bg-raise) 55%, transparent); }
+  .ledger-summary {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 1rem;
+    min-height: 44px; padding: var(--dn-space-3) var(--dn-space-4);
+    cursor: pointer; list-style: none; position: relative;
+  }
+  .ledger-summary::-webkit-details-marker { display: none; }
+  .ledger-summary::after {
+    content: "›"; margin-left: auto; color: var(--dn-accent-dim);
+    transition: transform 120ms ease; transform-origin: 50% 50%;
+  }
+  .ledger[open] .ledger-summary::after { transform: rotate(90deg); }
+  .ledger-summary:hover .ledger-sum-label { color: var(--dn-accent); }
+  .ledger-sum-label {
+    font-size: var(--dn-text-sm); letter-spacing: var(--dn-track-wide);
+    text-transform: uppercase; color: var(--dn-fg);
+  }
+  .ledger-sum-count { font-size: var(--dn-text-xs); color: var(--dn-accent-dim); }
+  .ledger-sum-note { flex-basis: 100%; font-size: var(--dn-text-xs); color: var(--dn-fg-faint); }
+  .ledger-legend {
+    display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; align-items: baseline;
+    padding: var(--dn-space-2) var(--dn-space-4); border-top: 1px solid var(--dn-hairline);
+    font-size: var(--dn-text-2xs); letter-spacing: var(--dn-track); color: var(--dn-fg-faint);
+  }
+  .lg-meta { flex-basis: 100%; }
+  .dot {
+    display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    margin-right: 0.4rem; vertical-align: baseline;
+    /* hues = the real graph palette entries the canvas paints (djb2 hashed,
+       hashString() byte-identical): emacs idx 6, org idx 5, guix idx 2. */
+  }
+  .dot-emacs { background: #56c8ff; }
+  .dot-org { background: #ff7a45; }
+  .dot-guix { background: #ffd93f; }
+  :root[data-theme='light'] .dot-emacs { background: #0369a1; }
+  :root[data-theme='light'] .dot-org { background: #96400a; }
+  :root[data-theme='light'] .dot-guix { background: #7a4a00; }
+  .ledger-table {
+    width: 100%; border-collapse: collapse; border-top: 1px solid var(--dn-hairline);
+    font-size: var(--dn-text-xs); font-variant-numeric: tabular-nums;
+  }
+  .ledger-table thead th {
+    text-align: left; font-weight: 400; text-transform: uppercase;
+    letter-spacing: var(--dn-track); font-size: var(--dn-text-2xs);
+    color: var(--dn-fg-faint); padding: var(--dn-space-2) var(--dn-space-4);
+  }
+  .ledger-row { border-top: 1px solid var(--dn-hairline); }
+  .ledger-rank { width: 3.5ch; text-align: right; padding: 0.3rem var(--dn-space-2) 0.3rem var(--dn-space-4); color: var(--dn-fg-faint); }
+  .ledger-corpus { white-space: nowrap; padding: 0.3rem var(--dn-space-3); color: var(--dn-fg-muted); }
+  .ledger-chip { white-space: nowrap; }
+  .ledger-node { padding: 0.3rem var(--dn-space-2); color: var(--dn-fg); }
+  .ledger-deg { width: 6ch; text-align: right; padding: 0.3rem var(--dn-space-4) 0.3rem var(--dn-space-2); color: var(--dn-fg-muted); }
+
+  .how { width: 100%; margin: 0 0 var(--dn-space-6); }
+  .how-steps {
+    list-style: none; margin: 0; padding: 0; display: grid;
+    grid-template-columns: repeat(3, 1fr); gap: 0; counter-reset: none;
+  }
+  .how-step { position: relative; padding: var(--dn-space-3) var(--dn-space-5) var(--dn-space-5) 0; }
+  .how-step + .how-step::before {
+    content: ""; position: absolute; left: calc(-1 * var(--dn-space-4));
+    top: var(--dn-space-3); bottom: var(--dn-space-4); width: 1px;
+    background: var(--dn-hairline);
+  }
+  .how-num { display: block; font-size: var(--dn-text-xs); color: var(--dn-accent-dim); letter-spacing: var(--dn-track); margin-bottom: var(--dn-space-2); }
+  .how-verb { margin: 0 0 var(--dn-space-2); font-size: var(--dn-text-lg); font-weight: 400; color: var(--dn-fg); }
+  .how-line { margin: 0 0 var(--dn-space-3); font-family: var(--dn-font-prose); font-size: var(--dn-text-sm); line-height: 1.55; color: var(--dn-fg-muted); max-width: 24em; }
+  .how-next { margin: 0; font-size: var(--dn-text-xs); color: var(--dn-fg-faint); }
+  .how-next span { color: var(--dn-accent-dim); }
+  .how-foot { margin: 0; font-size: var(--dn-text-xs); color: var(--dn-fg-faint); }
+  .how-foot span { color: var(--dn-accent-dim); }
+
+  /* colophon v2 — the design-system ledger */
+  .colo-lead {
+    margin: 0 0 var(--dn-space-5); grid-column: 1 / -1;
+    font-size: var(--dn-text-xs); color: var(--dn-fg-faint);
+    max-width: 52rem; letter-spacing: var(--dn-track-tight);
+  }
+  .colo-lead::first-letter { color: var(--dn-accent-dim); }
+  .colo-grid { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--dn-space-6); }
+  .colo-list { margin: 0; }
+  .colo-list dt {
+    font-size: var(--dn-text-2xs); letter-spacing: var(--dn-track-mega);
+    text-transform: uppercase; color: var(--dn-fg-faint); margin: var(--dn-space-3) 0 var(--dn-space-1);
+  }
+  .colo-list dd { margin: 0; font-size: var(--dn-text-xs); line-height: 1.7; color: var(--dn-fg-muted); }
+  .colo-links .mach { display: inline-block; margin-right: var(--dn-space-3); margin-bottom: 2px; }
+  .colo-details { grid-column: 1 / -1; border-top: 1px solid var(--dn-hairline); }
+  .colo-details summary {
+    min-height: 44px; display: flex; align-items: center; cursor: pointer;
+    list-style: none; font-size: var(--dn-text-xs); letter-spacing: var(--dn-track-wide);
+    text-transform: uppercase; color: var(--dn-fg-faint);
+  }
+  .colo-details summary::-webkit-details-marker { display: none; }
+  .colo-details summary::after { content: "›"; margin-left: auto; color: var(--dn-accent-dim); transition: transform 120ms ease; }
+  .colo-details[open] summary::after { transform: rotate(90deg); }
+  .colo-details summary:hover { color: var(--dn-accent); }
+  .colo-details-body { padding: 0 0 var(--dn-space-4); overflow-x: auto; }
+  .colo-details-body p {
+    font-family: var(--dn-font-prose); font-size: var(--dn-text-sm); line-height: 1.6;
+    color: var(--dn-fg-muted); max-width: 52rem; margin: var(--dn-space-3) 0;
+  }
+  .colo-manifest, .colo-a11y {
+    width: 100%; min-width: 34rem; border-collapse: collapse;
+    font-size: var(--dn-text-2xs); font-variant-numeric: tabular-nums;
+  }
+  .colo-manifest th, .colo-manifest td, .colo-a11y th, .colo-a11y td {
+    text-align: left; padding: 0.3rem var(--dn-space-3) 0.3rem 0;
+    border-top: 1px solid var(--dn-hairline); vertical-align: top;
+    color: var(--dn-fg-muted); font-weight: 400;
+  }
+  .colo-manifest thead th, .colo-a11y thead th {
+    text-transform: uppercase; letter-spacing: var(--dn-track);
+    color: var(--dn-fg-faint); border-top: 0; padding-top: var(--dn-space-3);
+  }
+  .colo-manifest td:first-child, .colo-a11y td:first-child { color: var(--dn-fg); white-space: nowrap; }
+  .colo-manifest tr th[scope="rowgroup"] {
+    text-transform: uppercase; letter-spacing: var(--dn-track); color: var(--dn-accent-dim);
+    padding-top: var(--dn-space-3); font-weight: 400;
+  }
+  .colo-chrome { margin: var(--dn-space-4) 0 0; max-width: 52rem; }
+  .colo-chrome dt {
+    display: inline; font-size: var(--dn-text-xs); color: var(--dn-fg);
+  }
+  .colo-chrome dt::after { content: " — "; color: var(--dn-fg-faint); }
+  .colo-chrome dd {
+    display: inline; margin: 0; font-size: var(--dn-text-xs); line-height: 1.7; color: var(--dn-fg-muted);
+  }
+  .colo-chrome dd::after { content: ""; display: block; }
+  .colo-tick {
+    grid-column: 1 / -1; margin: var(--dn-space-4) 0 0; font-size: var(--dn-text-2xs);
+    letter-spacing: var(--dn-track-wide); text-transform: uppercase; color: var(--dn-fg-faint);
+  }
+  .colo-tick span { color: var(--dn-accent-dim); }
+
+  .src-body {
+    display: block; font-family: var(--dn-font-prose); font-size: var(--dn-text-sm);
+    line-height: 1.5; color: var(--dn-fg-muted); text-align: left;
+    margin-top: var(--dn-space-2);
+  }
+
   /* ---------- the Corpus Plate is drawn by CorpusField.svelte ----------
      Desktop loops at rest, whole Home (directive 21): rail sweep
      (transform) + caret blink (opacity). Nothing else. */
@@ -1047,6 +1451,20 @@
     gap: var(--dn-space-4);
     padding: var(--dn-space-5) 0 var(--dn-space-4) 2.9rem;
   }
+  /* CB-EXHAUST phone: ledger, steps, and colophon v2 stack; 44px floors;
+     static connectors (no draw-in), zero loops. */
+  .ledger-sum-note { display: none; }
+  .ledger-table { font-size: var(--dn-text-2xs); }
+  .ledger-rank { padding-left: var(--dn-space-3); }
+  .ledger-deg { padding-right: var(--dn-space-3); }
+  .how-steps { grid-template-columns: 1fr; }
+  .how-step {
+    border-left: 1px solid var(--dn-hairline);
+    padding: var(--dn-space-3) 0 var(--dn-space-4) var(--dn-space-4);
+  }
+  .how-step + .how-step::before { display: none; }
+  .colo-grid { grid-template-columns: 1fr; gap: var(--dn-space-4); }
+  .colo-details-body { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 /* Anchor landing under the sticky header (directive 23) — global, both
