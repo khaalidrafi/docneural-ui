@@ -214,7 +214,11 @@
   </nav>
 
   <div class="tools">
-    <span class="status dn-mono" class:down={store.failed || !store.ready}>
+    <!-- FULL-RIGHTS OP-52: the status line is the instrument's READOUT —
+         framed by the 16-arm reticle with acid arms (acid = live), the LED
+         inside it, tabular figures. On failure the arms flip pink: a real
+         state change you can see at arm's length. -->
+    <span class="status dn-mono dn-brackets" class:down={store.failed || !store.ready}>
       <span class="led" aria-hidden="true"></span>{status}
     </span>
     <button class="tool kbd" onclick={() => (paletteOpen = true)} aria-label="Search (Ctrl-K)">
@@ -488,8 +492,11 @@
   .seg.active .spark { color: var(--dn-accent); }
 
   .tools { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
-  /* The live readout: how much corpus is behind this interface. */
+  /* The live readout: how much corpus is behind this interface.
+     FULL-RIGHTS OP-52 — mounted: reticle arms in acid (live = acid),
+     tabular numerals; DOWN flips the arms + LED to the broken-wire pink. */
   .status {
+    --dn-src: var(--dn-acid);
     font-size: var(--dn-text-2xs);
     letter-spacing: var(--dn-track-tight);
     color: var(--dn-fg-faint);
@@ -498,7 +505,10 @@
     gap: 0.5em;
     margin-right: 0.5rem;
     white-space: nowrap;
+    padding: 0.2em 0.65em;
+    font-variant-numeric: tabular-nums;
   }
+  .status.down { --dn-src: var(--dn-accent-2); }
   .status .led {
     width: 7px;
     height: 7px;
@@ -513,7 +523,7 @@
       0 0 9px var(--dn-acid),
       0 0 20px color-mix(in srgb, var(--dn-acid) 55%, transparent);
   }
-  .status.down .led { background: var(--dn-amber); box-shadow: 0 0 9px var(--dn-amber), 0 0 20px color-mix(in srgb, var(--dn-amber) 55%, transparent); }
+  .status.down .led { background: var(--dn-accent-2); box-shadow: 0 0 9px var(--dn-accent-2), 0 0 20px color-mix(in srgb, var(--dn-accent-2) 55%, transparent); }
 
 /* Status LED is never colour-only: the strip text already names the
    state ("connected" / "offline" / "…"), so the LED is decorative. But

@@ -165,6 +165,10 @@
   --dn-hot: #ffd93f;
   --dn-amber: #ffb347;
   --dn-acid: #3ef04a;
+  /* FULL-RIGHTS OP-33 — the semantic palette gets its third tier: acid-dim
+     carries "live" where the text is small or secondary, so acid itself
+     stays reserved for the loudest live state. 7.4:1 on the void. */
+  --dn-acid-dim: #2bb533;
   --dn-violet: #bd00ff;
 
   /* Wordmark: the one gradient in the system — a filament, not a neon sign
@@ -246,6 +250,7 @@
   --dn-hot: #7a4a00;
   --dn-amber: #7a3f00;
   --dn-acid: #04610c;
+  --dn-acid-dim: #3a7a16;
   --dn-violet: #6b1fa8;
 
   /* Paper: ink is the whole idea — the wordmark carries no gradient fill
@@ -338,12 +343,20 @@ body.dn-body {
      cyan grid plus a corner vignette reads as a board without the
      second lattice fighting the first for attention. */
   background-color: var(--dn-bg);
+  /* FULL-RIGHTS OP-34 — the page floor is the same tissue as the graph well:
+     the 72px cyan grid now sits on a 9px micro-grid (the .dn-dish pitch),
+     so the whole site is ONE board and the Plate reads as "zoomed in", not
+     "a different surface". The vignette is capped at 40% height — the top
+     gets its depth, the scroll stops muddying. Two more composite-once
+     gradient layers, zero repaint cost (budgeted in OP-34). */
   background-image:
-    radial-gradient(ellipse at 50% 46%, transparent 58%, color-mix(in srgb, black 55%, transparent) 100%),
+    radial-gradient(ellipse 120% 100% at 50% 0%, transparent 55%, color-mix(in srgb, black 42%, transparent) 100%),
     linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 5%, transparent) 1px, transparent 1px);
-  background-size: 100% 100%, 72px 72px, 72px 72px;
-  background-attachment: fixed, scroll, scroll;
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 2.5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 2.5%, transparent) 1px, transparent 1px);
+  background-size: 100% 40%, 72px 72px, 72px 72px, 9px 9px, 9px 9px;
+  background-attachment: fixed, scroll, scroll, scroll, scroll;
 }
 
 :root[data-theme='light'] body.dn-body {
@@ -351,19 +364,28 @@ body.dn-body {
      but paper now has its OWN identity, not a bleached dark theme: a quiet
      ink grid (3%) plus a 4% cyan wash bleeding from the top edge — ink
      meeting the wire, once, where the eye lands first. */
+  /* FULL-RIGHTS OP-47 — paper is its own instrument: the ink grid plus the
+     same 9px micro-tissue as the dark floor, plus a ruled-paper line every
+     7rem (the one horizontal rhythm prose already beats against). */
   background-image:
+    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--dn-accent) 4%, transparent) 0, transparent 60%),
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 2%, transparent) 0 1px, transparent 1px 7rem),
     linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
-    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--dn-accent) 4%, transparent) 0, transparent 60%);
-  background-size: 72px 72px, 72px 72px, 100% 40%;
+    linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 1.5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 1.5%, transparent) 1px, transparent 1px);
+  background-size: 100% 40%, 100% 7rem, 72px 72px, 72px 72px, 9px 9px, 9px 9px;
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) body.dn-body {
     background-image:
+      radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--dn-accent) 4%, transparent) 0, transparent 60%),
+      repeating-linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 2%, transparent) 0 1px, transparent 1px 7rem),
       linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
       linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 3%, transparent) 1px, transparent 1px),
-      radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--dn-accent) 4%, transparent) 0, transparent 60%);
-    background-size: 72px 72px, 72px 72px, 100% 40%;
+      linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 1.5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 1.5%, transparent) 1px, transparent 1px);
+    background-size: 100% 40%, 100% 7rem, 72px 72px, 72px 72px, 9px 9px, 9px 9px;
   }
 }
 
@@ -382,6 +404,9 @@ body.dn-body {
 }
 :root[data-theme='light'] .dn-brackets {
   border-color: var(--dn-fg-muted);
+  /* OP-54 (consult B): the tick hue on paper resolves as a visible mark,
+     not a smudge — still decoration, still 1.4.11-exempt. */
+  color: color-mix(in srgb, var(--dn-accent) 70%, var(--dn-fg));
 }
 :root[data-theme='light'] .dn-trace {
   background: linear-gradient(90deg,
@@ -454,6 +479,29 @@ body.dn-body::after {
   opacity: 0.4;
 }
 
+/* FULL-RIGHTS OP-47 — a CRT overlay on paper is the wrong metaphor: the
+   scanlines die on light. Paper gets its own identity (the ruled floor
+   above), not a bleached terminal. Both light arms, same rule. */
+:root[data-theme='light'] body.dn-body::after { opacity: 0; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) body.dn-body::after { opacity: 0; }
+}
+
+
+/* FULL-RIGHTS OP-47d — the code well on paper: the inset shadow read as a
+   smudge on white; a solid ink left rail + sunken fill is a clean ink well. */
+:root[data-theme='light'] .dn-org pre {
+  box-shadow: none;
+  border-left: 2px solid var(--dn-fg);
+  background: var(--dn-bg-sunken);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .dn-org pre {
+    box-shadow: none;
+    border-left: 2px solid var(--dn-fg);
+    background: var(--dn-bg-sunken);
+  }
+}
 
 /* The scan SWEEP was considered here (designer effect #3) and dropped in the
    R3 merge: the SIGNAL aurora already owns body::before, and aurora +
@@ -807,13 +855,23 @@ body.dn-body::after {
    (the --dn-wordmark token); the chromatic aberration shadows are deleted —
    cyan->violet->pink read as a gaming peripheral. Light theme: ink is the
    whole idea — no gradient fill, no halo, plain fg text. */
+/* FULL-RIGHTS consult B, F1/F2 ruling: the gradient is clipped ONLY where
+   the engine actually supports background-clip:text; everywhere else the
+   wordmark wears real ink (--dn-fg) instead of invisible text. The worst
+   gradient stop still clears 4.5:1 on the board (OP-53, measured 12.8:1). */
 .dn-gradient-text {
+  color: var(--dn-fg);
   background: var(--dn-wordmark);
   background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
   background-position: 0% 0;
+}
+@supports (-webkit-background-clip: text) {
+  .dn-gradient-text {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
 }
 :root[data-theme='light'] .dn-gradient-text,
 :root:not([data-theme]) .dn-gradient-text {
@@ -830,6 +888,15 @@ body.dn-body::after {
     color: var(--dn-fg);
     -webkit-text-fill-color: var(--dn-fg);
   }
+}
+
+/* OP-55 (consult B): progressive hardening for users who ask for more
+   contrast — every disclosed-exempt ornament lifts above 4.5:1, the wordmark
+   drops the gradient entirely. Zero cost, no default aesthetic change. */
+@media (prefers-contrast: more) {
+  .dn-brackets { color: var(--dn-accent); opacity: 1; }
+  .dn-gradient-text { background: none; color: var(--dn-fg); -webkit-text-fill-color: var(--dn-fg); }
+  .seg.active .bracket { color: var(--dn-accent); }
 }
 
 /* Hairline rule that reads as a trace on the board: a 1px line with a lit
@@ -1499,4 +1566,20 @@ body.dn-body::after {
   .dn-glass,
   .dn-header { box-shadow: none; }
   :root { --dn-bracket-l: 10px; }
+}
+
+/* FULL-RIGHTS OP-49b — print is an output mode, not an afterthought: the
+   scanline overlay, the void floor and the HUD brackets are screen ink and
+   all of them print as grey noise on paper. Paper gets the prose, clean. */
+@media print {
+  body.dn-body {
+    background: #fff;
+    color: #000;
+    background-image: none;
+  }
+  body.dn-body::after { display: none; }
+  .dn-hud::before,
+  .dn-hud::after { display: none; }
+  .dn-org pre,
+  .dn-org table { break-inside: avoid; }
 }

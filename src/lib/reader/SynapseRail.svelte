@@ -119,7 +119,7 @@
       <div class="graph-box" bind:this={boxEl}>
         <GraphView store={roam} onNodeClick={(n) => go(n.id)} loadEngine={minimapLoad} />
       </div>
-      <button class="expand dn-mono" onclick={() => store.setMode('graph')}>
+      <button class="expand dn-mono dn-notch" onclick={() => store.setMode('graph')}>
         open full graph ›
       </button>
     </section>
@@ -230,12 +230,17 @@
   .synapse-head { color: var(--dn-accent); }
   .spark-mark { width: 0.62em; height: 0.62em; }
 
-  .toc { list-style: none; margin: 0; padding: 0; }
-  .toc li { margin: 0; }
+  /* FULL-RIGHTS OP-44 — the reading rail: a numbered index, not a list.
+     CSS counters stroke in hollow 2xs figures; the active row slides an
+     acid → marker to rest (motion-to-rest, 160ms, state change — not a
+     loop). Space for the marker is reserved so nothing reflows. */
+  .toc { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .toc li { margin: 0; counter-increment: toc; }
   .toc li.sub { padding-left: 0.8em; }
   .toc button {
     display: block;
     width: 100%;
+    position: relative;
     text-align: left;
     font-family: var(--dn-font-prose);
     font-size: 0.78rem;
@@ -244,8 +249,33 @@
     background: none;
     border: none;
     border-left: 2px solid transparent;
-    padding: 0.22em 0.5em;
+    padding: 0.22em 0.5em 0.22em 2.15rem;
     cursor: pointer;
+  }
+  .toc button::before {
+    content: counter(toc, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0.34em;
+    width: 1.35rem;
+    text-align: right;
+    font-family: var(--dn-font-mono);
+    font-size: var(--dn-text-2xs);
+    letter-spacing: 0;
+    color: transparent;
+    -webkit-text-stroke: 0.5px var(--dn-border-strong);
+  }
+  .toc button::after {
+    content: "→";
+    position: absolute;
+    left: 1.42rem;
+    top: 0.3em;
+    font-family: var(--dn-font-mono);
+    font-size: 0.72rem;
+    color: var(--dn-acid);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 160ms ease, transform 160ms ease;
   }
   .toc button:hover { color: var(--dn-fg); }
   .toc button.here {
@@ -253,6 +283,11 @@
     border-left-color: var(--dn-accent);
     background: color-mix(in srgb, var(--dn-accent) 8%, transparent);
     font-weight: 600;
+  }
+  .toc button.here::after { opacity: 1; transform: translateX(0); }
+  .toc button.here::before {
+    color: var(--dn-acid);
+    -webkit-text-stroke: 0;
   }
 
   .graph-box {
@@ -279,16 +314,21 @@
   @media (max-width: 700px) {
     .graph-box { height: 260px; }
   }
+  /* FULL-RIGHTS OP-44: the mini-map's exit is a real affordance now — a
+     notched, framed button under the graph window. */
   .expand {
+    display: block;
+    width: 100%;
     margin-top: 0.4rem;
     font-size: 0.72rem;
-    color: var(--dn-accent-2);
-    background: none;
-    border: none;
-    padding: 0;
+    text-align: center;
+    color: var(--dn-accent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent);
+    padding: 0.5em 0.7em;
     cursor: pointer;
   }
-  .expand:hover { color: var(--dn-hot); }
+  .expand:hover { color: var(--dn-accent); border-color: var(--dn-accent); }
 
   ul { list-style: none; margin: 0; padding: 0; }
   li { margin: 0.3rem 0; }

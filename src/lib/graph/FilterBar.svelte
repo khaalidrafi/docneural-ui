@@ -89,11 +89,12 @@
   }
   .tag-chip:hover { border-color: var(--dn-src, var(--dn-accent)); color: var(--dn-accent); }
   .tag-chip.active {
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 18%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent);
     color: var(--dn-accent);
+    font-weight: 600;
     border-color: var(--dn-src, var(--dn-accent));
-    text-shadow: 0 0 8px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 22%, transparent);
+    /* FULL-RIGHTS OP-45: no text-shadow, no box-shadow on a selected state —
+       fill + weight carry it; glow = focus + live only. */
   }
   /* A source chip keeps its hue even when unselected — the legend reading. */
   .tag-chip.src { border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent); }
