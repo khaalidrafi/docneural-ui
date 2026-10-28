@@ -352,25 +352,18 @@
   .shell {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--dn-space-4);
     height: var(--dn-header-h);
-    padding: 0 1rem;
-    /* Glass-black: a near-opaque ink gradient over the board (the blur is
-       a garnish — every browser that lacks backdrop-filter still sees a
-       solid rail). A 4 GB machine only ever composites this one short bar. */
-    background:
-      linear-gradient(180deg,
-        color-mix(in srgb, var(--dn-bg-raise) 55%, transparent),
-        color-mix(in srgb, var(--dn-bg-sunken) 92%, transparent)),
-      color-mix(in srgb, var(--dn-bg-sunken) 88%, transparent);
-    backdrop-filter: blur(9px) saturate(1.3);
-    -webkit-backdrop-filter: blur(9px) saturate(1.3);
+    padding: 0 var(--dn-space-4);
+    /* Solid translucent fill. backdrop-filter: blur(9px) saturate(1.3) is
+       removed — on a 4GB machine a sticky backdrop-filter repaints the
+       blur every scroll frame. A 92%-opaque fill over the board reads the
+       same and costs one composite. */
+    background: color-mix(in srgb, var(--dn-bg-raise) 92%, transparent);
     border-bottom: 1px solid var(--dn-border-strong);
     position: relative;
-    box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent),
-      0 2px 18px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
   }
+
   /* The signal rail: a thin cyan→magenta gradient line under the whole bar —
      the header is now visibly the top of the instrument, not just a strip.
      IGNITION: a bright data pulse rides the rail on a loop (background-position
@@ -381,23 +374,19 @@
     left: 0;
     right: 0;
     bottom: -1px;
-    height: 2px;
+    height: 1px;
     pointer-events: none;
-    background:
-      linear-gradient(90deg,
-        transparent 2%,
-        color-mix(in srgb, var(--dn-accent) 85%, transparent) 28%,
-        color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, var(--dn-accent-2)) 55%,
-        color-mix(in srgb, var(--dn-accent-2) 85%, transparent) 78%,
-        transparent 98%),
-      repeating-linear-gradient(90deg,
-        transparent 0 170px,
-        color-mix(in srgb, var(--dn-fg) 60%, transparent) 176px,
-        transparent 184px 340px);
-    background-size: 100% 100%, 340px 100%;
-    animation: dn-rail-flow 5.6s linear infinite;
-    opacity: 0.9;
+    /* Static signal rail: one gradient, no animation, no repeating layer.
+       The header is the top of the instrument at rest. */
+    background: linear-gradient(90deg,
+      transparent 2%,
+      color-mix(in srgb, var(--dn-accent) 70%, transparent) 30%,
+      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, var(--dn-accent-2)) 55%,
+      color-mix(in srgb, var(--dn-accent-2) 70%, transparent) 78%,
+      transparent 98%);
+    opacity: 0.85;
   }
+
   @keyframes dn-rail-flow {
     to { background-position: 0 0, 340px 0; }
   }
@@ -542,11 +531,6 @@
     .status { display: none; }
   }
   @media (max-width: 600px) {
-    /* Phone. The mode switch stays — hiding it left no way at all to reach
-       the graph view — but it becomes two icon buttons sized for a thumb.
-       What goes instead are the keyboard affordances, since a phone has no
-       keyboard: ⌘K and the shortcut sheet. The shell clears the notch via
-       the same safe-area inset that grew --dn-header-h. */
     .seg {
       padding: 0;
       width: 44px;
@@ -557,10 +541,38 @@
     .seg .seg-ico { font-size: 1.2rem; }
     .tool.kbd, .tool.keys { display: none; }
     .shell {
-      padding: env(safe-area-inset-top, 0px) max(0.5rem, env(safe-area-inset-right, 0px)) 0 max(0.5rem, env(safe-area-inset-left, 0px));
+      padding: env(safe-area-inset-top, 0px)
+               max(0.5rem, env(safe-area-inset-right, 0px))
+               0
+               max(0.5rem, env(safe-area-inset-left, 0px));
       gap: 0.5rem;
     }
+    .controls {
+      left: 0.5rem;
+      right: 0.5rem;
+      width: auto;
+      padding: 0.5rem 0.7rem;
+      top: max(0.5rem, env(safe-area-inset-top, 0px));
+    }
+    .controls > summary {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      min-height: 44px;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--dn-fg);
+      cursor: pointer;
+      list-style: none;
+    }
+    .controls > summary::-webkit-details-marker { display: none; }
+    .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
+    .controls > summary .chev { margin-left: auto; color: var(--dn-fg-muted); }
+    .controls[open] > summary .chev { transform: rotate(180deg); }
+    .scope, .layout { bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px)); }
+    .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
   }
+
 
   .synapse-mode {
     position: relative;
@@ -580,23 +592,23 @@
     font: inherit;
     letter-spacing: var(--dn-track);
     color: var(--dn-fg);
-    background: color-mix(in srgb, var(--dn-bg) 82%, black);
+    /* Solid fill, no backdrop-filter — the chip floats over the canvas
+       and a blur there is the worst place for one. */
+    background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
     border: 1px solid var(--dn-border-strong);
-    border-radius: 2px;
-    padding: 0.3em 0.7em;
+    border-radius: 0;
+    padding: 0.35em 0.75em;
     cursor: pointer;
     max-width: min(30rem, calc(100vw - 2rem));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
   }
   .scope:hover {
     color: var(--dn-accent);
-    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-accent) 24%, transparent);
+    border-color: var(--dn-accent);
   }
+
   /* Layout chip: the same HUD pill, and when the scope chip is out it stacks
      ABOVE it rather than sharing a corner with a variable-length label — the
      scope chip can run to nearly the viewport width, so side by side would
@@ -609,28 +621,23 @@
     font: inherit;
     letter-spacing: var(--dn-track);
     color: var(--dn-fg);
-    background: color-mix(in srgb, var(--dn-bg) 82%, black);
+    background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
     border: 1px solid var(--dn-border-strong);
-    border-radius: 2px;
-    padding: 0.3em 0.7em;
+    border-radius: 0;
+    padding: 0.35em 0.75em;
     cursor: pointer;
   }
   .scope ~ .layout { bottom: 2.9rem; }
   .layout:hover {
     color: var(--dn-accent);
-    border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-accent) 24%, transparent);
+    border-color: var(--dn-accent);
   }
-  /* On means the visitor asked for it, so it wears the accent like an active
-     filter chip does. */
   .layout.spread {
     color: var(--dn-accent);
-    border: 1px solid transparent;
-    background:
-      linear-gradient(color-mix(in srgb, var(--dn-bg) 82%, black), color-mix(in srgb, var(--dn-bg) 82%, black)) padding-box,
-      linear-gradient(135deg, color-mix(in srgb, var(--dn-accent) 70%, transparent), color-mix(in srgb, var(--dn-violet) 55%, transparent)) border-box;
-    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-accent) 24%, transparent);
+    border-color: var(--dn-accent);
+    background: color-mix(in srgb, var(--dn-accent) 12%, var(--dn-bg));
   }
+
   /* Controls panel: desktop floats over the canvas top-left; the summary
      doubles as the live wire-count badge. Notched corner + brackets = it
      reads as a module clamped onto the board. SIGNAL pass: neon edge + a
@@ -653,35 +660,7 @@
   .controls > summary {
     display: none; /* desktop: always open, no header needed */
   }
-  @media (max-width: 600px) {
-    .controls {
-      left: 0.5rem;
-      right: 0.5rem;
-      width: auto;
-      padding: 0.5rem 0.7rem;
-      top: max(0.5rem, env(safe-area-inset-top, 0px));
-    }
-    /* Thumb-reachable: the summary is the collapsed control row — give it a
-       40px+ touch target by padding instead of growing type. */
-    .controls > summary {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      min-height: 40px;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--dn-fg);
-      cursor: pointer;
-      list-style: none;
-    }
-    .controls > summary::-webkit-details-marker { display: none; }
-    .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
-    .controls > summary .chev { margin-left: auto; color: var(--dn-fg-muted); }
-    .controls[open] > summary .chev { transform: rotate(180deg); }
-    /* The canvas chips stay clear of the home-indicator zone. */
-    .scope, .layout { bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px)); }
-    .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
-  }
+
   .reader-mode {
     height: calc(100dvh - var(--dn-header-h));
     min-height: 0;
@@ -815,13 +794,19 @@
      Desktop is untouched. */
   @media (max-width: 700px) {
     .reader-mode { overflow-y: auto; }
-    /* The home page now scrolls the DOCUMENT (native phone scroll), so the
-       header sticks like a real mobile nav — glass over the passing board.
-       z 40: under the scanline overlay (60), over all page content. */
-    .shell { position: sticky; top: 0; z-index: 40; }
+
+    /* Sticky header: solid translucent fill, no backdrop-filter. z 40 sits
+       under the scanline overlay (60), over page content. */
+    .shell {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--dn-bg-raise) 96%, transparent);
+    }
     .shell::after { animation: none; }
     .spark { animation: none; }
     .status .led { animation: none; }
     .panel .dots { animation: none; }
   }
+
 </style>
