@@ -47,6 +47,16 @@
   // Data, query or tags moved -> swap the snapshot the canvas sees.
   $effect(() => {
     roam.applyGraphdata(toRoam(store.visible))
+    // Lattice bookkeeping: a filter sync brings nodes the parked simulation
+    // will never place (the lattice IS the placement), so the deterministic
+    // pass re-runs over the new snapshot — same sort, same rules, one frame
+    // of cost. Before the engine hand-back this is a no-op.
+    const eng = engine
+    if (eng && store.layout === 'lattice') {
+      const vp = viewport()
+      applyLayout(eng, 'lattice', vp ? packRect(vp) : undefined)
+      if (vp) fitNow(eng, vp)
+    }
   })
 
   // A selection made anywhere (rail, palette, reader) pans the camera.
@@ -200,6 +210,22 @@
     }
   }
 
+  /** Frame the current field: the fitReadable call plus the two data-*
+   *  evidence attributes. Shared by the engine-stop path (cluster/spread,
+   *  which must wait for the physics to finish) and the lattice path (whose
+   *  placement is final the moment applyLayout returns — a 0-tick simulation
+   *  owes nobody an onEngineStop). */
+  function fitNow(eng: NeuronEngine, vp: NonNullable<ReturnType<typeof viewport>>): void {
+    const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
+      pad: PAD,
+      inset: vp.inset,
+      maxScale: store.layout === 'spread' ? 1 : Infinity
+    })
+    if (!wrapEl) return
+    wrapEl.dataset.fit = k.toFixed(3)
+    wrapEl.dataset.field = `${Math.round(w)}x${Math.round(h)}`
+  }
+
   $effect(() => {
     const mode = store.layout
     const eng = engine
@@ -215,6 +241,13 @@
     // Hand the spread layout the rect it is being packed to fill; cluster is a
     // shape view and takes no container.
     const vp = viewport()
+    if (mode === 'lattice') {
+      // Fixed-distance grid: place + pin, then frame immediately — there is
+      // no simulation run to wait for.
+      applyLayout(eng, mode, vp ? packRect(vp) : undefined)
+      if (vp) fitNow(eng, vp)
+      return
+    }
     applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined)
     fitNextStop = true
     if (!stopArmed) {
@@ -250,7 +283,9 @@
     tokenEl: () => wrapEl,
     selected: () => selId,
     neighbors: () => selNb,
-    spread: () => store.layout === 'spread',
+    // Label eligibility rides with the layout: spread AND lattice are the two
+    // "read the names" views, so both make every neuron's title eligible.
+    spread: () => store.layout !== 'cluster',
     onEngine: (e) => { engine = e }
   })
 

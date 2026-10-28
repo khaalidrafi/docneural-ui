@@ -309,3 +309,77 @@ export function labelExtent(title: string | undefined, soma: number): Extent {
   }
 }
 
+
+
+/* ---------- LATTICE — the fixed-distance overview (Owner law 2026-10-28) ----------
+   "ALL nodes will maintain a fixed distance so that the overview can be seen
+   clearly other than crowded clusters." A square lattice does exactly that:
+   every neuron's four neighbours sit exactly one PITCH away, forever, no
+   matter how hard the citation graph pulls. A serpentine walk over hue-grouped
+   chapters keeps each manual's colour one contiguous band, so the grid still
+   reads as structure — bands of source hue, hubs leading — instead of static. */
+
+/** The pitch (world px between neighbouring nodes) for `count` nodes filling
+ *  a w×h room: the even density the room affords, clamped so a small ego
+ *  graph never opens into a meadow (72 px) and a full corpus never welds shut
+ *  (28 px clears the fattest soma at overview zoom). */
+export function latticePitch(count: number, w: number, h: number): number {
+  if (!count || w <= 0 || h <= 0) return 32
+  const density = Math.sqrt((w * h) / count)
+  return Math.max(28, Math.min(72, density * 0.82))
+}
+
+/** A node the lattice can place: the fields GraphView copies onto the engine
+ *  objects (title/tags/degree — the color seed is the first tag) plus the
+ *  position fields the placement writes. */
+export type LatticeBody = {
+  id: string
+  title?: string
+  tags?: string[]
+  degree?: number
+  x?: number
+  y?: number
+  fx?: number | null
+  fy?: number | null
+}
+
+/** Place `nodes` on a serpentine square lattice, IN PLACE, and PIN them
+ *  (fx/fy): the lattice is deterministic, so the simulation has nothing to
+ *  settle — the mode parks the physics and the field cannot re-knot.
+ *  Ordering: hue groups (first tag — the same key nodeColor hashes)
+ *  alphabetically, degree descending inside a group, id as the final
+ *  tiebreak, so identical inputs always give the identical picture. `cols`
+ *  follows the room's aspect: a wide window gets wide rows. */
+export function latticePlace(
+  nodes: LatticeBody[],
+  pitch: number,
+  w: number,
+  h: number
+): void {
+  const n = nodes.length
+  if (!n || pitch <= 0) return
+  const cols = Math.max(1, Math.round(Math.sqrt((n * w) / Math.max(1, h))))
+  const ordered = [...nodes].sort((a, b) => {
+    const ga = a.tags?.[0] ?? ''
+    const gb = b.tags?.[0] ?? ''
+    if (ga !== gb) return ga < gb ? -1 : 1
+    const da = a.degree ?? 0
+    const db = b.degree ?? 0
+    if (da !== db) return db - da
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0
+  })
+  const rows = Math.ceil(n / cols)
+  const offX = ((cols - 1) * pitch) / 2
+  const offY = ((rows - 1) * pitch) / 2
+  ordered.forEach((nd, i) => {
+    const row = Math.floor(i / cols)
+    const colRaw = i % cols
+    // Serpentine: odd rows walk right-to-left, so a hue band FOLDS at the
+    // row end instead of tearing — the next band starts where this one stops.
+    const col = row % 2 ? cols - 1 - colRaw : colRaw
+    nd.x = col * pitch - offX
+    nd.y = row * pitch - offY
+    nd.fx = nd.x
+    nd.fy = nd.y
+  })
+}

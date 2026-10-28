@@ -104,7 +104,10 @@ export class DocneuralStore {
    *  the lazy canvas chunk and must not be imported from here. */
   layout = $state<LayoutMode>(loadLayout())
   toggleLayout(): void {
-    this.layout = this.layout === 'spread' ? 'cluster' : 'spread'
+    // Three questions, one button: packed clusters (shape) -> spread (titles
+    // readable) -> lattice (fixed distance, Owner law 2026-10-28) -> packed.
+    this.layout =
+      this.layout === 'cluster' ? 'spread' : this.layout === 'spread' ? 'lattice' : 'cluster'
     writeLayout(this.layout)
   }
 

@@ -65,10 +65,13 @@ export type Peek = {
   degree: number
 }
 
-/** The two graph layouts, named from the visitor's question. `cluster` keeps
+/** The three graph layouts, named from the visitor's question. `cluster` keeps
  *  force-graph's own defaults and shows how a corpus hangs together; `spread`
  *  pushes every node far enough from its neighbours that its title can be
- *  read, which is what makes an overview say anything at all. Lives here (not
- *  in graph/neuronEngine.ts) because the store must name it without importing
+ *  read; `lattice` pins every neuron to a fixed-distance grid cell (Owner law
+ *  2026-10-28: "ALL nodes will maintain a fixed distance so that the overview
+ *  can be seen clearly other than crowded clusters") — deterministic,
+ *  simulation-free, spacing IS the message. Lives here (not in
+ *  graph/neuronEngine.ts) because the store must name it without importing
  *  the canvas module into the boot chunk. */
-export type LayoutMode = 'cluster' | 'spread'
+export type LayoutMode = 'cluster' | 'spread' | 'lattice'

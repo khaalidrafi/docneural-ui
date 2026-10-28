@@ -11,6 +11,8 @@ import {
   groupWires,
   labelExtent,
   labelWidth,
+  latticePitch,
+  latticePlace,
   localGraph,
   neighborIds,
   nodeMatches,
@@ -292,5 +294,68 @@ describe('label geometry', () => {
     expect(e.t).toBeGreaterThan(8) // the soma itself is inside its own box
     expect(labelExtent('Fonts', 8).l).toBeLessThan(labelExtent('Agenda Views', 8).l)
     expect(labelExtent(undefined, 8).l).toBeGreaterThan(0)
+  })
+})
+
+
+// ---------- LATTICE (Owner law 2026-10-28: fixed-distance overview) ----------
+
+describe('latticePitch', () => {
+  it('clamps the density so a corpus never welds shut and an ego graph never opens into a meadow', () => {
+    expect(latticePitch(0, 1000, 800)).toBe(32)
+    expect(latticePitch(1392, 1200, 700)).toBeGreaterThanOrEqual(28)
+    expect(latticePitch(30, 552, 768)).toBeLessThanOrEqual(72)
+    expect(latticePitch(400, 1000, 1000)).toBeCloseTo(Math.sqrt(1000000 / 400) * 0.82, 5)
+  })
+})
+
+describe('latticePlace', () => {
+  const nodes = (specs: [string, string, number][]): any[] =>
+    specs.map(([id, tag, degree]) => ({ id, tags: [tag], degree }))
+
+  it('puts every full-row neighbour exactly one pitch away — the Owner fixed-distance law, checked', () => {
+    const bodies = nodes([
+      ['a', 'emacs', 3], ['b', 'emacs', 2], ['c', 'emacs', 1],
+      ['d', 'org', 3], ['e', 'org', 2], ['f', 'org', 1],
+      ['g', 'guix', 3], ['h', 'guix', 2], ['i', 'guix', 1]
+    ])
+    latticePlace(bodies, 40, 800, 800)
+    const at = new Map(bodies.map((b) => [b.id, b]))
+    for (const b of bodies) {
+      expect(b.fx).toBe(b.x)
+      expect(b.fy).toBe(b.y)
+    }
+    const dist = (p: any, q: any) => Math.hypot(p.x - q.x, p.y - q.y)
+    for (const p of bodies) {
+      const nearest = Math.min(...bodies.filter((q) => q !== p).map((q) => dist(p, q)))
+      expect(nearest).toBeCloseTo(40, 6)
+    }
+    expect(dist(at.get('c'), at.get('g'))).toBeCloseTo(40, 6)
+  })
+
+  it('is deterministic and keeps each hue band contiguous along the serpentine walk', () => {
+    const make = () => nodes([
+      ['a', 'emacs', 1], ['b', 'org', 5], ['c', 'emacs', 9],
+      ['d', 'guix', 2], ['e', 'org', 7], ['f', 'emacs', 4]
+    ])
+    const one = make(); const two = make()
+    latticePlace(one, 32, 600, 600)
+    latticePlace(two, 32, 600, 600)
+    expect(one.map((b) => `${b.x},${b.y}`)).toEqual(two.map((b) => `${b.x},${b.y}`))
+    const cols = Math.round(Math.sqrt((6 * 600) / 600))
+    const offX = ((cols - 1) * 32) / 2
+    const rows = Math.ceil(6 / cols)
+    const offY = ((rows - 1) * 32) / 2
+    const walkAt = (b: any): number => {
+      const row = Math.round((b.y + offY) / 32)
+      const col = Math.round((b.x + offX) / 32)
+      return row * cols + (row % 2 ? cols - 1 - col : col)
+    }
+    const walked = [...one].sort((a, b) => walkAt(a) - walkAt(b))
+    const bands = new Map<string, number[]>()
+    walked.forEach((b, i) => bands.set(b.tags?.[0] ?? '', [...(bands.get(b.tags?.[0] ?? '') ?? []), i]))
+    for (const idxs of bands.values()) {
+      expect(Math.max(...idxs) - Math.min(...idxs)).toBe(idxs.length - 1)
+    }
   })
 })

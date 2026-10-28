@@ -72,7 +72,11 @@
     tokenEl: () => boxEl,
     selected: () => doc?.id ?? null,
     neighbors: () => NO_NB,
-    compact: true
+    compact: true,
+    // Owner law 2026-10-28: "Local graph should show node headings!" — the
+    // mini-map paints every neuron's name it can without overprinting (the
+    // painter's claim grid drops whichever would land on one already drawn).
+    miniLabels: () => true
   })
 
   // Cap the signal lists so the rail stays light on a potato and readable.
