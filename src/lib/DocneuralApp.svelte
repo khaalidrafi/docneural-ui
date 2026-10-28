@@ -1002,7 +1002,7 @@
     font-size: 0.92rem;
     color: var(--dn-accent-2);
   }
-  .panel .hint, .panel .step {
+  .panel .hint {
     margin: 0;
     font-size: 0.92rem;
     color: var(--dn-fg);
