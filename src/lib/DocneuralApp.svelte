@@ -296,12 +296,18 @@
       <button
         class="layout dn-mono"
         class:spread={store.layout === 'spread'}
-        aria-pressed={store.layout === 'spread'}
+        class:lattice={store.layout === 'lattice'}
         onclick={() => store.toggleLayout()}
         title={store.layout === 'spread'
-          ? 'Pack the neurons back into their citation clusters'
-          : 'Space every neuron out until its title reads cleanly'}
-      >{store.layout === 'spread' ? 'spread · titles' : 'packed · titles'}</button>
+          ? 'Pin every neuron to a fixed-distance grid'
+          : store.layout === 'lattice'
+            ? 'Pack the neurons back into their citation clusters'
+            : 'Space every neuron out until its title reads cleanly'}
+      >{store.layout === 'spread'
+          ? 'spread · titles'
+          : store.layout === 'lattice'
+            ? 'grid · fixed'
+            : 'packed · titles'}</button>
     </div>
     <details class="controls" open={!isPhone}>
       <summary class="dn-mono">

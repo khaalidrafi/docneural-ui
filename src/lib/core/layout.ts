@@ -16,7 +16,7 @@ const KEY = 'docneural:layout'
 export function loadLayout(nodeCount = 0): LayoutMode {
   try {
     const saved = localStorage.getItem(KEY)
-    if (saved === 'spread' || saved === 'cluster') return saved
+    if (saved === 'spread' || saved === 'cluster' || saved === 'lattice') return saved
   } catch {
     /* private mode: fall through to the size-based default */
   }

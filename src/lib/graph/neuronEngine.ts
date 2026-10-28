@@ -23,7 +23,14 @@
 // per frame would freeze this machine. Label ink/paper come from the site's
 // own --dn-fg/--dn-bg so text stays readable on both themes.
 import { canvasTokens, nodeColor, dimColor, type CanvasTokens } from 'orui/graph/colors'
-import { LABEL_LINE, labelExtent, shortTitle, spreadStrength } from '../core/graph'
+import {
+  LABEL_LINE,
+  labelExtent,
+  latticePitch,
+  latticePlace,
+  shortTitle,
+  spreadStrength
+} from '../core/graph'
 import {
   forceFitContainer,
   forceLabelBoxes,
@@ -53,6 +60,12 @@ export type NeuronFocus = {
   /** True when the visitor asked for the spread layout. Read per paint, like
    *  `selected`, so turning it on never rebuilds the graph data. */
   spread?: () => boolean
+  /** Mini-map headings (Owner law 2026-10-28: "Local graph should show node
+   *  headings!"). True = the compact painter labels every neuron it can
+   *  without overprinting; the claim grid drops whichever names would land
+   *  on one already drawn, so a busy hub keeps its own name and its
+   *  first-drawn neighbours instead of an ink pile. */
+  miniLabels?: () => boolean
   /** Handed the live engine once it exists, so the component can push layout
    *  changes into it. GraphView keeps the instance private and exposes no
    *  physics knob, so the construction seam is the only door. */
@@ -128,6 +141,31 @@ export function applyLayout(
   const charge = engine.d3Force('charge')
   const link = engine.d3Force('link')
   if (!charge || !link) return // no physics (jsdom, or a canvas-less fallback)
+  if (mode === 'lattice') {
+    // THE FIXED-DISTANCE OVERVIEW (Owner law 2026-10-28). Deterministic and
+    // simulation-free: every neuron is PINNED (fx/fy) to its serpentine
+    // lattice cell, so the physics has nothing to settle — cooldown 0 parks
+    // the engine and a pinned field cannot re-knot into citation blobs. The
+    // one cost is the placement itself: one sort + one write per node, once
+    // per sync. Charge goes to 0 so nothing (a stray drag reheat, a filter
+    // sync) ever fights the pins between placements.
+    charge.strength(0).distanceMax(Infinity)
+    engine.d3Force('collide', null)
+    engine.d3Force('fit', null)
+    const bodies = engine.graphData().nodes as import('../core/graph').LatticeBody[]
+    const box = room ?? { w: 1000, h: 800 }
+    latticePlace(bodies, latticePitch(bodies.length, box.w, box.h), box.w, box.h)
+    engine.cooldownTicks(0).cooldownTime(0)
+    engine.d3ReheatSimulation()
+    return
+  }
+  // Leaving the lattice un-pins the field: the physics owns positions again.
+  // (d3 keeps no pin state of its own — a null fx/fy is the whole unpin.)
+  const unpinned = engine.graphData().nodes as { fx?: number | null; fy?: number | null }[]
+  for (const n of unpinned) {
+    n.fx = null
+    n.fy = null
+  }
   // Bound the relayout. force-graph cools on WALL CLOCK (cooldownTicks is
   // Infinity and cooldownTime 15,000 ms out of the box), so a layout switch
   // meant 15 seconds of Barnes-Hut per toggle on this machine — and, worse, the
@@ -480,6 +518,37 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         ctx.beginPath()
         ctx.arc(x, y, r * 2.3, 0, 2 * Math.PI)
         ctx.stroke()
+      }
+      // MINI HEADINGS (Owner law 2026-10-28). Same recipe as the full-mode
+      // label below — claim grid, paper-coloured stroke behind the glyphs,
+      // hot set never loses its name — at mini-map scale: 9px screen size,
+      // under the soma, ink = --dn-fg (AA on --dn-graph-bg in both themes;
+      // the halo stroke carries it over wires).
+      if (focus.miniLabels?.()) {
+        const label = shortTitle(n.title ?? '')
+        if (label) {
+          const fontSize = Math.max(8, 9 / globalScale)
+          ctx.save()
+          ctx.font = `600 ${fontSize}px "JetBrains Mono", ui-monospace, monospace`
+          ctx.textAlign = 'center'
+          ctx.textBaseline = 'top'
+          const ly = y + r + 2 / globalScale
+          const lw = ctx.measureText(label).width
+          const box = { x: x - lw / 2, y: ly, w: lw, h: fontSize * 1.2 }
+          if (!hot && overlaps(box)) {
+            ctx.restore()
+            return
+          }
+          claim(box)
+          ctx.strokeStyle = paper
+          ctx.globalAlpha = 0.85
+          ctx.lineWidth = fontSize * 0.32
+          ctx.strokeText(label, x, ly)
+          ctx.globalAlpha = 1
+          ctx.fillStyle = chosen ? hotCol : hot ? col : ink
+          ctx.fillText(label, x, ly)
+          ctx.restore()
+        }
       }
       return
     }
