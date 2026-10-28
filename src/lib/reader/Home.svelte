@@ -146,12 +146,12 @@
 
 <div class="home">
   <header class="hero dn-hud" style={sourceVars(store.manual)}>
-    <!-- IGNITION pass: the front door is now a live instrument. The beam is a
-       slow scan sweep; the constellation is a real (static, decorative) slice
-       of the corpus graph — wires carry travelling pulses, nodes breathe —
-       so the hero reads as SIGNAL ON before a single word is read. Both are
+    <!-- IGNITION pass, trimmed by PERF-MOBILE: the front door is a printed
+       instrument. The constellation is a real (static, decorative) slice
+       of the corpus graph — a printed network whose somas glow, rendered once
+       and never repainted (zero loops on the phone) —
+       so the hero reads as SIGNAL ON before a single word is read. It is
        aria-hidden garnish; the words carry the meaning. -->
-    <span class="beam" aria-hidden="true"></span>
     <svg
       class="constellation"
       viewBox="0 0 640 360"
@@ -820,16 +820,9 @@
   .cta-k.spark { color: var(--dn-hot); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
   .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
-  /* IGNITION: the door to the canvas carries a ROTATING conic ring —
-     voltage circulating the highest-voltage control. @property registers
-     the angle so the spin is a real custom-property animation; browsers
-     without @property simply hold the first frame (a static ring), so the
-     fallback is the old gradient border, not a broken one. */
-  @property --dn-spin {
-    syntax: "<angle>";
-    inherits: false;
-    initial-value: 0deg;
-  }
+  /* PERF-MOBILE: the conic voltage ring holds its first frame — a static
+     four-hue gradient border, zero spin. The spin was heavy GPU work on the
+     one control a phone owner touches most. */
   .cta.graph {
     /* The synapses CTA is the door to the canvas: gradient border, not a
        dashed outline — it should read as the highest-voltage control here. */
@@ -838,13 +831,9 @@
       linear-gradient(180deg,
         color-mix(in srgb, var(--dn-accent) 10%, transparent), transparent 55%)
         padding-box,
-      conic-gradient(from var(--dn-spin),
+      conic-gradient(from 0deg,
         var(--dn-accent), var(--dn-violet) 32%, var(--dn-accent-2) 58%,
         var(--dn-hot) 82%, var(--dn-accent)) border-box;
-    animation: dn-ring 7s linear infinite;
-  }
-  @keyframes dn-ring {
-    to { --dn-spin: 360deg; }
   }
   .cta.graph:hover {
     box-shadow: 0 0 26px color-mix(in srgb, var(--dn-violet) 35%, transparent);
@@ -942,44 +931,14 @@
   .foot .mach:hover { color: var(--dn-hot); border-bottom-style: solid; }
   @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  /* ---------- IGNITION pass -----------------------------------------------
-     The front door as a live instrument: a scan beam sweeping the hero, a
-     neural constellation breathing behind the wordmark, a power rail under
-     it, a data bus across the stats brow. Every effect is transform /
-     opacity / background-position on a small layer — nothing lays out,
-     nothing repaints the page — and every one re-tunes for paper and parks
-     under prefers-reduced-motion. */
-
-  .beam {
-    position: absolute;
-    top: -6%;
-    bottom: -6%;
-    left: 0;
-    width: 22%;
-    z-index: -1;
-    pointer-events: none;
-    background: linear-gradient(90deg,
-      transparent,
-      color-mix(in srgb, var(--dn-accent) 9%, transparent) 42%,
-      color-mix(in srgb, var(--dn-fg) 5%, transparent) 50%,
-      color-mix(in srgb, var(--dn-accent) 9%, transparent) 58%,
-      transparent);
-    transform: translateX(-140%) skewX(-14deg);
-    animation: dn-beam 8.5s cubic-bezier(0.45, 0, 0.2, 1) infinite;
-  }
-  @keyframes dn-beam {
-    0% { transform: translateX(-140%) skewX(-14deg); opacity: 0; }
-    6% { opacity: 1; }
-    46% { opacity: 1; }
-    54%, 100% { transform: translateX(640%) skewX(-14deg); opacity: 0; }
-  }
-  :global([data-theme='light']) .beam {
-    /* On paper the beam is a tint wash, not a light bar. */
-    background: linear-gradient(90deg,
-      transparent,
-      color-mix(in srgb, var(--dn-accent) 8%, transparent) 46%,
-      transparent);
-  }
+  /* ---------- IGNITION pass, trimmed by the PERF-MOBILE pass ---------------
+     Designer: glm-5v-turbo (design-forge crown, FINAL 9.0/9). Owner law:
+     performance beats eye candy, and the phone gets a STATIC page. The scan
+     beam died outright (it read as a loading bar); the constellation is a
+     printed graph now (static wires + glow, 28 loops gone); the data bus is
+     a static strip; the conic ring holds still. What still runs on desktop
+     is transform/opacity on tiny layers: the power rail sweep, the caret
+     blink — and on phones none of it runs at all. */
 
   .constellation {
     position: absolute;
@@ -996,32 +955,20 @@
     stroke-width: 1;
     fill: none;
   }
+  /* Static constellation (PERF-MOBILE): the printed graph. One dash segment
+     per wire reads as a packet mid-flight, frozen; the somas keep their glow
+     at full weight. 28 of the page's 105 running animations were these. */
   .constellation .p {
     fill: none;
     stroke-width: 1.6;
     stroke-linecap: round;
     stroke-dasharray: 12 150;
-    animation: dn-flow 5.2s linear infinite;
   }
   .constellation .p.p1 { stroke: var(--dn-accent); }
   .constellation .p.p2 { stroke: var(--dn-accent-2); }
   .constellation .p.p3 { stroke: var(--dn-violet); }
-  .constellation .p:nth-of-type(2n) { animation-duration: 6.6s; animation-delay: -2.2s; }
-  .constellation .p:nth-of-type(3n) { animation-duration: 7.8s; animation-delay: -3.9s; }
-  @keyframes dn-flow {
-    to { stroke-dashoffset: -162; }
-  }
   .constellation circle {
-    transform-box: fill-box;
-    transform-origin: center;
     filter: drop-shadow(0 0 4px currentColor);
-    animation: dn-node 4.4s ease-in-out infinite;
-  }
-  .constellation circle:nth-of-type(2n) { animation-delay: -1.5s; }
-  .constellation circle:nth-of-type(3n) { animation-delay: -2.7s; animation-duration: 5.3s; }
-  @keyframes dn-node {
-    0%, 100% { opacity: 0.45; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.32); }
   }
   .constellation .nc { fill: var(--dn-accent); color: var(--dn-accent); }
   .constellation .nk { fill: var(--dn-accent-2); color: var(--dn-accent-2); }
@@ -1079,12 +1026,10 @@
       color-mix(in srgb, var(--dn-accent-2) 42%, transparent) 26px 31px,
       transparent 31px 48px);
     background-size: 48px 100%;
-    animation: dn-bus 1.7s linear infinite;
+    /* PERF-MOBILE: the bus is a static strip now — the readout rides in on
+       the count-up, not on a 1.7s repaint loop. */
     opacity: 0.55;
     border-radius: 2px;
-  }
-  @keyframes dn-bus {
-    to { background-position: 48px 0; }
   }
   :global([data-theme='light']) .bus { opacity: 0.4; }
   @media (max-width: 700px) {
@@ -1092,12 +1037,42 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    /* The beam is pure motion — park it. Everything else freezes on its
-       first frame (the global reduced-motion block zeroes durations too). */
-    .beam { display: none; }
-    .constellation .p,
-    .constellation circle,
-    .rail::before,
-    .bus { animation: none; }
+    /* Everything that still loops parks on its resting frame (the global
+       reduced-motion block in docneural-ui.css zeroes durations too). */
+    .rail::before { animation: none; transform: translateX(-120%); }
+    .feed-caret { animation: none; }
+  }
+
+  /* ---------- PERF-MOBILE pass (≤700px): the static phone -----------------
+     Designer: glm-5v-turbo (design-forge crown, FINAL 9.0/9). Owner law:
+     "performance should always be prioritized over eye candy", phones get
+     "performance, responsiveness, lightweight and simplicity". So on a
+     phone: ZERO running loops — every effect rests on its composed frame —
+     and the page scrolls natively with the document instead of nesting a
+     100dvh scroller inside the shell (the nested scroller is what made the
+     phone feel like a shrunken desktop: trapped scroll, URL-bar fights,
+     clipped content). */
+  @media (max-width: 700px) {
+    .home {
+      height: auto;
+      overflow: visible;
+      min-height: 0;
+      padding: 1.4rem 1rem 3rem;
+      gap: 1.5rem;
+    }
+    .hero { padding: 1.1rem 0.8rem 0.3rem; }
+    /* The halo shrinks with the viewport: one small painted layer instead
+       of a viewport-overflowing blur. */
+    .hero::before { inset: -14% -8% -10%; filter: blur(5px); }
+    /* Designer spec: wordmark clamps to 8vw on phones. */
+    .wordmark { font-size: clamp(2.5rem, 8vw, 4rem); }
+    .lede { line-height: 1.7; }
+    .stats .dn-kv .num { font-size: 1.3rem; }
+    /* Thumb law: every control clears 40px of touch target. */
+    .resume, .mk { min-height: 40px; align-items: center; }
+    .cta { min-height: 48px; }
+    /* The 0-loop lock: survivors park on their resting frame. */
+    .rail::before { animation: none; transform: translateX(-120%); }
+    .feed-caret { animation: none; }
   }
 </style>
