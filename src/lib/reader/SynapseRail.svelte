@@ -236,7 +236,7 @@
     font-size: 0.72em;
     letter-spacing: 0.04em;
   }
-  .spark { color: var(--dn-accent); animation: dn-pulse 2.4s ease-in-out infinite; }
+  .spark { color: var(--dn-accent); } /* OP-56: pulse retired — static lit glyph */
   .synapse-head { color: var(--dn-accent); }
   .spark-mark { width: 0.62em; height: 0.62em; }
 
@@ -303,7 +303,8 @@
   .graph-box {
     position: relative;
     height: 210px;
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 34%, var(--dn-border-strong));
+    /* OP-56: the mini-map window wears the electric keyline. */
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 45%, var(--dn-border-strong));
     /* notched corner: the mini-map is an instrument window, not a card */
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--dn-notch)), calc(100% - var(--dn-notch)) 100%, 0 100%);
     overflow: hidden;
@@ -333,8 +334,8 @@
     font-size: 0.72rem;
     text-align: center;
     color: var(--dn-accent);
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 40%, transparent);
+    background: color-mix(in srgb, var(--dn-electric) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 40%, transparent);
     padding: 0.5em 0.7em;
     cursor: pointer;
   }

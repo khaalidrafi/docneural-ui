@@ -255,6 +255,7 @@
   <div class="fatal">
     <div class="panel" role="alert">
       <span class="dn-neuron-mark" aria-hidden="true"></span>
+      <p class="kicker" aria-hidden="true">// no route</p>
       <h2>This documentation graph did not load</h2>
       <p class="why">{store.failed}</p>
       <p class="hint">The site builds its graph from an exported corpus. If a
@@ -473,7 +474,7 @@
       transparent);
     box-shadow: 0 0 12px color-mix(in srgb, var(--dn-electric) 90%, transparent);
     transform: translateX(-18%);
-    animation: dn-bus 2.8s ease-in-out infinite alternate;
+    animation: dn-bus 2.6s ease-in-out infinite alternate;
   }
   @keyframes dn-bus {
     from { transform: translateX(-18%); }
@@ -956,6 +957,17 @@
     place-items: center;
     padding: 2rem 1rem;
   }
+  /* OP-56: the failure panel is the one place pink leads — a 2px left cap
+     on an electric frame. Colour never carries the meaning alone: the
+     heading names the failure and .why is accent-2 text in both themes. */
+  .fatal .panel { border-left: 2px solid var(--dn-accent-2); }
+  .panel .kicker {
+    margin: 0;
+    font-family: var(--dn-font-mono);
+    font-size: var(--dn-text-xs);
+    letter-spacing: var(--dn-track-wide);
+    color: var(--dn-accent-dim);
+  }
   /* One panel for both states a visitor can be stuck on: loading, and failed.
      Real borders, real contrast, no fake window chrome — the terminal feel
      lives in the type and the corners, not in a pretend tty. SIGNAL pass:
@@ -966,7 +978,7 @@
     gap: 0.7rem;
     justify-items: start;
     padding: 1.6rem 1.8rem;
-    border: 1px solid color-mix(in srgb, var(--dn-accent) 34%, var(--dn-border-strong));
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 45%, var(--dn-border-strong));
     border-radius: 4px;
     background:
       linear-gradient(180deg, color-mix(in srgb, var(--dn-accent) 5%, transparent), transparent 42%),
@@ -1020,14 +1032,14 @@
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 0.04em;
-    color: var(--dn-bg-sunken);
-    /* The one saturated CTA on the failure panel: the cyberpunk gradient. */
-    background: linear-gradient(135deg, var(--dn-accent), var(--dn-violet));
+    color: #ffffff;
+    /* OP-56: electric fill, white ink — violet retires from the UI. */
+    background: var(--dn-electric);
     border: none;
     border-radius: 3px;
     padding: 0.6em 1.4em;
     cursor: pointer;
-    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-accent) 40%, transparent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--dn-electric) 40%, transparent);
   }
   .retry:hover { box-shadow: var(--dn-glow); filter: brightness(1.15); }
 
@@ -1151,21 +1163,39 @@
     margin: 0 0 0.6rem;
     font-size: var(--dn-text-xs);
     letter-spacing: var(--dn-track);
-    color: var(--dn-accent);
-    /* DS-COOLEST directive 20: no glow — the accent color is the state. */
+    color: var(--dn-electric);
+    /* OP-56: an acid live-dot leads the keymap title; no glow (directive 20). */
+  }
+  .help h3::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 0.5em;
+    background: var(--dn-acid);
+    vertical-align: 1px;
   }
   .blurb { color: var(--dn-fg-muted); font-size: var(--dn-text-sm); line-height: 1.6; margin: 0 0 1rem; }
   .blurb em, .blurb strong { color: var(--dn-fg); }
   dl { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1rem; margin: 0; }
-  dt { font-family: var(--dn-font-mono); font-size: var(--dn-text-sm); color: var(--dn-fg); }
+  dt {
+    font-family: var(--dn-font-mono);
+    font-size: var(--dn-text-sm);
+    color: var(--dn-accent);
+    border: 1px solid var(--dn-border);
+    border-bottom: 2px solid var(--dn-accent);
+    padding: 0.05em 0.45em;
+    background: color-mix(in srgb, var(--dn-bg-raise) 80%, transparent);
+    justify-self: start;
+  }
   dd { margin: 0; font-size: var(--dn-text-sm); color: var(--dn-fg-muted); }
   .close {
     margin-top: 1.2rem;
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--dn-bg-sunken);
-    background: var(--dn-accent);
+    color: #ffffff;
+    background: var(--dn-electric);
     border: none;
     border-radius: 2px;
     padding: 0.4em 1.2em;
@@ -1178,14 +1208,14 @@
    inverse case, so light mode gives the close button a full ink icon
    plus a border, so it does not rely solely on the filled background. */
 :global([data-theme='light']) .close {
-  background: var(--dn-accent);
+  background: var(--dn-electric);
   border: 1px solid var(--dn-accent-dim);
   color: #ffffff;
 }
 :global([data-theme='light']) .retry {
   color: #ffffff;
   box-shadow: none;
-  border: 1px solid color-mix(in srgb, var(--dn-accent) 60%, #000000);
+  border: 1px solid color-mix(in srgb, var(--dn-electric) 60%, #000000);
 }
   .close:hover { background: var(--dn-hot); }
   @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
