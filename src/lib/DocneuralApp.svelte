@@ -185,6 +185,9 @@
 </script>
 
 <header class="shell" style={sourceVars(store.manual)}>
+  <!-- CONSULT C: the electric bus lives under all header content; the
+       bright rider traverses it (one transform-only desktop loop). -->
+  <span class="bus-rail" aria-hidden="true"></span>
   <button class="brand dn-mono" onclick={() => store.goHome()} aria-label="{title} home">
     <span class="dn-neuron-mark" aria-hidden="true"></span>{title.toUpperCase()}
   </button>
@@ -196,7 +199,7 @@
     <!-- The thumb slides under the active segment — measured, not a fake
          50% split, because DOCS and SYNAPSES are different widths. -->
     <span
-      class="seg-thumb"
+      class="seg-thumb electric"
       aria-hidden="true"
       style:transform="translateX({thumb.x}px)"
       style:width="{thumb.w}px"
@@ -364,31 +367,68 @@
        blur every scroll frame. A 92%-opaque fill over the board reads the
        same and costs one composite. */
     background: color-mix(in srgb, var(--dn-bg-raise) 92%, transparent);
-    border-bottom: 1px solid var(--dn-border-strong);
+    /* CONSULT C — the bottom edge is the ELECTRIC BUS: 2px neon blue, the
+       chrome's power rail. A 1px hairline above it reads as the rail's
+       mounting seam. */
+    border-bottom: 2px solid var(--dn-electric);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--dn-electric) 30%, transparent);
     position: relative;
   }
 
-  /* The signal rail: a thin cyan→magenta gradient line under the whole bar —
-     the header is now visibly the top of the instrument, not just a strip.
-     IGNITION: a bright data pulse rides the rail on a loop (background-position
-     on a 2px bar — negligible paint), so the chrome itself reads as wired. */
+  /* CONSULT C — the old cyan→magenta gradient hairline is deleted; the
+     freed ::after is a thin electric scan-stripe sitting on the bus (1px,
+     low-alpha, static): the bottom edge reads as a lit seam. */
   .shell::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -1px;
+    bottom: 2px;
     height: 1px;
     pointer-events: none;
-    /* Static signal rail: one gradient, no animation, no repeating layer.
-       The header is the top of the instrument at rest. */
     background: linear-gradient(90deg,
-      transparent 2%,
-      color-mix(in srgb, var(--dn-accent) 70%, transparent) 30%,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, var(--dn-accent-2)) 55%,
-      color-mix(in srgb, var(--dn-accent-2) 70%, transparent) 78%,
-      transparent 98%);
-    opacity: 0.85;
+      transparent 0%,
+      color-mix(in srgb, var(--dn-electric) 55%, transparent) 18%,
+      color-mix(in srgb, var(--dn-electric) 70%, transparent) 50%,
+      color-mix(in srgb, var(--dn-electric) 55%, transparent) 82%,
+      transparent 100%);
+    opacity: 0.6;
+  }
+
+  /* CONSULT C — the electric rider: a bright pulse traversing the bus.
+     One new desktop loop, transform-only, parked on phone + reduced-motion. */
+  .shell > * { position: relative; z-index: 1; }
+  .bus-rail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;            /* rides ON the 2px bus line */
+    height: 2px;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .bus-rail::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 18%;
+    height: 100%;
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in srgb, var(--dn-electric) 95%, white 5%) 50%,
+      transparent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--dn-electric) 70%, transparent);
+    transform: translateX(-18%);
+    animation: dn-bus 3.4s ease-in-out infinite alternate;
+  }
+  @keyframes dn-bus {
+    from { transform: translateX(-18%); }
+    to   { transform: translateX(560%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bus-rail::before { animation: none; opacity: 0; }
   }
 
   .brand {
@@ -422,8 +462,10 @@
       color: var(--dn-fg);
       -webkit-text-fill-color: var(--dn-fg);
     }
+    /* CONSULT D (F3): the fixed hintkey stops flip on OS-light too. */
+    :global(:root:not([data-theme])) .tool.kbd .hintkey { color: #1a4fb3; }
   }
-  .brand:hover { color: var(--dn-accent); -webkit-text-fill-color: var(--dn-accent); }
+  .brand:hover { color: var(--dn-electric); -webkit-text-fill-color: var(--dn-electric); }
 
   /* Segmented control: square cells, brackets around the label so an active
      mode reads as a selected switch rather than a painted pill. */
@@ -459,9 +501,9 @@
   .seg .bracket { color: var(--dn-border-strong); }
   .seg:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .seg.active {
-    color: var(--dn-accent);
+    color: var(--dn-electric);
     font-weight: 600;
-    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
+    border-color: color-mix(in srgb, var(--dn-electric) 80%, transparent);
     /* DS-COOLEST directive 20: states come from fill and weight, not halo —
        the sliding thumb owns the fill (below). */
   }
@@ -476,8 +518,10 @@
     left: 0;
     height: 100%;
     border-radius: 2px;
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent);
+    /* CONSULT C — electric blue fill + edge: the active mode's lit keycap. */
+    background: color-mix(in srgb, var(--dn-electric) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 72%, transparent);
+    box-shadow: var(--dn-glow-electric);
     transition: transform 220ms cubic-bezier(0.3, 1.3, 0.35, 1),
       width 220ms cubic-bezier(0.3, 1.3, 0.35, 1);
     pointer-events: none;
@@ -487,16 +531,26 @@
     transform: translateY(1px);
     filter: brightness(1.25);
   }
-  .seg.active .bracket { color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent); }
+  .seg.active .bracket { color: color-mix(in srgb, var(--dn-electric) 55%, transparent); }
   .spark { color: var(--dn-accent); animation: dn-pulse 2.6s ease-in-out infinite; }
-  .seg.active .spark { color: var(--dn-accent); }
+  .seg.active .spark { color: var(--dn-electric); }
+
+  /* CONSULT C (E4) + CONSULT D (F3 fix): search is the electric action —
+     the ⌕ ⌘K affordance wears the chrome rail's hue; the hintkey uses
+     fixed AA-safe electric stops (#4d94ff = 4.62:1 dark, #1a4fb3 = 5.71:1
+     paper) after the color-mix recipe failed the text bar. */
+  .tool.kbd { color: var(--dn-electric-dim); }
+  .tool.kbd .hintkey { color: #4d94ff; }
+  .tool.kbd:hover { color: var(--dn-electric); border-color: color-mix(in srgb, var(--dn-electric) 65%, transparent); }
 
   .tools { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
   /* The live readout: how much corpus is behind this interface.
-     FULL-RIGHTS OP-52 — mounted: reticle arms in acid (live = acid),
-     tabular numerals; DOWN flips the arms + LED to the broken-wire pink. */
+     FULL-RIGHTS OP-52 + CONSULT C — the framing reticle arms flip to
+     electric blue (the header is now the electric instrument); the LED
+     itself STAYS acid (live = acid contract). DOWN still flips everything
+     to the broken-wire pink. */
   .status {
-    --dn-src: var(--dn-acid);
+    --dn-src: var(--dn-electric);   /* was var(--dn-acid) */
     font-size: var(--dn-text-2xs);
     letter-spacing: var(--dn-track-tight);
     color: var(--dn-fg-faint);
@@ -539,17 +593,24 @@
    darker ink line so it does not wash out. */
 :global([data-theme='light']) .shell {
   background: color-mix(in srgb, var(--dn-bg-raise) 96%, transparent);
-  border-bottom-color: var(--dn-border-strong);
+  border-bottom-color: var(--dn-electric);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--dn-electric) 22%, transparent);
 }
 :global([data-theme='light']) .shell::after {
   background: linear-gradient(90deg,
-    transparent 2%,
-    color-mix(in srgb, var(--dn-accent) 60%, transparent) 30%,
-    color-mix(in srgb, var(--dn-accent) 45%, var(--dn-accent-2)) 55%,
-    color-mix(in srgb, var(--dn-accent-2) 60%, transparent) 78%,
-    transparent 98%);
-  opacity: 0.9;
+    transparent 0%,
+    color-mix(in srgb, var(--dn-electric) 45%, transparent) 18%,
+    color-mix(in srgb, var(--dn-electric) 60%, transparent) 50%,
+    color-mix(in srgb, var(--dn-electric) 45%, transparent) 82%,
+    transparent 100%);
+  opacity: 0.7;
 }
+:global([data-theme='light']) .seg-thumb {
+  background: color-mix(in srgb, var(--dn-electric) 10%, transparent);
+  border-color: color-mix(in srgb, var(--dn-electric) 60%, transparent);
+  box-shadow: none;
+}
+:global([data-theme='light']) .tool.kbd .hintkey { color: #1a4fb3; }
   .status.down { color: var(--dn-amber); }
   .tool {
     font-family: var(--dn-font-mono);
@@ -937,6 +998,7 @@
     background: color-mix(in srgb, var(--dn-bg-raise) 96%, transparent);
   }
   .shell::after { animation: none; }
+  .bus-rail::before { animation: none; opacity: 0; }
   .spark { animation: none; }
   .status .led { animation: none; }
   .panel .dots { animation: none; }
