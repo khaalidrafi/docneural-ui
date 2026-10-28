@@ -189,7 +189,7 @@
        bright rider traverses it (one transform-only desktop loop). -->
   <span class="bus-rail" aria-hidden="true"></span>
   <button class="brand dn-mono" onclick={() => store.goHome()} aria-label="{title} home">
-    <span class="dn-neuron-mark" aria-hidden="true"></span>{title.toUpperCase()}
+    <span class="dn-neuron-mark" aria-hidden="true"></span><span class="wordmark">{title.toUpperCase()}</span>
   </button>
 
   <!-- The mode switch is the site's one big choice — read the text, or read
@@ -255,10 +255,18 @@
   <!-- Loading, not a boot log: the same three real steps (fetch, index, paint)
      stated once, with a live count as soon as the nodes are known. -->
   <div class="boot-wrap">
+    <!-- The boot screen, redesigned (Owner law 2026-10-28: the initial loader
+         looked dull). Same honest three facts, now staged like the instrument
+         waking: a 16-arm reticle ring, the wordmark, the fetch step, an
+         electric bus whose rider sweeps while the corpus lands, and the live
+         indexed count. Both loops are TRANSIENT - the panel unmounts the
+         moment the graph is ready, so steady-state loop budget is untouched;
+         phones and reduced-motion get the static board (parks below). -->
     <div class="panel boot" role="status" aria-live="polite">
-      <span class="dn-neuron-mark" aria-hidden="true"></span>
+      <div class="boot-reticle" aria-hidden="true"><span class="core"></span></div>
       <h2>{title}</h2>
       <p class="step">reading the graph<span class="dots">…</span></p>
+      <div class="boot-bus" aria-hidden="true"><span class="rider"></span></div>
       <p class="step dim">{store.data.nodes.length || '—'} chapters indexed</p>
     </div>
   </div>
@@ -417,11 +425,11 @@
     height: 100%;
     background: linear-gradient(90deg,
       transparent,
-      color-mix(in srgb, var(--dn-electric) 95%, white 5%) 50%,
+      color-mix(in srgb, var(--dn-electric) 72%, white 28%) 50%,
       transparent);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--dn-electric) 70%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-electric) 90%, transparent);
     transform: translateX(-18%);
-    animation: dn-bus 3.4s ease-in-out infinite alternate;
+    animation: dn-bus 2.8s ease-in-out infinite alternate;
   }
   @keyframes dn-bus {
     from { transform: translateX(-18%); }
@@ -437,27 +445,38 @@
     font-weight: 400;
     letter-spacing: var(--dn-track-tight);
     text-transform: uppercase;
-    /* The wordmark is a filament, not a neon sign (DS-COOLEST directive 7):
-       the white->cyan value ramp from --dn-wordmark, no chromatic fringe,
-       no hover glow. On paper it resolves to plain ink via the token. */
-    background: var(--dn-wordmark);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    border: none;
-    padding: 0;
+    /* HEADER V2 (Owner: "the header looks dull"): the wordmark sits on a
+       nameplate - a hairline-bordered instrument badge with a notched corner,
+       so the brand reads as a plate wired to the bus, not bare text. */
+    border: 1px solid var(--dn-hairline);
+    padding: 0.3em 0.75em 0.3em 0.6em;
+    clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+    background-color: color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 0.45em;
   }
+  /* The wordmark itself is a filament (DS-COOLEST directive 7): the
+     white->electric value ramp from --dn-wordmark, no chromatic fringe, no
+     hover glow. The nameplate carries the border; the text carries the ramp. */
+  .brand .wordmark {
+    background: var(--dn-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
   :global([data-theme='light']) .brand {
+    background-color: transparent;
+    border-color: var(--dn-hairline);
+  }
+  :global([data-theme='light']) .brand .wordmark {
     background: none;
     color: var(--dn-fg);
     -webkit-text-fill-color: var(--dn-fg);
   }
   @media (prefers-color-scheme: light) {
-    :global(:root:not([data-theme])) .brand {
+    :global(:root:not([data-theme])) .brand .wordmark {
       background: none;
       color: var(--dn-fg);
       -webkit-text-fill-color: var(--dn-fg);
@@ -465,7 +484,25 @@
     /* CONSULT D (F3): the fixed hintkey stops flip on OS-light too. */
     :global(:root:not([data-theme])) .tool.kbd .hintkey { color: #1a4fb3; }
   }
-  .brand:hover { color: var(--dn-electric); -webkit-text-fill-color: var(--dn-electric); }
+  .brand:hover { border-color: color-mix(in srgb, var(--dn-electric) 60%, transparent); }
+  .brand:hover .wordmark { color: var(--dn-electric); -webkit-text-fill-color: var(--dn-electric); background: none; }
+
+  /* HEADER V2: corner brackets at the bar's ends - the HUD frame vocabulary,
+     electric, static. The bar now reads as a framed instrument, not a strip. */
+  .shell::before {
+    content: "";
+    position: absolute;
+    inset: 6px 10px auto 10px;
+    height: 8px;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--dn-electric), var(--dn-electric)) left top / 10px 1px,
+      linear-gradient(var(--dn-electric), var(--dn-electric)) left top / 1px 8px,
+      linear-gradient(var(--dn-electric), var(--dn-electric)) right top / 10px 1px,
+      linear-gradient(var(--dn-electric), var(--dn-electric)) right top / 1px 8px;
+    background-repeat: no-repeat;
+    opacity: 0.85;
+  }
 
   /* Segmented control: square cells, brackets around the label so an active
      mode reads as a selected switch rather than a painted pill. */
@@ -544,6 +581,10 @@
   .tool.kbd:hover { color: var(--dn-electric); border-color: color-mix(in srgb, var(--dn-electric) 65%, transparent); }
 
   .tools { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
+  /* HEADER V2: every tool is a keycap on the electric rail - hover lights the
+     same neon edge the bus carries, so the whole bar speaks one language. */
+  .tool { transition: color 120ms, border-color 120ms; }
+  .tool:hover { color: var(--dn-electric-dim); border-color: color-mix(in srgb, var(--dn-electric) 60%, transparent); }
   /* The live readout: how much corpus is behind this interface.
      FULL-RIGHTS OP-52 + CONSULT C — the framing reticle arms flip to
      electric blue (the header is now the electric instrument); the LED
@@ -920,6 +961,58 @@
     place-items: center;
     padding: 3rem 1rem;
   }
+  /* BOOT RETICLE: the instrument's iris. A ring of 16 arms (repeating-conic
+     gradient, static) around a neon-blue core that breathes ONCE family with
+     the dots - both transient (unmount on ready). Static art, zero cost. */
+  .panel.boot { text-align: left; }
+  .boot-reticle {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 0.9rem;
+    border-radius: 50%;
+    background:
+      repeating-conic-gradient(
+        from 0deg,
+        color-mix(in srgb, var(--dn-electric) 75%, transparent) 0deg 3deg,
+        transparent 3deg 22.5deg);
+    -webkit-mask: radial-gradient(circle, transparent 55%, #000 56%, #000 100%);
+    mask: radial-gradient(circle, transparent 55%, #000 56%, #000 100%);
+  }
+  .boot-reticle .core {
+    position: absolute;
+    inset: 38%;
+    border-radius: 50%;
+    background: var(--dn-electric);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-electric) 80%, transparent),
+      0 0 30px color-mix(in srgb, var(--dn-electric) 35%, transparent);
+    animation: dn-pulse 1.2s ease-in-out infinite;
+  }
+  /* BOOT BUS: the header's electric rail, previewed here - a 2px neon-blue
+     bus with one bright rider sweeping while the corpus lands. The visitor
+     watches the same wire they are about to scroll under. */
+  .boot-bus {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    margin: 0.8rem 0 0.9rem;
+    background: color-mix(in srgb, var(--dn-electric) 38%, transparent);
+    overflow: hidden;
+  }
+  .boot-bus .rider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent,
+      color-mix(in srgb, var(--dn-electric) 95%, white 5%) 50%, transparent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--dn-electric) 70%, transparent);
+    animation: dn-bus 2.6s ease-in-out infinite alternate;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .boot-reticle .core, .boot-bus .rider { animation: none; }
+  }
 
   .overlay {
     position: fixed;
@@ -1002,6 +1095,8 @@
   .spark { animation: none; }
   .status .led { animation: none; }
   .panel .dots { animation: none; }
+  .boot-reticle .core { animation: none; }
+  .boot-bus .rider { animation: none; opacity: 0; }
 
   /* The controls panel's clip-path notch relies on a fixed pixel clip; at
      narrow widths the corner should shrink so it does not eat the summary
