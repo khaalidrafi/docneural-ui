@@ -24,7 +24,7 @@
 
 <nav class="chapters" aria-label="Contents" style={sourceVars(store.manual)}>
   <button class="home {store.selected ? '' : 'active'} dn-mono" onclick={() => store.goHome()}>
-    <span class="glyph">◈</span> WELCOME
+    <span class="glyph">▤</span> WELCOME
   </button>
   <ManualTabs {store} />
   <div class="find">
@@ -103,7 +103,8 @@
     background: color-mix(in srgb, var(--dn-accent) 10%, transparent);
     box-shadow: 0 0 12px color-mix(in srgb, var(--dn-accent) 16%, transparent);
   }
-  .glyph { color: var(--dn-hot); }
+  /* DS-COOLEST directive 5: the glyph rides the wire hue. */
+  .glyph { color: var(--dn-accent); }
 
   /* The filter field, marked with a search glyph. */
   .find {

@@ -286,13 +286,13 @@
         title={store.layout === 'spread'
           ? 'Pack the neurons back into their citation clusters'
           : 'Space every neuron out until its title reads cleanly'}
-      >{store.layout === 'spread' ? '▚ titles: spread' : '▦ titles: packed'}</button>
+      >{store.layout === 'spread' ? 'spread · titles' : 'packed · titles'}</button>
     </div>
     <details class="controls" open={!isPhone}>
       <summary class="dn-mono">
         <span class="dn-neuron-mark" aria-hidden="true"></span>
         <span class="spark">⌁</span> SYNAPSES · {store.visible.links.length} WIRES
-        <span class="chev">▾</span>
+        <span class="chev">+</span>
       </summary>
       <FilterBar {store} />
     </details>
@@ -319,7 +319,7 @@
     onclick={(e) => { if (e.target === e.currentTarget) helpOpen = false }}
     onkeydown={(e) => { if (e.key === 'Escape') helpOpen = false }}
   >
-    <div class="help dn-hud dn-glass">
+    <div class="help dn-glass">
       <h3 class="dn-mono">{title.toUpperCase()} — KEYMAP</h3>
       <p class="blurb">
         A documentation reader <em>enhanced</em> with an org-roam graph. The written
@@ -387,27 +387,19 @@
     opacity: 0.85;
   }
 
-  @keyframes dn-rail-flow {
-    to { background-position: 0 0, 340px 0; }
-  }
   .brand {
     font-family: var(--dn-font-display);
-    font-size: 0.95rem;
+    font-size: var(--dn-text-md);
     font-weight: 400;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--dn-track-tight);
     text-transform: uppercase;
-    /* The wordmark wears the neon-sign decay (cyan -> violet -> pink) with
-       the chromatic fringe — the designer's wordmark treatment, on the one
-       piece of chrome that is always on screen. background-clip:text keeps
-       the letters selectable and the accessible name intact. Replaces the
-       SIGNAL split-glow, which it extends into a full gradient. */
+    /* The wordmark is a filament, not a neon sign (DS-COOLEST directive 7):
+       the white->cyan value ramp from --dn-wordmark, no chromatic fringe,
+       no hover glow. On paper it resolves to plain ink via the token. */
     background: var(--dn-wordmark);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow:
-      -1px 0 color-mix(in srgb, var(--dn-accent-2) 45%, transparent),
-      1px 0 color-mix(in srgb, var(--dn-accent) 35%, transparent);
     border: none;
     padding: 0;
     cursor: pointer;
@@ -415,7 +407,19 @@
     align-items: center;
     gap: 0.45em;
   }
-  .brand:hover { text-shadow: var(--dn-glow); }
+  :global([data-theme='light']) .brand {
+    background: none;
+    color: var(--dn-fg);
+    -webkit-text-fill-color: var(--dn-fg);
+  }
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme])) .brand {
+      background: none;
+      color: var(--dn-fg);
+      -webkit-text-fill-color: var(--dn-fg);
+    }
+  }
+  .brand:hover { color: var(--dn-accent); -webkit-text-fill-color: var(--dn-accent); }
 
   /* Segmented control: square cells, brackets around the label so an active
      mode reads as a selected switch rather than a painted pill. */
@@ -454,14 +458,13 @@
     color: var(--dn-accent);
     font-weight: 600;
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
-    /* Active label at full brightness: the glow IS the on-state. The lit
-       fill itself is the sliding thumb's job (below) — one surface owns the
-       fill so the switch reads as one moving keycap, not two painted pills. */
-    text-shadow: 0 0 9px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
+    /* DS-COOLEST directive 20: states come from fill and weight, not halo —
+       the sliding thumb owns the fill (below). */
   }
   /* The sliding thumb paints the fill: one lit block gliding between the
      segments (measured, so unequal labels are honest), a spring on it.
-     SIGNAL pass: the fill and halo rose — the thumb reads as a lit keycap. */
+     DS-COOLEST directive 20: the halo is gone — the thumb is already a lit
+     keycap by shape; fill + border carry it. */
   .modes { position: relative; }
   .seg-thumb {
     position: absolute;
@@ -469,11 +472,8 @@
     left: 0;
     height: 100%;
     border-radius: 2px;
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 17%, transparent);
-    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent);
-    box-shadow:
-      0 0 14px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 38%, transparent),
-      inset 0 0 8px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent);
     transition: transform 220ms cubic-bezier(0.3, 1.3, 0.35, 1),
       width 220ms cubic-bezier(0.3, 1.3, 0.35, 1);
     pointer-events: none;
@@ -485,13 +485,13 @@
   }
   .seg.active .bracket { color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent); }
   .spark { color: var(--dn-accent); animation: dn-pulse 2.6s ease-in-out infinite; }
-  .seg.active .spark { color: var(--dn-hot); }
+  .seg.active .spark { color: var(--dn-accent); }
 
   .tools { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
   /* The live readout: how much corpus is behind this interface. */
   .status {
-    font-size: 0.66rem;
-    letter-spacing: 0.1em;
+    font-size: var(--dn-text-2xs);
+    letter-spacing: var(--dn-track-tight);
     color: var(--dn-fg-faint);
     display: inline-flex;
     align-items: center;
@@ -504,14 +504,14 @@
     height: 7px;
     border-radius: 50%;
     /* Acid: the LIVE color (r3). The corpus readout is the one place the site
-       says "online", so the LED wears the acid signal, not the accent — while
-       keeping the SIGNAL lamp's heartbeat (transform+opacity only, §2's
-       dn-led) and its halo-ring shadow recipe. */
+       says "online", so the LED wears the acid signal, not the accent. The
+       perpetual heartbeat is gone (cool-pass OP-15): a lamp that always
+       pulses reads as wallpaper — the halo-ring glow IS the live state, and
+       dropping the loop frees a desktop motion slot (cap 4 -> 3). */
     background: var(--dn-acid);
     box-shadow:
       0 0 9px var(--dn-acid),
       0 0 20px color-mix(in srgb, var(--dn-acid) 55%, transparent);
-    animation: dn-led 1.6s ease-in-out infinite;
   }
   .status.down .led { background: var(--dn-amber); box-shadow: 0 0 9px var(--dn-amber), 0 0 20px color-mix(in srgb, var(--dn-amber) 55%, transparent); }
 
@@ -543,8 +543,8 @@
   .status.down { color: var(--dn-amber); }
   .tool {
     font-family: var(--dn-font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
+    font-size: var(--dn-text-sm);
+    letter-spacing: var(--dn-track-tight);
     color: var(--dn-fg-muted);
     background: transparent;
     border: 1px solid var(--dn-border);
@@ -567,10 +567,9 @@
   .tool:hover {
     color: var(--dn-accent);
     border-color: color-mix(in srgb, var(--dn-accent) 65%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-accent) 26%, transparent);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--dn-accent) 45%, transparent);
+    /* DS-COOLEST directive 20: no halo — the border + color carry hover. */
   }
-  .tool .hintkey { color: var(--dn-fg-faint); font-size: 0.68rem; margin-left: 0.3em; }
+  .tool .hintkey { color: var(--dn-fg-faint); font-size: var(--dn-text-2xs); margin-left: 0.3em; }
 
   @media (max-width: 900px) {
     /* The instrument reading is the first thing to go; the buttons stay. */
@@ -617,7 +616,7 @@
   /* Fit the logo + segments + 2 tools within 390px: the brand shortens
      to the mark plus 3-letter prefix, which is what the design language
      already suggests (a node in cross-section IS the mark). */
-  .brand { font-size: 0.78rem; letter-spacing: 0.08em; }
+  .brand { font-size: var(--dn-text-sm); letter-spacing: var(--dn-track-tight); }
 
   /* Controls panel (only shown in graph mode) still fits. */
   .controls {
@@ -868,16 +867,16 @@
   }
   .help h3 {
     margin: 0 0 0.6rem;
-    font-size: 0.78rem;
+    font-size: var(--dn-text-xs);
     letter-spacing: var(--dn-track);
     color: var(--dn-accent);
-    text-shadow: var(--dn-glow);
+    /* DS-COOLEST directive 20: no glow — the accent color is the state. */
   }
-  .blurb { color: var(--dn-fg-muted); font-size: 0.9rem; line-height: 1.6; margin: 0 0 1rem; }
+  .blurb { color: var(--dn-fg-muted); font-size: var(--dn-text-sm); line-height: 1.6; margin: 0 0 1rem; }
   .blurb em, .blurb strong { color: var(--dn-fg); }
   dl { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1rem; margin: 0; }
-  dt { font-family: var(--dn-font-mono); font-size: 0.8rem; color: var(--dn-hot); }
-  dd { margin: 0; font-size: 0.85rem; color: var(--dn-fg-muted); }
+  dt { font-family: var(--dn-font-mono); font-size: var(--dn-text-sm); color: var(--dn-fg); }
+  dd { margin: 0; font-size: var(--dn-text-sm); color: var(--dn-fg-muted); }
   .close {
     margin-top: 1.2rem;
     font-size: 0.75rem;

@@ -89,24 +89,34 @@
     sans-serif;
   --dn-font-display: "Electrolize", "JetBrains Mono", ui-monospace, monospace;
 
-  /* Tracking ramp: tight (code/tags) < base (labels) < wide (kickers/status). */
-  --dn-track: 0.16em;
-  --dn-track-tight: 0.08em;
-  --dn-track-wide: 0.28em;
+  /* Tracking ramp: four tokens, four jobs (DS-COOLEST directive 3).
+     tight (code/tags) < base (labels) < wide (kickers/status) < mega (hero
+     kicker only). Component CSS must use a token — literals forbidden. */
+  --dn-track-tight: 0.05em;
+  --dn-track: 0.14em;
+  --dn-track-wide: 0.26em;
+  --dn-track-mega: 0.40em;
 
   /* --- Type scale ---------------------------------------------------------
-     One ramp, 1.2-ish ratio, used by chrome AND prose so heading rhythm is a
-     single system. Line heights are paired to each step. */
-  --dn-text-xs: 0.7rem;    /* micro-labels, chips, meta */
-  --dn-text-sm: 0.85rem;   /* table headers, code wells, nav */
+     One ramp, 9 steps with a real top (DS-COOLEST directive 1). Used by
+     chrome AND prose so heading rhythm is a single system. Line heights are
+     paired to each step. Component CSS must map to a token — literal
+     font-size values are forbidden outside this block. */
+  --dn-text-2xs: 0.625rem; /* micro-legend, HUD readout rows */
+  --dn-text-xs: 0.75rem;   /* micro-labels, chips, meta */
+  --dn-text-sm: 0.875rem;  /* table headers, code wells, nav */
   --dn-text-md: 1rem;      /* body */
-  --dn-text-lg: 1.15rem;   /* h3 */
-  --dn-text-xl: 1.4rem;    /* h2 */
-  --dn-text-2xl: 1.75rem;  /* h1 / page title */
-  --dn-text-3xl: 2.4rem;   /* hero display (clamped per-breakpoint) */
-  --dn-lh-tight: 1.2;      /* headings */
-  --dn-lh-body: 1.65;      /* prose */
-  --dn-lh-loose: 1.75;     /* phone prose */
+  --dn-text-lg: 1.25rem;   /* h3, section heads */
+  --dn-text-xl: 1.625rem;  /* h2 */
+  --dn-text-2xl: 2.125rem; /* h1 / page title */
+  --dn-text-3xl: 3rem;     /* hero display (clamped per-breakpoint) */
+  --dn-text-4xl: clamp(3rem, 7.2vw, 5.25rem); /* wordmark display */
+  --dn-lh-tight: 1.08;     /* display + h1 */
+  --dn-lh-snug: 1.3;       /* h2, UI heads */
+  --dn-lh-snug-2: 1.4;     /* h3 — breathes apart from h2 so the heading
+                              rhythm steps down, not just sizes */
+  --dn-lh-body: 1.6;       /* prose */
+  --dn-lh-loose: 1.72;     /* phone prose */
 
   /* --- Spacing ramp -------------------------------------------------------
      4px base, 8 steps. Everything lands on the circuit grid. */
@@ -116,15 +126,16 @@
   --dn-space-4: 1rem;
   --dn-space-5: 1.5rem;
   --dn-space-6: 2rem;
-  --dn-space-7: 3rem;
-  --dn-space-8: 4rem;
+  --dn-space-7: 3.5rem;
+  --dn-space-8: 5.5rem;
 
   /* --- Radii --------------------------------------------------------------
      HUD is sharp. Radii exist only to take the pixel-sting off small filled
-     elements. Panels are 0; chips/wells cap at 3px. */
+     elements. Panels are 0; chips/wells cap at 4px. 2px steps so sm/base/lg
+     are actually distinct at fill size (1px deltas were sub-perceptual). */
   --dn-radius-sm: 2px;
-  --dn-radius: 3px;
-  --dn-radius-lg: 4px;
+  --dn-radius: 4px;
+  --dn-radius-lg: 6px;
 
   /* --- Surfaces -----------------------------------------------------------
      Night terminal. Cool cast, never neutral grey. Three tiers only:
@@ -135,9 +146,13 @@
   --dn-fg: #e8f1fb;
   --dn-fg-muted: #a6bcd4;
   --dn-fg-faint: #7f97b3;
-  /* Hairline borders do the work shadows used to do. 3:1 vs raise. */
-  --dn-border: #3f5f80;
-  --dn-border-strong: #5c85ad;
+  /* Three border tiers with defined roles (DS-COOLEST directive 16):
+     hairline = decorative seams (card bottoms, table rows, section rules);
+     border   = control outlines and wells;
+     border-strong = header underline, the readout plate, focus ONLY. */
+  --dn-hairline: #14202d;
+  --dn-border: #33597d;
+  --dn-border-strong: #6b9dc6;
 
   /* --- Signals ------------------------------------------------------------
      Cyan is the wire (links, focus, active chrome). Everything else is
@@ -152,20 +167,21 @@
   --dn-acid: #3ef04a;
   --dn-violet: #bd00ff;
 
-  /* Wordmark: the one gradient in the system. Cyan -> violet -> pink. */
-  --dn-wordmark: linear-gradient(135deg,
-    #7df9ff 0%, var(--dn-accent) 26%, var(--dn-violet) 62%, var(--dn-accent-2) 100%);
+  /* Wordmark: the one gradient in the system — a filament, not a neon sign
+     (DS-COOLEST directive 7). White -> cyan value ramp; no violet, no pink. */
+  --dn-wordmark: linear-gradient(100deg,
+    #e8f1fb 0%, var(--dn-accent) 50%, #9de8f0 100%);
 
   /* Glow: two recipes, both short-throw. Used on focus rings and the one
      active chip — never on body text, never on large surfaces. */
   --dn-glow: 0 0 6px color-mix(in srgb, var(--dn-accent) 60%, transparent);
   --dn-glow-2: 0 0 6px color-mix(in srgb, var(--dn-accent-2) 60%, transparent);
-  --dn-glow-acid: 0 0 6px color-mix(in srgb, var(--dn-acid) 70%, transparent);
+  --dn-glow-acid: 0 0 8px color-mix(in srgb, var(--dn-acid) 60%, transparent);
 
   /* Bracket recipe: one stroke width, one arm length, one bleed. */
   --dn-bracket-w: 1px;
-  --dn-bracket-l: 12px;
-  --dn-bracket-bleed: none;
+  --dn-bracket-l: 14px;
+  --dn-bracket-bleed: 0px;
 
   /* Graph literals (canvas cannot parse var()/color-mix()). */
   --dn-graph-link: rgba(0, 229, 245, 0.26);
@@ -210,20 +226,21 @@
      same three-tier surface discipline (sunken < raise < fg). */
   --dn-bg: #fbfbfd;
   --dn-bg-raise: #ffffff;
-  --dn-bg-sunken: #f0f2f5;
+  --dn-bg-sunken: #eef1f5;
   --dn-fg: #0d1117;
   --dn-fg-muted: #2a3a4d;
   --dn-fg-faint: #4a5b6e;
   /* Hairlines visible against white, still quiet. AA-safe borders sit at
      #6b7a8c and above; #b6c2ce was only 1.9:1 against paper. */
+  --dn-hairline: #dde3ea;
   --dn-border: #a3afbd;
   --dn-border-strong: #60738a;
 
   /* Signals darken into ink-jet colour. Every signal here clears 4.5:1 on
      paper as text, and every text signal also carries an underline or a
      glyph so colour is never the only cue. */
-  --dn-accent: #00617f;
-  --dn-accent-dim: #005068;
+  --dn-accent: #005a78;
+  --dn-accent-dim: #00455c;
   --dn-accent-2: #a30d55;
   --dn-accent-2-text: #98084e;
   --dn-hot: #7a4a00;
@@ -231,22 +248,23 @@
   --dn-acid: #04610c;
   --dn-violet: #6b1fa8;
 
-  --dn-wordmark: linear-gradient(135deg,
-    #072f4f 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
+  /* Paper: ink is the whole idea — the wordmark carries no gradient fill
+     (the .dn-gradient-text paper arm forces plain fg text). */
+  --dn-wordmark: none;
 
   /* No bloom on paper. Focus rings use outline + border, not glow. */
   --dn-glow: none;
   --dn-glow-2: none;
   --dn-glow-acid: none;
 
-  --dn-bracket-bleed: none;
+  --dn-bracket-bleed: 0px;
 
   /* Wires: darker and more opaque than the dark theme so the graph still
      reads as "wired together" on paper without becoming a barcode. The
      dish grid is a faint grey graph-paper instead of signal-tinted dots. */
   --dn-graph-link: rgba(0, 97, 127, 0.55);
   --dn-graph-bg: #ffffff;
-  --dn-dish-dot-1: rgba(96, 115, 138, 0.20);
+  --dn-dish-dot-1: rgba(96, 115, 138, 0.14);
   --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
   --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
 
@@ -258,10 +276,11 @@
   :root:not([data-theme]) {
     --dn-bg: #fbfbfd;
     --dn-bg-raise: #ffffff;
-    --dn-bg-sunken: #f0f2f5;
+    --dn-bg-sunken: #eef1f5;
     --dn-fg: #0d1117;
     --dn-fg-muted: #2a3a4d;
     --dn-fg-faint: #4a5b6e;
+    --dn-hairline: #dde3ea;
     --dn-border: #a3afbd;
     --dn-border-strong: #60738a;
     --dn-accent: #00617f;
@@ -272,15 +291,14 @@
     --dn-amber: #7a3f00;
     --dn-acid: #04610c;
     --dn-violet: #6b1fa8;
-    --dn-wordmark: linear-gradient(135deg,
-      #072f4f 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
+    --dn-wordmark: none;
     --dn-glow: none;
     --dn-glow-2: none;
     --dn-glow-acid: none;
-    --dn-bracket-bleed: none;
+    --dn-bracket-bleed: 0px;
     --dn-graph-link: rgba(0, 97, 127, 0.55);
     --dn-graph-bg: #ffffff;
-    --dn-dish-dot-1: rgba(96, 115, 138, 0.20);
+    --dn-dish-dot-1: rgba(96, 115, 138, 0.14);
     --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
     --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
     color-scheme: light;
@@ -310,7 +328,7 @@
 body.dn-body {
   margin: 0;
   font-family: var(--dn-font-prose);
-  font-size: 16px;
+  font-size: var(--dn-text-md);
   line-height: var(--dn-lh-body);
   color: var(--dn-fg);
   /* One grid, one vignette. The coarse grid is gone — a single 72px
@@ -326,14 +344,12 @@ body.dn-body {
 }
 
 :root[data-theme='light'] body.dn-body {
-  /* Light paper: the vignette is a whisper (a shadowed edge on bright paper
-     reads as dirt), and the grid lowers to barely-there so text sits on
-     clean stock, not graph paper. Contrast drop was fixed in the tokens;
-     this is the material pass. */
+  /* Light paper (DS-COOLEST directive 17): the vignette layer is deleted —
+     a shadowed edge on bright paper reads as dirt — and the grid neutralises
+     to ink 4% so prose sits on clean stock, not graph paper. */
   background-image:
-    radial-gradient(ellipse at 50% 44%, transparent 72%, color-mix(in srgb, var(--dn-bg-sunken) 45%, transparent) 100%),
-    linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 3%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 3%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--dn-fg) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-fg) 4%, transparent) 1px, transparent 1px);
 }
 
 
@@ -350,16 +366,6 @@ body.dn-body::before {
      ambient glow rather than signal. The vignette in the body background
      already does the "edges fall into the void" job for free. */
   content: none;
-}
-
-@keyframes dn-aurora {
-  from { transform: translate3d(-2.2%, -1.4%, 0) scale(1); opacity: 0.8; }
-  to { transform: translate3d(2.2%, 1.4%, 0) scale(1.07); opacity: 1; }
-}
-
-@keyframes dn-aurora-soft {
-  from { transform: translate3d(-2.2%, -1.4%, 0) scale(1); }
-  to { transform: translate3d(2.2%, 1.4%, 0) scale(1.07); }
 }
 
 /* Scanlines: the CRT overlay every cyberpunk HUD has. Fixed and full-bleed so
@@ -397,21 +403,21 @@ body.dn-body::after {
   color: var(--dn-accent);
   text-decoration-color: color-mix(in srgb, var(--dn-accent) 45%, transparent);
   text-underline-offset: 3px;
-  transition: color 120ms, text-shadow 120ms;
+  transition: color 120ms;
 }
 .dn-body a:hover {
-  color: var(--dn-hot);
-  text-shadow: 0 0 12px color-mix(in srgb, var(--dn-hot) 65%, transparent);
-}
-:root[data-theme='light'] .dn-body a:hover {
-  /* On paper the hot-yellow halo reads as a stain; a firmer underline does
-     the hovering instead. */
-  text-shadow: none;
-  text-decoration-color: var(--dn-hot);
+  /* DS-COOLEST directive 20: no glow on links — the hover state is the
+     underline firming up, not a halo. Hot is banned from chrome. */
+  color: var(--dn-accent);
+  text-decoration-color: var(--dn-accent);
+  text-decoration-thickness: from-font;
 }
 
 :where(a, button, input, [tabindex]):focus-visible {
-  outline: 1px solid var(--dn-accent);
+  /* Focus is a RING, never a brighter border (cool-pass OP-10): 2px outline
+     + glow. Colour stays accent — the Signals charter reserves cyan for
+     focus; the strong border tier never carries it. */
+  outline: 2px solid var(--dn-accent);
   outline-offset: 2px;
   box-shadow: var(--dn-glow);
 }
@@ -574,6 +580,10 @@ body.dn-body::after {
    gradient strokes, one per corner-arm, drawn from the same tokens. No
    pseudo-elements, no extra markup; composites once and never repaints. */
 .dn-brackets {
+  /* Structural plate (cool-pass OP-11): the arms anchor to a real hairline
+     edge, so bracket framing reads as intentional HUD framing, not floating
+     ticks. The bleed token stays reserved at 0px (arms sit ON the edge). */
+  border: 1px solid var(--dn-hairline);
   background-image:
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
     linear-gradient(var(--dn-src, var(--dn-accent)), var(--dn-src, var(--dn-accent))),
@@ -636,9 +646,11 @@ body.dn-body::after {
    panel title ("CORPUS // GNU EMACS"). Wider than a label, dimmer than a
    heading — the hierarchy is track width, not size. */
 .dn-kicker {
+  /* The HUD signature (cool-pass OP-13): small, faint, mega-tracked. A
+     large bright mega-kicker is candy; small+faint+megatracked is signal. */
   font-family: var(--dn-font-mono);
-  font-size: var(--dn-text-xs);
-  letter-spacing: var(--dn-track-wide);
+  font-size: var(--dn-text-2xs);
+  letter-spacing: var(--dn-track-mega);
   text-transform: uppercase;
   color: var(--dn-fg-faint);
 }
@@ -647,22 +659,25 @@ body.dn-body::after {
    the host set one (see the MULTI-SOURCE note above). SIGNAL pass: the edge
    and the fill both rose so a chip reads from across the page. */
 .dn-chip {
+  /* Two-state jump (cool-pass OP-14): default = quiet outline; active =
+     strong edge + glow + accent tint. "Engaged" must read as a state
+     change, not a slightly different shade of the same chip. The source
+     hue stays on the text so multi-source identity survives. */
   font-family: var(--dn-font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   color: var(--dn-src, var(--dn-accent-2));
-  background: color-mix(in srgb, var(--dn-src, var(--dn-accent-2)) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent-2)) 45%, transparent);
+  background: transparent;
+  border: 1px solid var(--dn-border);
   border-radius: var(--dn-radius-sm);
   padding: 0.12em 0.6em;
   white-space: nowrap;
 }
-/* The lit chip: for the one active filter/tab in a row of chips. Same hue,
-   but the fill doubles and the edge goes solid, so "selected" is weight,
-   not a second colour. */
+/* The lit chip: the one active filter/tab in a row of chips. */
 .dn-chip.active {
-  background: color-mix(in srgb, var(--dn-src, var(--dn-accent-2)) 24%, transparent);
-  border-color: var(--dn-src, var(--dn-accent-2));
+  border-color: var(--dn-border-strong);
+  box-shadow: var(--dn-glow);
+  background: color-mix(in srgb, var(--dn-accent) 8%, transparent);
 }
 
 /* The lit edge: a bar that grows out of an element when it becomes active —
@@ -687,64 +702,34 @@ body.dn-body::after {
 .dn-spine.active::before,
 .dn-spine:hover::before { height: 72%; }
 
-/* Glitch wordmark — the hero's whole reason to look like a screen. The text
-   is real (::before/::after carry the SAME string from data-text, so the
-   glyphs stay selectable and the accessible name is untouched), and the two
-   offset copies are cyan and magenta: the chromatic split of a bad signal.
-   It fires briefly on a 6s loop rather than strobing, so it reads as an
-   event, not a headache. */
-.dn-glitch {
-  position: relative;
-  display: inline-block;
-}
-/* PERF-MOBILE: the ghosts park at opacity 0 — same treatment reduced-motion
-   already gave them, because "a frozen chromatic split looks like misrendered
-   text" (this file's own words). The wordmark keeps its chromatic fringe via
-   the text-shadow under the gradient; the 6s steps() loops are gone from
-   every page load. */
-.dn-glitch::before,
-.dn-glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  clip-path: inset(0 0 60% 0);
-}
-.dn-glitch::before {
-  color: var(--dn-accent);
-}
-.dn-glitch::after {
-  color: var(--dn-accent-2-text);
-  clip-path: inset(55% 0 0 0);
-}
-
-/* Brand gradient text — the wordmark and section headers. R2: the gradient
-   IS the neon-sign decay (cyan -> violet -> hot pink, the designer's token),
-   and the aberration shadows ride underneath it: text-shadow paints the
-   glyph silhouette even when the fill is transparent, so the fringe reads
-   while the gradient carries the face. Kept as a background-clip trick so it
-   survives every theme (both stops are live tokens, not baked hues). */
+/* Brand gradient text — the wordmark only (DS-COOLEST directive 7): a
+   filament, not a neon sign. The gradient is a white->cyan value ramp
+   (the --dn-wordmark token); the chromatic aberration shadows are deleted —
+   cyan->violet->pink read as a gaming peripheral. Light theme: ink is the
+   whole idea — no gradient fill, no halo, plain fg text. */
 .dn-gradient-text {
-  background: var(--dn-wordmark, linear-gradient(100deg,
-    var(--dn-accent), var(--dn-violet), var(--dn-accent-2)));
+  background: var(--dn-wordmark);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow:
-    -2px 0 color-mix(in srgb, var(--dn-accent-2) 55%, transparent),
-    2px 0 color-mix(in srgb, var(--dn-accent) 45%, transparent),
-    0 0 30px color-mix(in srgb, var(--dn-accent) 30%, transparent);
-  /* PERF-MOBILE: the 9s background-position sweep is parked — a gradient
-     that never stops repainting the wordmark bought little; the decay
-     gradient at rest is the look. */
   background-position: 0% 0;
 }
-:root[data-theme='light'] .dn-gradient-text {
-  /* On paper the aberration fringe is noise, not neon: drop the offsets and
-     keep only the faintest cool halo so the wordmark stays ink-crisp. */
-  text-shadow: 0 0 18px color-mix(in srgb, var(--dn-accent) 18%, transparent);
+:root[data-theme='light'] .dn-gradient-text,
+:root:not([data-theme]) .dn-gradient-text {
+  /* Paper: ink is the whole idea. (The :not([data-theme]) arm is overridden
+     by the prefers-color-scheme token mirror below when light is the OS
+     scheme; the gradient text then also resolves to ink via --dn-wordmark.) */
+  background: none;
+  color: var(--dn-fg);
+  -webkit-text-fill-color: var(--dn-fg);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .dn-gradient-text {
+    background: none;
+    color: var(--dn-fg);
+    -webkit-text-fill-color: var(--dn-fg);
+  }
 }
 
 /* Hairline rule that reads as a trace on the board: a 1px line with a lit
@@ -833,10 +818,15 @@ body.dn-body::after {
 /* A column of keys, a column of values. Grid rather than a table because it
    is not tabular data. */
 .dn-kv {
+  /* Telemetry strip (cool-pass OP-17): baseline-locked grid, tight type,
+     base tracking — readout rows scan, they don't read like a definition
+     list. */
   display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 1.4em;
-  row-gap: var(--dn-space-1);
+  grid-template-columns: auto 1fr;
+  gap: var(--dn-space-2) var(--dn-space-3);
+  align-items: baseline;
+  font-size: var(--dn-text-2xs);
+  letter-spacing: var(--dn-track);
 }
 .dn-kv > span:nth-child(odd) { color: var(--dn-fg-faint); }
 .dn-kv > span { overflow-wrap: anywhere; }
@@ -915,26 +905,39 @@ body.dn-body::after {
 }
 .dn-status b { color: var(--dn-fg-muted); font-weight: 600; }
 .dn-led-dot {
+  /* State-change, not a pulse (cool-pass OP-15): a status lamp that is
+     ALWAYS breathing reads as wallpaper; the acid glow is the "live"
+     state, honest and free of a running loop (desktop cap 4 -> 3). */
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--dn-acid);
   box-shadow: var(--dn-glow-acid);
-  animation: dn-led 1.6s ease-in-out infinite;
 }
 
 /* Section header: kicker over a mono title over a trace. The bus-line under
    it carries the source hue, matching the h1 rule in §3, so "a new section"
    looks the same in chrome and in prose. */
 .dn-section-head {
-  margin: var(--dn-space-6) 0 var(--dn-space-4);
-  padding-bottom: var(--dn-space-2);
-  /* One hairline in the source hue; the color-mix against --dn-border
-     is dropped (it forced a second color resolution per section). */
-  border-bottom: 1px solid var(--dn-src, var(--dn-accent));
+  /* Asymmetric rhythm (cool-pass OP-12): more breath above than below so
+     section heads lead the eye downward — composition, not list-flat.
+     The bus line yields to a plain hairline; the h1 keeps the hue. */
+  margin: var(--dn-space-7) 0 var(--dn-space-5);
+  padding-bottom: var(--dn-space-3);
+  border-bottom: 1px solid var(--dn-hairline);
 }
 
 .dn-section-head .dn-kicker { display: block; margin-bottom: var(--dn-space-1); }
+
+/* Phone: the HUD signature steps down (cool-pass OP-16). Mega tracking on a
+   360px screen makes the kicker walk off the edge of attention — wide keeps
+   it HUD without cropping; section rhythm tightens to match the smaller
+   canvas. Zero running animations preserved (kill-switches in components). */
+@media (max-width: 600px) {
+  .dn-section-head { margin: var(--dn-space-6) 0 var(--dn-space-4); }
+  .dn-kicker { letter-spacing: var(--dn-track-wide); }
+}
+
 .dn-section-head h2 {
   margin: 0;
   font-family: var(--dn-font-mono);
@@ -973,6 +976,17 @@ body.dn-body::after {
 .dn-org {
   max-width: var(--dn-max-prose);
   animation: dn-rise 220ms ease-out both;
+}
+
+/* DS-COOLEST directive 4: free typographic craft — hanging punctuation and
+   balanced headings. Zero paint cost; the difference between "typeset"
+   and "rendered". */
+.dn-org p {
+  text-wrap: pretty;
+  hanging-punctuation: first last;
+}
+.dn-org h1, .dn-org h2, .dn-org h3, .dn-org h4 {
+  text-wrap: balance;
 }
 
 /* Paragraph rhythm: no indent, one blank line's worth of air. Text is the
@@ -1018,24 +1032,24 @@ body.dn-body::after {
 
 .dn-org h1 {
   font-size: var(--dn-text-2xl);
+  line-height: var(--dn-lh-tight);
   color: var(--dn-fg);
-  /* The page title is the one place a glow earns its keep: it is a header,
-     not a paragraph, and it marks the top of the doc. Under it, a neon rule
-     in the source's hue — the chapter's bus line. */
-  text-shadow: 0 0 26px color-mix(in srgb, var(--dn-accent) 30%, transparent);
+  /* DS-COOLEST directive 20: no glow on the page title. Under it, a neon
+     rule in the source's hue — the chapter's bus line. */
   border-bottom: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border-strong));
   box-shadow: 0 1px 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent);
   padding-bottom: 0.35em;
 }
 :root[data-theme='light'] .dn-org h1 {
-  /* On paper the title glow is a halo smudge; the bus line alone carries it. */
-  text-shadow: none;
+  /* On paper the bus line alone carries it. */
+  border-bottom-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border-strong));
 }
 /* h2/h3 carry a mono sigil in the source's hue (set --dn-src by the reader):
    a heading level is legible from the margin before you read a word. */
 .dn-org h2 {
   font-size: var(--dn-text-xl);
-  letter-spacing: 0.005em;
+  line-height: var(--dn-lh-snug);
+  letter-spacing: var(--dn-track-tight);
   padding-bottom: 0.2em;
   /* Overline rule in the section's own hue — quiet (mostly border ink) but
      never anonymous: every section sits on its corpus's bus line. */
@@ -1044,10 +1058,11 @@ body.dn-body::after {
 .dn-org h2::before {
   content: "// ";
   color: var(--dn-src, var(--dn-accent));
-  text-shadow: 0 0 10px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, transparent);
 }
-:root[data-theme='light'] .dn-org h2::before { text-shadow: none; }
-.dn-org h3 { font-size: var(--dn-text-lg); }
+.dn-org h3 {
+  font-size: var(--dn-text-lg);
+  line-height: var(--dn-lh-snug-2);
+}
 .dn-org h3::before {
   content: "» ";
   color: var(--dn-src, var(--dn-border-strong));
@@ -1182,19 +1197,6 @@ body.dn-body::after {
 }
 .dn-org pre.example {
   border-left-color: var(--dn-accent-2);
-}
-
-.dn-org pre:hover {
-  border-left-color: var(--dn-src, var(--dn-accent));
-  box-shadow:
-    -3px 0 14px -3px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent),
-    inset 0 0 24px color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent);
-}
-.dn-org pre.example {
-  border-left-color: var(--dn-accent-2);
-  box-shadow:
-    -3px 0 10px -4px color-mix(in srgb, var(--dn-accent-2) 55%, transparent),
-    inset 0 0 24px color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent);
 }
 :root[data-theme='light'] .dn-org pre,
 :root[data-theme='light'] .dn-org pre.example {

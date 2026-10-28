@@ -12,6 +12,7 @@
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
+  import CorpusField from './CorpusField.svelte'
 
   /* Instrument-style count-up on the corpus readout: the numbers sweep from
      zero once on mount, mono digits make it read like a boot readout.
@@ -83,48 +84,12 @@
     return m
   })
 
-  /* The terminal status line: a slow typewriter cycling REAL corpus facts.
-     It types only after the data is live (a boot line that lies is worse
-     than none), it is aria-hidden (the same facts are in the stats block
-     below it), and reduced-motion visitors get a static line, no loop. */
-  const feedLines = $derived([
-    `// ${sources.length} corpora indexed · ${pageCount} pages live`,
-    `// ${synCount} synapses primed — ego lens armed`,
-    `// drop into ⌁ SYNAPSES to watch the wires fire`
-  ])
-  let feedText = $state('')
-  let feedTimer: ReturnType<typeof setTimeout> | 0 = 0
-  $effect(() => {
-    if (!store.ready) return
-    const lines = feedLines
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      feedText = lines[1] ?? ''
-      return
-    }
-    let li = 0
-    let ci = 0
-    let cancelled = false
-    const step = (): void => {
-      if (cancelled) return
-      const line = lines[li % lines.length]
-      if (ci <= line.length) {
-        feedText = line.slice(0, ci)
-        ci++
-        feedTimer = setTimeout(step, 24)
-      } else {
-        feedTimer = setTimeout(() => {
-          li++
-          ci = 0
-          step()
-        }, 3200)
-      }
-    }
-    step()
-    return () => {
-      cancelled = true
-      clearTimeout(feedTimer)
-    }
-  })
+  /* The terminal status line, STATIC (DS-COOLEST directive 21): the 24ms
+     $state typewriter was a JS re-render loop — the most expensive thing on
+     Home after the hero filters. The line renders once, real corpus facts,
+     aria-hidden (the stats block carries them for real), caret blinks via
+     CSS only (the one surviving desktop loop beside the rail sweep). */
+  const feedLine = $derived(`// ${synCount} synapses primed — ego lens armed`)
 
   // A source card: open that corpus and land its first chapter (showManual
   // alone only retargets the TOC; here there is no selection, so we do it).
@@ -145,85 +110,22 @@
 </script>
 
 <div class="home">
-  <header class="hero dn-hud" style={sourceVars(store.manual)}>
-    <!-- IGNITION pass, trimmed by PERF-MOBILE: the front door is a printed
-       instrument. The constellation is a real (static, decorative) slice
-       of the corpus graph — a printed network whose somas glow, rendered once
-       and never repainted (zero loops on the phone) —
-       so the hero reads as SIGNAL ON before a single word is read. It is
-       aria-hidden garnish; the words carry the meaning. -->
-    <svg
-      class="constellation"
-      viewBox="0 0 640 360"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <!-- wires: the corpus graph, dimmed -->
-      <g class="wires">
-        <line class="w" x1="38" y1="62" x2="120" y2="32" />
-        <line class="w" x1="120" y1="32" x2="210" y2="74" />
-        <line class="w" x1="210" y1="74" x2="300" y2="40" />
-        <line class="w" x1="300" y1="40" x2="320" y2="88" />
-        <line class="w" x1="320" y1="88" x2="470" y2="102" />
-        <line class="w" x1="470" y1="102" x2="520" y2="54" />
-        <line class="w" x1="520" y1="54" x2="610" y2="118" />
-        <line class="w" x1="210" y1="74" x2="320" y2="88" />
-        <line class="w" x1="38" y1="62" x2="40" y2="152" />
-        <line class="w" x1="40" y1="152" x2="60" y2="242" />
-        <line class="w" x1="60" y1="242" x2="140" y2="300" />
-        <line class="w" x1="140" y1="300" x2="240" y2="312" />
-        <line class="w" x1="240" y1="312" x2="320" y2="332" />
-        <line class="w" x1="320" y1="332" x2="480" y2="308" />
-        <line class="w" x1="480" y1="308" x2="560" y2="248" />
-        <line class="w" x1="560" y1="248" x2="610" y2="318" />
-        <line class="w" x1="560" y1="248" x2="470" y2="102" />
-        <line class="w" x1="120" y1="32" x2="40" y2="152" />
-      </g>
-      <!-- pulses: action potentials travelling the wires -->
-      <g class="pulses">
-        <line class="p p1" x1="38" y1="62" x2="120" y2="32" />
-        <line class="p p2" x1="120" y1="32" x2="210" y2="74" />
-        <line class="p p3" x1="300" y1="40" x2="320" y2="88" />
-        <line class="p p1" x1="320" y1="88" x2="470" y2="102" />
-        <line class="p p2" x1="470" y1="102" x2="520" y2="54" />
-        <line class="p p1" x1="520" y1="54" x2="610" y2="118" />
-        <line class="p p3" x1="210" y1="74" x2="320" y2="88" />
-        <line class="p p2" x1="40" y1="152" x2="60" y2="242" />
-        <line class="p p1" x1="60" y1="242" x2="140" y2="300" />
-        <line class="p p3" x1="240" y1="312" x2="320" y2="332" />
-        <line class="p p2" x1="480" y1="308" x2="560" y2="248" />
-        <line class="p p1" x1="560" y1="248" x2="470" y2="102" />
-      </g>
-      <!-- nodes: somas, breathing -->
-      <g class="nodes">
-        <circle class="nc" cx="38" cy="62" r="3" />
-        <circle class="nv" cx="120" cy="32" r="2.2" />
-        <circle class="nk" cx="210" cy="74" r="2.6" />
-        <circle class="nc" cx="300" cy="40" r="2.2" />
-        <circle class="nc" cx="320" cy="88" r="3.6" />
-        <circle class="nc" cx="470" cy="102" r="2.4" />
-        <circle class="nk" cx="520" cy="54" r="2.8" />
-        <circle class="nc" cx="610" cy="118" r="2.4" />
-        <circle class="nv" cx="40" cy="152" r="2.2" />
-        <circle class="nk" cx="60" cy="242" r="2.4" />
-        <circle class="nc" cx="140" cy="300" r="2.8" />
-        <circle class="nk" cx="240" cy="312" r="2.2" />
-        <circle class="nc" cx="320" cy="332" r="2.2" />
-        <circle class="nk" cx="480" cy="308" r="2.6" />
-        <circle class="nv" cx="560" cy="248" r="2.8" />
-        <circle class="nc" cx="610" cy="318" r="2.4" />
-      </g>
-    </svg>
-    <p class="kicker dn-label">// knowledge uplink · online</p>
-    <div class="wordmark dn-mono dn-glitch" data-text={title.toUpperCase()}>
-      <span class="dn-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
-    </div>
-    <!-- The power rail: the wordmark's neon-sign power feed, with a bright
-       segment forever running the loop (transform-only, cheap). -->
-    <div class="rail" aria-hidden="true"></div>
-    <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
-    <p class="feed dn-mono" aria-hidden="true">{feedText}<span class="feed-caret">▌</span></p>
+  <header class="hero" style={sourceVars(store.manual)}>
+    <!-- DS-COOLEST pass: the hero is a two-column instrument (directive 9).
+         Left = the identity column (kicker/wordmark/rail/tagline/feed/lede/
+         CTAs/readout), right = the Corpus Plate (directive 11) — the REAL
+         graph drawn once, not a decoration. The seam between them is a
+         hairline border, the instrument seam. -->
+    <div class="id">
+      <p class="kicker dn-label">// knowledge uplink · online</p>
+      <div class="wordmark dn-mono dn-gradient-text">
+        <span class="dn-neuron-mark mark" aria-hidden="true"></span>{title.toUpperCase()}
+      </div>
+      <!-- The power rail: a cyan filament sweep (transform-only, cheap —
+           desktop loop 1 of 2; the caret blink is the other). -->
+      <div class="rail" aria-hidden="true"></div>
+      <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
+      <p class="feed dn-mono" aria-hidden="true">{feedLine}<span class="feed-caret">▌</span></p>
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual
       split per section, exported from Org by Emacs, and wired into an org-roam
@@ -232,6 +134,26 @@
       Every page also ships as raw Org and as
       <span class="dn-mono">llms.txt</span> — machine-readable on purpose.
     </p>
+
+    <!-- Exactly two CTAs, one job each (DS-COOLEST directive 13): the
+         sources strip below already lists the corpora — the front door no
+         longer offers the same destination twice. -->
+    <div class="cta-row">
+      {#if first}
+        <button class="cta dn-notch" onclick={() => store.goto(first)}>
+          <span class="cta-k">▤</span>
+          <span class="cta-t">Start reading</span>
+          <span class="cta-s">{first.title}</span>
+        </button>
+      {/if}
+      {#if !store.lite}
+        <button class="cta graph dn-notch" onclick={() => store.setMode('graph')}>
+          <span class="cta-k spark">⌁</span>
+          <span class="cta-t">Explore synapses</span>
+          <span class="cta-s">the whole graph, live</span>
+        </button>
+      {/if}
+    </div>
 
     <!-- The corpus readout, stated plainly. The size of the site IS the pitch,
          so the numbers get a panel of their own — but as a panel, not as a
@@ -259,9 +181,14 @@
         <button class="resume" onclick={resume}>
           <span class="r-lab">resume</span>
           <span class="r-to">{last.node.tags[0]}/{last.node.title}{last.anchor ? `#${last.anchor}` : ''}</span>
-          <span class="r-go" aria-hidden="true">↷</span>
+          <span class="r-go" aria-hidden="true">›</span>
         </button>
       {/if}
+    </div>
+    </div>
+    <!-- The Corpus Plate: the product itself, drawn once (see CorpusField). -->
+    <div class="plate">
+      <CorpusField {store} />
     </div>
   </header>
 
@@ -269,7 +196,7 @@
        whole point of a bookmark list on a reference site: you return, and the
        five sections that matter to today's task are already in one place. -->
   {#if marks.length}
-    <section class="saved">
+    <section class="saved" data-idx="01">
       <h2 class="section-h dn-label">
         // marked <span class="hint">{marks.length} section{marks.length === 1 ? '' : 's'} · b in the reader</span>
       </h2>
@@ -289,14 +216,14 @@
     </section>
   {/if}
 
-  <section class="sources">
-    <h2 class="dn-label">// sources <span class="hint">each corpus wears its graph hue</span></h2>
+  <section class="sources" data-idx="02">
+    <h2 class="dn-label section-h">// sources <span class="hint">each corpus wears its graph hue</span></h2>
     <div class="src-row">
       {#each sources as s, si (s.name)}
-        <button class="src-card dn-hud" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
+        <button class="src-card" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
           <span class="src-name dn-mono">{DocneuralStore.manualTitle(s.name)}</span>
           <span class="src-meta dn-mono">{s.pages} pages · {s.links} wires</span>
-          <span class="src-open">read ↗</span>
+          <span class="src-open">read ›</span>
         </button>
       {:else}
         <p class="none dn-mono">one corpus, no tags — everything is one source</p>
@@ -306,7 +233,7 @@
 
   <!-- The jump box. Monospace and left-labelled, which is enough: the field
        searches, it does not pretend to be a shell. -->
-  <div class="search-wrap">
+  <section class="search-wrap" data-idx="03">
     <div class="search-box dn-mono">
       <span class="prompt" aria-hidden="true">⌕</span>
       <input
@@ -331,34 +258,9 @@
         {/each}
       </ul>
     {/if}
-  </div>
+  </section>
 
-  <div class="cta-row">
-    {#each sources as s, si (s.name)}
-      <button class="cta dn-notch" style={sourceVars(s.name)} onclick={() => openManual(s.name)}>
-        <span class="cta-k">▤</span>
-        <span class="cta-t">{DocneuralStore.manualTitle(s.name)}</span>
-        <span class="cta-s">read from the top</span>
-      </button>
-    {:else}
-      {#if first}
-        <button class="cta dn-notch" onclick={() => store.goto(first)}>
-          <span class="cta-k">▤</span>
-          <span class="cta-t">Start reading</span>
-          <span class="cta-s">{first.title}</span>
-        </button>
-      {/if}
-    {/each}
-    {#if !store.lite}
-      <button class="cta graph dn-notch" onclick={() => store.setMode('graph')}>
-        <span class="cta-k spark">⌁</span>
-        <span class="cta-t">Explore synapses</span>
-        <span class="cta-s">the whole graph, live</span>
-      </button>
-    {/if}
-  </div>
-
-  <section class="chapters-grid">
+  <section class="chapters-grid" data-idx="04">
     <div class="contents-head">
       <h2 class="section-h dn-label">
         contents // {DocneuralStore.manualTitle(store.manual) || 'all sources'}
@@ -394,46 +296,42 @@
   .home {
     height: calc(100dvh - var(--dn-header-h));
     overflow-y: auto;
+    /* DS-COOLEST directive 12 — one spine: every block shares one left edge
+       and one width. The page is composed, not assembled. */
+    max-width: 74rem;
+    margin-inline: auto;
     padding: var(--dn-space-7) var(--dn-space-5) var(--dn-space-8);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--dn-space-6);
+    align-items: stretch;
+    gap: var(--dn-space-7);
   }
 
 
   /* ---------- hero ---------- */
-  /* Framed by .dn-hud corner brackets in the source's hue: the front door is
-     a target on the board, and its colour changes with the corpus you are in.
-     The ::before is a wide, low halo so the wordmark sits in a field of
-     signal rather than on empty page. */
+  /* DS-COOLEST directive 9: the hero is a two-column instrument, not a
+     centered poster. Left = identity column with a hairline seam; right =
+     the Corpus Plate. Asymmetric split reads as hardware. */
   .hero {
     position: relative;
-    /* Hero composition: a single centered column, max 62ch, with a
-       deliberate vertical rhythm. The ::before halo is gone (see below). */
-    max-width: 62ch;
+    max-width: none;
     width: 100%;
-    text-align: center;
+    text-align: left;
     isolation: isolate;
-    padding: var(--dn-space-5) var(--dn-space-4) var(--dn-space-2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--dn-space-3);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: var(--dn-space-7);
+    align-items: start;
+    padding: var(--dn-space-5) 0 0;
   }
-
-/* Light hero: the constellation is a printed network — bump its opacity
-   and darken wires so the metaphor survives daylight. The stats panel
-   gets a real hairline on paper; the old single-pixel border vanished
-   into the sunken wash. */
-:global([data-theme='light']) .hero {
-  border-color: var(--dn-border-strong);
-}
-:global([data-theme='light']) .stats {
-  border-color: var(--dn-border);
-  border-left-color: var(--dn-src, var(--dn-accent));
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 8%, transparent);
-}
+  .id {
+    border-right: 1px solid var(--dn-hairline);
+    padding-right: var(--dn-space-7);
+    min-width: 0;
+  }
+  .plate {
+    min-width: 0;
+  }
 
   .kicker {
     color: var(--dn-acid);
@@ -445,42 +343,34 @@
 
   .wordmark {
     font-family: var(--dn-font-display);
-    /* Hero display: one step above the page title, clamped so phones get
-       a legible size and desktops get presence. */
-    font-size: clamp(2.4rem, 8vw, 4.4rem);
+    /* Hero display rides the ramp's top step (DS-COOLEST directive 1) —
+       no more hardcoded clamp; the fill + paper ink come from the global
+       .dn-gradient-text class (directive 7: filament, not neon sign). */
+    font-size: var(--dn-text-4xl);
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: var(--dn-track-tight);
     line-height: var(--dn-lh-tight);
-    background: var(--dn-wordmark);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    /* Chromatic fringe only — the 34px halo is gone (it was a paint cost
-       with no legibility gain). */
-    text-shadow:
-      -1px 0 color-mix(in srgb, var(--dn-accent-2) 45%, transparent),
-      1px 0 color-mix(in srgb, var(--dn-accent) 35%, transparent);
     display: inline-flex;
     align-items: center;
     gap: 0.35em;
-    margin: 0;
+    margin: 0.25rem 0 0;
   }
 
   .wordmark .mark { width: 0.55em; height: 0.55em; flex: none; }
   .tagline {
     color: var(--dn-accent-dim);
-    letter-spacing: 0.12em;
+    letter-spacing: var(--dn-track);
     font-size: var(--dn-text-xs);
     text-transform: lowercase;
-    margin: 0;
+    margin: var(--dn-space-3) 0 0;
     text-shadow: none;
   }
 
-  /* The terminal status line: types real corpus facts, caret blinking.
+  /* The terminal status line: static real corpus facts, caret blinking.
      aria-hidden in the markup; its facts are duplicated in the stats. */
   .feed {
     min-height: 1.2em;
-    margin: 0;
+    margin: var(--dn-space-2) 0 0;
     font-size: var(--dn-text-xs);
     letter-spacing: var(--dn-track-tight);
     color: var(--dn-fg-faint);
@@ -501,50 +391,43 @@
     color: var(--dn-fg-muted);
     font-size: var(--dn-text-md);
     line-height: var(--dn-lh-body);
-    margin: 0;
+    margin: var(--dn-space-5) 0 0;
     max-width: 54ch;
   }
 
-/* Vertical rhythm, hero-specific (the review flagged light desktop as
-   tighter than dark). This is a structural gap, not a theme tint — same
-   gap in both themes so the composition is honest; the light material
-   pass does not need to fake air with different spacing. */
-.hero > .kicker { margin-bottom: var(--dn-space-2); }
-.hero > .wordmark { margin-bottom: var(--dn-space-1); }
-.hero > .tagline { margin-bottom: var(--dn-space-1); }
-.hero > .feed { margin-bottom: var(--dn-space-2); }
-.hero > .lede { margin-bottom: var(--dn-space-3); }
-.hero > .stats { margin-top: var(--dn-space-5); }
+/* DS-COOLEST directive 10 — one rhythm ladder in the hero: the flex gap is
+   dead, explicit margins compose the vertical rhythm. Five arbitrary gaps
+   become five deliberate ones. */
+.hero > .id > .cta-row { margin-top: var(--dn-space-5); }
+.hero > .id > .stats { margin-top: var(--dn-space-6); }
 
   .lede strong { color: var(--dn-fg); }
-  .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2-text); }
-  /* The hero readout: a bordered panel of real numbers, left-aligned inside a
-     centered hero and wide enough that the columns never wrap on a laptop.
-     SIGNAL pass: darker glass, accent edge — and the numbers are the hero's
-     second voice: big mono digits with a neon keyline, not a data table. */
+  .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent); }
+  /* The readout plate (DS-COOLEST directive 15): the ONE framed module per
+     screen. Border tier = control outline, 3px bus rail in the source hue,
+     one inset keyline. The numbers speak in solid ink + one cyan accent —
+     no gradient decay, no halo (directive 5). */
   .stats {
-    width: min(44rem, 100%);
-    margin-top: var(--dn-space-4);
+    width: 100%;
+    margin-top: 0;
     text-align: left;
     display: grid;
     gap: var(--dn-space-3);
-    padding: var(--dn-space-4) var(--dn-space-5) var(--dn-space-5);
-    /* Layered flat: raise surface + one hairline border + one inset
-       keyline. No gradient overlay, no 40px drop shadow. */
+    padding: var(--dn-space-4) var(--dn-space-5);
     background: var(--dn-bg-raise);
-    border: 1px solid var(--dn-border-strong);
+    border: 1px solid var(--dn-border);
     border-left: 3px solid var(--dn-src, var(--dn-accent));
     border-radius: 0;
-    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 12%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dn-fg) 6%, transparent);
+  }
+  :global([data-theme='light']) .stats {
+    border-color: var(--dn-border);
+    border-left-color: var(--dn-src, var(--dn-accent));
   }
 
-  /* The glow behind the wordmark: three radial blooms in the signal hues
-     (cyan left, hot pink right, violet top), blurred — the night-city
-     ambience. Sits under the hero (z-index -1) and never repaints. */
+  /* The glow behind the wordmark is long gone; nothing paints under the
+     hero but the plate's own sunken wash. */
   .hero::before {
-    /* Hero halo removed. It was three radial gradients + filter: blur(8px)
-       on a viewport-sized layer — the single most expensive paint on Home.
-       The constellation SVG already carries the "signal on" read. */
     content: none;
   }
 
@@ -555,44 +438,39 @@
     color: var(--dn-fg-muted);
   }
   .stats-hd .dn-neuron-mark { width: 0.7em; height: 0.7em; }
-  .stats .note { margin: 0; font-size: 0.78rem; color: var(--dn-fg-muted); }
+  .stats .note { margin: 0; font-size: var(--dn-text-xs); color: var(--dn-fg-muted); }
   /* The readout is monospace: digits that do not shift width between builds are
      the difference between a machine's count and a sentence about a count. */
   .stats .dn-kv {
     font-family: var(--dn-font-mono);
-    font-size: 0.84rem;
+    font-size: var(--dn-text-sm);
     align-items: baseline;
     row-gap: 0.35rem;
   }
   .stats .dn-kv > span:nth-child(odd) {
     text-transform: uppercase;
     letter-spacing: var(--dn-track);
-    font-size: 0.66rem;
+    font-size: var(--dn-text-2xs);
     padding-top: 0.45em;
   }
-  /* Big neon count-up numbers: the corpus size IS the pitch. IGNITION: the
-     digits wear a white-hot -> signal-cyan decay; the fringe shadow paints
-     the glyph silhouette so the neon reads even mid-gradient. */
+  /* Big count-up numbers in solid ink (DS-COOLEST directive 5): the corpus
+     size IS the pitch — size and weight carry it now, not neon. */
   .stats .dn-kv .num {
-    font-size: 1.6rem;
+    font-size: var(--dn-text-2xl);
     line-height: 1.05;
-    background: linear-gradient(180deg, var(--dn-fg) 18%, var(--dn-accent-dim) 96%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 16px color-mix(in srgb, var(--dn-accent) 26%, transparent);
+    color: var(--dn-fg);
   }
   .stats .dn-kv .num b {
     font-weight: 600;
-    color: var(--dn-hot);
+    color: var(--dn-accent);
     background: none;
     -webkit-background-clip: border-box;
     background-clip: border-box;
-    text-shadow: 0 0 16px color-mix(in srgb, var(--dn-hot) 42%, transparent);
+    text-shadow: none;
   }
   .stats .dn-kv .num em {
     font-style: normal;
-    font-size: 0.66rem;
+    font-size: var(--dn-text-2xs);
     letter-spacing: var(--dn-track);
     text-transform: uppercase;
     color: var(--dn-fg-muted);
@@ -601,7 +479,7 @@
     background-clip: border-box;
     text-shadow: none;
   }
-  .stats .dn-kv .files { font-size: 0.84rem; }
+  .stats .dn-kv .files { font-size: var(--dn-text-sm); }
   /* Resume: a labelled row, not a command line. The label says what it does,
      the value says where it goes. */
   .resume {
@@ -609,7 +487,7 @@
     align-items: baseline;
     gap: 0.7em;
     font-family: var(--dn-font-mono);
-    font-size: 0.82rem;
+    font-size: var(--dn-text-sm);
     text-align: left;
     color: var(--dn-fg-muted);
     background: color-mix(in srgb, var(--dn-accent) 7%, transparent);
@@ -625,7 +503,7 @@
   .resume .r-lab {
     text-transform: uppercase;
     letter-spacing: var(--dn-track);
-    font-size: 0.68rem;
+    font-size: var(--dn-text-2xs);
     color: var(--dn-accent);
   }
   .resume .r-to { color: var(--dn-fg); overflow-wrap: anywhere; }
@@ -636,10 +514,10 @@
   }
 
   /* ---------- sources strip: the aggregator, shown not told ---------- */
-  .sources { width: min(68rem, 100%); }
+  .sources { width: 100%; }
 
   /* ---------- marked sections ---------- */
-  .saved { width: min(68rem, 100%); margin-top: 1.2rem; }
+  .saved { width: 100%; }
   .saved .section-h { margin-bottom: 0.5rem; }
   .mk-row {
     display: flex;
@@ -668,7 +546,27 @@
   .mk .mk-src { color: var(--dn-accent); }
   .mk .mk-to { color: var(--dn-fg-faint); }
   .sources h2, .section-h { color: var(--dn-fg-muted); margin: 0 0 0.7rem; }
-  .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: 0.04em; font-size: 0.68rem; }
+  .hint { color: var(--dn-fg-faint); text-transform: none; letter-spacing: var(--dn-track-tight); font-size: var(--dn-text-2xs); }
+  /* DS-COOLEST directive 18 — the tick rule: every section header ends in a
+     rule whose first 2px are lit in the accent. A reticle mark drawn with
+     alignment, not effects; costs one gradient. */
+  .section-h::after {
+    content: "";
+    display: block;
+    height: 1px;
+    margin-top: var(--dn-space-2);
+    background: linear-gradient(90deg, var(--dn-accent) 0 2px, var(--dn-hairline) 2px 100%);
+  }
+  /* Directive 18 — the mono index gutter: each Home section announces its
+     position like a manual page (01–04). Pure alignment, one text node. */
+  .home > section::before {
+    content: attr(data-idx);
+    font: 400 var(--dn-text-2xs)/1 var(--dn-font-mono);
+    letter-spacing: var(--dn-track-wide);
+    color: var(--dn-fg-faint);
+    display: block;
+    margin-bottom: var(--dn-space-2);
+  }
   /* Entrance choreography: a 24ms-per-card rise, capped so a 200-row grid
      does not turn into a slow curtain. Reduced motion is killed globally. */
   .card, .src-card {
@@ -688,11 +586,11 @@
     gap: var(--dn-space-1);
     text-align: left;
     color: var(--dn-fg);
-    /* Flat card: solid fill + hairline border + source-hue left rail.
-       The 280%-wide sheen background layer is gone. */
+    /* Flat card: solid fill + hairline border + source-hue rail (directive
+       6: a MARK, not a material — 2px at 55% at rest, full on hover). */
     background: var(--dn-bg-raise);
     border: 1px solid var(--dn-border);
-    border-left: 3px solid var(--dn-src, var(--dn-accent));
+    border-left: 2px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border));
     border-radius: 0;
     padding: var(--dn-space-3) var(--dn-space-4);
     cursor: pointer;
@@ -700,35 +598,25 @@
   }
   .src-card:hover {
     background-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, var(--dn-bg-raise));
-    border-color: var(--dn-src, var(--dn-accent));
+    border-left-color: var(--dn-src, var(--dn-accent));
   }
-
-  .src-card:hover {
-    background-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 10%, transparent);
-    background-position: -135% 0;
-    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 70%, transparent);
-    box-shadow:
-      0 0 22px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 26%, transparent),
-      0 6px 18px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
-    transform: translateY(-2px);
-  }
-  .src-name { font-size: 0.85rem; font-weight: 600; color: var(--dn-accent); letter-spacing: 0.03em; }
-  .src-meta { font-size: 0.68rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
+  .src-name { font-size: var(--dn-text-sm); font-weight: 600; color: var(--dn-accent); letter-spacing: var(--dn-track-tight); }
+  .src-meta { font-size: var(--dn-text-xs); color: var(--dn-fg-faint); letter-spacing: var(--dn-track-tight); }
   .src-open {
     position: absolute;
     right: 0.7em;
     top: 0.7em;
-    font-size: 0.68rem;
+    font-size: var(--dn-text-xs);
     font-family: var(--dn-font-mono);
     color: var(--dn-accent);
     opacity: 0;
     transition: opacity 120ms;
   }
   .src-card:hover .src-open { opacity: 1; }
-  .none { color: var(--dn-fg-faint); font-size: 0.78rem; margin: 0; }
+  .none { color: var(--dn-fg-faint); font-size: var(--dn-text-xs); margin: 0; }
 
   /* ---------- jump box ---------- */
-  .search-wrap { width: min(46rem, 100%); }
+  .search-wrap { width: 100%; }
   .search-box {
     position: relative;
     display: flex;
@@ -738,15 +626,14 @@
     border: 1px solid var(--dn-border-strong);
     border-radius: 2px;
     padding: 0.7em 1em;
-    transition: border-color 120ms, box-shadow 120ms;
+    transition: border-color 120ms;
   }
   .search-box:focus-within {
     border-color: var(--dn-accent);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dn-accent) 30%, transparent),
-      0 0 22px color-mix(in srgb, var(--dn-accent) 20%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dn-accent) 30%, transparent);
   }
   /* PS1 sits outside the input, so only the path part may shrink. */
-  .prompt { flex: none; font-size: 0.8rem; }
+  .prompt { flex: none; font-size: var(--dn-text-sm); }
   .search-box input {
     flex: 1;
     min-width: 0;
@@ -754,11 +641,11 @@
     border: none;
     color: var(--dn-fg);
     font-family: var(--dn-font-mono);
-    font-size: 0.9rem;
+    font-size: var(--dn-text-sm);
     caret-color: var(--dn-accent);
   }
   .search-box input:focus { outline: none; }
-  .search-box .prompt { color: var(--dn-fg-muted); font-size: 1rem; }
+  .search-box .prompt { color: var(--dn-fg-muted); font-size: var(--dn-text-md); }
   @media (max-width: 520px) {
     .search-box .prompt { display: none; }
   }
@@ -777,7 +664,7 @@
     width: 100%;
     text-align: left;
     font-family: var(--dn-font-prose);
-    font-size: 0.88rem;
+    font-size: var(--dn-text-sm);
     color: var(--dn-fg);
     background: none;
     border: none;
@@ -796,50 +683,40 @@
     background: var(--dn-src, var(--dn-accent));
     box-shadow: 0 0 8px var(--dn-src, var(--dn-accent));
   }
-  .stub { font-size: 0.72rem; color: var(--dn-fg-faint); margin-left: auto; }
+  .stub { font-size: var(--dn-text-xs); color: var(--dn-fg-faint); margin-left: auto; }
   .results .none { padding: 0.5em 0.7em; color: var(--dn-fg-faint); }
 
-  /* ---------- CTAs ---------- */
-  .cta-row { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+  /* ---------- CTAs: two actions, inline under the lede (directive 13) --- */
+  .cta-row { display: flex; gap: var(--dn-space-2); flex-wrap: wrap; justify-content: flex-start; min-width: 0; }
   .cta {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--dn-space-1);
-    min-width: 15rem;
+    min-width: 0;
     text-align: left;
     color: var(--dn-fg);
     background: var(--dn-bg-raise);
-    border: 1px solid var(--dn-border-strong);
-    border-left: 3px solid var(--dn-src, var(--dn-accent));
-    padding: var(--dn-space-3) var(--dn-space-4);
+    border: 1px solid var(--dn-border);
+    border-left: 2px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border));
+    padding: 0.7rem 1.1rem;
     cursor: pointer;
     transition: border-color 120ms, background-color 120ms;
   }
   .cta:hover {
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, var(--dn-bg-raise));
-    border-color: var(--dn-src, var(--dn-accent));
+    border-left-color: var(--dn-src, var(--dn-accent));
   }
-  /* The ::after sheen and the translateY(-2px) lift are gone. */
+  /* Directive 5: glyph keys are quiet ink; only the ⌁ synapse glyph carries
+     the accent. No pink, no hot in the CTA row. */
+  .cta-k { font-size: var(--dn-text-lg); color: var(--dn-fg-faint); }
+  .cta-k.spark { color: var(--dn-accent); }
+  .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: var(--dn-text-sm); letter-spacing: var(--dn-track-tight); }
+  .cta-s { font-size: var(--dn-text-xs); color: var(--dn-fg-muted); }
 
-  .cta-k { font-size: 1.1rem; color: var(--dn-accent-2-text); }
-  .cta-k.spark { color: var(--dn-hot); }
-  .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; }
-  .cta-s { font-size: 0.75rem; color: var(--dn-fg-muted); }
-  /* DS-DESIGN review fix (glm-5v-turbo): the conic voltage border read as
-     leftover eye candy. The synapses CTA now wears the same flat language
-     as every card: raise fill, hairline border, source-hue left rail - the
-     glyph keeps the hot accent so it still reads first. */
-  .cta.graph {
-    border: 1px solid var(--dn-border-strong);
-    border-left: 3px solid var(--dn-src, var(--dn-accent));
-    background: var(--dn-bg-raise);
-  }
-  .cta.graph .cta-k { color: var(--dn-hot); }
-
-  /* ---------- contents grid ---------- */
-  .chapters-grid { width: min(68rem, 100%); }
+  /* ---------- contents grid: an index of hairline rows (directive 14) -- */
+  .chapters-grid { width: 100%; }
   .contents-head {
     display: flex;
     align-items: baseline;
@@ -848,7 +725,15 @@
     flex-wrap: wrap;
     margin-bottom: 0.8rem;
   }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.5rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 0;
+  }
+  /* Directive 14: a manual's contents should look like a contents page —
+     an index of hairline rows, not 60 boxes. 60 borders + 60 fills become
+     60 hairlines (a real paint win); the source hue rides the 2px left
+     mark, full on hover. */
   .card {
     position: relative;
     display: flex;
@@ -857,167 +742,60 @@
     text-align: left;
     font-family: var(--dn-font-prose);
     color: var(--dn-fg);
-    background: var(--dn-bg-raise);
-    border: 1px solid var(--dn-border);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--dn-hairline);
+    border-left: 2px solid transparent;
     border-radius: 0;
-    padding: var(--dn-space-3) var(--dn-space-4);
+    padding: 0.55rem 0.5rem 0.55rem 0.75rem;
     cursor: pointer;
     transition: border-color 120ms, background-color 120ms;
   }
-
-/* Paper cards: the hairline border was near-invisible on white (1.9:1
-   against the raised surface). Darker edge + a subtle inset keyline
-   give cards a floor in both themes. Also the light review fix: the
-   "active" left rail must be a full 4px in light so colour is not the
-   only cue — this rule lowers reliance on the hue itself for anyone
-   with reduced colour perception. */
-.card,
-.src-card,
-.cta {
-  border-left-width: 4px;
-  border-left-style: solid;
-}
-:global([data-theme='light']) .card,
-:global([data-theme='light']) .src-card,
-:global([data-theme='light']) .cta {
-  border-color: var(--dn-border);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dn-border) 55%, transparent);
-}
   .card:hover {
-    border-color: var(--dn-src, var(--dn-accent));
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, var(--dn-bg-raise));
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 5%, transparent);
+    border-left-color: var(--dn-src, var(--dn-accent));
+    border-bottom-color: var(--dn-border);
   }
-  /* The ::before spine and ::after brow hairline are removed — the left
-     rail on the base state carries the source hue at rest. */
-
-  /* The lit edge: a hairline bar grows out of the card's left edge on hover,
-     in that chapter's source hue — the DOM echo of an axon leaving a soma. */
-  .card::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 2px;
-    height: 0;
-    background: var(--dn-src, var(--dn-accent));
-    box-shadow: 0 0 8px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 65%, transparent);
-    transform: translateY(-50%);
-    transition: height 160ms ease;
-  }
-  .card:hover {
-    border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent);
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, transparent);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--dn-bg-sunken) 65%, transparent);
-    transform: translateY(-2px);
-  }
-  .card:hover::before { height: 72%; }
-  /* IGNITION: a lit hairline along the card's brow — the row announces its
-     source hue across the top edge before the spine even grows. */
-  .card::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg,
-      transparent,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent) 38%,
-      var(--dn-fg) 50%,
-      color-mix(in srgb, var(--dn-src, var(--dn-accent)) 80%, transparent) 62%,
-      transparent);
-    opacity: 0;
-    transition: opacity 160ms ease;
-    pointer-events: none;
-  }
-  .card:hover::after { opacity: 0.9; }
+  /* The ::before spine and ::after brow hairline are deleted (directive 8):
+     the 2px left mark carries the hue; nothing grows, nothing lifts. */
   .show-all {
     align-items: center;
     justify-content: center;
     text-align: center;
     color: var(--dn-accent);
-    border-style: dashed;
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
+    border-bottom-style: dashed;
+    font-size: var(--dn-text-xs);
+    letter-spacing: var(--dn-track-tight);
   }
-  .card-title { font-size: 0.88rem; }
-  .card-deg { align-self: flex-end; font-size: 0.66rem; color: var(--dn-fg-faint); letter-spacing: 0.06em; }
+  .card-title { font-size: var(--dn-text-sm); }
+  .card-deg { align-self: flex-end; font-size: var(--dn-text-2xs); color: var(--dn-fg-faint); letter-spacing: var(--dn-track-tight); }
   .card:hover .card-deg { color: var(--dn-accent); }
 
-  .foot { max-width: 60ch; text-align: center; font-size: 0.7rem; color: var(--dn-fg-faint); line-height: 1.9; letter-spacing: 0.04em; }
+  .foot { width: 100%; text-align: left; font-size: var(--dn-text-xs); color: var(--dn-fg-faint); line-height: 1.9; letter-spacing: var(--dn-track-tight); }
   .foot .sym { color: var(--dn-accent-dim); }
   .foot .mach {
-    color: var(--dn-accent-2-text);
+    color: var(--dn-fg-muted);
     text-decoration: none;
-    border-bottom: 1px dotted color-mix(in srgb, var(--dn-accent-2) 45%, transparent);
+    border-bottom: 1px dotted var(--dn-border-strong);
     padding-bottom: 1px;
   }
-  .foot .mach:hover { color: var(--dn-hot); border-bottom-style: solid; }
-  @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .foot .mach:hover { color: var(--dn-accent); border-bottom-style: solid; }
 
-  /* ---------- IGNITION pass, trimmed by the PERF-MOBILE pass ---------------
-     Designer: glm-5v-turbo (design-forge crown, FINAL 9.0/9). Owner law:
-     performance beats eye candy, and the phone gets a STATIC page. The scan
-     beam died outright (it read as a loading bar); the constellation is a
-     printed graph now (static wires + glow, 28 loops gone); the data bus is
-     a static strip; the conic ring holds still. What still runs on desktop
-     is transform/opacity on tiny layers: the power rail sweep, the caret
-     blink — and on phones none of it runs at all. */
-
-  .constellation {
-    position: absolute;
-    inset: -4% -2%;
-    z-index: -1;
-    pointer-events: none;
-    /* glm-5v-turbo vet round-1 flagged the wires as visual noise behind the
-       wordmark — tuned down a step so the graph reads as ambience, not
-       interference. */
-    opacity: 0.75;
-  }
-  .constellation .w {
-    stroke: color-mix(in srgb, var(--dn-accent) 26%, transparent);
-    stroke-width: 1;
-    fill: none;
-  }
-  /* Static constellation (PERF-MOBILE): the printed graph. One dash segment
-     per wire reads as a packet mid-flight, frozen; the somas keep their glow
-     at full weight. 28 of the page's 105 running animations were these. */
-  .constellation .p {
-    fill: none;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-dasharray: 12 150;
-  }
-  .constellation .p.p1 { stroke: var(--dn-accent); }
-  .constellation .p.p2 { stroke: var(--dn-accent-2); }
-  .constellation .p.p3 { stroke: var(--dn-violet); }
-  .constellation circle {
-    filter: drop-shadow(0 0 4px currentColor);
-  }
-  .constellation .nc { fill: var(--dn-accent); color: var(--dn-accent); }
-  .constellation .nk { fill: var(--dn-accent-2); color: var(--dn-accent-2); }
-  .constellation .nv { fill: var(--dn-violet); color: var(--dn-violet); }
-  :global([data-theme='light']) .constellation {
-    /* Ink-jet constellation: same network, printed fainter — and fainter
-       still than dark, so the subtitle line keeps its clean paper read. */
-    opacity: 0.4;
-  }
-  :global([data-theme='light']) .stats .dn-kv .num b {
-    /* glm-5v-turbo round-1: the gold halo is heavy on white. Printed halo. */
-    text-shadow: 0 0 10px color-mix(in srgb, var(--dn-hot) 25%, transparent);
-  }
+  /* ---------- the Corpus Plate is drawn by CorpusField.svelte ----------
+     Desktop loops at rest, whole Home (directive 21): rail sweep
+     (transform) + caret blink (opacity). Nothing else. */
 
   .rail {
     position: relative;
-    width: min(24rem, 76%);
+    width: min(24rem, 100%);
     height: 2px;
-    margin: 0.7rem auto 0;
+    margin: var(--dn-space-4) 0 0;
+    /* Cyan filament (directive 5): the rail is chrome — no violet, no pink
+       stops. One hue, one job. */
     background: linear-gradient(90deg,
       transparent,
-      color-mix(in srgb, var(--dn-accent) 65%, transparent) 22%,
-      var(--dn-violet) 50%,
-      color-mix(in srgb, var(--dn-accent-2) 65%, transparent) 78%,
-      transparent);
+      var(--dn-accent) 30%,
+      color-mix(in srgb, var(--dn-accent) 40%, transparent) 100%);
     opacity: 0.85;
     overflow: hidden;
   }
@@ -1067,40 +845,41 @@
     .feed-caret { animation: none; }
   }
 
-  /* ---------- PERF-MOBILE pass (≤700px): the static phone -----------------
-     Designer: glm-5v-turbo (design-forge crown, FINAL 9.0/9). Owner law:
-     "performance should always be prioritized over eye candy", phones get
-     "performance, responsiveness, lightweight and simplicity". So on a
-     phone: ZERO running loops — every effect rests on its composed frame —
-     and the page scrolls natively with the document instead of nesting a
-     100dvh scroller inside the shell (the nested scroller is what made the
-     phone feel like a shrunken desktop: trapped scroll, URL-bar fights,
-     clipped content). */
+  /* ---------- DS-COOLEST phone pass (≤700px): the static instrument -------
+     Directives 22 + 23: the hero left-aligns and the Corpus Plate becomes a
+     full-bleed band under the wordmark; one column everywhere, native
+     scroll, zero loops, every control above 44px. */
 @media (max-width: 700px) {
   .home {
     height: auto;
     overflow: visible;
     min-height: 0;
-    padding: var(--dn-space-5) var(--dn-space-4) var(--dn-space-7);
+    padding: var(--dn-space-4) var(--dn-space-4) var(--dn-space-7);
     gap: var(--dn-space-5);
   }
   .hero {
-    padding: var(--dn-space-4) var(--dn-space-3) var(--dn-space-2);
-    gap: var(--dn-space-3);
-    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: var(--dn-space-4) 0 0;
+    gap: 0;
   }
-  /* Vertical rhythm for phones: one step tighter than desktop but still
-     airier than the shrunken gutter the review flagged. */
-  .hero > .kicker { margin-bottom: var(--dn-space-1); }
-  .hero > .lede { margin-bottom: var(--dn-space-4); }
-  .hero > .stats { margin-top: var(--dn-space-4); }
-  .wordmark { font-size: clamp(2.2rem, 9vw, 3.4rem); }
+  /* The seam is a desktop idea; on paper-thin phone width the identity
+     column simply flows. */
+  .id {
+    border-right: 0;
+    padding-right: 0;
+    width: 100%;
+  }
+  .wordmark { font-size: clamp(2rem, 11vw, 2.75rem); }
   .lede { line-height: var(--dn-lh-loose); max-width: 100%; }
   .stats {
     padding: var(--dn-space-3) var(--dn-space-4);
     width: 100%;
   }
-  .stats .dn-kv .num { font-size: 1.3rem; }
+  .stats .dn-kv .num { font-size: var(--dn-text-xl); }
+  .cta-row { display: grid; grid-template-columns: 1fr; gap: var(--dn-space-2); width: 100%; }
 
   /* Thumb law: every control clears 44px. */
   .resume, .mk { min-height: 44px; align-items: center; }
@@ -1108,22 +887,23 @@
   .src-card { min-height: 44px; }
   .card { min-height: 44px; }
 
+  /* One column everywhere (directive 23). */
+  .grid { grid-template-columns: 1fr; gap: 0; }
+  .src-row { grid-template-columns: 1fr; }
+
   /* Zero loops on phone. Every animated child on Home is parked.
      F2: the rail shimmer keeps its park-transform — animation:none alone
      would leave the 34%-wide bar sitting visible inside the rail. */
   .rail::before { animation: none; transform: translateX(-120%); }
-  .constellation .p,
-  .constellation .w,
-  .constellation .nodes circle,
   .feed-caret,
   .card,
   .src-card { animation: none; }
-  .rail, .bus { animation: none; }
+}
 
-  /* The constellation on phone: too dense behind the wordmark at 390px.
-     Fade to solitude (still present, still printed, just backgrounded). */
-  .constellation { opacity: 0.32; inset: -6% -4%; }
-  :global([data-theme='light']) .constellation { opacity: 0.28; }
+/* Anchor landing under the sticky header (directive 23) — global, both
+   viewports, zero cost. */
+:global(html) {
+  scroll-padding-top: calc(var(--dn-header-h) + 8px);
 }
 
 </style>

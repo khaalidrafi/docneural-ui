@@ -461,9 +461,9 @@
                   onclick={mark}
                   title="Keep this section — b (shows on the front door)">⚑ {store.isSaved(doc.slug, currentAnchor()) ? 'marked' : 'mark'}</button>
           <button class="cpy" onclick={() => copyLink(currentAnchor())}
-                  title="Copy a link to this position (y)">⧉ link</button>
+                  title="Copy a link to this position (y)">link</button>
           <button class="cpy" onclick={copyContext}
-                  title="Copy this page as plain text with its sources, for an LLM">⧉ llm</button>
+                  title="Copy this page as plain text with its sources, for an LLM">llm</button>
           <a class="raw" href="{store.base}/docs/{doc.slug}.org"
              title="This page as plain Org (lossless, LLM-friendly)">raw org</a>
         </span>
@@ -676,17 +676,19 @@
   }
   .crumbs .raw {
     letter-spacing: var(--dn-track);
-    color: var(--dn-accent-2);
+    /* DS-COOLEST directive 5: the wire hue, not pink — raw org is a link to
+       a file, and links ride the cyan wire. */
+    color: var(--dn-accent);
     text-decoration: none;
-    border: 1px solid color-mix(in srgb, var(--dn-accent-2) 45%, transparent);
+    border: 1px solid color-mix(in srgb, var(--dn-accent) 45%, transparent);
     border-radius: 2px;
     padding: 0.15em 0.6em;
     white-space: nowrap;
   }
   .crumbs .raw:hover {
     color: var(--dn-bg);
-    background: var(--dn-accent-2);
-    box-shadow: var(--dn-glow-2);
+    background: var(--dn-accent);
+    box-shadow: none;
   }
   .crumb {
     font: inherit;
