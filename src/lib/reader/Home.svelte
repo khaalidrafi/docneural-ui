@@ -88,7 +88,8 @@
      $state typewriter was a JS re-render loop — the most expensive thing on
      Home after the hero filters. The line renders once, real corpus facts,
      aria-hidden (the stats block carries them for real), caret blinks via
-     CSS only (the one surviving desktop loop beside the rail sweep). */
+     CSS only (the one surviving desktop loop now that the rail sweep is
+     retired — OP-56 loop ledger). */
   const feedLine = $derived(`// ${synCount} synapses primed — ego lens armed`)
 
   // A source card: open that corpus and land its first chapter (showManual
@@ -563,9 +564,9 @@
             <tr><td>--dn-acid</td><td>#3ef04a</td><td>#04610c</td><td>signal</td></tr>
             <tr><td>--dn-acid-dim</td><td>#2bb533</td><td>#3a7a16</td><td>live, secondary — the quiet tier of the live hue</td></tr>
             <tr><th scope="rowgroup" colspan="4">chrome laws</th></tr>
-            <tr><td>palette</td><td colspan="2">wire = cyan · live = acid · mark = hot</td><td>semantic, never decorative</td></tr>
+            <tr><td>palette</td><td colspan="2">wire = electric · live = acid · mark = hot</td><td>semantic, never decorative</td></tr>
             <tr><td>glyph budget</td><td colspan="2">8</td><td>the full decorative set</td></tr>
-            <tr><td>desktop loops</td><td colspan="2">3</td><td>rail sweep · caret blink · pulse spark</td></tr>
+            <tr><td>desktop loops</td><td colspan="2">1</td><td>caret blink — the rail sweep and pulse spark are retired (OP-56); the header bus lives in chrome, not Home</td></tr>
             <tr><td>phone loops</td><td colspan="2">0</td><td>no ambient motion on phone</td></tr>
             <tr><td>entrances</td><td colspan="2">mark-in · rise</td><td>finite — not loops</td></tr>
           </tbody>
@@ -575,7 +576,7 @@
           <dt>hairline tiers — three</dt><dd>separate chrome bands, section gutters, surface steps. never thicken, never multiply into grids, never carry color beyond the chrome set.</dd>
           <dt>tick rules + mono indexes (00-04)</dt><dd>number chrome sections and align kickers to the baseline. never renumber per article, never replace semantic headings.</dd>
           <dt>glyph budget — eight</dt><dd>the fixed set (› · — ▤ among them) is the only decorative marks. never a ninth glyph, no emoji, no icon-font substitutes.</dd>
-          <dt>loops contract — desktop only</dt><dd>rail sweep, caret blink, pulse spark. never on phone, never a fourth, never a looped entrance.</dd>
+          <dt>loops contract — desktop only</dt><dd>caret blink (chrome adds the header bus rider). the rail sweep and pulse spark retired OP-56. never on phone, never a fourth, never a looped entrance.</dd>
           <dt>entrances — mark-in, rise</dt><dd>finite one-shots for chrome. never repeat, never loop, never play on phone.</dd>
           <dt>light identity — paper arm</dt><dd>#fbfbfd ground, near-black ink, same surface discipline, accent unified to #0b3fbf (the electric wire, 8.2:1 on paper). never diverges tiers, never breaks AA on paper.</dd>
         </dl>
@@ -1253,24 +1254,37 @@
     gap: var(--dn-space-1);
     min-width: 0;
     text-align: left;
-    color: var(--dn-fg);
-    background: var(--dn-bg-raise);
-    border: 1px solid var(--dn-border);
-    border-left: 2px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border));
+    /* OP-56: CTA-1 is the electric FILL — white ink (4.56:1 on #1f6bff,
+       every white line here carries >=600 weight). */
+    color: #ffffff;
+    background: var(--dn-electric);
+    border: 1px solid var(--dn-electric);
+    border-left: 2px solid var(--dn-electric-dim);
     padding: 0.7rem 1.1rem;
     cursor: pointer;
     transition: border-color 120ms, background-color 120ms;
   }
   .cta:hover {
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 8%, var(--dn-bg-raise));
-    border-left-color: var(--dn-src, var(--dn-accent));
+    background: color-mix(in srgb, var(--dn-accent) 78%, var(--dn-electric));
+    border-color: var(--dn-accent);
   }
-  /* Directive 5: glyph keys are quiet ink; only the ⌁ synapse glyph carries
-     the accent. No pink, no hot in the CTA row. */
-  .cta-k { font-size: var(--dn-text-lg); color: var(--dn-fg-faint); }
-  .cta-k.spark { color: var(--dn-accent); }
+  .cta-k { font-size: var(--dn-text-lg); color: color-mix(in srgb, #ffffff 78%, transparent); }
   .cta-t { font-family: var(--dn-font-mono); font-weight: 600; font-size: var(--dn-text-sm); letter-spacing: var(--dn-track-tight); }
-  .cta-s { font-size: var(--dn-text-xs); color: var(--dn-fg-muted); }
+  .cta-s { font-size: var(--dn-text-xs); font-weight: 600; color: color-mix(in srgb, #ffffff 82%, transparent); }
+  /* CTA-2 stays an outline cell — electric edge, board ink. */
+  .cta.graph {
+    color: var(--dn-fg);
+    background: var(--dn-bg-raise);
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 55%, var(--dn-border));
+    border-left: 2px solid var(--dn-electric);
+  }
+  .cta.graph:hover {
+    background: color-mix(in srgb, var(--dn-electric) 8%, var(--dn-bg-raise));
+    border-color: var(--dn-electric);
+  }
+  .cta.graph .cta-k { color: var(--dn-fg-faint); }
+  .cta.graph .cta-k.spark { color: var(--dn-accent); }
+  .cta.graph .cta-s { font-weight: 400; color: var(--dn-fg-muted); }
 
   /* ---------- contents grid: an index of hairline rows (directive 14) -- */
   .chapters-grid { width: 100%; }
@@ -1594,22 +1608,23 @@
   }
 
   /* ---------- the Corpus Plate is drawn by CorpusField.svelte ----------
-     Desktop loops at rest, whole Home (directive 21): rail sweep
-     (transform) + caret blink (opacity). Nothing else. */
+     Desktop loops at rest, whole Home (OP-56 ledger): caret blink only.
+     The rail sweep is retired — the charge line is static art now. */
 
   .rail {
     position: relative;
     width: min(24rem, 100%);
-    /* FULL-RIGHTS OP-35: 4px and a 42% sweep — visible at arm's length. */
+    /* OP-56: the sweep is RETIRED (loop ledger: desktop steady-state 2 —
+       the header bus and the caret own the motion budget). The rail reads
+       electric while perfectly still: a 4px charge line with one bright
+       head parked at 62% and three solder pads, like the header bus. */
     height: 4px;
     margin: var(--dn-space-4) 0 0;
-    /* Cyan filament (directive 5): the rail is chrome — no violet, no pink
-       stops. One hue, one job. */
     background: linear-gradient(90deg,
       transparent,
-      var(--dn-accent) 30%,
-      color-mix(in srgb, var(--dn-accent) 40%, transparent) 100%);
-    opacity: 0.85;
+      var(--dn-electric) 30%,
+      var(--dn-accent) 100%);
+    opacity: 0.9;
     overflow: hidden;
   }
   .rail::before {
@@ -1617,19 +1632,20 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    width: 42%;
+    left: 62%;
+    width: 10px;
     background: linear-gradient(90deg, transparent, var(--dn-fg) 50%, transparent);
-    transform: translateX(-120%);
-    animation: dn-rail 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    opacity: 0.9;
   }
-  @keyframes dn-rail {
-    0% { transform: translateX(-120%); opacity: 0; }
-    12% { opacity: 1; }
-    88% { opacity: 1; }
-    100% { transform: translateX(410%); opacity: 0; }
+  .rail::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(90deg,
+      transparent 0 46px,
+      color-mix(in srgb, var(--dn-electric-dim) 70%, transparent) 46px 48px);
   }
-  :global([data-theme='light']) .rail { opacity: 0.7; }
+  :global([data-theme='light']) .rail { opacity: 0.75; }
 
   /* OP-38 fact note: the count-up sweep keeps its 900ms script — the P1
      law outbids the directive's 600ms wish. Only the frame moved. */

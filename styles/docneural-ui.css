@@ -610,7 +610,7 @@ body.dn-body::after {
 /* Thin themed scrollbars keep the rails feeling like one instrument. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--dn-border-strong) transparent;
+  scrollbar-color: color-mix(in srgb, var(--dn-electric) 55%, var(--dn-border-strong)) transparent;
 }
 *::-webkit-scrollbar { width: 9px; height: 9px; }
 *::-webkit-scrollbar-thumb {
@@ -1433,8 +1433,10 @@ body.dn-body::after {
 .dn-org blockquote {
   margin: 1.2em 0;
   padding: 0.4em 1.2em;
-  border-left: 3px solid var(--dn-accent-2);
-  background: color-mix(in srgb, var(--dn-accent-2) 6%, transparent);
+  /* OP-56: the quote rail joins the electric system (the one warm
+     counter-hue stays reserved for tags, DOWN and the fatal cap). */
+  border-left: 3px solid var(--dn-electric);
+  background: color-mix(in srgb, var(--dn-electric) 5%, transparent);
   color: var(--dn-fg-muted);
   font-style: italic;
 }

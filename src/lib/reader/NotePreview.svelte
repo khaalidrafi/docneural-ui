@@ -173,7 +173,8 @@
        opaque anyway. The lit left edge carries the source's hue, and the top
        edge carries a whisper of the same — a panel plugged into the bus. */
     background: color-mix(in srgb, var(--dn-bg-raise) 97%, transparent);
-    border-left: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, var(--dn-border-strong));
+    border-left: 2px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, var(--dn-electric));
+    border-top: 2px solid var(--dn-electric);
     padding: 1.2rem 1.6rem 3rem;
     box-shadow:
       -1px 0 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent),
