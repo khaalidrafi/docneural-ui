@@ -75,25 +75,49 @@
   const srcCount = $derived(store.sources.length)
 </script>
 
-<figure class="corpus-field" aria-hidden="true">
+<figure class="corpus-field dn-brackets" aria-hidden="true">
+  <!-- COOLER-3 OP-21: the stage is 4/5 (portrait plate) — the y axis is
+       stretched ×1.25 in the TEMPLATE expressions (never in the script, so
+       the script-hash gate stays byte-identical) and somas stay circles. -->
   <svg
-    viewBox="0 0 100 100"
+    viewBox="0 0 100 125"
     preserveAspectRatio="xMidYMid meet"
     focusable="false"
   >
     <g class="wires">
       {#each field.wires as w, i (i)}
-        <line x1={w.x1} y1={w.y1} x2={w.x2} y2={w.y2} />
+        <line x1={w.x1} y1={w.y1 * 1.25} x2={w.x2} y2={w.y2 * 1.25} />
       {/each}
     </g>
     {#each field.groups as [tag, somas] (tag)}
-      <g style={sourceVars(tag)}>
-        {#each somas as s (s.id)}
-          <circle class="halo" cx={s.x} cy={s.y} r={s.r + 1.1} />
-          <circle class="soma" cx={s.x} cy={s.y} r={s.r} />
+      <!-- COOLER-3 OP-19: constellation reading. Each source's brightest
+           soma (si === 0) wears two dashed orbit rings and full opacity;
+           the rest of the cluster steps down by index. Hovering one source
+           dims the others — the field RESOLVES under the cursor. Pure CSS
+           opacity + static SVG; zero JS, zero filters. -->
+      <g class="src-g" style={sourceVars(tag)}>
+        {#each somas as s, si (s.id)}
+          {@const focal = si === 0}
+          {#if focal}
+            <circle class="orbit" cx={s.x} cy={s.y * 1.25} r={s.r + 4} />
+            <circle class="orbit orbit-2" cx={s.x} cy={s.y * 1.25} r={s.r + 7} />
+          {/if}
+          <circle class="halo" cx={s.x} cy={s.y * 1.25} r={s.r + 1.1} opacity={focal ? 0.42 : 0.18} />
+          <circle class="soma" cx={s.x} cy={s.y * 1.25} r={s.r} opacity={focal ? 1 : 0.62 + 0.38 * (1 - si / somas.length)} />
         {/each}
       </g>
     {/each}
+    <!-- COOLER-3 OP-20: the two highest-degree somas in the whole plate get
+         static callouts — a constellation that labels its brightest stars
+         reads as a reading of data, not decoration. -->
+    <g class="callouts" aria-hidden="true">
+      {#each field.somas.slice(0, 2) as s, i (s.id)}
+        {@const dx = i === 0 ? 14 : -14}
+        {@const anchor = i === 0 ? 'start' : 'end'}
+        <line class="callout-line" x1={s.x} y1={s.y * 1.25} x2={s.x + dx} y2={s.y * 1.25 - 6} />
+        <text class="callout-t" x={s.x + dx + (i === 0 ? 1.2 : -1.2)} y={s.y * 1.25 - 7.5} text-anchor={anchor}>HUB·{i + 1}</text>
+      {/each}
+    </g>
   </svg>
   <figcaption class="plate-legend dn-mono">
     {docCount} nodes · {synCount} wires · {srcCount} src
@@ -101,42 +125,20 @@
 </figure>
 
 <style>
-  /* The Plate: one 1px border frame + four corner brackets in the accent +
-     a bottom legend. Static composition only — nothing here animates. */
+  /* The Plate: hairline frame + the evolved double-reticle brackets come
+     from the global .dn-brackets class (COOLER-3 OP-30 — the Plate is its
+     first consumer); a bottom legend closes it. Static composition only. */
   .corpus-field {
     position: relative;
     margin: 0;
     padding: var(--dn-space-3);
-    border: 1px solid var(--dn-border);
     background: color-mix(in srgb, var(--dn-bg-sunken) 55%, transparent);
-  }
-  /* Four reticle corner brackets, drawn with two gradients per corner via
-     background-image on the wrapper's ::before/::after — no extra DOM. */
-  .corpus-field::before,
-  .corpus-field::after {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    pointer-events: none;
-  }
-  .corpus-field::before {
-    top: -1px;
-    left: -1px;
-    border-top: 1px solid var(--dn-accent);
-    border-left: 1px solid var(--dn-accent);
-  }
-  .corpus-field::after {
-    bottom: -1px;
-    right: -1px;
-    border-bottom: 1px solid var(--dn-accent);
-    border-right: 1px solid var(--dn-accent);
   }
   svg {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 5;
   }
   .wires line {
     stroke: var(--dn-graph-link);
@@ -152,6 +154,42 @@
     stroke: var(--dn-src, var(--dn-accent));
     opacity: 0.18;
   }
+  /* COOLER-3 OP-19: phantom keplerian orbits on each source's focal soma,
+     plus the resolve-on-hover group dim (opacity only, 200ms). */
+  .orbit {
+    fill: none;
+    stroke: var(--dn-src, var(--dn-accent));
+    stroke-width: 0.18;
+    stroke-dasharray: 1.4 1.8;
+    opacity: 0.55;
+  }
+  .orbit-2 {
+    stroke-dasharray: 0.6 2.4;
+    opacity: 0.28;
+  }
+  .src-g {
+    transition: opacity 200ms;
+  }
+  .corpus-field:hover .src-g:not(:hover) {
+    opacity: 0.32;
+  }
+  /* COOLER-3 OP-20: static hub callouts. 2.6px in a 100-unit viewBox ≈
+     11px at render — legible, tiny, HUD-correct. */
+  .callouts {
+    color: var(--dn-fg-faint);
+  }
+  .callout-line {
+    stroke: var(--dn-border-strong);
+    stroke-width: 0.16;
+    opacity: 0.7;
+  }
+  .callout-t {
+    font-family: var(--dn-font-mono);
+    font-size: 2.6px;
+    letter-spacing: 0.3px;
+    fill: var(--dn-fg-faint);
+    text-transform: uppercase;
+  }
   .plate-legend {
     margin: var(--dn-space-2) 0 0;
     font-size: var(--dn-text-2xs);
@@ -161,10 +199,10 @@
     text-align: left;
   }
 
-  /* PHONE (directive 22): the Plate becomes a full-bleed 112px band under
-     the wordmark rail — one memorable element for one paint. 40 somas /
-     90 wires (chosen at init), no halos, hairline band edges. The -1rem
-     bleed matches Home's 1rem gutters. */
+  /* PHONE (directive 22 + COOLER-3): the Plate stays a full-bleed 112px
+     band under the wordmark rail — 40 somas / 90 wires (chosen at init),
+     no halos, no orbits, no callouts (sub-pixel noise at band scale),
+     hairline band edges. The -1rem bleed matches Home's 1rem gutters. */
   @media (max-width: 700px) {
     .corpus-field {
       width: calc(100% + 2rem);
@@ -177,15 +215,15 @@
       border-block: 1px solid var(--dn-hairline);
       background: none;
     }
-    .corpus-field::before,
-    .corpus-field::after { content: none; }
     svg {
       flex: 1;
       min-height: 0;
       aspect-ratio: auto;
       width: 100%;
     }
-    .halo { display: none; }
+    .halo,
+    .orbit,
+    .callouts { display: none; }
     .plate-legend { margin-top: var(--dn-space-1); }
   }
 </style>
