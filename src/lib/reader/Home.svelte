@@ -422,6 +422,19 @@
     gap: var(--dn-space-3);
   }
 
+/* Light hero: the constellation is a printed network — bump its opacity
+   and darken wires so the metaphor survives daylight. The stats panel
+   gets a real hairline on paper; the old single-pixel border vanished
+   into the sunken wash. */
+:global([data-theme='light']) .hero {
+  border-color: var(--dn-border-strong);
+}
+:global([data-theme='light']) .stats {
+  border-color: var(--dn-border);
+  border-left-color: var(--dn-src, var(--dn-accent));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--dn-accent) 8%, transparent);
+}
+
   .kicker {
     color: var(--dn-acid);
     letter-spacing: var(--dn-track-wide);
@@ -491,6 +504,17 @@
     margin: 0;
     max-width: 54ch;
   }
+
+/* Vertical rhythm, hero-specific (the review flagged light desktop as
+   tighter than dark). This is a structural gap, not a theme tint — same
+   gap in both themes so the composition is honest; the light material
+   pass does not need to fake air with different spacing. */
+.hero > .kicker { margin-bottom: var(--dn-space-2); }
+.hero > .wordmark { margin-bottom: var(--dn-space-1); }
+.hero > .tagline { margin-bottom: var(--dn-space-1); }
+.hero > .feed { margin-bottom: var(--dn-space-2); }
+.hero > .lede { margin-bottom: var(--dn-space-3); }
+.hero > .stats { margin-top: var(--dn-space-5); }
 
   .lede strong { color: var(--dn-fg); }
   .lede .dn-mono { font-size: 0.9em; color: var(--dn-accent-2-text); }
@@ -840,6 +864,25 @@
     cursor: pointer;
     transition: border-color 120ms, background-color 120ms;
   }
+
+/* Paper cards: the hairline border was near-invisible on white (1.9:1
+   against the raised surface). Darker edge + a subtle inset keyline
+   give cards a floor in both themes. Also the light review fix: the
+   "active" left rail must be a full 4px in light so colour is not the
+   only cue — this rule lowers reliance on the hue itself for anyone
+   with reduced colour perception. */
+.card,
+.src-card,
+.cta {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+:global([data-theme='light']) .card,
+:global([data-theme='light']) .src-card,
+:global([data-theme='light']) .cta {
+  border-color: var(--dn-border);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dn-border) 55%, transparent);
+}
   .card:hover {
     border-color: var(--dn-src, var(--dn-accent));
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 7%, var(--dn-bg-raise));
@@ -1033,40 +1076,54 @@
      100dvh scroller inside the shell (the nested scroller is what made the
      phone feel like a shrunken desktop: trapped scroll, URL-bar fights,
      clipped content). */
-  @media (max-width: 700px) {
-    .home {
-      height: auto;
-      overflow: visible;
-      min-height: 0;
-      padding: var(--dn-space-5) var(--dn-space-4) var(--dn-space-7);
-      gap: var(--dn-space-5);
-    }
-    .hero {
-      padding: var(--dn-space-4) var(--dn-space-3) var(--dn-space-2);
-      gap: var(--dn-space-3);
-      max-width: 100%;
-    }
-    .wordmark { font-size: clamp(2.2rem, 9vw, 3.4rem); }
-    .lede { line-height: var(--dn-lh-loose); max-width: 100%; }
-    .stats {
-      padding: var(--dn-space-3) var(--dn-space-4);
-      width: 100%;
-    }
-    .stats .dn-kv .num { font-size: 1.3rem; }
-
-    /* Thumb law: every control clears 44px. */
-    .resume, .mk { min-height: 44px; align-items: center; }
-    .cta { min-height: 48px; }
-    .src-card { min-height: 44px; }
-    .card { min-height: 44px; }
-
-    /* Zero loops on phone. */
-    .rail::before { animation: none; transform: translateX(-120%); }
-    .feed-caret { animation: none; }
-
-    /* The rail and bus are static strips — they already are, but restated
-       here so a future edit does not reintroduce a loop. */
-    .rail, .bus { animation: none; }
+@media (max-width: 700px) {
+  .home {
+    height: auto;
+    overflow: visible;
+    min-height: 0;
+    padding: var(--dn-space-5) var(--dn-space-4) var(--dn-space-7);
+    gap: var(--dn-space-5);
   }
+  .hero {
+    padding: var(--dn-space-4) var(--dn-space-3) var(--dn-space-2);
+    gap: var(--dn-space-3);
+    max-width: 100%;
+  }
+  /* Vertical rhythm for phones: one step tighter than desktop but still
+     airier than the shrunken gutter the review flagged. */
+  .hero > .kicker { margin-bottom: var(--dn-space-1); }
+  .hero > .lede { margin-bottom: var(--dn-space-4); }
+  .hero > .stats { margin-top: var(--dn-space-4); }
+  .wordmark { font-size: clamp(2.2rem, 9vw, 3.4rem); }
+  .lede { line-height: var(--dn-lh-loose); max-width: 100%; }
+  .stats {
+    padding: var(--dn-space-3) var(--dn-space-4);
+    width: 100%;
+  }
+  .stats .dn-kv .num { font-size: 1.3rem; }
+
+  /* Thumb law: every control clears 44px. */
+  .resume, .mk { min-height: 44px; align-items: center; }
+  .cta { min-height: 48px; }
+  .src-card { min-height: 44px; }
+  .card { min-height: 44px; }
+
+  /* Zero loops on phone. Every animated child on Home is parked.
+     F2: the rail shimmer keeps its park-transform — animation:none alone
+     would leave the 34%-wide bar sitting visible inside the rail. */
+  .rail::before { animation: none; transform: translateX(-120%); }
+  .constellation .p,
+  .constellation .w,
+  .constellation .nodes circle,
+  .feed-caret,
+  .card,
+  .src-card { animation: none; }
+  .rail, .bus { animation: none; }
+
+  /* The constellation on phone: too dense behind the wordmark at 390px.
+     Fade to solitude (still present, still printed, just backgrounded). */
+  .constellation { opacity: 0.32; inset: -6% -4%; }
+  :global([data-theme='light']) .constellation { opacity: 0.28; }
+}
 
 </style>

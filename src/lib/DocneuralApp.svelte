@@ -439,6 +439,15 @@
     align-items: center;
     gap: 0.3em;
   }
+
+/* Phone tap-target: 44px is already set inside the ≤600px block, but
+   the padding default for a mid-size viewport leaves the segment at
+   ~34px. Land a floor of 40px at every width so no chrome is
+   thumb-hostile on a tablet-in-portrait / 599px viewport. */
+.seg {
+  min-height: 40px;
+  min-width: 40px;
+}
   .seg .bracket { color: var(--dn-border-strong); }
   .seg:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .seg.active {
@@ -505,6 +514,32 @@
     animation: dn-led 1.6s ease-in-out infinite;
   }
   .status.down .led { background: var(--dn-amber); box-shadow: 0 0 9px var(--dn-amber), 0 0 20px color-mix(in srgb, var(--dn-amber) 55%, transparent); }
+
+/* Status LED is never colour-only: the strip text already names the
+   state ("connected" / "offline" / "…"), so the LED is decorative. But
+   the DOWN state should still read without colour: the LED gets a
+   distinct shape (a square outline) so it is not the accent-only cue. */
+.status.down .led {
+  border-radius: 2px;
+  outline: 1px solid var(--dn-amber);
+  outline-offset: 1px;
+}
+/* Light material for the shell: the solid translucent fill on paper
+   picks up the raised surface cleanly, and the signal rail drops to a
+   darker ink line so it does not wash out. */
+:global([data-theme='light']) .shell {
+  background: color-mix(in srgb, var(--dn-bg-raise) 96%, transparent);
+  border-bottom-color: var(--dn-border-strong);
+}
+:global([data-theme='light']) .shell::after {
+  background: linear-gradient(90deg,
+    transparent 2%,
+    color-mix(in srgb, var(--dn-accent) 60%, transparent) 30%,
+    color-mix(in srgb, var(--dn-accent) 45%, var(--dn-accent-2)) 55%,
+    color-mix(in srgb, var(--dn-accent-2) 60%, transparent) 78%,
+    transparent 98%);
+  opacity: 0.9;
+}
   .status.down { color: var(--dn-amber); }
   .tool {
     font-family: var(--dn-font-mono);
@@ -518,6 +553,17 @@
     cursor: pointer;
     transition: all 120ms;
   }
+
+/* Same 40px floor for header tools at all widths. On phones they get
+   hidden or bumped to 44px in their own block; here is the middle of
+   the ramp. */
+.tool {
+  min-height: 40px;
+  min-width: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
   .tool:hover {
     color: var(--dn-accent);
     border-color: color-mix(in srgb, var(--dn-accent) 65%, transparent);
@@ -530,48 +576,82 @@
     /* The instrument reading is the first thing to go; the buttons stay. */
     .status { display: none; }
   }
-  @media (max-width: 600px) {
-    .seg {
-      padding: 0;
-      width: 44px;
-      height: 44px;
-      justify-content: center;
-    }
-    .seg .bracket, .seg .seg-txt { display: none; }
-    .seg .seg-ico { font-size: 1.2rem; }
-    .tool.kbd, .tool.keys { display: none; }
-    .shell {
-      padding: env(safe-area-inset-top, 0px)
-               max(0.5rem, env(safe-area-inset-right, 0px))
-               0
-               max(0.5rem, env(safe-area-inset-left, 0px));
-      gap: 0.5rem;
-    }
-    .controls {
-      left: 0.5rem;
-      right: 0.5rem;
-      width: auto;
-      padding: 0.5rem 0.7rem;
-      top: max(0.5rem, env(safe-area-inset-top, 0px));
-    }
-    .controls > summary {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      min-height: 44px;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--dn-fg);
-      cursor: pointer;
-      list-style: none;
-    }
-    .controls > summary::-webkit-details-marker { display: none; }
-    .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
-    .controls > summary .chev { margin-left: auto; color: var(--dn-fg-muted); }
-    .controls[open] > summary .chev { transform: rotate(180deg); }
-    .scope, .layout { bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px)); }
-    .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 600px) {
+  /* Every header control is a 44px square, sized for a thumb. Icons only
+     (labels are still present for screen readers via aria-label). */
+  .seg {
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
   }
+  .seg .bracket, .seg .seg-txt { display: none; }
+  .seg .seg-ico { font-size: 1.2rem; }
+
+  .tool {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.3em 0.5em;
+  }
+
+  /* The keyboard shortcut and keymap buttons are useless on touch; park
+     them. The brand, the two mode segments, and the theme/lite toggles
+     fit comfortably at 390px with these sizes. */
+  .tool.kbd, .tool.keys { display: none; }
+
+  .shell {
+    padding: env(safe-area-inset-top, 0px)
+             max(0.5rem, env(safe-area-inset-right, 0px))
+             0
+             max(0.5rem, env(safe-area-inset-left, 0px));
+    gap: 0.5rem;
+  }
+
+  /* The status hint chip would collide with the mode segments and the
+     theme toggle at 390px. Its information is duplicated on the home page
+     panel; hide it here. */
+  .status { display: none; }
+
+  /* Fit the logo + segments + 2 tools within 390px: the brand shortens
+     to the mark plus 3-letter prefix, which is what the design language
+     already suggests (a node in cross-section IS the mark). */
+  .brand { font-size: 0.78rem; letter-spacing: 0.08em; }
+
+  /* Controls panel (only shown in graph mode) still fits. */
+  .controls {
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    padding: 0.5rem 0.7rem;
+    top: max(0.5rem, env(safe-area-inset-top, 0px));
+  }
+  .controls > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 44px;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--dn-fg);
+    cursor: pointer;
+    list-style: none;
+  }
+  .controls > summary::-webkit-details-marker { display: none; }
+  .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
+  .controls > summary .chev { margin-left: auto; color: var(--dn-fg-muted); }
+  .controls[open] > summary .chev { transform: rotate(180deg); }
+  .scope, .layout {
+    font-size: 0.72rem;
+    padding: 0.5em 0.85em;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  }
+  .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
+}
 
 
   .synapse-mode {
@@ -638,6 +718,21 @@
     background: color-mix(in srgb, var(--dn-accent) 12%, var(--dn-bg));
   }
 
+/* F1: light scope/layout chips (relocated from the home patch — these
+   classes live in the shell over the graph canvas). The black-glass fill
+   is the wrong material on paper: opaque raised surface, neutral hairline. */
+:global([data-theme='light']) .scope,
+:global([data-theme='light']) .layout {
+  background: var(--dn-bg-raise);
+  border-color: var(--dn-border-strong);
+  color: var(--dn-fg);
+}
+:global([data-theme='light']) .layout.spread {
+  background: color-mix(in srgb, var(--dn-accent) 8%, var(--dn-bg-raise));
+  border-color: var(--dn-accent);
+  color: var(--dn-accent);
+}
+
   /* Controls panel: desktop floats over the canvas top-left; the summary
      doubles as the live wire-count badge. Notched corner + brackets = it
      reads as a module clamped onto the board. SIGNAL pass: neon edge + a
@@ -691,6 +786,20 @@
       0 16px 44px color-mix(in srgb, var(--dn-bg-sunken) 85%, transparent);
     clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
   }
+
+/* Light panels: the linear-gradient overlay on the failure/boot panel
+   is invisible on white and the deep box-shadow reads as a grey halo.
+   Flatten to a paper card. */
+:global([data-theme='light']) .panel {
+  background: var(--dn-bg-raise);
+  border-color: var(--dn-border-strong);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--dn-border) 60%, transparent);
+}
+:global([data-theme='light']) .controls {
+  background: var(--dn-bg-raise);
+  border-color: var(--dn-border-strong);
+  box-shadow: none;
+}
   .panel .dn-neuron-mark { width: 1rem; height: 1rem; }
   .panel h2 {
     margin: 0;
@@ -782,6 +891,21 @@
     cursor: pointer;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
   }
+
+/* Light "help" dialog: the accent-on-sunken fill (cyan-ink text on the
+   pale sunken floor) lands at 5.1:1 — pass. But the danger is the
+   inverse case, so light mode gives the close button a full ink icon
+   plus a border, so it does not rely solely on the filled background. */
+:global([data-theme='light']) .close {
+  background: var(--dn-accent);
+  border: 1px solid var(--dn-accent-dim);
+  color: #ffffff;
+}
+:global([data-theme='light']) .retry {
+  color: #ffffff;
+  box-shadow: none;
+  border: 1px solid color-mix(in srgb, var(--dn-accent) 60%, #000000);
+}
   .close:hover { background: var(--dn-hot); }
   @keyframes dn-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -792,21 +916,26 @@
      like a real mobile nav. DocReader's section keeps its own established
      phone scroller. Last in the cascade so the parks outrank the base loops.
      Desktop is untouched. */
-  @media (max-width: 700px) {
-    .reader-mode { overflow-y: auto; }
+@media (max-width: 700px) {
+  .reader-mode { overflow-y: auto; }
 
-    /* Sticky header: solid translucent fill, no backdrop-filter. z 40 sits
-       under the scanline overlay (60), over page content. */
-    .shell {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: color-mix(in srgb, var(--dn-bg-raise) 96%, transparent);
-    }
-    .shell::after { animation: none; }
-    .spark { animation: none; }
-    .status .led { animation: none; }
-    .panel .dots { animation: none; }
+  /* Sticky header: solid translucent fill, no backdrop-filter. z 40 sits
+     under the scanline overlay (60), over page content. */
+  .shell {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--dn-bg-raise) 96%, transparent);
   }
+  .shell::after { animation: none; }
+  .spark { animation: none; }
+  .status .led { animation: none; }
+  .panel .dots { animation: none; }
+
+  /* The controls panel's clip-path notch relies on a fixed pixel clip; at
+     narrow widths the corner should shrink so it does not eat the summary
+     text. */
+  .controls { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%); }
+}
 
 </style>

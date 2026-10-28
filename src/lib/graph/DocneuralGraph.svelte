@@ -301,6 +301,17 @@
     opacity: 0.28;
     animation: sk-pulse 1.8s ease-in-out infinite;
   }
+
+/* Light skeleton: the orbs were calibrated for a dark dish; on white
+   they read as holes rather than lights. Bump border + shadow so the
+   loading state still implies a lit graph on paper. */
+:global([data-theme='light']) .skel .orb {
+  border: 1px solid color-mix(in srgb, var(--dn-accent) 55%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--dn-accent) 45%, transparent);
+}
+:global([data-theme='light']) .skel .skel-line {
+  color: var(--dn-fg-muted);
+}
   /* SIGNAL pass: the skeleton is the graph's promise — so it wears the same
      neon duo the canvas will paint, not a single flat cyan. */
   .skel .o2, .skel .o4 { background: var(--dn-accent-2); box-shadow: 0 0 10px color-mix(in srgb, var(--dn-accent-2) 70%, transparent); }
@@ -337,9 +348,17 @@
   }
   /* PERF-MOBILE (≤700px): the skeleton rests on its lit frame — a phone
      loading the graph is exactly when it can least afford decorative loops. */
-  @media (max-width: 700px) {
-    .skel .orb, .skel .sweep { animation: none; }
+@media (max-width: 700px) {
+  /* Zero loops on phone. The skeleton is a printed cluster of lit orbs;
+     the reference frame is the whole promise. */
+  .skel .orb,
+  .skel .sweep { animation: none; }
+  .skel .skel-line {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    bottom: 2.6rem;
   }
+}
 
   .roam-wrap {
     position: absolute;
@@ -356,4 +375,11 @@
        mini-map. The canvas paints transparent, so this DOM background IS
        what the neurons sit in. */
   }
+
+/* Light paper for the canvas well: the agar dish grid is now a fine
+   grey grid under a warm-white floor, so the neon somas paint with
+   contrast. The theme values come from --dn-* tokens (see below). */
+:global([data-theme='light']) .roam-wrap {
+  background-color: var(--dn-graph-bg);
+}
 </style>

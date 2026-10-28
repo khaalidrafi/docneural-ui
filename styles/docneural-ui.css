@@ -193,31 +193,46 @@
    and every token re-checked against WCAG AA (text >= 4.5:1, borders >= 3:1).
    Full parity: the glow recipes and bracket bleed are re-tuned for paper
    too, because a dark-theme bloom on white reads as a dirty smudge. */
+/* Day mode: same network, printed on paper. Opt in with
+   <html data-theme="light">; the JS theme toggle only flips this attribute.
+   DAWN pass: the review flagged a muddy grey-blue floor and a low-contrast
+   violet headline. Fixes here are structural, not cosmetic —
+   • Floor goes to true paper (near-white, warm-neutral).
+   • Ink drops to #0d1117 (18.6:1 on paper) so body copy passes AA with
+     room; muted/faint also step down and both still clear 4.5:1.
+   • Signal hues are darkened to ink-jet tones AND every signal that carries
+     text also carries a non-color signal (underline, glyph) below.
+   • Graph literals lighten the wires so the metaphor survives daylight.
+   Full parity: the glow recipes and bracket bleed are re-tuned for paper
+   too, because a dark-theme bloom on white reads as a dirty smudge. */
 :root[data-theme='light'] {
-  /* Paper, not inverted dark. Warm-neutral floor, near-black ink, and the
+  /* Paper, not inverted dark. Bright neutral floor, near-black ink, and the
      same three-tier surface discipline (sunken < raise < fg). */
-  --dn-bg: #f7f8fa;
+  --dn-bg: #fbfbfd;
   --dn-bg-raise: #ffffff;
-  --dn-bg-sunken: #eceff3;
-  --dn-fg: #0a1420;
-  --dn-fg-muted: #34485e;
-  --dn-fg-faint: #556a80;
-  --dn-border: #b6c2ce;
-  --dn-border-strong: #7d8fa2;
+  --dn-bg-sunken: #f0f2f5;
+  --dn-fg: #0d1117;
+  --dn-fg-muted: #2a3a4d;
+  --dn-fg-faint: #4a5b6e;
+  /* Hairlines visible against white, still quiet. AA-safe borders sit at
+     #6b7a8c and above; #b6c2ce was only 1.9:1 against paper. */
+  --dn-border: #a3afbd;
+  --dn-border-strong: #60738a;
 
-  /* Signals darken into ink-jet colour. Cyan becomes a deep teal-blue that
-     still reads as "the wire"; pink becomes a printed magenta. */
-  --dn-accent: #005f80;
-  --dn-accent-dim: #0a6a88;
-  --dn-accent-2: #b01260;
-  --dn-accent-2-text: #96084f;
-  --dn-hot: #6b4a00;
-  --dn-amber: #85500a;
-  --dn-acid: #0a6e14;
-  --dn-violet: #7a00b8;
+  /* Signals darken into ink-jet colour. Every signal here clears 4.5:1 on
+     paper as text, and every text signal also carries an underline or a
+     glyph so colour is never the only cue. */
+  --dn-accent: #00617f;
+  --dn-accent-dim: #005068;
+  --dn-accent-2: #a30d55;
+  --dn-accent-2-text: #98084e;
+  --dn-hot: #7a4a00;
+  --dn-amber: #7a3f00;
+  --dn-acid: #04610c;
+  --dn-violet: #6b1fa8;
 
   --dn-wordmark: linear-gradient(135deg,
-    #056a8a 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
+    #072f4f 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
 
   /* No bloom on paper. Focus rings use outline + border, not glow. */
   --dn-glow: none;
@@ -226,11 +241,14 @@
 
   --dn-bracket-bleed: none;
 
-  --dn-graph-link: rgba(0, 95, 128, 0.42);
+  /* Wires: darker and more opaque than the dark theme so the graph still
+     reads as "wired together" on paper without becoming a barcode. The
+     dish grid is a faint grey graph-paper instead of signal-tinted dots. */
+  --dn-graph-link: rgba(0, 97, 127, 0.55);
   --dn-graph-bg: #ffffff;
-  --dn-dish-dot-1: rgba(0, 95, 128, 0.14);
-  --dn-dish-dot-2: rgba(176, 18, 96, 0.08);
-  --dn-graph-palette: #005f80, #b01260, #6b4a00, #5b3fd6, #0a6e14, #b0400a, #0369a1, #a30d55;
+  --dn-dish-dot-1: rgba(96, 115, 138, 0.20);
+  --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
+  --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
 
   color-scheme: light;
 }
@@ -238,33 +256,33 @@
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
-    --dn-bg: #f7f8fa;
+    --dn-bg: #fbfbfd;
     --dn-bg-raise: #ffffff;
-    --dn-bg-sunken: #eceff3;
-    --dn-fg: #0a1420;
-    --dn-fg-muted: #34485e;
-    --dn-fg-faint: #556a80;
-    --dn-border: #b6c2ce;
-    --dn-border-strong: #7d8fa2;
-    --dn-accent: #005f80;
-    --dn-accent-dim: #0a6a88;
-    --dn-accent-2: #b01260;
-    --dn-accent-2-text: #96084f;
-    --dn-hot: #6b4a00;
-    --dn-amber: #85500a;
-    --dn-acid: #0a6e14;
-    --dn-violet: #7a00b8;
+    --dn-bg-sunken: #f0f2f5;
+    --dn-fg: #0d1117;
+    --dn-fg-muted: #2a3a4d;
+    --dn-fg-faint: #4a5b6e;
+    --dn-border: #a3afbd;
+    --dn-border-strong: #60738a;
+    --dn-accent: #00617f;
+    --dn-accent-dim: #005068;
+    --dn-accent-2: #a30d55;
+    --dn-accent-2-text: #98084e;
+    --dn-hot: #7a4a00;
+    --dn-amber: #7a3f00;
+    --dn-acid: #04610c;
+    --dn-violet: #6b1fa8;
     --dn-wordmark: linear-gradient(135deg,
-      #056a8a 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
+      #072f4f 0%, var(--dn-accent) 30%, var(--dn-violet) 66%, var(--dn-accent-2) 100%);
     --dn-glow: none;
     --dn-glow-2: none;
     --dn-glow-acid: none;
     --dn-bracket-bleed: none;
-    --dn-graph-link: rgba(0, 95, 128, 0.42);
+    --dn-graph-link: rgba(0, 97, 127, 0.55);
     --dn-graph-bg: #ffffff;
-    --dn-dish-dot-1: rgba(0, 95, 128, 0.14);
-    --dn-dish-dot-2: rgba(176, 18, 96, 0.08);
-    --dn-graph-palette: #005f80, #b01260, #6b4a00, #5b3fd6, #0a6e14, #b0400a, #0369a1, #a30d55;
+    --dn-dish-dot-1: rgba(96, 115, 138, 0.20);
+    --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
+    --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
     color-scheme: light;
   }
 }
@@ -308,11 +326,14 @@ body.dn-body {
 }
 
 :root[data-theme='light'] body.dn-body {
-  /* Paper: a faint grey wash at the edges, a whisper of grid. */
+  /* Light paper: the vignette is a whisper (a shadowed edge on bright paper
+     reads as dirt), and the grid lowers to barely-there so text sits on
+     clean stock, not graph paper. Contrast drop was fixed in the tokens;
+     this is the material pass. */
   background-image:
-    radial-gradient(ellipse at 50% 46%, transparent 62%, color-mix(in srgb, var(--dn-bg-sunken) 60%, transparent) 100%),
-    linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 4%, transparent) 1px, transparent 1px);
+    radial-gradient(ellipse at 50% 44%, transparent 72%, color-mix(in srgb, var(--dn-bg-sunken) 45%, transparent) 100%),
+    linear-gradient(to right, color-mix(in srgb, var(--dn-accent) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--dn-accent) 3%, transparent) 1px, transparent 1px);
 }
 
 
@@ -749,6 +770,24 @@ body.dn-body::after {
   box-shadow: 0 0 12px 2px color-mix(in srgb, var(--dn-accent) 65%, transparent);
   /* PERF-MOBILE: the lit node rests mid-trace instead of drifting forever. */
   transform: translateX(0);
+}
+
+/* Section rhythm on the reader: the guaranteed vertical breathing the
+   review flagged (spacing was tighter in light desktop). Applies in both
+   themes because the ramp is an identity rule, not a material one — it
+   only differs in the phone block, which is a legitimate override. */
+.dn-org > * + .dn-org h1,
+.dn-org > * + h1,
+.dn-org > * + h2,
+.dn-org > * + h3 {
+  margin-top: max(1.8em, var(--dn-space-6));
+}
+.dn-org ul,
+.dn-org ol,
+.dn-org table,
+.dn-org pre {
+  margin-top: var(--dn-space-4);
+  margin-bottom: var(--dn-space-4);
 }
 
 /* A halo behind a hero/panel: two stacked rings, so a DOM surface reads as
@@ -1204,6 +1243,27 @@ body.dn-body::after {
   font-style: italic;
 }
 
+/* Status never speaks in colour alone (Owner Law #4). On paper the TODO
+   amber and the accent-dim done badge gain a leading glyph and a bolder
+   weight, so "not done" and "done" read even in greyscale. Dark theme
+   keeps the original badge: on black the amber/cyan already sit at 4.5:1
+   against the surface and the coloured border is not the only cue. */
+:root[data-theme='light'] .dn-org .todo::before {
+  content: "◌ ";
+  font-weight: 700;
+}
+:root[data-theme='light'] .dn-org .done::before {
+  content: "✓ ";
+  font-weight: 700;
+}
+:root[data-theme='light'] .dn-org .status-active,
+:root[data-theme='light'] .dn-body .active,
+:root[data-theme='light'] .dn-chip.active {
+  /* Every "active" chip in light mode carries a weight bump in addition
+     to the fill/edge, so a colour-blind reader sees selection. */
+  font-weight: 700;
+}
+
 .dn-org ul, .dn-org ol { padding-left: 1.4em; }
 .dn-org li { margin: 0.25em 0; }
 .dn-org li::marker { color: var(--dn-border-strong); }
@@ -1274,21 +1334,41 @@ body.dn-body::after {
    the vignette rides the grid like the rest. */
 
 @media (max-width: 700px) {
+  /* Owner Law #2: zero animations on phone. Every loop that could run on a
+     page is parked. This list is exhaustive for the base file — any new
+     animated class MUST be added here, and the phone block is last in the
+     cascade so it outranks every base rule. */
   .spark,
   .dn-firing,
   .dn-led-dot,
   .feed-caret,
-  .dn-neuron-mark { animation: none; }
+  .dn-neuron-mark,
+  .dn-trace::after,
+  .dn-spine::before,
+  .dn-org .todo,
+  .dn-org .done { animation: none; }
+
+  /* The glitch ghosts are already at opacity 0 globally; restate nothing.
+     Transitions that only fire on interaction are fine, but the pulse-like
+     ones (.dn-firing, .dn-led-dot) are killed above. */
 
   body.dn-body {
+    /* background-attachment: fixed forces a repaint per scroll frame on
+       mobile GPUs (and iOS ignores it). Ride the grid like the vignette. */
     background-attachment: scroll, scroll, scroll;
     background-size: 100% 100%, 96px 96px, 96px 96px;
   }
-  .dn-org { line-height: var(--dn-lh-loose); }
-  .dn-org h1 { font-size: clamp(1.4rem, 6.5vw, var(--dn-text-2xl)); }
-  .dn-org h2 { font-size: clamp(1.15rem, 5.5vw, var(--dn-text-xl)); }
-  .dn-org h3 { font-size: clamp(1.05rem, 5vw, var(--dn-text-lg)); }
 
+  /* Reader rhythm: generous line-height + a slightly larger body step so
+     a 390px column is comfortable. Section spacing keeps its own ramp. */
+  .dn-org { line-height: var(--dn-lh-loose); }
+  .dn-org h1 { font-size: clamp(1.4rem, 6.5vw, var(--dn-text-2xl)); margin-bottom: var(--dn-space-3); }
+  .dn-org h2 { font-size: clamp(1.15rem, 5.5vw, var(--dn-text-xl)); margin-top: var(--dn-space-6); }
+  .dn-org h3 { font-size: clamp(1.05rem, 5vw, var(--dn-text-lg)); margin-top: var(--dn-space-5); }
+
+  /* Thumb law: 44px floor across the interactive vocabulary. The list
+     below is the vocabulary the site actually ships; the 40px base
+     rules in §2b are the ladder, and this is the top rung. */
   .dn-nav a,
   .dn-body .seg,
   .dn-body .tool,
@@ -1309,6 +1389,12 @@ body.dn-body::after {
   .dn-body .chapter,
   .dn-body .home,
   .dn-body .pinned button { min-height: 44px; }
+
+  /* Spacing ramp for phones: rhythm, not compression. The desktop hero
+     ramp is scaled down one step; section gaps stay at the top of the
+     ramp so the page breathes between cards and headings. */
+  .dn-section-head { margin: var(--dn-space-5) 0 var(--dn-space-3); }
+  .dn-footer { margin-top: var(--dn-space-6); }
 
   .dn-glass,
   .dn-header { box-shadow: none; }
