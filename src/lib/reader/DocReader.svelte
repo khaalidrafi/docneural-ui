@@ -436,13 +436,16 @@
          transform-only, so it costs the compositor nothing. -->
     <div class="prog" bind:this={barEl} aria-hidden="true"></div>
     {#if doc}
-      <nav class="crumbs dn-mono" aria-label="Breadcrumb">
+      <nav class="crumbs dn-mono dn-brackets" aria-label="Breadcrumb">
         <button class="menu" onclick={() => (drawer = true)} aria-label="Open contents">☰</button>
         <!-- A path, not a label: the corpus is a directory, the chapters are
              what is under it. `~/` says you started at the front door, which
-             is exactly what the chip links to. -->
+             is exactly what the chip links to.
+             FULL-RIGHTS OP-42: this bar is the instrument's ADDRESS BAR —
+             reticle frame, the channel chip in a fixed gutter, the action
+             zone split off by a rule, contents as the first action. -->
         <button class="src-chip" onclick={() => store.goHome()} title="Back to the front door">{`~/${doc?.tags[0] || store.manual || 'org-docs'}`}</button>
-        <span class="slash">/</span>
+        <span class="slash" aria-hidden="true">›</span>
         {#each ancestors as a (a.id)}
           <button class="crumb" onclick={() => go(a)}>{a.title}</button>
           <span class="sep">/</span>
@@ -476,6 +479,15 @@
              missing and what to run, in plain words. -->
         <p class="missing dn-mono">This chapter has no page yet — the export did not produce <code>docs/{doc.slug}.html</code>. Run <code>make export &amp;&amp; make build</code>.</p>
       {:else}
+        <!-- FULL-RIGHTS OP-43: every chapter opens as a MASTHEAD — corpus,
+               position in the manual, wire weight — the same rhythm a
+               printed manual uses before its title. Data is real store
+               derivation, no script changes. -->
+        <p class="masthead dn-mono">
+          <span class="mh-src">{DocneuralStore.manualTitle(doc.tags[0] || store.manual || 'org-docs')}</span>
+          · chapter {store.chapters.findIndex((c) => c.id === doc.id) + 1} of {store.chapters.length}
+          · {store.views.get(doc.id)?.degree ?? 0}⌁
+        </p>
         <div class="dn-org" bind:this={proseEl} role="presentation"
              onclick={onContentClick}
              onpointerover={onPeekMove} onpointerout={onPeekLeave}
@@ -627,10 +639,18 @@
     letter-spacing: var(--dn-track);
     color: var(--dn-fg-faint);
     margin-bottom: 1.2rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--dn-border);
+    padding: 0.4rem 0.7rem;
+    min-height: 2.5rem;
   }
-  /* the channel you are on, as a path — and a path is never uppercased */
+  /* FULL-RIGHTS OP-42: contents is the bar's FIRST action — a zone, not a
+     tucked button. */
+  .menu {
+    border-right: 1px solid var(--dn-border);
+    padding-right: 0.55rem;
+    margin-right: 0.1rem;
+  }
+  /* the channel you are on, as a path — and a path is never uppercased.
+     OP-42: it leads the address bar from a fixed gutter. */
   .src-chip {
     font: inherit;
     color: var(--dn-accent);
@@ -639,19 +659,39 @@
     border-radius: 2px;
     padding: 0.15em 0.6em;
     cursor: pointer;
+    min-width: 6rem;
+    text-align: left;
   }
   .src-chip:hover {
     box-shadow: 0 0 14px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 30%, transparent);
   }
   .slash { color: var(--dn-border-strong); }
-  /* The affordance group, pushed to the right end of the crumb line so the
-     path itself stays readable as a path. */
+  /* The affordance group, split off from the path by a rule — a distinct
+     zone at the right end of the address bar (OP-42). */
   .acts {
     margin-left: auto;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    border-left: 1px solid var(--dn-border-strong);
+    padding-left: 0.65rem;
   }
+  /* FULL-RIGHTS OP-43 — the chapter masthead: corpus · position · weight,
+     on a strong rule, the same rhythm a printed manual uses. */
+  .masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15em 0.5em;
+    font-size: var(--dn-text-2xs);
+    letter-spacing: var(--dn-track-wide);
+    text-transform: uppercase;
+    color: var(--dn-fg-faint);
+    margin: 0 0 var(--dn-space-3);
+    padding-bottom: var(--dn-space-2);
+    border-bottom: 1px solid var(--dn-border-strong);
+  }
+  .masthead .mh-src { color: var(--dn-src, var(--dn-accent)); }
   .cpy {
     font: inherit;
     letter-spacing: var(--dn-track);

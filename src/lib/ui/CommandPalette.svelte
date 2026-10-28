@@ -104,8 +104,15 @@
     }}
     onkeydown={onKey}
   >
-    <div class="palette dn-hud">
+    <div class="palette dn-brackets">
+      <!-- FULL-RIGHTS OP-46: real window chrome — three neuron marks (the
+           terminal dots, inverted), the corpus readout right. -->
       <div class="titlebar dn-mono">
+        <span class="tb-dots" aria-hidden="true">
+          <span class="dn-neuron-mark"></span>
+          <span class="dn-neuron-mark"></span>
+          <span class="dn-neuron-mark"></span>
+        </span>
         <span class="tb-l">jump</span>
         <span class="tb-r">{store.manuals.length} sources · {store.data.nodes.length} chapters</span>
       </div>
@@ -172,16 +179,20 @@
      readout lives so the palette says what it is searching. */
   .titlebar {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    min-height: 1.8rem;
     padding: 0.45em 0.9em;
     font-size: 0.65rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--dn-fg-faint);
     background: color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
-    border-bottom: 1px solid var(--dn-border);
+    border-bottom: 1px solid var(--dn-border-strong);
   }
+  .tb-dots { display: inline-flex; gap: 0.35em; align-items: center; }
+  .tb-dots .dn-neuron-mark { width: 5px; height: 5px; color: var(--dn-accent); opacity: 0.85; }
   .tb-l { color: var(--dn-accent); }
   .promptline {
     display: flex;
@@ -220,10 +231,13 @@
   .row .label { flex: 1; font-family: var(--dn-font-prose); font-size: 0.88rem; }
   .row .hint { font-size: 0.64rem; letter-spacing: 0.1em; color: var(--dn-fg-faint); }
   /* Selected row: lit in the SOURCE's hue, so the highlight itself tells you
-     which corpus you are about to open. */
+     which corpus you are about to open. FULL-RIGHTS OP-46: the selection is
+     a SLOT IN A RACK — 18% fill, the source rail, and a chamfered corner
+     cut by clip-path (no paint cost). Glow stays reserved for focus. */
   .row.active {
-    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 14%, transparent);
+    background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 18%, transparent);
     border-left-color: var(--dn-src, var(--dn-accent));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 4px, 4px 0);
   }
   .row.active .label { color: var(--dn-accent); }
   .row.active .hint { color: var(--dn-accent); }

@@ -53,12 +53,14 @@
   .bracket { color: var(--dn-border-strong); margin: 0 0.15em; }
   .tab:hover { color: var(--dn-fg); border-color: var(--dn-src, var(--dn-accent-dim)); }
   /* Active = lit in the source's own hue, never the generic accent: two tabs
-     can look different from each other at a glance. */
+     can look different from each other at a glance.
+     FULL-RIGHTS OP-45 state grammar: selected = fill + weight, NEVER glow —
+     glow is reserved for focus rings and live readouts. */
   .tab.active {
     color: var(--dn-accent);
+    font-weight: 600;
     background: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 12%, transparent);
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-src, var(--dn-accent)) 20%, transparent);
   }
   .tab.active .bracket { color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent); }
 </style>

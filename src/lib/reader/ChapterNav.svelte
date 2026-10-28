@@ -99,9 +99,11 @@
   .home:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .home.active {
     color: var(--dn-accent);
+    font-weight: 600;
     border-color: color-mix(in srgb, var(--dn-accent) 55%, transparent);
-    background: color-mix(in srgb, var(--dn-accent) 10%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--dn-accent) 16%, transparent);
+    border-left-width: 2px;
+    background: color-mix(in srgb, var(--dn-accent) 12%, transparent);
+    /* FULL-RIGHTS OP-45: selected = rail + fill + weight. No glow. */
   }
   /* DS-COOLEST directive 5: the glyph rides the wire hue. */
   .glyph { color: var(--dn-accent); }
