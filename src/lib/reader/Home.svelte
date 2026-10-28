@@ -559,7 +559,7 @@
             <tr><td>--dn-fg-muted</td><td>#a6bcd4</td><td>#2a3a4d</td><td>secondary text</td></tr>
             <tr><td>--dn-fg-faint</td><td>#7f97b3</td><td>#4a5b6e</td><td>meta text (6.1:1 / 6.4:1 min measured)</td></tr>
             <tr><td>--dn-hairline</td><td>#14202d</td><td>#dde3ea</td><td>rules, tier 1</td></tr>
-            <tr><td>--dn-accent</td><td>#4f8bff</td><td>#004299</td><td>accent — the electric wire (Owner neon-blue law)</td></tr>
+            <tr><td>--dn-accent</td><td>#4d94ff</td><td>#0b3fbf</td><td>accent — the electric wire (consult E / Owner neon-blue law)</td></tr>
             <tr><td>--dn-acid</td><td>#3ef04a</td><td>#04610c</td><td>signal</td></tr>
             <tr><td>--dn-acid-dim</td><td>#2bb533</td><td>#3a7a16</td><td>live, secondary — the quiet tier of the live hue</td></tr>
             <tr><th scope="rowgroup" colspan="4">chrome laws</th></tr>
@@ -577,7 +577,7 @@
           <dt>glyph budget — eight</dt><dd>the fixed set (› · — ▤ among them) is the only decorative marks. never a ninth glyph, no emoji, no icon-font substitutes.</dd>
           <dt>loops contract — desktop only</dt><dd>rail sweep, caret blink, pulse spark. never on phone, never a fourth, never a looped entrance.</dd>
           <dt>entrances — mark-in, rise</dt><dd>finite one-shots for chrome. never repeat, never loop, never play on phone.</dd>
-          <dt>light identity — paper arm</dt><dd>#fbfbfd ground, near-black ink, same surface discipline, accent unified to #004299 (the electric ink-blue). never diverges tiers, never breaks AA on paper.</dd>
+          <dt>light identity — paper arm</dt><dd>#fbfbfd ground, near-black ink, same surface discipline, accent unified to #0b3fbf (the electric wire, 8.2:1 on paper). never diverges tiers, never breaks AA on paper.</dd>
         </dl>
       </div>
     </details>

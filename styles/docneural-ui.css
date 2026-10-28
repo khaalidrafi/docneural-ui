@@ -158,16 +158,15 @@
      Cyan is the wire (links, focus, active chrome). Everything else is
      restrained: pink for tags/counts, amber for warnings, acid for the one
      LIVE readout. No violet in the body — only in the wordmark gradient. */
-  /* OWNER LAW 2026-10-28 — "Use neon blue, add electric vibe" on the WHOLE
-     site. The consult-C electric wire (#1f6bff, chrome-tier 4.1-4.5:1) is
-     promoted to the site's primary axis: --dn-accent takes the text-safe
-     electric stop #4f8bff (6.3:1 void / 5.8:1 raise), --dn-accent-dim the
-     deeper tier #3f78f0 (5.0/4.6). Cyan retires from chrome — the graph
-     palette keeps one blue slot for source identity. Pink/acid/hot/amber
-     hold their posts: neon blue leads, the electric cast discharges around
-     it, not a mono-blue mush. */
-  --dn-accent: #4f8bff;
-  --dn-accent-dim: #3f78f0;
+  /* OWNER LAW 2026-10-28 — "I wanted neon blue and electric vibes on the
+     WHOLE site, not just header." Consult E (OP-56) re-ruled the axis with
+     the site-wide map: --dn-accent takes the text-safe stop #4d94ff
+     (6.6:1 void / 6.2:1 raise), --dn-accent-dim the deeper tier #3b82f6
+     (5.4:1). Cyan retires from chrome entirely — it survives only as DATA
+     (the 8-hue graph palette). Pink/acid/hot hold their posts: neon blue
+     leads, the electric cast discharges around it, not a mono-blue mush. */
+  --dn-accent: #4d94ff;
+  --dn-accent-dim: #3b82f6;
   --dn-accent-2: #ff3366;
   --dn-accent-2-text: #ff3366;
   --dn-hot: #ffd93f;
@@ -179,19 +178,21 @@
   --dn-acid-dim: #2bb533;
   --dn-violet: #bd00ff;
 
-  /* CONSULT C — NEON BLUE: the header's electric wire. Distinct from the
-     cyan accent (the body wire / focus ring) AND from the canvas-pinned
-     #56c8ff source hue, so the top chrome reads as its own rail, not a
-     reuse. Carries the brand rail, the active seg, the status reticle,
-     the caret hue. */
+  /* CONSULT C — NEON BLUE: the electric wire. Distinct from the accent
+     (text-tier) AND from the canvas-pinned #56c8ff source hue, so chrome
+     reads as its own rail. OP-56: electric is FILL/WIRE only — never body
+     text (4.38:1 on the void is a fail); white-on-electric is legal only
+     at >=600 weight / >=14px bold (4.56:1). --dn-electric-dim is the
+     decorative half-tone (40% mixes, ticks, pads): non-text duty only. */
   --dn-electric: #1f6bff;
-  --dn-electric-dim: #4f8bff;
+  --dn-electric-dim: #8fbaff;
   --dn-glow-electric: 0 0 6px color-mix(in srgb, var(--dn-electric) 60%, transparent);
 
   /* Wordmark: the one gradient in the system — a filament, not a neon sign
-     (DS-COOLEST directive 7). White -> cyan value ramp; no violet, no pink. */
+     (DS-COOLEST directive 7). OP-56 stops: white -> sky -> electric. Worst
+     stop 6.2:1 — a gradient is only as legible as its faintest ink. */
   --dn-wordmark: linear-gradient(100deg,
-    #e8f1fb 0%, var(--dn-accent) 50%, #a7c4ff 100%);
+    #eaf3fc 0%, #8fc0ff 48%, #4d94ff 100%);
 
   /* Glow: two recipes, both short-throw. Used on focus rings and the one
      active chip — never on body text, never on large surfaces. */
@@ -204,12 +205,15 @@
   --dn-bracket-l: 14px;
   --dn-bracket-bleed: 0px;
 
-  /* Graph literals (canvas cannot parse var()/color-mix()). */
+  /* Graph literals (canvas cannot parse var()/color-mix()). OP-56: the
+     wires take the electric hue at 30%; the palette itself is UNCHANGED —
+     hues are djb2(tag) % 8, so re-ordering would re-colour every chip,
+     tab and heading sigil. Data keeps 8 hues; chrome keeps 1. */
   --dn-graph-link: rgba(31, 107, 255, 0.30);
   --dn-graph-bg: #0a1524;
   --dn-dish-dot-1: rgba(31, 107, 255, 0.10);
   --dn-dish-dot-2: rgba(255, 51, 102, 0.05);
-  --dn-graph-palette: #2f7bff, #ff3366, #ffd93f, #bd00ff, #3ef04a, #ff7a45, #56c8ff, #ff5c8a;
+  --dn-graph-palette: #00e5f5, #ff3366, #ffd93f, #bd00ff, #3ef04a, #ff7a45, #56c8ff, #ff5c8a;
 
   /* Geometry. */
   --dn-notch: 9px;
@@ -260,8 +264,8 @@
   /* Signals darken into ink-jet colour. Every signal here clears 4.5:1 on
      paper as text, and every text signal also carries an underline or a
      glyph so colour is never the only cue. */
-  --dn-accent: #004299;   /* the paper arm of the electric wire (9.1:1) */
-  --dn-accent-dim: #003380;
+  --dn-accent: #0b3fbf;   /* the paper arm of the electric wire (OP-56, 8.2:1) */
+  --dn-accent-dim: #0a3a8f;
   --dn-accent-2: #a30d55;
   --dn-accent-2-text: #98084e;
   --dn-hot: #7a4a00;
@@ -269,8 +273,8 @@
   --dn-acid: #04610c;
   --dn-acid-dim: #3a7a16;
   --dn-violet: #6b1fa8;
-  --dn-electric: #004299;
-  --dn-electric-dim: #0a3a7a;
+  --dn-electric: #1b4fd6;   /* white on it: 6.7:1 */
+  --dn-electric-dim: #2a63d6;
   --dn-glow-electric: none;
 
   /* Paper: ink is the whole idea — the wordmark carries no gradient fill
@@ -287,11 +291,11 @@
   /* Wires: darker and more opaque than the dark theme so the graph still
      reads as "wired together" on paper without becoming a barcode. The
      dish grid is a faint grey graph-paper instead of signal-tinted dots. */
-  --dn-graph-link: rgba(0, 66, 153, 0.5);
+  --dn-graph-link: rgba(27, 79, 214, 0.45);
   --dn-graph-bg: #ffffff;
-  --dn-dish-dot-1: rgba(96, 115, 138, 0.14);
-  --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
-  --dn-graph-palette: #1e50c8, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
+  --dn-dish-dot-1: rgba(27, 79, 214, 0.10);
+  --dn-dish-dot-2: rgba(27, 79, 214, 0.07);
+  --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
 
   color-scheme: light;
 }
@@ -311,27 +315,27 @@
     /* cool-pass OP-5 unified across BOTH light arms (COOLER-3 fidelity fix:
        the auto-light arm had kept the old #00617f while the toggle arm moved
        to the wire-lineage #005a78 — toggle-light and auto-light must agree). */
-    --dn-accent: #004299;   /* the paper arm of the electric wire (9.1:1) */
-    --dn-accent-dim: #003380;
+    --dn-accent: #0b3fbf;   /* the paper arm of the electric wire (OP-56, 8.2:1) */
+    --dn-accent-dim: #0a3a8f;
     --dn-accent-2: #a30d55;
     --dn-accent-2-text: #98084e;
     --dn-hot: #7a4a00;
     --dn-amber: #7a3f00;
     --dn-acid: #04610c;
     --dn-violet: #6b1fa8;
-    --dn-electric: #004299;
-    --dn-electric-dim: #0a3a7a;
+    --dn-electric: #1b4fd6;   /* white on it: 6.7:1 */
+    --dn-electric-dim: #2a63d6;
     --dn-glow-electric: none;
     --dn-wordmark: none;
     --dn-glow: none;
     --dn-glow-2: none;
     --dn-glow-acid: none;
     --dn-bracket-bleed: 0px;
-    --dn-graph-link: rgba(0, 66, 153, 0.5);
+    --dn-graph-link: rgba(27, 79, 214, 0.45);
     --dn-graph-bg: #ffffff;
-    --dn-dish-dot-1: rgba(96, 115, 138, 0.14);
-    --dn-dish-dot-2: rgba(96, 115, 138, 0.10);
-    --dn-graph-palette: #1e50c8, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
+    --dn-dish-dot-1: rgba(27, 79, 214, 0.10);
+    --dn-dish-dot-2: rgba(27, 79, 214, 0.07);
+    --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
     color-scheme: light;
   }
 }

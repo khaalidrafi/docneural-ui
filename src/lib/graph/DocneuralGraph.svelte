@@ -30,7 +30,7 @@
   import { applyLayout, fitReadable, makeNeuronLoader } from './neuronEngine'
   import type { Blocker } from './spreadForces'
   import type { Engine as NeuronEngine } from './neuronEngine'
-  import { neighborIds } from '../core/graph'
+  import { neighborIds, latticePitch } from '../core/graph'
   import type { LayoutMode } from '../core/types'
   import type { DocneuralStore } from '../core/store.svelte'
 
@@ -54,8 +54,13 @@
     const eng = engine
     if (eng && store.layout === 'lattice') {
       const vp = viewport()
-      applyLayout(eng, 'lattice', vp ? packRect(vp) : undefined)
-      if (vp) fitNow(eng, vp)
+      if (vp) {
+        const room = packRect(vp)
+        const p = latticePitch(eng.graphData().nodes.length || 1, room.w, room.h)
+        latticeK = Math.min(1, (0.36 * p) / 18.33)
+        applyLayout(eng, 'lattice', room)
+        fitNow(eng, vp)
+      }
     }
   })
 
@@ -125,6 +130,10 @@
   let lastMode: LayoutMode | null = null
   let stopArmed = false
   let fitNextStop = false
+  // OP-56 lattice radiusScale — somas shrink with the hex pitch (0.36·p/18.33,
+  // capped at 1) so a corpus-scale field (p≈24) can never overlap. Recomputed
+  // each time the lattice is (re)placed; read per paint via the focus.
+  let latticeK = 1
 
   // Air kept between the packed field and the canvas edge, in screen px. Small
   // on purpose: `forceFitContainer` already keeps every LABEL inside the rect,
@@ -219,7 +228,9 @@
     const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
       pad: PAD,
       inset: vp.inset,
-      maxScale: store.layout === 'spread' ? 1 : Infinity
+      maxScale: store.layout === 'spread' ? 1 : Infinity,
+      // OP-56: the lattice camera is instant — the field IS the room.
+      duration: store.layout === 'lattice' ? 0 : undefined
     })
     if (!wrapEl) return
     wrapEl.dataset.fit = k.toFixed(3)
@@ -245,7 +256,12 @@
       // Fixed-distance grid: place + pin, then frame immediately — there is
       // no simulation run to wait for.
       applyLayout(eng, mode, vp ? packRect(vp) : undefined)
-      if (vp) fitNow(eng, vp)
+      if (vp) {
+        const room = packRect(vp)
+        const p = latticePitch(eng.graphData().nodes.length || 1, room.w, room.h)
+        latticeK = Math.min(1, (0.36 * p) / 18.33)
+        fitNow(eng, vp)
+      }
       return
     }
     applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined)
@@ -286,6 +302,8 @@
     // Label eligibility rides with the layout: spread AND lattice are the two
     // "read the names" views, so both make every neuron's title eligible.
     spread: () => store.layout !== 'cluster',
+    // OP-56: lattice somas scale with the hex pitch; cluster/spread keep 1.
+    somaScale: () => (store.layout === 'lattice' ? latticeK : 1),
     onEngine: (e) => { engine = e }
   })
 

@@ -188,9 +188,12 @@
   <!-- CONSULT C: the electric bus lives under all header content; the
        bright rider traverses it (one transform-only desktop loop). -->
   <span class="bus-rail" aria-hidden="true"></span>
+  <span class="bus-pads" aria-hidden="true"></span>
   <button class="brand dn-mono" onclick={() => store.goHome()} aria-label="{title} home">
     <span class="dn-neuron-mark" aria-hidden="true"></span><span class="wordmark">{title.toUpperCase()}</span>
   </button>
+  <!-- CONSULT E §3: the modes nav occupies the middle bay of the grid; the
+       rocker (below) replaces the bracket pair with an electric lead tick. -->
 
   <!-- The mode switch is the site's one big choice — read the text, or read
        the graph — so it never hides. On phones the words and brackets drop
@@ -204,36 +207,44 @@
       style:transform="translateX({thumb.x}px)"
       style:width="{thumb.w}px"
     ></span>
+    <!-- CONSULT E §3: the [ ] brackets die — the active cell carries a 3px
+         electric lead tick at its left edge instead. -->
     <button class="seg" class:active={store.mode === 'reader'} aria-pressed={store.mode === 'reader'}
       onclick={() => store.setMode('reader')} title="Read the documentation">
-      <span class="bracket">[</span><span class="seg-ico" aria-hidden="true">▤</span><span class="seg-txt">DOCS</span><span class="bracket">]</span>
+      <span class="seg-ico" aria-hidden="true">▤</span><span class="seg-txt">DOCS</span>
     </button>
     {#if !store.lite}
       <button class="seg" class:active={store.mode === 'graph'} aria-pressed={store.mode === 'graph'}
         onclick={() => store.setMode('graph')} title="See the citations as a graph">
-        <span class="bracket">[</span><span class="seg-ico spark" aria-hidden="true">⌁</span><span class="seg-txt">SYNAPSES</span><span class="bracket">]</span>
+        <span class="seg-ico spark" aria-hidden="true">⌁</span><span class="seg-txt">SYNAPSES</span>
       </button>
     {/if}
   </nav>
 
   <div class="tools">
-    <!-- FULL-RIGHTS OP-52: the status line is the instrument's READOUT —
-         framed by the 16-arm reticle with acid arms (acid = live), the LED
-         inside it, tabular figures. On failure the arms flip pink: a real
-         state change you can see at arm's length. -->
-    <span class="status dn-mono dn-brackets" class:down={store.failed || !store.ready}>
-      <span class="led" aria-hidden="true"></span>{status}
+    <!-- CONSULT E §3: the status plate. The 7px LED dot is dead — a 3-bar
+         acid meter carries "live" (heights 4/7/10). DOWN: one bar remains,
+         pink, square (non-colour cue kept; the text also names the state).
+         During boot the plate honest-states BUS · ARMING (markup ternary on
+         the existing store flags — no script edit). -->
+    <span class="status dn-mono" class:down={store.failed || !store.ready}>
+      <span class="meter" aria-hidden="true"><i></i><i></i><i></i></span>
+      {store.failed ? 'LINK DOWN' : !store.ready ? 'BUS · ARMING' : status}
     </span>
-    <button class="tool kbd" onclick={() => (paletteOpen = true)} aria-label="Search (Ctrl-K)">
-      ⌕ <span class="hintkey">⌘K</span>
-    </button>
-    <button class="tool keys" onclick={() => (helpOpen = true)} aria-label="Keyboard help">?</button>
-    <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode" title="graph engine on/off">
-      {store.lite ? 'FAST' : 'FULL'}
-    </button>
-    <button class="tool" onclick={toggleTheme} aria-label="Toggle theme" title="day / night">
-      {theme === 'light' ? '☀' : '☾'}
-    </button>
+    <!-- CONSULT E §3: the keycap bank — four independent outlines become one
+         40px strip with 1px dividers; cells 40x40. -->
+    <div class="bank" role="group" aria-label="Instrument controls">
+      <button class="tool kbd" onclick={() => (paletteOpen = true)} aria-label="Search (Ctrl-K)">
+        ⌕ <span class="hintkey">⌘K</span>
+      </button>
+      <button class="tool keys" onclick={() => (helpOpen = true)} aria-label="Keyboard help">?</button>
+      <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode" title="graph engine on/off">
+        {store.lite ? 'FAST' : 'FULL'}
+      </button>
+      <button class="tool" onclick={toggleTheme} aria-label="Toggle theme" title="day / night">
+        {theme === 'light' ? '☀' : '☾'}
+      </button>
+    </div>
   </div>
 </header>
 
@@ -255,19 +266,22 @@
   <!-- Loading, not a boot log: the same three real steps (fetch, index, paint)
      stated once, with a live count as soon as the nodes are known. -->
   <div class="boot-wrap">
-    <!-- The boot screen, redesigned (Owner law 2026-10-28: the initial loader
-         looked dull). Same honest three facts, now staged like the instrument
-         waking: a 16-arm reticle ring, the wordmark, the fetch step, an
-         electric bus whose rider sweeps while the corpus lands, and the live
-         indexed count. Both loops are TRANSIENT - the panel unmounts the
-         moment the graph is ready, so steady-state loop budget is untouched;
-         phones and reduced-motion get the static board (parks below). -->
-    <div class="panel boot" role="status" aria-live="polite">
-      <div class="boot-reticle" aria-hidden="true"><span class="core"></span></div>
-      <h2>{title}</h2>
-      <p class="step">reading the graph<span class="dots">…</span></p>
-      <div class="boot-bus" aria-hidden="true"><span class="rider"></span></div>
-      <p class="step dim">{store.data.nodes.length || '—'} chapters indexed</p>
+    <!-- CONSULT E §4: the boot is drawn ON THE BOARD (no card fill) - a
+         framed instrument readout, not a dialog. Five rows of FACTS the boot
+         actually knows, a charge line the scan crosses ONCE, and voltage bars
+         that settle. One-shot timeline (<=900ms, compositor-only); no fake
+         percentage; the panel unmounts the moment the graph is ready and the
+         reveal is continuous with Home (same floor, same header). -->
+    <div class="boot dn-hud" role="status" aria-live="polite">
+      <p class="brand-row">
+        <span class="dn-neuron-mark" aria-hidden="true"></span>
+        <span class="boot-mark">{title.toUpperCase()}</span>
+        <span class="count dn-mono">{store.data.nodes.length || '—'} ch</span>
+      </p>
+      <div class="charge" aria-hidden="true"><span class="scan"></span></div>
+      <p class="row idx dn-mono">INDEXING CORPUS <b>{store.data.nodes.length || '—'}</b></p>
+      <p class="row sub dn-mono">reading the graph · {store.manuals.length} channels · {store.data.links.length || '—'} wires</p>
+      <div class="volts" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
 {:else if store.mode === 'graph' && !store.lite}
@@ -288,26 +302,31 @@
             ? `⌁ around ${store.selected.title} · ${store.visible.nodes.length} of ${store.data.nodes.length}`
             : `⌁ whole corpus · ${store.visible.nodes.length} — around this page`}</button>
       {/if}
-      <!-- The layout chip. Clustered is force-graph's own default, and a
-           citation graph naturally knots each doc into a blob — which shows how
-           the corpus hangs together but says nothing about what is in it. This
-           asks the physics for room per title instead: the other half of the
-           overview question, and a preference worth remembering. -->
+      <!-- The layout chip. Three readings of the same corpus (OP-56): packed
+           clusters show how citations knot; spread asks the physics for room
+           per title; lattice pins every neuron to a fixed-distance hex cell —
+           the whole-corpus overview with no crowding. Text is the state, the
+           three dots are the position; the accessible name is the NEXT state. -->
       <button
         class="layout dn-mono"
         class:spread={store.layout === 'spread'}
         class:lattice={store.layout === 'lattice'}
         onclick={() => store.toggleLayout()}
-        title={store.layout === 'spread'
-          ? 'Pin every neuron to a fixed-distance grid'
-          : store.layout === 'lattice'
-            ? 'Pack the neurons back into their citation clusters'
-            : 'Space every neuron out until its title reads cleanly'}
-      >{store.layout === 'spread'
-          ? 'spread · titles'
-          : store.layout === 'lattice'
-            ? 'grid · fixed'
-            : 'packed · titles'}</button>
+        aria-label={store.layout === 'cluster'
+          ? 'switch to spread — room per title'
+          : store.layout === 'spread'
+            ? 'switch to lattice — even fixed spacing'
+            : 'switch to clusters — citation knots'}
+        title={store.layout === 'cluster'
+          ? 'switch to spread — room per title'
+          : store.layout === 'spread'
+            ? 'switch to lattice — even fixed spacing'
+            : 'switch to clusters — citation knots'}
+      >{store.layout === 'cluster'
+          ? '⌗ clusters ●○○'
+          : store.layout === 'spread'
+            ? '▤ spread ○●○'
+            : '▦ lattice ○○●'}</button>
     </div>
     <details class="controls" open={!isPhone}>
       <summary class="dn-mono">
@@ -371,7 +390,10 @@
 
 <style>
   .shell {
-    display: flex;
+    /* CONSULT E §3: one bar, three BAYS — brand left, rocker in the middle
+       bay, keycap bank hard right. Columns, not a flex scatter. */
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: var(--dn-space-4);
     height: var(--dn-header-h);
@@ -407,6 +429,22 @@
       color-mix(in srgb, var(--dn-electric) 55%, transparent) 82%,
       transparent 100%);
     opacity: 0.6;
+  }
+  /* CONSULT E §3: static SOLDER PADS on the bus - the rail reads as wired,
+     not painted. repeating-gradient masked to the bottom 2px, zero loops. */
+  .bus-rail,
+  .shell > .bus-rail { overflow: hidden; }
+  .bus-pads {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    pointer-events: none;
+    z-index: 0;
+    background: repeating-linear-gradient(90deg,
+      transparent 0 46px,
+      color-mix(in srgb, var(--dn-electric-dim) 70%, transparent) 46px 48px);
   }
 
   /* CONSULT C — the electric rider: a bright pulse traversing the bus.
@@ -451,63 +489,72 @@
     font-weight: 400;
     letter-spacing: var(--dn-track-tight);
     text-transform: uppercase;
-    /* HEADER V2 (Owner: "the header looks dull"): the wordmark sits on a
-       nameplate - a hairline-bordered instrument badge with a notched corner,
-       so the brand reads as a plate wired to the bus, not bare text. */
-    border: 1px solid var(--dn-hairline);
-    padding: 0.3em 0.75em 0.3em 0.6em;
-    clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
-    background-color: color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
+    /* CONSULT E §3: no plate — the brand is mark 20px + wordmark 15px/600
+       with a 1px electric CHROMATIC FRINGE (static text-shadow). Hover/focus
+       lights the full split: pink left, electric right. Electricity is a
+       STATE, not wallpaper. */
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border: none;
+    padding: 0;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 0.45em;
   }
-  /* The wordmark itself is a filament (DS-COOLEST directive 7): the
-     white->electric value ramp from --dn-wordmark, no chromatic fringe, no
-     hover glow. The nameplate carries the border; the text carries the ramp. */
+  .brand .wordmark {
+    text-shadow: 1px 0 0 color-mix(in srgb, var(--dn-electric) 45%, transparent);
+  }
+  .brand:hover .wordmark,
+  .brand:focus-visible .wordmark {
+    text-shadow:
+      -2px 0 0 color-mix(in srgb, var(--dn-accent-2) 55%, transparent),
+      2px 0 0 color-mix(in srgb, var(--dn-electric) 65%, transparent);
+  }
+  /* The wordmark: the white->electric filament ramp (consult E §1) +
+     the 1px fringe above. background-clip keeps it text. */
   .brand .wordmark {
     background: var(--dn-wordmark);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  :global([data-theme='light']) .brand {
-    background-color: transparent;
-    border-color: var(--dn-hairline);
-  }
   :global([data-theme='light']) .brand .wordmark {
     background: none;
     color: var(--dn-fg);
     -webkit-text-fill-color: var(--dn-fg);
+    /* Paper arm: 2px electric under-rule 4px below the baseline. */
+    box-shadow: 0 6px 0 -4px var(--dn-electric);
   }
   @media (prefers-color-scheme: light) {
     :global(:root:not([data-theme])) .brand .wordmark {
       background: none;
       color: var(--dn-fg);
       -webkit-text-fill-color: var(--dn-fg);
+      box-shadow: 0 6px 0 -4px var(--dn-electric);
     }
     /* CONSULT D (F3): the fixed hintkey stops flip on OS-light too. */
     :global(:root:not([data-theme])) .tool.kbd .hintkey { color: #1a4fb3; }
   }
-  .brand:hover { border-color: color-mix(in srgb, var(--dn-electric) 60%, transparent); }
-  .brand:hover .wordmark { color: var(--dn-electric); -webkit-text-fill-color: var(--dn-electric); background: none; }
 
-  /* HEADER V2: corner brackets at the bar's ends - the HUD frame vocabulary,
-     electric, static. The bar now reads as a framed instrument, not a strip. */
+
+  /* CONSULT E §3: LEFT CAP RAIL — a 2px x 100% electric spine at x:0 with a
+     10px x 6px dim notch at vertical centre. The bar has a physical left
+     edge now; static, non-text (electric on raise = 4.1:1, floor 3:1). */
   .shell::before {
     content: "";
     position: absolute;
-    inset: 6px 10px auto 10px;
-    height: 8px;
+    left: 0;
+    top: 0;
+    bottom: 2px;
+    width: 2px;
+    background: var(--dn-electric);
     pointer-events: none;
+  }
+  .shell::before {
     background:
-      linear-gradient(var(--dn-electric), var(--dn-electric)) left top / 10px 1px,
-      linear-gradient(var(--dn-electric), var(--dn-electric)) left top / 1px 8px,
-      linear-gradient(var(--dn-electric), var(--dn-electric)) right top / 10px 1px,
-      linear-gradient(var(--dn-electric), var(--dn-electric)) right top / 1px 8px;
-    background-repeat: no-repeat;
-    opacity: 0.85;
+      linear-gradient(var(--dn-electric-dim), var(--dn-electric-dim)) center / 10px 6px no-repeat,
+      var(--dn-electric);
   }
 
   /* Segmented control: square cells, brackets around the label so an active
@@ -541,14 +588,16 @@
   min-height: 40px;
   min-width: 40px;
 }
-  .seg .bracket { color: var(--dn-border-strong); }
   .seg:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
   .seg.active {
-    color: var(--dn-electric);
+    /* CONSULT E §3: active label takes the TEXT-SAFE accent (6.2:1) — the
+       fill tier never carries text. */
+    color: var(--dn-accent);
     font-weight: 600;
-    border-color: color-mix(in srgb, var(--dn-electric) 80%, transparent);
-    /* DS-COOLEST directive 20: states come from fill and weight, not halo —
-       the sliding thumb owns the fill (below). */
+    border-color: transparent;
+    /* The lead tick: a 3px electric mark on the cell's left edge — the
+       bracket pair's replacement, positioned by the same measured thumb. */
+    box-shadow: inset 3px 0 0 var(--dn-electric);
   }
   /* The sliding thumb paints the fill: one lit block gliding between the
      segments (measured, so unequal labels are honest), a spring on it.
@@ -561,10 +610,12 @@
     left: 0;
     height: 100%;
     border-radius: 2px;
-    /* CONSULT C — electric blue fill + edge: the active mode's lit keycap. */
+    /* CONSULT E §3: the keycap — 16% electric fill, 72% edge, and the
+       inset white highlight that makes it read as a physical cap. The
+       outer glow is dead (directive 20). */
     background: color-mix(in srgb, var(--dn-electric) 16%, transparent);
     border: 1px solid color-mix(in srgb, var(--dn-electric) 72%, transparent);
-    box-shadow: var(--dn-glow-electric);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 18%, transparent);
     transition: transform 220ms cubic-bezier(0.3, 1.3, 0.35, 1),
       width 220ms cubic-bezier(0.3, 1.3, 0.35, 1);
     pointer-events: none;
@@ -574,8 +625,9 @@
     transform: translateY(1px);
     filter: brightness(1.25);
   }
-  .seg.active .bracket { color: color-mix(in srgb, var(--dn-electric) 55%, transparent); }
-  .spark { color: var(--dn-accent); animation: dn-pulse 2.6s ease-in-out infinite; }
+  /* CONSULT E §2: the spark pulse RETIRES — a static lit glyph. One loop
+     dead by name (loop ledger: desktop budget down to 2 steady states). */
+  .spark { color: var(--dn-accent); }
   .seg.active .spark { color: var(--dn-electric); }
 
   /* CONSULT C (E4) + CONSULT D (F3 fix): search is the electric action —
@@ -586,18 +638,37 @@
   .tool.kbd .hintkey { color: #4d94ff; }
   .tool.kbd:hover { color: var(--dn-electric); border-color: color-mix(in srgb, var(--dn-electric) 65%, transparent); }
 
-  .tools { display: flex; gap: 0.35rem; margin-left: auto; align-items: center; }
-  /* HEADER V2: every tool is a keycap on the electric rail - hover lights the
-     same neon edge the bus carries, so the whole bar speaks one language. */
-  .tool { transition: color 120ms, border-color 120ms; }
-  .tool:hover { color: var(--dn-electric-dim); border-color: color-mix(in srgb, var(--dn-electric) 60%, transparent); }
+  .tools { display: flex; align-items: center; }
+  /* CONSULT E §3: the KEYCAP BANK — four independent outlines become one
+     40px-tall bordered strip; 1px dividers; cells 40x40. Hover = cell fill
+     10% electric + glyph to the text-safe accent. */
+  .bank {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--dn-hairline);
+    border-radius: 2px;
+    height: 40px;
+  }
+  .bank .tool {
+    border: none;
+    border-radius: 0;
+    min-width: 40px;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bank .tool + .tool { border-left: 1px solid color-mix(in srgb, var(--dn-fg) 12%, transparent); }
+  .bank .tool:hover { background: color-mix(in srgb, var(--dn-electric) 10%, transparent); color: var(--dn-accent); }
   /* The live readout: how much corpus is behind this interface.
      FULL-RIGHTS OP-52 + CONSULT C — the framing reticle arms flip to
      electric blue (the header is now the electric instrument); the LED
      itself STAYS acid (live = acid contract). DOWN still flips everything
      to the broken-wire pink. */
   .status {
-    --dn-src: var(--dn-electric);   /* was var(--dn-acid) */
+    /* CONSULT E §3: the status PLATE — 1px electric 30% frame, 2px acid left
+       cap (live = acid contract), tabular figures. */
+    --dn-src: var(--dn-electric);
     font-size: var(--dn-text-2xs);
     letter-spacing: var(--dn-track-tight);
     color: var(--dn-fg-faint);
@@ -606,35 +677,37 @@
     gap: 0.5em;
     margin-right: 0.5rem;
     white-space: nowrap;
-    padding: 0.2em 0.65em;
+    padding: 0 0.65em 0 0.55em;
+    min-height: 28px;
     font-variant-numeric: tabular-nums;
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 30%, transparent);
+    border-left: 2px solid var(--dn-acid);
   }
-  .status.down { --dn-src: var(--dn-accent-2); }
-  .status .led {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    /* Acid: the LIVE color (r3). The corpus readout is the one place the site
-       says "online", so the LED wears the acid signal, not the accent. The
-       perpetual heartbeat is gone (cool-pass OP-15): a lamp that always
-       pulses reads as wallpaper — the halo-ring glow IS the live state, and
-       dropping the loop frees a desktop motion slot (cap 4 -> 3). */
+  .status.down { --dn-src: var(--dn-accent-2); border-left-color: var(--dn-accent-2); }
+  /* The 3-bar meter: live reads as a rising signal (4/7/10px, acid). The
+     7px LED dot is retired. Bars are decorative — the text names the state. */
+  .status .meter {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .status .meter i {
+    width: 2px;
     background: var(--dn-acid);
-    box-shadow:
-      0 0 9px var(--dn-acid),
-      0 0 20px color-mix(in srgb, var(--dn-acid) 55%, transparent);
   }
-  .status.down .led { background: var(--dn-accent-2); box-shadow: 0 0 9px var(--dn-accent-2), 0 0 20px color-mix(in srgb, var(--dn-accent-2) 55%, transparent); }
-
-/* Status LED is never colour-only: the strip text already names the
-   state ("connected" / "offline" / "…"), so the LED is decorative. But
-   the DOWN state should still read without colour: the LED gets a
-   distinct shape (a square outline) so it is not the accent-only cue. */
-.status.down .led {
-  border-radius: 2px;
-  outline: 1px solid var(--dn-amber);
-  outline-offset: 1px;
-}
+  .status .meter i:nth-child(1) { height: 4px; }
+  .status .meter i:nth-child(2) { height: 7px; }
+  .status .meter i:nth-child(3) { height: 10px; }
+  /* DOWN: one bar remains, pink, square — the non-colour cue. */
+  .status.down .meter i:nth-child(2),
+  .status.down .meter i:nth-child(3) { display: none; }
+  .status.down .meter i:nth-child(1) {
+    height: 10px;
+    width: 6px;
+    background: var(--dn-accent-2);
+    outline: 1px solid var(--dn-amber);
+    outline-offset: 1px;
+  }
 /* Light material for the shell: the solid translucent fill on paper
    picks up the raised surface cleanly, and the signal rail drops to a
    darker ink line so it does not wash out. */
@@ -704,7 +777,7 @@
     min-height: 44px;
     justify-content: center;
   }
-  .seg .bracket, .seg .seg-txt { display: none; }
+  .seg .seg-txt { display: none; }
   .seg .seg-ico { font-size: 1.2rem; }
 
   .tool {
@@ -942,10 +1015,6 @@
     background: var(--dn-bg-sunken);
     border: 1px solid var(--dn-border);
   }
-  .panel .dim { color: var(--dn-fg-muted); }
-  .panel .dots { color: var(--dn-hot); animation: dn-pulse 1.2s ease-in-out infinite; }
-  .panel .step { animation: dn-rise 260ms ease-out both; }
-  .panel .step.dim { animation-delay: 0.16s; }
   .retry {
     margin-top: 0.4rem;
     font-size: 0.85rem;
@@ -967,45 +1036,51 @@
     place-items: center;
     padding: 3rem 1rem;
   }
-  /* BOOT RETICLE: the instrument's iris. A ring of 16 arms (repeating-conic
-     gradient, static) around a neon-blue core that breathes ONCE family with
-     the dots - both transient (unmount on ready). Static art, zero cost. */
-  .panel.boot { text-align: left; }
-  .boot-reticle {
-    position: relative;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 0.9rem;
-    border-radius: 50%;
-    background:
-      repeating-conic-gradient(
-        from 0deg,
-        color-mix(in srgb, var(--dn-electric) 75%, transparent) 0deg 3deg,
-        transparent 3deg 22.5deg);
-    -webkit-mask: radial-gradient(circle, transparent 55%, #000 56%, #000 100%);
-    mask: radial-gradient(circle, transparent 55%, #000 56%, #000 100%);
+  /* CONSULT E §4: the boot — board floor, 1px electric 28% frame, .dn-hud
+     brackets. Timeline is ONE-SHOT (<=900ms): 90ms fade-in, the scan bar
+     crosses the charge line once at t=120ms, rows rise staggered from
+     t=240ms, bars settle at t=600ms. NO infinite loop at all (the ruling
+     permitted one; the one-shot scan carries the energy without it). */
+  .boot {
+    width: min(38rem, 100%);
+    padding: 1.6rem 1.8rem;
+    display: grid;
+    gap: 0.55rem;
+    background: var(--dn-bg);
+    border: 1px solid color-mix(in srgb, var(--dn-electric) 28%, transparent);
+    animation: boot-in 90ms ease-out both;
   }
-  .boot-reticle .core {
-    position: absolute;
-    inset: 38%;
-    border-radius: 50%;
-    background: var(--dn-electric);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--dn-electric) 80%, transparent),
-      0 0 30px color-mix(in srgb, var(--dn-electric) 35%, transparent);
-    animation: dn-pulse 1.2s ease-in-out infinite;
+  @keyframes boot-in { from { opacity: 0; } }
+  .boot .brand-row {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    animation: boot-rise 180ms steps(3) 60ms both;
   }
-  /* BOOT BUS: the header's electric rail, previewed here - a 2px neon-blue
-     bus with one bright rider sweeping while the corpus lands. The visitor
-     watches the same wire they are about to scroll under. */
-  .boot-bus {
+  .boot .boot-mark {
+    font-family: var(--dn-font-display);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: var(--dn-track-tight);
+    background: var(--dn-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  :global([data-theme='light']) .boot .boot-mark {
+    background: none;
+    color: var(--dn-fg);
+    -webkit-text-fill-color: var(--dn-fg);
+  }
+  .boot .count { margin-left: auto; color: var(--dn-fg-faint); font-size: var(--dn-text-2xs); }
+  .boot .charge {
     position: relative;
-    width: 100%;
     height: 2px;
-    margin: 0.8rem 0 0.9rem;
-    background: color-mix(in srgb, var(--dn-electric) 38%, transparent);
+    background: color-mix(in srgb, var(--dn-electric) 30%, transparent);
     overflow: hidden;
   }
-  .boot-bus .rider {
+  .boot .charge .scan {
     position: absolute;
     top: 0;
     left: 0;
@@ -1013,11 +1088,48 @@
     height: 100%;
     background: linear-gradient(90deg, transparent,
       color-mix(in srgb, var(--dn-electric) 95%, white 5%) 50%, transparent);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--dn-electric) 70%, transparent);
-    animation: dn-bus 2.6s ease-in-out infinite alternate;
+    animation: boot-scan 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms 1 both;
+  }
+  @keyframes boot-scan {
+    from { transform: translateX(-110%); }
+    to { transform: translateX(460%); }
+  }
+  .boot .row { margin: 0; }
+  .boot .idx {
+    color: var(--dn-fg);
+    letter-spacing: var(--dn-track);
+    font-size: var(--dn-text-sm);
+    animation: boot-rise 200ms ease-out 240ms both;
+  }
+  .boot .idx b { color: var(--dn-accent); font-weight: 600; }
+  .boot .sub {
+    color: var(--dn-fg-muted);
+    font-size: var(--dn-text-sm);
+    animation: boot-rise 200ms ease-out 320ms both;
+  }
+  .boot .volts {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 22px;
+    margin-top: 0.2rem;
+  }
+  .boot .volts i {
+    width: 6px;
+    background: var(--dn-electric);
+    animation: boot-volt 300ms cubic-bezier(0.2, 0.8, 0.2, 1) 600ms both;
+  }
+  .boot .volts i:nth-child(1) { height: 6px; }
+  .boot .volts i:nth-child(2) { height: 10px; }
+  .boot .volts i:nth-child(3) { height: 14px; }
+  .boot .volts i:nth-child(4) { height: 18px; }
+  .boot .volts i:nth-child(5) { height: 22px; background: var(--dn-acid); }
+  @keyframes boot-volt { from { height: 2px; } }
+  @keyframes boot-rise {
+    from { opacity: 0; transform: translateY(6px); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .boot-reticle .core, .boot-bus .rider { animation: none; }
+    .boot, .boot .scan, .boot .brand-row, .boot .row, .boot .volts i { animation: none; }
   }
 
   .overlay {
@@ -1099,10 +1211,7 @@
   .shell::after { animation: none; }
   .bus-rail::before { animation: none; opacity: 0; }
   .spark { animation: none; }
-  .status .led { animation: none; }
-  .panel .dots { animation: none; }
-  .boot-reticle .core { animation: none; }
-  .boot-bus .rider { animation: none; opacity: 0; }
+  .boot, .boot .scan, .boot .brand-row, .boot .row, .boot .volts i { animation: none; }
 
   /* The controls panel's clip-path notch relies on a fixed pixel clip; at
      narrow widths the corner should shrink so it does not eat the summary

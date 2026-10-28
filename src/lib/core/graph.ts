@@ -217,9 +217,9 @@ export function commonTags(data: GraphData, min = 2): string[] {
 
 /** The title as the canvas prints it: a chapter name without its manual
     suffix, capped so one 60-word Info node cannot dominate a whole screen. */
-export function shortTitle(title: string): string {
+export function shortTitle(title: string, max = 26): string {
   const t = title.replace(/\s*\([^)]*\)\s*$/, '') // drop "(The Org Manual)"
-  return t.length > 26 ? t.slice(0, 25) + '…' : t
+  return t.length > max ? t.slice(0, max - 1) + '…' : t
 }
 
 /* Advance width of the label font: 11px JetBrains Mono is a monospace at
@@ -319,14 +319,24 @@ export function labelExtent(title: string | undefined, soma: number): Extent {
    chapters keeps each manual's colour one contiguous band, so the grid still
    reads as structure — bands of source hue, hubs leading — instead of static. */
 
+/** sin 60° — the exact hex row-height ratio, so "one pitch away" is exact
+ *  to float precision (a 0.866 literal left a 0.0009 lie in the math). */
+const HEX = Math.sqrt(3) / 2
+
 /** The pitch (world px between neighbouring nodes) for `count` nodes filling
- *  a w×h room: the even density the room affords, clamped so a small ego
- *  graph never opens into a meadow (72 px) and a full corpus never welds shut
- *  (28 px clears the fattest soma at overview zoom). */
+ *  a w×h room: OP-56's hex fill math — the field is authored to the room at
+ *  1:1 with no clamps, every interior node holds six neighbours at exactly
+ *  p, and the painter's radiusScale keeps somas inside the pitch. */
 export function latticePitch(count: number, w: number, h: number): number {
   if (!count || w <= 0 || h <= 0) return 32
-  const density = Math.sqrt((w * h) / count)
-  return Math.max(28, Math.min(72, density * 0.82))
+  // OP-56 fill math: the hex field is authored to FILL the measured room at
+  // 1:1 — columns from the hex density, then the pitch is whatever keeps
+  // `rows` of that width inside the height. No clamps: the field IS the
+  // room, every node holds the same six-neighbour distance p, and the
+  // painter's radiusScale (0.36·p/18.33) keeps somas inside it.
+  const cols = Math.max(1, Math.round(Math.sqrt((HEX * count * w) / h)))
+  const rows = Math.ceil(count / cols)
+  return Math.min(w / cols, h / ((rows - 1) * HEX + 1))
 }
 
 /** A node the lattice can place: the fields GraphView copies onto the engine
@@ -369,16 +379,20 @@ export function latticePlace(
     return a.id < b.id ? -1 : a.id > b.id ? 1 : 0
   })
   const rows = Math.ceil(n / cols)
+  // OP-56 hex: odd rows shift half a pitch right and every row steps HEX·p
+  // down (HEX = sin 60°, exact), so each interior node holds SIX neighbours
+  // at exactly p — the fixed-distance promise as geometry, not as a force.
+  // The serpentine walk stays: a hue band FOLDS at the row end instead of
+  // tearing (the next band starts where this one stops), now on the hex grid.
+  const hexY = pitch * HEX
   const offX = ((cols - 1) * pitch) / 2
-  const offY = ((rows - 1) * pitch) / 2
+  const offY = ((rows - 1) * hexY) / 2
   ordered.forEach((nd, i) => {
     const row = Math.floor(i / cols)
     const colRaw = i % cols
-    // Serpentine: odd rows walk right-to-left, so a hue band FOLDS at the
-    // row end instead of tearing — the next band starts where this one stops.
     const col = row % 2 ? cols - 1 - colRaw : colRaw
-    nd.x = col * pitch - offX
-    nd.y = row * pitch - offY
+    nd.x = col * pitch - offX + (row % 2 ? pitch / 2 : 0)
+    nd.y = row * hexY - offY
     nd.fx = nd.x
     nd.fy = nd.y
   })
