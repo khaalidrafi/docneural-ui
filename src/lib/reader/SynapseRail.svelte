@@ -68,6 +68,11 @@
   // re-sync.
   let boxEl: HTMLDivElement | undefined = $state()
   const NO_NB: Set<string> = new Set()
+  // OP-56 mini-heading cap: 4 names desktop, 6 phone (the phone frame is the
+  // same 210px but full-width labels read easier in a thumb session); a hub
+  // over 24 neighbours drops to centre + 2 inside the painter.
+  const miniCap =
+    typeof matchMedia === 'function' && matchMedia('(max-width: 600px)').matches ? 6 : 4
   const minimapLoad = makeNeuronLoader({
     tokenEl: () => boxEl,
     selected: () => doc?.id ?? null,
@@ -76,7 +81,8 @@
     // Owner law 2026-10-28: "Local graph should show node headings!" — the
     // mini-map paints every neuron's name it can without overprinting (the
     // painter's claim grid drops whichever would land on one already drawn).
-    miniLabels: () => true
+    miniLabels: () => true,
+    miniCap: () => miniCap
   })
 
   // Cap the signal lists so the rail stays light on a potato and readable.

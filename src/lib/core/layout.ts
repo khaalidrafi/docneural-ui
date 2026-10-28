@@ -9,10 +9,11 @@ import type { LayoutMode } from './types'
 const KEY = 'docneural:layout'
 
 /** First-visit default: SMALL corpora open packed (the cluster silhouette
- *  shows how a small corpus hangs together); big ones open spread — past a
- *  few hundred neurons the packed view is a solid blob of ink, and the
- *  spread layout is the one overview you can actually read. The visitor's
- *  own toggle always wins from here on. */
+ *  shows how a small corpus hangs together); big ones open LATTICE — OP-56's
+ *  owner-call ruling on the Owner's fixed-distance law: past a few hundred
+ *  neurons the packed view is a solid blob of ink, and the lattice is the
+ *  one overview that is never crowded (deterministic hex, zero physics).
+ *  The visitor's own toggle always wins from here on. */
 export function loadLayout(nodeCount = 0): LayoutMode {
   try {
     const saved = localStorage.getItem(KEY)
@@ -20,7 +21,7 @@ export function loadLayout(nodeCount = 0): LayoutMode {
   } catch {
     /* private mode: fall through to the size-based default */
   }
-  return nodeCount > 300 ? 'spread' : 'cluster'
+  return nodeCount > 300 ? 'lattice' : 'cluster'
 }
 
 export function writeLayout(mode: LayoutMode): void {

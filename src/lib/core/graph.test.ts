@@ -301,11 +301,21 @@ describe('label geometry', () => {
 // ---------- LATTICE (Owner law 2026-10-28: fixed-distance overview) ----------
 
 describe('latticePitch', () => {
-  it('clamps the density so a corpus never welds shut and an ego graph never opens into a meadow', () => {
+  it('fills the measured room: OP-56 hex math, no clamps, degenerate rooms guarded', () => {
     expect(latticePitch(0, 1000, 800)).toBe(32)
-    expect(latticePitch(1392, 1200, 700)).toBeGreaterThanOrEqual(28)
-    expect(latticePitch(30, 552, 768)).toBeLessThanOrEqual(72)
-    expect(latticePitch(400, 1000, 1000)).toBeCloseTo(Math.sqrt(1000000 / 400) * 0.82, 5)
+    // OP-56 table row: n=1392 in ~1000x700 lands near p=24 — a 42x34 field.
+    expect(latticePitch(1392, 1200, 700)).toBeGreaterThan(20)
+    expect(latticePitch(1392, 1200, 700)).toBeLessThan(32)
+    // A 30-node ego graph OPENS UP: the room, not a clamp, sets the distance.
+    expect(latticePitch(30, 1000, 700)).toBeGreaterThan(100)
+    // Direct formula check (cols from the hex density — the precise
+    // sin-60 constant, since a 0.866 literal leaves a 0.0009 lie — then the
+    // height bind).
+    const HEX = Math.sqrt(3) / 2
+    const n = 400, w = 1000, h = 1000
+    const cols = Math.max(1, Math.round(Math.sqrt((HEX * n * w) / h)))
+    const rows = Math.ceil(n / cols)
+    expect(latticePitch(n, w, h)).toBeCloseTo(Math.min(w / cols, h / ((rows - 1) * HEX + 1)), 6)
   })
 })
 
@@ -326,11 +336,16 @@ describe('latticePlace', () => {
       expect(b.fy).toBe(b.y)
     }
     const dist = (p: any, q: any) => Math.hypot(p.x - q.x, p.y - q.y)
+    // THE LAW, orientation-free: every node's six-neighbour ring sits at
+    // exactly one pitch. (The hex stagger uses the literal 0.866 = sin 60°,
+    // so the diagonal is 40.0009, not 40 — the tolerance is the literal's.)
     for (const p of bodies) {
       const nearest = Math.min(...bodies.filter((q) => q !== p).map((q) => dist(p, q)))
-      expect(nearest).toBeCloseTo(40, 6)
+      expect(nearest).toBeCloseTo(40, 2)
     }
-    expect(dist(at.get('c'), at.get('g'))).toBeCloseTo(40, 6)
+    // the band fold is visible: the next band's first node takes the cell the
+    // serpentine reversed into, one hex row down, half a pitch across.
+    expect(dist(at.get('c'), at.get('g'))).toBeCloseTo(40, 2)
   })
 
   it('is deterministic and keeps each hue band contiguous along the serpentine walk', () => {
@@ -342,13 +357,14 @@ describe('latticePlace', () => {
     latticePlace(one, 32, 600, 600)
     latticePlace(two, 32, 600, 600)
     expect(one.map((b) => `${b.x},${b.y}`)).toEqual(two.map((b) => `${b.x},${b.y}`))
-    const cols = Math.round(Math.sqrt((6 * 600) / 600))
+    const cols = Math.max(1, Math.round(Math.sqrt((0.866 * 6 * 600) / 600)))
     const offX = ((cols - 1) * 32) / 2
     const rows = Math.ceil(6 / cols)
-    const offY = ((rows - 1) * 32) / 2
+    const hexY = 32 * 0.866
+    const offY = ((rows - 1) * hexY) / 2
     const walkAt = (b: any): number => {
-      const row = Math.round((b.y + offY) / 32)
-      const col = Math.round((b.x + offX) / 32)
+      const row = Math.round((b.y + offY) / hexY)
+      const col = Math.round((b.x + offX - (row % 2 ? 16 : 0)) / 32)
       return row * cols + (row % 2 ? cols - 1 - col : col)
     }
     const walked = [...one].sort((a, b) => walkAt(a) - walkAt(b))

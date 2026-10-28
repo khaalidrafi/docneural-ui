@@ -60,12 +60,20 @@ export type NeuronFocus = {
   /** True when the visitor asked for the spread layout. Read per paint, like
    *  `selected`, so turning it on never rebuilds the graph data. */
   spread?: () => boolean
+  /** OP-56 lattice radiusScale: somas shrink with the hex pitch so a tight
+   *  field (p≈24 at corpus scale) can never overlap. Read per paint; 1 = no
+   *  scaling (cluster/spread keep their authored radii). */
+  somaScale?: () => number
   /** Mini-map headings (Owner law 2026-10-28: "Local graph should show node
    *  headings!"). True = the compact painter labels every neuron it can
    *  without overprinting; the claim grid drops whichever names would land
    *  on one already drawn, so a busy hub keeps its own name and its
    *  first-drawn neighbours instead of an ink pile. */
   miniLabels?: () => boolean
+  /** OP-56 mini-heading cap: how many names the 210px frame may ink besides
+   *  the centre (4 desktop / 6 phone; a hub over 24 neighbours drops to
+   *  centre + 2). Read per paint. */
+  miniCap?: () => number
   /** Handed the live engine once it exists, so the component can push layout
    *  changes into it. GraphView keeps the instance private and exposes no
    *  physics knob, so the construction seam is the only door. */
@@ -247,6 +255,9 @@ export function fitReadable(
     pad: number
     inset?: { top: number; right: number; bottom: number; left: number }
     maxScale?: number
+    /** Camera tween length. The lattice passes 0: its field is authored to
+     *  the room, so the "fit" is a statement of fact, not a transition. */
+    duration?: number
   }
 ): { k: number; w: number; h: number } {
   const bbox = engine.getGraphBbox()
@@ -261,14 +272,15 @@ export function fitReadable(
     (box.h - inset.top - inset.bottom - opts.pad * 2) / worldH
   )
   const k = Math.min(opts.maxScale ?? Infinity, Math.max(1e-3, fit))
-  engine.zoom(k, 420)
+  const dur = opts.duration ?? 420
+  engine.zoom(k, dur)
   // The visible rect is off-centre whenever an overlay eats one side, so the
   // world point to park at the CANVAS centre is off-centre by half the
   // difference — over the scale, because it is a screen distance.
   engine.centerAt(
     (bbox.x[0] + bbox.x[1]) / 2 + (inset.right - inset.left) / (2 * k),
     (bbox.y[0] + bbox.y[1]) / 2 + (inset.bottom - inset.top) / (2 * k),
-    420
+    dur
   )
   return { k, w: worldW, h: worldH }
 }
@@ -429,6 +441,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let cells: Map<number, Box[]> = new Map()
   let drawn = 0
   let frameNodes = 0
+  let miniLabelCount = 0
   const cellKey = (cx: number, cy: number): number => (cx + 65536) * 131072 + (cy + 65536)
   const eachCell = (b: Box, fn: (cx: number, cy: number) => void): void => {
     const x0 = Math.floor(b.x / CELL)
@@ -475,11 +488,12 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     if (drawn >= frameNodes) {
       cells = new Map()
       drawn = 0
+      miniLabelCount = 0
       frameNodes = engine.graphData().nodes.length || 1
     }
     drawn++
     const col = nodeColor(n, tokensNow())
-    const r = somaRadius(n, focus.compact)
+    const r = somaRadius(n, focus.compact) * (focus.compact ? 1 : focus.somaScale?.() ?? 1)
     const hot = isHot(n.id)
     // The selected node alone: it wears the targeting reticle, the 1-hop
     // neighbours only the brighter halo. Reticle on one node is a cheap way
@@ -523,10 +537,14 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       // label below — claim grid, paper-coloured stroke behind the glyphs,
       // hot set never loses its name — at mini-map scale: 9px screen size,
       // under the soma, ink = --dn-fg (AA on --dn-graph-bg in both themes;
-      // the halo stroke carries it over wires).
+      // the halo stroke carries it over wires). OP-56 caps: 18-char truncation
+      // (104px at 9px mono), at most miniCap() names besides the centre, and
+      // a hub over 24 neighbours drops to centre + 2 — the centre (always hot
+      // while a doc is open) keeps its name no matter what.
       if (focus.miniLabels?.()) {
-        const label = shortTitle(n.title ?? '')
-        if (label) {
+        const cap = (frameNodes > 24 ? 2 : focus.miniCap?.() ?? 4) + 1
+        const label = shortTitle(n.title ?? '', 18)
+        if (label && (hot || miniLabelCount < cap)) {
           const fontSize = Math.max(8, 9 / globalScale)
           ctx.save()
           ctx.font = `600 ${fontSize}px "JetBrains Mono", ui-monospace, monospace`
@@ -540,6 +558,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
             return
           }
           claim(box)
+          miniLabelCount++
           ctx.strokeStyle = paper
           ctx.globalAlpha = 0.85
           ctx.lineWidth = fontSize * 0.32
