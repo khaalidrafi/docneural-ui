@@ -489,10 +489,13 @@ body.dn-body::after {
   text-decoration-color: var(--dn-accent-dim);
 }
 
-:where(a, button, input, [tabindex]):focus-visible {
+:where(a, button, input, [tabindex], summary):focus-visible {
   /* Focus is a RING, never a brighter border (cool-pass OP-10): 2px outline
      + glow. Colour stays accent — the Signals charter reserves cyan for
-     focus; the strong border tier never carries it. */
+     focus; the strong border tier never carries it. summaries added by
+     CB-EXHAUST: the browser default `1px auto` ring measured 1.1:1 on the
+     ledger (invisible) — the designed ring replaces it (live re-measure:
+     accent ring on raise = AA non-text pass). */
   outline: 2px solid var(--dn-accent);
   outline-offset: 2px;
   box-shadow: var(--dn-glow);
