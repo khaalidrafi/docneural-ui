@@ -13,6 +13,7 @@ import {
   labelWidth,
   latticePitch,
   latticePlace,
+  manualToc,
   localGraph,
   neighborIds,
   nodeMatches,
@@ -373,5 +374,47 @@ describe('latticePlace', () => {
     for (const idxs of bands.values()) {
       expect(Math.max(...idxs) - Math.min(...idxs)).toBe(idxs.length - 1)
     }
+  })
+})
+
+// ---------- manualToc (Owner directive 2026-10-31: TOC not a page listing) ----------
+
+describe('manualToc', () => {
+  const page = (id: string, up?: string, next?: string): any => ({
+    id, slug: id, title: id, tags: ['emacs'], ...(up ? { up } : {}), ...(next ? { next } : {})
+  })
+
+  it('builds the Info tree: roots are pages whose up is outside the set, siblings ride next', () => {
+    const tree = manualToc([
+      page('m--Top', undefined, 'm--Ch1'),
+      page('m--Ch1', 'm--Top', 'm--Sec1'),
+      page('m--Sec1', 'm--Ch1'),
+      page('m--Ch2', 'm--Top')
+    ])
+    expect(tree.map((n) => n.doc!.id)).toEqual(['m--Top'])
+    expect(tree[0].children.map((n) => n.doc!.id)).toEqual(['m--Ch1', 'm--Ch2'])
+    expect(tree[0].children[0].children.map((n) => n.doc!.id)).toEqual(['m--Sec1'])
+  })
+
+  it('falls back to A–Z letter groups when the corpus carries no Info structure', () => {
+    const tree = manualToc([
+      page('org--zeta'), page('org--Alpha'), page('org--mid'), page('org--3way')
+    ])
+    expect(tree.map((n) => n.group)).toEqual(['A', 'M', 'Z'])
+    expect(tree[0].children.map((n) => n.doc!.id)).toEqual(['org--Alpha'])
+    expect(tree[0].doc).toBeUndefined() // groups are pure folders
+  })
+
+  it('keeps small unstructured manuals flat (a 24-page list needs no folders)', () => {
+    const pages = Array.from({ length: 10 }, (_, i) => page(`m--p${i}`))
+    const tree = manualToc(pages)
+    expect(tree.every((n) => n.doc && n.children.length === 0)).toBe(true)
+  })
+
+  it('survives a cyclic up without hanging', () => {
+    const a = page('m--a', 'm--b')
+    const b = page('m--b', 'm--a')
+    const tree = manualToc([a, b])
+    expect(tree.length).toBe(2) // neither up resolves inside the set as a root parent
   })
 })

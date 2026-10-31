@@ -13,6 +13,7 @@
   import { sourceVars } from '../core/source'
   import ManualTabs from '../ui/ManualTabs.svelte'
   import CorpusField from './CorpusField.svelte'
+  import Toc from './Toc.svelte'
 
   /* Instrument-style count-up on the corpus readout: the numbers sweep from
      zero once on mount, mono digits make it read like a boot readout.
@@ -100,14 +101,9 @@
     if (c) store.goto(c)
   }
 
-  // A manual can carry ~500 chapters; painting all of them on a potato is
-  // slow and useless to skim. Show a first page, offer the rest on demand.
-  // (Reset when the TOC's manual changes -- the $effect below.)
-  let showAll = $state(false)
-  $effect(() => {
-    void store.manual
-    showAll = false
-  })
+  // The TOC replaced the flat 60-card grid (Owner directive 2026-10-31):
+  // branch rows render closed, so a 752-page manual costs ~75 row layouts,
+  // not 752 — the old showAll pagination has no job here anymore.
 </script>
 
 <div class="home">
@@ -465,23 +461,12 @@
       </h2>
       <ManualTabs {store} />
     </div>
-    <!-- FULL-RIGHTS OP-41: the grid announces its own scale before you scan
-         it — manual, chapter count, total wire weight. Derived from the
-         same degree map the rows render (static template derivation). -->
-    <p class="grid-head dn-mono">// {DocneuralStore.manualTitle(store.manual) || 'all sources'} · {chapters.length} chapters · {[...degree.values()].reduce((a, b) => a + b, 0)}⌁ total</p>
-    <div class="grid">
-      {#each showAll ? chapters : chapters.slice(0, 60) as c, ci (c.id)}
-        <button class="card" style="--i: {ci}; {sourceVars(c.tags[0])}" onclick={() => store.goto(c)}>
-          <span class="card-title">{c.title}</span>
-          <span class="card-deg dn-mono">{degree.get(c.id) ?? 0}⌁</span>
-        </button>
-      {/each}
-      {#if !showAll && chapters.length > 60}
-        <button class="card show-all dn-mono" onclick={() => (showAll = true)}>
-          <span class="sa-k" aria-hidden="true">▸</span> show all {chapters.length - 60}
-        </button>
-      {/if}
-    </div>
+    <!-- Owner directive 2026-10-31: a TOC, not a page listing. The Info tree
+         the exporter already rides along (up/next) becomes the directory:
+         chapters as branches, sections nested, closed until asked for — the
+         shape that survives the hundreds of docs still to come. -->
+    <p class="grid-head dn-mono">// {DocneuralStore.manualTitle(store.manual) || 'all sources'} · toc · {chapters.length} pages · {[...degree.values()].reduce((a, b) => a + b, 0)}⌁ total</p>
+    <Toc {chapters} goto={(c) => store.goto(c)} {degree} activeId={store.selected?.id ?? null} />
   </section>
 
   <!-- CB-EXHAUST consults 1+3+4+6 (deepseek-v4.1-flash@codebuddy): the
