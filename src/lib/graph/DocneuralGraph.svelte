@@ -58,6 +58,8 @@
         const room = packRect(vp)
         const p = latticePitch(eng.graphData().nodes.length || 1, room.w, room.h)
         latticeK = Math.min(1, (0.36 * p) / 18.33)
+        latticeP = p
+        if (wrapEl) wrapEl.dataset.pitch = p.toFixed(1)
         applyLayout(eng, 'lattice', room)
         fitNow(eng, vp)
       }
@@ -134,6 +136,12 @@
   // capped at 1) so a corpus-scale field (p≈24) can never overlap. Recomputed
   // each time the lattice is (re)placed; read per paint via the focus.
   let latticeK = 1
+  // The same pitch, world px, read per paint by the neuron painter's label
+  // pass: labels render only when pitch·zoom >= 18px on screen (the phone
+  // lattice fix — desktop fit ≈31px is unchanged, a phone fit ≈17px stays a
+  // clean dot starfield). Kept beside latticeK because it is computed from
+  // the very same latticePitch call in both lattice (re)placement paths.
+  let latticeP = 0
 
   // WebGL is the canvas's one hard dependency (force-graph paints GL, not 2D).
   // On a machine with hardware acceleration off — and they exist, or the
@@ -287,10 +295,17 @@
         const room = packRect(vp)
         const p = latticePitch(eng.graphData().nodes.length || 1, room.w, room.h)
         latticeK = Math.min(1, (0.36 * p) / 18.33)
+        latticeP = p
+        if (wrapEl) wrapEl.dataset.pitch = p.toFixed(1)
         fitNow(eng, vp)
       }
       return
     }
+    // Left the lattice: drop the pitch so the painter's label gate goes inert
+    // (pitch <= 0 reads as "unknown" there). A stale phone pitch (~17px) would
+    // otherwise keep gating CLUSTER/SPREAD labels at fit zoom after the visitor
+    // toggled away — those layouts police their own collisions.
+    latticeP = 0
     applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined)
     fitNextStop = true
     if (!stopArmed) {
@@ -332,8 +347,12 @@
     // OP-56: lattice somas scale with the hex pitch; cluster/spread keep 1.
     somaScale: () => (store.layout === 'lattice' ? latticeK : 1),
     // Lattice labels ride absolute zoom (see NeuronFocus.lattice): at fit the
-    // field shows hub names only, and zooming fills the rest in.
+    // field shows hub names only, and zooming fills the rest in — but only
+    // while the pitch leaves 18px of screen room per name (NeuronFocus
+    // .latticePitchPx): on a phone the fit pitch is smaller than the type,
+    // and the honest state there is the clean starfield.
     lattice: () => store.layout === 'lattice',
+    latticePitchPx: () => latticeP,
     onEngine: (e) => { engine = e }
   })
 

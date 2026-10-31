@@ -56,7 +56,11 @@
 
   let paletteOpen = $state(false)
   let helpOpen = $state(false)
-  let theme = $state<string | null>(null)
+  // The glyph mirrors the LIVE attribute: main.ts arms data-theme before this
+  // component boots (explicit dark arm), so read it instead of assuming dark.
+  let theme = $state<string>(
+    typeof document !== 'undefined' ? (document.documentElement.dataset.theme ?? 'dark') : 'dark'
+  )
 
   // The sliding segmented thumb: measured off the live .seg buttons (the two
   // labels differ in width, so a 50% split would lie). Re-measured on mode
@@ -90,6 +94,13 @@
     const cur = document.documentElement.dataset.theme
     theme = cur === 'light' ? 'dark' : 'light'
     document.documentElement.dataset.theme = theme
+    // Persist the explicit choice so the next boot arms it before first
+    // paint (main.ts reads docneural:theme back). Private mode: ignore.
+    try {
+      localStorage.setItem('docneural:theme', theme)
+    } catch {
+      /* private mode */
+    }
   }
 
   function toggleLite(): void {
@@ -452,7 +463,14 @@
 
   /* CONSULT C — the electric rider: a bright pulse traversing the bus.
      One new desktop loop, transform-only, parked on phone + reduced-motion. */
-  .shell > * { position: relative; z-index: 1; }
+  /* The content lift: header children sit above the two decorative bus
+     spans (z 0). The lift must NOT catch those spans themselves — catching
+     .bus-pads turned it into a grid item, which pushed the tools onto a
+     second grid row that hung BELOW the 3.25rem bar and OVER the page
+     content (the reader-header collision the real-browser sweep caught at
+     390px, 2026-10-31). Both spans restore their own absolute positioning
+     right below; :not() keeps this rule from ever competing with them. */
+  .shell > :not(.bus-rail):not(.bus-pads) { position: relative; z-index: 1; }
   .bus-rail {
     position: absolute;
     left: 0;

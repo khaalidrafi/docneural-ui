@@ -12,7 +12,7 @@
 // no page of its own) are transparently followed to their canonical home.
 
 import type { DocLink, DocNode, GraphData, LayoutMode } from './types'
-import { coCitations, egoGraph, filteredGraph, localGraph, nodeViews, type NodeView } from './graph'
+import { coCitations, dedupeGraphTags, egoGraph, filteredGraph, localGraph, nodeViews, type NodeView } from './graph'
 import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
 import { loadLayout, writeLayout } from './layout'
@@ -254,7 +254,12 @@ export class DocneuralStore {
   /** Load graph.json once; then honor the deep link in the URL if present. */
   async load(): Promise<void> {
     try {
-      this.data = await this.fetchGraph()
+      // Ingest normalization (dedupeGraphTags): the exporter can ride the same
+      // tag twice onto one node, and a keyed `{#each doc.tags (tag)}` throws
+      // `each_key_duplicate` on the first duplicate — the shipped corpus has
+      // one on every node, which killed the graph-mode note preview. One
+      // pure pass at the single ingest point fixes every consumer.
+      this.data = dedupeGraphTags(await this.fetchGraph())
       this.ready = true
       // The size-aware layout default needs the corpus size, so it lands
       // here (the constructor ran before any fetch). A saved preference

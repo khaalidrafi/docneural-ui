@@ -128,7 +128,11 @@
       <h2 class="dn-mono">{doc.title}</h2>
       <div class="meta dn-mono">
         <span class="src">{sourceTitle(doc.tags[0]) || 'corpus'}</span>
-        {#each doc.tags as tag (tag)}<span class="tag">#{tag}</span>{/each}
+        <!-- Render guard: the each is KEYED BY the tag, so a duplicate in the
+             data throws each_key_duplicate and unmounts this preview (the
+             graph-mode crash of the 2026-10-31 sweep). The store dedupes at
+             ingest; this Set is the cheap second belt on the raw array. -->
+        {#each [...new Set(doc.tags)] as tag (tag)}<span class="tag">#{tag}</span>{/each}
         <span class="deg" title="synapses touching this neuron">⌁ {ins} IN · {outs} OUT</span>
         <button class="open-reader dn-mono" onclick={() => store.setMode('reader')}>
           open in docs ›

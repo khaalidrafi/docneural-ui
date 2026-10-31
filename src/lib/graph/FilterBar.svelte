@@ -34,7 +34,10 @@
   />
   {#if tags.length > 0}
     <div class="tags">
-      {#each tags as tag (tag)}
+      <!-- Render guard: keyed by the tag (each_key_duplicate). commonTags()
+           builds from Map keys so it is unique by construction; the Set is
+           the cheap belt that keeps this site safe even if that changes. -->
+      {#each [...new Set(tags)] as tag (tag)}
         <button
           class="tag-chip"
           class:active={store.tags.includes(tag)}
