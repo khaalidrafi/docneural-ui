@@ -323,6 +323,18 @@ export function labelExtent(title: string | undefined, soma: number): Extent {
  *  to float precision (a 0.866 literal left a 0.0009 lie in the math). */
 const HEX = Math.sqrt(3) / 2
 
+/** The column count of the hex field that packs `count` nodes into a w×h
+ *  room. ONE function, used by BOTH the pitch and the placement: the bug
+ *  that shipped measured cols from the hex density here but re-measured it
+ *  without the HEX factor inside latticePlace, so the placed field ran
+ *  ~3% wider than the room it was packed to fill — the camera then zoomed
+ *  out and the serpentine hue bands folded a column early. Same inputs,
+ *  same cols, everywhere, or the field and the room disagree. */
+export function latticeCols(count: number, w: number, h: number): number {
+  if (!count || w <= 0 || h <= 0) return 1
+  return Math.max(1, Math.round(Math.sqrt((HEX * count * w) / h)))
+}
+
 /** The pitch (world px between neighbouring nodes) for `count` nodes filling
  *  a w×h room: OP-56's hex fill math — the field is authored to the room at
  *  1:1 with no clamps, every interior node holds six neighbours at exactly
@@ -330,11 +342,12 @@ const HEX = Math.sqrt(3) / 2
 export function latticePitch(count: number, w: number, h: number): number {
   if (!count || w <= 0 || h <= 0) return 32
   // OP-56 fill math: the hex field is authored to FILL the measured room at
-  // 1:1 — columns from the hex density, then the pitch is whatever keeps
-  // `rows` of that width inside the height. No clamps: the field IS the
-  // room, every node holds the same six-neighbour distance p, and the
-  // painter's radiusScale (0.36·p/18.33) keeps somas inside it.
-  const cols = Math.max(1, Math.round(Math.sqrt((HEX * count * w) / h)))
+  // 1:1 — columns from the hex density (latticeCols, shared with the
+  // placement), then the pitch is whatever keeps `rows` of that width
+  // inside the height. No clamps: the field IS the room, every node holds
+  // the same six-neighbour distance p, and the painter's radiusScale
+  // (0.36·p/18.33) keeps somas inside it.
+  const cols = latticeCols(count, w, h)
   const rows = Math.ceil(count / cols)
   return Math.min(w / cols, h / ((rows - 1) * HEX + 1))
 }
@@ -368,7 +381,11 @@ export function latticePlace(
 ): void {
   const n = nodes.length
   if (!n || pitch <= 0) return
-  const cols = Math.max(1, Math.round(Math.sqrt((n * w) / Math.max(1, h))))
+  // The SAME cols the pitch was computed from — latticeCols carries the hex
+  // density. A plain square-density measure here disagreed with latticePitch
+  // by 3 columns on this corpus and the field overflowed its room (the
+  // "lattice is a wall of paint" deploy bug, 2026-10-31).
+  const cols = latticeCols(n, w, h)
   const ordered = [...nodes].sort((a, b) => {
     const ga = a.tags?.[0] ?? ''
     const gb = b.tags?.[0] ?? ''

@@ -135,6 +135,21 @@
   // each time the lattice is (re)placed; read per paint via the focus.
   let latticeK = 1
 
+  // WebGL is the canvas's one hard dependency (force-graph paints GL, not 2D).
+  // On a machine with hardware acceleration off — and they exist, or the
+  // owner would not have reported "no graphs showing up" — context creation
+  // returns null and the dish would sit blank forever, reading as a broken
+  // site. One capability probe at mount: fail HONESTLY, in copy, and keep
+  // the whole reader usable.
+  const webglOk = (() => {
+    try {
+      const c = document.createElement('canvas')
+      return !!(c.getContext('webgl2') || c.getContext('webgl'))
+    } catch {
+      return false
+    }
+  })()
+
   // Air kept between the packed field and the canvas edge, in screen px. Small
   // on purpose: `forceFitContainer` already keeps every LABEL inside the rect,
   // so this is breathing room, not clipping protection.
@@ -228,9 +243,21 @@
     const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
       pad: PAD,
       inset: vp.inset,
-      maxScale: store.layout === 'spread' ? 1 : Infinity,
-      // OP-56: the lattice camera is instant — the field IS the room.
-      duration: store.layout === 'lattice' ? 0 : undefined
+      // 1:1 is the authored scale of BOTH readable layouts — spread packs the
+      // label field to the rect, the lattice authors the hex field to the
+      // room — so neither may zoom IN past it at fit time; cluster is a shape
+      // view and takes whatever fit it whole needs.
+      maxScale: store.layout === 'cluster' ? Infinity : 1,
+      // The lattice camera rides a 260ms tween, not an instant set — NOT for
+      // looks: force-graph auto-fits the zoom to `4/∛n` whenever a data
+      // update lands while the camera sits at its default (k===lastSetZoom,
+      // and lastSetZoom ships as 1). A k=1.000 instant fit is INDISTINGUISHABLE
+      // from "never fitted", so the engine's first data update stomped it back
+      // to 0.36 and the field painted at a third of the canvas (the 2026-10-31
+      // "no graphs showing up" bug). A tween never passes through the default
+      // value, so the auto-fit's guard `k === lastSetZoom` is false at the
+      // moment its check runs, and the fit sticks.
+      duration: store.layout === 'lattice' ? 260 : undefined
     })
     if (!wrapEl) return
     wrapEl.dataset.fit = k.toFixed(3)
@@ -283,9 +310,9 @@
         const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
           pad: PAD,
           inset: vp.inset,
-          // 1:1 is the spread layout's authored scale, so never zoom IN past it;
-          // cluster is a shape view and takes whatever fit it whole needs.
-          maxScale: store.layout === 'spread' ? 1 : Infinity
+          // Same 1:1 ceiling as the boot fit above: spread and lattice are
+          // authored to the room, cluster is a shape view.
+          maxScale: store.layout === 'cluster' ? Infinity : 1
         })
         wrapEl.dataset.fit = k.toFixed(3)
         // The other half of the evidence: `fit: 0.6` alone cannot tell a camera
@@ -304,6 +331,9 @@
     spread: () => store.layout !== 'cluster',
     // OP-56: lattice somas scale with the hex pitch; cluster/spread keep 1.
     somaScale: () => (store.layout === 'lattice' ? latticeK : 1),
+    // Lattice labels ride absolute zoom (see NeuronFocus.lattice): at fit the
+    // field shows hub names only, and zooming fills the rest in.
+    lattice: () => store.layout === 'lattice',
     onEngine: (e) => { engine = e }
   })
 
@@ -312,13 +342,25 @@
   }
 </script>
 
-<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl}>
+<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl} data-webgl={webglOk ? 'ok' : 'none'}>
   <!-- loadEngine comes from neuronEngine so the force-graph import resolves
        from SYNAPT's node_modules (Vite resolves bare specifiers relative to
        the importing file, and GraphView.svelte lives in the sibling orui
        checkout) — and so the neuron painting rides in at construction. -->
-  <GraphView store={roam} onNodeClick={click} loadEngine={neuronLoad} />
-  {#if !painted}
+  {#if webglOk}
+    <GraphView store={roam} onNodeClick={click} loadEngine={neuronLoad} />
+  {:else}
+    <!-- No WebGL, no canvas: say so, in the dish, where the graph would be.
+         The reader and every other surface keep working. -->
+    <div class="no-webgl" role="status">
+      <p class="nw-h dn-mono">⌁ synapses unavailable</p>
+      <p class="nw-line">The neuron canvas needs WebGL, and this browser
+        has it off (hardware acceleration disabled, or a remote desktop
+        without a GPU). Everything else works: open</p>
+      <p><button class="nw-go dn-mono" onclick={() => store.setMode('reader')}>▤ DOCS</button></p>
+    </div>
+  {/if}
+  {#if webglOk && !painted}
     <!-- Shape, not a spinner: the promise of what is coming (a field of
          neurons) in the pixels it will occupy. Compositor-only (one
          translateX sweep), aria-hidden, and deliberately the LAST child —
@@ -434,5 +476,43 @@
    contrast. The theme values come from --dn-* tokens (see below). */
 :global([data-theme='light']) .roam-wrap {
   background-color: var(--dn-graph-bg);
+}
+
+/* ---------- WebGL fallback: the honest empty dish ---------- */
+.no-webgl {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2rem;
+  text-align: center;
+}
+.no-webgl .nw-h {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-accent, var(--dn-fg));
+}
+.no-webgl .nw-line {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--dn-fg-muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.no-webgl .nw-go {
+  border: 1px solid var(--dn-border-strong);
+  background: var(--dn-bg-raise, transparent);
+  color: var(--dn-fg);
+  padding: 0.55rem 1.1rem;
+  min-height: 40px;
+  cursor: pointer;
+  letter-spacing: var(--dn-track);
+}
+.no-webgl .nw-go:hover {
+  border-color: var(--dn-accent, var(--dn-fg));
 }
 </style>

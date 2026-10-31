@@ -64,6 +64,14 @@ export type NeuronFocus = {
    *  field (p≈24 at corpus scale) can never overlap. Read per paint; 1 = no
    *  scaling (cluster/spread keep their authored radii). */
   somaScale?: () => number
+  /** True while the lattice layout owns the field. The overview labels ride
+   *  ABSOLUTE zoom, not the cluster/spread LOD bands: the lattice boots fit
+   *  at k≈0.93, which is band 2 on the packed scales — the band gate waved
+   *  every one of 1,386 titles through and the overview drowned in ink
+   *  (the deploy bug of 2026-10-31). Lattice rule: hub names at fit, hot +
+   *  chapter hubs past 0.85, everything past 1.6 — a starfield that fills
+   *  in as you zoom, never a wall of text. */
+  lattice?: () => boolean
   /** Mini-map headings (Owner law 2026-10-28: "Local graph should show node
    *  headings!"). True = the compact painter labels every neuron it can
    *  without overprinting; the claim grid drops whichever names would land
@@ -162,13 +170,25 @@ export function applyLayout(
     engine.d3Force('fit', null)
     const bodies = engine.graphData().nodes as import('../core/graph').LatticeBody[]
     const box = room ?? { w: 1000, h: 800 }
-    latticePlace(bodies, latticePitch(bodies.length, box.w, box.h), box.w, box.h)
+    const p = latticePitch(bodies.length, box.w, box.h)
+    latticePlace(bodies, p, box.w, box.h)
+    // Shrink the BASE discs, not just the overpaint. force-graph derives the
+    // painted radius per frame as sqrt(nodeVal)·nodeRelSize, and GraphView
+    // owns nodeVal but never touches nodeRelSize — so this is the one lever
+    // that scales the soma itself. The 18.33 here is the biggest soma at
+    // relSize 4 (sqrt(21)·4); 0.36·p is the largest disc the pitch can hold
+    // with a visible gap on every side. Without this the base disc painted
+    // at full size and the field fused into walls of colour (the 2026-10-31
+    // deploy bug).
+    const k = Math.min(1, (0.36 * p) / 18.33)
+    engine.nodeRelSize?.(4 * k)
     engine.cooldownTicks(0).cooldownTime(0)
     engine.d3ReheatSimulation()
     return
   }
-  // Leaving the lattice un-pins the field: the physics owns positions again.
-  // (d3 keeps no pin state of its own — a null fx/fy is the whole unpin.)
+  // Leaving the lattice restores the authored soma scale (relSize 4) before
+  // the physics unpins — the packed views own their full-size discs.
+  engine.nodeRelSize?.(4)
   const unpinned = engine.graphData().nodes as { fx?: number | null; fy?: number | null }[]
   for (const n of unpinned) {
     n.fx = null
@@ -255,8 +275,10 @@ export function fitReadable(
     pad: number
     inset?: { top: number; right: number; bottom: number; left: number }
     maxScale?: number
-    /** Camera tween length. The lattice passes 0: its field is authored to
-     *  the room, so the "fit" is a statement of fact, not a transition. */
+    /** Camera tween length. The lattice passes 260: its field is authored to
+     *  the room, but the tween is load-bearing — force-graph's data-update
+     *  auto-fit (4/∛n) stomps any zoom that equals its default (k===1), and
+     *  only a tween dodges that guard. See DocneuralGraph fitNow. */
     duration?: number
   }
 ): { k: number; w: number; h: number } {
@@ -396,6 +418,15 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
      token-set, and a cocite dash needs preserving, so applyLinkLod carries
      the same dashed/dim cocite semantics GraphView paints (l.type). */
   let band = 2
+  // Lattice overview, refreshed per paint: while the lattice owns the field
+  // below zoom 1.1 (its fit scale), the corpus's 30k wires and 1.5r halo
+  // rings bury the very grid the layout exists to show — the 2026-10-31
+  // screenshot read as fur over the dots. So the overview ghosts the wires
+  // down to the arteries (traffic ≥ 60), skips the halos, and labels hubs
+  // only; past 1.1 the packed-view band rules take over. The link accessors
+  // read this flag live per frame (same mechanism as `band`), so no
+  // re-registration is needed when the visitor crosses the boundary.
+  let latFit = false
   const touchesSel = (l: any): boolean => {
     const sel = focus.selected()
     return sel != null && (l.source?.id === sel || l.target?.id === sel)
@@ -405,23 +436,28 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     engine
       .linkVisibility((l: any) =>
         touchesSel(l) ||
-        (band === 2) ||
-        (band === 1 && (traffic(l) >= 10 || (l.source?.degree ?? 0) >= 5 || (l.target?.degree ?? 0) >= 5))
+        (latFit
+          ? traffic(l) >= 60
+          : (band === 2) ||
+            (band === 1 && (traffic(l) >= 10 || (l.source?.degree ?? 0) >= 5 || (l.target?.degree ?? 0) >= 5)))
       )
       .linkColor((l: any) => {
-        // Compose the three color systems, quietest wins at distance:
-        //   hot (selection)  >  SIGNAL ego fade  >  LOD band dim.
+        // Compose the four color systems, quietest wins at distance:
+        //   hot (selection)  >  SIGNAL ego fade  >  lattice overview ghost  >  LOD band dim.
         if (touchesSel(l)) return hotCol
         const base = fade(nodeColor(l.source ?? {}, tokensNow()))
+        if (latFit) return dimColor(base, 0.22)
         return band === 2 ? base : dimColor(base, band === 1 ? 0.55 : 0.4)
       })
       .linkLineDash((l: any) => (l.type === 'cocite' ? COCITE_DASH : null))
       .linkWidth((l: any) =>
         touchesSel(l)
           ? 2.0
-          : band === 2
-            ? Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l)))
-            : 0.35)
+          : latFit
+            ? Math.min(1.1, 0.2 + 0.03 * Math.sqrt(traffic(l)))
+            : band === 2
+              ? Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l)))
+              : 0.35)
       .linkCurvature(curvature)
   }
 
@@ -480,6 +516,8 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     // crossing re-asserts the LOD link chain (see the block above for why the
     // re-assert, not a set-once, is required).
     const nextBand = globalScale < 0.45 ? 0 : globalScale < 0.85 ? 1 : 2
+    const lat = !focus.compact && !!focus.lattice?.()
+    latFit = lat && globalScale < 1.1
     if (nextBand !== band || !linkLodArmed) {
       band = nextBand
       linkLodArmed = true
@@ -591,14 +629,14 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     }
     ctx.strokeStyle = col
     const halo = dim ? 0.35 : 1
-    if (band === 2 || hot) {
+    if ((band === 2 && !latFit) || hot) {
       ctx.lineWidth = (hot ? 1.7 : 1) / globalScale
       ctx.globalAlpha = halo * (hot ? 1 : band === 2 ? 0.55 : 0.7)
       ctx.beginPath()
       ctx.arc(x, y, r * 1.5, 0, 2 * Math.PI)
       ctx.stroke()
     }
-    if (band === 2) {
+    if (band === 2 && !latFit) {
       ctx.globalAlpha = halo * (hot ? 0.6 : 0.3)
       ctx.beginPath()
       ctx.arc(x, y, r * 2.4, 0, 2 * Math.PI)
@@ -634,11 +672,15 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     //   band 2: everything once the user zooms in (gs > 1.15), hubs, hot.
     const spread = !!focus.spread?.()
     const deg = n.degree ?? 0
-    const labelOk = spread
-      ? band === 0 ? deg >= 60 : true
-      : band === 0 ? deg >= 60
-      : band === 1 ? (hot || deg >= 20)
-      : (globalScale > 1.15 || hot || deg >= 60)
+    const labelOk = lat
+      ? latFit
+        ? deg >= 60
+        : globalScale > 1.6 ? true : hot || deg >= 40
+      : spread
+        ? band === 0 ? deg >= 60 : true
+        : band === 0 ? deg >= 60
+        : band === 1 ? (hot || deg >= 20)
+        : (globalScale > 1.15 || hot || deg >= 60)
     if (labelOk) {
       const label = shortTitle(n.title ?? '')
       if (!label) return
