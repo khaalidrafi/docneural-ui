@@ -66,6 +66,16 @@
     if (last) store.goto(last.node, 'reader', last.anchor)
   }
 
+  // The reading trail (core/trail.ts), resolved against the live graph. The
+  // front door row appears only when the journey is EARNED — two or more
+  // surviving stops — and resumes at the HEAD: the most recent stop, which
+  // is where the road actually left off (a re-read never moved it).
+  const trailHead = $derived.by(() => {
+    if (!store.ready) return null
+    const stops = store.trailResolved
+    return stops.length >= 2 ? stops[stops.length - 1] : null
+  })
+
   // The sections marked with `b`, newest first. Resolved against the live
   // graph exactly like `last`: a mark saved from an older export can name a
   // page that no longer exists, and a dead entry in a bookmark list is worse
@@ -182,6 +192,18 @@
         <span>artifacts</span><span class="files">graph.json · llms.txt · *.org</span>
       </div>
       <p class="note">indexed at build time — no database, no server</p>
+      {#if trailHead}
+        {@const head = trailHead}
+        <!-- TRAIL (designer spec 2026-10-31): the journey above the point.
+             One full-width prose row; the label carries the count, the
+             destination is the trail's head. Appears at two stops, never
+             prompts before that. -->
+        <button class="trail-go" onclick={() => store.goto(head, 'reader')}>
+          <span class="tg-lab dn-mono">◈ YOUR TRAIL · {store.trailResolved.length} STOPS</span>
+          <span class="tg-res"> — resume at {head.title}</span>
+          <span class="tg-go" aria-hidden="true">›</span>
+        </button>
+      {/if}
       {#if last}
         <button class="resume" onclick={resume}>
           <span class="r-lab">resume</span>
@@ -1000,6 +1022,42 @@
   .resume .r-to { color: var(--dn-fg); overflow-wrap: anywhere; }
   .resume:hover .r-to { text-decoration: underline; }
   .resume .r-go { margin-left: auto; }
+
+  /* TRAIL (designer spec 2026-10-31; ds@cb review r2): one full-width prose
+     row above the resume line — the journey, not just the point. 13px
+     prose, 44px tap, the label wearing the trail token so the route's
+     colour is the same on the canvas, the chip and here. ds@cb: the
+     visitor's question ("where was I") must not be the quietest text on
+     its own row — the destination clause carries --dn-fg, the label keeps
+     the trail ink as the route's identity. Wash 10% so the row reads lit,
+     not tinted; radius 0 (house law). */
+  .trail-go {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45em;
+    width: 100%;
+    min-height: 44px;
+    font-family: var(--dn-font-prose);
+    font-size: 13px;
+    line-height: 1.35;
+    text-align: left;
+    color: var(--dn-fg);
+    background: color-mix(in srgb, var(--dn-trail) 10%, transparent);
+    border: 1px solid var(--dn-border);
+    border-radius: 0;
+    padding: 0.5em 0.8em;
+    cursor: pointer;
+  }
+  .trail-go:hover { border-color: var(--dn-trail); }
+  .trail-go .tg-lab {
+    color: var(--dn-trail);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .trail-go .tg-res { overflow-wrap: anywhere; }
+  .trail-go:hover .tg-res { text-decoration: underline; }
+  .trail-go .tg-go { margin-left: auto; color: var(--dn-trail); }
   @media (max-width: 700px) {
     .stats { padding: 0.9rem 1rem; }
   }
@@ -1699,7 +1757,7 @@
   .cta-row { display: grid; grid-template-columns: 1fr; gap: var(--dn-space-2); width: 100%; }
 
   /* Thumb law: every control clears 44px. */
-  .resume, .mk { min-height: 44px; align-items: center; }
+  .resume, .mk, .trail-go { min-height: 44px; align-items: center; }
   .cta { min-height: 48px; }
   .src-card { min-height: 44px; }
   .card { min-height: 44px; }
