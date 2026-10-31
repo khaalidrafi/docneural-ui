@@ -396,13 +396,22 @@ describe('manualToc', () => {
     expect(tree[0].children[0].children.map((n) => n.doc!.id)).toEqual(['m--Sec1'])
   })
 
-  it('falls back to A–Z letter groups when the corpus carries no Info structure', () => {
-    const tree = manualToc([
-      page('org--zeta'), page('org--Alpha'), page('org--mid'), page('org--3way')
-    ])
+  it('falls back to A–Z letter groups when a big corpus carries no Info structure', () => {
+    // 25+ pages: above the small-manual flat threshold, so the folder
+    // fallback is what the directive asked for at hundreds-of-docs scale.
+    const pages = [
+      ...Array.from({ length: 12 }, (_, i) => page(`org--alpha-${i}`, undefined, undefined).title = 'Alpha ' + i),
+      ...Array.from({ length: 10 }, (_, i) => page(`org--mid-${i}`, undefined, undefined).title = 'Mid ' + i),
+      ...Array.from({ length: 8 }, (_, i) => page(`org--zulu-${i}`, undefined, undefined).title = 'Zulu ' + i)
+    ].map((_, i) => page(`org--p${i}`))
+    // give the generated pages their spread of first letters
+    pages.forEach((n: any, i: number) => {
+      n.title = i < 12 ? 'Alpha ' + i : i < 22 ? 'Mid ' + i : 'Zulu ' + i
+    })
+    const tree = manualToc(pages)
     expect(tree.map((n) => n.group)).toEqual(['A', 'M', 'Z'])
-    expect(tree[0].children.map((n) => n.doc!.id)).toEqual(['org--Alpha'])
     expect(tree[0].doc).toBeUndefined() // groups are pure folders
+    expect(tree[0].children.length).toBe(12)
   })
 
   it('keeps small unstructured manuals flat (a 24-page list needs no folders)', () => {
@@ -411,10 +420,10 @@ describe('manualToc', () => {
     expect(tree.every((n) => n.doc && n.children.length === 0)).toBe(true)
   })
 
-  it('survives a cyclic up without hanging', () => {
+  it('survives a cyclic up: unreachable pages are salvaged as roots, not dropped', () => {
     const a = page('m--a', 'm--b')
     const b = page('m--b', 'm--a')
     const tree = manualToc([a, b])
-    expect(tree.length).toBe(2) // neither up resolves inside the set as a root parent
+    expect(tree.length).toBe(2) // both still render — corruption never loses pages
   })
 })
