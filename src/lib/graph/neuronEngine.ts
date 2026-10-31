@@ -432,20 +432,30 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     return sel != null && (l.source?.id === sel || l.target?.id === sel)
   }
   const COCITE_DASH = [4, 4]
+  /** A link whose endpoints are still unresolved (force-graph swaps the id
+   *  strings for node objects during the data pipeline) has no color, no
+   *  traffic and no business being painted. The paint pipeline evaluates the
+   *  accessors for EVERY link while bucketing them — so these guards keep a
+   *  mid-sync frame from throwing `node.tags[0]` on a bare string (the
+   *  layout-toggle crash, 2026-10-31 audit). */
+  const endpointsResolved = (l: any): boolean =>
+    l.source != null && typeof l.source === 'object' && l.target != null && typeof l.target === 'object'
   const applyLinkLod = (): void => {
     engine
       .linkVisibility((l: any) =>
-        touchesSel(l) ||
+        endpointsResolved(l) &&
+        (touchesSel(l) ||
         (latFit
           ? traffic(l) >= 60
           : (band === 2) ||
-            (band === 1 && (traffic(l) >= 10 || (l.source?.degree ?? 0) >= 5 || (l.target?.degree ?? 0) >= 5)))
+            (band === 1 && (traffic(l) >= 10 || (l.source?.degree ?? 0) >= 5 || (l.target?.degree ?? 0) >= 5))))
       )
       .linkColor((l: any) => {
         // Compose the four color systems, quietest wins at distance:
         //   hot (selection)  >  SIGNAL ego fade  >  lattice overview ghost  >  LOD band dim.
         if (touchesSel(l)) return hotCol
-        const base = fade(nodeColor(l.source ?? {}, tokensNow()))
+        if (!endpointsResolved(l)) return '#808080' // bucketed, never painted
+        const base = fade(nodeColor(l.source, tokensNow()))
         if (latFit) return dimColor(base, 0.22)
         return band === 2 ? base : dimColor(base, band === 1 ? 0.55 : 0.4)
       })
