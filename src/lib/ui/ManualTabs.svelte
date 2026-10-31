@@ -8,6 +8,12 @@
   // Each tab carries its source's hue through --dn-src — the same colour the
   // canvas paints that corpus with — so the tab row doubles as a legend:
   // the colour you click is the colour the graph will show you.
+  //
+  // LIBRARY (network pass 2026-10-31, SPEC §6.2): a trailing `+` opens the
+  // document library drawer — the shelf that lists every manual at once,
+  // which is what a row of tabs points at but cannot show. It sits OUTSIDE
+  // the tablist (a non-tab control must not join role="tablist") and keeps
+  // the 40px tap-target law the tabs themselves are exempt from.
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
 
@@ -17,23 +23,37 @@
 </script>
 
 {#if manuals.length > 1}
-  <div class="manual-tabs" role="tablist" aria-label="Source">
-    {#each manuals as m (m)}
-      <button
-        role="tab"
-        class="tab dn-mono"
-        class:active={store.manual === m}
-        aria-selected={store.manual === m}
-        style={sourceVars(m)}
-        onclick={() => store.showManual(m)}
-        title={DocneuralStore.manualTitle(m)}
-      ><span class="bracket">[</span>{DocneuralStore.manualTitle(m)}<span class="bracket">]</span></button>
-    {/each}
+  <div class="manual-tabs">
+    <div class="tabs" role="tablist" aria-label="Source">
+      {#each manuals as m (m)}
+        <button
+          role="tab"
+          class="tab dn-mono"
+          class:active={store.manual === m}
+          aria-selected={store.manual === m}
+          style={sourceVars(m)}
+          onclick={() => store.showManual(m)}
+          title={DocneuralStore.manualTitle(m)}
+        ><span class="bracket">[</span>{DocneuralStore.manualTitle(m)}<span class="bracket">]</span></button>
+      {/each}
+    </div>
+    <button
+      class="lib"
+      onclick={() => (store.libraryOpen = true)}
+      aria-label="Open the document library"
+      title="Open the document library"
+    >+</button>
   </div>
 {/if}
 
 <style>
   .manual-tabs {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .tabs {
     display: flex;
     gap: 0.3rem;
     flex-wrap: wrap;
@@ -63,4 +83,21 @@
     border-color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 60%, transparent);
   }
   .tab.active .bracket { color: color-mix(in srgb, var(--dn-src, var(--dn-accent)) 55%, transparent); }
+  /* The library toggle: a 40px square of tab chrome, trailing the row. */
+  .lib {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    color: var(--dn-fg-muted);
+    background: transparent;
+    border: 1px solid var(--dn-border);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: color 120ms, border-color 120ms;
+  }
+  .lib:hover { color: var(--dn-fg); border-color: var(--dn-accent-dim); }
+  .lib:focus-visible { outline: 2px solid var(--dn-accent); outline-offset: 2px; }
 </style>

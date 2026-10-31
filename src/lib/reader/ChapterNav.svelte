@@ -41,7 +41,7 @@
   </div>
   {#if store.checked.length > 0}
     <div class="pinned dn-mono">
-      <span>⌁ GRAPH: {store.checked.length} TICKED</span>
+      <span>⌁ NEURAL NETWORK: {store.checked.length} TICKED</span>
       <button onclick={() => store.clearChecked()}>clear</button>
     </div>
   {/if}
@@ -54,8 +54,8 @@
             class="tick"
             checked={store.checked.includes(c.id)}
             onchange={() => store.toggleChecked(c.id)}
-            aria-label="Show {c.title} in the synapses graph"
-            title="tick to isolate in the synapses graph"
+            aria-label="Show {c.title} in the synapses network"
+            title="tick to isolate in the synapses network"
           />
           <button
             class="chapter"

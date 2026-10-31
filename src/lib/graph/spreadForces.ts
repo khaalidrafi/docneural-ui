@@ -45,10 +45,16 @@ export type SpreadForce = {
 
 /** How many Gauss-Seidel sweeps per tick. One leaves the pile half-resolved
     because a node pushed out of one box is pushed into the next; two means the
-    second sweep sees the damage the first did. Each sweep rebuilds the grid, so
-    this is the only knob for cost-vs-tightness, and on a 1,500-node corpus two
-    hash passes a tick is still linear. */
-const PASSES = 2
+    second sweep sees the damage the first did. Three exists because the charge
+    grew (network pass: 44 + 1.1×label): with the corner-chrome blocker in
+    play, the node the blocker evicts lands inside a neighbour's box on the
+    SAME sweep, and two sweeps left exactly that pair overlapping at settle —
+    a real regression spreadForces.test.ts caught ('routes the field around
+    corner chrome'). The third sweep is the one that sees the eviction's
+    aftermath. Each sweep rebuilds the grid, so this is the only knob for
+    cost-vs-tightness, and on a 1,500-node corpus three hash passes a tick is
+    still linear. */
+const PASSES = 3
 
 /** Each node of a colliding pair takes half the correction, so the pair's
  *  centre of mass does not move — the field drifts by nothing but its own

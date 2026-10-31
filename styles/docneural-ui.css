@@ -228,6 +228,22 @@
   --dn-trail-halo: rgba(124, 192, 255, 0.28);
   --dn-trail-w: 2.2px;
 
+  /* SYNAPSE PASS (network pass 2026-10-31): wire + panel + chrome tokens,
+     spec'd hex values, AA-checked in both arms. --dn-synapse is a non-text
+     wire colour (3.5:1 dark / 3.4:1 light); -lit is the lit/pressed fill;
+     -hover the pointer tier; -mined the recovered bridge wire (10.4/5.6).
+     --dn-toc-guide is decorative (the TOC tree rule). */
+  --dn-synapse: #5a6b80;
+  --dn-synapse-lit: #7fe3d0;
+  --dn-synapse-hover: #9fb0c4;
+  --dn-synapse-mined: #f0b35a;
+  --dn-toc-guide: #26313d;
+  --dn-panel-bg: #121820;
+  --dn-panel-ink: #e8edf2;
+  --dn-panel-ink-dim: #a7b4c2;
+  --dn-chrome-bg: #121a24;
+  --dn-chrome-ink: #c7d3df;
+
   /* Geometry. */
   --dn-notch: 9px;
   --dn-max-prose: 72ch;
@@ -319,6 +335,18 @@
   --dn-trail-halo: rgba(11, 63, 191, 0.16);
   --dn-trail-w: 2.2px;
 
+  /* SYNAPSE PASS, paper arm (network pass 2026-10-31) — spec'd hex values. */
+  --dn-synapse: #7a8798;
+  --dn-synapse-lit: #0e7c6b;
+  --dn-synapse-hover: #3e4c5e;
+  --dn-synapse-mined: #8a5a00;
+  --dn-toc-guide: #dce2e9;
+  --dn-panel-bg: #ffffff;
+  --dn-panel-ink: #121820;
+  --dn-panel-ink-dim: #5a6b80;
+  --dn-chrome-bg: #ffffff;
+  --dn-chrome-ink: #24303c;
+
   color-scheme: light;
 }
 
@@ -364,6 +392,17 @@
     --dn-trail-wash: rgba(11, 63, 191, 0.07);
     --dn-trail-halo: rgba(11, 63, 191, 0.16);
     --dn-trail-w: 2.2px;
+    /* SYNAPSE PASS, auto-light arm — byte-identical to the toggle arm. */
+    --dn-synapse: #7a8798;
+    --dn-synapse-lit: #0e7c6b;
+    --dn-synapse-hover: #3e4c5e;
+    --dn-synapse-mined: #8a5a00;
+    --dn-toc-guide: #dce2e9;
+    --dn-panel-bg: #ffffff;
+    --dn-panel-ink: #121820;
+    --dn-panel-ink-dim: #5a6b80;
+    --dn-chrome-bg: #ffffff;
+    --dn-chrome-ink: #24303c;
     color-scheme: light;
   }
 }

@@ -276,20 +276,21 @@ const LABEL_PX = 11
     node's own centre: how far it reaches left, right, up, down. */
 export type Extent = { l: number; r: number; t: number; b: number }
 
-/** Repulsion one node asks for in spread layout: a floor, plus a share of its
- *  own title width. forceManyBody is negative = repel, and d3 adds this per
- *  node, so a long chapter name pushes harder than a short one — which breaks
- *  the per-doc knot that sibling chapters tie between themselves.
+/**
+ * Repulsion one node asks for in spread layout, scaled by the spacing
+ * multiplier `k` (network pass 2026-10-31, SPEC §3): a 44px baseline halo,
+ * plus ~one full label extent per competing node, times k. The old
+ * `20 + labelWidth * 0.5` cut reserved less than one extent and let sibling
+ * chapter names share air they had not paid for; the new reserve plus the
+ * 220px link distance (see applyLayout) is what buys a visible gap between
+ * two adjacent labels at the default fit.
  *
- *  Deliberately WEAK, because this is not what makes the view legible: the boxes
- *  in `labelExtent` are. Charge sets the SHAPE (open, knotted-free, centred by
- *  force-graph's own `forceCenter`), the boxes set the DENSITY. The first cut of
- *  this layout asked -490 per hub-titled node and the field blew out to circle
- *  packing — 34,000 px² per neuron, so the camera had to zoom to 0.6 and the
- *  titles overlapped again. Let the hard bodies pack, and let charge only keep
- *  the wires honest. */
-export function spreadStrength(title?: string): number {
-  return -(20 + labelWidth(title) * 0.5)
+ * Still WEAK relative to the hard bodies: charge sets the SHAPE (open,
+ * knotted-free, centred by force-graph's own `forceCenter`), the label boxes
+ * set the DENSITY — `labelExtent` packing stays the promise owner.
+ */
+export function spreadStrength(title: string | undefined, k = 1): number {
+  return -(44 + labelWidth(title) * 1.1) * k
 }
 
 /** The rectangle a neuron OCCUPIES on screen: its soma, its halo rings, and the
@@ -443,15 +444,20 @@ export function latticePlace(
 
 /** One row of the manual TOC: the page plus the sections nested under it
  *  (Info's `up` field, resolved inside the same manual's content set).
- *  `open` is UI scratch — the disclosure state the Toc component writes.
- *  Group rows (the A–Z fallback) carry `group` instead of `doc`: a pure
- *  folder with no page of its own. */
+ *  `open` is UI scratch — the disclosure state the Toc component writes. */
 export type TocNode = {
-  doc?: DocNode
-  group?: string
+  doc: DocNode
   children: TocNode[]
   open?: boolean
 }
+
+/** A filter hit: the row plus its breadcrumb chain (ancestor page titles,
+ *  ending with the hit's own — the `Up › Section › Page` path). */
+export type TocHit = { node: TocNode; path: string[] }
+
+/** Depth the TOC opens to by default (SPEC §2: depth 2 — the root and its
+ *  chapter rows visible, sections closed until asked for). */
+export const TOC_OPEN_DEPTH = 2
 
 /** The title a TOC row prints: the canvas's suffix rule (drop "(The Org
  *  Manual)") WITHOUT the 26-char truncation — a directory row can afford
@@ -469,7 +475,9 @@ export function tocTitle(title: string): string {
  *  collapsible directory for free. Roots are pages whose `up` is missing or
  *  outside the set; siblings keep Info reading order via the same next-chain
  *  walk the reading-order spine uses, with id order as the fallback so the
- *  output is deterministic for identical exports. */
+ *  output is deterministic for identical exports. A corpus with no Info
+ *  structure at all comes back as a FLAT reading-order list (the A–Z letter
+ *  fallback was removed 2026-10-31 — never letter groups). */
 export function manualToc(chapters: DocNode[]): TocNode[] {
   const inSet = new Set(chapters.map((c) => c.id))
   const byId = new Map(chapters.map((c) => [c.id, c]))
@@ -515,7 +523,7 @@ export function manualToc(chapters: DocNode[]): TocNode[] {
     children: depth >= 8 ? [] : orderSiblings(kids.get(doc.id) ?? []).map((c) => build(c, depth + 1))
   })
   const ordered = orderSiblings(roots)
-  const tree = ordered.map((r) => build(r, 1))
+  let tree = ordered.map((r) => build(r, 1))
   // Corruption guard: a chapter whose `up` chain never reaches a root (a
   // cyclic export, or a parent filtered out by the manual scope) would
   // silently vanish from the tree — unreachable from any root, rendered by
@@ -523,8 +531,8 @@ export function manualToc(chapters: DocNode[]): TocNode[] {
   // itself, in reading order, so pages are lost to no bug.
   const reachable = new Set<string>()
   const markReach = (n: TocNode) => {
-    if (n.doc && reachable.has(n.doc.id)) return
-    if (n.doc) reachable.add(n.doc.id)
+    if (reachable.has(n.doc.id)) return
+    reachable.add(n.doc.id)
     for (const c of n.children) markReach(c)
   }
   for (const r of tree) markReach(r)
@@ -532,34 +540,53 @@ export function manualToc(chapters: DocNode[]): TocNode[] {
   if (orphaned.length) {
     for (const c of orderSiblings(orphaned)) tree.push(build(c, 1))
   }
-  // FALLBACK (Owner law: "we'll add hundreds of docs later"): a corpus whose
-  // export carries no Info structure — this site's Org and Guix manuals
-  // today — would render as one flat alphabetized list of every page, which
-  // is exactly the listing the TOC directive replaced. Group those by first
-  // letter instead: 26 collapsible folders at any corpus size, and the
-  // moment the exporter rides `up` along for a manual, its real chapter
-  // tree takes over with no UI change.
-  const structured = tree.some(function hasKids(n: TocNode): boolean {
+  // SINGLE-CHILD ROOT DESCENT (SPEC §2.1): a root whose only content is one
+  // nested child is a pass-through folder — the lone `Top` row a manual shows
+  // when its Info header chains through a single hub. Promote that child (and
+  // its subtree) to the root until the tree stops being a single-file chain:
+  // the visitor sees chapter rows, not a directory with one door.
+  while (tree.length === 1 && tree[0].children.length === 1) {
+    tree = [tree[0].children[0]]
+  }
+  // No letter-group fallback. A corpus whose export carries no Info structure
+  // (this site's Org and Guix manuals today) renders as a FLAT reading-order
+  // list with degree badges — NEVER A–Z folders (SPEC §2.5: the letter groups
+  // hid the reading order behind an alphabet nobody asked for). The real
+  // chapter tree takes over automatically the moment the exporter rides `up`
+  // along for a manual; no UI change.
+  return tree
+}
+
+/** True when the tree carries real Info structure (any nested row) — false for
+ *  the flat reading-order fallback, which wears the `flat list · no structure
+ *  in export` rail badge. */
+export function tocHasStructure(tree: TocNode[]): boolean {
+  return tree.some(function hasKids(n: TocNode): boolean {
     return n.children.length > 0 || n.children.some(hasKids)
   })
-  if (structured || chapters.length <= 24) return tree
-  const sorted = [...chapters].sort((a, b) => {
-    const ta = tocTitle(a.title).toLowerCase()
-    const tb = tocTitle(b.title).toLowerCase()
-    return ta < tb ? -1 : ta > tb ? 1 : a.id < b.id ? -1 : 1
-  })
-  const groups = new Map<string, DocNode[]>()
-  for (const c of sorted) {
-    const first = tocTitle(c.title).trim().charAt(0).toUpperCase()
-    const letter = /[A-Z]/.test(first) ? first : '#'
-    const list = groups.get(letter)
-    if (list) list.push(c)
-    else groups.set(letter, [c])
+}
+
+/** In-TOC filter (SPEC §2.4): local substring over chapter titles, returning
+ *  AT MOST `limit` hits as flat rows with breadcrumb paths. Pure — the
+ *  component owns the 250ms debounce. Ancestors never filter in: a hit is a
+ *  page whose OWN title matches (matching a parent would flood the cap with
+ *  every section under it); its path is how the row still says where it lives. */
+export function filterToc(tree: TocNode[], query: string, limit = 12): TocHit[] {
+  const needle = query.trim().toLowerCase()
+  if (!needle) return []
+  const hits: TocHit[] = []
+  const walk = (nodes: TocNode[], path: string[]): void => {
+    for (const n of nodes) {
+      const title = tocTitle(n.doc.title)
+      const nextPath = [...path, title]
+      if (hits.length >= limit) return
+      if (title.toLowerCase().includes(needle)) {
+        hits.push({ node: n, path: nextPath })
+      }
+      if (n.children.length) walk(n.children, nextPath)
+      if (hits.length >= limit) return
+    }
   }
-  return [...groups.entries()]
-    .sort(([a], [b]) => (a === '#' ? 1 : b === '#' ? -1 : a < b ? -1 : 1))
-    .map(([letter, list]) => ({
-      group: letter,
-      children: list.map((doc) => ({ doc, children: [] }))
-    }))
+  walk(tree, [])
+  return hits
 }

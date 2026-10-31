@@ -46,6 +46,12 @@
     linkColor(f: (l: GraphLink) => string): Engine
     /** force-graph's dash array per link; null/undefined = solid line. */
     linkLineDash(f: (l: GraphLink) => number[] | null): Engine
+    /** Hit tolerance for wire hover, in canvas px (see the pass-through
+     *  props below — docneural's synapse click rides these). Optional so
+     *  mock engines in tests stay constructible. */
+    linkHoverPrecision?(n: number): Engine
+    onLinkClick?(f: (l: GraphLink) => void): Engine
+    onLinkHover?(f: (l: GraphLink | null) => void): Engine
     backgroundColor(c: string): Engine
     onNodeClick(f: (n: { id: string }) => void): Engine
     /** Stop physics once the layout has visibly settled (see d3AlphaMin note). */
@@ -71,11 +77,24 @@
   let {
     store,
     onNodeClick = () => {},
+    /** Edge interrogation (docneural network pass): wire click + hover,
+     *  pass-through to force-graph's own onLinkClick/onLinkHover. Default
+     *  no-ops keep the orui contract unchanged for embedders that never
+     *  pass them; registering them also arms force-graph's `.clickable`
+     *  cursor class on hover, so the pointer affordance is free. */
+    onLinkClick = () => {},
+    onLinkHover = () => {},
+    /** Canvas-px hit tolerance for the pointer against a wire.
+     *  6 = the docneural spec (large enough for a finger). */
+    linkHoverPrecision = 6,
     /** Defaults to importing force-graph as its own lazy chunk. */
     loadEngine = (): Promise<{ default: unknown }> => import('force-graph')
   }: {
     store: GraphStore
     onNodeClick?: (node: import('../api').OrgRoamNode) => void
+    onLinkClick?: (link: GraphLink) => void
+    onLinkHover?: (link: GraphLink | null) => void
+    linkHoverPrecision?: number
     loadEngine?: () => Promise<unknown>
   } = $props()
 
@@ -110,21 +129,23 @@
 
   // ----- Kind-aware link paint -----
   // A link's `type` has exactly the producers our wire shape knows: 'id' (a
-  // real citation the exporter resolved) and 'cocite' (a SYNTHETIC edge the
+  // real citation the exporter resolved), 'cocite' (a SYNTHETIC edge the
   // UI itself computed — a co-citation: two chapters the corpus cites
-  // together, no real wire between them). The visual must match the meaning:
-  // a synthetic edge that looked like a wire would state a connection the
-  // corpus never made. So cocite links paint dashed (COCITE_DASH) and at a
-  // reduced opacity of the SAME theme colour — dimColor reads whatever
-  // --orui-link-color resolves to, so an embed needs no extra token — and
-  // real wires stay solid and full-strength. Both accessors travel with
-  // GraphView's non-canvas paint (linkColor): a kind that is not in {id,
-  // cocite} paints as a real wire, so future wire types stay default-true.
+  // together, no real wire between them), and 'bridge' (a RECOVERED
+  // cross-manual wire, docneural's xref miner). The visual must match the
+  // meaning: synthetic/recovered edges paint dashed — dimColor for cocite,
+  // the engine's own mined hue for bridge (which re-asserts color through
+  // its LOD chain) — and real wires stay solid and full-strength. Both
+  // accessors travel with GraphView's non-canvas paint (linkColor): a kind
+  // that is not in {id, cocite, bridge} paints as a real wire, so future
+  // wire types stay default-true. The dash is kind-only (no token), so it
+  // survives a theme-flip clobber here without reading canvas colors.
   const COCITE_DASH: number[] = [4, 4]
+  const BRIDGE_DASH: number[] = [4, 3]
   const linkColorFor = (l: GraphLink): string =>
     l.type === 'cocite' ? dimColor(tokens.link) : tokens.link
   const linkDashFor = (l: GraphLink): number[] | null =>
-    l.type === 'cocite' ? COCITE_DASH : null
+    l.type === 'cocite' ? COCITE_DASH : l.type === 'bridge' ? BRIDGE_DASH : null
 
   function repaintTokens(): void {
     if (!engine) return
@@ -300,6 +321,13 @@
         .nodeVal((n) => 1 + Math.min(n.degree, 20))
         .linkColor(linkColorFor)
         .linkLineDash(linkDashFor)
+        // Edge interrogation pass-through (docneural): the wire is a first
+        // class target. linkHoverPrecision widens the hit test; onLinkHover
+        // is null on leave. Optional calls keep mock engines (jsdom tests)
+        // constructible.
+        .linkHoverPrecision?.(linkHoverPrecision)
+        .onLinkClick?.((l) => onLinkClick(l))
+        .onLinkHover?.((l) => onLinkHover(l))
         .onNodeClick((n) => {
           const node = store.getState().nodeMap.get(n.id)
           if (node) onNodeClick(node)
