@@ -17,6 +17,7 @@
   import { makeNeuronLoader } from '../graph/neuronEngine'
   import { backlinks, groupWires, outlinks } from '../core/graph'
   import { sourceVars } from '../core/source'
+  import { isBoilerplateCtx } from '../core/vocab'
   import type { DocneuralStore } from '../core/store.svelte'
 
   let {
@@ -145,11 +146,12 @@
     {:else}
       <ul>
         {#each insShown as g (g.id)}
+          {@const cite = store.ctxFor(g.link)}
           <li>
             <button class="link-btn" onclick={() => go(g.id)}>
               {titleOf(g.id)}{#if g.n > 1}<span class="multi">×{g.n}</span>{/if}
             </button>
-            {#if store.ctxFor(g.link)}<p class="ctx">{store.ctxFor(g.link)}</p>{/if}
+            {#if cite}<p class="ctx">{isBoilerplateCtx(cite) ? 'navigation header — no prose citation recorded' : cite}</p>{/if}
           </li>
         {/each}
         {#if insG.length > CAP}

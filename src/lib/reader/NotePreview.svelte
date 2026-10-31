@@ -124,7 +124,7 @@
     in:fly={{ x: 24, duration: 200, easing: cubicOut }}
   >
     <header>
-      <p class="kicker dn-label">node // preview</p>
+      <p class="kicker dn-label">neuron // preview</p>
       <h2 class="dn-mono">{doc.title}</h2>
       <div class="meta dn-mono">
         <span class="src">{sourceTitle(doc.tags[0]) || 'corpus'}</span>
@@ -185,7 +185,14 @@
       -22px 0 44px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
   }
   .note-preview.empty {
-    width: auto;
+    /* F5: the hint is a corner chip, not a strip. left:auto pins it to the
+       right edge at every width — the phone bottom-sheet rule stretches the
+       FULL preview left:0, and a stretched empty hint turned the canvas's
+       corner reservation into a whole top inset. Aside padding dies with it:
+       the dashed box is the p's, and dead padding only grew the corner. */
+    left: auto;
+    width: fit-content;
+    padding: 0;
     border: none;
     background: transparent;
     box-shadow: none;
@@ -198,6 +205,10 @@
     gap: 0.5em;
     margin: 0;
     padding: 0.55em 0.9em;
+    /* Fit-content under an 18rem cap: this copy wraps to two lines, never a
+       third, and word wrapping never clips mid-word. */
+    width: fit-content;
+    max-width: 18rem;
     border: 1px dashed var(--dn-border-strong);
     border-radius: 2px;
     background: color-mix(in srgb, var(--dn-bg) 70%, transparent);

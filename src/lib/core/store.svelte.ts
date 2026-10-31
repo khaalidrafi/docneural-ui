@@ -18,7 +18,7 @@ import { loadLastRead, saveLastRead } from './lastRead'
 import { loadLayout, writeLayout } from './layout'
 import { loadSaved, writeSaved, type SavedMark } from './saved'
 import { loadTrail, appendTrail, clearTrail as clearTrailStorage } from './trail'
-import { mergeBridges, parseBridges, recoveredCount } from './bridges'
+import { mergeBridges, parseBridges, bridgeWireCount } from './bridges'
 
 export type Mode = 'graph' | 'reader'
 
@@ -336,10 +336,12 @@ export class DocneuralStore {
     }
   }
 
-  /** Recovered reference count over the loaded wires (the `+3 recovered`
-   *  plate suffix; distinct from the wire count — see bridges.ts). */
+  /** Bridge WIRES merged into the corpus — the `+N recovered` plate suffix.
+   *  Counts wires, not references (final polish 2026-10-31, SPEC F4): the
+   *  arithmetic against the plate's SYNAPSES total has to close, and the
+   *  references stay where they are honest — the card's provenance list. */
   get recovered(): number {
-    return this.bridgesLoaded ? recoveredCount(this.data.links) : 0
+    return this.bridgesLoaded ? bridgeWireCount(this.data.links) : 0
   }
 
   /** Load graph.json once; then honor the deep link in the URL if present. */
@@ -380,7 +382,12 @@ export class DocneuralStore {
     // Deep-link into the canvas: ?mode=graph (read once at load; a lite
     // machine is refused by setMode). Shareable entry into the synapses
     // view — and what lets a headless browser exercise graph mode by URL.
-    if (new URLSearchParams(location.search).get('mode') === 'graph') {
+    // `network`/`synapses` ride as accepted ALIASES (final polish 2026-10-31,
+    // SPEC F2): case/whitespace forgiven, additive only — `graph` stays the
+    // one form the UI emits, `neurons` is an entity rather than a
+    // destination, and an unknown value still just stays home.
+    const mode = (new URLSearchParams(location.search).get('mode') ?? '').trim().toLowerCase()
+    if (mode === 'graph' || mode === 'network' || mode === 'synapses') {
       this.setMode('graph')
     }
   }

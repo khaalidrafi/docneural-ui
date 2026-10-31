@@ -19,6 +19,7 @@
   import type { DocneuralStore } from '../core/store.svelte'
   import type { Peek } from '../core/types'
   import { sourceVars } from '../core/source'
+  import { isBoilerplateCtx } from '../core/vocab'
 
   let { store, peek }: { store: DocneuralStore; peek: Peek | null } = $props()
 
@@ -32,6 +33,8 @@
     if (!peek) return ''
     const l = store.wire(peek.fromId, peek.toId)
     const w = (l ? store.ctxFor(l) : '')?.replace(/\s+/g, ' ').trim() ?? ''
+    // A GNU Info nav header is chrome, not a citation — say so (SPEC F3).
+    if (isBoilerplateCtx(w)) return 'navigation header — no prose citation recorded'
     // One line of the sentence, capped: the card is a decision aid, not a
     // second page. Cutting at a word boundary keeps it readable at any width.
     return w.length > 210 ? `${w.slice(0, 210).replace(/\s\S*$/, '')}…` : w
