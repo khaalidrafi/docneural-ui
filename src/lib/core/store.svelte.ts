@@ -18,6 +18,7 @@ import { loadLastRead, saveLastRead } from './lastRead'
 import { loadLayout, writeLayout } from './layout'
 import { loadSaved, writeSaved, type SavedMark } from './saved'
 import { loadTrail, appendTrail, clearTrail as clearTrailStorage } from './trail'
+import { mergeBridges, parseBridges, recoveredCount } from './bridges'
 
 export type Mode = 'graph' | 'reader'
 
@@ -45,6 +46,11 @@ export class DocneuralStore {
   data = $state<GraphData>({ nodes: [], links: [] })
   ready = $state(false)
   failed = $state<string | null>(null)
+
+  /** Bridge synapses (SPEC §5) landed from `bridges.json` at load. False
+   *  when the artifact is absent/broken — the corpus works unchanged, and
+   *  the chrome that names recovered wires simply never renders. */
+  bridgesLoaded = $state(false)
 
   /** Reader is the front door; synapses (the roam graph) is opt-in. */
   mode = $state<Mode>('reader')
@@ -125,9 +131,32 @@ export class DocneuralStore {
     clearTrailStorage()
   }
 
+  /**
+   * Extend the trail THROUGH one synapse (the click card's "Light trail
+   * through this synapse", SPEC §4): both endpoints join the reading path
+   * in wire direction, so the lit route on the canvas crosses this wire.
+   * appendTrail dedupes in place, so re-lighting a visited hop reorders
+   * nothing; a hop between the two then resolves solid when the pair rides a
+   * real wire (bridge wires are in `data.links`, so they light solid too).
+   */
+  extendTrailThrough(aId: string, bId: string): void {
+    const a = this.byId(aId)
+    const b = this.byId(bId)
+    if (!a || !b) return
+    this.trail = appendTrail(appendTrail(this.trail, a.slug), b.slug)
+  }
+
   // Graph-mode UI filter state (ported from org-roam-lite-ui filters).
   query = $state('')
   tags = $state<string[]>([])
+
+  /** The document library drawer (network pass 2026-10-31, SPEC §6): one
+   *  flag on the store so the left-rail toggle, the manual-tabs `+` and the
+   *  ⌘⇧K keybind all drive the same overlay from any surface. */
+  libraryOpen = $state(false)
+  toggleLibrary(): void {
+    this.libraryOpen = !this.libraryOpen
+  }
 
   /** Canvas scope. `ego` = around the chapter being read (see `visible`);
    *  `corpus` = every node the filters pass. A chip in graph mode flips it,
@@ -285,6 +314,34 @@ export class DocneuralStore {
     throw lastErr
   }
 
+  /**
+   * Bridges (SPEC §5): fetch the committed artifact and merge its recovered
+   * wires into the corpus. FETCH FAIL = SILENTLY CONTINUE — the site ships
+   * before/without bridges.json and every consumer must behave identically;
+   * only the `+N recovered` plate suffix and the bridge legend disappear.
+   * Best-effort by construction: parseBridges tolerates junk, mergeBridges
+   * skips dangling endpoints and pairs the corpus already wires.
+   */
+  private async loadBridges(): Promise<void> {
+    try {
+      const res = await fetch(`${this.base}/bridges.json`)
+      if (!res.ok) return
+      const wires = parseBridges(await res.json())
+      if (wires.length) {
+        this.data = mergeBridges(this.data, wires)
+        this.bridgesLoaded = true
+      }
+    } catch {
+      /* no bridges — the corpus stands alone */
+    }
+  }
+
+  /** Recovered reference count over the loaded wires (the `+3 recovered`
+   *  plate suffix; distinct from the wire count — see bridges.ts). */
+  get recovered(): number {
+    return this.bridgesLoaded ? recoveredCount(this.data.links) : 0
+  }
+
   /** Load graph.json once; then honor the deep link in the URL if present. */
   async load(): Promise<void> {
     try {
@@ -294,6 +351,11 @@ export class DocneuralStore {
       // one on every node, which killed the graph-mode note preview. One
       // pure pass at the single ingest point fixes every consumer.
       this.data = dedupeGraphTags(await this.fetchGraph())
+      // Bridge synapses merge BEFORE any index builds (SPEC §5) — every
+      // consumer (visible, wire(), degrees, ego) then treats a recovered
+      // wire exactly like an exported one. Fetch failure leaves `data`
+      // untouched; the flag stays false and no bridge chrome renders.
+      await this.loadBridges()
       this.ready = true
       // The size-aware layout default needs the corpus size, so it lands
       // here (the constructor ran before any fetch). A saved preference

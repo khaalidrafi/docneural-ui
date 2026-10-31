@@ -36,6 +36,7 @@ import {
   forceLabelBoxes,
   type Blocker
 } from './spreadForces'
+import { arrowHeadPx, arrowVisible } from '../core/controls'
 import type { LayoutMode } from '../core/types'
 
 // The force-graph instance is a chainable kapsule; GraphView keeps its own
@@ -100,6 +101,18 @@ export type NeuronFocus = {
    *  (a synapse is there), anything else strokes dashed and dimmer (the
    *  visitor jumped; the canvas must not claim a wire that isn't). */
   trailHops?: () => Set<string>
+  /** SYNAPSE CLICK (network pass 2026-10-31, SPEC §4): the hovered wire as
+   *  its "sourceId>targetId" key, or null. Read per frame by the link
+   *  accessors — the hover tier (3px stroke in --dn-synapse-hover, always
+   *  arrowed) rides the same closure mechanism as the LOD band. */
+  hoverLink?: () => string | null
+  /** The selected neuron's incident synapses as "a>b" keys, ALREADY capped
+   *  at the 24 nearest (controls.ts#capSelectedLinks) — the arrow tier and
+   *  the hot width read this per frame. */
+  arrowSel?: () => Set<string>
+  /** How many synapses the current view shows — the arrow paint budget
+   *  check (≤ 1500 arrows, else the selection/hover tier only). */
+  linkCount?: () => number
   /** Handed the live engine once it exists, so the component can push layout
    *  changes into it. GraphView keeps the instance private and exposes no
    *  physics knob, so the construction seam is the only door. */
@@ -170,7 +183,12 @@ export function applyLayout(
    *  immovable boxes inside it, which is what the spread field is packed to
    *  fill. Omitted = no container, just the packing — what you want before the
    *  canvas has a measured size. */
-  room?: { w: number; h: number; blockers?: Blocker[] }
+  room?: { w: number; h: number; blockers?: Blocker[] },
+  /** Layout options. `spacingK` scales the SPREAD forces only (the persisted
+   *  `dn.spacing.spread` multiplier; other layouts keep their own spacing).
+   *  `quick` swaps the full 180-tick relayout for the spacing buttons'
+   *  one-shot reheat: alpha 0.25 territory in ~60 ticks, then stop. */
+  opts?: { spacingK?: number; quick?: boolean }
 ): void {
   const charge = engine.d3Force('charge')
   const link = engine.d3Force('link')
@@ -221,11 +239,15 @@ export function applyLayout(
   // this size is a finished layout and roughly three seconds of a Celeron.
   engine.cooldownTicks(180).cooldownTime(3500)
   if (mode === 'spread') {
+    const k = Math.min(2, Math.max(0.6, opts?.spacingK ?? 1))
     // d3 takes a per-node strength function, and the node objects it hands
     // back are ours (GraphView copies title/degree onto them when syncing), so
-    // each chapter repels in proportion to the width of its own name.
-    charge.strength((n: Painted) => spreadStrength(n.title)).distanceMax(1400)
-    link.distance(140)
+    // each chapter repels in proportion to the width of its own name, scaled
+    // by the spacing multiplier (SPEC §3: distance 220·k, charge
+    // -(44 + labelWidth·1.1)·k, charge reach bounded at 520 so the stronger
+    // charge cannot fold long citations into a central knot).
+    charge.strength((n: Painted) => spreadStrength(n.title, k)).distanceMax(520)
+    link.distance(220 * k)
     // The two readable-overview forces, under the slots force-graph leaves us:
     // 'collide' packs the label boxes apart, 'fit' keeps them inside the window.
     // Both read the SAME extent — one name's size, measured once, so the promise
@@ -241,6 +263,10 @@ export function applyLayout(
     if (room) engine.d3Force('fit', forceFitContainer(room, extentOf))
     else engine.d3Force('fit', null)
     engine.d3Force('collide', forceLabelBoxes(extentOf, room?.blockers ?? []))
+    // One-shot reheat for the spacing buttons: ~60 ticks lands alpha at
+    // ~0.25 and the cooldown stops the engine — a visible breathing of the
+    // field, not a full relayout.
+    if (opts?.quick) engine.cooldownTicks(60).cooldownTime(800)
   } else {
     charge.strength(CLUSTER_CHARGE).distanceMax(Infinity)
     link.distance(CLUSTER_LINK_DISTANCE)
@@ -338,6 +364,13 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let trailHeadCol = '#eaf6ff'
   let trailHaloCol = 'rgba(124,192,255,0.28)'
   let trailW = 2.2
+  // SYNAPSE PASS tokens (network pass 2026-10-31): wire tiers + the recovered
+  // bridge hue. Fallbacks are the spec's dark-arm hex pairs, byte-exact — the
+  // token poll below overrides from computed style on the first frame.
+  let synapseCol = '#5a6b80'
+  let synapseLitCol = '#7fe3d0'
+  let synapseHoverCol = '#9fb0c4'
+  let synapseMinedCol = '#f0b35a'
   // Stop-halo radius, screen px: 6 desktop / 5 phone (read at the same
   // cadence as labelPx — innerWidth does not change mid-frame usefully).
   let trailHaloR = 6
@@ -361,6 +394,10 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         trailHeadCol = get('--dn-trail-head').trim() || trailHeadCol
         trailHaloCol = get('--dn-trail-halo').trim() || trailHaloCol
         trailW = parseFloat(get('--dn-trail-w')) || trailW
+        synapseCol = get('--dn-synapse').trim() || synapseCol
+        synapseLitCol = get('--dn-synapse-lit').trim() || synapseLitCol
+        synapseHoverCol = get('--dn-synapse-hover').trim() || synapseHoverCol
+        synapseMinedCol = get('--dn-synapse-mined').trim() || synapseMinedCol
         labelPx = (typeof window !== 'undefined' && window.innerWidth < 700) ? 12.5 : 11
         trailHaloR = (typeof window !== 'undefined' && window.innerWidth < 700) ? 5 : 6
       }
@@ -460,11 +497,19 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   // read this flag live per frame (same mechanism as `band`), so no
   // re-registration is needed when the visitor crosses the boundary.
   let latFit = false
+  // The camera scale, refreshed by paintNode every frame (the node painter is
+  // the hook that sees globalScale). The arrow accessors read it per frame —
+  // arrows keep a constant SCREEN size (headPx / zoom), which is the whole
+  // point of the LOD: a wedge that swells as you zoom out is unreadable.
+  let zoomNow = 1
+  // Hovered wire key ("a>b"), read per frame through the focus closure.
+  const hoverKeyNow = (): string | null => focus.hoverLink?.() ?? null
+  const linkKeyOf = (l: any): string =>
+    `${l.source?.id ?? l.source}>${l.target?.id ?? l.target}`
   const touchesSel = (l: any): boolean => {
     const sel = focus.selected()
     return sel != null && (l.source?.id === sel || l.target?.id === sel)
   }
-  const COCITE_DASH = [4, 4]
   /** A link whose endpoints are still unresolved (force-graph swaps the id
    *  strings for node objects during the data pipeline) has no color, no
    *  traffic and no business being painted. The paint pipeline evaluates the
@@ -473,6 +518,9 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
    *  layout-toggle crash, 2026-10-31 audit). */
   const endpointsResolved = (l: any): boolean =>
     l.source != null && typeof l.source === 'object' && l.target != null && typeof l.target === 'object'
+  const COCITE_DASH = [4, 4]
+  const BRIDGE_DASH = [4, 3]
+  const isBridge = (l: any): boolean => l.type === 'bridge'
   const applyLinkLod = (): void => {
     engine
       .linkVisibility((l: any) =>
@@ -484,23 +532,34 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
             (band === 1 && (traffic(l) >= 10 || (l.source?.degree ?? 0) >= 5 || (l.target?.degree ?? 0) >= 5))))
       )
       .linkColor((l: any) => {
-        // Compose the four color systems, quietest wins at distance:
-        //   hot (selection)  >  SIGNAL ego fade  >  lattice overview ghost  >  LOD band dim.
+        // Compose the five color systems, quietest wins at distance:
+        //   hover  >  hot (selection)  >  bridge (recovered)  >
+        //   SIGNAL ego fade  >  lattice overview ghost  >  LOD band dim.
+        if (endpointsResolved(l) && hoverKeyNow() === linkKeyOf(l)) return synapseHoverCol
         if (touchesSel(l)) return hotCol
         if (!endpointsResolved(l)) return '#808080' // bucketed, never painted
+        // A recovered bridge wears its own mined hue at every band — the
+        // dashed amber IS the statement "this wire was recovered, not
+        // exported", and it must not dim into the background it proves wrong.
+        if (isBridge(l)) return synapseMinedCol
         const base = fade(nodeColor(l.source, tokensNow()))
         if (latFit) return dimColor(base, 0.22)
         return band === 2 ? base : dimColor(base, band === 1 ? 0.55 : 0.4)
       })
-      .linkLineDash((l: any) => (l.type === 'cocite' ? COCITE_DASH : null))
-      .linkWidth((l: any) =>
-        touchesSel(l)
-          ? 2.0
-          : latFit
-            ? Math.min(1.1, 0.2 + 0.03 * Math.sqrt(traffic(l)))
-            : band === 2
-              ? Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l)))
-              : 0.35)
+      .linkLineDash((l: any) =>
+        isBridge(l) ? BRIDGE_DASH : l.type === 'cocite' ? COCITE_DASH : null)
+      .linkWidth((l: any) => {
+        // Pointer tier first: the hovered wire strokes 3px (SPEC §4.1).
+        if (endpointsResolved(l) && hoverKeyNow() === linkKeyOf(l)) return 3
+        // A bridge reads as its own kind: 1.5px dashed (SPEC §5), quiet
+        // enough to never outweigh the hot set.
+        if (isBridge(l)) return 1.5
+        if (touchesSel(l)) return 2.0
+        if (latFit) return Math.min(1.1, 0.2 + 0.03 * Math.sqrt(traffic(l)))
+        return band === 2
+          ? Math.min(1.45, 0.4 + 0.07 * Math.sqrt(traffic(l)))
+          : 0.35
+      })
       .linkCurvature(curvature)
   }
 
@@ -558,6 +617,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     // globalScale, so it is also what keeps the link accessors honest. A band
     // crossing re-asserts the LOD link chain (see the block above for why the
     // re-assert, not a set-once, is required).
+    zoomNow = globalScale
     const nextBand = globalScale < 0.45 ? 0 : globalScale < 0.85 ? 1 : 2
     const lat = !focus.compact && !!focus.lattice?.()
     latFit = lat && globalScale < 1.1
@@ -913,5 +973,42 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         touchesSel(l)
           ? nodeColor(l.source ?? {}, tokensNow())
           : fade(nodeColor(l.source ?? {}, tokensNow())))
+
+    /* ---------- ARROWS (zoom-LOD, network pass 2026-10-31 SPEC §3.4) ----------
+       Direction cue, NOT decoration: an interaction tier (hovered wire, the
+       selected neuron's capped incident set) is always arrowed at any zoom;
+       the idle field arrows every visible synapse only past zoom 0.75 AND
+       under the 1500-synapse paint budget (else the tier only, and the
+       component prints the honest status line). No second canvas, no rAF:
+       force-graph's own paintArrows() re-reads these accessors per frame, and
+       `length 0` is the off switch. The head keeps a constant SCREEN size
+       (clamp(5, 7/√zoom, 11) px, divided by the camera scale to reach world
+       units); relPos 1 parks the tip at the target's radius — force-graph
+       already offsets the head by the target node's own radius there.
+       Reciprocal wires are separate links, so each gets its own head. */
+    const key = (l: any): string => `${l.source?.id ?? l.source}>${l.target?.id ?? l.target}`
+    engine
+      .linkDirectionalArrowLength((l: any) => {
+        if (!endpointsResolved(l)) return 0
+        const hovered = hoverKeyNow() === key(l)
+        const selected = focus.arrowSel?.().has(key(l)) ?? false
+        if (!arrowVisible({
+          zoom: zoomNow,
+          hovered,
+          inSelectedSet: selected,
+          visibleCount: focus.linkCount?.() ?? 0
+        })) return 0
+        return arrowHeadPx(zoomNow) / zoomNow
+      })
+      .linkDirectionalArrowRelPos(1)
+      // Fill = the wire's own color, resolved to a literal (canvas cannot
+      // parse var()): lit tier in --dn-synapse-lit, recovered bridges keep
+      // their mined amber, everything else --dn-synapse.
+      .linkDirectionalArrowColor((l: any) => {
+        const hovered = hoverKeyNow() === key(l)
+        const selected = focus.arrowSel?.().has(key(l)) ?? false
+        if (isBridge(l)) return synapseMinedCol
+        return hovered || selected ? synapseLitCol : synapseCol
+      })
   }
 }

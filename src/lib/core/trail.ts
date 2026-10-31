@@ -77,3 +77,19 @@ export function trailText(stops: ReadonlyArray<{ slug: string; title: string }>)
   const lines = stops.map((s, i) => `${i + 1}. [${s.title}](?doc=${s.slug})`)
   return `# trail — docneural\n\n${lines.join('\n')}\n`
 }
+
+/**
+ * One synapse's citation, in the trail's own markdown voice (the click
+ * card's "Copy citation" reuses this formatter — network pass 2026-10-31):
+ * `source → target` as two wiki-links plus the recovered/citing line when
+ * one exists. Same `?doc=` URL contract as the trail, so a pasted citation
+ * is a navigable deep link and not just prose.
+ */
+export function synapseCitation(
+  a: { slug: string; title: string },
+  b: { slug: string; title: string },
+  ctx?: string
+): string {
+  const line = `[${a.title}](?doc=${a.slug}) → [${b.title}](?doc=${b.slug})`
+  return ctx ? `${line} — “${ctx}”\n` : `${line}\n`
+}

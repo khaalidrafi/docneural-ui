@@ -18,6 +18,7 @@
   import DocReader from './reader/DocReader.svelte'
   import Home from './reader/Home.svelte'
   import CommandPalette from './ui/CommandPalette.svelte'
+  import Library from './ui/Library.svelte'
   import AskPanel from './reader/AskPanel.svelte'
   import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
@@ -143,12 +144,19 @@
 
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        paletteOpen = !paletteOpen
+        // ⌘⇧K / Ctrl-Shift-K opens the LIBRARY (SPEC §6.2); plain ⌘K stays
+        // the jump palette. The library wins when both modifiers are down.
+        if (e.shiftKey) {
+          store.toggleLibrary()
+        } else {
+          paletteOpen = !paletteOpen
+        }
         return
       }
       if (e.key === 'Escape') {
         paletteOpen = false
         helpOpen = false
+        store.libraryOpen = false
         return
       }
       if (typing || e.metaKey || e.ctrlKey || e.altKey) return
@@ -188,11 +196,12 @@
   })
 
   // Status line: the corpus as an instrument reading. Only after the data
-  // lands — a HUD that reports 0 nodes looks broken, not technical.
+  // lands — a HUD that reports 0 nodes looks broken, not technical. Bridge
+  // recoveries append their own honest suffix (+N recovered, SPEC §5).
   const status = $derived(
     store.ready
-      ? `${store.data.nodes.length} NODES · ${store.data.links.length} WIRES · ${store.manuals.length} SRC`
-      : 'LINK DOWN'
+      ? `${store.data.nodes.length} NEURONS · ${store.data.links.length} SYNAPSES · ${store.manuals.length} SRC${store.bridgesLoaded ? ` · +${store.recovered} recovered` : ''}`
+      : 'SYNAPSE LINK DOWN'
   )
 </script>
 
@@ -227,7 +236,7 @@
     </button>
     {#if !store.lite}
       <button class="seg" class:active={store.mode === 'graph'} aria-pressed={store.mode === 'graph'}
-        onclick={() => store.setMode('graph')} title="See the citations as a graph">
+        onclick={() => store.setMode('graph')} title="See the citations in the neural network">
         <span class="seg-ico spark" aria-hidden="true">⌁</span><span class="seg-txt">SYNAPSES</span>
       </button>
     {/if}
@@ -241,7 +250,7 @@
          the existing store flags — no script edit). -->
     <span class="status dn-mono" class:down={store.failed || !store.ready}>
       <span class="meter" aria-hidden="true"><i></i><i></i><i></i></span>
-      {store.failed ? 'LINK DOWN' : !store.ready ? 'BUS · ARMING' : status}
+      {store.failed ? 'SYNAPSE LINK DOWN' : !store.ready ? 'BUS · ARMING' : status}
     </span>
     <!-- CONSULT E §3: the keycap bank — four independent outlines become one
          40px strip with 1px dividers; cells 40x40. -->
@@ -250,7 +259,7 @@
         ⌕ <span class="hintkey">⌘K</span>
       </button>
       <button class="tool keys" onclick={() => (helpOpen = true)} aria-label="Keyboard help">?</button>
-      <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode" title="graph engine on/off">
+      <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode" title="neural network engine on/off">
         {store.lite ? 'FAST' : 'FULL'}
       </button>
       <button class="tool" onclick={toggleTheme} aria-label="Toggle theme" title="day / night">
@@ -268,9 +277,9 @@
     <div class="panel" role="alert">
       <span class="dn-neuron-mark" aria-hidden="true"></span>
       <p class="kicker" aria-hidden="true">// no route</p>
-      <h2>This documentation graph did not load</h2>
+      <h2>This documentation neural network did not load</h2>
       <p class="why">{store.failed}</p>
-      <p class="hint">The site builds its graph from an exported corpus. If a
+      <p class="hint">The site builds its neural network from an exported corpus. If a
         local build is being served, run <code>make export &amp;&amp; make build</code>.</p>
       <button class="retry" onclick={() => location.reload()}>Reload</button>
     </div>
@@ -293,7 +302,7 @@
       </p>
       <div class="charge" aria-hidden="true"><span class="scan"></span></div>
       <p class="row idx dn-mono">INDEXING CORPUS <b>{store.data.nodes.length || '—'}</b></p>
-      <p class="row sub dn-mono">reading the graph · {store.manuals.length} channels · {store.data.links.length || '—'} wires</p>
+      <p class="row sub dn-mono">reading the neural network · {store.manuals.length} channels · {store.data.links.length || '—'} synapses</p>
       <div class="volts" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
@@ -344,7 +353,7 @@
     <details class="controls" open={!isPhone}>
       <summary class="dn-mono">
         <span class="dn-neuron-mark" aria-hidden="true"></span>
-        <span class="spark">⌁</span> SYNAPSES · {store.visible.links.length} WIRES
+        <span class="spark">⌁</span> SYNAPSES · {store.visible.links.length} SYNAPSES
         <span class="chev">+</span>
       </summary>
       <FilterBar {store} />
@@ -362,6 +371,7 @@
 {/if}
 
 <CommandPalette bind:open={paletteOpen} {store} />
+<Library {store} />
 <AskPanel {store} />
 
 {#if helpOpen}
@@ -376,14 +386,16 @@
     <div class="help dn-glass">
       <h3 class="dn-mono">{title.toUpperCase()} — KEYMAP</h3>
       <p class="blurb">
-        A documentation reader <em>enhanced</em> with an org-roam graph. The written
-        word is the home page; <span class="spark">⌁ synapses</span> is the connection
-        graph between docs — named for Hebb's law, since every citation resolved
-        strengthens the link. It aggregates <strong>any</strong> Org corpus: one
+        A documentation reader <em>enhanced</em> with an org-roam neural network. The written
+        word is the home page; <span class="spark">⌁ synapses</span> is the neural
+        network between docs — named for Hebb's law, since every citation resolved
+        strengthens the synapse. It aggregates <strong>any</strong> Org corpus: one
         channel per manual, each with its own hue.
+        <span class="dn-mono" style="display:block; margin-top:0.5em">dashed amber wire = bridge · recovered from literal text references — not the source link graph.</span>
       </p>
       <dl>
         <dt>⌘K / Ctrl-K</dt><dd>command palette (jump anywhere)</dd>
+        <dt>⌘⇧K / Ctrl-Shift-K</dt><dd>document library</dd>
         <dt>/</dt><dd>same, from an empty keyboard</dd>
         <dt>g then d</dt><dd>docs mode</dd>
         <dt>g then s</dt><dd>synapses mode</dd>

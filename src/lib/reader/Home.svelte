@@ -150,8 +150,8 @@
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual
       split per section, exported from Org by Emacs, and wired into an org-roam
-      graph of <strong>{synCount} firing synapses</strong>. Read it top to bottom,
-      jump anywhere with ⌘K, or drop into the graph and follow the citations.
+      neural network of <strong>{synCount} firing synapses</strong>. Read it top to bottom,
+      jump anywhere with ⌘K, or drop into the neural network and follow the citations.
       Every page also ships as raw Org and as
       <span class="dn-mono">llms.txt</span> — machine-readable on purpose.
     </p>
@@ -171,7 +171,7 @@
         <button class="cta graph dn-notch" onclick={() => store.setMode('graph')}>
           <span class="cta-k spark">⌁</span>
           <span class="cta-t">Explore synapses</span>
-          <span class="cta-s">the whole graph, live</span>
+          <span class="cta-s">the whole neural network, live</span>
         </button>
       {/if}
     </div>
@@ -182,7 +182,7 @@
          sweep is untouched (script law) — only the frame around it moved. -->
     <div class="stats dn-hud" role="status" aria-live="polite">
       <div class="stats-bus dn-mono">
-        <span class="bus-led" aria-hidden="true"></span>BUS · {synCount} WIRES · LIVE
+        <span class="bus-led" aria-hidden="true"></span>BUS · {synCount} SYNAPSES · LIVE
       </div>
       <div class="dn-kv">
         <span>sources</span><span>{sources.length} · {sourceList}</span>
@@ -226,7 +226,7 @@
       <span class="plate-tick pt-tr" aria-hidden="true"></span>
       <CorpusField {store} />
       <div class="plate-cap dn-label">
-        <span class="pc-name">corpus plate · 96 of 1386 nodes · phyllotaxis</span>
+        <span class="pc-name">corpus plate · 96 of 1386 neurons · phyllotaxis</span>
         <a class="pc-index" href="#plate-ledger">full index ›</a>
       </div>
     </div>
@@ -241,17 +241,17 @@
       <summary class="ledger-summary">
         <span class="ledger-sum-label dn-mono">plate ledger</span>
         <span class="ledger-sum-count dn-mono">› 96 rows · top degree · 3 corpora</span>
-        <span class="ledger-sum-note">collapsible readout of the top-96 highest-degree nodes plotted in the Corpus Plate above — one row per node, degree = real wire count</span>
+        <span class="ledger-sum-note">collapsible readout of the top-96 highest-degree neurons plotted in the Corpus Plate above — one row per neuron, degree = real synapse count</span>
       </summary>
       <div class="ledger-legend dn-mono" role="note">
         <span class="lg-item"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span>
         <span class="lg-item"><i class="dot dot-org" aria-hidden="true"></i>org</span>
         <span class="lg-item"><i class="dot dot-guix" aria-hidden="true"></i>guix</span>
-        <span class="lg-meta">▤ degree = real wire count · corpora wear their graph hue · source of truth: graph.json</span>
+        <span class="lg-meta">▤ degree = real synapse count · corpora wear their neural hue · source of truth: graph.json</span>
       </div>
       <table class="ledger-table">
         <thead>
-          <tr><th scope="col" class="ledger-rank">#</th><th scope="col" class="ledger-corpus">corpus</th><th scope="col" class="ledger-node">index node</th><th scope="col" class="ledger-deg">degree</th></tr>
+          <tr><th scope="col" class="ledger-rank">#</th><th scope="col" class="ledger-corpus">corpus</th><th scope="col" class="ledger-node">index neuron</th><th scope="col" class="ledger-deg">degree</th></tr>
         </thead>
         <tbody>
                         <tr class="ledger-row"><td class="ledger-rank">1</td><td class="ledger-corpus"><span class="ledger-chip"><i class="dot dot-emacs" aria-hidden="true"></i>emacs</span></td><td class="ledger-node">Concept Index</td><td class="ledger-deg">4189</td></tr>
@@ -365,19 +365,19 @@
       <li class="how-step">
         <span class="how-num" aria-hidden="true">01</span>
         <h3 class="how-verb dn-mono">Orient</h3>
-        <p class="how-line">This page is the map: the Corpus Plate plots the 96 most-connected of 1386 nodes, and the ledger below it counts every wire.</p>
+        <p class="how-line">This page is the map: the Corpus Plate plots the 96 most-connected of 1386 neurons, and the ledger below it counts every synapse.</p>
         <p class="how-next"><span aria-hidden="true">›</span> next: where the 1386 live</p>
       </li>
       <li class="how-step">
         <span class="how-num" aria-hidden="true">02</span>
         <h3 class="how-verb dn-mono">Navigate</h3>
-        <p class="how-line">The sources strip lists three corpora, each in its graph hue — open a card to read that corpus; tabs hop between its manuals.</p>
+        <p class="how-line">The sources strip lists three corpora, each in its neural hue — open a card to read that corpus; tabs hop between its manuals.</p>
         <p class="how-next"><span aria-hidden="true">›</span> next: walk the citations</p>
       </li>
       <li class="how-step">
         <span class="how-num" aria-hidden="true">03</span>
         <h3 class="how-verb dn-mono">Trace</h3>
-        <p class="how-line">Each page is a real org-export fragment; its links are the manual's own cross-references — the same graph that wires the Plate.</p>
+        <p class="how-line">Each page is a real org-export fragment; its synapses are the manual's own cross-references — the same network that wires the Plate.</p>
         <p class="how-next"><span aria-hidden="true">›</span> the citation network is the navigation</p>
       </li>
     </ol>
@@ -409,7 +409,7 @@
   {/if}
 
   <section class="sources" data-idx="02">
-    <h2 class="dn-label section-h" data-kicker="// 02 · corpora">sources <span class="hint">each corpus wears its graph hue</span></h2>
+    <h2 class="dn-label section-h" data-kicker="// 02 · corpora">sources <span class="hint">each corpus wears its neural hue</span></h2>
     <div class="src-row">
       {#each sources as s, si (s.name)}
         <button class="src-card" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
@@ -427,17 +427,17 @@
             <svg class="src-mark" viewBox="0 0 16 16" aria-hidden="true"><circle cx="4.5" cy="4.5" r="1.5"/><circle cx="11.5" cy="4.5" r="1.5"/><circle cx="8" cy="11.5" r="2"/></svg>
           {/if}
           <span class="src-name dn-mono">{DocneuralStore.manualTitle(s.name)}</span>
-          <span class="src-meta dn-mono">{s.pages} pages · {s.links} wires</span>
+          <span class="src-meta dn-mono">{s.pages} pages · {s.links} synapses</span>
           <!-- CB-EXHAUST consult 6: per-corpus body copy (facts re-verified
                against the real graph: 569/1386 = 41%, hubs = the indexes). -->
           {#if s.name === 'emacs'}
-            <span class="src-body">The GNU Emacs manual as a navigable node graph: editing, modes, and shell integration, edition-agnostic. Index hubs dominate the wire graph — the Concept Index alone wires 41% of the corpus.</span>
+            <span class="src-body">The GNU Emacs manual as a navigable neural network: editing, modes, and shell integration, edition-agnostic. Index hubs dominate the synapse network — the Concept Index alone connects 41% of the corpus.</span>
           {:else if s.name === 'org'}
-            <span class="src-body">The Org mode manual as a node graph: capture, agenda, tables, and export pipelines, edition-agnostic. The Main Index concentrates the manual's busiest surface — one dense book, fully crossed.</span>
+            <span class="src-body">The Org mode manual as a neural network: capture, agenda, tables, and export pipelines, edition-agnostic. The Main Index concentrates the manual's busiest surface — one dense book, fully crossed.</span>
           {:else if s.name === 'guix'}
-            <span class="src-body">The GNU Guix manual as a node graph: package definition, system configuration, and profiles, edition-agnostic. The Programming Index pulls the heaviest degree outside the Emacs indexes.</span>
+            <span class="src-body">The GNU Guix manual as a neural network: package definition, system configuration, and profiles, edition-agnostic. The Programming Index pulls the heaviest degree outside the Emacs indexes.</span>
           {:else}
-            <span class="src-body">An aggregated corpus: real cross-references from every manual, computed into one wire graph. 39 nodes carry no wires and float at the edge.</span>
+            <span class="src-body">An aggregated corpus: real cross-references from every manual, computed into one synapse network. 39 neurons carry no synapses and float at the edge.</span>
           {/if}
           <span class="src-open">read ›</span>
         </button>
@@ -488,7 +488,7 @@
          chapters as branches, sections nested, closed until asked for — the
          shape that survives the hundreds of docs still to come. -->
     <p class="grid-head dn-mono">// {DocneuralStore.manualTitle(store.manual) || 'all sources'} · toc · {chapters.length} pages · {[...degree.values()].reduce((a, b) => a + b, 0)}⌁ total</p>
-    <Toc {chapters} goto={(c) => store.goto(c)} {degree} activeId={store.selected?.id ?? null} />
+    <Toc {chapters} goto={(c) => store.goto(c)} {degree} activeId={store.selected?.id ?? null} manualKey={store.manual} />
   </section>
 
   <!-- CB-EXHAUST consults 1+3+4+6 (deepseek-v4.1-flash@codebuddy): the
@@ -500,16 +500,16 @@
     <!-- FULL-RIGHTS OP-51: the colophon closes on a signature, not a kv
          table — the lead becomes a framed statement, signed by an
          instrument stamp of the real export facts. -->
-    <p class="colo-lead dn-brackets"><span class="colo-lead-g" aria-hidden="true">▤</span> a static reader for a public corpus. 1386 nodes, 30915 wires, three GNU manuals — and this aggregator, the reading instrument. every page is a pre-exported org fragment, served read-only. <span class="colo-lead-g" aria-hidden="true">▤</span></p>
-    <p class="colo-stamp dn-mono">export 2026-10-28 · 1386 nodes · 30915 wires · 3 corpora · AA-verified · 0 trackers</p>
+    <p class="colo-lead dn-brackets"><span class="colo-lead-g" aria-hidden="true">▤</span> a static reader for a public corpus. 1386 neurons, 30915 synapses, three GNU manuals — and this aggregator, the reading instrument. every page is a pre-exported org fragment, served read-only. <span class="colo-lead-g" aria-hidden="true">▤</span></p>
+    <p class="colo-stamp dn-mono">export 2026-10-28 · 1386 neurons · 30915 synapses · 3 corpora · AA-verified · 0 trackers</p>
     <div class="colo-grid">
       <section class="colo-col" aria-labelledby="colo-method">
         <span class="col-h" id="colo-method">method</span>
         <dl class="colo-list">
-          <dt>export</dt><dd>one batch <span class="sym">org-export</span> pass: a graph plus one body-only HTML fragment per node. the shell mounts that data; it never re-parses org at runtime.</dd>
-          <dt>wire graph</dt><dd>30915 edges drawn from the corpus' real cross-references — computed, not curated. a wire exists here only if the citation exists in the source manuals.</dd>
-          <dt>plate</dt><dd>a single reading surface over the graph: the 96 most-connected nodes on a phyllotaxis field. navigation is graph traversal — no crawl, no rebuild on load.</dd>
-          <dt>provenance</dt><dd>GNU Emacs · 791 nodes — Org · 319 — Guix · 276. <span class="sym">graph.json</span> is the source of truth.</dd>
+          <dt>export</dt><dd>one batch <span class="sym">org-export</span> pass: a neural network plus one body-only HTML fragment per neuron. the shell mounts that data; it never re-parses org at runtime.</dd>
+          <dt>synapse network</dt><dd>30915 synapses drawn from the corpus' real cross-references — computed, not curated. a synapse exists here only if the citation exists in the source manuals.</dd>
+          <dt>plate</dt><dd>a single reading surface over the neural network: the 96 most-connected neurons on a phyllotaxis field. navigation is neural-network traversal — no crawl, no rebuild on load.</dd>
+          <dt>provenance</dt><dd>GNU Emacs · 791 neurons — Org · 319 — Guix · 276. <span class="sym">graph.json</span> is the source of truth.</dd>
         </dl>
       </section>
       <section class="colo-col" aria-labelledby="colo-contract">

@@ -40,12 +40,20 @@ export type DocNode = {
  *  shown in backlink lists (org-roam-style). `kind: 'cocite'` marks a
  *  SYNTHETIC edge the UI itself computed (a co-citation: two chapters cited
  *  together by the corpus) — never a corpus wire — so the graph can paint
- *  it differently (dashed, dimmed) instead of passing it off as real. */
+ *  it differently (dashed, dimmed) instead of passing it off as real.
+ *  `kind: 'bridge'` marks a RECOVERED cross-manual wire (core/bridges.ts):
+ *  a literal text reference the xref miner found in one manual's prose that
+ *  points into another manual. Also painted dashed (in the mined hue) with
+ *  its evidence — a recovered match states where it came from, never
+ *  masquerades as an export link. */
 export type DocLink = {
   source: string
   target: string
   context?: string
-  kind?: 'cocite'
+  kind?: 'cocite' | 'bridge'
+  /** Every recovered citing line, when more than one hit mined the same
+   *  pair (the deduped bridge keeps them all — SPEC §5). */
+  provenance?: string[]
 }
 
 export type GraphData = {

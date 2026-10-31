@@ -26,15 +26,32 @@
   import GraphView from 'orui/graph/GraphView.svelte'
   import { createGraphStore } from 'orui/state/graphStore'
   import type { OrgRoamNode } from 'orui/api'
+  import { untrack } from 'svelte'
   import { toRoam } from './roamBridge'
   import { applyLayout, fitReadable, makeNeuronLoader } from './neuronEngine'
   import type { Blocker } from './spreadForces'
   import type { Engine as NeuronEngine } from './neuronEngine'
   import { neighborIds, latticePitch } from '../core/graph'
-  import type { DocNode, LayoutMode } from '../core/types'
-  import type { DocneuralStore } from '../core/store.svelte'
-  import { trailText } from '../core/trail'
+  import type { DocNode, DocLink, LayoutMode } from '../core/types'
+  import { DocneuralStore } from '../core/store.svelte'
+  import { trailText, synapseCitation } from '../core/trail'
   import { copyText } from '../core/clipboard'
+  import {
+    ARROW_BUDGET,
+    ARROW_ZOOM_MIN,
+    SPACING_MAX,
+    SPACING_MIN,
+    ZOOM_MAX,
+    ZOOM_MIN,
+    capSelectedLinks,
+    clampSpacing,
+    loadLock,
+    loadSpacing,
+    nextSpacing,
+    nextZoom,
+    saveLock,
+    saveSpacing
+  } from '../core/controls'
 
   let {
     store,
@@ -72,18 +89,22 @@
   // Fresh request object per run is the contract: GraphView acts on focus
   // IDENTITY and ignores repeats, so old selections do not re-tween.
   // The same effect updates the plain vars the neuron painter reads per
-  // frame — hot set = selection + its 1-hop neighbours.
+  // frame — hot set = selection + its 1-hop neighbours — and the capped
+  // incident-link set the ARROW tier reads (24 nearest, controls.ts).
   let selId: string | null = null
   let selNb: Set<string> = new Set()
+  let selLinks: Set<string> = new Set()
   $effect(() => {
     const sel = store.selected
     if (sel) {
       roam.setFocus({ id: sel.id })
       selId = sel.id
       selNb = neighborIds(store.data, sel.id)
+      selLinks = capSelectedLinks(store.data.links, sel.id)
     } else {
       selId = null
       selNb = new Set()
+      selLinks = new Set()
     }
   })
 
@@ -227,7 +248,7 @@
     const inset = { top: 0, right: 0, bottom: 0, left: 0 }
     const corners: DOMRect[] = []
     const root = wrapEl.closest('section') ?? document
-    for (const el of root.querySelectorAll('.note-preview, .controls, .scope, .layout')) {
+    for (const el of root.querySelectorAll('.note-preview, .controls, .scope, .layout, .net-controls')) {
       const r = el.getBoundingClientRect()
       if (!r.width || !r.height) continue // closed <details>, or no selection
       if (r.right <= box.left || r.left >= box.right || r.bottom <= box.top || r.top >= box.bottom) continue
@@ -331,7 +352,8 @@
     // otherwise keep gating CLUSTER/SPREAD labels at fit zoom after the visitor
     // toggled away — those layouts police their own collisions.
     latticeP = 0
-    applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined)
+    applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined,
+      mode === 'spread' ? { spacingK } : undefined)
     fitNextStop = true
     if (!stopArmed) {
       stopArmed = true
@@ -371,6 +393,11 @@
     // only hand over the current values.
     trail: () => trailStopIds,
     trailHops: () => trailHopKeys,
+    // SYNAPSE CLICK (network pass): hover tier + arrow LOD inputs. Plain
+    // vars behind closures — the painter/accessors read them every frame.
+    hoverLink: () => hoverKey,
+    arrowSel: () => selLinks,
+    linkCount: () => store.visible.links.length,
     // Label eligibility rides with the layout: spread AND lattice are the two
     // "read the names" views, so both make every neuron's title eligible.
     spread: () => store.layout !== 'cluster',
@@ -390,6 +417,258 @@
     onNodeClick(node.id)
   }
 
+  /* ---------- NETWORK CONTROLS (canvas chrome, network pass 2026-10-31) ----------
+     One vertical stack, bottom-right: LOCK · SPACING −/+ · ZOOM +/− · FIT.
+     Every button is 44×44 with an 8px gap; the stack is DOM chrome over the
+     canvas, zero new animation loops — the readout pills fade through a CSS
+     transition, the reheat is a bounded force cooldown, and LOCK stops the
+     engine's own frame loop entirely (the phone default, so a phone in
+     synapses mode runs ZERO rAF loops until the visitor unlocks). */
+  const isPhone =
+    typeof matchMedia === 'function' && matchMedia('(max-width: 700px)').matches
+  // Boot-time snapshot ON PURPOSE (untrack states that): the lock preference
+  // is read once for the layout the canvas mounts with. Layout toggles own
+  // their own persistence from there — re-reading store.layout here would
+  // not re-read the lock either.
+  let locked = $state(loadLock(untrack(() => store.layout), isPhone))
+  let spacingK = $state(loadSpacing())
+  let zoomNow = $state(1)
+  let zoomPillText = $state('')
+  let zoomPillShow = $state(false)
+  let spacingPillText = $state('')
+  let spacingPillShow = $state(false)
+  let pillTimer: ReturnType<typeof setTimeout> | undefined = undefined
+  let pokeTimer: ReturnType<typeof setTimeout> | undefined = undefined
+  let zoomArmed = false
+
+  // Per-layout lock memory (SPEC §3.1): every layout remembers its own
+  // freeze state; switching layouts restores it.
+  $effect(() => {
+    locked = loadLock(store.layout, isPhone)
+  })
+
+  // LOCK = force-graph's pauseAnimation: the frame loop STOPS (verified in
+  // force-graph 1.51 — it exposes pause/resumeAnimation), which is both the
+  // freeze the acceptance checks (2 frames identical) and the phone's
+  // 0-loop law. Pan/zoom INPUT still works while locked: the transient poke
+  // below resumes for the length of one gesture/settle and re-pauses — the
+  // loop is never left running. Selection pans never reheat the physics.
+  $effect(() => {
+    const eng = engine
+    if (!eng) return
+    if (locked) {
+      clearTimeout(pokeTimer)
+      eng.pauseAnimation?.()
+    } else {
+      eng.resumeAnimation?.()
+      // Unlock settle: a bounded reheat (~60 ticks ≈ alpha 0.3, then stop) —
+      // never an unbounded full reheat.
+      eng.cooldownTicks?.(60)
+      eng.cooldownTime?.(800)
+    }
+  })
+
+  /** While locked: resume just long enough for one camera move/gesture to
+   *  paint, then re-pause. The resume is DEFERRED to a macrotask on purpose:
+   *  onZoom fires from inside force-graph's `_animationCycle` body (a zoom
+   *  tween emits zoom every frame), and a synchronous `resumeAnimation` there
+   *  re-enters `_animationCycle` while `animationFrameRequestId` is still null
+   *  — nested cycles recursing on every tweened frame until the stack dies
+   *  (the phone lock made this fire on boot, 2026-10-31). Deferring also
+   *  coalesces: a running tween keeps resetting this timer, so the engine
+   *  resumes once, AFTER the gesture settles. Two bounded timers — not loops. */
+  function pokeWhileLocked(): void {
+    const eng = engine
+    if (!eng || !locked) return
+    clearTimeout(pokeTimer)
+    pokeTimer = setTimeout(() => {
+      if (!locked || !engine) return
+      engine.resumeAnimation?.()
+      pokeTimer = setTimeout(() => {
+        if (locked) engine?.pauseAnimation?.()
+      }, 600)
+    }, 0)
+  }
+
+  // The camera scale, reported to the chrome: disabled ends, the readout
+  // pill, and the arrow-budget status line all read this.
+  $effect(() => {
+    const eng = engine
+    if (!eng || zoomArmed) return
+    zoomArmed = true
+    eng.onZoom?.((t: { k?: number }) => {
+      if (typeof t?.k === 'number' && t.k !== zoomNow) {
+        zoomNow = t.k
+        showZoomPill(t.k)
+      }
+      // Any pan/zoom gesture on a locked canvas gets its paint window.
+      if (locked) pokeWhileLocked()
+    })
+    zoomNow = typeof eng.zoom === 'function' ? eng.zoom() : 1
+  })
+
+  function showZoomPill(k: number): void {
+    zoomPillText = `${k.toFixed(1)}×`
+    zoomPillShow = true
+    clearTimeout(pillTimer)
+    pillTimer = setTimeout(() => { zoomPillShow = false }, 1200)
+  }
+
+  function showSpacingPill(k: number): void {
+    spacingPillText = `${k.toFixed(1)}×`
+    spacingPillShow = true
+    clearTimeout(pillTimer)
+    pillTimer = setTimeout(() => { spacingPillShow = false }, 1200)
+  }
+
+  function toggleLock(): void {
+    locked = !locked
+    saveLock(store.layout, locked)
+  }
+
+  function zoomBy(dir: 1 | -1): void {
+    const eng = engine
+    if (!eng) return
+    pokeWhileLocked()
+    eng.zoom(nextZoom(zoomNow, dir), 240)
+  }
+
+  function fitAction(): void {
+    const eng = engine
+    if (!eng) return
+    const vp = viewport()
+    if (!vp) return
+    pokeWhileLocked()
+    fitNow(eng, vp)
+    showZoomPill(typeof eng.zoom === 'function' ? eng.zoom() : zoomNow)
+  }
+
+  /** SPACING (spread only, SPEC §3.3): k 0.6–2.0 step 0.2, persisted in
+   *  `dn.spacing.spread`; applying it is ONE bounded reheat (60 ticks), then
+   *  the existing onEngineStop refit reframes the field. Other layouts keep
+   *  their own spacing — the multiplier is stored and waits for spread. */
+  function nudgeSpacing(dir: 1 | -1): void {
+    spacingK = nextSpacing(spacingK, dir)
+    saveSpacing(spacingK)
+    showSpacingPill(spacingK)
+    const eng = engine
+    if (!eng || store.layout !== 'spread') return
+    pokeWhileLocked()
+    const vp = viewport()
+    applyLayout(eng, 'spread', vp ? packRect(vp) : undefined, { spacingK, quick: true })
+    fitNextStop = true
+  }
+
+  const arrowOverBudget = $derived(
+    zoomNow >= ARROW_ZOOM_MIN && store.visible.links.length > ARROW_BUDGET
+  )
+
+  /* ---------- SYNAPSE CLICK (edge interrogation, network pass 2026-10-31) ----------
+     The wire is a first-class target: hover lights it (3px + chip), click
+     opens the detail card (ctx line, endpoint jumps, trail-light, citation).
+     The card and the trail sheet share the canvas's overlay layer and yield
+     to each other — one at a time, no collision. */
+  let hoverKey: string | null = null // engine closure input — plain var
+  let hoverWire = $state<{ a: string; b: string } | null>(null)
+  let hoverPos = $state({ x: 0, y: 0 })
+  let card = $state<{ link: DocLink; a: string; b: string } | null>(null)
+  let litDone = $state(false)
+  let citedDone = $state(false)
+  let litTimer: ReturnType<typeof setTimeout> | undefined = undefined
+  let citedTimer: ReturnType<typeof setTimeout> | undefined = undefined
+
+  const engineLinkKey = (l: any): string =>
+    `${typeof l.source === 'object' ? l.source?.id : l.source}>${typeof l.target === 'object' ? l.target?.id : l.target}`
+
+  function edgeHover(l: any | null): void {
+    if (!l) {
+      hoverKey = null
+      hoverWire = null
+      return
+    }
+    const [a, b] = engineLinkKey(l).split('>')
+    hoverKey = `${a}>${b}`
+    hoverWire = { a, b }
+    // The chip's citing line rides the existing ctx cache: one fetch per
+    // source per session, then every hover answers from memory.
+    if (a) store.loadContext(a)
+  }
+
+  function edgeClick(l: any): void {
+    const [a, b] = engineLinkKey(l).split('>')
+    const link = store.wire(a, b)
+    if (!link) return
+    store.loadContext(a)
+    card = { link, a, b }
+    // Shared overlay layer: the card yields the trail sheet its space.
+    trailOpen = false
+    hoverWire = null
+    hoverKey = null
+  }
+
+  function closeCard(): void {
+    card = null
+  }
+
+  function gotoEndpoint(id: string): void {
+    const n = store.byId(id)
+    if (n) store.goto(n)
+    closeCard()
+  }
+
+  function lightTrail(): void {
+    if (!card) return
+    store.extendTrailThrough(card.a, card.b)
+    litDone = true
+    clearTimeout(litTimer)
+    litTimer = setTimeout(() => { litDone = false }, 1600)
+  }
+
+  async function copyCitation(): Promise<void> {
+    if (!card) return
+    const a = store.byId(card.a)
+    const b = store.byId(card.b)
+    if (!a || !b) return
+    const ok = await copyText(synapseCitation(a, b, store.ctxFor(card.link)))
+    if (!ok) return
+    citedDone = true
+    clearTimeout(citedTimer)
+    citedTimer = setTimeout(() => { citedDone = false }, 1600)
+  }
+
+  // Hover chip follows the pointer over the canvas (a passive DOM listener,
+  // attached only while a wire is hovered — never a loop).
+  $effect(() => {
+    const wrap = wrapEl
+    if (!wrap || !hoverWire) return
+    const onMove = (e: PointerEvent): void => {
+      const box = wrap.getBoundingClientRect()
+      hoverPos = { x: e.clientX - box.left, y: e.clientY - box.top }
+    }
+    wrap.addEventListener('pointermove', onMove, { passive: true })
+    return () => wrap.removeEventListener('pointermove', onMove)
+  })
+
+  /** The chip's citing line: the store's ctx cache (lazy file → inline
+   *  fallback), truncated to the spec's 60 chars. */
+  const hoverCtx = $derived.by(() => {
+    if (!hoverWire) return ''
+    const l = store.wire(hoverWire.a, hoverWire.b)
+    const c = l ? store.ctxFor(l) : undefined
+    if (!c) return ''
+    return c.length > 60 ? c.slice(0, 60) + '…' : c
+  })
+
+  /** The card's full citing lines: a recovered bridge carries every
+   *  recovered line in its provenance array; an exported wire answers from
+   *  the ctx cache. Empty stays honest. */
+  const cardLines = $derived.by(() => {
+    if (!card) return []
+    if (card.link.provenance?.length) return card.link.provenance
+    const c = store.ctxFor(card.link)
+    return c ? [c] : []
+  })
+
   /* ---------- TRAIL chrome (designer spec 2026-10-31) ----------
      The chip pins the route's existence and count; the panel is the route
      itself — rows, copy, clear. Chrome exists only when the trail is EARNED
@@ -403,6 +682,9 @@
   let copyTimer: ReturnType<typeof setTimeout> | undefined = undefined
 
   function toggleTrail(): void {
+    // Shared overlay layer (SPEC §4.2): the trail sheet and the synapse
+    // card never show together — opening one closes the other.
+    if (card) card = null
     trailOpen = !trailOpen
   }
 
@@ -425,7 +707,14 @@
   }
 
   function trailEsc(e: KeyboardEvent): void {
-    if (trailOpen && e.key === 'Escape') {
+    if (e.key !== 'Escape') return
+    // Shared overlay layer, one Escape at a time: the synapse card yields
+    // first, then the trail panel. Selection persists through both.
+    if (card) {
+      closeCard()
+      return
+    }
+    if (trailOpen) {
       trailOpen = false
       chipEl?.focus()
     }
@@ -440,7 +729,14 @@
        the importing file, and GraphView.svelte lives in the sibling orui
        checkout) — and so the neuron painting rides in at construction. -->
   {#if webglOk}
-    <GraphView store={roam} onNodeClick={click} loadEngine={neuronLoad} />
+    <GraphView
+      store={roam}
+      onNodeClick={click}
+      loadEngine={neuronLoad}
+      linkHoverPrecision={6}
+      onLinkClick={edgeClick}
+      onLinkHover={edgeHover}
+    />
   {:else}
     <!-- No WebGL, no canvas: say so, in the dish, where the graph would be.
          The reader and every other surface keep working. -->
@@ -462,7 +758,144 @@
       <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
       <span class="orb o4"></span><span class="orb o5"></span>
       <span class="sweep"></span>
-      <p class="skel-line dn-mono">// laying out {store.data.links.length} connections</p>
+      <p class="skel-line dn-mono">// laying out {store.data.links.length} synapses</p>
+    </div>
+  {/if}
+
+  {#if webglOk}
+    <!-- Hover chip (SPEC §4.1): the pointer tier's floating readout — the
+         first 60 chars of the citing line, one ctx fetch, cached. DOM over
+         the canvas; it never steals the pointer (pointer-events: none). -->
+    {#if hoverWire}
+      <div
+        class="edge-chip dn-mono"
+        aria-hidden="true"
+        style:left="{Math.min(hoverPos.x + 14, 9999)}px"
+        style:top="{Math.max(hoverPos.y - 34, 4)}px"
+      >{hoverCtx || '⌁ synapse'}</div>
+    {/if}
+
+    <!-- NETWORK CONTROLS (SPEC §3): one vertical stack, bottom-right —
+         LOCK · SPACING −/+ · ZOOM +/− · FIT. 44×44 buttons, 8px gap,
+         chrome tokens, zero new animation loops. -->
+    <div class="net-controls" role="group" aria-label="Network controls">
+      <button
+        class="nc-btn"
+        class:active={locked}
+        onclick={toggleLock}
+        aria-pressed={locked}
+        aria-label={locked ? 'Unlock network positions' : 'Lock network positions'}
+        title={locked ? 'Unlock network positions' : 'Lock network positions'}
+      >
+        {#if locked}
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v.6" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7.2" y="9" width="1.6" height="2.4" fill="currentColor"/></svg>
+        {:else}
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 0 1 4.9-.6" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="7.2" y="9" width="1.6" height="2.4" fill="currentColor"/></svg>
+        {/if}
+      </button>
+      <div class="nc-pair">
+        <button
+          class="nc-btn dn-mono"
+          onclick={() => nudgeSpacing(-1)}
+          disabled={spacingK <= SPACING_MIN}
+          aria-disabled={spacingK <= SPACING_MIN}
+          aria-label="Decrease synapse spacing"
+          title="Decrease synapse spacing"
+        >−</button>
+        <button
+          class="nc-btn dn-mono"
+          onclick={() => nudgeSpacing(1)}
+          disabled={spacingK >= SPACING_MAX}
+          aria-disabled={spacingK >= SPACING_MAX}
+          aria-label="Increase synapse spacing"
+          title="Increase synapse spacing"
+        >+</button>
+      </div>
+      <div class="nc-pair">
+        <button
+          class="nc-btn dn-mono"
+          onclick={() => zoomBy(1)}
+          disabled={zoomNow >= ZOOM_MAX}
+          aria-disabled={zoomNow >= ZOOM_MAX}
+          aria-label="Zoom in"
+          title="Zoom in"
+        >+</button>
+        <button
+          class="nc-btn dn-mono"
+          onclick={() => zoomBy(-1)}
+          disabled={zoomNow <= ZOOM_MIN}
+          aria-disabled={zoomNow <= ZOOM_MIN}
+          aria-label="Zoom out"
+          title="Zoom out"
+        >−</button>
+      </div>
+      <button
+        class="nc-btn"
+        onclick={fitAction}
+        aria-label="Fit the neural network to the frame"
+        title="Fit the neural network to the frame"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></svg>
+      </button>
+      <!-- Readout pills (SPEC §3.2): they fade after 1.2s through a CSS
+           TRANSITION — opacity only, no keyframes, no loop. -->
+      <span class="nc-pill dn-mono" class:show={spacingPillShow} aria-hidden="true">{spacingPillText}</span>
+      <span class="nc-pill zoom dn-mono" class:show={zoomPillShow} aria-hidden="true">{zoomPillText}</span>
+    </div>
+    {#if arrowOverBudget}
+      <!-- The honest status line (SPEC §3.4): the field is over the arrow
+           paint budget, so arrows ride the selection/hover tier only. -->
+      <p class="nc-status dn-mono" role="status">arrows on selection · {store.visible.links.length} synapses exceeds paint budget</p>
+    {/if}
+  {/if}
+
+  {#if card}
+    <!-- SYNAPSE CLICK card (SPEC §4): 360px right card on a desktop, a
+         60vh bottom sheet on a phone. Backdrop click and Escape close;
+         selection persists. The trail sheet already yielded at open. -->
+    <div class="card-backdrop" onclick={closeCard} aria-hidden="true"></div>
+    <div class="synapse-card" role="dialog" aria-label="Synapse detail">
+      <header class="sc-head">
+        <span class="sc-k dn-mono">⌁ SYNAPSE</span>
+        {#if card.link.kind === 'bridge'}
+          <span class="sc-badge dn-mono">bridge · recovered</span>
+        {/if}
+        <button class="sc-close dn-mono" onclick={closeCard} aria-label="Close synapse detail">×</button>
+      </header>
+      {#if card.link.kind === 'bridge'}
+        <p class="sc-note dn-mono">Recovered from text reference — not in the source link graph</p>
+      {/if}
+      <!-- APG scrollable-region pattern: a scrollable area that keyboard
+           users can reach is a tab stop (tabindex 0) — the lint rule is
+           narrower than the pattern, so this is an explicit, cited opt-out. -->
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <div class="sc-ctx" tabindex="0">
+        {#if cardLines.length}
+          {#each cardLines as line, i (i)}<p class="sc-line">{line}</p>{/each}
+        {:else}
+          <p class="sc-line empty dn-mono">No citing line recorded</p>
+        {/if}
+      </div>
+      <div class="sc-ends">
+        {#each [card.a, card.b] as endId, i (endId)}
+          {@const n = store.byId(endId)}
+          {@const other = store.byId(i === 0 ? card.b : card.a)}
+          <div class="sc-end">
+            <span class="sc-dir dn-mono" aria-hidden="true">{i === 0 ? 'source' : 'target'}</span>
+            <span class="sc-end-t">{n?.title ?? endId}</span>
+            <span class="sc-end-m dn-mono">{i === 0 ? '→' : '←'} {other ? DocneuralStore.manualTitle(other.tags[0] ?? '') : ''}</span>
+            <button class="sc-open dn-mono" onclick={() => gotoEndpoint(endId)} aria-label="Open {n?.title ?? endId}">Open ›</button>
+          </div>
+        {/each}
+      </div>
+      <footer class="sc-foot">
+        <button class="sc-act dn-mono" class:done={litDone} onclick={lightTrail}>
+          {litDone ? '◈ trail lit' : 'Light trail through this synapse'}
+        </button>
+        <button class="sc-act dn-mono" class:done={citedDone} onclick={copyCitation}>
+          {citedDone ? 'copied ✓' : 'Copy citation'}
+        </button>
+      </footer>
     </div>
   {/if}
   {#if trailEarned}
@@ -765,5 +1198,276 @@
     bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ---------- NETWORK CONTROLS (network pass 2026-10-31) ----------
+   Bottom-right stack, chrome tokens only, 44×44 taps, 8px gaps. The stack
+   is a corner keep-out (viewport() routes the spread field around it). */
+.net-controls {
+  position: absolute;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--dn-border);
+  background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
+  border-radius: 0;
+}
+.nc-pair {
+  display: flex;
+  gap: 8px;
+}
+.nc-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--dn-border);
+  background: transparent;
+  color: var(--dn-chrome-ink);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color 120ms, border-color 120ms, background 120ms;
+}
+.nc-btn svg { width: 18px; height: 18px; }
+.nc-btn:hover:not(:disabled) {
+  border-color: var(--dn-synapse-lit);
+  color: var(--dn-chrome-ink);
+}
+/* Pressed/active fill = the lit synapse (SPEC §3); the icon inverts to the
+   chrome bg for AA contrast on the lit fill in both arms. */
+.nc-btn.active {
+  background: var(--dn-synapse-lit);
+  border-color: var(--dn-synapse-lit);
+  color: var(--dn-chrome-bg);
+}
+.nc-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.nc-btn:focus-visible,
+.nc-pill:focus-visible {
+  outline: 2px solid var(--dn-synapse-lit);
+  outline-offset: 2px;
+}
+/* Readout pills: CSS-transition fade only (no keyframes, no loop). */
+.nc-pill {
+  position: absolute;
+  right: calc(100% - 8px);
+  min-width: 44px;
+  padding: 3px 8px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-chrome-ink);
+  background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
+  border: 1px solid var(--dn-border);
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+.nc-pill.zoom { bottom: 8px; }
+.nc-pill:not(.zoom) { bottom: 112px; }
+.nc-pill.show { opacity: 1; }
+.nc-status {
+  position: absolute;
+  right: 12px;
+  bottom: calc(232px + env(safe-area-inset-bottom, 0px));
+  z-index: 6;
+  max-width: 250px;
+  margin: 0;
+  padding: 4px 8px;
+  text-align: right;
+  font-size: 10px;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-panel-ink-dim);
+  background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
+  border: 1px solid var(--dn-border);
+}
+
+/* ---------- SYNAPSE CLICK chrome (SPEC §4) ---------- */
+.edge-chip {
+  position: absolute;
+  z-index: 7;
+  max-width: min(300px, 70%);
+  padding: 4px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--dn-panel-ink);
+  background: color-mix(in srgb, var(--dn-panel-bg) 94%, transparent);
+  border: 1px solid var(--dn-synapse-hover);
+  pointer-events: none;
+}
+.card-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: color-mix(in srgb, var(--dn-bg-sunken) 35%, transparent);
+  cursor: default;
+}
+.synapse-card {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 9;
+  width: 360px;
+  max-width: calc(100% - 24px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--dn-border-strong);
+  background: var(--dn-panel-bg);
+  color: var(--dn-panel-ink);
+  overflow: hidden;
+}
+.sc-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--dn-hairline);
+}
+.sc-k { font-size: 11px; letter-spacing: var(--dn-track); color: var(--dn-panel-ink-dim); }
+.sc-badge {
+  font-size: 10px;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-synapse-mined);
+  border: 1px dashed color-mix(in srgb, var(--dn-synapse-mined) 60%, transparent);
+  padding: 2px 6px;
+}
+.sc-close {
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  color: var(--dn-panel-ink-dim);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.sc-close:hover { color: var(--dn-panel-ink); }
+.sc-note {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 10px;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-synapse-mined);
+  border-bottom: 1px solid var(--dn-hairline);
+}
+.sc-ctx {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px;
+  border-bottom: 1px solid var(--dn-hairline);
+}
+.sc-line {
+  margin: 0 0 0.5em;
+  font-family: var(--dn-font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--dn-panel-ink);
+}
+.sc-line.empty { color: var(--dn-panel-ink-dim); }
+.sc-ends { flex: 0 0 auto; }
+.sc-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--dn-hairline);
+}
+.sc-dir {
+  flex: 0 0 auto;
+  width: 44px;
+  font-size: 9px;
+  letter-spacing: var(--dn-track);
+  text-transform: uppercase;
+  color: var(--dn-panel-ink-dim);
+}
+.sc-end-t {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.sc-end-m {
+  flex: 0 0 auto;
+  font-size: 9.5px;
+  letter-spacing: var(--dn-track);
+  text-transform: uppercase;
+  color: var(--dn-panel-ink-dim);
+}
+.sc-open {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 8px;
+  border: 1px solid var(--dn-border);
+  background: none;
+  color: var(--dn-panel-ink);
+  font-size: 10px;
+  letter-spacing: var(--dn-track);
+  cursor: pointer;
+}
+.sc-open:hover { border-color: var(--dn-synapse-lit); color: var(--dn-synapse-lit); }
+.sc-foot {
+  flex: 0 0 auto;
+  display: flex;
+  border-top: 1px solid var(--dn-hairline);
+}
+.sc-act {
+  flex: 1;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--dn-panel-ink-dim);
+  font-size: 10.5px;
+  letter-spacing: var(--dn-track);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.sc-act:hover, .sc-act.done { color: var(--dn-synapse-lit); }
+.sc-act + .sc-act { border-left: 1px solid var(--dn-hairline); }
+.sc-close:focus-visible,
+.sc-open:focus-visible,
+.sc-act:focus-visible,
+.sc-ctx:focus-visible {
+  outline: 2px solid var(--dn-synapse-lit);
+  outline-offset: -2px;
+}
+
+/* Phone: the card becomes a 60vh bottom sheet (SPEC §4.2). */
+@media (max-width: 700px) {
+  .synapse-card {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-width: none;
+    height: 60dvh;
+    max-height: 60dvh;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+  .nc-status { max-width: 180px; }
+}
+
 
 </style>
