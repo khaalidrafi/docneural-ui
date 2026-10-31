@@ -232,7 +232,14 @@
     }
     .note-preview.empty {
       height: auto;
-      top: 0;
+      /* Stack UNDER the controls chip — one module column on phone (chip,
+         hint beneath). top:0 put the hint in the chip's pocket (hotfix 4b);
+         5.8rem clears the chip box's bottom edge (top 0.9rem + 44px chip +
+         2×0.7rem padding) with an 8px breath. The canvas corner pass measures
+         real rects, so it follows for free. */
+      top: 5.8rem;
+      left: 0.9rem;
+      right: auto;
       bottom: auto;
     }
   }

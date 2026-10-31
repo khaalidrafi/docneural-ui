@@ -995,8 +995,14 @@
       0 12px 34px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
-  .controls > summary {
-    display: none; /* desktop: always open, no header needed */
+  /* Desktop hides the summary: always open, no header needed. That hide is
+     DESKTOP-ONLY — the phone filter chip (≤600 block) IS this summary, and a
+     global hide silenced it at every width, leaving the closed details as a
+     headless ghost plate over the note-preview hint (hotfix 4b). */
+  @media (min-width: 701px) {
+    .controls > summary {
+      display: none;
+    }
   }
 
   .reader-mode {
