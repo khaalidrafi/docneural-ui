@@ -72,6 +72,13 @@ export type NeuronFocus = {
    *  chapter hubs past 0.85, everything past 1.6 — a starfield that fills
    *  in as you zoom, never a wall of text. */
   lattice?: () => boolean
+  /** The lattice's world-px pitch (the distance between neighbouring cells,
+   *  from latticePitch over the placed room). Read per paint and multiplied
+   *  by the frame's zoom: on the lattice every dot renders, so the screen
+   *  distance to the nearest rendered neighbour IS pitch·zoom — the gate
+   *  that keeps a phone field (pitch < 18px at fit) a clean dot starfield
+   *  instead of a wall of clipped desktop-sized names. */
+  latticePitchPx?: () => number
   /** Mini-map headings (Owner law 2026-10-28: "Local graph should show node
    *  headings!"). True = the compact painter labels every neuron it can
    *  without overprinting; the claim grid drops whichever names would land
@@ -682,7 +689,17 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     //   band 2: everything once the user zooms in (gs > 1.15), hubs, hot.
     const spread = !!focus.spread?.()
     const deg = n.degree ?? 0
-    const labelOk = lat
+    // PITCH GATE (phone lattice label soup, real-browser sweep 2026-10-31):
+    // a label renders only when the nearest RENDERED neighbour is >= 18px
+    // away ON SCREEN. On the lattice every dot paints, so that distance is
+    // exactly pitch·zoom — desktop fit (~31px) sails through unchanged, a
+    // phone field (p≈17px at fit) stays a clean starfield that fills in as
+    // the visitor zooms. The gate rides the LABEL pass only: dots always
+    // render, and cluster/spread keep their own band rules untouched.
+    // pitch <= 0 = pitch unknown (not yet placed) → no gate, paint as before.
+    const pitch = focus.latticePitchPx?.() ?? 0
+    const pitchOk = pitch <= 0 || pitch * globalScale >= 18
+    const labelOk = pitchOk && (lat
       ? latFit
         ? deg >= 60
         : globalScale > 1.6 ? true : hot || deg >= 40
@@ -690,7 +707,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         ? band === 0 ? deg >= 60 : true
         : band === 0 ? deg >= 60
         : band === 1 ? (hot || deg >= 20)
-        : (globalScale > 1.15 || hot || deg >= 60)
+        : (globalScale > 1.15 || hot || deg >= 60))
     if (labelOk) {
       const label = shortTitle(n.title ?? '')
       if (!label) return

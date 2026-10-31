@@ -5,6 +5,8 @@ import {
   backlinks,
   coCitations,
   commonTags,
+  dedupeGraphTags,
+  dedupeTags,
   degreesOf,
   egoGraph,
   filteredGraph,
@@ -51,6 +53,33 @@ describe('nodeViews', () => {
     const v = nodeViews(DATA)
     expect(v.get('b')?.degree).toBe(2)
     expect(v.get('d')?.degree).toBe(0)
+  })
+})
+
+describe('dedupeTags (ingest normalization)', () => {
+  it('drops duplicates, keeps first occurrence and order', () => {
+    expect(dedupeTags(['org', 'org'])).toEqual(['org'])
+    expect(dedupeTags(['emacs', 'org', 'emacs', 'org', 'gui'])).toEqual(['emacs', 'org', 'gui'])
+  })
+  it('never moves tags[0] — the deterministic colour seed', () => {
+    const before = dedupeTags(['guix', 'guix', 'guix'])[0]
+    expect(before).toBe('guix')
+  })
+  it('passes through short and missing lists untouched', () => {
+    expect(dedupeTags([])).toEqual([])
+    expect(dedupeTags(['org'])).toEqual(['org'])
+    expect(dedupeTags(undefined)).toEqual([])
+  })
+  it('dedupes every node of a graph without touching links', () => {
+    const raw: GraphData = {
+      nodes: [node('a', 'Alpha', ['x', 'x']), node('b', 'Beta', ['y'])],
+      links: [ab]
+    }
+    const clean = dedupeGraphTags(raw)
+    expect(clean.nodes.map((n) => n.tags)).toEqual([['x'], ['y']])
+    expect(clean.links).toEqual([ab])
+    // the input is not mutated: the fetch result stays intact for the caller
+    expect(raw.nodes[0].tags).toEqual(['x', 'x'])
   })
 })
 

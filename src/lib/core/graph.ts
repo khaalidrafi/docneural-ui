@@ -6,6 +6,30 @@ import type { DocLink, DocNode, GraphData } from './types'
 /** node id -> [node, degree], precomputed for canvas painting. */
 export type NodeView = DocNode & { degree: number }
 
+/* ---------- ingest normalization ---------- */
+
+/** One doc's tags with duplicates removed, first occurrence kept (so the
+ *  deterministic colour seed — tags[0] — never moves). The exporter can emit
+ *  `["org","org"]` (tag inheritance meeting an explicit tag), and a duplicate
+ *  inside a Svelte `{#each ... (tag)}` key throws `each_key_duplicate`, which
+ *  killed the graph-mode note preview on the shipped corpus (real-browser
+ *  sweep 2026-10-31). Deduped once at ingest; the render guards at the keyed
+ *  each sites are the second belt. */
+export function dedupeTags(tags: string[] | undefined | null): string[] {
+  if (!tags || tags.length < 2) return tags ?? []
+  return [...new Set(tags)]
+}
+
+/** Ingest pass over a freshly loaded GraphData: every node's tags deduped.
+ *  Returns new node objects (the input is the fetch result — nothing else
+ *  holds a reference yet), so the function stays pure. */
+export function dedupeGraphTags(data: GraphData): GraphData {
+  return {
+    nodes: data.nodes.map((n) => ({ ...n, tags: dedupeTags(n.tags) })),
+    links: data.links
+  }
+}
+
 export function degreesOf(links: DocLink[]): Map<string, number> {
   const d = new Map<string, number>()
   for (const l of links) {

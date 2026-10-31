@@ -728,6 +728,11 @@
     position: relative;
     padding: var(--dn-space-3) var(--dn-space-4) var(--dn-space-4);
     min-height: calc(var(--dn-text-4xl) * 1.35);
+    /* Container for the wordmark's cqw fit (below): the plate measures its
+       own inline size, so the display type can be sized AGAINST THE FRAME
+       instead of the viewport — the frame is what the wordmark must never
+       overflow, at any width from 320 to 1440 (real-browser sweep). */
+    container-type: inline-size;
   }
   .nameplate::after {
     content: "";
@@ -759,7 +764,14 @@
     /* Hero display rides the ramp's top step (DS-COOLEST directive 1) —
        no more hardcoded clamp; the fill + paper ink come from the global
        .dn-gradient-text class (directive 7: filament, not neon sign). */
-    font-size: var(--dn-text-4xl);
+    /* CONTAINER-FITTED (real-browser sweep 2026-10-31): at --dn-text-4xl
+       the nameplate's wordmark box (12 chars of Electrolize ≈ 9.1em incl.
+       mark + tracking) was wider than the identity column at every width
+       below ~1440px and spilled past the bracket frame. min() with 10cqw
+       caps the type at ~91% of the PLATE's own width — the whole word,
+       one line, inside the reticle, at any viewport; the ramp token still
+       wins wherever it fits. Contrast is untouched: same ink, both themes. */
+    font-size: min(var(--dn-text-4xl), 10cqw);
     font-weight: 400;
     letter-spacing: var(--dn-track-tight);
     line-height: var(--dn-lh-tight);
@@ -767,6 +779,9 @@
     align-items: center;
     gap: 0.35em;
     margin: 0;
+    /* Single-line by law: a fitted hero wordmark wraps into a second line
+       before it shrinks, which reads as two nameplates. */
+    white-space: nowrap;
   }
 
   .wordmark .mark { width: 0.55em; height: 0.55em; flex: none; }
@@ -1673,7 +1688,7 @@
   .nameplate { min-height: 0; padding: var(--dn-space-3) var(--dn-space-3) var(--dn-space-3); }
   .plate { padding: var(--dn-space-3) var(--dn-space-3) 0; }
   .plate-cap { font-size: var(--dn-text-2xs); }
-  .wordmark { font-size: clamp(2rem, 11vw, 2.75rem); }
+  .wordmark { font-size: min(clamp(2rem, 11vw, 2.75rem), 10cqw); white-space: nowrap; }
   .lede { line-height: var(--dn-lh-loose); max-width: 100%; }
   .stats {
     padding: var(--dn-space-3) var(--dn-space-4);

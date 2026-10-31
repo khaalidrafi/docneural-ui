@@ -79,12 +79,13 @@
   }
 
   /** One chat-completions POST with the shared status handling: aborts at
-   *  45 s (the free tier can stall), never sends an empty Bearer, and turns
-   *  every failure mode into an honest sentence. Returns the model's content
-   *  trimmed, or null once `error` is set. */
+   *  60 s (the free tier can stall — patience is part of the free-brain
+   *  contract), never sends an empty Bearer, and turns every failure mode
+   *  into an honest sentence. Returns the model's content trimmed, or null
+   *  once `error` is set. */
   async function postChat(messages: ChatMessage[]): Promise<string | null> {
     const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 45000)
+    const timer = setTimeout(() => ctrl.abort(), 60000)
     try {
       const res = await fetch(`${cfg.url}/chat/completions`, {
         method: 'POST',
@@ -100,6 +101,11 @@
         error = 'the endpoint rejected the key (401/403) — check it in settings'
         return null
       }
+      if (res.status === 402) {
+        error =
+          'free tier quota reached (402) — try again later, or set your own endpoint in settings'
+        return null
+      }
       if (res.status === 429) {
         error =
           'free endpoint rate-limited (429) — wait a moment, or set your own endpoint in settings'
@@ -113,7 +119,7 @@
       return data.choices?.[0]?.message?.content?.trim() || 'the endpoint returned no content'
     } catch (e) {
       error = ctrl.signal.aborted
-        ? 'the free brain took too long — try again'
+        ? 'the free brain took too long — try again in a moment'
         : e instanceof TypeError
           ? 'the browser could not reach the endpoint (network, or it refuses browser calls / CORS)'
           : String(e instanceof Error ? e.message : e)
@@ -200,7 +206,7 @@
         }
         const raw = await res.text()
         // Same budget the RAG extracts use: keeps one giant manual page from
-        // blowing the anonymous tier's latency past the 45 s abort.
+        // blowing the anonymous tier's latency past the 60 s abort.
         text = raw.length > EXTRACT_BUDGET ? raw.slice(0, EXTRACT_BUDGET) + '\n[…cut]' : raw
       } catch (e) {
         error =
