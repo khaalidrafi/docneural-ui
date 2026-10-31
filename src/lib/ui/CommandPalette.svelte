@@ -34,10 +34,10 @@
     { kind: 'cmd', label: 'Go home', hint: 'welcome', run: () => store.goHome() },
     { kind: 'cmd', label: 'Open reader', hint: 'docs mode', run: () => store.setMode('reader') },
     { kind: 'cmd', label: 'Open synapses', hint: 'graph mode', run: () => store.setMode('graph') },
-    // BYOK RAG over the corpus (core/ai.ts): the visitor's endpoint, the
-    // exporter's .org pages as retrieval. The one AI surface a static site
+    // Free-brain RAG over the corpus (core/ai.ts): answers, page essence and
+    // quizzes — out of the box, no key. The one AI surface a static site
     // can honestly ship.
-    { kind: 'cmd', label: 'Ask the corpus (AI)…', hint: 'your key, your endpoint', run: () => (store.aiOpen = true) }
+    { kind: 'cmd', label: 'Ask the corpus (AI)…', hint: 'answers, essence, quizzes — no setup', run: () => (store.aiOpen = true) }
   ]
 
   const items = $derived.by(() => {

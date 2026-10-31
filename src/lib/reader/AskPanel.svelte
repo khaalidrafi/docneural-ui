@@ -1,21 +1,29 @@
 <script lang="ts">
-  // AskPanel — "ask the corpus": a BYOK client-side RAG over the static
-  // export. Owner directive 2026-10-31 ("add some cool AI integrations").
+  // AskPanel — "ask the corpus": a client-side RAG over the static export,
+  // ready to use out of the box. Owner directive 2026-10-31 ("add some cool
+  // AI integrations and features!"), re-applied as the "ready-to-use AI"
+  // pass: the brain is a free public OpenAI-compatible endpoint, no key.
   //
   // How it works, end to end:
-  //   1. the visitor configures THEIR OWN OpenAI-compatible endpoint + key
-  //      (core/ai.ts; localStorage `docneural:ai`, never sent anywhere but
-  //      that endpoint, nothing proxied through us — there is no "us", the
-  //      site is files on Pages);
+  //   1. the panel ships pointed at a free, keyless, CORS-open brain
+  //      (core/ai.ts AI_DEFAULTS) — the visitor asks, it answers;
   //   2. retrieval ranks the corpus locally (core/ai.ts#rankContext: title
   //      hits, word credit, degree tiebreak) and fetches those pages' .org
   //      source — the lossless exporter output llms.txt already points at;
   //   3. one chat-completions call; the answer renders with the extract
-  //      titles it can be checked against, each a click away.
+  //      titles it can be checked against, each a click away, plus up to 3
+  //      follow-up question chips the model itself proposes.
+  //   Two more surfaces ride the same endpoint: ⚡ essence (this page →
+  //   TL;DR + key points) and quiz me (this page → 3 questions + answers).
+  //   No retrieval there — the open page's own .org source IS the context.
+  //   A personal endpoint + key stays OPTIONAL (settings); the key lives in
+  //   this browser's localStorage and is sent only to that URL.
   //
-  // Honest failure is a feature: 401 says the key is wrong, a TypeError
-  // says the endpoint refused a browser (CORS), an empty corpus rank says
-  // the question looks off-corpus. No spinners beyond the one real await.
+  // Honest failure is a feature: 429 says the free tier is crowded, 401
+  // says the override key is wrong, a TypeError says the endpoint refused a
+  // browser (CORS), an empty corpus rank says the question looks
+  // off-corpus. No spinners beyond the one real await; the busy indicator
+  // is a plain text line (animation-loop budget law: no new keyframes).
   import { fly } from 'svelte/transition'
   import { DocneuralStore } from '../core/store.svelte'
   import {
@@ -23,8 +31,15 @@
     saveAiConfig,
     rankContext,
     buildMessages,
+    buildEssenceMessages,
+    buildQuizMessages,
+    endpointHeaders,
+    sanitizeAnswer,
+    parseFollowUps,
     EXTRACT_BUDGET,
-    type AiConfig
+    AI_DEFAULTS,
+    type AiConfig,
+    type ChatMessage
   } from '../core/ai'
   import { sourceVars } from '../core/source'
   import type { DocNode } from '../core/types'
@@ -35,20 +50,21 @@
   let editing = $state(false)
   let question = $state('')
   let busy = $state(false)
+  let busyCopy = $state('')
   let answer = $state('')
   let sources = $state<DocNode[]>([])
+  let followUps = $state<string[]>([])
   let error = $state('')
   let inputEl: HTMLInputElement | undefined = $state()
   let panelEl: HTMLDivElement | undefined = $state()
-
-  const configured = $derived(cfg.key.trim().length > 0)
 
   $effect(() => {
     if (store.aiOpen) {
       answer = ''
       error = ''
       sources = []
-      editing = !configured
+      followUps = []
+      editing = false // the brain works out of the box; settings are optional
       setTimeout(() => inputEl?.focus(), 30)
     }
   })
@@ -62,6 +78,51 @@
     editing = false
   }
 
+  /** One chat-completions POST with the shared status handling: aborts at
+   *  45 s (the free tier can stall), never sends an empty Bearer, and turns
+   *  every failure mode into an honest sentence. Returns the model's content
+   *  trimmed, or null once `error` is set. */
+  async function postChat(messages: ChatMessage[]): Promise<string | null> {
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), 45000)
+    try {
+      const res = await fetch(`${cfg.url}/chat/completions`, {
+        method: 'POST',
+        headers: endpointHeaders(cfg),
+        body: JSON.stringify({
+          model: cfg.model,
+          messages,
+          temperature: 0.2
+        }),
+        signal: ctrl.signal
+      })
+      if (res.status === 401 || res.status === 403) {
+        error = 'the endpoint rejected the key (401/403) — check it in settings'
+        return null
+      }
+      if (res.status === 429) {
+        error =
+          'free endpoint rate-limited (429) — wait a moment, or set your own endpoint in settings'
+        return null
+      }
+      if (!res.ok) {
+        error = `the endpoint answered ${res.status} ${res.statusText || ''} — see its docs`
+        return null
+      }
+      const data = (await res.json()) as { choices?: { message?: { content?: string } }[] }
+      return data.choices?.[0]?.message?.content?.trim() || 'the endpoint returned no content'
+    } catch (e) {
+      error = ctrl.signal.aborted
+        ? 'the free brain took too long — try again'
+        : e instanceof TypeError
+          ? 'the browser could not reach the endpoint (network, or it refuses browser calls / CORS)'
+          : String(e instanceof Error ? e.message : e)
+      return null
+    } finally {
+      clearTimeout(timer)
+    }
+  }
+
   /** Retrieve + call. Everything async and DOM-adjacent lives here; the
    *  ranking and the payload are pure (core/ai.ts, unit-tested). */
   async function ask(): Promise<void> {
@@ -71,6 +132,8 @@
     error = ''
     answer = ''
     sources = []
+    followUps = []
+    busyCopy = `retrieving pages · calling ${cfg.model}…`
     try {
       const degreeOf = (id: string) => store.views.get(id)?.degree ?? 0
       const hits = store.search(q, 6)
@@ -102,36 +165,64 @@
         error = 'could not fetch any page source — is the export served at ' + store.base + '/docs/?'
         return
       }
-      const res = await fetch(`${cfg.url}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          authorization: `Bearer ${cfg.key.trim()}`
-        },
-        body: JSON.stringify({
-          model: cfg.model,
-          messages: buildMessages(q, extracts),
-          temperature: 0.2
-        })
-      })
-      if (res.status === 401 || res.status === 403) {
-        error = 'the endpoint rejected the key (401/403) — check it in settings'
-        return
-      }
-      if (!res.ok) {
-        error = `the endpoint answered ${res.status} ${res.statusText || ''} — see its docs`
-        return
-      }
-      const data = (await res.json()) as { choices?: { message?: { content?: string } }[] }
-      answer = data.choices?.[0]?.message?.content?.trim() || 'the endpoint returned no content'
+      const content = await postChat(buildMessages(q, extracts))
+      if (content === null) return
+      const clean = sanitizeAnswer(content) // reasoning models may inline <think>…
+      const parsed = parseFollowUps(clean)
+      answer = parsed.answer
+      followUps = parsed.followUps
     } catch (e) {
-      error =
-        e instanceof TypeError
-          ? 'the browser could not reach the endpoint (network, or it refuses browser calls / CORS)'
-          : String(e instanceof Error ? e.message : e)
+      error = String(e instanceof Error ? e.message : e)
     } finally {
       busy = false
     }
+  }
+
+  /** The preset surfaces (⚡ essence / quiz me): no retrieval, no source
+   *  chips, no follow-up parsing — the open page's own source goes to the
+   *  brain whole, and the answer lands in the same .ask-answer area. */
+  async function runPreset(kind: 'essence' | 'quiz'): Promise<void> {
+    const sel = store.selected
+    if (!sel || busy) return
+    busy = true
+    error = ''
+    answer = ''
+    sources = []
+    followUps = []
+    busyCopy = kind === 'essence' ? 'distilling this page…' : 'writing 3 questions…'
+    try {
+      let text = ''
+      try {
+        const res = await fetch(`${store.base}/docs/${sel.slug}.org`)
+        if (!res.ok) {
+          error = `could not fetch this page's source (${res.status}) — is the export served at ${store.base}/docs/?`
+          return
+        }
+        const raw = await res.text()
+        // Same budget the RAG extracts use: keeps one giant manual page from
+        // blowing the anonymous tier's latency past the 45 s abort.
+        text = raw.length > EXTRACT_BUDGET ? raw.slice(0, EXTRACT_BUDGET) + '\n[…cut]' : raw
+      } catch (e) {
+        error =
+          e instanceof TypeError
+            ? 'the browser could not reach the export (network?)'
+            : String(e instanceof Error ? e.message : e)
+        return
+      }
+      const content = await postChat(
+        kind === 'essence' ? buildEssenceMessages(sel.title, text) : buildQuizMessages(sel.title, text)
+      )
+      if (content === null) return
+      answer = sanitizeAnswer(content)
+    } finally {
+      busy = false
+    }
+  }
+
+  /** A follow-up chip is a typed question: fill the input and fire. */
+  function askNext(next: string): void {
+    question = next
+    void ask()
   }
 
   function onKey(e: KeyboardEvent): void {
@@ -163,21 +254,24 @@
       {#if editing}
         <section class="ask-cfg">
           <p class="ask-note">
-            This site is static — there is no server to proxy AI calls, so the panel
-            uses <strong>your own</strong> OpenAI-compatible endpoint. The key lives in
-            this browser's localStorage and is sent only to the URL below.
+            <strong>optional: bring your own endpoint</strong> — the panel already works with the
+            free public brain, no key. A personal OpenAI-compatible endpoint overrides it. The key
+            lives in this browser's localStorage and is sent only to the URL below.
           </p>
+          {#if !cfg.key.trim()}
+            <p class="ask-free dn-label">free public brain · no key needed</p>
+          {/if}
           <label class="ask-field">
             <span class="dn-label">endpoint base</span>
-            <input bind:value={cfg.url} spellcheck="false" placeholder="https://api.openai.com/v1" />
+            <input bind:value={cfg.url} spellcheck="false" placeholder={AI_DEFAULTS.url} />
           </label>
           <label class="ask-field">
             <span class="dn-label">api key</span>
-            <input bind:value={cfg.key} type="password" spellcheck="false" placeholder="sk-…" />
+            <input bind:value={cfg.key} type="password" spellcheck="false" placeholder="sk-… (optional)" />
           </label>
           <label class="ask-field">
             <span class="dn-label">model</span>
-            <input bind:value={cfg.model} spellcheck="false" placeholder="gpt-4o-mini" />
+            <input bind:value={cfg.model} spellcheck="false" placeholder={AI_DEFAULTS.model} />
           </label>
           <div class="ask-row">
             <button class="ask-go dn-mono" onclick={keepCfg}>save</button>
@@ -200,7 +294,7 @@
               placeholder={store.selected ? `ask about ${store.selected.title.toLowerCase()}…` : 'ask the manuals anything…'}
               aria-label="Your question"
             />
-            <button class="ask-go dn-mono" type="submit" disabled={busy || !configured}>
+            <button class="ask-go dn-mono" type="submit" disabled={busy || !question.trim()}>
               {busy ? '…' : 'ask'}
             </button>
           </div>
@@ -208,7 +302,21 @@
             {#if store.selected}
               <span class="ask-ctx dn-label">retrieval seeds: this page + title matches + hubs</span>
             {/if}
-            <button class="ask-alt dn-mono" type="button" onclick={() => (editing = true)}>settings</button>
+            <span class="ask-actions">
+              {#if store.selected}
+                <button
+                  class="ask-alt dn-mono"
+                  type="button"
+                  disabled={busy}
+                  onclick={() => void runPreset('essence')}>⚡ essence</button>
+                <button
+                  class="ask-alt dn-mono"
+                  type="button"
+                  disabled={busy}
+                  onclick={() => void runPreset('quiz')}>quiz me</button>
+              {/if}
+              <button class="ask-alt dn-mono" type="button" onclick={() => (editing = true)}>settings</button>
+            </span>
           </div>
         </form>
 
@@ -238,8 +346,19 @@
           </section>
         {/if}
 
+        {#if followUps.length}
+          <section class="ask-sources">
+            <p class="dn-label">// ask next</p>
+            <div class="ask-src-row">
+              {#each followUps as f (f)}
+                <button class="ask-src" disabled={busy} onclick={() => askNext(f)}>{f}</button>
+              {/each}
+            </div>
+          </section>
+        {/if}
+
         {#if busy}
-          <p class="ask-busy dn-mono" aria-live="polite">retrieving pages · calling {cfg.model}…</p>
+          <p class="ask-busy dn-mono" aria-live="polite">{busyCopy}</p>
         {/if}
       {/if}
     </div>
@@ -304,6 +423,10 @@
   .ask-note strong {
     color: var(--dn-fg);
   }
+  .ask-free {
+    margin: 0.4rem 0;
+    color: var(--dn-accent);
+  }
   .ask-field {
     display: block;
     margin: 0.65rem 0;
@@ -328,11 +451,18 @@
   }
   .ask-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.6rem;
     margin-top: 0.7rem;
     min-height: 40px;
+  }
+  .ask-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 0 0 auto;
   }
   .ask-ctx {
     font-size: 0.62rem;

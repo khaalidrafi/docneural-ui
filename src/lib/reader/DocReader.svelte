@@ -468,7 +468,7 @@
           <button class="cpy" onclick={copyContext}
                   title="Copy this page as plain text with its sources, for an LLM">llm</button>
           <button class="cpy" onclick={() => (store.aiOpen = true)}
-                  title="Ask the manuals — BYOK AI answers grounded in this corpus">ask</button>
+                  title="ask the corpus (AI)" aria-label="ask the corpus (AI)">ask</button>
           <a class="raw" href="{store.base}/docs/{doc.slug}.org"
              title="This page as plain Org (lossless, LLM-friendly)">raw org</a>
         </span>
