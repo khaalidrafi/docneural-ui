@@ -17,6 +17,7 @@ import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
 import { loadLayout, writeLayout } from './layout'
 import { loadSaved, writeSaved, type SavedMark } from './saved'
+import { loadTrail, appendTrail, clearTrail as clearTrailStorage } from './trail'
 
 export type Mode = 'graph' | 'reader'
 
@@ -89,6 +90,39 @@ export class DocneuralStore {
   }
   isSaved(slug: string, anchor: string | null): boolean {
     return this.saved.some((m) => m.slug === slug && m.anchor === (anchor ?? null))
+  }
+
+  /** The visitor's reading path (core/trail.ts): slugs in visit order, oldest
+   *  first, capped at 12, append-only — a re-read is not a new stop, so
+   *  revisiting never reorders. Mirrored into reactive state for the same
+   *  reason lastRead/saved are: the chip, the panel and Home paint from the
+   *  live array, and localStorage does not notify. Blocked storage degrades
+   *  to a session-only trail with an identical UI (the lastRead contract). */
+  trail = $state<string[]>(loadTrail())
+
+  /** The trail resolved against the live graph: slugs the current export
+   *  does not know are DROPPED here — without pruning `trail` — so every
+   *  consumer (chip count, panel rows, canvas painter, Home row) skips a
+   *  page a re-export removed and the chrome hides when fewer than two
+   *  stops survive. A slug that returns in a later export rejoins on its
+   *  own, because storage kept it. */
+  get trailResolved(): DocNode[] {
+    const out: DocNode[] = []
+    const seen = new Set<string>()
+    for (const slug of this.trail) {
+      const n = this.bySlug(slug)
+      if (n && !seen.has(n.id)) {
+        seen.add(n.id)
+        out.push(n)
+      }
+    }
+    return out
+  }
+
+  /** Back to no trail at all: reactive copy and the stored one. */
+  clearTrail(): void {
+    this.trail = []
+    clearTrailStorage()
   }
 
   // Graph-mode UI filter state (ported from org-roam-lite-ui filters).
@@ -455,7 +489,11 @@ export class DocneuralStore {
 
   /** Navigate to a doc, transparently following a stub's redirect.
    *  The URL keeps the slug the reader asked for, so ?doc=<stub> stays a
-   *  valid, shareable deep link even though a different chapter renders. */
+   *  valid, shareable deep link even though a different chapter renders.
+   *
+   *  The trail records the page that actually RENDERED — the redirect home
+   *  for a stub, the doc itself otherwise — appended AFTER the resolve, so
+   *  the route is a list of pages a visitor can be sent back to. */
   goto(doc: DocNode, mode?: Mode, anchor?: string | null): void {
     if (mode) this.mode = mode
     // Opening a doc retargets the TOC to its manual — the sidebar you see
@@ -473,6 +511,7 @@ export class DocneuralStore {
         this.origin = doc
         this.setUrl(requested, anchor)
         void this.body(home.slug)
+        this.trail = appendTrail(this.trail, home.slug)
         return
       }
     }
@@ -481,6 +520,7 @@ export class DocneuralStore {
     this.origin = null
     this.setUrl(requested, anchor)
     void this.body(doc.slug)
+    this.trail = appendTrail(this.trail, doc.slug)
   }
 
   /** Back to the welcome screen: reader mode, nothing selected, no deep link. */

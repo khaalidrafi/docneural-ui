@@ -215,6 +215,19 @@
   --dn-dish-dot-2: rgba(255, 51, 102, 0.05);
   --dn-graph-palette: #00e5f5, #ff3366, #ffd93f, #bd00ff, #3ef04a, #ff7a45, #56c8ff, #ff5c8a;
 
+  /* TRAIL (2026-10-31 spec): the visitor's reading path. The lit route on
+     the canvas + the chip/panel chrome. AA-measured by the designer against
+     --dn-bg / --dn-graph-bg / --dn-bg-raise:
+     --dn-trail      10.3 / 9.5 / 9.5   (chip text on wash: 7.2:1)
+     --dn-trail-head 18.2
+     --dn-trail-w    constant SCREEN px — the painter divides by globalScale;
+                     phone drops to 1.6px (media override below). */
+  --dn-trail: #7cc0ff;
+  --dn-trail-head: #eaf6ff;
+  --dn-trail-wash: rgba(124, 192, 255, 0.14);
+  --dn-trail-halo: rgba(124, 192, 255, 0.28);
+  --dn-trail-w: 2.2px;
+
   /* Geometry. */
   --dn-notch: 9px;
   --dn-max-prose: 72ch;
@@ -297,6 +310,15 @@
   --dn-dish-dot-2: rgba(27, 79, 214, 0.07);
   --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
 
+  /* TRAIL, paper arm — same map, ink-jet stops (2026-10-31 spec):
+     --dn-trail      8.2 / 8.5 / 8.5
+     --dn-trail-head 18.3 */
+  --dn-trail: #0b3fbf;
+  --dn-trail-head: #0d1117;
+  --dn-trail-wash: rgba(11, 63, 191, 0.07);
+  --dn-trail-halo: rgba(11, 63, 191, 0.16);
+  --dn-trail-w: 2.2px;
+
   color-scheme: light;
 }
 
@@ -336,6 +358,12 @@
     --dn-dish-dot-1: rgba(27, 79, 214, 0.10);
     --dn-dish-dot-2: rgba(27, 79, 214, 0.07);
     --dn-graph-palette: #00617f, #a30d55, #7a4a00, #6b1fa8, #04610c, #96400a, #0369a1, #8a0c48;
+    /* TRAIL, auto-light arm — byte-identical to the toggle arm above. */
+    --dn-trail: #0b3fbf;
+    --dn-trail-head: #0d1117;
+    --dn-trail-wash: rgba(11, 63, 191, 0.07);
+    --dn-trail-halo: rgba(11, 63, 191, 0.16);
+    --dn-trail-w: 2.2px;
     color-scheme: light;
   }
 }
@@ -351,6 +379,26 @@
     --dn-header-h: calc(3.25rem + env(safe-area-inset-top, 0px));
   }
 }
+
+/* TRAIL phone width (2026-10-31 spec): the route line thins on the small
+   canvas. One arm-independent value — both themes agree at 1.6px. */
+@media (max-width: 700px) {
+  :root {
+    --dn-trail-w: 1.6px;
+  }
+}
+
+/* TRAIL sheet open (screenshot review r2): while the trail sheet is open,
+   the scope + layout chips give way — with a trail earned they climb into
+   the sheet's exact pocket (scope bottom:60px == panel bottom) and the
+   scope chip's tail poked out beside the sheet's CLEAR action as a garbled
+   floating fragment. visibility (not display): no canvas reflow; Esc or a
+   second chip click returns them. Lives in the GLOBAL sheet because Svelte
+   prunes a scoped selector it cannot prove used, and
+   :has([data-trail-open]) points at the graph component's root element,
+   invisible to the scoped analyzer. */
+.canvas-wrap:has([data-trail-open]) .scope,
+.canvas-wrap:has([data-trail-open]) .layout { visibility: hidden; }
 
 
 /* ---------- 2. Base ----------------------------------------------------- */

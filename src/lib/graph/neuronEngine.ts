@@ -89,6 +89,17 @@ export type NeuronFocus = {
    *  the centre (4 desktop / 6 phone; a hub over 24 neighbours drops to
    *  centre + 2). Read per paint. */
   miniCap?: () => number
+  /** TRAIL (designer spec 2026-10-31): the visitor's reading path, resolved
+   *  to ENGINE node ids in visit order (oldest first, head = most recent;
+   *  slugs the corpus lost were dropped at the read path). Read per frame.
+   *  Fewer than 2 stops = no route: the feature appears when earned. */
+  trail?: () => string[]
+  /** The trail's hops as "aId>bId" keys — both directions of every
+   *  consecutive pair that rides a REAL corpus wire. The route painter reads
+   *  this per segment for the honesty rule: a hop in the set strokes solid
+   *  (a synapse is there), anything else strokes dashed and dimmer (the
+   *  visitor jumped; the canvas must not claim a wire that isn't). */
+  trailHops?: () => Set<string>
   /** Handed the live engine once it exists, so the component can push layout
    *  changes into it. GraphView keeps the instance private and exposes no
    *  physics knob, so the construction seam is the only door. */
@@ -320,6 +331,16 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let paper = '#10151a'
   let hotCol = '#ffd60a'
   let readAt = 0
+  // TRAIL (designer spec 2026-10-31): lit-route inks + the screen-px line
+  // width. Fallbacks are the dark-arm hex pairs, byte-exact from the spec —
+  // the poll below overrides from computed style on the first frame.
+  let trailCol = '#7cc0ff'
+  let trailHeadCol = '#eaf6ff'
+  let trailHaloCol = 'rgba(124,192,255,0.28)'
+  let trailW = 2.2
+  // Stop-halo radius, screen px: 6 desktop / 5 phone (read at the same
+  // cadence as labelPx — innerWidth does not change mid-frame usefully).
+  let trailHaloR = 6
   // Phones get +1.5px of label: at fit ~0.15 the 11px screen size the desktop
   // overview uses sits at the edge of legibility on a 390px viewport (designer
   // review r3: "increase node label font-size ... labels are sub-9px and bleed").
@@ -336,7 +357,12 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         ink = get('--dn-fg').trim() || ink
         paper = get('--dn-bg').trim() || paper
         hotCol = get('--dn-hot').trim() || hotCol
+        trailCol = get('--dn-trail').trim() || trailCol
+        trailHeadCol = get('--dn-trail-head').trim() || trailHeadCol
+        trailHaloCol = get('--dn-trail-halo').trim() || trailHaloCol
+        trailW = parseFloat(get('--dn-trail-w')) || trailW
         labelPx = (typeof window !== 'undefined' && window.innerWidth < 700) ? 12.5 : 11
+        trailHaloR = (typeof window !== 'undefined' && window.innerWidth < 700) ? 5 : 6
       }
     }
     return tokens
@@ -678,6 +704,45 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     }
     ctx.restore()
 
+    // TRAIL stop mark (designer spec 2026-10-31, ds@cb review r2): the
+    // visitor's own route wears a waypoint UNDER each stop — a soft halo,
+    // then a 1.2px ring at halo+3 — and the head (most recent stop) a
+    // fatter ring plus a solid core dot. Full alpha at every zoom band and
+    // regardless of ego dim: the lit stops are what give the phone starfield
+    // a figure, so the trail never recedes with the background. Painted
+    // between the dendritic tree and the label so titles stay on top.
+    // Gates at ONE stop (ds@cb: "the first stop is invisible — the exact
+    // moment the feature is earned is the one where the signature surface
+    // stays silent"): a single waypoint is not a route, so the segment
+    // painter keeps its 2-stop gate while the mark lights here.
+    if (!focus.compact) {
+      const tstops = focus.trail?.()
+      if (tstops && tstops.length >= 1) {
+        const si = tstops.indexOf(n.id)
+        if (si !== -1) {
+          const head = si === tstops.length - 1
+          ctx.save()
+          ctx.globalAlpha = 1
+          ctx.fillStyle = trailHaloCol
+          ctx.beginPath()
+          ctx.arc(x, y, trailHaloR / globalScale, 0, 2 * Math.PI)
+          ctx.fill()
+          ctx.strokeStyle = trailCol
+          ctx.lineWidth = (head ? 1.5 : 1.2) / globalScale
+          ctx.beginPath()
+          ctx.arc(x, y, (trailHaloR + 3) / globalScale, 0, 2 * Math.PI)
+          ctx.stroke()
+          if (head) {
+            ctx.fillStyle = trailHeadCol
+            ctx.beginPath()
+            ctx.arc(x, y, 4 / globalScale, 0, 2 * Math.PI)
+            ctx.fill()
+          }
+          ctx.restore()
+        }
+      }
+    }
+
     // Titles, per LOD band (designer spec §3, adapted for a DOCS corpus:
     // hub names are how the overview reads, so band 0 keeps the top hubs
     // rather than going fully blank):
@@ -752,6 +817,71 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   engine
     .nodeCanvasObjectMode(() => (focus.compact ? 'replace' : 'after'))
     .nodeCanvasObject(paintNode)
+
+  /* ---------- TRAIL route painter (designer spec 2026-10-31) ----------
+     The lit route over the field: one stroke per hop, drawn AFTER the
+     frame's own paint. Honesty rule — a hop the corpus really wires strokes
+     SOLID at full alpha in --dn-trail; a hop the visitor made by search,
+     pager or palette strokes DASHED and dimmer, because the canvas never
+     claims a synapse that isn't there.
+
+     Cost discipline: ≤12 stops → ≤11 segments, guarded save/restore, no
+     Path2D, and zero per-frame allocations beyond the loop's own work — the
+     dash pattern lives in a reused scratch array and the id→node index is
+     rebuilt only when the engine's graph data object is swapped. The camera
+     is never touched and no physics is read or written: this painter only
+     looks. */
+  let trailIdxSrc: unknown = null
+  const trailIdx = new Map<string, any>()
+  const trailNodeFor = (id: string): any => {
+    const gd = engine.graphData()
+    if (gd !== trailIdxSrc) {
+      trailIdx.clear()
+      for (const n of gd.nodes as any[]) trailIdx.set(String(n.id), n)
+      trailIdxSrc = gd
+    }
+    return trailIdx.get(id)
+  }
+  // Reused dash scratch — setLineDash copies at the boundary, so this puts
+  // zero arrays on the heap per frame.
+  const TRAIL_DASH = [0, 0]
+  const NO_DASH: number[] = []
+
+  const paintTrail = (ctx: Ctx, gs: number): void => {
+    if (focus.compact) return
+    const stops = focus.trail?.()
+    const hops = focus.trailHops?.()
+    if (!stops || stops.length < 2 || !hops) return // earned, or nothing to say
+    ctx.save()
+    let prev = trailNodeFor(stops[0])
+    for (let i = 1; i < stops.length; i++) {
+      const cur = trailNodeFor(stops[i])
+      // A stop the engine has not placed (filtered out of the current view,
+      // or mid-sync) breaks the route there — no segment guesses across it.
+      if (prev && cur && prev.x != null && cur.x != null) {
+        const solid = hops.has(`${stops[i - 1]}>${stops[i]}`)
+        ctx.beginPath()
+        ctx.moveTo(prev.x, prev.y)
+        ctx.lineTo(cur.x, cur.y)
+        ctx.globalAlpha = solid ? 1 : 0.55
+        ctx.strokeStyle = trailCol
+        if (solid) {
+          ctx.setLineDash(NO_DASH)
+          ctx.lineWidth = trailW / gs
+        } else {
+          TRAIL_DASH[0] = 2 / gs
+          TRAIL_DASH[1] = 6 / gs
+          ctx.setLineDash(TRAIL_DASH)
+          ctx.lineWidth = 1.2 / gs
+        }
+        ctx.stroke()
+      }
+      prev = cur
+    }
+    ctx.setLineDash(NO_DASH)
+    ctx.restore()
+  }
+  engine.onRenderFramePost(paintTrail)
 
   if (!focus.compact) {
     engine

@@ -299,7 +299,7 @@
   </div>
 {:else if store.mode === 'graph' && !store.lite}
   <section class="synapse-mode" in:fly={morph}>
-    <div class="canvas-wrap">
+    <div class="canvas-wrap" class:trail-up={store.trailResolved.length >= 2}>
       <DocneuralGraph {store} {onNodeClick} />
       <!-- The scope chip: what the canvas is showing, and the one click that
            says otherwise. An ego graph that cannot be expanded is a hidden
@@ -943,6 +943,26 @@
   border-color: var(--dn-accent);
   color: var(--dn-accent);
 }
+
+/* TRAIL (2026-10-31 spec): the trail chip owns the bottom-left pocket at
+   left:12px / bottom:12px+safe — the pocket the scope/layout chips lived
+   in. When a trail is on the field they climb rather than collide: the
+   trail's position is the spec's, the other two keep their stack shape
+   above it (trail top + 8px breath, then one chip-height step). Desktop
+   chips are ~28px tall, phone chips 44px — hence the two offsets. */
+.trail-up .scope { bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+.trail-up .layout { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 700px) {
+  .trail-up .scope { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .trail-up .layout { bottom: calc(116px + env(safe-area-inset-bottom, 0px)); }
+}
+/* Screenshot review r2: with the trail sheet OPEN, the climbed chips share
+   its exact pocket (scope bottom:60px == panel bottom) and the scope chip's
+   tail poked out beside the sheet's CLEAR action — a garbled floating
+   fragment. While the sheet is open the two chips give way. The rule lives
+   in the GLOBAL sheet (styles/docneural-ui.css): Svelte prunes a scoped
+   selector it cannot prove used, and :has([data-trail-open]) points at the
+   graph component's root, invisible to the scoped analyzer. */
 
   /* Controls panel: desktop floats over the canvas top-left; the summary
      doubles as the live wire-count badge. Notched corner + brackets = it
