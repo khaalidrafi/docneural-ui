@@ -35,6 +35,7 @@
   import type { DocNode, DocLink, LayoutMode } from '../core/types'
   import { DocneuralStore } from '../core/store.svelte'
   import { trailText, synapseCitation } from '../core/trail'
+  import { isBoilerplateCtx } from '../core/vocab'
   import { copyText } from '../core/clipboard'
   import {
     ARROW_BUDGET,
@@ -629,7 +630,10 @@
     const a = store.byId(card.a)
     const b = store.byId(card.b)
     if (!a || !b) return
-    const ok = await copyText(synapseCitation(a, b, store.ctxFor(card.link)))
+    // A nav-header "citing line" is chrome, not a sentence: the copy omits
+    // the quote and ships the bare wire (SPEC F3).
+    const ctx = store.ctxFor(card.link)
+    const ok = await copyText(synapseCitation(a, b, ctx && !isBoilerplateCtx(ctx) ? ctx : undefined))
     if (!ok) return
     citedDone = true
     clearTimeout(citedTimer)
@@ -650,23 +654,29 @@
   })
 
   /** The chip's citing line: the store's ctx cache (lazy file → inline
-   *  fallback), truncated to the spec's 60 chars. */
+   *  fallback), truncated to the spec's 60 chars. A nav header is chrome, not
+   *  a sentence — the chip quotes the honesty string instead (SPEC F3). */
   const hoverCtx = $derived.by(() => {
     if (!hoverWire) return ''
     const l = store.wire(hoverWire.a, hoverWire.b)
     const c = l ? store.ctxFor(l) : undefined
     if (!c) return ''
+    if (isBoilerplateCtx(c)) return 'navigation header — no prose citation'
     return c.length > 60 ? c.slice(0, 60) + '…' : c
   })
 
-  /** The card's full citing lines: a recovered bridge carries every
-   *  recovered line in its provenance array; an exported wire answers from
-   *  the ctx cache. Empty stays honest. */
-  const cardLines = $derived.by(() => {
-    if (!card) return []
-    if (card.link.provenance?.length) return card.link.provenance
-    const c = store.ctxFor(card.link)
-    return c ? [c] : []
+  /** The card's citing lines, boilerplate-filtered: a recovered bridge
+   *  carries every recovered line in its provenance array; an exported wire
+   *  answers from the ctx cache. Lines that are really GNU Info nav headers
+   *  are dropped; when that leaves nothing, the card says so instead of
+   *  quoting navigation chrome (SPEC F3). */
+  const cardCite = $derived.by(() => {
+    if (!card) return { lines: [] as string[], navHeader: false }
+    const raw = card.link.provenance?.length
+      ? card.link.provenance
+      : [store.ctxFor(card.link)].filter((s): s is string => !!s)
+    const lines = raw.filter((l) => !isBoilerplateCtx(l))
+    return { lines, navHeader: raw.length > 0 && lines.length === 0 }
   })
 
   /* ---------- TRAIL chrome (designer spec 2026-10-31) ----------
@@ -776,7 +786,7 @@
     {/if}
 
     <!-- NETWORK CONTROLS (SPEC §3): one vertical stack, bottom-right —
-         LOCK · SPACING −/+ · ZOOM +/− · FIT. 44×44 buttons, 8px gap,
+         LOCK · SPACING −/+ · ZOOM −/+ · FIT. 44×44 buttons, 8px gap,
          chrome tokens, zero new animation loops. -->
     <div class="net-controls" role="group" aria-label="Network controls">
       <button
@@ -811,15 +821,11 @@
           title="Increase synapse spacing"
         >+</button>
       </div>
+      <!-- Both pairs read [− +] left-to-right (final polish, SPEC F6): the
+           zoom pair shipped as [+ −] with the disabled bounds riding the
+           glyphs. Handlers and bounds travel WITH the button, so the fix is
+           the DOM order — never a CSS reversal that would unpair them. -->
       <div class="nc-pair">
-        <button
-          class="nc-btn dn-mono"
-          onclick={() => zoomBy(1)}
-          disabled={zoomNow >= ZOOM_MAX}
-          aria-disabled={zoomNow >= ZOOM_MAX}
-          aria-label="Zoom in"
-          title="Zoom in"
-        >+</button>
         <button
           class="nc-btn dn-mono"
           onclick={() => zoomBy(-1)}
@@ -828,6 +834,14 @@
           aria-label="Zoom out"
           title="Zoom out"
         >−</button>
+        <button
+          class="nc-btn dn-mono"
+          onclick={() => zoomBy(1)}
+          disabled={zoomNow >= ZOOM_MAX}
+          aria-disabled={zoomNow >= ZOOM_MAX}
+          aria-label="Zoom in"
+          title="Zoom in"
+        >+</button>
       </div>
       <button
         class="nc-btn"
@@ -844,8 +858,14 @@
     </div>
     {#if arrowOverBudget}
       <!-- The honest status line (SPEC §3.4): the field is over the arrow
-           paint budget, so arrows ride the selection/hover tier only. -->
-      <p class="nc-status dn-mono" role="status">arrows on selection · {store.visible.links.length} synapses exceeds paint budget</p>
+           paint budget, so arrows ride the selection/hover tier only. Phone
+           says the tier alone (F7): the desktop line is ~440px of 10px type
+           and the 180px corner cannot hold it. The swap is CSS-only, so the
+           live region never re-registers and desktop copy is unchanged. -->
+      <p class="nc-status dn-mono" role="status">
+        <span class="ns-desktop">arrows on selection · {store.visible.links.length} synapses exceeds paint budget</span>
+        <span class="ns-phone">arrows: selection only</span>
+      </p>
     {/if}
   {/if}
 
@@ -870,8 +890,10 @@
            narrower than the pattern, so this is an explicit, cited opt-out. -->
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <div class="sc-ctx" tabindex="0">
-        {#if cardLines.length}
-          {#each cardLines as line, i (i)}<p class="sc-line">{line}</p>{/each}
+        {#if cardCite.lines.length}
+          {#each cardCite.lines as line, i (i)}<p class="sc-line">{line}</p>{/each}
+        {:else if cardCite.navHeader}
+          <p class="sc-line empty dn-mono">navigation header — no prose citation recorded</p>
         {:else}
           <p class="sc-line empty dn-mono">No citing line recorded</p>
         {/if}
@@ -1289,6 +1311,8 @@
   background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
   border: 1px solid var(--dn-border);
 }
+/* F7: one nc-status, two copies — the phone swap is a display toggle. */
+.ns-phone { display: none; }
 
 /* ---------- SYNAPSE CLICK chrome (SPEC §4) ---------- */
 .edge-chip {
@@ -1466,7 +1490,15 @@
     border-right: 0;
     border-bottom: 0;
   }
-  .nc-status { max-width: 180px; }
+  .nc-status {
+    max-width: 180px;
+    /* F7: 4px side air (desktop keeps 8px) — the phone line must hold ONE
+       row at 180px, and "arrows: selection only" at 10px/0.14em measures
+       162.8px; 8px padding left it a sub-pixel short and it wrapped. */
+    padding-inline: 4px;
+  }
+  .ns-desktop { display: none; }
+  .ns-phone { display: inline; }
 }
 
 

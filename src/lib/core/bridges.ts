@@ -12,6 +12,7 @@
 // broken artifact degrades to "no bridges" and the corpus works unchanged.
 
 import type { DocLink, GraphData } from './types'
+import { isBoilerplateCtx } from './vocab'
 
 /** One entry of the committed artifact (a superset of the miner's
  *  proposed-wires.json shape: same fields, kind pinned to 'bridge'). */
@@ -76,8 +77,10 @@ export function parseBridges(raw: unknown): BridgeWire[] {
  *  - both endpoints must exist in the corpus (a dangling bridge cannot draw);
  *  - a pair the corpus already wires in EITHER direction is skipped — the real
  *    citation wins and the canvas never double-paints one synapse;
- *  - each wire is `kind: 'bridge'`, context = the first recovered line (the
- *    rail fallback), provenance = every recovered line (the click card).
+ *  - each wire is `kind: 'bridge'`, context = the first recovered line that
+ *    is not a nav-header (a GNU Info navigation header is chrome, not a
+ *    citation — final polish 2026-10-31, SPEC F3), provenance = every
+ *    recovered line (the click card).
  */
 export function mergeBridges(data: GraphData, bridges: BridgeWire[]): GraphData {
   if (!bridges.length) return data
@@ -96,7 +99,10 @@ export function mergeBridges(data: GraphData, bridges: BridgeWire[]): GraphData 
     fresh.push({
       source: b.source,
       target: b.target,
-      context: b.ctx[0],
+      // Provenance stays FULL (honesty); only the rail-fallback context
+      // skips the boilerplate, falling back to the first line when every
+      // recovered line is a nav header.
+      context: b.ctx.find((l) => !isBoilerplateCtx(l)) ?? b.ctx[0],
       kind: 'bridge',
       provenance: b.ctx.length > 1 ? b.ctx : undefined
     })
@@ -104,11 +110,12 @@ export function mergeBridges(data: GraphData, bridges: BridgeWire[]): GraphData 
   return fresh.length ? { nodes: data.nodes, links: [...data.links, ...fresh] } : data
 }
 
-/** How many references the bridges RECOVERED (Σ provenance lines) — the
- *  number the status plate and the legend print ("+3 recovered"). Distinct
- *  from the wire count: the two guix hits are one wire but two recoveries. */
-export function recoveredCount(links: DocLink[]): number {
+/** How many bridge WIRES are merged — the number the status plate prints as
+ *  `+N recovered` (final polish 2026-10-31, SPEC F4: the plate counts WIRES
+ *  so its arithmetic closes against the SYNAPSES total; the recovered
+ *  REFERENCES stay visible only in the card's provenance list). */
+export function bridgeWireCount(links: DocLink[]): number {
   let n = 0
-  for (const l of links) if (l.kind === 'bridge') n += Math.max(1, l.provenance?.length ?? 1)
+  for (const l of links) if (l.kind === 'bridge') n++
   return n
 }

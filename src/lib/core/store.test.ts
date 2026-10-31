@@ -328,3 +328,36 @@ describe('?mode=graph deep link', () => {
     expect(store.mode).toBe('reader')
   })
 })
+
+// URL aliases (final polish 2026-10-31, SPEC F2): `network`/`synapses` are
+// accepted destinations at the one parse point; the UI keeps emitting only
+// `?mode=graph`. `neurons` names an entity, not a destination, and an
+// unknown value has always just stayed home.
+describe('?mode aliases', () => {
+  async function bootAt(search: string): Promise<DocneuralStore> {
+    ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search }
+    const store = new DocneuralStore()
+    await store.load()
+    return store
+  }
+
+  it('accepts the network and synapses aliases', async () => {
+    expect((await bootAt('?mode=network')).mode).toBe('graph')
+    expect((await bootAt('?mode=synapses')).mode).toBe('graph')
+  })
+
+  it('forgives case and surrounding whitespace', async () => {
+    expect((await bootAt('?mode=%20NETWORK%20')).mode).toBe('graph')
+    expect((await bootAt('?mode=Graph')).mode).toBe('graph')
+  })
+
+  it('rejects neurons — an entity is not a destination', async () => {
+    expect((await bootAt('?mode=neurons')).mode).toBe('reader')
+    expect((await bootAt('?mode=NEURONS')).mode).toBe('reader')
+  })
+
+  it('leaves unknown values home, silently (unchanged)', async () => {
+    expect((await bootAt('?mode=banana')).mode).toBe('reader')
+    expect((await bootAt('?mode=')).mode).toBe('reader')
+  })
+})

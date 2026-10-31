@@ -145,7 +145,7 @@
       <div class="rail" aria-hidden="true"></div>
     </div>
     <div class="id-body">
-      <p class="tagline dn-mono">docs are neurons · citations are axons · fire together, wire stronger</p>
+      <p class="tagline dn-mono">docs are neurons · citations are synapses · fire together, wire stronger</p>
       <p class="feed dn-mono" aria-hidden="true">{feedLine}<span class="feed-caret">▌</span></p>
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual

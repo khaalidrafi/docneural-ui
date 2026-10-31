@@ -23,14 +23,14 @@
 </script>
 
 <div class="filter-bar">
-  <label class="dn-label" for="gbq">filter chapters</label>
+  <label class="dn-label" for="gbq">filter neurons</label>
   <input
     id="gbq"
     type="search"
     class="dn-mono"
     placeholder="title contains…"
     bind:value={store.query}
-    aria-label="Search nodes"
+    aria-label="Search neurons"
   />
   {#if tags.length > 0}
     <div class="tags">
