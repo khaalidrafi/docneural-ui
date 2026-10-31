@@ -18,6 +18,7 @@
   import DocReader from './reader/DocReader.svelte'
   import Home from './reader/Home.svelte'
   import CommandPalette from './ui/CommandPalette.svelte'
+  import AskPanel from './reader/AskPanel.svelte'
   import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
 
@@ -350,6 +351,7 @@
 {/if}
 
 <CommandPalette bind:open={paletteOpen} {store} />
+<AskPanel {store} />
 
 {#if helpOpen}
   <div

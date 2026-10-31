@@ -490,7 +490,24 @@ export function manualToc(chapters: DocNode[]): TocNode[] {
     doc,
     children: depth >= 8 ? [] : orderSiblings(kids.get(doc.id) ?? []).map((c) => build(c, depth + 1))
   })
-  const tree = orderSiblings(roots).map((r) => build(r, 1))
+  const ordered = orderSiblings(roots)
+  const tree = ordered.map((r) => build(r, 1))
+  // Corruption guard: a chapter whose `up` chain never reaches a root (a
+  // cyclic export, or a parent filtered out by the manual scope) would
+  // silently vanish from the tree — unreachable from any root, rendered by
+  // nothing. Salvage: every chapter the walk did not touch becomes a root
+  // itself, in reading order, so pages are lost to no bug.
+  const reachable = new Set<string>()
+  const markReach = (n: TocNode) => {
+    if (n.doc && reachable.has(n.doc.id)) return
+    if (n.doc) reachable.add(n.doc.id)
+    for (const c of n.children) markReach(c)
+  }
+  for (const r of tree) markReach(r)
+  const orphaned = chapters.filter((c) => !reachable.has(c.id))
+  if (orphaned.length) {
+    for (const c of orderSiblings(orphaned)) tree.push(build(c, 1))
+  }
   // FALLBACK (Owner law: "we'll add hundreds of docs later"): a corpus whose
   // export carries no Info structure — this site's Org and Guix manuals
   // today — would render as one flat alphabetized list of every page, which

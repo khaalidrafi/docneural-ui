@@ -61,6 +61,13 @@ export class DocneuralStore {
    *  The mirror exists because Home's `--resume` line must appear the moment
    *  you click back to the front door, and localStorage is not reactive. */
   lastRead = $state<{ slug: string; anchor: string | null } | null>(loadLastRead())
+
+  /** The "ask the corpus" overlay (reader/AskPanel.svelte). Lives on the
+   *  store so the command palette, the reader toolbar and a future header
+   *  button all open the same panel over any surface. BYOK: the endpoint
+   *  and key are the visitor's own (core/ai.ts); the store carries only the
+   *  open flag, never the config. */
+  aiOpen = $state(false)
   /** Record a reading position: the reactive copy and the durable one. */
   notePosition(slug: string, anchor: string | null): void {
     if (!this.lastRead || this.lastRead.slug !== slug || this.lastRead.anchor !== anchor) {
