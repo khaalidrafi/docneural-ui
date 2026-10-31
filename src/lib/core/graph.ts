@@ -414,3 +414,111 @@ export function latticePlace(
     nd.fy = nd.y
   })
 }
+
+// ---------- TABLE OF CONTENTS (Owner directive 2026-10-31) ----------
+
+/** One row of the manual TOC: the page plus the sections nested under it
+ *  (Info's `up` field, resolved inside the same manual's content set).
+ *  `open` is UI scratch — the disclosure state the Toc component writes.
+ *  Group rows (the A–Z fallback) carry `group` instead of `doc`: a pure
+ *  folder with no page of its own. */
+export type TocNode = {
+  doc?: DocNode
+  group?: string
+  children: TocNode[]
+  open?: boolean
+}
+
+/** The title a TOC row prints: the canvas's suffix rule (drop "(The Org
+ *  Manual)") WITHOUT the 26-char truncation — a directory row can afford
+ *  the full name, and truncating it would hide the one thing rows are
+ *  picked by. */
+export function tocTitle(title: string): string {
+  return title.replace(/\s*\([^)]*\)\s*$/, '')
+}
+
+/** Build a manual's TOC tree from its content pages (the store's `chapters`
+ *  list, already stub-free and manual-scoped). The Owner's ship directive:
+ *  "Show TOC instead of listing each page of the doc. We'll add hundreds of
+ *  docs to this site later" — a flat grid of 752 cards dies at that scale,
+ *  while the Info tree the exporter already rides along (up/next/prev) is a
+ *  collapsible directory for free. Roots are pages whose `up` is missing or
+ *  outside the set; siblings keep Info reading order via the same next-chain
+ *  walk the reading-order spine uses, with id order as the fallback so the
+ *  output is deterministic for identical exports. */
+export function manualToc(chapters: DocNode[]): TocNode[] {
+  const inSet = new Set(chapters.map((c) => c.id))
+  const byId = new Map(chapters.map((c) => [c.id, c]))
+  const kids = new Map<string, DocNode[]>()
+  const roots: DocNode[] = []
+  for (const c of chapters) {
+    const up = c.up && inSet.has(c.up) ? c.up : null
+    if (up) {
+      const list = kids.get(up)
+      if (list) list.push(c)
+      else kids.set(up, [c])
+    } else {
+      roots.push(c)
+    }
+  }
+  /** Info reading order inside one sibling list: walk `next` chains from the
+   *  chain heads (id order), then sweep leftovers — mirrors the store's
+   *  `chapters` walk so the TOC and the reader spine never disagree. */
+  const orderSiblings = (list: DocNode[]): DocNode[] => {
+    if (list.length <= 1) return list
+    const set = new Set(list.map((n) => n.id))
+    const targeted = new Set(list.map((n) => n.next).filter(Boolean) as string[])
+    const seen = new Set<string>()
+    const out: DocNode[] = []
+    const walk = (start: DocNode) => {
+      let cur: DocNode | undefined = start
+      while (cur && !seen.has(cur.id)) {
+        seen.add(cur.id)
+        out.push(cur)
+        cur = cur.next && set.has(cur.next) ? byId.get(cur.next) : undefined
+      }
+    }
+    for (const n of [...list].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
+      if (!targeted.has(n.id)) walk(n)
+    }
+    for (const n of list) if (!seen.has(n.id)) walk(n)
+    return out
+  }
+  // Depth cap is a corruption guard, not a design choice: real manuals top
+  // out at 4 (measured on this corpus), 8 keeps a cyclic `up` from hanging.
+  const build = (doc: DocNode, depth: number): TocNode => ({
+    doc,
+    children: depth >= 8 ? [] : orderSiblings(kids.get(doc.id) ?? []).map((c) => build(c, depth + 1))
+  })
+  const tree = orderSiblings(roots).map((r) => build(r, 1))
+  // FALLBACK (Owner law: "we'll add hundreds of docs later"): a corpus whose
+  // export carries no Info structure — this site's Org and Guix manuals
+  // today — would render as one flat alphabetized list of every page, which
+  // is exactly the listing the TOC directive replaced. Group those by first
+  // letter instead: 26 collapsible folders at any corpus size, and the
+  // moment the exporter rides `up` along for a manual, its real chapter
+  // tree takes over with no UI change.
+  const structured = tree.some(function hasKids(n: TocNode): boolean {
+    return n.children.length > 0 || n.children.some(hasKids)
+  })
+  if (structured || chapters.length <= 24) return tree
+  const sorted = [...chapters].sort((a, b) => {
+    const ta = tocTitle(a.title).toLowerCase()
+    const tb = tocTitle(b.title).toLowerCase()
+    return ta < tb ? -1 : ta > tb ? 1 : a.id < b.id ? -1 : 1
+  })
+  const groups = new Map<string, DocNode[]>()
+  for (const c of sorted) {
+    const first = tocTitle(c.title).trim().charAt(0).toUpperCase()
+    const letter = /[A-Z]/.test(first) ? first : '#'
+    const list = groups.get(letter)
+    if (list) list.push(c)
+    else groups.set(letter, [c])
+  }
+  return [...groups.entries()]
+    .sort(([a], [b]) => (a === '#' ? 1 : b === '#' ? -1 : a < b ? -1 : 1))
+    .map(([letter, list]) => ({
+      group: letter,
+      children: list.map((doc) => ({ doc, children: [] }))
+    }))
+}
