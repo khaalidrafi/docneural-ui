@@ -9,6 +9,9 @@ import {
   sanitizeAnswer,
   parseFollowUps,
   loadAiConfig,
+  describeBrain,
+  AI_PRESETS,
+  BRAIN_FALLBACK,
   AI_DEFAULTS,
   EXTRACT_BUDGET
 } from './ai'
@@ -82,7 +85,7 @@ describe('endpointHeaders', () => {
   })
 
   it('sends a Bearer token only for a non-empty key, trimmed', () => {
-    const headers = endpointHeaders({ url: AI_DEFAULTS.url, key: '  sk-live-1  ', model: 'm' })
+    const headers = endpointHeaders({ url: AI_DEFAULTS.url, key: '  sk-live-1  ', model: 'm', fallback: true })
     expect(headers['content-type']).toBe('application/json')
     expect(headers.authorization).toBe('Bearer sk-live-1')
   })
@@ -175,10 +178,51 @@ describe('buildQuizMessages', () => {
 })
 
 describe('AI_DEFAULTS', () => {
-  it('ships the free public brain: no key, anonymous model, pollinations path', () => {
+  it('ships the free public brain: no key, fast anonymous model, pollinations path', () => {
     expect(AI_DEFAULTS.url).toBe('https://text.pollinations.ai/openai')
     expect(AI_DEFAULTS.key).toBe('')
-    expect(AI_DEFAULTS.model).toBe('openai')
+    expect(AI_DEFAULTS.model).toBe('openai-fast')
+  })
+
+  it('defaults the failover ladder ON (SPEC 4)', () => {
+    expect(AI_DEFAULTS.fallback).toBe(true)
+  })
+})
+
+describe('BRAIN_FALLBACK / describeBrain (SPEC 4)', () => {
+  it('points at our own edge relay, the OpenAI chat path', () => {
+    expect(BRAIN_FALLBACK).toBe('https://dn-brain.khalidrafi.workers.dev/v1/chat/completions')
+    expect(BRAIN_FALLBACK.endsWith('/v1/chat/completions')).toBe(true)
+  })
+
+  it('labels the brain honestly: fallback wins, then key vs keyless', () => {
+    const keyless = { ...AI_DEFAULTS, key: '' }
+    const keyed = { ...AI_DEFAULTS, key: ' sk-1 ' }
+    expect(describeBrain(keyless, false)).toBe('free brain')
+    expect(describeBrain(keyed, false)).toBe('your key')
+    // The edge brain answered — the status line says so even for a keyed visit.
+    expect(describeBrain(keyed, true)).toBe('edge brain')
+    expect(describeBrain(keyless, true)).toBe('edge brain')
+  })
+})
+
+describe('AI_PRESETS (SPEC 4 §C2)', () => {
+  it('carries exactly the five ruled providers, in order', () => {
+    expect(AI_PRESETS.map((p) => p.name)).toEqual(['Pollinations', 'Groq', 'OpenRouter', 'Gemini', 'Cerebras'])
+  })
+
+  it('only Pollinations is keyless; every preset keeps the OpenAI chat path', () => {
+    for (const p of AI_PRESETS) {
+      expect(p.url.startsWith('https://')).toBe(true)
+      expect(p.model.length).toBeGreaterThan(0)
+    }
+    expect(AI_PRESETS.filter((p) => p.keyless).map((p) => p.name)).toEqual(['Pollinations'])
+  })
+
+  it('the keyless preset IS the shipped default', () => {
+    const pollinations = AI_PRESETS[0]
+    expect(pollinations.url).toBe(AI_DEFAULTS.url)
+    expect(pollinations.model).toBe(AI_DEFAULTS.model)
   })
 })
 

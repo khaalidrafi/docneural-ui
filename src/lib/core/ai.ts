@@ -22,6 +22,11 @@ export type AiConfig = {
    *  and only when non-empty (never an empty Bearer). */
   key: string
   model: string
+  /** The failover ladder (SPEC 4): when the configured brain is unreachable
+   *  (network / 429 / 402 / 5xx) the panel may retry ONCE against the edge
+   *  relay (BRAIN_FALLBACK, our own Workers AI quota). Default true; a
+   *  visitor who wants ONLY their own endpoint can switch it off. */
+  fallback: boolean
 }
 
 /** One chat message, shaped the way every OpenAI-compatible endpoint takes it. */
@@ -31,10 +36,40 @@ const KEY = 'docneural:ai'
 export const AI_DEFAULTS: AiConfig = {
   // The free public brain: CORS-open, anonymous tier, no key needed.
   // `${url}/chat/completions` is the OpenAI-compatible chat path.
+  // `openai-fast` verified live 2026-11-01 (keyless, HTTP 200) — the fast
+  // tier answers in a fraction of the reasoning model's latency.
   url: 'https://text.pollinations.ai/openai',
   key: '',
-  model: 'openai'
+  model: 'openai-fast',
+  fallback: true
 }
+
+/** The edge brain (SPEC 4, workstream B): our own Workers AI relay at
+ *  dn-brain, failover ONLY — the free public brain stays the default. Its
+ *  quota is ours (10,000 neurons/day), which is what makes fallback-only
+ *  volume acceptable. Keyless, OpenAI-shaped, clamped (700 tok / 0.6 temp). */
+export const BRAIN_FALLBACK = 'https://dn-brain.khalidrafi.workers.dev/v1/chat/completions'
+
+/** Which brain answered, for the honest status line. `usedFallback` wins
+ *  (the edge brain answered, period); otherwise the visitor's own key vs
+ *  the keyless default. Pure, so the panel cannot invent a fourth story. */
+export function describeBrain(cfg: AiConfig, usedFallback: boolean): string {
+  if (usedFallback) return 'edge brain'
+  return cfg.key.trim() ? 'your key' : 'free brain'
+}
+
+/** Provider presets for the optional-key settings (SPEC 4 §C2): one click
+ *  fills url + model. Every preset here is free-tier; only Pollinations
+ *  answers keyless. Keys stay in localStorage and are sent ONLY to the
+ *  visitor's chosen url — the preset never moves the key. */
+export type AiPreset = { name: string; url: string; model: string; keyless: boolean }
+export const AI_PRESETS: AiPreset[] = [
+  { name: 'Pollinations', url: 'https://text.pollinations.ai/openai', model: 'openai-fast', keyless: true },
+  { name: 'Groq', url: 'https://api.groq.com/openai/v1', model: 'llama-3.3-70b-versatile', keyless: false },
+  { name: 'OpenRouter', url: 'https://openrouter.ai/api/v1', model: 'meta-llama/llama-3.3-70b-instruct:free', keyless: false },
+  { name: 'Gemini', url: 'https://generativelanguage.googleapis.com/v1beta/openai', model: 'gemini-2.0-flash', keyless: false },
+  { name: 'Cerebras', url: 'https://api.cerebras.ai/v1', model: 'llama-3.3-70b', keyless: false }
+]
 
 export function loadAiConfig(): AiConfig {
   try {
@@ -44,7 +79,9 @@ export function loadAiConfig(): AiConfig {
     return {
       url: typeof p.url === 'string' && p.url.trim() ? p.url.trim().replace(/\/+$/, '') : AI_DEFAULTS.url,
       key: typeof p.key === 'string' ? p.key : '',
-      model: typeof p.model === 'string' && p.model.trim() ? p.model.trim() : AI_DEFAULTS.model
+      model: typeof p.model === 'string' && p.model.trim() ? p.model.trim() : AI_DEFAULTS.model,
+      // Absent (an older stored config) reads as the default: ON.
+      fallback: typeof p.fallback === 'boolean' ? p.fallback : AI_DEFAULTS.fallback
     }
   } catch {
     return { ...AI_DEFAULTS }
