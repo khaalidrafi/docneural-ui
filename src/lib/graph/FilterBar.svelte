@@ -44,6 +44,8 @@
           class:src={isSource(tag)}
           style={isSource(tag) ? sourceVars(tag) : ''}
           onclick={() => toggleTag(tag)}
+          aria-pressed={store.tags.includes(tag)}
+          title={store.tags.includes(tag) ? `Stop filtering by #${tag}` : `Filter by #${tag}`}
         >#{tag}</button>
       {/each}
     </div>

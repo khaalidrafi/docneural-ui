@@ -308,7 +308,7 @@
     >
       <header class="ask-head">
         <p class="ask-title dn-mono">⌁ ask the corpus</p>
-        <button class="ask-x dn-mono" onclick={close} title="Close (Esc)">×</button>
+        <button class="ask-x dn-mono" onclick={close} title="Close (Esc)" aria-label="Close">×</button>
       </header>
 
       {#if editing}
