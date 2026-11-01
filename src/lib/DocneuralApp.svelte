@@ -14,6 +14,7 @@
   import { cubicOut } from 'svelte/easing'
   import DocneuralGraph from './graph/DocneuralGraph.svelte'
   import FilterBar from './graph/FilterBar.svelte'
+  import SpacingControl from './graph/SpacingControl.svelte'
   import NotePreview from './reader/NotePreview.svelte'
   import DocReader from './reader/DocReader.svelte'
   import Home from './reader/Home.svelte'
@@ -424,6 +425,7 @@
         <span class="chev">+</span>
       </summary>
       <FilterBar {store} />
+      <SpacingControl {store} />
     </details>
     <NotePreview {store} />
   </section>

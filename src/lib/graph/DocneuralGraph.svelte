@@ -198,6 +198,10 @@
   // once and never re-ran — the boot layout/park never armed.)
   let engine: NeuronEngine = $state.raw(null)
   let lastMode: LayoutMode | null = null
+  // The spread spacing the last applied layout used — a change to it is a
+  // layout request of its own (Owner directive 2026-11-01: the visitor may
+  // crank spacing as high as they wish, and the field must follow).
+  let lastSpacing = 1
   let stopArmed = false
   let fitNextStop = false
   // OP-56 lattice radiusScale — somas shrink with the hex pitch (0.36·p/18.33,
@@ -342,18 +346,25 @@
 
   $effect(() => {
     const mode = store.layout
+    const spacing = store.spacing
     const eng = engine
     if (!eng) return
     const boot = lastMode === null
-    const changed = mode !== lastMode
+    // A spacing change is only a relayout request in the layout that consumes
+    // it: spread. Dragging the slider while cluster/lattice is up just records
+    // the preference for the next visit to spread.
+    const changed =
+      mode !== lastMode || (mode === 'spread' && spacing !== lastSpacing)
     lastMode = mode
+    lastSpacing = spacing
     if (!changed) return
     // A first run into the shipped layout must neither reheat nor re-frame:
     // that is already what the canvas looks like. Honouring a stored `spread`
     // is another matter — that one is the visitor's own request, replayed.
     if (boot && mode === 'cluster') return
     // Hand the spread layout the rect it is being packed to fill; cluster is a
-    // shape view and takes no container.
+    // shape view and takes no container. The spacing rides along: the engine
+    // scales repulsion, the wire rest length and the container by it.
     const vp = viewport()
     if (mode === 'lattice') {
       // Fixed-distance grid: place + pin, then frame immediately — there is
@@ -369,13 +380,7 @@
       }
       return
     }
-    // Left the lattice: drop the pitch so the painter's label gate goes inert
-    // (pitch <= 0 reads as "unknown" there). A stale phone pitch (~17px) would
-    // otherwise keep gating CLUSTER/SPREAD labels at fit zoom after the visitor
-    // toggled away — those layouts police their own collisions.
-    latticeP = 0
-    applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined,
-      mode === 'spread' ? { spacingK } : undefined)
+    applyLayout(eng, mode, vp && mode === 'spread' ? packRect(vp) : undefined, spacing)
     fitNextStop = true
     if (!stopArmed) {
       stopArmed = true
