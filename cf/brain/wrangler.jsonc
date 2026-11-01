@@ -1,0 +1,10 @@
+// dn-brain — Workers AI fallback relay config (SPEC 4, workstream B).
+// NOTE: if the `experimental_remote: "rerun"` key errors on deploy, drop to
+// the plain form: "ai": { "binding": "AI" }. Lead-owned deploy either way.
+{
+  "name": "dn-brain",
+  "compatibility_date": "2026-10-01",
+  "main": "src/index.js",
+  "workers_dev": true,
+  "ai": { "binding": "AI", "experimental_remote": "rerun" }
+}
