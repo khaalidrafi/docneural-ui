@@ -267,7 +267,7 @@
        bright rider traverses it (one transform-only desktop loop). -->
   <span class="bus-rail" aria-hidden="true"></span>
   <span class="bus-pads" aria-hidden="true"></span>
-  <button class="brand dn-mono" onclick={() => store.goHome()} aria-label="{title} home">
+  <button class="brand dn-mono" onclick={() => store.goHome()} aria-label="{title} home" title="Go home">
     <span class="dn-neuron-mark" aria-hidden="true"></span><span class="wordmark">{title.toUpperCase()}</span>
   </button>
   <!-- CONSULT E §3: the modes nav occupies the middle bay of the grid; the
@@ -293,7 +293,7 @@
     </button>
     {#if !store.lite}
       <button class="seg" class:active={store.mode === 'graph'} aria-pressed={store.mode === 'graph'}
-        onclick={() => store.setMode('graph')} title="See the citations in the neural network">
+        onclick={() => store.setMode('graph')} title="See the citations as a network">
         <span class="seg-ico spark" aria-hidden="true">⌁</span><span class="seg-txt">SYNAPSES</span>
       </button>
     {/if}
@@ -312,14 +312,14 @@
     <!-- CONSULT E §3: the keycap bank — four independent outlines become one
          40px strip with 1px dividers; cells 40x40. -->
     <div class="bank" role="group" aria-label="Instrument controls">
-      <button class="tool kbd" onclick={() => (paletteOpen = true)} aria-label="Search (Ctrl-K)">
+      <button class="tool kbd" onclick={() => (paletteOpen = true)} aria-label="Search (Ctrl-K)" title="Search (Ctrl-K)">
         ⌕ <span class="hintkey">⌘K</span>
       </button>
-      <button class="tool keys" onclick={() => (helpOpen = true)} aria-label="Keyboard help">?</button>
-      <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode" title="neural network engine on/off">
+      <button class="tool keys" onclick={() => (helpOpen = true)} aria-label="Keyboard help" title="Keyboard shortcuts">?</button>
+      <button class="tool" onclick={toggleLite} aria-label="Toggle lite mode" title="Switch full / fast rendering">
         {store.lite ? 'FAST' : 'FULL'}
       </button>
-      <button class="tool" onclick={toggleTheme} aria-label="Toggle theme" title="day / night">
+      <button class="tool" onclick={toggleTheme} aria-label="Toggle theme" title="Switch day / night theme">
         {theme === 'light' ? '☀' : '☾'}
       </button>
     </div>
@@ -334,9 +334,9 @@
     <div class="panel" role="alert">
       <span class="dn-neuron-mark" aria-hidden="true"></span>
       <p class="kicker" aria-hidden="true">// no route</p>
-      <h2>This documentation neural network did not load</h2>
+      <h2>This documentation network did not load</h2>
       <p class="why">{store.failed}</p>
-      <p class="hint">The site builds its neural network from an exported corpus. If a
+      <p class="hint">The site builds its network from an exported corpus. If a
         local build is being served, run <code>make export &amp;&amp; make build</code>.</p>
       <button class="retry" onclick={() => location.reload()}>Reload</button>
     </div>
@@ -359,7 +359,7 @@
       </p>
       <div class="charge" aria-hidden="true"><span class="scan"></span></div>
       <p class="row idx dn-mono">INDEXING CORPUS <b>{store.data.nodes.length || '—'}</b></p>
-      <p class="row sub dn-mono">reading the neural network · {store.manuals.length} channels · {store.data.links.length || '—'} synapses</p>
+      <p class="row sub dn-mono">reading the network · {store.manuals.length} channels · {store.data.links.length || '—'} wires</p>
       <div class="volts" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
     </div>
   </div>
@@ -474,10 +474,10 @@
     <div class="help dn-glass">
       <h3 class="dn-mono">{title.toUpperCase()} — KEYMAP</h3>
       <p class="blurb">
-        A documentation reader <em>enhanced</em> with an org-roam neural network. The written
-        word is the home page; <span class="spark">⌁ synapses</span> is the neural
-        network between docs — named for Hebb's law, since every citation resolved
-        strengthens the synapse. It aggregates <strong>any</strong> Org corpus: one
+        A documentation reader <em>enhanced</em> with an org-roam network. The written
+        word is the home page; <span class="spark">⌁ synapses</span> is the connection
+        map between docs — named for Hebb's law, since every citation resolved
+        strengthens the link. It aggregates <strong>any</strong> Org corpus: one
         channel per manual, each with its own hue.
         <span class="dn-mono" style="display:block; margin-top:0.5em">dashed amber wire = bridge · recovered from literal text references — not the source link graph.</span>
       </p>

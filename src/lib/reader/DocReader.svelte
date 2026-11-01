@@ -437,7 +437,7 @@
     <div class="prog" bind:this={barEl} aria-hidden="true"></div>
     {#if doc}
       <nav class="crumbs dn-mono dn-brackets" aria-label="Breadcrumb">
-        <button class="menu" onclick={() => (drawer = true)} aria-label="Open contents">☰</button>
+        <button class="menu" onclick={() => (drawer = true)} aria-label="Open contents" title="Open contents">☰</button>
         <!-- A path, not a label: the corpus is a directory, the chapters are
              what is under it. `~/` says you started at the front door, which
              is exactly what the chip links to.

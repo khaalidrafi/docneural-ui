@@ -41,7 +41,7 @@
   </div>
   {#if store.checked.length > 0}
     <div class="pinned dn-mono">
-      <span>⌁ NEURAL NETWORK: {store.checked.length} TICKED</span>
+      <span>⌁ NETWORK: {store.checked.length} TICKED</span>
       <button onclick={() => store.clearChecked()}>clear</button>
     </div>
   {/if}

@@ -124,14 +124,14 @@
     <section>
       <h3 class="dn-mono synapse-head">
         <span class="dn-neuron-mark spark-mark" aria-hidden="true"></span>
-        <span class="spark">⌁</span> local neural network
+        <span class="spark">⌁</span> local network
         <span class="count">{local.nodes.length - 1}</span>
       </h3>
       <div class="graph-box" bind:this={boxEl}>
         <GraphView store={roam} onNodeClick={(n) => go(n.id)} loadEngine={minimapLoad} />
       </div>
       <button class="expand dn-mono dn-notch" onclick={() => store.setMode('graph')}>
-        open full neural network ›
+        open full network ›
       </button>
     </section>
   {/if}

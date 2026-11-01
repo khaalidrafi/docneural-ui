@@ -150,8 +150,8 @@
     <p class="lede">
       One reader for documentation from <strong>anywhere</strong> — every manual
       split per section, exported from Org by Emacs, and wired into an org-roam
-      neural network of <strong>{synCount} firing synapses</strong>. Read it top to bottom,
-      jump anywhere with ⌘K, or drop into the neural network and follow the citations.
+      network of <strong>{synCount} firing synapses</strong>. Read it top to bottom,
+      jump anywhere with ⌘K, or drop into the network and follow the citations.
       Every page also ships as raw Org and as
       <span class="dn-mono">llms.txt</span> — machine-readable on purpose.
     </p>
@@ -171,7 +171,7 @@
         <button class="cta graph dn-notch" onclick={() => store.setMode('graph')}>
           <span class="cta-k spark">⌁</span>
           <span class="cta-t">Explore synapses</span>
-          <span class="cta-s">the whole neural network, live</span>
+          <span class="cta-s">the whole network, live</span>
         </button>
       {/if}
     </div>
@@ -371,13 +371,13 @@
       <li class="how-step">
         <span class="how-num" aria-hidden="true">02</span>
         <h3 class="how-verb dn-mono">Navigate</h3>
-        <p class="how-line">The sources strip lists three corpora, each in its neural hue — open a card to read that corpus; tabs hop between its manuals.</p>
+        <p class="how-line">The sources strip lists three corpora, each in its network hue — open a card to read that corpus; tabs hop between its manuals.</p>
         <p class="how-next"><span aria-hidden="true">›</span> next: walk the citations</p>
       </li>
       <li class="how-step">
         <span class="how-num" aria-hidden="true">03</span>
         <h3 class="how-verb dn-mono">Trace</h3>
-        <p class="how-line">Each page is a real org-export fragment; its synapses are the manual's own cross-references — the same network that wires the Plate.</p>
+        <p class="how-line">Each page is a real org-export fragment; its links are the manual's own cross-references — the same network that wires the Plate.</p>
         <p class="how-next"><span aria-hidden="true">›</span> the citation network is the navigation</p>
       </li>
     </ol>
@@ -409,7 +409,7 @@
   {/if}
 
   <section class="sources" data-idx="02">
-    <h2 class="dn-label section-h" data-kicker="// 02 · corpora">sources <span class="hint">each corpus wears its neural hue</span></h2>
+    <h2 class="dn-label section-h" data-kicker="// 02 · corpora">sources <span class="hint">each corpus wears its network hue</span></h2>
     <div class="src-row">
       {#each sources as s, si (s.name)}
         <button class="src-card" style="--i: {si}; {sourceVars(s.name)}" onclick={() => openManual(s.name)}>
@@ -431,13 +431,13 @@
           <!-- CB-EXHAUST consult 6: per-corpus body copy (facts re-verified
                against the real graph: 569/1386 = 41%, hubs = the indexes). -->
           {#if s.name === 'emacs'}
-            <span class="src-body">The GNU Emacs manual as a navigable neural network: editing, modes, and shell integration, edition-agnostic. Index hubs dominate the synapse network — the Concept Index alone connects 41% of the corpus.</span>
+            <span class="src-body">The GNU Emacs manual as a navigable node network: editing, modes, and shell integration, edition-agnostic. Index hubs dominate the wire field — the Concept Index alone wires 41% of the corpus.</span>
           {:else if s.name === 'org'}
-            <span class="src-body">The Org mode manual as a neural network: capture, agenda, tables, and export pipelines, edition-agnostic. The Main Index concentrates the manual's busiest surface — one dense book, fully crossed.</span>
+            <span class="src-body">The Org mode manual as a node network: capture, agenda, tables, and export pipelines, edition-agnostic. The Main Index concentrates the manual's busiest surface — one dense book, fully crossed.</span>
           {:else if s.name === 'guix'}
-            <span class="src-body">The GNU Guix manual as a neural network: package definition, system configuration, and profiles, edition-agnostic. The Programming Index pulls the heaviest degree outside the Emacs indexes.</span>
+            <span class="src-body">The GNU Guix manual as a node network: package definition, system configuration, and profiles, edition-agnostic. The Programming Index pulls the heaviest degree outside the Emacs indexes.</span>
           {:else}
-            <span class="src-body">An aggregated corpus: real cross-references from every manual, computed into one synapse network. 39 neurons carry no synapses and float at the edge.</span>
+            <span class="src-body">An aggregated corpus: real cross-references from every manual, computed into one wire network. 39 nodes carry no wires and float at the edge.</span>
           {/if}
           <span class="src-open">read ›</span>
         </button>
@@ -506,10 +506,10 @@
       <section class="colo-col" aria-labelledby="colo-method">
         <span class="col-h" id="colo-method">method</span>
         <dl class="colo-list">
-          <dt>export</dt><dd>one batch <span class="sym">org-export</span> pass: a neural network plus one body-only HTML fragment per neuron. the shell mounts that data; it never re-parses org at runtime.</dd>
-          <dt>synapse network</dt><dd>30915 synapses drawn from the corpus' real cross-references — computed, not curated. a synapse exists here only if the citation exists in the source manuals.</dd>
-          <dt>plate</dt><dd>a single reading surface over the neural network: the 96 most-connected neurons on a phyllotaxis field. navigation is neural-network traversal — no crawl, no rebuild on load.</dd>
-          <dt>provenance</dt><dd>GNU Emacs · 791 neurons — Org · 319 — Guix · 276. <span class="sym">graph.json</span> is the source of truth.</dd>
+          <dt>export</dt><dd>one batch <span class="sym">org-export</span> pass: a network plus one body-only HTML fragment per node. the shell mounts that data; it never re-parses org at runtime.</dd>
+          <dt>wire network</dt><dd>30915 edges drawn from the corpus' real cross-references — computed, not curated. a wire exists here only if the citation exists in the source manuals.</dd>
+          <dt>plate</dt><dd>a single reading surface over the network: the 96 most-connected nodes on a phyllotaxis field. navigation is network traversal — no crawl, no rebuild on load.</dd>
+          <dt>provenance</dt><dd>GNU Emacs · 791 nodes — Org · 319 — Guix · 276. <span class="sym">graph.json</span> is the source of truth.</dd>
         </dl>
       </section>
       <section class="colo-col" aria-labelledby="colo-contract">
