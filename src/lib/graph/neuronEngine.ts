@@ -180,6 +180,21 @@ const CLUSTER_LINK_DISTANCE = 30
  * `distanceMax` bounds the Barnes-Hut reach so a 1,559-node corpus stays a
  * quadtree pass rather than a global shoving match, which on this machine is
  * the difference between a relayout and a freeze.
+ *
+ * `spacing` (Owner directive 2026-11-01: "no need to limit spacing") scales the
+ * WHOLE physics vocabulary by one number, so the field stays internally
+ * consistent at any magnitude instead of collapsing back into a clump:
+ *
+ *  - repulsion × s: every chapter pushes proportionally harder;
+ *  - `distanceMax` × s: the Barnes-Hut SEARCH RADIUS grows with the field —
+ *    left at 1400 a 10× field would stop repelling past 1400 px and the
+ *    periphery would re-knot;
+ *  - link rest length × s: connected chapters keep the same RELATIVE room, so
+ *    wires stretch instead of dragging hubs back into the pile;
+ *  - the container box × s: the room the packing force fills grows with the
+ *    spacing, so the labels keep their 1:1 promise and the freed air goes
+ *    BETWEEN them — the camera then zooms out to frame the (vast) field, which
+ *    is exactly the "sane, even if vast" outcome the directive asks for.
  */
 export function applyLayout(
   engine: Engine,
@@ -189,11 +204,8 @@ export function applyLayout(
    *  fill. Omitted = no container, just the packing — what you want before the
    *  canvas has a measured size. */
   room?: { w: number; h: number; blockers?: Blocker[] },
-  /** Layout options. `spacingK` scales the SPREAD forces only (the persisted
-   *  `dn.spacing.spread` multiplier; other layouts keep their own spacing).
-   *  `quick` swaps the full 180-tick relayout for the spacing buttons'
-   *  one-shot reheat: alpha 0.25 territory in ~60 ticks, then stop. */
-  opts?: { spacingK?: number; quick?: boolean }
+  /** Spread spacing multiplier, ≥ 1 (1 = the authored layout). */
+  spacing = 1
 ): void {
   const charge = engine.d3Force('charge')
   const link = engine.d3Force('link')
@@ -244,28 +256,33 @@ export function applyLayout(
   // this size is a finished layout and roughly three seconds of a Celeron.
   engine.cooldownTicks(180).cooldownTime(3500)
   if (mode === 'spread') {
-    const k = Math.min(2, Math.max(0.6, opts?.spacingK ?? 1))
+    // The spacing multiplier: every force below scales with it, so a spacing
+    // of 10 is a genuine 10× room, not 10× push against the same walls.
+    const s = Math.max(1, spacing)
     // d3 takes a per-node strength function, and the node objects it hands
     // back are ours (GraphView copies title/degree onto them when syncing), so
-    // each chapter repels in proportion to the width of its own name, scaled
-    // by the spacing multiplier (SPEC §3: distance 220·k, charge
-    // -(44 + labelWidth·1.1)·k, charge reach bounded at 520 so the stronger
-    // charge cannot fold long citations into a central knot).
-    charge.strength((n: Painted) => spreadStrength(n.title, k)).distanceMax(520)
-    link.distance(220 * k)
+    // each chapter repels in proportion to the width of its own name — and the
+    // whole field repels in proportion to the spacing the visitor asked for.
+    charge.strength((n: Painted) => spreadStrength(n.title) * s).distanceMax(1400 * s)
+    link.distance(140 * s)
     // The two readable-overview forces, under the slots force-graph leaves us:
     // 'collide' packs the label boxes apart, 'fit' keeps them inside the window.
     // Both read the SAME extent — one name's size, measured once, so the promise
     // "no two titles touch, none clipped" cannot be broken by a disagreement.
     // Non-compact radii: spread layout is only ever the full canvas.
     const extentOf = (n: Painted) => labelExtent(n.title, somaRadius(n, false))
+    // The room scales with the spacing: the labels' own boxes never change, so
+    // every extra multiple of spacing lands as air BETWEEN the titles. Blockers
+    // (corner chrome) stay pinned to the origin — the room grows around them.
+    const sRoom =
+      room && s > 1 ? { w: room.w * s, h: room.h * s, blockers: room.blockers } : room
     // REGISTERED LAST, because d3 iterates its forces in insertion order and
     // integrates `x += vx` after all of them: whatever runs last owns the
     // position. The container spring pulls inward, so a packing pass that ran
     // after it would be undone — and the packing pass is the one that clamps
     // the velocity pointing into a gap. Swapping these two lines reproduces the
     // overlap bug at ~5 % of a field (measured by `spreadForces.test.ts`).
-    if (room) engine.d3Force('fit', forceFitContainer(room, extentOf))
+    if (sRoom) engine.d3Force('fit', forceFitContainer(sRoom, extentOf))
     else engine.d3Force('fit', null)
     engine.d3Force('collide', forceLabelBoxes(extentOf, room?.blockers ?? []))
     // One-shot reheat for the spacing buttons: ~60 ticks lands alpha at

@@ -15,7 +15,18 @@ import type { DocLink, DocNode, GraphData, LayoutMode } from './types'
 import { coCitations, dedupeGraphTags, egoGraph, filteredGraph, localGraph, nodeViews, type NodeView } from './graph'
 import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
-import { loadLayout, writeLayout } from './layout'
+import {
+  loadControlsOpen,
+  loadLayout,
+  loadPreviewOpen,
+  loadSpacing,
+  MAX_SPACING,
+  MIN_SPACING,
+  writeControlsOpen,
+  writeLayout,
+  writePreviewOpen,
+  writeSpacing
+} from './layout'
 import { loadSaved, writeSaved, type SavedMark } from './saved'
 import { loadTrail, appendTrail, clearTrail as clearTrailStorage } from './trail'
 import { mergeBridges, parseBridges, bridgeWireCount } from './bridges'
@@ -179,6 +190,38 @@ export class DocneuralStore {
     this.layout =
       this.layout === 'cluster' ? 'spread' : this.layout === 'spread' ? 'lattice' : 'cluster'
     writeLayout(this.layout)
+  }
+
+  /** How far apart the spread layout puts the chapters. Owner directive
+   *  2026-11-01: "no need to limit spacing. User will increase as much as they
+   *  wish." The slider tops out at 10 for a precise drag; the numeric input
+   *  beside it keeps going to MAX_SPACING. Only the floor is sensible (1 = the
+   *  authored layout) — the ceiling is a typo guard, not a design opinion.
+   *  The repulsion, the wire rest length and the Barnes-Hut search radius all
+   *  scale with this (see applyLayout), so 40 is a vast but real layout. */
+  spacing = $state(loadSpacing())
+  setSpacing(v: number): void {
+    if (!Number.isFinite(v)) return
+    this.spacing = Math.min(MAX_SPACING, Math.max(MIN_SPACING, v))
+    writeSpacing(this.spacing)
+  }
+
+  /** The note-preview panel (the doc dock over the canvas). Hiding it reclaims
+   *  the viewport; the choice persists (Owner directive 2026-11-01) and a
+   *  one-tap pill brings it back. */
+  previewOpen = $state(loadPreviewOpen())
+  setPreviewOpen(open: boolean): void {
+    this.previewOpen = open
+    writePreviewOpen(open)
+  }
+
+  /** The controls panel (filter chips + spacing). `null` = never answered, so
+   *  the caller applies its own phone/desktop default; an explicit toggle —
+   *  either direction — persists from then on. */
+  controlsOpen = $state<boolean | null>(loadControlsOpen())
+  setControlsOpen(open: boolean): void {
+    this.controlsOpen = open
+    writeControlsOpen(open)
   }
 
   /** Docs ticked in the sidebar. Non-empty means the synapses canvas shows
