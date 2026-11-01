@@ -112,6 +112,23 @@ export const USER_VISIBLE_STRINGS: readonly string[] = [
   // GNU Info navigation header is not a citation — say so, on every surface.
   'navigation header — no prose citation recorded',
   'navigation header — no prose citation',
+  // agents on the field (SPEC 4): presence + the failover ladder. The
+  // status line names which brain answered — never a fourth story.
+  'ASK THE CORPUS',
+  '${n} AGENTS ON THE FIELD',
+  'agents here',
+  'this site answers questions — try asking',
+  'ask the corpus — the site answers ( / )',
+  'ask the corpus — the site answers (AI, no setup)',
+  'free brain',
+  'edge brain',
+  'your key',
+  '// answered by ${brain}',
+  'free brain unreachable · trying the edge brain…',
+  'presets — free tiers',
+  'edge fallback: on',
+  'edge fallback: off',
+  'When the brain is unreachable, retry once on our workers relay (failover only)',
 ]
 
 /** Allowed literals: the exported artifacts keep their file names so they

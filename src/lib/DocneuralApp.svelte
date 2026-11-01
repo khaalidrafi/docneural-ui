@@ -22,6 +22,7 @@
   import AskPanel from './reader/AskPanel.svelte'
   import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
+  import { pulse } from './core/pulse.svelte'
 
   let {
     base = '.',
@@ -54,6 +55,47 @@
   $effect(() => {
     void store.load()
   })
+
+  /* ---------- AGENT PRESENCE (SPEC 4) ----------
+     The pulse poll is DESKTOP + FULL MODE ONLY (team law: phone and lite run
+     ZERO background loops — shouldPoll refuses everything else and the
+     store never arms a timer there). The visitor's lite flip re-runs this
+     effect: the cleanup stops the old poll, the gate answers the new one. */
+  const phonePulse = $state(
+    typeof matchMedia === 'function' && matchMedia('(max-width: 700px)').matches
+  )
+  $effect(() => {
+    if (!store.ready) return
+    const started = pulse.start({ phone: phonePulse, lite: liteOn })
+    return started ? () => pulse.stop() : undefined
+  })
+
+  // First-visit hint (SPEC 4): "this site answers questions" shows until the
+  // visitor opens the panel once, then the localStorage flag buries it.
+  const ASK_HINT_KEY = 'dn.ask.hint'
+  let askHint = $state(false)
+  $effect(() => {
+    try {
+      askHint = localStorage.getItem(ASK_HINT_KEY) !== '1'
+    } catch {
+      askHint = false // private mode: no durable flag, no nag
+    }
+  })
+  function dismissAskHint(): void {
+    if (!askHint) return
+    askHint = false
+    try {
+      localStorage.setItem(ASK_HINT_KEY, '1')
+    } catch {
+      /* session-only */
+    }
+  }
+
+  /** The one ASK entry point every surface drives (chip, /, palette). */
+  function openAsk(): void {
+    store.aiOpen = true
+    dismissAskHint()
+  }
 
   let paletteOpen = $state(false)
   let helpOpen = $state(false)
@@ -162,12 +204,13 @@
       if (typing || e.metaKey || e.ctrlKey || e.altKey) return
 
       if (e.key === '?') { helpOpen = !helpOpen; return }
-      // `/` is the universal "search" key on docs sites (GitHub, Discourse).
-      // It needs the same typing guard as the rest of the layer, so it is
-      // handled here rather than in the palette.
+      // `/` — the assistant is FIRST-CLASS now (SPEC 4): the key opens and
+      // focuses ask the corpus, not the palette. The typing guard above is
+      // the "when no input is focused" clause; the palette keeps ⌘K and the
+      // header ⌕. (The keymap dialog says the same.)
       if (e.key === '/') {
         e.preventDefault()
-        paletteOpen = true
+        openAsk()
         return
       }
 
@@ -310,6 +353,30 @@
   <section class="synapse-mode" in:fly={morph}>
     <div class="canvas-wrap" class:trail-up={store.trailResolved.length >= 2}>
       <DocneuralGraph {store} {onNodeClick} />
+      <!-- AGENT PRESENCE plate (SPEC 4 §5): the field's live chrome, OUTSIDE
+           the collapsed controls. The agents chip + ticker exist only when
+           someone is actually here (N > 0); ASK THE CORPUS is always
+           first-class. The stack sits above the scope/layout chips (and
+           climbs with the trail, same override pattern). -->
+      <div class="field-chrome">
+        {#if pulse.live > 0}
+          <span class="agents-chip dn-mono" role="status">◈ {pulse.live} AGENTS ON THE FIELD</span>
+          {#if pulse.recent.length}
+            <p class="pulse-ticker dn-mono" aria-hidden="true">
+              {pulse.recent
+                .slice(0, 5)
+                .map((e) => `${e.agent} · ${e.action} · ${e.nodes[0] ? (store.bySlug(e.nodes[0])?.title ?? e.nodes[0]) : '—'}`)
+                .join('  ·  ')}
+            </p>
+          {/if}
+        {/if}
+        <button class="ask-chip dn-mono" onclick={openAsk} title="ask the corpus — the site answers ( / )">
+          ⌁ ASK THE CORPUS
+        </button>
+        {#if askHint}
+          <p class="ask-hint dn-label" role="note">this site answers questions — try asking</p>
+        {/if}
+      </div>
       <!-- The scope chip: what the canvas is showing, and the one click that
            says otherwise. An ego graph that cannot be expanded is a hidden
            feature; a corpus hairball that cannot be narrowed is a broken one. -->
@@ -396,7 +463,7 @@
       <dl>
         <dt>⌘K / Ctrl-K</dt><dd>command palette (jump anywhere)</dd>
         <dt>⌘⇧K / Ctrl-Shift-K</dt><dd>document library</dd>
-        <dt>/</dt><dd>same, from an empty keyboard</dd>
+        <dt>/</dt><dd>ask the corpus — the site answers (AI, no setup)</dd>
         <dt>g then d</dt><dd>docs mode</dd>
         <dt>g then s</dt><dd>synapses mode</dd>
         <dt>g then h</dt><dd>home</dd>
@@ -954,6 +1021,70 @@
   background: color-mix(in srgb, var(--dn-accent) 8%, var(--dn-bg-raise));
   border-color: var(--dn-accent);
   color: var(--dn-accent);
+}
+
+/* AGENT PRESENCE plate (SPEC 4 §5): the field's live chrome OUTSIDE the
+   collapsed controls — ASK THE CORPUS always, agents chip + ticker when
+   N > 0. Same bottom-left pocket the scope/layout chips own, stacked above
+   them (desktop chips ~30px, phone 44px — hence the two bottoms), and the
+   .trail-up climb mirrors the existing scope/layout overrides exactly. */
+.field-chrome {
+  position: absolute;
+  left: 0.9rem;
+  bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: min(34rem, calc(100vw - 2rem));
+}
+.trail-up .field-chrome { bottom: calc(7.9rem + env(safe-area-inset-bottom, 0px)); }
+.agents-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.35em 0.85em;
+  font-size: 0.72rem;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-agent);
+  background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--dn-agent) 55%, transparent);
+}
+.pulse-ticker {
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.62rem;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-fg-faint);
+}
+.ask-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5em 0.95em;
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-accent);
+  background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
+  border: 1px solid var(--dn-accent);
+  cursor: pointer;
+}
+.ask-chip:hover {
+  background: color-mix(in srgb, var(--dn-accent) 12%, transparent);
+}
+.ask-hint {
+  margin: 0;
+  font-size: 0.62rem;
+  color: var(--dn-fg-muted);
+}
+@media (max-width: 700px) {
+  .field-chrome { bottom: calc(6.1rem + env(safe-area-inset-bottom, 0px)); }
+  .trail-up .field-chrome { bottom: calc(10.4rem + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* TRAIL (2026-10-31 spec): the trail chip owns the bottom-left pocket at

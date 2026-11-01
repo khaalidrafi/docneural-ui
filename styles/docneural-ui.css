@@ -244,6 +244,11 @@
   --dn-chrome-bg: #121a24;
   --dn-chrome-ink: #c7d3df;
 
+  /* AGENT PRESENCE (SPEC 4): the violet the live agents wear — halos on the
+     canvas, the agents chip, the ticker. Dark arm #cf7fff is 7.7:1 on the
+     void; the paper arm reuses the ink-jet violet (8.4:1 on paper). */
+  --dn-agent: #cf7fff;
+
   /* Geometry. */
   --dn-notch: 9px;
   --dn-max-prose: 72ch;
@@ -347,6 +352,9 @@
   --dn-chrome-bg: #ffffff;
   --dn-chrome-ink: #24303c;
 
+  /* AGENT PRESENCE, paper arm — the ink-jet violet, 8.4:1 on paper. */
+  --dn-agent: #6b1fa8;
+
   color-scheme: light;
 }
 
@@ -403,6 +411,8 @@
     --dn-panel-ink-dim: #5a6b80;
     --dn-chrome-bg: #ffffff;
     --dn-chrome-ink: #24303c;
+    /* AGENT PRESENCE, auto-light arm — byte-identical to the toggle arm. */
+    --dn-agent: #6b1fa8;
     color-scheme: light;
   }
 }

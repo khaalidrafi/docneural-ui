@@ -37,6 +37,8 @@
   import { trailText, synapseCitation } from '../core/trail'
   import { isBoilerplateCtx } from '../core/vocab'
   import { copyText } from '../core/clipboard'
+  import { ageLabel } from '../core/pulse'
+  import { pulse } from '../core/pulse.svelte'
   import {
     ARROW_BUDGET,
     ARROW_ZOOM_MIN,
@@ -131,6 +133,25 @@
     }
     trailHopKeys = hops
   })
+
+  // AGENT PRESENCE (SPEC 4): the engine node ids wearing the agent halo —
+  // resolved from the pulse store's slug map (snapshot + the visitor's own
+  // ask in flight). Plain var, like the trail: the painter reads it once per
+  // frame through a closure; this effect only refreshes it when presence
+  // actually moves (a poll, an ask start/end). An empty field leaves the
+  // Set empty and the painter's per-frame cost is one null check.
+  let agentIds: Set<string> = new Set()
+  $effect(() => {
+    const ids = new Set<string>()
+    for (const slug of pulse.byNode.keys()) {
+      const n = store.bySlug(slug)
+      if (n) ids.add(n.id)
+    }
+    agentIds = ids
+  })
+
+  /** The synapse card's "agents here" row for one endpoint. */
+  const pulseAgents = (id: string) => pulse.agentsFor(store.byId(id)?.slug ?? id)
 
   // The wrap element carries the resolved --orui-* / --dn-* tokens the
   // painter samples (same source GraphView polls for its own repaints).
@@ -399,6 +420,8 @@
     hoverLink: () => hoverKey,
     arrowSel: () => selLinks,
     linkCount: () => store.visible.links.length,
+    // AGENT PRESENCE: the halo set the painter reads once per frame.
+    agents: () => agentIds,
     // Label eligibility rides with the layout: spread AND lattice are the two
     // "read the names" views, so both make every neuron's title eligible.
     spread: () => store.layout !== 'cluster',
@@ -906,6 +929,11 @@
             <span class="sc-dir dn-mono" aria-hidden="true">{i === 0 ? 'source' : 'target'}</span>
             <span class="sc-end-t">{n?.title ?? endId}</span>
             <span class="sc-end-m dn-mono">{i === 0 ? '→' : '←'} {other ? DocneuralStore.manualTitle(other.tags[0] ?? '') : ''}</span>
+            {#if pulseAgents(endId).length}
+              <!-- AGENT PRESENCE (SPEC 4): who is standing on this neuron
+                   right now — name · action · age. -->
+              <span class="sc-agents dn-mono">◈ agents here · {pulseAgents(endId).map((a) => `${a.agent} · ${a.action} · ${ageLabel(a.age)}`).join(' · ')}</span>
+            {/if}
             <button class="sc-open dn-mono" onclick={() => gotoEndpoint(endId)} aria-label="Open {n?.title ?? endId}">Open ›</button>
           </div>
         {/each}
@@ -1405,6 +1433,7 @@
 .sc-ends { flex: 0 0 auto; }
 .sc-end {
   display: flex;
+  flex-wrap: wrap; /* the agents-here line takes its own row */
   align-items: center;
   gap: 8px;
   min-height: 44px;
@@ -1436,6 +1465,18 @@
   letter-spacing: var(--dn-track);
   text-transform: uppercase;
   color: var(--dn-panel-ink-dim);
+}
+/* AGENT PRESENCE (SPEC 4): who is standing on this neuron — the only
+   place the synapse card names agents. Violet (--dn-agent), 8px minimum
+   gap so it never rides the endpoint meta. */
+.sc-agents {
+  flex: 1 1 100%;
+  font-size: 9.5px;
+  letter-spacing: var(--dn-track);
+  color: var(--dn-agent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .sc-open {
   flex: 0 0 auto;

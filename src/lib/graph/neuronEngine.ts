@@ -106,6 +106,11 @@ export type NeuronFocus = {
    *  accessors — the hover tier (3px stroke in --dn-synapse-hover, always
    *  arrowed) rides the same closure mechanism as the LOD band. */
   hoverLink?: () => string | null
+  /** AGENT PRESENCE (SPEC 4): the engine node ids carrying live agents
+   *  right now (from the pulse store's snapshot + the visitor's own ask in
+   *  flight). Read ONCE per frame by the frame-reset block; an empty set
+   *  costs literally zero per-frame work beyond that one check. */
+  agents?: () => Set<string>
   /** The selected neuron's incident synapses as "a>b" keys, ALREADY capped
    *  at the 24 nearest (controls.ts#capSelectedLinks) — the arrow tier and
    *  the hot width read this per frame. */
@@ -371,6 +376,9 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
   let synapseLitCol = '#7fe3d0'
   let synapseHoverCol = '#9fb0c4'
   let synapseMinedCol = '#f0b35a'
+  // AGENT PRESENCE (SPEC 4): the violet live agents wear. Fallback is the
+  // dark-arm hex; the token poll below overrides from computed style.
+  let agentCol = '#cf7fff'
   // Stop-halo radius, screen px: 6 desktop / 5 phone (read at the same
   // cadence as labelPx — innerWidth does not change mid-frame usefully).
   let trailHaloR = 6
@@ -398,6 +406,7 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         synapseLitCol = get('--dn-synapse-lit').trim() || synapseLitCol
         synapseHoverCol = get('--dn-synapse-hover').trim() || synapseHoverCol
         synapseMinedCol = get('--dn-synapse-mined').trim() || synapseMinedCol
+        agentCol = get('--dn-agent').trim() || agentCol
         labelPx = (typeof window !== 'undefined' && window.innerWidth < 700) ? 12.5 : 11
         trailHaloR = (typeof window !== 'undefined' && window.innerWidth < 700) ? 5 : 6
       }
@@ -488,6 +497,10 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
      token-set, and a cocite dash needs preserving, so applyLinkLod carries
      the same dashed/dim cocite semantics GraphView paints (l.type). */
   let band = 2
+  // AGENT PRESENCE per-frame cache: refreshed in the frame-reset block (the
+  // first paintNode of a frame), read per node as one null check. Null = no
+  // agent on the field = the halo code costs literally zero.
+  let agentsNow: Set<string> | null = null
   // Lattice overview, refreshed per paint: while the lattice owns the field
   // below zoom 1.1 (its fit scale), the corpus's 30k wires and 1.5r halo
   // rings bury the very grid the layout exists to show — the 2026-10-31
@@ -631,6 +644,10 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       drawn = 0
       miniLabelCount = 0
       frameNodes = engine.graphData().nodes.length || 1
+      // AGENT PRESENCE: one read per frame, nulled when nobody is here —
+      // the empty field's only cost is the `.size === 0` check below.
+      const live = focus.agents?.()
+      agentsNow = live && live.size > 0 ? live : null
     }
     drawn++
     const col = nodeColor(n, tokensNow())
@@ -801,6 +818,37 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
           ctx.restore()
         }
       }
+    }
+
+    // AGENT PRESENCE (SPEC 4): a pulsing violet ring + glyph dot on the
+    // neurons live agents are touching. Rides the engine's OWN repaint —
+    // no new loop, no new particle system; the bloom reuses the cached
+    // glow sprite (one drawImage) and the ring is one stroke. Phase is
+    // deterministic per node id, so a field of agents breathes out of step
+    // instead of blinking in unison. Zero cost when nobody is on the field.
+    if (agentsNow?.has(n.id)) {
+      const t = performance.now()
+      let h = 0
+      for (let i = 0; i < n.id.length; i++) h = (h * 31 + n.id.charCodeAt(i)) | 0
+      const phase = (Math.abs(h) % 628) / 100
+      const k = 0.5 + 0.5 * Math.sin(t / 600 + phase)
+      ctx.save()
+      const sp = glowSprite(agentCol)
+      const gs = r * 5.2
+      ctx.globalAlpha = 0.22 + 0.14 * k
+      ctx.drawImage(sp, x - gs / 2, y - gs / 2, gs, gs)
+      ctx.globalAlpha = 0.35 + 0.4 * k
+      ctx.strokeStyle = agentCol
+      ctx.lineWidth = 1.6 / globalScale
+      ctx.beginPath()
+      ctx.arc(x, y, r * (2.2 + 0.5 * k), 0, 2 * Math.PI)
+      ctx.stroke()
+      ctx.globalAlpha = 0.95
+      ctx.fillStyle = agentCol
+      ctx.beginPath()
+      ctx.arc(x, y, 2.6 / globalScale, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.restore()
     }
 
     // Titles, per LOD band (designer spec §3, adapted for a DOCS corpus:
