@@ -125,6 +125,7 @@
     onclick={() => store.setPreviewOpen(true)}
     title="Show the document panel"
     aria-label="Show the document panel"
+    aria-expanded="false"
   ><span class="chev" aria-hidden="true">▴</span> panel</button>
 {:else if doc}
   <!-- Slide-in: the panel is a HUD surface arriving, not a div blinking in.
@@ -159,7 +160,7 @@
           onclick={() => store.setPreviewOpen(false)}
           title="Hide panel — tap ▴ panel to bring it back"
           aria-controls="note-preview-panel"
-          aria-expanded="false"
+          aria-expanded="true"
         >hide <span class="chev" aria-hidden="true">▾</span></button>
       </div>
     </header>
