@@ -134,6 +134,19 @@
     typeof matchMedia === 'function' && matchMedia('(max-width: 600px)').matches
   )
 
+  // The controls panel's open state (Owner directive 2026-11-01: the network
+  // chrome must be hideable, and the collapsed state must persist). A stored
+  // answer wins over the size default; any toggle — either direction —
+  // persists from then on. The $effect writes the boot default back once, so
+  // the very first flip is already a persisted choice. The store read is a
+  // DELIBERATE boot-time snapshot (bind:open owns the value from here on;
+  // a live subscription would fight the binding), hence the ignore.
+  // svelte-ignore state_referenced_locally
+  let controlsOpen = $state(store.controlsOpen ?? !isPhone)
+  $effect(() => {
+    store.setControlsOpen(controlsOpen)
+  })
+
   function toggleTheme(): void {
     const cur = document.documentElement.dataset.theme
     theme = cur === 'light' ? 'dark' : 'light'
@@ -351,8 +364,8 @@
     </div>
   </div>
 {:else if store.mode === 'graph' && !store.lite}
-  <section class="synapse-mode" in:fly={morph}>
-    <div class="canvas-wrap" class:trail-up={store.trailResolved.length >= 2}>
+  <section class="synapse-mode" class:dock-open={store.previewOpen} in:fly={morph}>
+    <div class="canvas-wrap">
       <DocneuralGraph {store} {onNodeClick} />
       <!-- AGENT PRESENCE plate (SPEC 4 §5): the field's live chrome, OUTSIDE
            the collapsed controls. The agents chip + ticker exist only when
@@ -418,11 +431,17 @@
             ? '▤ spread ○●○'
             : '▦ lattice ○○●'}</button>
     </div>
-    <details class="controls" open={!isPhone}>
-      <summary class="dn-mono">
+    <details class="controls" bind:open={controlsOpen}>
+      <!-- The summary is the panel's hide switch on EVERY width (Owner
+           directive 2026-11-01): a visible chevron + the live wire count,
+           with a verb-phrase tooltip naming what a tap does. -->
+      <summary
+        class="dn-mono"
+        title={controlsOpen ? 'Hide the controls panel' : 'Show the controls panel'}
+      >
         <span class="dn-neuron-mark" aria-hidden="true"></span>
-        <span class="spark">⌁</span> SYNAPSES · {store.visible.links.length} SYNAPSES
-        <span class="chev">+</span>
+        <span class="spark">⌁</span> SYNAPSES · {store.visible.links.length} WIRES
+        <span class="chev" aria-hidden="true">▾</span>
       </summary>
       <FilterBar {store} />
       <SpacingControl {store} />
@@ -911,38 +930,12 @@
      already suggests (a node in cross-section IS the mark). */
   .brand { font-size: var(--dn-text-sm); letter-spacing: var(--dn-track-tight); }
 
-  /* Controls panel (only shown in graph mode) still fits. */
-  .controls {
-    left: 0.5rem;
-    right: 0.5rem;
-    width: auto;
-    padding: 0.5rem 0.7rem;
-    top: max(0.5rem, env(safe-area-inset-top, 0px));
-  }
-  .controls > summary {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    min-height: 44px;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    color: var(--dn-fg);
-    cursor: pointer;
-    list-style: none;
-  }
-  .controls > summary::-webkit-details-marker { display: none; }
-  .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
-  .controls > summary .chev { margin-left: auto; color: var(--dn-fg-muted); }
-  .controls[open] > summary .chev { transform: rotate(180deg); }
-  .scope, .layout {
-    font-size: 0.72rem;
-    padding: 0.5em 0.85em;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
-  }
-  .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
+  /* The .controls / .scope / .layout phone overrides live in their own block
+     AFTER those base rules (see the dock block near the end of this style
+     sheet): the base panels are declared later in the cascade, so these
+     overrides only hold when they come after them. They used to sit here —
+     BEFORE the base — and silently lost every property they re-declared,
+     which is how the controls summary ended up undisplayable on a phone. */
 }
 
 
@@ -1025,93 +1018,52 @@
   color: var(--dn-accent);
 }
 
-/* AGENT PRESENCE plate (SPEC 4 §5): the field's live chrome OUTSIDE the
-   collapsed controls — ASK THE CORPUS always, agents chip + ticker when
-   N > 0. Same bottom-left pocket the scope/layout chips own, stacked above
-   them (desktop chips ~30px, phone 44px — hence the two bottoms), and the
-   .trail-up climb mirrors the existing scope/layout overrides exactly. */
-.field-chrome {
-  position: absolute;
-  left: 0.9rem;
-  bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  max-width: min(34rem, calc(100vw - 2rem));
-}
-.trail-up .field-chrome { bottom: calc(7.9rem + env(safe-area-inset-bottom, 0px)); }
-.agents-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0.35em 0.85em;
-  font-size: 0.72rem;
-  letter-spacing: var(--dn-track);
-  color: var(--dn-agent);
-  background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
-  border: 1px solid color-mix(in srgb, var(--dn-agent) 55%, transparent);
-}
-.pulse-ticker {
-  margin: 0;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.62rem;
-  letter-spacing: var(--dn-track);
-  color: var(--dn-fg-faint);
-}
-.ask-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0.5em 0.95em;
-  font: inherit;
-  font-size: 0.72rem;
-  letter-spacing: var(--dn-track);
-  color: var(--dn-accent);
-  background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
-  border: 1px solid var(--dn-accent);
-  cursor: pointer;
-}
-.ask-chip:hover {
-  background: color-mix(in srgb, var(--dn-accent) 12%, transparent);
-}
-.ask-hint {
-  margin: 0;
-  font-size: 0.62rem;
-  color: var(--dn-fg-muted);
-}
-@media (max-width: 700px) {
-  .field-chrome { bottom: calc(6.1rem + env(safe-area-inset-bottom, 0px)); }
-  .trail-up .field-chrome { bottom: calc(10.4rem + env(safe-area-inset-bottom, 0px)); }
-}
+  /* ---------- DOCK, phone (Owner directive 2026-11-01) ----------
+     The network's bottom chrome — controls panel, doc-preview sheet — is
+     hideable on every width; on a phone it must also never eat the view.
+     This block sits AFTER the base .controls/.scope/.layout rules on purpose:
+     these are overrides, and the cascade only honours them from here. */
+  @media (max-width: 600px) {
+    .controls {
+      left: 0.5rem;
+      right: 0.5rem;
+      width: auto;
+      padding: 0.5rem 0.7rem;
+      top: max(0.5rem, env(safe-area-inset-top, 0px));
+    }
+    .controls > summary {
+      min-height: 44px;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--dn-fg);
+    }
+    .scope, .layout {
+      font-size: 0.72rem;
+      padding: 0.5em 0.85em;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+    }
+    .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
+  }
 
-/* TRAIL (2026-10-31 spec): the trail chip owns the bottom-left pocket at
-   left:12px / bottom:12px+safe — the pocket the scope/layout chips lived
-   in. When a trail is on the field they climb rather than collide: the
-   trail's position is the spec's, the other two keep their stack shape
-   above it (trail top + 8px breath, then one chip-height step). Desktop
-   chips are ~28px tall, phone chips 44px — hence the two offsets. */
-.trail-up .scope { bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
-.trail-up .layout { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
-@media (max-width: 700px) {
-  .trail-up .scope { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
-  .trail-up .layout { bottom: calc(116px + env(safe-area-inset-bottom, 0px)); }
-}
-/* Screenshot review r2: with the trail sheet OPEN, the climbed chips share
-   its exact pocket (scope bottom:60px == panel bottom) and the scope chip's
-   tail poked out beside the sheet's CLEAR action — a garbled floating
-   fragment. While the sheet is open the two chips give way. The rule lives
-   in the GLOBAL sheet (styles/docneural-ui.css): Svelte prunes a scoped
-   selector it cannot prove used, and :has([data-trail-open]) points at the
-   graph component's root, invisible to the scoped analyzer. */
+  /* Preview sheet open (≤700px): the bottom 45% is the sheet, so the canvas
+     chips stack just ABOVE it instead of overlapping its text. Dock closed,
+     the chips return to the bottom edge. */
+  @media (max-width: 700px) {
+    .synapse-mode.dock-open .scope {
+      bottom: calc(45% + 0.75rem);
+    }
+    .synapse-mode.dock-open .scope ~ .layout {
+      bottom: calc(45% + 2.75rem);
+    }
+  }
 
-  /* Controls panel: desktop floats over the canvas top-left; the summary
-     doubles as the live wire-count badge. Notched corner + brackets = it
-     reads as a module clamped onto the board. SIGNAL pass: neon edge + a
+  /* Controls panel: floats over the canvas top-left; the summary is the
+     panel's hide switch on EVERY width (Owner directive 2026-11-01 — the
+     controls are chrome the visitor can reclaim). Notched corner + brackets
+     = it reads as a module clamped onto the board. SIGNAL pass: neon edge + a
      slightly deeper fill, so the module reads as glass over the field. */
   .controls {
     position: absolute;
@@ -1128,14 +1080,38 @@
       0 12px 34px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
   }
-  /* Desktop hides the summary: always open, no header needed. That hide is
-     DESKTOP-ONLY — the phone filter chip (≤600 block) IS this summary, and a
-     global hide silenced it at every width, leaving the closed details as a
-     headless ghost plate over the note-preview hint (hotfix 4b). */
-  @media (min-width: 701px) {
-    .controls > summary {
-      display: none;
-    }
+  /* The header row: neuron mark, live wire count, chevron. A tap/click on it
+     toggles the panel; the tooltip names the verb. 40px tall so the switch
+     itself is a legal tap target on touch. */
+  .controls > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 40px;
+    font-size: 0.66rem;
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg-muted);
+    cursor: pointer;
+    list-style: none;
+    border-bottom: 1px solid var(--dn-border);
+    margin: -0.2rem 0 0.6rem;
+  }
+  .controls > summary::-webkit-details-marker { display: none; }
+  .controls > summary .dn-neuron-mark { width: 0.7em; height: 0.7em; }
+  .controls > summary .chev {
+    margin-left: auto;
+    color: var(--dn-fg-muted);
+    transition: transform 140ms;
+  }
+  .controls[open] > summary .chev { transform: rotate(180deg); }
+  /* Collapsed, the panel is just its header row — the wire count badge the
+     desktop never had, and the way back in. */
+  .controls:not([open]) {
+    padding-bottom: 0.4rem;
+  }
+  .controls:not([open]) > summary {
+    margin-bottom: 0;
+    border-bottom-color: transparent;
   }
 
   .reader-mode {
