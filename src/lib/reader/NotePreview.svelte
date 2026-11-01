@@ -114,10 +114,23 @@
   })
 </script>
 
-{#if doc}
+{#if !store.previewOpen}
+  <!-- The dock is collapsed (Owner directive 2026-11-01: the doc preview must
+       be hideable, and the choice must persist). One pill, one tap, back: it
+       sits in the corner the panel used to own, clears a 44px thumb on a
+       phone, and rides the safe-area inset so a home-indicator phone does not
+       clip it. -->
+  <button
+    class="preview-restore dn-mono"
+    onclick={() => store.setPreviewOpen(true)}
+    title="Show the document panel"
+    aria-label="Show the document panel"
+  ><span class="chev" aria-hidden="true">▴</span> panel</button>
+{:else if doc}
   <!-- Slide-in: the panel is a HUD surface arriving, not a div blinking in.
        Fly from the right (the edge it is docked to), 200ms, spring-ish ease. -->
   <aside
+    id="note-preview-panel"
     class="note-preview"
     aria-label="Note preview"
     style={sourceVars(doc.tags[0])}
@@ -134,9 +147,20 @@
              ingest; this Set is the cheap second belt on the raw array. -->
         {#each [...new Set(doc.tags)] as tag (tag)}<span class="tag">#{tag}</span>{/each}
         <span class="deg" title="synapses touching this neuron">⌁ {ins} IN · {outs} OUT</span>
-        <button class="open-reader dn-mono" onclick={() => store.setMode('reader')}>
+        <button class="open-reader dn-mono" onclick={() => store.setMode('reader')}
+          title="Open this chapter in the docs reader">
           open in docs ›
         </button>
+        <!-- The hide switch the Owner asked for: a labelled verb, not a
+             mystery ×. aria-expanded names the panel's state for AT; the
+             tap target clears 44px on touch (see the phone block). -->
+        <button
+          class="hide-panel dn-mono"
+          onclick={() => store.setPreviewOpen(false)}
+          title="Hide panel — tap ▴ panel to bring it back"
+          aria-controls="note-preview-panel"
+          aria-expanded="false"
+        >hide <span class="chev" aria-hidden="true">▾</span></button>
       </div>
     </header>
 
@@ -163,7 +187,6 @@
     <p class="dn-mono"><span class="dn-neuron-mark" aria-hidden="true"></span> select a neuron — its text lands here</p>
   </aside>
 {/if}
-
 <style>
   .note-preview {
     position: absolute;
@@ -217,7 +240,10 @@
   }
   .note-preview.empty .dn-neuron-mark { width: 0.75em; height: 0.75em; }
   /* Phone: a side panel would eat the whole canvas. The preview becomes a
-     bottom sheet so the graph keeps the top half of the screen. */
+     bottom sheet so the graph keeps the top half of the screen — a BOUNDED
+     45% that scrolls inside (the aside is the scroller), never the whole
+     view, with the home-indicator inset added to the padding so content
+     clears the gesture bar. */
   @media (max-width: 700px) {
     .note-preview {
       top: auto;
@@ -228,7 +254,7 @@
       border-left: none;
       border-top: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, var(--dn-border-strong));
       box-shadow: 0 -12px 30px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
-      padding: 0.8rem 1rem 2rem;
+      padding: 0.8rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
     }
     .note-preview.empty {
       height: auto;
@@ -241,6 +267,21 @@
       left: 0.9rem;
       right: auto;
       bottom: auto;
+    }
+    /* Touch: the two meta actions are thumb targets — 44px, the dock's
+       whole contract. */
+    .open-reader, .hide-panel {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    /* The restore pill centres above the gesture bar, where a thumb lands
+       without stretching. */
+    .preview-restore {
+      right: 50%;
+      transform: translateX(50%);
+      bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+      min-height: 44px;
     }
   }
   .kicker { color: var(--dn-accent); margin: 0 0 0.3rem; }
@@ -283,6 +324,43 @@
     cursor: pointer;
   }
   .open-reader:hover { background: var(--dn-accent); color: var(--dn-bg); box-shadow: var(--dn-glow); }
+  /* The hide switch: same ghost chrome as open-reader, muted until hovered.
+     The chevron is decoration — the word carries the verb. */
+  .hide-panel {
+    font: inherit;
+    color: var(--dn-fg-muted);
+    background: transparent;
+    border: 1px solid var(--dn-border-strong);
+    border-radius: 2px;
+    padding: 0.15em 0.6em;
+    cursor: pointer;
+    min-height: 40px;
+  }
+  .hide-panel:hover { color: var(--dn-fg); border-color: var(--dn-accent); }
+  .hide-panel .chev { color: var(--dn-fg-faint); }
+  /* The one-tap way back: a pill in the corner the panel vacated. Visible in
+     both themes via tokens, ≥40px everywhere (44px on touch below). */
+  .preview-restore {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    min-height: 40px;
+    min-width: 44px;
+    padding: 0.35em 0.9em;
+    font: inherit;
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg);
+    background: color-mix(in srgb, var(--dn-bg-raise) 92%, transparent);
+    border: 1px solid var(--dn-border-strong);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .preview-restore .chev { color: var(--dn-accent); }
+  .preview-restore:hover { color: var(--dn-accent); border-color: var(--dn-accent); }
   .loading, .missing { color: var(--dn-fg-faint); font-size: 0.85rem; }
   .missing { color: var(--dn-amber); }
 </style>

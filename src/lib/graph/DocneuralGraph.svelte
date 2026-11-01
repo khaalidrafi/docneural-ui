@@ -274,7 +274,9 @@
     const inset = { top: 0, right: 0, bottom: 0, left: 0 }
     const corners: DOMRect[] = []
     const root = wrapEl.closest('section') ?? document
-    for (const el of root.querySelectorAll('.note-preview, .controls, .scope, .layout, .net-controls')) {
+    for (const el of root.querySelectorAll(
+      '.note-preview, .preview-restore, .controls, .scope, .layout'
+    )) {
       const r = el.getBoundingClientRect()
       if (!r.width || !r.height) continue // closed <details>, or no selection
       if (r.right <= box.left || r.left >= box.right || r.bottom <= box.top || r.top >= box.bottom) continue
@@ -343,6 +345,44 @@
     wrapEl.dataset.fit = k.toFixed(3)
     wrapEl.dataset.field = `${Math.round(w)}x${Math.round(h)}`
   }
+
+  // Hiding or showing the dock (note preview, controls) changes the room the
+  // field was framed into — reclaiming the panel should reclaim the view.
+  // This is a CAMERA move, not a relayout: the physics' positions stand, only
+  // the framing recentres on the freed space. Skipped on the first engine
+  // sighting so the boot framing the layout path already chose is not
+  // second-guessed, and measured in a rAF so the dock's unmount has landed.
+  let dockSeen = false
+  $effect(() => {
+    void store.previewOpen
+    void store.controlsOpen
+    const eng = engine
+    if (!eng) return
+    if (!dockSeen) {
+      dockSeen = true
+      return
+    }
+    const raf = requestAnimationFrame(() => {
+      const vp = viewport()
+      if (!vp) return
+      if (store.layout === 'lattice') {
+        const room = packRect(vp)
+        const p = latticePitch(eng.graphData().nodes.length || 1, room.w, room.h)
+        latticeK = Math.min(1, (0.36 * p) / 18.33)
+        fitNow(eng, vp)
+      } else {
+        const { k, w, h } = fitReadable(eng, { w: vp.w, h: vp.h }, {
+          pad: PAD,
+          inset: vp.inset,
+          maxScale: store.layout === 'cluster' ? Infinity : 1
+        })
+        if (!wrapEl) return
+        wrapEl.dataset.fit = k.toFixed(3)
+        wrapEl.dataset.field = `${Math.round(w)}x${Math.round(h)}`
+      }
+    })
+    return () => cancelAnimationFrame(raf)
+  })
 
   $effect(() => {
     const mode = store.layout
