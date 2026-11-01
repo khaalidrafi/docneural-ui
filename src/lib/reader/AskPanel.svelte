@@ -19,6 +19,18 @@
   //   A personal endpoint + key stays OPTIONAL (settings); the key lives in
   //   this browser's localStorage and is sent only to that URL.
   //
+  //   THE LADDER (SPEC 4): when the configured brain fails RECOVERABLY
+  //   (network, 429, 402, 5xx — not a rejected key), the panel retries ONCE
+  //   against the edge brain (BRAIN_FALLBACK, our own Workers AI relay,
+  //   keyless) when the visitor left the fallback on. The status line says
+  //   which brain answered — free brain / edge brain / your key, no story
+  //   inflation. Provider presets fill url+model for the free tiers.
+  //
+  //   PRESENCE (SPEC 4): a question run announces ask-the-corpus on the
+  //   field (core/pulse.ts beacon, fire-and-forget, no PII: agent name +
+  //   node slugs + action), and the asked + source neurons carry the agent
+  //   halo while the answer streams (pulse.beginAsk/endAsk).
+  //
   // Honest failure is a feature: 429 says the free tier is crowded, 401
   // says the override key is wrong, a TypeError says the endpoint refused a
   // browser (CORS), an empty corpus rank says the question looks
@@ -36,11 +48,16 @@
     endpointHeaders,
     sanitizeAnswer,
     parseFollowUps,
+    describeBrain,
+    AI_PRESETS,
+    BRAIN_FALLBACK,
     EXTRACT_BUDGET,
     AI_DEFAULTS,
     type AiConfig,
     type ChatMessage
   } from '../core/ai'
+  import { beacon } from '../core/pulse'
+  import { pulse } from '../core/pulse.svelte'
   import { sourceVars } from '../core/source'
   import type { DocNode } from '../core/types'
 
@@ -55,6 +72,7 @@
   let sources = $state<DocNode[]>([])
   let followUps = $state<string[]>([])
   let error = $state('')
+  let usedBrain = $state('')
   let inputEl: HTMLInputElement | undefined = $state()
   let panelEl: HTMLDivElement | undefined = $state()
 
@@ -78,59 +96,81 @@
     editing = false
   }
 
-  /** One chat-completions POST with the shared status handling: aborts at
-   *  60 s (the free tier can stall — patience is part of the free-brain
-   *  contract), never sends an empty Bearer, and turns every failure mode
-   *  into an honest sentence. Returns the model's content trimmed, or null
-   *  once `error` is set. */
-  async function postChat(messages: ChatMessage[]): Promise<string | null> {
+  /** One chat-completions POST to one endpoint. Returns the model's content
+   *  trimmed, or WHY it failed — `recoverable` marks the failure modes the
+   *  ladder may retry (network / 429 / 402 / 5xx); a rejected key (401/403)
+   *  is a config problem no fallback can fix. `keyed` is false for the edge
+   *  brain: the visitor's key is only ever sent to THEIR chosen url. */
+  type ChatAttempt = { ok: true; content: string } | { ok: false; recoverable: boolean; message: string }
+  async function postOnce(url: string, messages: ChatMessage[], keyed: boolean, fullPath = false): Promise<ChatAttempt> {
     const ctrl = new AbortController()
     const timer = setTimeout(() => ctrl.abort(), 60000)
     try {
-      const res = await fetch(`${cfg.url}/chat/completions`, {
+      const res = await fetch(fullPath ? url : `${url}/chat/completions`, {
         method: 'POST',
-        headers: endpointHeaders(cfg),
+        headers: keyed ? endpointHeaders(cfg) : { 'content-type': 'application/json' },
         body: JSON.stringify({
-          model: cfg.model,
+          model: keyed ? cfg.model : 'openai-fast',
           messages,
           temperature: 0.2
         }),
         signal: ctrl.signal
       })
       if (res.status === 401 || res.status === 403) {
-        error = 'the endpoint rejected the key (401/403) — check it in settings'
-        return null
+        return { ok: false, recoverable: false, message: 'the endpoint rejected the key (401/403) — check it in settings' }
       }
       if (res.status === 402) {
-        error =
-          'free tier quota reached (402) — try again later, or set your own endpoint in settings'
-        return null
+        return { ok: false, recoverable: true, message: 'free tier quota reached (402) — try again later, or set your own endpoint in settings' }
       }
       if (res.status === 429) {
-        error =
-          'free endpoint rate-limited (429) — wait a moment, or set your own endpoint in settings'
-        return null
+        return { ok: false, recoverable: true, message: 'endpoint rate-limited (429) — wait a moment, or set your own endpoint in settings' }
       }
       if (!res.ok) {
-        error = `the endpoint answered ${res.status} ${res.statusText || ''} — see its docs`
-        return null
+        return { ok: false, recoverable: true, message: `the endpoint answered ${res.status} ${res.statusText || ''} — see its docs` }
       }
       const data = (await res.json()) as { choices?: { message?: { content?: string } }[] }
-      return data.choices?.[0]?.message?.content?.trim() || 'the endpoint returned no content'
+      const content = data.choices?.[0]?.message?.content?.trim()
+      return content
+        ? { ok: true, content }
+        : { ok: false, recoverable: true, message: 'the endpoint returned no content' }
     } catch (e) {
-      error = ctrl.signal.aborted
-        ? 'the free brain took too long — try again in a moment'
-        : e instanceof TypeError
-          ? 'the browser could not reach the endpoint (network, or it refuses browser calls / CORS)'
-          : String(e instanceof Error ? e.message : e)
-      return null
+      return {
+        ok: false,
+        recoverable: true,
+        message: ctrl.signal.aborted
+          ? 'the brain took too long — try again in a moment'
+          : e instanceof TypeError
+            ? 'the browser could not reach the endpoint (network, or it refuses browser calls / CORS)'
+            : String(e instanceof Error ? e.message : e)
+      }
     } finally {
       clearTimeout(timer)
     }
   }
 
+  /** The failover ladder (SPEC 4): the configured brain first; on a
+   *  RECOVERABLE failure and a left-on fallback, ONE retry against the
+   *  keyless edge relay. Sets `error` only when the ladder is exhausted —
+   *  and says which rung broke. */
+  async function postChat(messages: ChatMessage[]): Promise<{ content: string; viaFallback: boolean } | null> {
+    const primary = await postOnce(cfg.url, messages, true)
+    if (primary.ok) return { content: primary.content, viaFallback: false }
+    if (!primary.recoverable || !cfg.fallback) {
+      error = primary.message
+      return null
+    }
+    busyCopy = 'free brain unreachable · trying the edge brain…'
+    const edge = await postOnce(BRAIN_FALLBACK, messages, false, true)
+    if (edge.ok) return { content: edge.content, viaFallback: true }
+    error = `the configured brain failed (${primary.message}) and the edge brain did not answer either (${edge.message})`
+    return null
+  }
+
   /** Retrieve + call. Everything async and DOM-adjacent lives here; the
-   *  ranking and the payload are pure (core/ai.ts, unit-tested). */
+   *  ranking and the payload are pure (core/ai.ts, unit-tested). A question
+   *  run is also a PRESENCE event (SPEC 4): the beacon announces
+   *  ask-the-corpus on the asked + source neurons, and those nodes carry
+   *  the halo until the answer lands. */
   async function ask(): Promise<void> {
     const q = question.trim()
     if (!q || busy) return
@@ -139,6 +179,7 @@
     answer = ''
     sources = []
     followUps = []
+    usedBrain = ''
     busyCopy = `retrieving pages · calling ${cfg.model}…`
     try {
       const degreeOf = (id: string) => store.views.get(id)?.degree ?? 0
@@ -150,6 +191,15 @@
         return
       }
       sources = picks
+      // Presence (no PII — agent name + node slugs + action): the asked node
+      // rides first, the ranked sources fill the rest, capped at the worker's
+      // 12. beginAsk lights the halo NOW; the worker's 90 s dedupe collapses
+      // repeat asks of the same question into one presence.
+      const askSlugs = [
+        ...new Set([store.selected?.slug, ...picks.map((n) => n.slug)].filter((s): s is string => !!s))
+      ].slice(0, 12)
+      pulse.beginAsk(askSlugs)
+      void beacon({ agent: 'ask-the-corpus', kind: 'assistant', action: 'ask', nodes: askSlugs })
       const extracts: { title: string; slug: string; text: string }[] = []
       await Promise.all(
         picks.map(async (n) => {
@@ -171,15 +221,17 @@
         error = 'could not fetch any page source — is the export served at ' + store.base + '/docs/?'
         return
       }
-      const content = await postChat(buildMessages(q, extracts))
-      if (content === null) return
-      const clean = sanitizeAnswer(content) // reasoning models may inline <think>…
+      const out = await postChat(buildMessages(q, extracts))
+      if (out === null) return
+      const clean = sanitizeAnswer(out.content) // reasoning models may inline <think>…
       const parsed = parseFollowUps(clean)
       answer = parsed.answer
       followUps = parsed.followUps
+      usedBrain = describeBrain(cfg, out.viaFallback)
     } catch (e) {
       error = String(e instanceof Error ? e.message : e)
     } finally {
+      pulse.endAsk()
       busy = false
     }
   }
@@ -195,6 +247,7 @@
     answer = ''
     sources = []
     followUps = []
+    usedBrain = ''
     busyCopy = kind === 'essence' ? 'distilling this page…' : 'writing 3 questions…'
     try {
       let text = ''
@@ -215,11 +268,12 @@
             : String(e instanceof Error ? e.message : e)
         return
       }
-      const content = await postChat(
+      const out = await postChat(
         kind === 'essence' ? buildEssenceMessages(sel.title, text) : buildQuizMessages(sel.title, text)
       )
-      if (content === null) return
-      answer = sanitizeAnswer(content)
+      if (out === null) return
+      answer = sanitizeAnswer(out.content)
+      usedBrain = describeBrain(cfg, out.viaFallback)
     } finally {
       busy = false
     }
@@ -279,6 +333,34 @@
             <span class="dn-label">model</span>
             <input bind:value={cfg.model} spellcheck="false" placeholder={AI_DEFAULTS.model} />
           </label>
+          <!-- Provider presets (SPEC 4 §C2): one click fills url+model. Only
+               Pollinations answers keyless; the rest need a free-tier key
+               which stays in localStorage and is sent only to that url. -->
+          <div class="ask-presets">
+            <span class="dn-label">presets — free tiers</span>
+            <div class="ask-src-row">
+              {#each AI_PRESETS as p (p.name)}
+                <button
+                  class="ask-src"
+                  class:active={cfg.url === p.url && cfg.model === p.model}
+                  title={p.keyless ? `${p.name} — the keyless default` : `${p.name} — needs your free-tier key`}
+                  onclick={() => {
+                    cfg.url = p.url
+                    cfg.model = p.model
+                  }}
+                >{p.name}{p.keyless ? ' · keyless' : ''}</button>
+              {/each}
+            </div>
+          </div>
+          <!-- The failover ladder switch (SPEC 4 §C1): persisted with the
+               rest of the config. The edge brain is OUR relay, failover only. -->
+          <button
+            class="ask-alt dn-mono ask-ladder"
+            type="button"
+            aria-pressed={cfg.fallback}
+            title="When the brain is unreachable, retry once on our workers relay (failover only)"
+            onclick={() => (cfg.fallback = !cfg.fallback)}
+          >edge fallback: {cfg.fallback ? 'on' : 'off'}</button>
           <div class="ask-row">
             <button class="ask-go dn-mono" onclick={keepCfg}>save</button>
             <button class="ask-alt dn-mono" onclick={() => (editing = false)}>back</button>
@@ -328,6 +410,10 @@
 
         {#if error}
           <p class="ask-error dn-mono" role="alert">✗ {error}</p>
+        {/if}
+
+        {#if usedBrain}
+          <p class="ask-brain dn-mono" role="status">// answered by {usedBrain}</p>
         {/if}
 
         {#if answer}
@@ -545,6 +631,26 @@
   }
   .ask-sources {
     margin-top: 1rem;
+  }
+  .ask-presets {
+    margin: 0.7rem 0 0.4rem;
+  }
+  .ask-presets > .dn-label {
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .ask-src.active {
+    font-weight: 600;
+    border-color: var(--dn-src, var(--dn-accent));
+  }
+  .ask-ladder {
+    margin-top: 0.6rem;
+  }
+  .ask-brain {
+    color: var(--dn-fg-faint);
+    font-size: 0.66rem;
+    letter-spacing: var(--dn-track);
+    margin: 0.9rem 0 0;
   }
   .ask-sources > p {
     margin: 0 0 0.4rem;
