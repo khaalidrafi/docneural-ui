@@ -37,7 +37,7 @@
   import { trailText, synapseCitation } from '../core/trail'
   import { isBoilerplateCtx } from '../core/vocab'
   import { copyText } from '../core/clipboard'
-  import { ageLabel } from '../core/pulse'
+  import { actionVerb, ageLabel } from '../core/pulse'
   import { pulse } from '../core/pulse.svelte'
   import {
     ARROW_BUDGET,
@@ -977,7 +977,7 @@
             {#if pulseAgents(endId).length}
               <!-- AGENT PRESENCE (SPEC 4): who is standing on this neuron
                    right now — name · action · age. -->
-              <span class="sc-agents dn-mono">◈ agents here · {pulseAgents(endId).map((a) => `${a.agent} · ${a.action} · ${ageLabel(a.age)}`).join(' · ')}</span>
+              <span class="sc-agents dn-mono">◈ agents here · {pulseAgents(endId).map((a) => `${a.agent} · ${actionVerb(a.action)} · ${ageLabel(a.age)}`).join(' · ')}</span>
             {/if}
             <button class="sc-open dn-mono" onclick={() => gotoEndpoint(endId)} aria-label="Open {n?.title ?? endId}">Open ›</button>
           </div>

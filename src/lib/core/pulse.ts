@@ -17,7 +17,7 @@
 export const PULSE_URL = 'https://dn-pulse.khalidrafi.workers.dev'
 
 export type PulseKind = 'assistant' | 'agent' | 'mcp' | 'cli'
-export type PulseAction = 'read' | 'ask' | 'import'
+export type PulseAction = 'read' | 'ask' | 'import' | 'teach'
 
 /** One announce payload. The exact shape the worker validates. */
 export type PulseBeacon = {
@@ -46,8 +46,22 @@ export type PulseSnapshot = {
 }
 
 const KINDS: readonly PulseKind[] = ['assistant', 'agent', 'mcp', 'cli']
-const ACTIONS: readonly PulseAction[] = ['read', 'ask', 'import']
+const ACTIONS: readonly PulseAction[] = ['read', 'ask', 'import', 'teach']
 export const PULSE_LIST_CAP = 50
+
+/** How an action reads in the ticker and the synapse card: the honest
+ *  verb for what the agent did — teach is an agent saying it TAUGHT the
+ *  node (explained/tutored it to a human), shown as `taught`. Every
+ *  PulseAction has an entry here (parseSnapshot already dropped unknowns). */
+const ACTION_VERBS: Readonly<Record<PulseAction, string>> = {
+  read: 'reading',
+  ask: 'asked',
+  import: 'imported',
+  teach: 'taught'
+}
+export function actionVerb(action: PulseAction): string {
+  return ACTION_VERBS[action]
+}
 
 /**
  * Fire-and-forget beacon. POSTs to the worker with a 3 s AbortController
