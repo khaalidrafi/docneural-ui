@@ -5,6 +5,7 @@
 // fake is a plain function, no jsdom.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  actionVerb,
   ageLabel,
   agentsByNode,
   beacon,
@@ -76,6 +77,21 @@ describe('parseSnapshot', () => {
     expect(snap.agents[0].nodes).toEqual(['a', 'b'])
   })
 
+  it('accepts the teach action (an agent taught the node) and still rejects unknowns', () => {
+    const snap = parseSnapshot(
+      { agents: [{ agent: 'tutor-agent', kind: 'agent', nodes: ['emacs--Basic'], action: 'teach', age: 0 }] },
+      NOW
+    )
+    expect(snap.agents.length).toBe(1)
+    expect(snap.agents[0].action).toBe('teach')
+    expect(snap.agents[0].nodes).toEqual(['emacs--Basic'])
+    const junk = parseSnapshot(
+      { agents: [{ agent: 'tutor-agent', kind: 'agent', nodes: ['emacs--Basic'], action: 'lecture', age: 0 }] },
+      NOW
+    )
+    expect(junk.agents).toEqual([])
+  })
+
   it('answers a shape-shaped empty snapshot for junk input, never throws', () => {
     for (const junk of [null, undefined, 42, 'x', {}, { agents: 'all' }]) {
       const snap = parseSnapshot(junk, NOW)
@@ -83,6 +99,15 @@ describe('parseSnapshot', () => {
       expect(snap.total).toBe(0)
       expect(snap.agents).toEqual([])
     }
+  })
+})
+
+describe('actionVerb (the ticker/card wording)', () => {
+  it('renders the honest verb per action — teach reads as taught', () => {
+    expect(actionVerb('read')).toBe('reading')
+    expect(actionVerb('ask')).toBe('asked')
+    expect(actionVerb('import')).toBe('imported')
+    expect(actionVerb('teach')).toBe('taught')
   })
 })
 
