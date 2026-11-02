@@ -24,6 +24,7 @@
   import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
   import { pulse } from './core/pulse.svelte'
+  import { actionVerb } from './core/pulse'
 
   let {
     base = '.',
@@ -379,7 +380,7 @@
             <p class="pulse-ticker dn-mono" aria-hidden="true">
               {pulse.recent
                 .slice(0, 5)
-                .map((e) => `${e.agent} · ${e.action} · ${e.nodes[0] ? (store.bySlug(e.nodes[0])?.title ?? e.nodes[0]) : '—'}`)
+                .map((e) => `${e.agent} · ${actionVerb(e.action)} · ${e.nodes[0] ? (store.bySlug(e.nodes[0])?.title ?? e.nodes[0]) : '—'}`)
                 .join('  ·  ')}
             </p>
           {/if}
