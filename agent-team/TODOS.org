@@ -45,6 +45,47 @@
    - F5 (medium) floating chips (scope, layout, arrows, ego) are translucent
      over a dense label field -> illegible when zoomed. Solid/backdrop-blur
      backgrounds + border; z-order below the header.
+   - DOE SUPPLEMENTS (DoE review 2026-11-03 08:5xZ, production preview 4173,
+     iPhone-15 emulation + DOM probes; shots in download/shots/doe-p1/).
+     Same seat, same gate — fold into the fix package:
+   - S1 (blocker, z-order) canvas chrome paints OVER the phone sheet:
+     .net-controls / .nc-status / .edge-chip ride z-index 6/7 INSIDE
+     .roam-wrap while .note-preview (reader sheet) carries NO z-index —
+     evidence: "Table of Contents" renders under the lock/zoom buttons and
+     the "arrows: selection only" chip (doe-p1/select2.png). And because
+     .roam-wrap is full-bleed, at >700px with the preview side panel open
+     the controls anchor at right:12px INSIDE the panel's territory
+     (landscape phone: controls box x718 w114 over the reader; desktop
+     narrow windows same). Fix family: sheet z-index above canvas chrome;
+     re-anchor net-controls/nc-status to the VISIBLE canvas rect (reuse
+     DocneuralGraph viewport()'s inset math — the layout already honours
+     it, the DOM chrome must too).
+   - S2 (high, keep-out) node TITLE labels spill over chrome: blocked
+     corners reserve node centers + 8px only, so hub labels clip under the
+     filter panel, the collapsed .controls header and the empty-hint chip
+     (stray "C"/"nv"/"...ilati Mode" glyphs in doe-p1/synapses.png +
+     collapsed.png). Pad blockers by the measured label extent, or clamp
+     label drawing to the visible rect in the painter.
+   - S3 (high, hierarchy) the SELECTED neuron renders no canvas label on
+     phone — the lattice pitch gate (pitch*zoom >= 18px) hides even the
+     one node the visitor chose (doe-p1/collapsed.png: selection ring
+     visible, name only in the sheet). Painter override: selected node's
+     title always eligible.
+   - S4 (medium, prefs) controlsOpen is form-factor-blind: one persisted
+     value + `store.controlsOpen ?? !isPhone` boot — a desktop "open" pref
+     boots the phone with the filter sheet eating ~37% of the canvas
+     (timeline-verified: stays open). The lock pref already splits per
+     form factor (loadLock(layout, isPhone) / dn.lock.*): split the
+     controls key the same way (e.g. dn.controls.open.desk|phone), phone
+     default closed.
+   - S5 (low, dead control) the SPREAD SPACING slider renders in
+     lattice/cluster where spacing is inert (nudgeSpacing is spread-only).
+     Hide the section unless store.layout === 'spread' (saves ~90px of the
+     phone sheet).
+   - KEEP (regression guard): phone lock default ON (zero rAF loops),
+     bounded poke on zoom/pan while locked, 44px targets, safe-area
+     insets on sheet/restore/trail, ego scope chip, honest no-WebGL
+     fallback, skeleton static on phone.
    GATE: npm run check 0 errors; npm test green; npm run build ok; agent-browser
    self-verify at 390x844 (touch-action:none computed on canvas, no mis-pack
    after 390<->1280 resize without reload, bottom sheet solid + closable).
