@@ -28,9 +28,10 @@
   import type { OrgRoamNode } from 'orui/api'
   import { untrack } from 'svelte'
   import { toRoam } from './roamBridge'
-  import { applyLayout, fitReadable, makeNeuronLoader } from './neuronEngine'
+  import { applyLayout, fitReadable, makeNeuronLoader, refreshSpreadBlockers } from './neuronEngine'
   import type { Blocker } from './spreadForces'
   import type { Engine as NeuronEngine } from './neuronEngine'
+  import { cornerBlocker, planOverlays, type Box, type CornerBox } from './overlays'
   import { neighborIds, latticePitch } from '../core/graph'
   import type { DocNode, DocLink, LayoutMode } from '../core/types'
   import { DocneuralStore } from '../core/store.svelte'
@@ -268,42 +269,51 @@
     h: number
     inset: { top: number; right: number; bottom: number; left: number }
     blockers: Blocker[]
+    /** S2: the corner chrome as canvas-relative screen rects — the painter's
+     *  label keep-outs (the lattice field has no blocker physics of its own). */
+    corners: CornerBox[]
   } | null {
     const box = wrapEl?.getBoundingClientRect()
     if (!box || !wrapEl) return null
-    const inset = { top: 0, right: 0, bottom: 0, left: 0 }
-    const corners: DOMRect[] = []
     const root = wrapEl.closest('section') ?? document
+    const rects: Box[] = []
+    // Every piece of DOM chrome that can cover the field: the dock (note
+    // preview + its restore pill), the filter/scope drawer, the HUD chips,
+    // the agents/ask plate and the network-controls stack. Anything NOT in
+    // this list is invisible to the keep-out math — labels will sit on it
+    // (the ask chip did, until it joined the list).
     for (const el of root.querySelectorAll(
-      '.note-preview, .preview-restore, .controls, .scope, .layout'
+      '.note-preview, .preview-restore, .controls, .scope, .layout, .field-chrome, .net-controls, .nc-status'
     )) {
       const r = el.getBoundingClientRect()
-      if (!r.width || !r.height) continue // closed <details>, or no selection
-      if (r.right <= box.left || r.left >= box.right || r.bottom <= box.top || r.top >= box.bottom) continue
-      if (r.height >= box.height - 2) {
-        // A full-height panel: it took the LEFT or the RIGHT of the room.
-        if (r.left - box.left < box.right - r.right) inset.left = Math.max(inset.left, r.right - box.left)
-        else inset.right = Math.max(inset.right, box.right - r.left)
-      } else if (r.width >= box.width - 2) {
-        if (r.top - box.top < box.bottom - r.bottom) inset.top = Math.max(inset.top, r.bottom - box.top)
-        else inset.bottom = Math.max(inset.bottom, box.bottom - r.top)
-      } else {
-        corners.push(r)
-      }
+      rects.push({
+        left: r.left,
+        top: r.top,
+        right: r.right,
+        bottom: r.bottom,
+        width: r.width,
+        height: r.height
+      })
     }
+    // The pure classification (a SIDE of the room -> inset; a CORNER ->
+    // keep-out) lives in ./overlays so the comparators stay unit-tested.
+    const plan = planOverlays(
+      {
+        left: box.left,
+        top: box.top,
+        right: box.right,
+        bottom: box.bottom,
+        width: box.width,
+        height: box.height
+      },
+      rects
+    )
     // Second pass: the corners are off-centre by whatever the insets did, so
     // they can only be mapped once the visible rect is known.
-    const cx = (inset.left + (box.width - inset.right)) / 2
-    const cy = (inset.top + (box.height - inset.bottom)) / 2
-    const blockers = corners.map((r): Blocker => ({
-      x: r.left + r.width / 2 - box.left - cx,
-      y: r.top + r.height / 2 - box.top - cy,
-      l: r.width / 2 + CHROME,
-      r: r.width / 2 + CHROME,
-      t: r.height / 2 + CHROME,
-      b: r.height / 2 + CHROME
-    }))
-    return { w: box.width, h: box.height, inset, blockers }
+    const cx = (plan.inset.left + (box.width - plan.inset.right)) / 2
+    const cy = (plan.inset.top + (box.height - plan.inset.bottom)) / 2
+    const blockers = plan.corners.map((c) => cornerBlocker(c, cx, cy, CHROME))
+    return { w: box.width, h: box.height, inset: plan.inset, blockers, corners: plan.corners }
   }
 
   /** The rect the spread field is packed to fill: the visible canvas, less the
@@ -383,6 +393,123 @@
     })
     return () => cancelAnimationFrame(raf)
   })
+
+  /* ---------- S1 (board TODO-001): anchor the canvas chrome to the VISIBLE rect ----------
+     The layout and the camera already honour viewport()'s insets — the DOM
+     chrome must too. .net-controls / .nc-status pin to right:12/bottom:12 of
+     the FULL-BLEED wrap, which on a desk with the preview panel open drops
+     the controls INSIDE the panel's territory, and on a phone under the
+     bottom sheet. chromeShift carries the dock's inset (right/bottom) and
+     the style bindings add it to the same offsets; the painter's keep-outs
+     (S2) ride the same measurement. */
+  let chromeShift = $state({ right: 0, bottom: 0 })
+  // Plain vars, not $state: the painter reads them once per frame through
+  // closures (same pattern as trailStopIds) — only re-measured on change.
+  let chromeBoxes: { x: number; y: number; w: number; h: number }[] = []
+  let visibleBox: { x: number; y: number; w: number; h: number } | null = null
+  function refreshChrome(): void {
+    const vp = viewport()
+    if (!vp) return
+    chromeShift = { right: vp.inset.right, bottom: vp.inset.bottom }
+    chromeBoxes = vp.corners
+    visibleBox = {
+      x: vp.inset.left,
+      y: vp.inset.top,
+      w: Math.max(0, vp.w - vp.inset.left - vp.inset.right),
+      h: Math.max(0, vp.h - vp.inset.top - vp.inset.bottom)
+    }
+    // The section-scoped inset vars: the app's OWN chips (.scope/.layout/
+    // .field-chrome) live outside this component, and this is how the same
+    // measurement reaches their CSS without a second DOM walk. The chips'
+    // rules read calc(... + var(--dn-inset-bottom, 0px)).
+    const host = wrapEl?.closest('section')
+    if (host) {
+      host.style.setProperty('--dn-inset-top', `${vp.inset.top}px`)
+      host.style.setProperty('--dn-inset-right', `${vp.inset.right}px`)
+      host.style.setProperty('--dn-inset-bottom', `${vp.inset.bottom}px`)
+      host.style.setProperty('--dn-inset-left', `${vp.inset.left}px`)
+    }
+  }
+  // Re-measured in a rAF so the dock's mount/unmount has landed in the DOM
+  // before the rects are read (same reason the dock refit above defers) —
+  // plus one SETTLED re-measure past the dock's 200ms fly transition, so the
+  // inset is never frozen mid-flight (a mid-transition rect short-changes the
+  // inset and the chrome stacks overlap the half-open sheet).
+  $effect(() => {
+    void store.previewOpen
+    void store.controlsOpen
+    void store.selected // the scope chip exists only with a selection
+    const raf = requestAnimationFrame(refreshChrome)
+    const settle = setTimeout(refreshChrome, 260)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(settle)
+    }
+  })
+
+  /* ---------- F2 (board TODO-001): re-frame on viewport resize ----------
+     A viewport change (rotate, a phone emulation 390->1280->390, a window
+     dragged between monitors) must re-run the viewport()/packRect path:
+     GraphView's own ResizeObserver only resizes the BACKING SURFACE, so a
+     lattice placed for the old room stayed packed for the STALE room — field
+     glued top-left, clipped. Debounced (a live resize fires dozens of
+     entries); the first sighting only ARMS the measured size so the boot
+     framing is never double-run; and the engine's width/height stay
+     GraphView's business — this observer never touches them, so the two
+     observers cannot fight. */
+  let roLastW = 0
+  let roLastH = 0
+  let roTimer: ReturnType<typeof setTimeout> | undefined = undefined
+  $effect(() => {
+    const wrap = wrapEl
+    if (!wrap || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0]?.contentRect
+      if (!cr) return
+      if (!roLastW && !roLastH) {
+        // Arm only: the boot path already framed this size.
+        roLastW = cr.width
+        roLastH = cr.height
+        return
+      }
+      if (Math.abs(cr.width - roLastW) < 1 && Math.abs(cr.height - roLastH) < 1) return
+      roLastW = cr.width
+      roLastH = cr.height
+      clearTimeout(roTimer)
+      roTimer = setTimeout(reframe, 160)
+    })
+    ro.observe(wrap)
+    return () => {
+      ro.disconnect()
+      clearTimeout(roTimer)
+    }
+  })
+
+  /** The resize path, debounced: lattice re-pins to the new room and re-frames;
+   *  spread/cluster only re-frame the camera (positions stand) and re-arm the
+   *  corner blockers the packing force routes around. */
+  function reframe(): void {
+    const eng = engine
+    if (!eng) return
+    refreshChrome()
+    const vp = viewport()
+    if (!vp) return
+    if (store.layout === 'lattice') {
+      const room = packRect(vp)
+      const p = latticePitch(eng.graphData().nodes.length || 1, room.w, room.h)
+      latticeK = Math.min(1, (0.36 * p) / 18.33)
+      latticeP = p
+      if (wrapEl) wrapEl.dataset.pitch = p.toFixed(1)
+      applyLayout(eng, 'lattice', room)
+      fitNow(eng, vp)
+    } else {
+      // Blocker refresh: applyLayout() would also reheat the whole field —
+      // a relayout nobody asked for on every resize. The collide force swap
+      // is enough; d3 initializes it against the live nodes.
+      if (store.layout === 'spread') refreshSpreadBlockers(eng, vp.blockers)
+      fitNow(eng, vp)
+    }
+  }
 
   $effect(() => {
     const mode = store.layout
@@ -479,6 +606,10 @@
     // and the honest state there is the clean starfield.
     lattice: () => store.layout === 'lattice',
     latticePitchPx: () => latticeP,
+    // S2: label keep-outs — the corner chrome and the visible rect, both
+    // canvas-relative screen px, refreshed by refreshChrome() (never per frame).
+    chromeBoxes: () => chromeBoxes,
+    visibleRect: () => visibleBox,
     onEngine: (e) => { engine = e }
   })
 
@@ -624,7 +755,7 @@
     if (!eng || store.layout !== 'spread') return
     pokeWhileLocked()
     const vp = viewport()
-    applyLayout(eng, 'spread', vp ? packRect(vp) : undefined, { spacingK, quick: true })
+    applyLayout(eng, 'spread', vp ? packRect(vp) : undefined, spacingK, { quick: true })
     fitNextStop = true
   }
 
@@ -855,8 +986,16 @@
 
     <!-- NETWORK CONTROLS (SPEC §3): one vertical stack, bottom-right —
          LOCK · SPACING −/+ · ZOOM −/+ · FIT. 44×44 buttons, 8px gap,
-         chrome tokens, zero new animation loops. -->
-    <div class="net-controls" role="group" aria-label="Network controls">
+         chrome tokens, zero new animation loops. S1: the stack anchors to
+         the VISIBLE canvas rect (chromeShift adds the dock's inset), so a
+         side panel or the phone sheet never owns its pocket. -->
+    <div
+      class="net-controls"
+      role="group"
+      aria-label="Network controls"
+      style:right="{12 + chromeShift.right}px"
+      style:bottom="calc({12 + chromeShift.bottom}px + env(safe-area-inset-bottom, 0px))"
+    >
       <button
         class="nc-btn"
         class:active={locked}
@@ -929,8 +1068,14 @@
            paint budget, so arrows ride the selection/hover tier only. Phone
            says the tier alone (F7): the desktop line is ~440px of 10px type
            and the 180px corner cannot hold it. The swap is CSS-only, so the
-           live region never re-registers and desktop copy is unchanged. -->
-      <p class="nc-status dn-mono" role="status">
+           live region never re-registers and desktop copy is unchanged.
+           S1: anchored beside the controls stack, inside the visible rect. -->
+      <p
+        class="nc-status dn-mono"
+        role="status"
+        style:right="{12 + chromeShift.right}px"
+        style:bottom="calc({232 + chromeShift.bottom}px + env(safe-area-inset-bottom, 0px))"
+      >
         <span class="ns-desktop">arrows on selection · {store.visible.links.length} synapses exceeds paint budget</span>
         <span class="ns-phone">arrows: selection only</span>
       </p>
@@ -1132,6 +1277,17 @@
        what the neurons sit in. */
   }
 
+  /* F1 (blocker, board TODO-001): force-graph drives d3-drag/d3-zoom from
+     POINTER events on this canvas, and the browser default touch-action:auto
+     lets a phone cancel the gesture for page scroll — the graph never pans
+     and a pinch zooms the page instead of the camera. The canvas alone opts
+     out (contain keeps any leftover overscroll chained to the dish); page
+     scroll OUTSIDE the canvas is untouched. */
+  .roam-wrap :global(canvas) {
+    touch-action: none;
+    overscroll-behavior: contain;
+  }
+
 /* Light paper for the canvas well: the agar dish grid is now a fine
    grey grid under a warm-white floor, so the neon somas paint with
    contrast. The theme values come from --dn-* tokens (see below). */
@@ -1192,7 +1348,10 @@
   height: 40px;
   padding: 0 12px;
   border: 1px solid color-mix(in srgb, var(--dn-trail) 45%, transparent);
-  background: color-mix(in srgb, var(--dn-bg-raise) 82%, transparent);
+  /* F5 (board TODO-001): floating chrome reads only when the field behind it
+     cannot bleed through — solid paper, hard border (z-order stays below the
+     sticky header). */
+  background: var(--dn-bg-raise);
   border-radius: var(--dn-radius);
   font-size: 11px;
   letter-spacing: var(--dn-track);
@@ -1296,7 +1455,9 @@
 
 /* ---------- NETWORK CONTROLS (network pass 2026-10-31) ----------
    Bottom-right stack, chrome tokens only, 44×44 taps, 8px gaps. The stack
-   is a corner keep-out (viewport() routes the spread field around it). */
+   is a corner keep-out (viewport() routes the spread field around it).
+   F5: solid chrome fill — a translucent plate over a dense label field is
+   illegible exactly when zoomed in, which is when these buttons matter. */
 .net-controls {
   position: absolute;
   right: 12px;
@@ -1307,8 +1468,8 @@
   align-items: stretch;
   gap: 8px;
   padding: 8px;
-  border: 1px solid var(--dn-border);
-  background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
+  border: 1px solid var(--dn-border-strong);
+  background: var(--dn-chrome-bg);
   border-radius: 0;
 }
 .nc-pair {
@@ -1360,8 +1521,8 @@
   font-size: 11px;
   letter-spacing: var(--dn-track);
   color: var(--dn-chrome-ink);
-  background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
-  border: 1px solid var(--dn-border);
+  background: var(--dn-chrome-bg);
+  border: 1px solid var(--dn-border-strong);
   opacity: 0;
   transition: opacity 400ms ease;
   pointer-events: none;
@@ -1381,8 +1542,9 @@
   font-size: 10px;
   letter-spacing: var(--dn-track);
   color: var(--dn-panel-ink-dim);
-  background: color-mix(in srgb, var(--dn-chrome-bg) 92%, transparent);
-  border: 1px solid var(--dn-border);
+  /* F5: solid plate + border, same material as the stack it labels. */
+  background: var(--dn-chrome-bg);
+  border: 1px solid var(--dn-border-strong);
 }
 /* F7: one nc-status, two copies — the phone swap is a display toggle. */
 .ns-phone { display: none; }
@@ -1399,7 +1561,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--dn-panel-ink);
-  background: color-mix(in srgb, var(--dn-panel-bg) 94%, transparent);
+  /* F5: solid plate — the chip quotes prose over a label field. */
+  background: var(--dn-panel-bg);
   border: 1px solid var(--dn-synapse-hover);
   pointer-events: none;
 }

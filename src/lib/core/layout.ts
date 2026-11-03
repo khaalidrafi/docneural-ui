@@ -82,7 +82,18 @@ export function writeSpacing(v: number): void {
    a phone, open on a laptop). */
 
 const PREVIEW_KEY = 'docneural:preview'
-const CONTROLS_KEY = 'docneural:controls'
+
+/* ---------- form factor (board TODO-001) ----------
+   One breakpoint for every phone branch of the fix package (preview sheet,
+   controls sheet, per-form-factor prefs): <=700px is a phone. Node (tests,
+   SSR-ish boots) has no matchMedia and is a desk. */
+export function isPhoneLayout(): boolean {
+  try {
+    return typeof matchMedia === 'function' && matchMedia('(max-width: 700px)').matches
+  } catch {
+    return false
+  }
+}
 
 export function loadPreviewOpen(): boolean {
   try {
@@ -102,21 +113,7 @@ export function writePreviewOpen(open: boolean): void {
   }
 }
 
-/** `null` = no stored answer — the caller applies its own size-based default. */
-export function loadControlsOpen(): boolean | null {
-  try {
-    const saved = localStorage.getItem(CONTROLS_KEY)
-    if (saved === 'open' || saved === 'closed') return saved === 'open'
-  } catch {
-    /* private mode: default below */
-  }
-  return null
-}
-
-export function writeControlsOpen(open: boolean): void {
-  try {
-    localStorage.setItem(CONTROLS_KEY, open ? 'open' : 'closed')
-  } catch {
-    /* ignore */
-  }
-}
+/* The controls-open pref MOVED to core/controls.ts (S4, board TODO-001):
+   one shared `docneural:controls` key leaked a desktop "open" answer into
+   the phone boot. It now lives at dn.controls.open.desk|phone, split per
+   form factor exactly like the lock pref — see loadControlsPref there. */
