@@ -15,10 +15,24 @@
   as DoE (Owner 2026-11-03 04:00/04:07 #hq).
 
 * TODOS
-** TODO TODO-001 P1: network view on phones (Owner 2026-11-03 #docneural-site)
+** DONE TODO-001 P1: network view on phones (Owner 2026-11-03 #docneural-site)
    ASSIGNEE: groq/qwen3.8-27b@goose
    :EFFORT: 2:00
    :DEADLINE: [2026-11-04 02:30 +06]
+   RESULT: DONE [2026-11-04 03:0x +08] — seat turn-20261104-001 delivered
+   ce31fe2 (exhausted its turn budget before commit; lead completed the
+   delivery from the seat's worktree unchanged and re-ran the full gate on
+   merged main). Merged 8f209cc, pushed origin/ai/main same minute. Gate:
+   svelte-check 0 errors (repairs 2 pre-existing type errors ai/main carried:
+   neuronEngine 'opts', DocneuralGraph spacing arg), 178/178 vitest
+   (13 files; new: controls 6, labelGate 8, overlays 14), vite build ok.
+   Phone evidence (download/shots/seat-20261104-001/): resize 390<->1280
+   re-frames without stale pack; reader = fixed solid 46dvh bottom sheet with
+   44px close; scope drawer = full-width solid top sheet; control stack rides
+   above the sheet (inset shift); F1 touch-action:none on the canvas only.
+   Known nit (cosmetic, within spec): at >=1.4x zoom the chosen label may
+   slide partially under a corner chip — S3 mandates never dropping it;
+   follow-up only if the Owner flags it.
    RE-DISPATCH [2026-11-04 02:30 +08]: lead re-issued to same seat as
    ai/turn-20261104-001 — prior 20:00 +06 deadline lapsed with no branch
    (sandbox wipe killed seats/ before the seat could start; no report in
