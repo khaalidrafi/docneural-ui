@@ -127,6 +127,15 @@ export function lockKey(layout: LayoutMode): string {
   return `${LOCK_PREFIX}${layout}`
 }
 
+/**
+ * S5 (board TODO-001): the spread-spacing chrome is only meaningful in the one
+ * layout that consumes spacing. The FILTER panel renders the section for every
+ * layout today, which on a phone spends ~90px of sheet on a dead control.
+ */
+export function spacingSectionVisible(layout: LayoutMode): boolean {
+  return layout === 'spread'
+}
+
 /** Per-manual TOC open-state key ('' manual = the whole-corpus TOC). */
 export function tocOpenKey(manual: string): string {
   return `${TOC_OPEN_PREFIX}${manual || 'all'}`
@@ -196,6 +205,33 @@ export function saveTocOpen(manual: string, state: Record<string, boolean>): voi
 
 /** Library recents: doc slugs, max 8, newest last (trail order). */
 export const RECENTS_MAX = 8
+
+/* ---------- S4 (board TODO-001): controls-open pref, per form factor ----------
+   One shared key made a desktop "open" answer boot the phone with the filter
+   sheet eating a third of the canvas. The lock pref already splits per form
+   factor (dn.lock.<layout>, loadLock(layout, phone)); the controls key splits
+   the same way: dn.controls.open.desk | dn.controls.open.phone, with `null`
+   meaning "never answered" so each form factor applies its own default
+   (phone closed, desk open). */
+
+export const CONTROLS_OPEN_PREFIX = 'dn.controls.open.'
+
+export function controlsOpenKey(phone: boolean): string {
+  return `${CONTROLS_OPEN_PREFIX}${phone ? 'phone' : 'desk'}`
+}
+
+/** Stored answer for THIS form factor; `null` = no stored answer. Anything
+ *  but the exact '0'/'1' is ignored, like loadLock. */
+export function loadControlsPref(phone: boolean): boolean | null {
+  const v = readStored(controlsOpenKey(phone))
+  if (v === '1') return true
+  if (v === '0') return false
+  return null
+}
+
+export function writeControlsPref(open: boolean, phone: boolean): void {
+  writeStored(controlsOpenKey(phone), open ? '1' : '0')
+}
 
 export function loadRecents(): string[] {
   const raw = readStored(RECENTS_KEY)
