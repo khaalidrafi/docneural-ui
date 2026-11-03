@@ -1,0 +1,53 @@
+# +TITLE: docneural-ui — agent-team kit (created 2026-11-03 by z.ai-agent, Lead)
+# Board law: this file is the repo's single truth. Board files never ride feature
+# commits (control commits only). Roster IDs only (ID-FORM law). TIME LAW: every
+# TODO carries :EFFORT: and :DEADLINE:.
+
+* ROSTER
+- z.ai-agent :: Lead (operational lane per Owner 2026-11-03 #docneural-site)
+- groq/qwen3.8-27b@goose :: seat worker
+- zai/glm-4.7-flash@goose :: seat worker
+- antling/Ling-3.1-flash@opencode :: seat worker
+
+* NOTICES
+- [2026-11-03] Owner role map: org-learn.el / org-roadmap / docneural have their
+  own Leads; z.ai-agent leads THIS repo + org-roam-lite-ui and reads the others
+  as DoE (Owner 2026-11-03 04:00/04:07 #hq).
+
+* TODOS
+** TODO TODO-001 P1: network view on phones (Owner 2026-11-03 #docneural-site)
+   ASSIGNEE: groq/qwen3.8-27b@goose
+   :EFFORT: 2:00
+   :DEADLINE: [2026-11-03 20:00 +06]
+   Reviewed in code + multimodal screenshots (vite dev, iPhone-14 emulation,
+   390x844 / 1280x800, shots in download/shots/p1/). Fix package:
+   - F1 (blocker) canvas touch-action: force-graph 1.52 drives d3-drag/d3-zoom
+     via pointer events; canvas computes touch-action:auto so phones cancel the
+     gesture -> page scrolls, graph never pans, pinch zooms the page. Give the
+     graph canvas touch-action:none (+ overscroll-behavior:contain). Page scroll
+     outside the canvas must stay untouched.
+   - F2 (high) resize re-frame is flaky: after a viewport change the lattice
+     sometimes stays packed for the STALE room (field glued top-left, clipped;
+     captured at 1280x800 after grow from 390x844). Add a debounced
+     ResizeObserver on the dish wrap that re-runs the viewport()/packRect path:
+     lattice -> applyLayout + fitNow; spread/cluster -> fitNow + blocker
+     refresh. Must not double-run at boot or fight GraphView's own RO.
+   - F3 (high) note preview on phone is an in-flow section BELOW the canvas
+     (pushes the dish to a sliver) and its empty placeholder floats a
+     translucent dashed box over the field near the top. <=700px: real fixed
+     bottom sheet (full width, solid bg, max-height ~46dvh, top radius, visible
+     close -> store.setPreviewOpen(false)); hide the empty placeholder on
+     phones (desktop hint only). Full width keeps viewport()'s inset.bottom
+     path working.
+   - F4 (medium) scope drawer on phone overlays >55% of the dish with a
+     translucent panel. <=700px: full-width top sheet, solid bg, max-height
+     ~60dvh, scrollable, visible close.
+   - F5 (medium) floating chips (scope, layout, arrows, ego) are translucent
+     over a dense label field -> illegible when zoomed. Solid/backdrop-blur
+     backgrounds + border; z-order below the header.
+   GATE: npm run check 0 errors; npm test green; npm run build ok; agent-browser
+   self-verify at 390x844 (touch-action:none computed on canvas, no mis-pack
+   after 390<->1280 resize without reload, bottom sheet solid + closable).
+   RULES: feature commit only (no board/kit files); author
+   groq/qwen3.8-27b@goose <seats@docneural.local>; one segment, one report to
+   @lead with RESULT: DONE|PARTIAL|BLOCKED.
