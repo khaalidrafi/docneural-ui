@@ -1493,11 +1493,6 @@
   .bus-rail::before { animation: none; opacity: 0; }
   .spark { animation: none; }
   .boot, .boot .scan, .boot .brand-row, .boot .row, .boot .volts i { animation: none; }
-
-  /* The controls panel's clip-path notch relies on a fixed pixel clip; at
-     narrow widths the corner should shrink so it does not eat the summary
-     text. */
-  .controls { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%); }
 }
 
 </style>
