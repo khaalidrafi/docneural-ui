@@ -23,6 +23,8 @@
   import AskPanel from './reader/AskPanel.svelte'
   import { DocneuralStore } from './core/store.svelte'
   import { sourceVars } from './core/source'
+  import { isPhoneLayout } from './core/layout'
+  import { spacingSectionVisible } from './core/controls'
   import { pulse } from './core/pulse.svelte'
   import { actionVerb } from './core/pulse'
 
@@ -131,9 +133,11 @@
   // Graph mode's control panel starts collapsed on phones: a full-width
   // filter bar over the canvas left a sliver of neurons to look at. The
   // header itself carries the live wire count, so nothing is lost.
-  const isPhone = $state(
-    typeof matchMedia === 'function' && matchMedia('(max-width: 600px)').matches
-  )
+  // S4 (board TODO-001): the form factor rides ONE breakpoint (isPhoneLayout,
+  // 700px) and the persisted answer is PER FORM FACTOR now — the store's
+  // loadControlsPref already split the key, so this boot default can never
+  // be cross-contaminated by the other device's choice.
+  const isPhone = $state(isPhoneLayout())
 
   // The controls panel's open state (Owner directive 2026-11-01: the network
   // chrome must be hideable, and the collapsed state must persist). A stored
@@ -445,7 +449,12 @@
         <span class="chev" aria-hidden="true">▾</span>
       </summary>
       <FilterBar {store} />
-      <SpacingControl {store} />
+      <!-- S5 (board TODO-001): the SPREAD SPACING dial is inert outside the
+           spread layout (nudgeSpacing is spread-only) — rendering it there
+           was ~90px of dead control on the phone sheet. -->
+      {#if spacingSectionVisible(store.layout)}
+        <SpacingControl {store} />
+      {/if}
     </details>
     <NotePreview {store} />
   </section>
@@ -949,18 +958,21 @@
   /* The scope chip lives bottom-left over the canvas: that is the corner the
      eye returns to after reading a count, and it is where orui puts its own
      `⤢ Fit` — same pocket, same meaning ("what you are looking at, and how to
-     change it"). */
+     change it"). S1: --dn-inset-bottom (set by DocneuralGraph on the section
+     from viewport()'s inset math) lifts the chips above the dock they must
+     not cover — the phone sheet on a phone, nothing on an open dish. */
   .scope {
     position: absolute;
     left: 0.9rem;
-    bottom: 0.9rem;
+    bottom: calc(0.9rem + var(--dn-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px));
     z-index: 5;
     font: inherit;
     letter-spacing: var(--dn-track);
     color: var(--dn-fg);
-    /* Solid fill, no backdrop-filter — the chip floats over the canvas
-       and a blur there is the worst place for one. */
-    background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
+    /* F5 (board TODO-001): a floating chip must be legible over a dense
+       label field — solid raised ink + the hairline border (z-order stays
+       below the sticky header's 40). */
+    background: var(--dn-bg-raise);
     border: 1px solid var(--dn-border-strong);
     border-radius: 0;
     padding: 0.35em 0.75em;
@@ -978,22 +990,22 @@
   /* Layout chip: the same HUD pill, and when the scope chip is out it stacks
      ABOVE it rather than sharing a corner with a variable-length label — the
      scope chip can run to nearly the viewport width, so side by side would
-     collide on a phone. */
+     collide on a phone. F5: solid raised ink like its sibling. */
   .layout {
     position: absolute;
     left: 0.9rem;
-    bottom: 0.9rem;
+    bottom: calc(0.9rem + var(--dn-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px));
     z-index: 5;
     font: inherit;
     letter-spacing: var(--dn-track);
     color: var(--dn-fg);
-    background: color-mix(in srgb, var(--dn-bg) 90%, transparent);
+    background: var(--dn-bg-raise);
     border: 1px solid var(--dn-border-strong);
     border-radius: 0;
     padding: 0.35em 0.75em;
     cursor: pointer;
   }
-  .scope ~ .layout { bottom: 2.9rem; }
+  .scope ~ .layout { bottom: calc(2.9rem + var(--dn-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px)); }
   .layout:hover {
     color: var(--dn-accent);
     border-color: var(--dn-accent);
@@ -1022,43 +1034,74 @@
   /* ---------- DOCK, phone (Owner directive 2026-11-01) ----------
      The network's bottom chrome — controls panel, doc-preview sheet — is
      hideable on every width; on a phone it must also never eat the view.
-     This block sits AFTER the base .controls/.scope/.layout rules on purpose:
-     these are overrides, and the cascade only honours them from here. */
+     The .scope/.layout overrides here sit AFTER their base rules on purpose
+     (the cascade only honours them from here). The .controls overrides live
+     in the F4 block AFTER the base .controls rules further down — these
+     used to carry them too, BEFORE the base, and silently lost (the F4
+     bug: the phone drawer rendered as the translucent 250px panel). */
   @media (max-width: 600px) {
-    .controls {
-      left: 0.5rem;
-      right: 0.5rem;
-      width: auto;
-      padding: 0.5rem 0.7rem;
-      top: max(0.5rem, env(safe-area-inset-top, 0px));
-    }
-    .controls > summary {
-      min-height: 44px;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--dn-fg);
-    }
     .scope, .layout {
       font-size: 0.72rem;
       padding: 0.5em 0.85em;
       min-height: 44px;
       display: inline-flex;
       align-items: center;
-      bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+      /* Same inset-aware lift as the base rule (var set by DocneuralGraph). */
+      bottom: calc(0.9rem + var(--dn-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px));
     }
-    .scope ~ .layout { bottom: calc(2.9rem + env(safe-area-inset-bottom, 0px)); }
+    .scope ~ .layout {
+      bottom: calc(2.9rem + var(--dn-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px));
+    }
   }
 
-  /* Preview sheet open (≤700px): the bottom 45% is the sheet, so the canvas
-     chips stack just ABOVE it instead of overlapping its text. Dock closed,
-     the chips return to the bottom edge. */
-  @media (max-width: 700px) {
-    .synapse-mode.dock-open .scope {
-      bottom: calc(45% + 0.75rem);
-    }
-    .synapse-mode.dock-open .scope ~ .layout {
-      bottom: calc(45% + 2.75rem);
-    }
+  /* F5 (board TODO-001): the agents/ask plate was markup without a single
+     style — a UA-default button floating raw over the field. One solid
+     plate, top-right, under the header, lifting with the dock insets the
+     same way the bottom chips do. */
+  .field-chrome {
+    position: absolute;
+    top: calc(0.9rem + var(--dn-inset-top, 0px));
+    right: calc(0.9rem + var(--dn-inset-right, 0px));
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    max-width: min(24rem, calc(100vw - 1.8rem));
+  }
+  .field-chrome .agents-chip,
+  .field-chrome .ask-chip {
+    font-size: 0.66rem;
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg);
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border-strong);
+    border-radius: 0;
+    padding: 0.35em 0.75em;
+    white-space: nowrap;
+  }
+  .field-chrome .agents-chip { color: var(--dn-agent, var(--dn-accent)); }
+  .field-chrome .ask-chip {
+    cursor: pointer;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--dn-font-mono);
+  }
+  .field-chrome .ask-chip:hover { color: var(--dn-accent); border-color: var(--dn-accent); }
+  .field-chrome .pulse-ticker,
+  .field-chrome .ask-hint {
+    margin: 0;
+    font-size: 0.6rem;
+    letter-spacing: var(--dn-track);
+    color: var(--dn-fg-faint);
+    background: var(--dn-bg-raise);
+    border: 1px solid var(--dn-border);
+    padding: 0.25em 0.6em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* Controls panel: floats over the canvas top-left; the summary is the
@@ -1113,6 +1156,46 @@
   .controls:not([open]) > summary {
     margin-bottom: 0;
     border-bottom-color: transparent;
+  }
+
+  /* F4 (board TODO-001): the scope drawer on a phone was the translucent
+     250px panel above — its ≤600 overrides used to sit BEFORE this base rule
+     and silently lost the cascade, so the drawer ate >55% of the dish.
+     Declared AFTER the base (and after the ≤600 chip block), <=700px it is a
+     full-width TOP sheet: solid raised ink, bounded at 60dvh, its own
+     scroller, and the summary — the visible close — stuck to the sheet's top
+     edge so it stays reachable mid-scroll. z-index 12: above the canvas
+     chrome (≤7), below the sticky header (40). */
+  @media (max-width: 700px) {
+    .controls {
+      left: 0;
+      right: 0;
+      top: 0;
+      width: auto;
+      max-height: 60dvh;
+      overflow-y: auto;
+      background: var(--dn-bg-raise);
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+      border-radius: 0;
+      clip-path: none;
+      z-index: 12;
+    }
+    .controls > summary {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      min-height: 44px;
+      padding: 0 0.7rem;
+      margin: 0 0 0.6rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--dn-fg);
+      background: var(--dn-bg-raise); /* the close bar reads mid-scroll */
+      border-bottom: 1px solid var(--dn-border);
+    }
+    .controls:not([open]) > summary { border-bottom-color: transparent; }
   }
 
   .reader-mode {

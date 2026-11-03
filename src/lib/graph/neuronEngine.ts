@@ -45,6 +45,10 @@ import type { LayoutMode } from '../core/types'
 export type Engine = any
 type Ctx = CanvasRenderingContext2D
 
+/** Shared empty keep-out: returning a fresh [] per frame would allocate per
+ *  node per frame for the common no-chrome case (S2 painter clamp). */
+const CHROME_BOXES_NONE: { x: number; y: number; w: number; h: number }[] = []
+
 /** The fields of an engine node this module reads. GraphView copies them onto
  *  its own node objects at sync time; force-graph then adds x/y/velocity. */
 type Painted = { title?: string; degree?: number }
@@ -118,6 +122,16 @@ export type NeuronFocus = {
   /** How many synapses the current view shows — the arrow paint budget
    *  check (≤ 1500 arrows, else the selection/hover tier only). */
   linkCount?: () => number
+  /** S2 (board TODO-001): the blocked-corner chrome as CANVAS-relative
+   *  screen-px rects, refreshed by the host whenever the dock or the dish
+   *  size changes (never per frame). A label that would land in one is
+   *  dropped — the keep-out the DOM chrome earns, since the spread layout's
+   *  blockers and the lattice's room cannot speak for the painter. */
+  chromeBoxes?: () => { x: number; y: number; w: number; h: number }[]
+  /** S2: the visible canvas rect (canvas-relative screen px, dock insets
+   *  already removed) — labels are clamped/dropped to it. null = not yet
+   *  measured; the painter draws unclamped, as before. */
+  visibleRect?: () => { x: number; y: number; w: number; h: number } | null
   /** Handed the live engine once it exists, so the component can push layout
    *  changes into it. GraphView keeps the instance private and exposes no
    *  physics knob, so the construction seam is the only door. */
@@ -205,7 +219,10 @@ export function applyLayout(
    *  canvas has a measured size. */
   room?: { w: number; h: number; blockers?: Blocker[] },
   /** Spread spacing multiplier, ≥ 1 (1 = the authored layout). */
-  spacing = 1
+  spacing = 1,
+  /** `{ quick: true }` = the spacing-nudge path: one bounded reheat (~60
+   *  ticks) instead of the full 180-tick relayout. */
+  opts?: { quick?: boolean }
 ): void {
   const charge = engine.d3Force('charge')
   const link = engine.d3Force('link')
@@ -300,6 +317,79 @@ export function applyLayout(
   // Changing a force does not wake a cooled simulation: onEngineTick stopped
   // firing long ago, so without this the new physics would never run.
   engine.d3ReheatSimulation()
+}
+
+/**
+ * F2 (board TODO-001): re-arm the spread collide force with FRESH corner
+ * blockers after a viewport change, WITHOUT a reheat. applyLayout() re-registers
+ * the force but also reheats the whole simulation — a relayout the visitor never
+ * asked for on every window resize. d3 initializes a force against the live
+ * nodes the moment it is set, so a swap here is enough; the refreshed boxes are
+ * honoured on the next tick the simulation runs (a poke, an unlock, a filter
+ * sync), and the camera refit is the caller's job.
+ */
+export function refreshSpreadBlockers(engine: Engine, blockers: Blocker[]): void {
+  const charge = engine.d3Force('charge')
+  const link = engine.d3Force('link')
+  if (!charge || !link) return // no physics (jsdom, or a canvas-less fallback)
+  // The SAME extent recipe applyLayout registers (labelExtent over the painted
+  // soma), so the refreshed boxes keep the promise the layout was authored with.
+  const extentOf = (n: Painted) => labelExtent(n.title, somaRadius(n, false))
+  engine.d3Force('collide', forceLabelBoxes(extentOf, blockers))
+}
+
+/* ---------- S3 (board TODO-001): the label-eligibility gate, as a value ----------
+   The painter's title pass boils down to this predicate, and it is exactly the
+   place a wrong boolean shows up as a wall of ink (the 2026-10-31 lattice soup)
+   or as a name that never draws (the phone pitch gate erasing the SELECTED
+   neuron). Extracted verbatim — plus the one override the board asks for — so
+   the rules are unit-testable without a canvas. */
+
+export type LabelGate = {
+  /** The node the visitor chose. ALWAYS eligible — see the first line. */
+  chosen: boolean
+  /** Selection + 1-hop neighbours (the hot set keeps its label at every band). */
+  hot: boolean
+  degree: number
+  /** Camera scale (the painter's globalScale). */
+  zoom: number
+  /** World-px lattice pitch; <= 0 = unknown (gate off). */
+  pitchPx: number
+  /** The lattice layout owns the field. */
+  lattice: boolean
+  /** Lattice at its fit zoom (the overview tier). */
+  latFit: boolean
+  /** A "read the names" view (spread — the gate predates the lattice). */
+  spread: boolean
+  /** Zoom-LOD band: 0 corpus / 1 backbone / 2 detail. */
+  band: number
+}
+
+export function labelEligible(g: LabelGate): boolean {
+  // THE OVERRIDE: the pitch gate below hides EVERY label on a phone lattice
+  // fit (pitch·zoom < 18px), which erased the one name the visitor chose —
+  // selection ring visible, title only in the sheet. The chosen node's title
+  // is always eligible for drawing, in every layout, at every zoom.
+  if (g.chosen) return true
+  // PITCH GATE (phone lattice label soup, real-browser sweep 2026-10-31):
+  // a label renders only when the nearest RENDERED neighbour is >= 18px
+  // away ON SCREEN. On the lattice every dot paints, so that distance is
+  // exactly pitch·zoom — desktop fit (~31px) sails through unchanged, a
+  // phone field (p≈17px at fit) stays a clean starfield that fills in as
+  // the visitor zooms. pitch <= 0 = pitch unknown (not yet placed) → no
+  // gate, paint as before.
+  if (g.pitchPx > 0 && g.pitchPx * g.zoom < 18) return false
+  if (g.lattice) {
+    return g.latFit
+      ? g.degree >= 60
+      : g.zoom > 1.6
+        ? true
+        : g.hot || g.degree >= 40
+  }
+  if (g.spread) return g.band === 0 ? g.degree >= 60 : true
+  if (g.band === 0) return g.degree >= 60
+  if (g.band === 1) return g.hot || g.degree >= 20
+  return g.zoom > 1.15 || g.hot || g.degree >= 60
 }
 
 /**
@@ -877,28 +967,22 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
     //   band 0: hubs only (deg >= 60). A dozen names on a starfield.
     //   band 1: hot set + chapter hubs (deg >= 20).
     //   band 2: everything once the user zooms in (gs > 1.15), hubs, hot.
+    // S3: the whole gate now lives in labelEligible() above, so the rules —
+    // and the chosen-node override — are one tested function.
     const spread = !!focus.spread?.()
     const deg = n.degree ?? 0
-    // PITCH GATE (phone lattice label soup, real-browser sweep 2026-10-31):
-    // a label renders only when the nearest RENDERED neighbour is >= 18px
-    // away ON SCREEN. On the lattice every dot paints, so that distance is
-    // exactly pitch·zoom — desktop fit (~31px) sails through unchanged, a
-    // phone field (p≈17px at fit) stays a clean starfield that fills in as
-    // the visitor zooms. The gate rides the LABEL pass only: dots always
-    // render, and cluster/spread keep their own band rules untouched.
-    // pitch <= 0 = pitch unknown (not yet placed) → no gate, paint as before.
     const pitch = focus.latticePitchPx?.() ?? 0
-    const pitchOk = pitch <= 0 || pitch * globalScale >= 18
-    const labelOk = pitchOk && (lat
-      ? latFit
-        ? deg >= 60
-        : globalScale > 1.6 ? true : hot || deg >= 40
-      : spread
-        ? band === 0 ? deg >= 60 : true
-        : band === 0 ? deg >= 60
-        : band === 1 ? (hot || deg >= 20)
-        : (globalScale > 1.15 || hot || deg >= 60))
-    if (labelOk) {
+    if (labelEligible({
+      chosen,
+      hot,
+      degree: deg,
+      zoom: globalScale,
+      pitchPx: pitch,
+      lattice: lat,
+      latFit,
+      spread,
+      band
+    })) {
       const label = shortTitle(n.title ?? '')
       if (!label) return
       const fontSize = labelPx / globalScale
@@ -922,7 +1006,51 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
         ctx.restore()
         return
       }
-      claim(box)
+      // S2 (board TODO-001): clamp label DRAWING to the visible canvas and
+      // the blocked-corner chrome. The spread layout routes node CENTRES
+      // around the corner blockers, and the lattice room honours the dock
+      // insets — but a pinned lattice field has no blocker physics at all,
+      // so hub titles clipped under the filter panel, the collapsed
+      // .controls header and the empty-hint chip. The keep-outs arrive as
+      // canvas-relative screen rects (the host refreshes them on dock and
+      // resize changes; never per frame), mapped from this frame's world
+      // box through the engine's own graph2ScreenCoords.
+      const vis = focus.visibleRect?.() ?? null
+      const keepOut = focus.chromeBoxes?.() ?? CHROME_BOXES_NONE
+      let drawX = x
+      let drawY = ly
+      if ((vis || keepOut.length > 0) && typeof engine.graph2ScreenCoords === 'function') {
+        const tl = engine.graph2ScreenCoords(box.x, box.y)
+        const sw = w * globalScale
+        const sh = fontSize * 1.2 * globalScale
+        if (vis) {
+          if (chosen) {
+            // S3: the chosen name NEVER drops — it slides into the visible
+            // rect instead (the claim below follows the shifted box).
+            const dxs = Math.max(vis.x, Math.min(tl.x, vis.x + vis.w - sw)) - tl.x
+            const dys = Math.max(vis.y, Math.min(tl.y, vis.y + vis.h - sh)) - tl.y
+            if (dxs || dys) {
+              drawX += dxs / globalScale
+              drawY += dys / globalScale
+            }
+          } else if (
+            tl.x + sw <= vis.x || tl.x >= vis.x + vis.w ||
+            tl.y + sh <= vis.y || tl.y >= vis.y + vis.h
+          ) {
+            ctx.restore()
+            return
+          }
+        }
+        if (!chosen) {
+          for (const o of keepOut) {
+            if (tl.x < o.x + o.w && tl.x + sw > o.x && tl.y < o.y + o.h && tl.y + sh > o.y) {
+              ctx.restore()
+              return
+            }
+          }
+        }
+      }
+      claim({ x: drawX - w / 2, y: drawY, w, h: fontSize * 1.2 })
       // Paper-coloured stroke behind the glyphs: readable on either theme and
       // over any wire hairball. Dimmed neurons' labels dim WITH them — a
       // full-brightness name over a 15% soma was the one place the old ego
@@ -930,10 +1058,10 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       ctx.strokeStyle = paper
       ctx.globalAlpha = dim ? 0.4 : 0.8
       ctx.lineWidth = fontSize * 0.32
-      ctx.strokeText(label, x, ly)
+      ctx.strokeText(label, drawX, drawY)
       ctx.globalAlpha = dim ? 0.3 : 1
       ctx.fillStyle = chosen ? hotCol : hot ? col : ink
-      ctx.fillText(label, x, ly)
+      ctx.fillText(label, drawX, drawY)
       ctx.restore()
     }
   }

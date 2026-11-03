@@ -137,6 +137,15 @@
     style={sourceVars(doc.tags[0])}
     in:fly={{ x: 24, duration: 200, easing: cubicOut }}
   >
+    <!-- S1/F3 (board TODO-001): the sheet's own close — always reachable on a
+         phone (the meta row's "hide" verb scrolls away with the content).
+         44px target; desktop keeps the labelled verb and hides this glyph. -->
+    <button
+      class="sheet-close dn-mono"
+      onclick={() => store.setPreviewOpen(false)}
+      title="Close the note preview"
+      aria-label="Close the note preview"
+    >×</button>
     <header>
       <p class="kicker dn-label">neuron // preview</p>
       <h2 class="dn-mono">{doc.title}</h2>
@@ -196,6 +205,12 @@
     bottom: 0;
     width: min(46rem, 55vw);
     overflow-y: auto;
+    /* S1 (board TODO-001): the reader sheet paints ABOVE the canvas chrome
+       (net-controls 6 / nc-status 6 / edge-chip 7 inside .roam-wrap used to
+       ride over the preview text) and BELOW the synapse card (9), which is a
+       focused surface, not chrome. Same stacking context (.synapse-mode), so
+       one number settles the family. */
+    z-index: 8;
     /* Solid ink, not frosted glass: a big backdrop-filter over an animating
        canvas is the first thing that stutters on a potato, and a HUD panel is
        opaque anyway. The lit left edge carries the source's hue, and the top
@@ -208,6 +223,27 @@
       -1px 0 0 color-mix(in srgb, var(--dn-src, var(--dn-accent)) 16%, transparent),
       -22px 0 44px color-mix(in srgb, var(--dn-bg-sunken) 80%, transparent);
   }
+  /* F3: the sheet's close glyph. Desktop hides it (the meta row's "hide"
+     verb is the affordance there); the phone block shows it 44px. */
+  .sheet-close {
+    display: none;
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--dn-fg);
+    background: transparent;
+    border: 1px solid var(--dn-border-strong);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .sheet-close:hover { color: var(--dn-accent); border-color: var(--dn-accent); }
+  .sheet-close:focus-visible { outline: 2px solid var(--dn-accent); outline-offset: 2px; }
   .note-preview.empty {
     /* F5: the hint is a corner chip, not a strip. left:auto pins it to the
        right edge at every width — the phone bottom-sheet rule stretches the
@@ -240,34 +276,37 @@
     font-size: 0.75rem;
   }
   .note-preview.empty .dn-neuron-mark { width: 0.75em; height: 0.75em; }
-  /* Phone: a side panel would eat the whole canvas. The preview becomes a
-     bottom sheet so the graph keeps the top half of the screen — a BOUNDED
-     45% that scrolls inside (the aside is the scroller), never the whole
-     view, with the home-indicator inset added to the padding so content
-     clears the gesture bar. */
+  /* Phone: a side panel would eat the whole canvas. F3 (board TODO-001):
+     a real FIXED bottom sheet — full width (so viewport()'s inset.bottom
+     path keeps working), SOLID raised ink (the field must not bleed through
+     under the reading text), bounded at 46dvh, top corners rounded, and
+     padded clear of the home-indicator inset. The aside stays the scroller,
+     so the sheet never grows past its bound. */
   @media (max-width: 700px) {
     .note-preview {
+      position: fixed;
       top: auto;
       left: 0;
       right: 0;
+      bottom: 0;
       width: auto;
-      height: 45%;
+      height: auto;
+      max-height: 46dvh;
+      background: var(--dn-bg-raise);
       border-left: none;
       border-top: 1px solid color-mix(in srgb, var(--dn-src, var(--dn-accent)) 45%, var(--dn-border-strong));
+      border-radius: 10px 10px 0 0;
       box-shadow: 0 -12px 30px color-mix(in srgb, var(--dn-bg-sunken) 70%, transparent);
       padding: 0.8rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
     }
+    .note-preview header { padding-right: 3rem; }
+    /* F3: the × is the phone's close — visible, 44px, top-right of the sheet. */
+    .sheet-close { display: inline-flex; }
     .note-preview.empty {
-      height: auto;
-      /* Stack UNDER the controls chip — one module column on phone (chip,
-         hint beneath). top:0 put the hint in the chip's pocket (hotfix 4b);
-         5.8rem clears the chip box's bottom edge (top 0.9rem + 44px chip +
-         2×0.7rem padding) with an 8px breath. The canvas corner pass measures
-         real rects, so it follows for free. */
-      top: 5.8rem;
-      left: 0.9rem;
-      right: auto;
-      bottom: auto;
+      /* F3: the empty placeholder is a DESKTOP hint. On a phone it was a
+         translucent dashed box floating over the field near the top — hide
+         it; the restore pill (below) is the phone's way back. */
+      display: none;
     }
     /* Touch: the two meta actions are thumb targets — 44px, the dock's
        whole contract. */
