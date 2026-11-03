@@ -16,13 +16,16 @@ import { coCitations, dedupeGraphTags, egoGraph, filteredGraph, localGraph, node
 import { sourceColor, sourceTitle } from './source'
 import { loadLastRead, saveLastRead } from './lastRead'
 import {
-  loadControlsOpen,
+  loadControlsPref,
+  writeControlsPref
+} from './controls'
+import {
+  isPhoneLayout,
   loadLayout,
   loadPreviewOpen,
   loadSpacing,
   MAX_SPACING,
   MIN_SPACING,
-  writeControlsOpen,
   writeLayout,
   writePreviewOpen,
   writeSpacing
@@ -215,13 +218,15 @@ export class DocneuralStore {
     writePreviewOpen(open)
   }
 
-  /** The controls panel (filter chips + spacing). `null` = never answered, so
-   *  the caller applies its own phone/desktop default; an explicit toggle —
-   *  either direction — persists from then on. */
-  controlsOpen = $state<boolean | null>(loadControlsOpen())
+  /** The controls panel (filter chips + spacing). S4 (board TODO-001): the
+   *  stored answer is PER FORM FACTOR (dn.controls.open.desk|phone, same
+   *  split as the lock pref), so a desktop "open" can no longer boot the
+   *  phone with the filter sheet up. `null` = this form factor never
+   *  answered, and the caller applies its own default. */
+  controlsOpen = $state<boolean | null>(loadControlsPref(isPhoneLayout()))
   setControlsOpen(open: boolean): void {
     this.controlsOpen = open
-    writeControlsOpen(open)
+    writeControlsPref(open, isPhoneLayout())
   }
 
   /** Docs ticked in the sidebar. Non-empty means the synapses canvas shows
