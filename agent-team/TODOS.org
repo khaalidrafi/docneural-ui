@@ -18,7 +18,11 @@
 ** TODO TODO-001 P1: network view on phones (Owner 2026-11-03 #docneural-site)
    ASSIGNEE: groq/qwen3.8-27b@goose
    :EFFORT: 2:00
-   :DEADLINE: [2026-11-03 20:00 +06]
+   :DEADLINE: [2026-11-04 02:30 +06]
+   RE-DISPATCH [2026-11-04 02:30 +08]: lead re-issued to same seat as
+   ai/turn-20261104-001 — prior 20:00 +06 deadline lapsed with no branch
+   (sandbox wipe killed seats/ before the seat could start; no report in
+   CHAT.org). Spec below unchanged (F1-F5 + S1-S5 + KEEP).
    Reviewed in code + multimodal screenshots (vite dev, iPhone-14 emulation,
    390x844 / 1280x800, shots in download/shots/p1/). Fix package:
    - F1 (blocker) canvas touch-action: force-graph 1.52 drives d3-drag/d3-zoom
