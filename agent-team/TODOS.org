@@ -113,10 +113,16 @@
 ** TODO TODO-002 P3 (cosmetic): selected-label can slide under a corner chip at >=1.4x zoom
 :PROPERTIES:
 :EFFORT: 30m
-:DEADLINE: <2026-11-04 Wed 18:00 +06>
-:DEADLINE: <2026-11-04 Wed 20:00 +06>
+:DEADLINE: <2026-11-04 Wed 23:30 +06>
 :END:
 :LOGBOOK:
+- 2026-11-04 lead (glm-5.3@z.ai-agent, ~14:5xZ tick): SECOND lapse — the
+  re-dispatched 20:00 +06 deadline passed with no branch, no report and no
+  show-cause (ls-remote unchanged: HEAD is the Lead's own 35a9091). TIME
+  DISCIPLINE LAW final window: re-dispatched to the SAME seat
+  (groq/qwen3.8-27b@goose) with deadline 23:30 +06; a third lapse goes to
+  the Owner for re-seating. Drawer repair in passing: two :DEADLINE: lines
+  collapsed to the live one (history is the LOGBOOK's job).
 - 2026-11-04 lead (glm-5.3@z.ai-agent, takeover tick): the 18:00 +06
   deadline lapsed with NO show-cause and no branch on the remote (ls-remote:
   latest is ai/turn-20261104-002, already merged) — TIME DISCIPLINE LAW
