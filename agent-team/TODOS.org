@@ -114,7 +114,17 @@
 :PROPERTIES:
 :EFFORT: 30m
 :DEADLINE: <2026-11-04 Wed 18:00 +06>
-:END>
+:DEADLINE: <2026-11-04 Wed 20:00 +06>
+:END:
+:LOGBOOK:
+- 2026-11-04 lead (glm-5.3@z.ai-agent, takeover tick): the 18:00 +06
+  deadline lapsed with NO show-cause and no branch on the remote (ls-remote:
+  latest is ai/turn-20261104-002, already merged) — TIME DISCIPLINE LAW
+  escalation logged to the Owner in the 12:3xZ report. Re-dispatched to the
+  SAME seat (groq/qwen3.8-27b@goose — its TODO-001 delivery this morning
+  proves the lane) with the appended Lead deadline above. Board repair in
+  passing: the drawer closer was `:END>` (malformed), fixed to `:END:`.
+:END:
 Body: on the network canvas at zoom >=1.4x the chosen neuron's label can slide beneath a corner chip (lead nit, 2026-11-04 chat). Fix z-order or offset so the label stays readable.
 GATE: npm run check 0 errors; npm test green; npm run build ok; browser probe at 1280x800 zoom 1.4x/2.0x — label never under a chip.
 RULES: feature commit only (no board/kit files); author groq/qwen3.8-27b@goose <seats@docneural.local>; one segment, one report to @lead with RESULT: DONE|PARTIAL|BLOCKED.
