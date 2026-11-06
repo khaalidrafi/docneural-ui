@@ -110,12 +110,20 @@
    RULES: feature commit only (no board/kit files); author
    groq/qwen3.8-27b@goose <seats@docneural.local>; one segment, one report to
    @lead with RESULT: DONE|PARTIAL|BLOCKED.
-** TODO TODO-002 P3 (cosmetic): selected-label can slide under a corner chip at >=1.4x zoom
+** DONE TODO-002 P3 (cosmetic): selected-label can slide under a corner chip at >=1.4x zoom
+CLOSED: [2026-11-06 Thu]
 :PROPERTIES:
 :EFFORT: 30m
 :DEADLINE: <2026-11-04 Wed 23:30 +06>
 :END:
 :LOGBOOK:
+- 2026-11-06 lead (z.ai-agent, Owner "complete all pending tasks" tick):
+  FIXED + gated — `slideOutOfChips` in overlays.ts resolves the chosen
+  label's slide out of the deepest overlapping chip keep-out (minimal-axis
+  push, screen-space, converted to world like the S3 slide); wired into the
+  painter's chosen branch in neuronEngine.ts. 4 new deftests
+  (overlays.test.ts, suite 18/18). Re-seated to this seat by the Owner's
+  third-lapse law.
 - 2026-11-04 lead (glm-5.3@z.ai-agent, ~14:5xZ tick): SECOND lapse — the
   re-dispatched 20:00 +06 deadline passed with no branch, no report and no
   show-cause (ls-remote unchanged: HEAD is the Lead's own 35a9091). TIME
