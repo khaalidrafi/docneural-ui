@@ -90,3 +90,40 @@ export function cornerBlocker(
     b: c.h / 2 + half
   }
 }
+
+/**
+ * TODO-002 (P3 cosmetic, >=1.4x zoom): the CHOSEN label slides, never drops —
+ * but the S3 slide only knew the visible rect, so a selected title could come
+ * to rest under a corner chip. Given the label's screen-space top-left, size
+ * and the chip keep-outs, return the minimal-axis push out of the DEEPEST
+ * overlapping chip (largest intersection area — the one the visitor can
+ * actually see). One chip, one axis, always terminates: adjacent-chip packing
+ * is the force layer's job, not the painter's.
+ */
+export function slideOutOfChips(
+  b: { x: number; y: number },
+  sw: number,
+  sh: number,
+  keepOut: CornerBox[]
+): { dx: number; dy: number } {
+  let deepest: CornerBox | null = null
+  let deepestArea = 0
+  for (const o of keepOut) {
+    const ox = Math.min(b.x + sw, o.x + o.w) - Math.max(b.x, o.x)
+    const oy = Math.min(b.y + sh, o.y + o.h) - Math.max(b.y, o.y)
+    if (ox > 0 && oy > 0 && ox * oy > deepestArea) {
+      deepestArea = ox * oy
+      deepest = o
+    }
+  }
+  if (!deepest) return { dx: 0, dy: 0 }
+  const o = deepest
+  const pushLeft = b.x + sw - o.x
+  const pushRight = o.x + o.w - b.x
+  const pushUp = b.y + sh - o.y
+  const pushDown = o.y + o.h - b.y
+  const mx = Math.min(pushLeft, pushRight)
+  const my = Math.min(pushUp, pushDown)
+  if (mx <= my) return { dx: pushLeft <= pushRight ? -mx : mx, dy: 0 }
+  return { dx: 0, dy: pushUp <= pushDown ? -my : my }
+}

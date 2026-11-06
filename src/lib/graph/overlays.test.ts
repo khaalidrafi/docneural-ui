@@ -3,7 +3,7 @@
 // layout must keep) and which is a CORNER (a keep-out the physics routes
 // around). The component measures the DOM; these tests own the verdicts.
 import { describe, expect, it } from 'vitest'
-import { cornerBlocker, planOverlays, type Box } from './overlays'
+import { cornerBlocker, planOverlays, slideOutOfChips, type Box } from './overlays'
 
 const box = (left: number, top: number, width: number, height: number): Box => ({
   left,
@@ -139,5 +139,41 @@ describe('cornerBlocker: the world-space keep-out (S2 pad)', () => {
     const b = cornerBlocker({ x: 0, y: 0, w: 100, h: 40 }, 0, 0, -5)
     expect(b.l).toBe(50)
     expect(b.t).toBe(20)
+  })
+})
+
+// TODO-002: the chosen label's slide must leave the corner chrome — a
+// selected title at >=1.4x zoom never rests under a chip.
+describe('slideOutOfChips', () => {
+  const chip = { x: 12, y: 560, w: 180, h: 44 } // the scope chip, bottom-left
+
+  it('a label clear of every chip is not pushed at all', () => {
+    const r = slideOutOfChips({ x: 400, y: 200 }, 120, 14, [chip])
+    expect(r.dx).toBe(0)
+    expect(r.dy).toBe(0)
+  })
+
+  it('a label resting over the chip top pushes UP — the cheaper vertical exit', () => {
+    // label y 550..590 over chip 560..604: up 30 < down 54
+    const r = slideOutOfChips({ x: 40, y: 550 }, 120, 40, [chip])
+    expect(r.dy).toBe(-30)
+    expect(r.dx).toBe(0)
+  })
+
+  it('a label fully inside the chip takes the cheaper exit — vertical here', () => {
+    // exits: horizontal 98 vs vertical 30 → vertical wins
+    const r = slideOutOfChips({ x: 50, y: 570 }, 60, 20, [chip])
+    expect(r.dy).toBe(-30)
+    expect(r.dx).toBe(0)
+  })
+
+  it('resolves the DEEPEST of two chips and always terminates', () => {
+    const wider = { x: 12, y: 550, w: 180, h: 90 } // deeper: covers the full label height
+    const r = slideOutOfChips({ x: 40, y: 550 }, 120, 40, [chip, wider])
+    const x = 40 + r.dx
+    const y = 550 + r.dy
+    // every chip is left behind once the deepest one is resolved
+    for (const o of [chip, wider])
+      expect(x < o.x + o.w && x + 120 > o.x && y < o.y + o.h && y + 40 > o.y).toBe(false)
   })
 })
