@@ -37,6 +37,7 @@ import {
   type Blocker
 } from './spreadForces'
 import { arrowHeadPx, arrowVisible } from '../core/controls'
+import { slideOutOfChips } from './overlays'
 import type { LayoutMode } from '../core/types'
 
 // The force-graph instance is a chainable kapsule; GraphView keeps its own
@@ -1027,8 +1028,20 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
           if (chosen) {
             // S3: the chosen name NEVER drops — it slides into the visible
             // rect instead (the claim below follows the shifted box).
-            const dxs = Math.max(vis.x, Math.min(tl.x, vis.x + vis.w - sw)) - tl.x
-            const dys = Math.max(vis.y, Math.min(tl.y, vis.y + vis.h - sh)) - tl.y
+            let dxs = Math.max(vis.x, Math.min(tl.x, vis.x + vis.w - sw)) - tl.x
+            let dys = Math.max(vis.y, Math.min(tl.y, vis.y + vis.h - sh)) - tl.y
+            // TODO-002: the slide now also leaves the corner chrome — a
+            // selected title at >=1.4x zoom must not come to rest under a
+            // chip. The push is screen-space (chip rects are canvas-relative)
+            // and converts to world like the vis slide above.
+            const chip = slideOutOfChips(
+              { x: tl.x + dxs, y: tl.y + dys },
+              sw,
+              sh,
+              keepOut
+            )
+            dxs += chip.dx
+            dys += chip.dy
             if (dxs || dys) {
               drawX += dxs / globalScale
               drawY += dys / globalScale
