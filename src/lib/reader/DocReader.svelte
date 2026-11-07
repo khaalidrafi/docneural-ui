@@ -10,6 +10,7 @@
   import { onMount } from 'svelte'
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
+  import { sanitizeHtml } from '../core/sanitize'
   import { copyText } from '../core/clipboard'
   import type { DocNode, Peek } from '../core/types'
 
@@ -17,6 +18,10 @@
 
   const doc = $derived(store.selected)
   const html = $derived(doc ? store.bodies.get(doc.slug) : undefined)
+  // Bodies travel (imports, later exports, pipeline slips) — the reader
+  // renders the sanitized fragment, removal-only, so prose and code blocks
+  // survive byte-identical and the script/handler/js-URL class cannot.
+  const shownHtml = $derived(typeof html === 'string' ? sanitizeHtml(html) : '')
 
   let mainEl: HTMLElement | undefined = $state()
   let proseEl: HTMLElement | undefined = $state()
@@ -495,7 +500,7 @@
              onpointerover={onPeekMove} onpointerout={onPeekLeave}
              onpointerdown={onPeekDown} onpointerup={onPeekUp}
              onpointercancel={onPeekUp} onpointerleave={closePeek}>
-          {@html html}
+          {@html shownHtml}
         </div>
 
         <nav class="pager" aria-label="Chapter pager">
