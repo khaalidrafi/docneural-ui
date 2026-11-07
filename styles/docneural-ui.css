@@ -1092,9 +1092,24 @@ body.dn-body::after {
   .dn-led-dot { animation: none; }
   /* CONSULT C: the header bus rider is parked for reduced-motion users. */
   .bus-rail::before { animation: none; opacity: 0; }
+  /* Deepseek review r1: the org-content rise, the anchor flash and the
+     command palette were not on the park list — static visitors still saw
+     them sweep. Parked beside the rest. */
+  .dn-org { animation: none; }
+  .dn-flash { animation: none; }
+  .palette { animation: none; }
   /* The glitch layer is deleted outright (DS-COOLEST directive 8) — nothing
      to park here anymore. */
-  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  /* Duration-shortening alone is a trap for INFINITE animations: a 0.01ms
+     cycle at infinite iteration is a strobe, not a park. Cap the iteration
+     count so every survivor plays at most once and rests. */
+  * {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 /* ---------- 2c. Machine output ------------------------------------------
@@ -1642,6 +1657,13 @@ body.dn-body::after {
   .dn-spine::before,
   .dn-org .todo,
   .dn-org .done { animation: none; }
+
+  /* Deepseek review r1: the kill list was not exhaustive after all — the
+     org-content rise (every reader page), the anchor flash and the command
+     palette animated on phones. Zero means zero. */
+  .dn-org,
+  .dn-flash,
+  .palette { animation: none; }
 
   /* The glitch ghosts are already at opacity 0 globally; restate nothing.
      Transitions that only fire on interaction are fine, but the pulse-like
