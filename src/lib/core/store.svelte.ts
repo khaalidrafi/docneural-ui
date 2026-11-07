@@ -34,7 +34,7 @@ import { loadSaved, writeSaved, type SavedMark } from './saved'
 import { loadTrail, appendTrail, clearTrail as clearTrailStorage } from './trail'
 import { mergeBridges, parseBridges, bridgeWireCount } from './bridges'
 
-export type Mode = 'graph' | 'reader'
+export type Mode = 'graph' | 'reader' | 'browse'
 
 /* Ego-graph tuning. Two hops is the honest ceiling: a third hop over 29,017
    wires reaches the whole corpus, which is the hairball that makes a graph
@@ -438,6 +438,12 @@ export class DocneuralStore {
     if (mode === 'graph' || mode === 'network' || mode === 'synapses') {
       this.setMode('graph')
     }
+    // Browse deep link (Owner directive 2026-11-07): ?mode=all lands on the
+    // every-page sidebar surface. `browse`/`library` ride as aliases, the
+    // same additive-alias pattern as the graph forms above.
+    if (mode === 'all' || mode === 'browse' || mode === 'library') {
+      this.setMode('browse')
+    }
   }
 
   /** Indexes over the loaded graph, rebuilt only when the graph object is
@@ -546,8 +552,16 @@ export class DocneuralStore {
    *  data carries no manual tag, and per-manual grouping is the exporter's
    *  first tag. */
   get chapters(): DocNode[] {
+    return this.chaptersIn(this.manual)
+  }
+
+  /** The same walk scoped to ANY manual: Browse's sidebar (Owner directive
+   *  2026-11-07 — "a dedicated page where ALL docs can be navigated through
+   *  sidebar, like devdocs") needs every manual's tree at once, not just the
+   *  active one. Same stub/filter/reading-order rules, parameterized. */
+  chaptersIn(manual: string): DocNode[] {
     const content = this.data.nodes.filter(
-      (n) => !n.stub && (!this.manual || !n.tags[0] || n.tags[0] === this.manual)
+      (n) => !n.stub && (!manual || !n.tags[0] || n.tags[0] === manual)
     )
     const inSet = new Set(content.map((n) => n.id))
     const targeted = new Set(content.map((n) => n.next).filter(Boolean) as string[])

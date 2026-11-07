@@ -51,6 +51,7 @@
   const commands: Item[] = [
     { kind: 'cmd', label: 'Go home', hint: 'welcome', run: () => store.goHome() },
     { kind: 'cmd', label: 'Open reader', hint: 'docs mode', run: () => store.setMode('reader') },
+    { kind: 'cmd', label: 'Browse every page', hint: 'all docs, one sidebar', run: () => store.setMode('browse') },
     { kind: 'cmd', label: 'Open synapses', hint: 'network mode', run: () => store.setMode('graph') },
     // BYOK RAG over the corpus (core/ai.ts): the visitor's endpoint, the
     // exporter's .org pages as retrieval. The one AI surface a static site

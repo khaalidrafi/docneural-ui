@@ -236,6 +236,28 @@ describe('manual scoping', () => {
     expect(src[0].links).toBe(1) // the wire that starts inside alpha
     expect(src[1].links).toBe(1)
   })
+
+  it('chaptersIn scopes the same walk to ANY manual (Browse sidebar, Owner 2026-11-07)', () => {
+    ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search: '' }
+    const store = new DocneuralStore()
+    const e1 = node({ id: 'e1', title: 'Emacs one', tags: ['emacs'], next: 'e2' })
+    const e2 = node({ id: 'e2', title: 'Emacs two', tags: ['emacs'] })
+    const o1 = node({ id: 'o1', title: 'Org one', tags: ['org'] })
+    store.data = { nodes: [e1, e2, o1], links: [] }
+    store.ready = true
+    expect(store.chaptersIn('emacs').map((n) => n.id)).toEqual(['e1', 'e2'])
+    expect(store.chaptersIn('org').map((n) => n.id)).toEqual(['o1'])
+    store.manual = 'org'
+    expect(store.chapters.map((n) => n.id)).toEqual(['o1']) // getter = chaptersIn(manual)
+  })
+
+  it('browse is allowed on the lite tier (text-only room; only the canvas is refused)', async () => {
+    ;(globalThis as Record<string, unknown>).location = { href: 'http://site.test/', search: '' }
+    const store = new DocneuralStore('.', true)
+    await store.load()
+    store.setMode('browse')
+    expect(store.mode).toBe('browse')
+  })
 })
 
 describe('co-citation edges in the ego view', () => {
@@ -354,6 +376,12 @@ describe('?mode aliases', () => {
   it('rejects neurons — an entity is not a destination', async () => {
     expect((await bootAt('?mode=neurons')).mode).toBe('reader')
     expect((await bootAt('?mode=NEURONS')).mode).toBe('reader')
+  })
+
+  it('lands ?mode=all / browse / library on the every-page surface (Owner 2026-11-07)', async () => {
+    expect((await bootAt('?mode=all')).mode).toBe('browse')
+    expect((await bootAt('?mode=Browse')).mode).toBe('browse')
+    expect((await bootAt('?mode=library')).mode).toBe('browse')
   })
 
   it('leaves unknown values home, silently (unchanged)', async () => {
