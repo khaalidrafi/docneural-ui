@@ -23,6 +23,7 @@
 // per frame would freeze this machine. Label ink/paper come from the site's
 // own --dn-fg/--dn-bg so text stays readable on both themes.
 import { canvasTokens, nodeColor, dimColor, type CanvasTokens } from 'orui/graph/colors'
+import { motionAllowed } from '../core/motion'
 import {
   LABEL_LINE,
   labelExtent,
@@ -1168,8 +1169,11 @@ function installNeuron(engine: Engine, focus: NeuronFocus): void {
       // alive even before you pick anything. SIGNAL pass: the ambient
       // threshold dropped (64, was 80 — more of the corpus visibly fires)
       // and the stream itself got fatter and faster (width/speed below).
+      // MOTION LAW: the particle stream is a perpetual animation loop — it
+      // is capped to zero on phones (zero-anims law) and under
+      // prefers-reduced-motion, where a static field still reads fully.
       .linkDirectionalParticles((l: any) =>
-        touchesSel(l) ? 4 : traffic(l) >= 64 ? 1 : 0)
+        motionAllowed() ? (touchesSel(l) ? 4 : traffic(l) >= 64 ? 1 : 0) : 0)
       .linkDirectionalParticleWidth((l: any) => (touchesSel(l) ? 2.6 : 2))
       .linkDirectionalParticleSpeed(0.0055)
       // After graphData() force-graph resolves endpoints to node objects.
