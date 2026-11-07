@@ -179,6 +179,14 @@
           <span class="cta-s">the whole network, live</span>
         </button>
       {/if}
+      <!-- The dedicated room (Owner directive 2026-11-07): the homepage
+           highlights popular docs; every page of every manual lives behind
+           this door, navigated through a devdocs-style sidebar. -->
+      <button class="cta browse dn-notch" onclick={() => store.setMode('browse')}>
+        <span class="cta-k">▦</span>
+        <span class="cta-t">Browse all docs</span>
+        <span class="cta-s">every page, one sidebar</span>
+      </button>
     </div>
 
     <!-- FULL-RIGHTS OP-38: the stats panel is the hero's second signature —

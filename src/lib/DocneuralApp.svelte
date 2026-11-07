@@ -19,6 +19,7 @@
   import NotePreview from './reader/NotePreview.svelte'
   import DocReader from './reader/DocReader.svelte'
   import Home from './reader/Home.svelte'
+  import Browse from './reader/Browse.svelte'
   import CommandPalette from './ui/CommandPalette.svelte'
   import Library from './ui/Library.svelte'
   import AskPanel from './reader/AskPanel.svelte'
@@ -300,6 +301,13 @@
       onclick={() => store.setMode('reader')} title="Read the documentation">
       <span class="seg-ico" aria-hidden="true">▤</span><span class="seg-txt">DOCS</span>
     </button>
+    <!-- The third surface (Owner directive 2026-11-07): homepage highlights
+         popular docs; ALL is the devdocs-style room where every page of
+         every manual is navigable through the sidebar. -->
+    <button class="seg" class:active={store.mode === 'browse'} aria-pressed={store.mode === 'browse'}
+      onclick={() => store.setMode('browse')} title="Browse every page of every manual">
+      <span class="seg-ico" aria-hidden="true">▦</span><span class="seg-txt">ALL</span>
+    </button>
     {#if !store.lite}
       <button class="seg" class:active={store.mode === 'graph'} aria-pressed={store.mode === 'graph'}
         onclick={() => store.setMode('graph')} title="See the citations as a network">
@@ -461,6 +469,10 @@
       {/if}
     </details>
     <NotePreview {store} />
+  </section>
+{:else if store.mode === 'browse'}
+  <section class="reader-mode browse-mode" in:fly={morph}>
+    <Browse {store} />
   </section>
 {:else if store.selected}
   <section class="reader-mode" in:fly={morph}>
