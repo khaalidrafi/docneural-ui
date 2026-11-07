@@ -22,7 +22,8 @@ import {
   nodeViews,
   outlinks,
   shortTitle,
-  spreadStrength
+  spreadStrength,
+  TOC_OPEN_DEPTH
 } from './graph'
 import type { DocNode, GraphData } from './types'
 
@@ -469,5 +470,13 @@ describe('manualToc', () => {
     const b = page('m--b', 'm--a')
     const tree = manualToc([a, b])
     expect(tree.length).toBe(2) // both still render — corruption never loses pages
+  })
+
+  it('boots COLLAPSED — the default opens depth 1 only (Owner directive 2026-11-07)', () => {
+    // "The TOC should be collapsed by default, and expandable as well":
+    // the constant is the ONE place the boot depth lives (Toc.svelte applies
+    // it), so the law is pinned here where a refactor cannot silently
+    // re-expand hundreds of section rows under a first-time visitor.
+    expect(TOC_OPEN_DEPTH).toBe(1)
   })
 })

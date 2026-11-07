@@ -455,9 +455,11 @@ export type TocNode = {
  *  ending with the hit's own — the `Up › Section › Page` path). */
 export type TocHit = { node: TocNode; path: string[] }
 
-/** Depth the TOC opens to by default (SPEC §2: depth 2 — the root and its
- *  chapter rows visible, sections closed until asked for). */
-export const TOC_OPEN_DEPTH = 2
+/** Depth the TOC opens to by default (Owner directive 2026-11-07: "The TOC
+ *  should be collapsed by default, and expandable as well" — depth 1 lists
+ *  the root chapters only, every section closed until its disclosure is
+ *  asked for; the ▸ arrows and the ± expand-all button open the rest). */
+export const TOC_OPEN_DEPTH = 1
 
 /** The title a TOC row prints: the canvas's suffix rule (drop "(The Org
  *  Manual)") WITHOUT the 26-char truncation — a directory row can afford

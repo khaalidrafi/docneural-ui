@@ -7,10 +7,12 @@
   // Svelte 5 snippet calling itself, one component for all depths.
   //
   // TOC RESCUE (network pass 2026-10-31, SPEC §2):
-  //  - default open depth 2, ancestors of the active page force-expand;
+  //  - COLLAPSED BY DEFAULT (Owner directive 2026-11-07): depth 1 — root
+  //    chapters listed, sections closed until a disclosure or the ± button
+  //    opens them; ancestors of the active page still force-expand;
   //  - the visitor's explicit open/closed choices persist per manual
   //    (localStorage `dn.toc.open.<manual>`, core/controls.ts);
-  //  - one icon button flips depth-2 ↔ expand-all;
+  //  - one icon button flips the collapsed default ↔ expand-all;
   //  - an in-TOC filter (250ms debounce) answers with ≤12 flat rows that
   //    each carry their breadcrumb path;
   //  - a manual with no Info structure renders as a FLAT reading-order list
@@ -38,7 +40,11 @@
     goto,
     degree,
     activeId = null,
-    manualKey = ''
+    manualKey = '',
+    /** false hides the tools row (filter field + ± button) — Browse's
+     *  sidebar embeds one Toc per manual under its own single filter, and
+     *  seven identical toolbars would be noise. Default true = standalone. */
+    chrome = true
   }: {
     chapters: DocNode[]
     goto: (c: DocNode) => void
@@ -46,6 +52,7 @@
     activeId?: string | null
     /** Storage scope for the open-state persistence (the manual's name). */
     manualKey?: string
+    chrome?: boolean
   } = $props()
 
   // Deep-reactive on purpose: the disclosure state lives ON the tree nodes
@@ -175,6 +182,7 @@
   {/if}
 {/snippet}
 
+{#if chrome}
 <div class="toc-tools">
   <!-- The in-TOC filter (SPEC §2.4): 40px field, pinned at the rail top. -->
   <div class="find">
@@ -197,6 +205,7 @@
     >{allOpen ? '−' : '+'}</button>
   {/if}
 </div>
+{/if}
 
 {#if !structured && tree.length > 0}
   <!-- The flat badge (SPEC §2.5): honest about what the export carries. -->
