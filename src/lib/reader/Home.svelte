@@ -11,27 +11,32 @@
   // "documentation from anywhere", because that is what the exporter emits.
   import { DocneuralStore } from '../core/store.svelte'
   import { sourceVars } from '../core/source'
+  import { motionAllowed } from '../core/motion'
   import ManualTabs from '../ui/ManualTabs.svelte'
   import CorpusField from './CorpusField.svelte'
   import Toc from './Toc.svelte'
 
   /* Instrument-style count-up on the corpus readout: the numbers sweep from
      zero once on mount, mono digits make it read like a boot readout.
-     Reduced-motion visitors (and crawlers) just get the final value. */
-  function countup(node: HTMLElement, target: number) {
-    if (!Number.isFinite(target)) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+     MOTION LAW: the sweep drives a $state factor through Svelte's own text
+     node (never textContent — that orphans the node Svelte keeps updating),
+     and it does not run at all on phones or for reduced-motion visitors —
+     they get the final value on the first paint. */
+  const motion = motionAllowed()
+  let sweep = $state(motion ? 0 : 1)
+  $effect(() => {
+    if (!motion) return // final value already in place
     const t0 = performance.now()
-    const DUR = 900
-    const tick = (t: number) => {
-      const k = Math.min(1, (t - t0) / DUR)
-      const eased = 1 - Math.pow(1 - k, 3)
-      node.textContent = String(Math.round(target * eased))
-      if (k < 1) requestAnimationFrame(tick)
+    let raf = 0
+    const tick = (t: number): void => {
+      const k = Math.min(1, (t - t0) / 900)
+      sweep = 1 - Math.pow(1 - k, 3)
+      if (k < 1) raf = requestAnimationFrame(tick)
     }
-    node.textContent = '0'
-    requestAnimationFrame(tick)
-  }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  })
+  const shown = (n: number): number => Math.round(n * sweep)
 
   let { store, title = 'org-docs' }: { store: DocneuralStore; title?: string } = $props()
 
@@ -186,9 +191,9 @@
       </div>
       <div class="dn-kv">
         <span>sources</span><span>{sources.length} · {sourceList}</span>
-        <span>pages</span><span class="num" use:countup={pageCount}>{pageCount}</span>
-        <span>neurons</span><span class="num" use:countup={docCount}>{docCount}</span>
-        <span>synapses</span><span class="num"><b use:countup={synCount}>{synCount}</b> <em>firing</em></span>
+        <span>pages</span><span class="num">{shown(pageCount)}</span>
+        <span>neurons</span><span class="num">{shown(docCount)}</span>
+        <span>synapses</span><span class="num"><b>{shown(synCount)}</b> <em>firing</em></span>
         <span>artifacts</span><span class="files">graph.json · llms.txt · *.org</span>
       </div>
       <p class="note">indexed at build time — no database, no server</p>

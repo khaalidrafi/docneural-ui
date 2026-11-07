@@ -12,6 +12,7 @@
   import { onMount } from 'svelte'
   import { fly } from 'svelte/transition'
   import { cubicOut } from 'svelte/easing'
+  import { motionAllowed } from './core/motion'
   import DocneuralGraph from './graph/DocneuralGraph.svelte'
   import FilterBar from './graph/FilterBar.svelte'
   import SpacingControl from './graph/SpacingControl.svelte'
@@ -128,7 +129,10 @@
       window.removeEventListener('resize', measure)
     }
   })
-  const morph = { y: 10, duration: 200, easing: cubicOut }
+  // MOTION LAW: JS transitions ignore CSS media queries — the morph picks
+  // its own duration from the same gate the CSS parks use, so phones and
+  // reduced-motion visitors get an instant surface swap, not a 200ms fly.
+  const morph = { y: 10, duration: motionAllowed() ? 200 : 0, easing: cubicOut }
 
   // Graph mode's control panel starts collapsed on phones: a full-width
   // filter bar over the canvas left a sliver of neurons to look at. The
