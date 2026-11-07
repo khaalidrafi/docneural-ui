@@ -49,6 +49,25 @@
     }
   })
 
+  // Dialog contract (a11y): the drawer is aria-modal, so Escape must close
+  // it and the focus it borrowed goes home when it leaves. The filter input
+  // already takes first focus above; this closes the loop.
+  $effect(() => {
+    if (!store.libraryOpen) return
+    const opener = document.activeElement as HTMLElement | null
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        store.libraryOpen = false
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      opener?.focus?.()
+    }
+  })
+
   // Recents ARE the trail, persisted: every stop is mirrored into
   // `dn.library.recents` (max 8, oldest last — controls.ts owns the cap) so
   // the drawer can still show a shelf after the trail itself is cleared,
