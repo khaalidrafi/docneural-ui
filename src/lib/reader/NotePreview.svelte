@@ -8,6 +8,8 @@
   import type { DocneuralStore } from '../core/store.svelte'
   import { backlinks, outlinks } from '../core/graph'
   import { sourceTitle, sourceVars } from '../core/source'
+  import { motionAllowed } from '../core/motion'
+  import { sanitizeHtml } from '../core/sanitize'
   import LinkPeek from './LinkPeek.svelte'
   import type { Peek } from '../core/types'
 
@@ -15,6 +17,13 @@
 
   const doc = $derived(store.selected)
   const html = $derived(doc ? store.bodies.get(doc.slug) : undefined)
+  // MOTION LAW: a JS fly cannot see the CSS media queries — pick the
+  // duration from the same gate that parks the CSS animations.
+  const flyIn = { x: 24, duration: motionAllowed() ? 200 : 0, easing: cubicOut }
+  // Bodies travel (imports, later exports, pipeline slips): the preview
+  // renders the same sanitized fragment the reader does — one pass, removal
+  // only, so the note stays byte-identical to the reader's version.
+  const shownHtml = $derived(typeof html === 'string' ? sanitizeHtml(html) : '')
   const ins = $derived(doc ? backlinks(store.data, doc.id).length : 0)
   const outs = $derived(doc ? outlinks(store.data, doc.id).length : 0)
 
@@ -135,7 +144,7 @@
     class="note-preview"
     aria-label="Note preview"
     style={sourceVars(doc.tags[0])}
-    in:fly={{ x: 24, duration: 200, easing: cubicOut }}
+    in:fly={flyIn}
   >
     <!-- S1/F3 (board TODO-001): the sheet's own close — always reachable on a
          phone (the meta row's "hide" verb scrolls away with the content).
@@ -179,14 +188,15 @@
     {:else if html === null}
       <p class="missing dn-mono">No page for <code>docs/{doc.slug}.html</code> — run <code>make export</code>.</p>
     {:else}
-      <!-- Organically trusted content: our own build pipeline's static
-           files only (never user input), hence raw {@html} is fine. -->
+      <!-- Same trust level as the reader: the exporter's fragment goes
+           through core/sanitize first — bodies travel, the pass removes
+           the whole script/handler/js-URL class and nothing else. -->
       <div class="dn-org" onclick={onContentClick}
            onpointerover={onPeekMove} onpointerout={onPeekLeave}
            onpointerdown={onPeekDown} onpointerup={onPeekUp}
            onpointercancel={onPeekUp} onpointerleave={closePeek}
            onscroll={closePeek} role="presentation">
-        {@html html}
+        {@html shownHtml}
       </div>
     {/if}
   </aside>
