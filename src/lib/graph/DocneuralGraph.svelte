@@ -216,16 +216,20 @@
   // the very same latticePitch call in both lattice (re)placement paths.
   let latticeP = 0
 
-  // WebGL is the canvas's one hard dependency (force-graph paints GL, not 2D).
-  // On a machine with hardware acceleration off — and they exist, or the
-  // owner would not have reported "no graphs showing up" — context creation
-  // returns null and the dish would sit blank forever, reading as a broken
-  // site. One capability probe at mount: fail HONESTLY, in copy, and keep
-  // the whole reader usable.
-  const webglOk = (() => {
+  // The canvas's one hard dependency is the 2D canvas API — NOT WebGL.
+  // force-graph paints with getContext('2d') (the library ships zero GL
+  // code), so a machine with hardware acceleration off — they exist, or
+  // the owner would not have reported "no graphs showing up" — still
+  // gets the full neuron field: Firefox's software canvas, a remote
+  // desktop without a GPU, a VM, all of them.  The old probe asked for
+  // webgl2/webgl and locked exactly those visitors out while the
+  // canvas would have painted fine.  One capability probe at mount,
+  // for the thing ACTUALLY used: fail HONESTLY, in copy, and keep the
+  // whole reader usable.
+  const canvasOk = (() => {
     try {
       const c = document.createElement('canvas')
-      return !!(c.getContext('webgl2') || c.getContext('webgl'))
+      return !!c.getContext('2d')
     } catch {
       return false
     }
@@ -932,12 +936,12 @@
 
 <svelte:window onkeydown={trailEsc} />
 
-<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl} data-webgl={webglOk ? 'ok' : 'none'} data-trail-open={trailOpen ? '1' : undefined}>
+<div class="roam-wrap dn-dish" data-layout={store.layout} bind:this={wrapEl} data-canvas={canvasOk ? 'ok' : 'none'} data-trail-open={trailOpen ? '1' : undefined}>
   <!-- loadEngine comes from neuronEngine so the force-graph import resolves
        from SYNAPT's node_modules (Vite resolves bare specifiers relative to
        the importing file, and GraphView.svelte lives in the sibling orui
        checkout) — and so the neuron painting rides in at construction. -->
-  {#if webglOk}
+  {#if canvasOk}
     <GraphView
       store={roam}
       onNodeClick={click}
@@ -947,17 +951,19 @@
       onLinkHover={edgeHover}
     />
   {:else}
-    <!-- No WebGL, no canvas: say so, in the dish, where the graph would be.
-         The reader and every other surface keep working. -->
-    <div class="no-webgl" role="status">
+    <!-- No canvas API at all: say so, in the dish, where the graph would
+         be.  The reader and every other surface keep working.  This is
+         the near-hypothetical case (a browser with canvas blocked) —
+         software rendering, no GPU, remote desktop all still paint. -->
+    <div class="no-canvas" role="status">
       <p class="nw-h dn-mono">⌁ synapses unavailable</p>
-      <p class="nw-line">The neuron canvas needs WebGL, and this browser
-        has it off (hardware acceleration disabled, or a remote desktop
-        without a GPU). Everything else works: open</p>
+      <p class="nw-line">The neuron canvas needs the 2D canvas API, and
+        this browser blocks it (canvas disabled or content blocked).
+        Everything else works: open</p>
       <p><button class="nw-go dn-mono" onclick={() => store.setMode('reader')}>▤ DOCS</button></p>
     </div>
   {/if}
-  {#if webglOk && !painted}
+  {#if canvasOk && !painted}
     <!-- Shape, not a spinner: the promise of what is coming (a field of
          neurons) in the pixels it will occupy. Compositor-only (one
          translateX sweep), aria-hidden, and deliberately the LAST child —
@@ -971,7 +977,7 @@
     </div>
   {/if}
 
-  {#if webglOk}
+  {#if canvasOk}
     <!-- Hover chip (SPEC §4.1): the pointer tier's floating readout — the
          first 60 chars of the citing line, one ctx fetch, cached. DOM over
          the canvas; it never steals the pointer (pointer-events: none). -->
@@ -1295,8 +1301,8 @@
   background-color: var(--dn-graph-bg);
 }
 
-/* ---------- WebGL fallback: the honest empty dish ---------- */
-.no-webgl {
+/* ---------- canvas fallback: the honest empty dish ---------- */
+.no-canvas {
   position: absolute;
   inset: 0;
   display: flex;
@@ -1307,20 +1313,20 @@
   padding: 2rem;
   text-align: center;
 }
-.no-webgl .nw-h {
+.no-canvas .nw-h {
   margin: 0;
   font-size: 0.72rem;
   letter-spacing: var(--dn-track);
   color: var(--dn-accent, var(--dn-fg));
 }
-.no-webgl .nw-line {
+.no-canvas .nw-line {
   margin: 0;
   max-width: 34rem;
   color: var(--dn-fg-muted);
   font-size: 0.86rem;
   line-height: 1.55;
 }
-.no-webgl .nw-go {
+.no-canvas .nw-go {
   border: 1px solid var(--dn-border-strong);
   background: var(--dn-bg-raise, transparent);
   color: var(--dn-fg);
@@ -1329,7 +1335,7 @@
   cursor: pointer;
   letter-spacing: var(--dn-track);
 }
-.no-webgl .nw-go:hover {
+.no-canvas .nw-go:hover {
   border-color: var(--dn-accent, var(--dn-fg));
 }
 
