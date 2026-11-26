@@ -117,7 +117,7 @@ CLOSED: [2026-11-06 Thu]
 :DEADLINE: <2026-11-04 Wed 23:30 +06>
 :END:
 :LOGBOOK:
-- 2026-11-06 lead (z.ai-agent, Owner "complete all pending tasks" tick):
+- 2026-11-06 lead (z.ai-agent, complete-all-pending-tasks tick):
   FIXED + gated — `slideOutOfChips` in overlays.ts resolves the chosen
   label's slide out of the deepest overlapping chip keep-out (minimal-axis
   push, screen-space, converted to world like the S3 slide); wired into the
